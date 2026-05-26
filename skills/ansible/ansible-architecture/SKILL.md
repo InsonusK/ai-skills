@@ -49,14 +49,81 @@ Roles define:
 - infrastructure configuration rules
 - reusable system components
 - state definitions
+- capabilities of a host
+- embedded operational functions (optional, bounded)
+
+Role is NOT only configuration — it also defines what the host is able to do.
+
+Examples of capabilities:
+- backup execution capability
+- restore capability
+- rotation capability
+- verification capability
+
+These capabilities MAY be implemented as internal role commands.
 
 ### 3.2 Validation requirement
 
-- Every role MUST include `validation.yaml` IF:
+Every role MUST
+- include `validation.yaml` IF:
   - not all input variables have safe defaults
   - or external dependencies exist
-
 - validation MUST be executed at role entry
+- sepparate:
+  - state layer (idempotent configuration)
+  - capability layer (commands / procedures)
+
+Recommended structure:
+```
+roles/{{ role_name }}/
+  tasks/
+    main.yaml
+    validation.yaml
+
+    state/
+      install.yaml
+      configure.yaml
+
+    commands/
+      backup.yaml
+      restore.yaml
+      rotate.yaml
+      verify.yaml
+```
+
+---
+
+### 3.3 Command execution inside role
+Roles MAY expose internal actions via:
+
+```yaml
+- name: Validate action
+  assert:
+    that:
+      - server_action in supported_actions
+    fail_msg: >
+      Invalid server_action '{{ server_action }}'.
+      Supported: {{ supported_actions | join(', ') }}
+
+- name: Execute action
+  include_tasks: "actions/{{ server_action }}.yaml"
+  when: server_action is defined
+```
+
+Rules:
+- commands are part of the role boundary (NOT external playbook logic)
+- commands MUST be explicit files, not inline logic
+- commands MUST remain idempotent where possible
+
+### 3.4 When NOT to put actions in role
+
+Actions MUST NOT be placed in role if:
+- they require cross-host orchestration
+- they depend on global workflow state
+- they require distributed coordination (cluster-wide backup, migration, etc.)
+
+In these cases:
+- use playbook/task list orchestration layer
 
 ---
 
@@ -65,31 +132,63 @@ Roles define:
 ### 4.1 Purpose
 
 Task lists define:
-- procedural workflows
-- transformations
-- data aggregation
-- deployment steps
+- cross-role workflows
+- orchestration of multiple capabilities
+- multi-host operations
+- business processes (backup campaigns, migrations, rollouts)
+
+Task list is a workflow engine layer, NOT host capability.
 
 ---
 
 ### 4.2 Requirements
 
-- Every complex task list MUST include documentation:
-  - `README.md`
+Task lists MAY:
+- call role capabilities (actions)
+- coordinate multiple roles
+- define execution order across hosts
+- aggregate results
+- implement pipelines (backup all DB nodes, then sync, then verify)
 
-- Task list MUST include `validation.yaml` IF:
-  - it accepts input parameters without defaults
-
-- Task list MUST be decomposed if large:
-  - split into sub-task directories
+Task lists MUST NOT:
+- define host-level state
+- duplicate role configuration logic
+- implement low-level system setup
 
 ---
 
-### 4.3 Structure rule
+### 4.3 Example: correct usage (NEW)
 
-If task list contains multiple logical units:
+```yaml
+- name: Run backup on DB nodes
+  hosts: db_nodes
+  tasks:
+    - include_role:
+        name: database
+      vars:
+        server_action: backup
+```
 
-- MUST be placed in a dedicated directory
+or workflow orchestration:
+
+```yaml
+- name: Backup cluster
+  hosts: db_nodes
+  tasks:
+    - include_role:
+        name: database
+      vars:
+        server_action: backup
+
+    - include_tasks: sync_backup.yaml
+```
+
+---
+
+### 4.4 Key principle
+
+Task list = composition of capabilities
+NOT implementation of capabilities.
 
 ---
 
@@ -188,17 +287,26 @@ ansible/
 
 ```
 Playbook (storybook)
-  ├── validation.yaml
-  ├── roles execution (state layer)
-  └── tasks execution (process layer)
+  ├── validation.yaml (global scope)
+  ├── Task Lists (workflow layer)
+  │     ├── orchestration across roles
+  │     ├── multi-host coordination
+  │     └── process pipelines
+  │
+  └── Roles (capability + state layer)
         ├── validation.yaml
-        └── workflow steps
+        ├── state/
+        └── commands/
+              ├── backup.yaml
+              ├── restore.yaml
+              └── etc
 ```
 
 ## 9. Key principles
-- Playbooks = orchestration only
-- Roles = infrastructure state
-- Tasks = procedural workflows
+- Playbooks = orchestration entrypoint
+- Roles = state + host capabilities
+- Tasks = cross-role workflows
+- Commands belong to roles when they are host-scoped capabilities
 - Validation = mandatory entry gate everywhere
 - No business logic inside playbooks
 - No implicit assumptions without validation
