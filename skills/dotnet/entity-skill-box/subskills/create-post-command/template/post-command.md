@@ -1,0 +1,27 @@
+# Template of property validator
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Ardalis.Result;
+using MediatR;
+using InsonusK.Shared.Models.Common;
+using {ProjectNamespace}.Entities.{EntityName}Entity.Models;
+
+namespace {ProjectNamespace}.Entities.{EntityName}Entity.Commands;
+
+public static class {EntityName}PostCommand 
+{
+    public class Single : IRequest<Result<{EntityName}Response.Single>>, IClientActionTimeStamp
+    {
+        public required {EntityName}PostRequestDto Payload { get; init; }
+        public required DateTimeOffset ActionTimeStamp { get; init; }    
+    }
+
+    public class Many : IRequest<Result<{EntityName}Response.Many>>, IClientActionTimeStamp
+    {
+        public required IEnumerable<{EntityName}PostRequestDto> Payload { get; init; }
+        public required DateTimeOffset ActionTimeStamp { get; init; }
+    }
+}
+```
