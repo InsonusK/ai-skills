@@ -96,6 +96,7 @@ roles/{{ role_name }}/
 ### 3.3 Command execution inside role
 Roles MAY expose internal actions via:
 
+*tasks/validation.yaml*
 ```yaml
 - name: Validate action
   assert:
@@ -104,16 +105,27 @@ Roles MAY expose internal actions via:
     fail_msg: >
       Invalid server_action '{{ server_action }}'.
       Supported: {{ supported_actions | join(', ') }}
+```
 
+*tasks/main.yaml*
+```yaml
 - name: Execute action
   include_tasks: "actions/{{ server_action }}.yaml"
   when: server_action is defined
+```
+
+*vars/main.yaml*
+```yaml
+supported_actions:
+  - deploy
+  - backup
 ```
 
 Rules:
 - commands are part of the role boundary (NOT external playbook logic)
 - commands MUST be explicit files, not inline logic
 - commands MUST remain idempotent where possible
+- list of `supported_actions` store in `vars` values
 
 ### 3.4 When NOT to put actions in role
 
