@@ -12,3 +12,4 @@ description: How to write documentation for ansible role
 2. All parameters in defaults/*.yml must have comments in English and Russian describing what this parameter is for. 
 If any parameters is used in tasks/*.yml or templates/*.j2 but not defined in defaults/*.yml, you must add description of this parameters to documentation. You add information about this parameters to documentation in ./docs. You can use [template](./templates/readme-template.md.j2) for this.
 2. If you add new input parameters to role, you must add description of this parameters to documentation. You can use [template](./templates/readme-template.md.j2) for this.
+3. Add example `playbook.yaml`
