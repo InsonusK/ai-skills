@@ -1,6 +1,16 @@
 ---
-name: ansible-architecture-rules
-description: High-level architectural concepts for Ansible projects — separation of concerns between playbooks, roles and task lists
+name: ansible-architecture
+description: >
+  High-level architectural concepts for Ansible projects.
+  Defines the three execution layers: playbooks, task lists, and roles.
+type: architecture
+domain: infrastructure
+tags:
+  - ansible
+  - architecture
+  - playbook
+  - role
+  - task-list
 ---
 
 # Ansible Storybook Skill (Architecture Concepts)

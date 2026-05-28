@@ -1,6 +1,16 @@
 ---
-name: Ansible Task List Requirements
-description: Architecture rules for writing Ansible task lists — workflows, pipelines and cross-role orchestration
+name: ansible-task-list-requirements
+description: >
+  Architecture rules for Ansible task lists.
+  Defines cross-role workflows, pipelines, and orchestration boundaries.
+type: guide
+domain: infrastructure
+tags:
+  - ansible
+  - task-list
+  - workflow
+  - pipeline
+  - requirements
 ---
 
 # Ansible Task List Requirements

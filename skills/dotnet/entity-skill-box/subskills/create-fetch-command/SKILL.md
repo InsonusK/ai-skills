@@ -1,7 +1,17 @@
 ---
-name: Create new entity fetch command
+name: dotnet-entity-fetch-command
 version: 1.0.0
-description: create new entity fetch command skill
+description: >
+  Creates a fetch command and handler for retrieving multiple .NET entities.
+  Requires a response DTO as a prerequisite.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - fetch
+  - query
+  - list
 ---
 
 # When to use this skill

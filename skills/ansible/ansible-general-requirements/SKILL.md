@@ -1,6 +1,16 @@
 ---
 name: ansible-general-requirements
-description: Common architecture rules, validation, defaults handling and directory structure standards for Ansible projects
+description: >
+  Cross-cutting rules for all Ansible artifacts.
+  Covers validation, default values handling, and directory structure standards.
+type: guide
+domain: infrastructure
+tags:
+  - ansible
+  - validation
+  - defaults
+  - directory-structure
+  - requirements
 ---
 
 # Ansible General Requirements

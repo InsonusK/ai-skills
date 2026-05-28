@@ -1,7 +1,17 @@
 ---
-name: Create new entity delete command
+name: dotnet-entity-delete-command
 version: 1.0.0
-description: create new entity delete command skill
+description: >
+  Creates a delete command and handler for a .NET entity.
+  Requires response DTO and entity extractor as prerequisites.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - delete
+  - command
+  - handler
 ---
 
 # When to use this skill

@@ -1,7 +1,17 @@
 ---
-name: Create new entity patch command
+name: dotnet-entity-patch-command
 version: 1.0.0
-description: create new entity patch command skill
+description: >
+  Creates a patch command, DTO, validator, and handler for a .NET entity.
+  Requires response DTO and entity extractor as prerequisites.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - patch
+  - partial-update
+  - command
 ---
 
 # When to use this skill

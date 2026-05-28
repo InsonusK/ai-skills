@@ -1,7 +1,17 @@
 ---
-name: readme_write
+name: dotnet-readme-write
 version: 1.0.0
-description: use this skill to create readme for unittest writing skill
+description: >
+  Guidelines for creating README files and code comments for .NET libraries.
+  Distinguishes between user-facing documentation and developer comments.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - readme
+  - documentation
+  - comments
+  - developer-experience
 ---
 
 # When to use this skill

@@ -1,6 +1,16 @@
 ---
-name: Ansible tasks documentation
-description: How to write documentation for ansible tasks
+name: ansible-tasks-documentation
+description: >
+  Guidelines for writing documentation inside Ansible task files.
+  Covers bilingual comments and parameter descriptions.
+type: guide
+domain: infrastructure
+tags:
+  - ansible
+  - tasks
+  - documentation
+  - comments
+  - i18n
 ---
 
 # When to use this skill

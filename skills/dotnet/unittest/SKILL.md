@@ -1,7 +1,17 @@
 ---
-name: unittest
+name: dotnet-unittest
 version: 1.0.0
-description: Define a unittest writing skill 
+description: >
+  Guidelines for writing .NET unit tests with mock separation and folder mirroring.
+  Enforces 80% coverage and structured test class organization.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - unit-testing
+  - xunit
+  - mocks
+  - coverage
 ---
 
 # When to use this skill

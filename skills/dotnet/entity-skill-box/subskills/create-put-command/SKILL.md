@@ -1,7 +1,17 @@
 ---
-name: Create new entity put command
+name: dotnet-entity-put-command
 version: 1.0.0
-description: create new entity put command skill
+description: >
+  Creates a put command, DTO, validator, and handler for a .NET entity.
+  Requires response DTO and entity extractor as prerequisites.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - put
+  - update
+  - command
 ---
 
 # When to use this skill

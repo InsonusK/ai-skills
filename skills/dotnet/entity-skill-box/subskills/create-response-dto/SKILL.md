@@ -1,7 +1,17 @@
 ---
-name: Create new entity response dto
+name: dotnet-entity-response-dto
 version: 1.0.0
-description: create new entity response dto skill
+description: >
+  Creates a response DTO for a .NET entity.
+  Selects the appropriate interface based on editability.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - dto
+  - response
+  - api-contract
 ---
 
 # When to use this skill

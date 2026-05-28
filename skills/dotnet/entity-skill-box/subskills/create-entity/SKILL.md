@@ -1,7 +1,17 @@
 ---
-name: Create new entity
+name: dotnet-entity-create
 version: 1.0.0
-description: create new entity skill
+description: >
+  Creates a new entity class and its configuration in a .NET project.
+  Covers entity fields, constraints, relations, and soft-delete strategy.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - domain-model
+  - configuration
+  - ef-core
 ---
 
 # When to use this skill

@@ -1,6 +1,15 @@
 ---
-name: Ansible Playbook Requirements
-description: Architecture rules for writing Ansible playbooks — orchestration, scope definition and validation
+name: ansible-playbook-requirements
+description: >
+  Architecture rules for Ansible playbooks.
+  Defines orchestration responsibilities, target scope, and validation gates.
+type: guide
+domain: infrastructure
+tags:
+  - ansible
+  - playbook
+  - orchestration
+  - requirements
 ---
 
 # Ansible Playbook Requirements

@@ -1,7 +1,17 @@
 ---
-name: Create new entity post command
+name: dotnet-entity-post-command
 version: 1.0.0
-description: create new entity post command skill
+description: >
+  Creates a post command, DTO, validator, and handler for a .NET entity.
+  Requires a response DTO as a prerequisite.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - post
+  - create
+  - command
 ---
 
 # When to use this skill

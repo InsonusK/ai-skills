@@ -1,7 +1,17 @@
 ---
-name: Create new entity validator
+name: dotnet-entity-validator
 version: 1.0.0
-description: create new entity validator skill
+description: >
+  Creates property and complex validators for a .NET entity.
+  Enforces custom error codes and avoids default validation methods.
+type: guide
+domain: dotnet
+tags:
+  - dotnet
+  - entity
+  - validation
+  - fluent-validation
+  - custom-rules
 ---
 
 # When to use this skill
