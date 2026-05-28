@@ -2,55 +2,55 @@
 name: Markdown Documentation Metadata
 description: Require structured YAML metadata header for all markdown documentation files
 ---
+# VS Code Agent Markdown Metadata Skill (Schema-Compliant)
 
-# Markdown Documentation Metadata Skill
+## Purpose
 
-## Goal
+When generating or updating any documentation `.md` file in a VS Code Agent environment, ensure metadata is **strictly compatible with the supported schema**.
 
-When creating or updating any `*.md` documentation file, always add a compact YAML frontmatter block at the beginning of the file.
-
-The metadata helps:
-
-* AI agents understand document purpose
-* improve semantic retrieval
-* improve repository navigation
-* improve context routing
-* reduce hallucinations
-* improve architectural understanding
+This skill prevents warnings caused by unsupported YAML attributes and enforces correct separation between runtime fields and extended AI metadata.
 
 ---
 
-# Required Rules
+## Hard Constraint: Allowed Top-Level Fields
 
-* Every markdown documentation file MUST start with YAML frontmatter.
-* The metadata MUST be short and semantic.
-* The metadata MUST describe intent and responsibility.
-* The metadata MUST NOT duplicate implementation details.
-* The metadata MUST be understandable without reading the entire document.
+In agent-compatible YAML frontmatter, ONLY these fields are allowed:
+
+* `name`
+* `description`
+* `metadata`
+* `context`
+* `license`
+* `compatibility`
+* `argument-hint`
+* `disable-model-invocation`
+* `user-invocable`
+
+Any other top-level field WILL produce warnings and must not be used.
 
 ---
 
-# Required Metadata Fields
+## Required Structure
 
-Every markdown file should contain:
+Every markdown file MUST start with:
 
 ```yaml
 ---
-name:
-description:
-type:
-domain:
-tags:
+name: <stable-identifier>
+description: <short semantic summary>
+metadata: {}
 ---
 ```
 
 ---
 
-# Field Rules
+## Field Semantics
 
-## `name`
+### `name` (required)
 
-AI agent readable document name.
+* Stable machine identifier
+* lowercase, kebab-case recommended
+* must not change frequently
 
 Example:
 
@@ -60,187 +60,136 @@ name: docker-host-role
 
 ---
 
-## `description`
+### `description` (required)
 
-Short semantic description.
-
-Rules:
-
-* 1-3 lines maximum
-* describe responsibility and purpose
-* avoid implementation details
-* optimized for AI understanding
-
-Good:
-
-```yaml
-description: >
-  Manages Docker host infrastructure,
-  reverse proxy configuration,
-  and container publication rules.
-```
-
-Bad:
-
-```yaml
-description: >
-  Contains tasks/main.yml,
-  templates/nginx.conf.j2,
-  and handlers/restart.yml.
-```
-
----
-
-## `type`
-
-Document category.
-
-Allowed values:
-
-```yaml
-type:
-  - architecture
-  - role
-  - service
-  - domain
-  - api
-  - deployment
-  - decision
-  - guide
-  - workflow
-  - component
-  - infrastructure
-```
-
----
-
-## `domain`
-
-Bounded context or ownership area.
-
-Examples:
-
-```yaml
-domain: networking
-domain: infrastructure
-domain: vpn
-domain: monitoring
-domain: certificates
-```
-
----
-
-## `tags`
-
-Short semantic keywords.
-
-Rules:
-
-* 3-10 tags
-* lowercase
-* kebab-case preferred
+* Short semantic explanation
+* 1–3 lines max
+* used by AI for routing and embedding
 
 Example:
 
 ```yaml
-tags:
-  - docker
-  - ansible
-  - reverse-proxy
-  - nginx
-  - infrastructure
+description: Manages Docker host provisioning and reverse proxy integration for container exposure.
 ```
 
 ---
 
-# Recommended Optional Fields
+### `metadata` (recommended extension layer)
 
-Use when useful.
+Use `metadata` for ALL additional structured information.
+
+This is the ONLY safe place for extended schema.
+
+Allowed content inside metadata:
+
+* domain
+* tags
+* responsibilities
+* constraints
+* dependencies
+* ai_hints
+
+Example:
 
 ```yaml
-responsibility:
-depends_on:
-related:
-constraints:
-owned_by:
-ai_hints:
+metadata:
+  domain: infrastructure
+  tags:
+    - docker
+    - nginx
+    - ansible
+  responsibilities:
+    - provision docker host
+    - configure reverse proxy routing
+  constraints:
+    - no direct container port exposure
+    - all ingress must go through proxy
+  ai_hints:
+    priority: high
+    idempotent: true
 ```
 
 ---
 
-# Example
+## Optional Fields (Use Only If Needed)
 
-```markdown
----
-name: Docker Host Role
+### `context`
 
-description: >
-  Provides Docker host provisioning,
-  reverse proxy integration,
-  and centralized container exposure rules.
+Additional runtime or execution context.
 
-type: infrastructure
+### `license`
 
-domain: containers
+License declaration for the document or module.
 
-tags:
-  - docker
-  - ansible
-  - nginx
-  - reverse-proxy
+### `compatibility`
 
-constraints:
-  - all ingress must go through reverse proxy
-  - containers must not expose ports directly
----
+Defines supported environments or agent versions.
 
-# Docker Host Role
-```
+### `user-invocable`
+
+Marks whether this document/tool can be directly invoked by user agents.
 
 ---
 
-# AI Behavior Requirements
+## Prohibited Patterns
 
-When generating markdown documentation:
-
-* ALWAYS create metadata first
-* infer semantic purpose from codebase context
-* prefer concise summaries
-* optimize metadata for retrieval and AI understanding
-* avoid boilerplate descriptions
-* avoid file-level implementation details
-* avoid repeating headings inside metadata
-
----
-
-# Anti-patterns
-
-Do NOT generate:
+Do NOT use these at top level:
 
 ```yaml
-description: This document explains the document.
+title: ❌
+summary: ❌
+type: ❌
+tags: ❌ (must be inside metadata)
+domain: ❌ (must be inside metadata)
 ```
 
-Do NOT generate:
-
-```yaml
-description: Contains configuration files.
-```
-
-Do NOT generate metadata that merely lists files or directories.
-
-Do NOT generate metadata longer than the actual introduction.
+These will trigger VS Code agent warnings.
 
 ---
 
-# Priority
+## Recommended Pattern (Full Example)
 
-If existing metadata exists:
+```yaml
+---
+name: docker-host-role
 
-* preserve structure
-* improve semantic quality
-* avoid breaking existing keys
+description: Manages Docker host provisioning and reverse proxy integration for containerized services.
 
-If no metadata exists:
+metadata:
+  domain: infrastructure
+  tags:
+    - docker
+    - nginx
+    - ansible
+  responsibilities:
+    - provision docker runtime
+    - configure reverse proxy routing
+  constraints:
+    - no direct external port exposure
+    - all traffic routed through proxy layer
+  ai_hints:
+    architecture: declarative
+    safety_level: high
+---
+```
 
-* create it automatically.
+---
+
+## Design Principles
+
+* Keep `name` + `description` minimal and stable
+* Push all extensibility into `metadata`
+* Treat YAML as a **strict contract**, not free-form notes
+* Optimize `description` for AI embedding quality
+* Avoid duplication of file contents in metadata
+
+---
+
+## Outcome
+
+Following this structure ensures:
+
+* no VS Code agent warnings
+* consistent AI retrieval behavior
+* clean separation of contract vs semantic context
+* better indexing in RAG systems
