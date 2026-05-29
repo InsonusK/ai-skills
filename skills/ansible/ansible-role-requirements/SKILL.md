@@ -45,7 +45,7 @@ These capabilities MAY be implemented as internal role commands.
 ## 2. Validation requirement
 
 Every role MUST
-- include `validation.yaml` IF:
+- include validation IF:
   - not all input variables have safe defaults
   - or external dependencies exist
 - validation MUST be executed at role entry
@@ -53,7 +53,12 @@ Every role MUST
   - state layer (idempotent configuration)
   - capability layer (commands / procedures)
 
-Recommended structure:
+> **HIGHLIGHT:** All validation, assertions, and pre-flight checks that can be performed **before** executing any command **MUST** be done in validation. Do NOT defer checks to runtime if they can be validated upfront.
+
+### 2.1 Simple validation (single `validation.yaml`)
+
+Use when validation logic is the same across all actions:
+
 ```
 roles/{{ role_name }}/
   tasks/
@@ -69,6 +74,55 @@ roles/{{ role_name }}/
       restore.yaml
       rotate.yaml
       verify.yaml
+```
+
+### 2.2 Per-action validation (split validation files)
+
+Use when validation differs between commands/actions. Store split validations under `tasks/validations/`:
+
+```
+roles/{{ role_name }}/
+  tasks/
+    main.yaml
+    validation.yaml          # optional: common/shared validation
+
+    validations/
+      action1-validation.yaml
+      action2-validation.yaml
+      action3-validation.yaml
+
+    state/
+      install.yaml
+      configure.yaml
+
+    commands/
+      backup.yaml
+      restore.yaml
+      rotate.yaml
+      verify.yaml
+```
+
+*`tasks/validation.yaml` (example dispatcher or common validation)*
+```yaml
+- name: Validate common inputs
+  assert:
+    that:
+      - required_var is defined
+    fail_msg: "required_var must be defined"
+
+- name: Include per-action validation
+  include_tasks: "validations/{{ server_action }}-validation.yaml"
+  when: server_action is defined
+```
+
+*`tasks/validations/backup-validation.yaml`*
+```yaml
+- name: Validate backup-specific inputs
+  assert:
+    that:
+      - backup_retention_days is defined
+      - backup_retention_days | int > 0
+    fail_msg: "backup_retention_days must be a positive integer"
 ```
 
 ---

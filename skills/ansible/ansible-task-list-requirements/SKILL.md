@@ -47,6 +47,25 @@ Task lists MUST NOT:
 - duplicate role configuration logic
 - implement low-level system setup
 
+### 2.1 Validation requirement
+
+Task lists MUST perform all validation and assertions that can be done **before** executing any command or role action.
+
+> **HIGHLIGHT:** All validation and assertion which we can do before run command we MUST do in validation. Do NOT defer checks to runtime if they can be validated upfront.
+
+- Validate inputs, variables, and preconditions at the start of the workflow
+- Use `assert` or `fail` modules to stop early on invalid configuration
+- If validation differs per step or action, split validation into separate task files
+
+Split validation structure (example):
+```
+task_lists/
+  workflow.yaml
+  validations/
+    step1-validation.yaml
+    step2-validation.yaml
+```
+
 ---
 
 ## 3. Example: correct usage
