@@ -119,3 +119,111 @@ Actions MUST NOT be placed in role if:
 
 In these cases:
 - use playbook/task list orchestration layer
+
+---
+
+## 5. Example requirement
+
+Every role MUST contain an `example/` folder at the role root with working demonstration playbooks.
+
+### 5.1 Folder structure
+
+```
+roles/{{ role_name }}/
+  example/
+    playbook.yaml
+    inventory/
+      hosts.yaml
+    group_vars/
+      all.yaml
+    host_vars/
+      node1.yaml
+      node2.yaml
+```
+
+### 5.2 Example playbook requirements
+
+The example playbook MUST:
+
+- call **every action** exposed by the role (`deploy`, `backup`, `restore`, `rotate`, `verify`, etc.)
+- demonstrate **different variable sets** (minimal, full, override)
+- be executable without modification for local testing (e.g. `ansible-playbook -i inventory/hosts.yaml playbook.yaml`)
+
+### 5.3 Example content
+
+*`example/playbook.yaml`*
+```yaml
+- name: Demonstrate all role capabilities
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: "{{ playbook_dir }}/.."
+      vars:
+        server_action: deploy
+        app_version: "1.2.3"
+
+    - role: "{{ playbook_dir }}/.."
+      vars:
+        server_action: backup
+        backup_retention_days: 14
+
+    - role: "{{ playbook_dir }}/.."
+      vars:
+        server_action: restore
+        restore_source: "/backups/latest.tar.gz"
+
+    - role: "{{ playbook_dir }}/.."
+      vars:
+        server_action: rotate
+        rotation_policy: "daily"
+
+    - role: "{{ playbook_dir }}/.."
+      vars:
+        server_action: verify
+        verify_checksums: true
+```
+
+*`example/group_vars/all.yaml`* — full variable set
+```yaml
+app_name: myapp
+app_version: "1.0.0"
+install_path: "/opt/myapp"
+config_template: "myapp.conf.j2"
+backup_enabled: true
+backup_retention_days: 7
+backup_destination: "/backups"
+rotation_policy: "weekly"
+verify_checksums: false
+```
+
+*`example/host_vars/node1.yaml`* — override for specific host
+```yaml
+app_version: "2.0.0-beta"
+backup_retention_days: 3
+verify_checksums: true
+```
+
+*`example/host_vars/node2.yaml`* — minimal override
+```yaml
+backup_enabled: false
+```
+
+*`example/inventory/hosts.yaml`*
+```yaml
+all:
+  children:
+    webservers:
+      hosts:
+        node1:
+          ansible_host: 127.0.0.1
+          ansible_connection: local
+        node2:
+          ansible_host: 127.0.0.1
+          ansible_connection: local
+```
+
+Rules:
+- `example/` MUST be present at role root
+- example MUST cover all actions defined in `vars/main.yaml` → `supported_actions`
+- example MUST show at least three variable profiles (default/minimal, full, host-specific override)
+- example MUST use relative path `{{ playbook_dir }}/..` to reference the role being demonstrated
