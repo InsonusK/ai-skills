@@ -1,17 +1,19 @@
 ---
 name: dotnet-entity-fetch-command
-version: 1.0.0
-description: >
-  Creates a fetch command and handler for retrieving multiple .NET entities.
-  Requires a response DTO as a prerequisite.
-type: guide
-domain: dotnet
-tags:
+
+description: Creates a fetch command and handler for retrieving multiple .NET entities. Requires a response DTO as a prerequisite.
+
+metadata:
+  domain: dotnet
+  tags:
   - dotnet
   - entity
   - fetch
   - query
   - list
+  version: 1.0.0
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill

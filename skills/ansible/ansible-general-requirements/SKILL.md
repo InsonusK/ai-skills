@@ -1,16 +1,18 @@
 ---
 name: ansible-general-requirements
-description: >
-  Cross-cutting rules for all Ansible artifacts.
-  Covers validation, default values handling, and directory structure standards.
-type: guide
-domain: infrastructure
-tags:
+
+description: Cross-cutting rules for all Ansible artifacts. Covers validation, default values handling, and directory structure standards.
+
+metadata:
+  domain: infrastructure
+  tags:
   - ansible
   - validation
   - defaults
   - directory-structure
   - requirements
+  ai_hints:
+    category: guide
 ---
 
 # Ansible General Requirements

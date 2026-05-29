@@ -1,17 +1,19 @@
 ---
 name: dotnet-entity-post-command
-version: 1.0.0
-description: >
-  Creates a post command, DTO, validator, and handler for a .NET entity.
-  Requires a response DTO as a prerequisite.
-type: guide
-domain: dotnet
-tags:
+
+description: Creates a post command, DTO, validator, and handler for a .NET entity. Requires a response DTO as a prerequisite.
+
+metadata:
+  domain: dotnet
+  tags:
   - dotnet
   - entity
   - post
   - create
   - command
+  version: 1.0.0
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill

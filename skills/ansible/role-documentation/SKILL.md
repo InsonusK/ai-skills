@@ -1,16 +1,18 @@
 ---
 name: ansible-role-documentation
-description: >
-  Guidelines for writing documentation inside Ansible roles.
-  Covers bilingual comments and parameter descriptions.
-type: guide
-domain: infrastructure
-tags:
+
+description: Guidelines for writing documentation inside Ansible roles. Covers bilingual comments and parameter descriptions.
+
+metadata:
+  domain: infrastructure
+  tags:
   - ansible
   - role
   - documentation
   - comments
   - i18n
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill

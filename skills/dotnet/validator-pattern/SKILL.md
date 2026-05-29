@@ -1,17 +1,19 @@
 ---
 name: dotnet-validation-patterns
-version: 1.0.0
-description: >
-  Best practices for writing FluentValidation validators in .NET.
-  Covers zero-default policy, composer rules, and error code conventions.
-type: guide
-domain: dotnet
-tags:
+
+description: Best practices for writing FluentValidation validators in .NET. Covers zero-default policy, composer rules, and error code conventions.
+
+metadata:
+  domain: dotnet
+  tags:
   - dotnet
   - validation
   - fluent-validation
   - error-codes
   - patterns
+  version: 1.0.0
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill

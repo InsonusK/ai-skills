@@ -1,17 +1,19 @@
 ---
 name: dotnet-entity-skill-box
-version: 1.0.0
-description: >
-  Master skill for creating CRUD entities in .NET projects.
-  Orchestrates sub-skills for commands, validators, extractors, and DTOs.
-type: guide
-domain: dotnet
-tags:
+
+description: Master skill for creating CRUD entities in .NET projects. Orchestrates sub-skills for commands, validators, extractors, and DTOs.
+
+metadata:
+  domain: dotnet
+  tags:
   - dotnet
   - entity
   - crud
   - command-pattern
   - architecture
+  version: 1.0.0
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill

@@ -1,17 +1,19 @@
 ---
 name: dotnet-entity-response-dto
-version: 1.0.0
-description: >
-  Creates a response DTO for a .NET entity.
-  Selects the appropriate interface based on editability.
-type: guide
-domain: dotnet
-tags:
+
+description: Creates a response DTO for a .NET entity. Selects the appropriate interface based on editability.
+
+metadata:
+  domain: dotnet
+  tags:
   - dotnet
   - entity
   - dto
   - response
   - api-contract
+  version: 1.0.0
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill

@@ -1,16 +1,18 @@
 ---
 name: ansible-role-requirements
-description: >
-  Architecture rules for Ansible roles.
-  Covers purpose, validation, command execution, and structural boundaries.
-type: guide
-domain: infrastructure
-tags:
+
+description: Architecture rules for Ansible roles. Covers purpose, validation, command execution, and structural boundaries.
+
+metadata:
+  domain: infrastructure
+  tags:
   - ansible
   - role
   - capabilities
   - validation
   - requirements
+  ai_hints:
+    category: guide
 ---
 
 # Ansible Role Requirements

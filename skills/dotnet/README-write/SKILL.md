@@ -1,17 +1,19 @@
 ---
 name: dotnet-readme-write
-version: 1.0.0
-description: >
-  Guidelines for creating README files and code comments for .NET libraries.
-  Distinguishes between user-facing documentation and developer comments.
-type: guide
-domain: dotnet
-tags:
+
+description: Guidelines for creating README files and code comments for .NET libraries. Distinguishes between user-facing documentation and developer comments.
+
+metadata:
+  domain: dotnet
+  tags:
   - dotnet
   - readme
   - documentation
   - comments
   - developer-experience
+  version: 1.0.0
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill

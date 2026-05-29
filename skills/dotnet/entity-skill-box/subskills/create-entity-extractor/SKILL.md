@@ -1,17 +1,19 @@
 ---
 name: dotnet-entity-extractor
-version: 1.0.0
-description: >
-  Creates a command extractor for a .NET entity.
-  Typically required by generic command handlers like Get, Put, Patch, and Delete.
-type: guide
-domain: dotnet
-tags:
+
+description: Creates a command extractor for a .NET entity. Typically required by generic command handlers like Get, Put, Patch, and Delete.
+
+metadata:
+  domain: dotnet
+  tags:
   - dotnet
   - entity
   - extractor
   - command
   - generic-handler
+  version: 1.0.0
+  ai_hints:
+    category: guide
 ---
 
 # When to use this skill
