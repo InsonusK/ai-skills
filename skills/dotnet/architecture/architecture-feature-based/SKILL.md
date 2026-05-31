@@ -14,19 +14,23 @@ Each feature must be self-contained.
 
 Correct:
 
+```
 Features/
-CreateTask/
-Command.cs
-Handler.cs
-Validator.cs
-Endpoint.cs
-Mapping.cs
+  CreateTask/
+    Command.cs
+    Handler.cs
+    Validator.cs
+    Endpoint.cs
+    Mapping.cs
+```
 
 Avoid:
 
+```
 Handlers/
 Validators/
 Repositories/
+```
 
 ## Rules
 
