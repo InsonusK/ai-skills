@@ -1,3 +1,13 @@
+---
+name: validator-model-template
+description: Template: Model Validator (2.4)
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - validator-pattern
+    - model-validator
+---
 # Template: Model Validator (2.4)
 *Composer only. No inline logic allowed.*
 

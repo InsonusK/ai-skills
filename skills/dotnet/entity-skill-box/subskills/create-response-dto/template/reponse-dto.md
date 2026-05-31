@@ -1,3 +1,14 @@
+---
+name: entity-response-dto-template
+description: Template of response dto
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - response-dto
+    - reponse-dto
+---
 # Template of response dto
 
 ```csharp

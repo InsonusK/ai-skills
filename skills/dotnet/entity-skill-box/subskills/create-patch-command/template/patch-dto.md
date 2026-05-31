@@ -1,3 +1,14 @@
+---
+name: entity-patch-dto-template
+description: Template of patch dto
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - patch-command
+    - patch-dto
+---
 # Template of patch dto
 
 ```csharp

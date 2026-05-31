@@ -1,3 +1,14 @@
+---
+name: entity-patch-dto-validator-template
+description: Template of patch dto validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - patch-command
+    - patch-dto-validator
+---
 # Template of patch dto validator
 
 ```csharp

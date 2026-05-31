@@ -1,3 +1,13 @@
+---
+name: entity-get-command-template
+description: Template of get command
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - get-command
+---
 # Template of get command
 
 ```csharp

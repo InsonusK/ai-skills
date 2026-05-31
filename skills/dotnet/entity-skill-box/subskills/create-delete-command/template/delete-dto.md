@@ -1,3 +1,14 @@
+---
+name: entity-delete-dto-template
+description: Template of delete dto
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - delete-command
+    - delete-dto
+---
 # Template of delete dto
 
 ```csharp

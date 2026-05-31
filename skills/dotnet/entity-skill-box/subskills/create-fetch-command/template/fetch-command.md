@@ -1,3 +1,13 @@
+---
+name: entity-fetch-command-template
+description: Template of fetch command
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - fetch-command
+---
 # Template of fetch command
 
 ```csharp

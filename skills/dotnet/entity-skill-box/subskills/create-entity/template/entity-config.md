@@ -1,3 +1,14 @@
+---
+name: entity-config-template
+description: Template of entity config
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - entity
+    - entity-config
+---
 # Template of entity config
 
 ```csharp

@@ -1,3 +1,14 @@
+---
+name: entity-validator-complex-template
+description: Template of Complex validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - validator
+    - complex-validator
+---
 # Template of Complex validator
 
 ```csharp

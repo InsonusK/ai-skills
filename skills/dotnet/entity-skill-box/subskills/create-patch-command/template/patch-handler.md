@@ -1,3 +1,14 @@
+---
+name: entity-patch-handler-template
+description: Template of patch handler
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - patch-command
+    - patch-handler
+---
 # Template of patch handler
 
 ```csharp

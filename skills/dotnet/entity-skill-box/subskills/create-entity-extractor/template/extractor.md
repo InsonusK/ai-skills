@@ -1,3 +1,13 @@
+---
+name: entity-extractor-template
+description: Template for entity skill box subskills create entity extractor template extractor
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - extractor
+---
 ```csharp
 using InsonusK.Shared.AnnotationsForDI;
 using Ardalis.Result;

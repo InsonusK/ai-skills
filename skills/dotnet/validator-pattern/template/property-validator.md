@@ -1,3 +1,13 @@
+---
+name: validator-property-template
+description: Template of property validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - validator-pattern
+    - property-validator
+---
 # Template of property validator
 
 ## [2.2] Custom Property Rule

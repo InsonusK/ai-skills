@@ -1,3 +1,14 @@
+---
+name: entity-put-dto-template
+description: Template of post dto
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - put-command
+    - put-dto
+---
 # Template of post dto
 
 ```csharp

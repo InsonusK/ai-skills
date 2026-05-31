@@ -1,3 +1,14 @@
+---
+name: entity-delete-handler-template
+description: Template of delete handler
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - delete-command
+    - delete-handler
+---
 # Template of delete handler
 
 ```csharp

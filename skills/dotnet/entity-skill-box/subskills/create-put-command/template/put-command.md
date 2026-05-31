@@ -1,3 +1,13 @@
+---
+name: entity-put-command-template
+description: Template of property validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - put-command
+---
 # Template of property validator
 
 ```csharp
