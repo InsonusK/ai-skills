@@ -33,8 +33,8 @@ Validation logic is divided into four distinct levels based on complexity
 
 |Level|Rule Type|Technical Implementation|Use Case|Folder for validator | Template |
 |----|----|-----|----|----|---|
-|2.1|Simple Rule|Extension Methods (`IRuleBuilder`)|Standard FluentValidation methods (e.g. `NotEmpty`, `Equal`, `Length`).|`{ProjectNamespace}Validator/Properties`| [property-validator#Extension property validator](./template/property-validator.md#extension-property-validator)|
-|2.2|Custom Property Rule|`PropertyValidator<T, TProp>`|Complex logic involving a single field or dependencies on other entity properties.|`{ProjectNamespace}/Validator/Properties`| [property-validator#Custom Property Rule](./template/property-validator.md#custom-property-rule)|
+|2.1|Simple Rule|Extension Methods (`IRuleBuilder`)|Standard FluentValidation methods (e.g. `NotEmpty`, `Equal`, `Length`).|`{ProjectNamespace}Validator/Properties`| [property-validator#Extension property validator](./template/property-validator.md#21-extension-property-validator)|
+|2.2|Custom Property Rule|`PropertyValidator<T, TProp>`|Complex logic involving a single field or dependencies on other entity properties.|`{ProjectNamespace}/Validator/Properties`| [property-validator#Custom Property Rule](./template/property-validator.md#22-custom-property-rule)|
 |2.3|Complex Validation|`AbstractValidator<T>` (Cross-property)|Rules involving the interaction or combination of multiple fields.|`{ProjectNamespace}/Validator/Models`|[complex-validator.md#Template of Complex validator](./template/complex-validator.md)|
 |2.4|DTO/Entity Validator|`AbstractValidator<T>` (Composer)|Orchestrates rules from 2.1, 2.2 and 2.3 for a specific DTO or Entity.|`{ProjectNamespace}/Validator/Entity` or `{ProjectNamespace}/Validator/Models`|[model-validator.md#Template of Model validator](./template/model-validator.md) |
 
