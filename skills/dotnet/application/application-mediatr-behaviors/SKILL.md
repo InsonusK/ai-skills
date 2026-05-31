@@ -1,13 +1,13 @@
-# name
-
-mediatr-behaviors
-
-# description
-
-Defines MediatR pipeline behavior conventions.
-
-# content
-
+---
+name: mediatr-behaviors
+description: Defines MediatR pipeline behavior conventions.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - application
+    - mediatr-behaviors
+---
 ## Required Behaviors
 
 The application should support:

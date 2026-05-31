@@ -1,13 +1,12 @@
-# name
-
-minimal-api
-
-# description
-
-Defines Minimal API conventions.
-
-# content
-
+---
+name: minimal-api
+description: Defines Minimal API conventions.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - minimal-api
+---
 ## Endpoints
 
 Endpoints must remain thin.

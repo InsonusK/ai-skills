@@ -1,13 +1,13 @@
-# name
-
-domain-entities
-
-# description
-
-Defines domain entity rules.
-
-# content
-
+---
+name: domain-entities
+description: Defines domain entity rules.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - domain
+    - domain-entities
+---
 ## Entities
 
 Entities represent business concepts.

@@ -1,3 +1,14 @@
+---
+name: unittest-class-template
+description: Template of unit test class
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - testing
+    - unittest
+    - unittest-class
+---
 # Template of unit test class
 Use this [template](#tempalte) to create unit test
 

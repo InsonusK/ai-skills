@@ -1,3 +1,14 @@
+---
+name: entity-get-handler-template
+description: Template of get handler
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - get-command
+    - get-handler
+---
 # Template of get handler
 
 ```csharp

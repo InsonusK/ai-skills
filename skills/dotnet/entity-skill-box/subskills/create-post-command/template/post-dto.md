@@ -1,3 +1,14 @@
+---
+name: entity-post-dto-template
+description: Template of post dto
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - post-command
+    - post-dto
+---
 # Template of post dto
 
 ```csharp

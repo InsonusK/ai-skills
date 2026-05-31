@@ -1,3 +1,13 @@
+---
+name: entity-class-template
+description: Template of entity
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - entity
+---
 # Template of entity
 
 ```csharp

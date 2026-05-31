@@ -1,13 +1,13 @@
-# name
-
-modular architecture
-
-# description
-
-Defines the global architecture rules for the .NET modular monolith solution.
-
-# content
-
+---
+name: modular-architecture
+description: Defines the global architecture rules for the .NET modular monolith solution.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - architecture
+    - architecture-modular
+---
 ## Solution Structure
 
 The solution uses a modular monolith architecture.

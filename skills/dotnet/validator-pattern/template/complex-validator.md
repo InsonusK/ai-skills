@@ -1,3 +1,13 @@
+---
+name: validator-complex-template
+description: Template: Complex Validator (2.3)
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - validator-pattern
+    - complex-validator
+---
 # Template: Complex Validator (2.3)
 *Use for rules involving multiple properties.*
 

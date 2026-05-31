@@ -1,13 +1,13 @@
-# name
-
-testing-strategy
-
-# description
-
-Defines testing conventions.
-
-# content
-
+---
+name: testing-strategy
+description: Defines testing conventions.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - testing
+    - testing-strategy
+---
 ## Test Types
 
 Use:

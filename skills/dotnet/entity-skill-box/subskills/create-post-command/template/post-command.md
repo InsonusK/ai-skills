@@ -1,3 +1,13 @@
+---
+name: entity-post-command-template
+description: Template of property validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - post-command
+---
 # Template of property validator
 
 ```csharp

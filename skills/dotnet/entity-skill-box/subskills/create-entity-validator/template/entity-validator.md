@@ -1,3 +1,14 @@
+---
+name: entity-validator-model-template
+description: Template of entity validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - validator
+    - entity-validator
+---
 # Template of entity validator
 
 ```csharp

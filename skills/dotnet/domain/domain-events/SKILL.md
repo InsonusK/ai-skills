@@ -1,13 +1,13 @@
-# name
-
-domain-events
-
-# description
-
-Defines domain event conventions.
-
-# content
-
+---
+name: domain-events
+description: Defines domain event conventions.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - domain
+    - domain-events
+---
 ## Domain Events
 
 Domain events represent important business events.

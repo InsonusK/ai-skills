@@ -1,13 +1,13 @@
-# name
-
-efcore-persistence
-
-# description
-
-Defines EF Core persistence conventions.
-
-# content
-
+---
+name: efcore-persistence
+description: Defines EF Core persistence conventions.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - infrastructure
+    - efcore-persistence
+---
 ## DbContext
 
 Each module may own its own DbContext.

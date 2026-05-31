@@ -1,3 +1,14 @@
+---
+name: entity-put-dto-validator-template
+description: Template of post dto validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - put-command
+    - put-dto-validator
+---
 # Template of post dto validator
 
 ```csharp

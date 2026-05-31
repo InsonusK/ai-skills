@@ -1,13 +1,13 @@
-# name
-
-cqrs-mediatr
-
-# description
-
-Defines CQRS and MediatR conventions.
-
-# content
-
+---
+name: cqrs-mediatr
+description: Defines CQRS and MediatR conventions.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - application
+    - sqrs-mediatr
+---
 ## Commands
 
 Commands modify state.

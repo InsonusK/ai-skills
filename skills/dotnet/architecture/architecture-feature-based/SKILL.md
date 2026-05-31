@@ -1,13 +1,13 @@
-# name
-
-feature-based architecture
-
-# description
-
-Defines feature-based organization rules.
-
-# content
-
+---
+name: feature-based-architecture
+description: Defines feature-based organization rules.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - architecture
+    - architecture-feature-based
+---
 ## Feature Organization
 
 Each feature must be self-contained.

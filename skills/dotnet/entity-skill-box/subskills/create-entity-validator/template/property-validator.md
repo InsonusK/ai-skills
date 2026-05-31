@@ -1,3 +1,14 @@
+---
+name: entity-validator-property-template
+description: Template of property validator
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - validator
+    - property-validator
+---
 # Template of property validator
 
 ## Code naming convension

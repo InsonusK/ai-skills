@@ -1,13 +1,12 @@
-# name
-
-observability
-
-# description
-
-Defines logging, metrics, tracing and monitoring conventions.
-
-# content
-
+---
+name: observability
+description: Defines logging, metrics, tracing and monitoring conventions.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - observability
+---
 ## Logging
 
 Use structured logging.

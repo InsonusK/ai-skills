@@ -1,3 +1,14 @@
+---
+name: entity-put-handler-template
+description: Template of post handler
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - skill-box
+    - put-command
+    - put-handler
+---
 # Template of post handler
 
 ```csharp

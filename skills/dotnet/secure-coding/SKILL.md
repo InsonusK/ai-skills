@@ -1,13 +1,12 @@
-# name
-
-secure-coding
-
-# description
-
-Defines secure coding practices.
-
-# content
-
+---
+name: secure-coding
+description: Defines secure coding practices.
+metadata:
+  domain: dotnet
+  tags:
+    - dotnet
+    - secure-coding
+---
 ## Rules
 
 Never trust external input.
