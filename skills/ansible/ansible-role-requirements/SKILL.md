@@ -281,3 +281,49 @@ Rules:
 - example MUST cover all actions defined in `vars/main.yaml` → `supported_actions`
 - example MUST show at least three variable profiles (default/minimal, full, host-specific override)
 - example MUST use relative path `{{ playbook_dir }}/..` to reference the role being demonstrated
+
+---
+
+## 6. Override-friendly dictionary variables
+
+Any role variable that is a **dictionary (mapping) structure** and whose individual keys MAY be overridden by the consumer MUST be implemented using the **defaults + override + combine** pattern.
+
+### 6.1 Pattern definition
+
+In `defaults/main.yaml` (or `vars/main.yaml` for internal constants):
+
+```yaml
+structure_name_defaults:
+  value1: 1
+  value2: 2
+```
+
+In the same file, immediately after the `_defaults` variable:
+
+```yaml
+structure_name: "{{ structure_name_defaults | combine(structure_name_override | default({})) }}"
+```
+
+### 6.2 Consumer-side override
+
+In an inventory file (for example `group_vars/ca_servers.yml`), the consumer overrides only the keys that need to change:
+
+```yaml
+# group_vars/ca_servers.yml
+structure_name_override:
+  value2: 20
+```
+
+The resulting `structure_name` will be:
+
+```yaml
+value1: 1   # taken from structure_name_defaults
+value2: 20  # overridden by structure_name_override
+```
+
+### 6.3 Rules
+
+- The `_defaults` variable MUST contain the full set of keys with safe default values.
+- The resulting variable MUST be named without the `_defaults` suffix and MUST use the `combine` filter with the `_override` variable.
+- The `_override` variable MUST NOT be defined in the role defaults; it is reserved for consumer input (inventory, extra vars, etc.).
+- This pattern MUST be used for all dictionary parameters that are expected to be customized per-host or per-group.
