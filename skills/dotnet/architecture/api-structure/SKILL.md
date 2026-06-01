@@ -30,7 +30,6 @@ The result is measurable: each endpoint has an explicit route, HTTP verb, owning
 - MediatR request type
   - Command for change data
   - Query for read data
-  - Notification for sending notification
 - Request and response DTO names.
 
 ## Optional
@@ -202,9 +201,10 @@ All responses must use a consistent API contract:
     /Task
       TaskController.cs
       SingleTaskController.cs
-      TaskTagController.cs
-      SingleTaskTagController.cs
-      SingleTaskIsCompleteController.cs
+      /Tag
+        TaskTagController.cs
+        SingleTaskTagController.cs
+        SingleTaskIsCompleteController.cs
   /MinimalApi
     WebhookEndpoints.cs
     SyncEndpoints.cs
