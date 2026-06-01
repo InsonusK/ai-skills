@@ -193,6 +193,53 @@ All responses must use a consistent API contract:
 - Created resources return `CreatedAtAction` or an equivalent typed route response.
 - Validation errors are produced by the Application layer validation pipeline, not by Controller logic.
 
+## Ardalis.Result Response Mapping
+
+For every Command or Query, determine whether the response is wrapped in `Ardalis.Result.Result<T>` or returned as a plain response DTO.
+
+When the response uses `Ardalis.Result`, define the allowed `ResultStatus` values and map each status to an explicit `ProducesResponseType` and HTTP response.
+
+Example mapping:
+
+```text
+ResultStatus.Ok -> 200 OK -> ProducesResponseType(typeof(TaskDto), StatusCodes.Status200OK)
+ResultStatus.Created -> 201 Created -> ProducesResponseType(typeof(TaskDto), StatusCodes.Status201Created)
+ResultStatus.NoContent -> 204 No Content -> ProducesResponseType(StatusCodes.Status204NoContent)
+ResultStatus.Invalid -> 400 Bad Request -> ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)
+ResultStatus.NotFound -> 404 Not Found -> ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)
+ResultStatus.Conflict -> 409 Conflict -> ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)
+ResultStatus.Error -> 500 Internal Server Error -> ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)
+```
+
+When a Command or Query returns a plain response DTO without `Ardalis.Result`, define the endpoint-specific rule that determines `ProducesResponseType`.
+
+Examples:
+
+```text
+CreateTaskCommand returns TaskDto -> 201 Created + ProblemDetails errors from exception middleware.
+GetTaskQuery returns TaskDto -> 200 OK + 404 only if the handler can signal not found by exception or nullable contract.
+DeleteTaskCommand returns Unit -> 204 No Content + ProblemDetails errors from exception middleware.
+```
+
+Every possible response produced by the Command or Query must have a matching `ProducesResponseType`. If the API receives an unexpected `ResultStatus`, null state, response variant, or unhandled response shape, it must throw an exception instead of returning an undocumented HTTP response.
+
+Example:
+
+```csharp
+return result.Status switch
+{
+    ResultStatus.Created => CreatedAtAction(
+        nameof(SingleTaskController.Get),
+        "SingleTask",
+        new { id = result.Value.Id },
+        result.Value),
+    ResultStatus.Invalid => BadRequest(ToProblemDetails(result.ValidationErrors)),
+    ResultStatus.Conflict => Conflict(ToProblemDetails(result.Errors)),
+    _ => throw new InvalidOperationException(
+        $"Unexpected result status '{result.Status}' for CreateTaskCommand.")
+};
+```
+
 ## Suggested Folder Structure
 
 ```text
@@ -257,12 +304,37 @@ All responses must use a consistent API contract:
    ```text
    POST /task
    Request: CreateTaskCommand
-   Response: TaskDto
+   Response: Result<TaskDto>
    Success: 201 Created
    Error: ProblemDetails
    ```
 
-4. Place the endpoint in the expected folder.
+4. Determine whether the Command or Query returns `Ardalis.Result`.
+   Expected output:
+
+   ```text
+   CreateTaskCommand returns Result<TaskDto>.
+   Allowed statuses: Created, Invalid, Conflict, Error.
+   ProducesResponseType mappings:
+   - Created -> TaskDto, 201
+   - Invalid -> ProblemDetails, 400
+   - Conflict -> ProblemDetails, 409
+   - Error -> ProblemDetails, 500
+   Unexpected statuses throw InvalidOperationException.
+   ```
+
+5. If the Command or Query returns a plain response, define how `ProducesResponseType` is selected.
+   Expected output:
+
+   ```text
+   GetTasksQuery returns IReadOnlyCollection<TaskDto>.
+   ProducesResponseType mappings:
+   - Success -> IReadOnlyCollection<TaskDto>, 200
+   - Unhandled errors -> ProblemDetails from exception middleware, 500
+   Unexpected null response throws InvalidOperationException.
+   ```
+
+6. Place the endpoint in the expected folder.
    Expected output:
 
    ```text
@@ -271,7 +343,7 @@ All responses must use a consistent API contract:
    /Application/Features/Task/CreateTask/CreateTaskHandler.cs
    ```
 
-5. Implement the API endpoint as a thin MediatR adapter.
+7. Implement the API endpoint as a thin MediatR adapter.
    Example:
 
    ```csharp
@@ -289,28 +361,43 @@ All responses must use a consistent API contract:
        [HttpPost]
        [ProducesResponseType(typeof(TaskDto), StatusCodes.Status201Created)]
        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+       [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+       [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
        public async Task<ActionResult<TaskDto>> Create(
            [FromBody] CreateTaskCommand command,
            CancellationToken cancellationToken)
        {
            var result = await _sender.Send(command, cancellationToken);
 
-           return CreatedAtAction(
-               nameof(SingleTaskController.Get),
-               "SingleTask",
-               new { id = result.Id },
-               result);
+           return result.Status switch
+           {
+               ResultStatus.Created => CreatedAtAction(
+                   nameof(SingleTaskController.Get),
+                   "SingleTask",
+                   new { id = result.Value.Id },
+                   result.Value),
+               ResultStatus.Invalid => BadRequest(ToProblemDetails(result.ValidationErrors)),
+               ResultStatus.Conflict => Conflict(ToProblemDetails(result.Errors)),
+               ResultStatus.Error => StatusCode(
+                   StatusCodes.Status500InternalServerError,
+                   ToProblemDetails(result.Errors)),
+               _ => throw new InvalidOperationException(
+                   $"Unexpected result status '{result.Status}' for CreateTaskCommand.")
+           };
        }
    }
    ```
 
-6. Validate that no API endpoint contains forbidden logic.
+8. Validate that no API endpoint contains forbidden logic and every Command or Query response has a documented HTTP mapping.
    Expected output:
 
    ```text
    No DbContext usage in API.
    No domain calculations in API.
    One endpoint dispatches one MediatR request.
+   ResultStatus.Created maps to 201 Created.
+   ResultStatus.Invalid maps to 400 Bad Request.
+   Unexpected ResultStatus throws InvalidOperationException.
    ```
 
 # Check list
@@ -325,5 +412,10 @@ All responses must use a consistent API contract:
 - [ ] The API layer contains no business logic, validation logic, persistence logic, or domain rules.
 - [ ] DTO mapping is limited to HTTP input and output mapping.
 - [ ] Responses are standardized with typed success responses and `ProblemDetails` for errors.
+- [ ] Each Command or Query response contract is classified as `Ardalis.Result` wrapped or plain response.
+- [ ] Every allowed `Ardalis.Result.ResultStatus` has an explicit `ProducesResponseType` mapping.
+- [ ] Plain responses define the endpoint-specific logic used to select `ProducesResponseType`.
+- [ ] Every possible Command or Query response is checked against the declared `ProducesResponseType` mappings.
+- [ ] Unexpected result statuses, null states, response variants, or unhandled response shapes throw an exception.
 - [ ] Files are placed in the suggested API and Application feature structure or the repository established equivalent.
 - [ ] Examples and expected outputs use real routes, request names, response names, and code.
