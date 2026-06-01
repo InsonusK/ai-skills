@@ -1,7 +1,13 @@
 ---
 name: {{ skill-name }}
 description: {{ Describe what skill define}}
-metadata: {{ based on skill markdown-header-documentation }}
+metadata: 
+    domain: skill
+    type: {{ kind of skill declarative | workflow | developing }}
+    tags:
+        - {{ tag for skill classification }}
+    triggers:
+        - {{ when skill should called }}
 ---
 
 # Goal
@@ -16,10 +22,10 @@ metadata: {{ based on skill markdown-header-documentation }}
 {{ Optional input data }}
 
 # Rules
-{{ Some rules and constrains which must be followed during work}}
+{{ Some rules and constrains or anti goals which must be followed during work}}
 
 # Work steps
-{{ what aget must to by this skill. Must container example of results. }}
+{{ what agent must to by this skill. Must container example of results. }}
 
 # Check list
-{{ Check list what agent must checked to validate that he follow the skill }}
+{{ Check list what agent must done and which artifacts create while using skill. Check list is using to validate that agent follow the skill }}
