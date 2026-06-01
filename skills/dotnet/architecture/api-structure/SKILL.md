@@ -1,10 +1,12 @@
 ---
 name: api-structure
-description: Defines strict rules for designing ASP.NET Core APIs using entity-centric Controllers and Minimal API for edge/system operations.
+description: Defines how to design ASP.NET Core API surfaces as thin MediatR adapters using entity-centric Controllers and Minimal API only for system or cross-entity operations.
 metadata:
   domain: dotnet
   tags:
     - dotnet
+    - aspnet-core
+    - api
     - controllers
     - minimal-api
     - cqrs
@@ -12,230 +14,189 @@ metadata:
     - vertical-slice
 ---
 
+# Goal
+
+Design or review an ASP.NET Core API structure where every HTTP operation is assigned to the correct API surface and every endpoint remains a thin adapter over MediatR.
+
+The result is measurable: each endpoint has an explicit route, HTTP verb, owning Controller or Minimal API group, matching Command or Query, and a response contract.
+
+# Input data
+
+## Required
+
+- Domain entity or relationship name, for example `Task`, `TaskTag`, or `Task.IsComplete`.
+- Operation type: collection, single entity, property, related collection, relationship instance, system operation, webhook, batch job, or cross-aggregate operation.
+- HTTP route and verb.
+- MediatR request type
+  - Command for change data
+  - Query for read data
+  - Notification for sending notification
+- Request and response DTO names.
+
+## Optional
+
+- Existing folder structure.
+- Existing Controller or Minimal API naming conventions.
+- Authentication, authorization, versioning, or tenant route requirements.
+- Error response conventions.
+- Examples of nearby endpoints that must remain consistent.
+
+# Rules
+
 ## Core Principle
 
-API layer is a thin HTTP adapter over MediatR.
+The API layer is a thin HTTP adapter over MediatR.
 
-It must NOT contain:
-- business logic
-- validation logic
-- persistence logic (DbContext / EF Core)
-- domain rules
+It must **not** contain:
 
-It MUST only:
-- map HTTP → DTO / Query / Command
-- dispatch MediatR request
-- map result → HTTP response
+- Business logic.
+- Validation logic.
+- Persistence logic, including `DbContext`, EF Core queries, or repositories.
+- Domain rules, calculations, state transitions, or orchestration decisions.
 
----
+It must only:
 
-## Architecture Model
+- Map HTTP input to DTOs, Commands, or Queries.
+- Dispatch exactly one MediatR request.
+- Map the result to a standardized HTTP response.
 
-Two API surface types exist:
+## API Surface Selection
 
-1. Entity-centric Controllers (primary)
-2. Minimal API endpoints (system / cross-entity / edge cases)
+Use entity-centric Controllers as the primary API surface.
 
----
+Use Minimal API only for:
 
-# 1. Controller Design Model (Entity-Centric)
+- System orchestration.
+- External integrations.
+- Webhooks.
+- Batch processing.
+- Cross-aggregate operations.
+- Infrastructure endpoints such as health checks.
+
+If an operation belongs to an entity lifecycle, use a Controller. If an operation spans multiple entities or is system-level, use Minimal API.
+
+## Controller Design Model
 
 Controllers represent a domain entity or entity relationship boundary.
 
-They define HTTP access to a cohesive domain model.
+### Collection Controller
 
----
-
-## 1.1 Collection Controller (Entity Root)
+Use for an entity collection root.
 
 Example:
-TaskController → /task
+
+```text
+TaskController -> /task
+POST /task -> CreateTaskCommand
+GET /task -> GetTasksQuery
+```
 
 Responsibilities:
-- manage entity collection
-- search/filter/list
-- create entities
 
-Endpoints:
-- POST /task → CreateTaskCommand
-- GET /task → GetTasksQuery
+- Create entities.
+- Search, filter, and list entities.
 
----
+### Single Entity Controller
 
-## 1.2 Single Entity Controller
+Use for the lifecycle of one entity instance.
 
 Example:
-SingleTaskController → /task/{id}
 
-Responsibilities:
-- manage lifecycle of a single entity
+```text
+SingleTaskController -> /task/{id}
+GET /task/{id} -> GetTaskQuery
+PUT /task/{id} -> UpdateTaskCommand
+PATCH /task/{id} -> PatchTaskCommand
+DELETE /task/{id} -> DeleteTaskCommand
+POST /task/{id}/sync -> SyncTaskCommand
+```
 
-Endpoints:
-- GET /task/{id} → GetTaskQuery
-- PUT /task/{id} → UpdateTaskCommand
-- PATCH /task/{id} → PatchTaskCommand
-- DELETE /task/{id} → DeleteTaskCommand
+### Property Controller
 
-Optional:
-- POST /task/{id}/sync → SyncTaskCommand
-
----
-
-## 1.3 Property Controller (Entity Sub-resource)
+Use for changing one addressable entity property.
 
 Example:
-SingleTaskIsCompleteController → /task/{id}/is-complete
 
-Responsibilities:
-- manage single property of entity
+```text
+SingleTaskIsCompleteController -> /task/{id}/is-complete
+POST /task/{id}/is-complete -> SetTaskIsCompleteCommand
+DELETE /task/{id}/is-complete -> UnsetTaskIsCompleteCommand
+```
 
-Endpoints:
-- POST /task/{id}/is-complete → SetIsCompleteCommand
-- DELETE /task/{id}/is-complete → UnsetIsCompleteCommand
+### Collection Sub-resource Controller
 
----
-
-## 1.4 Collection Sub-resource Controller
+Use for a collection related to one entity.
 
 Example:
-TaskTagController → /task/{id}/tag
 
-Responsibilities:
-- manage related collection
+```text
+TaskTagController -> /task/{id}/tag
+GET /task/{id}/tag -> GetTaskTagsQuery
+POST /task/{id}/tag -> AddTaskTagCommand
+```
 
-Endpoints:
-- GET /task/{id}/tag → GetTaskTagsQuery
-- POST /task/{id}/tag → AddTaskTagCommand
+### Relationship Controller
 
----
-
-## 1.5 Relationship Controller
+Use for a specific relationship instance between entities.
 
 Example:
-SingleTaskTagController → /task/{taskId}/tag/{tagId}
 
-Responsibilities:
-- manage specific relationship instance
+```text
+SingleTaskTagController -> /task/{taskId}/tag/{tagId}
+GET /task/{taskId}/tag/{tagId} -> GetTaskTagQuery
+PUT /task/{taskId}/tag/{tagId} -> UpdateTaskTagCommand
+PATCH /task/{taskId}/tag/{tagId} -> PatchTaskTagCommand
+DELETE /task/{taskId}/tag/{tagId} -> RemoveTaskTagCommand
+POST /task/{taskId}/tag/{tagId}/sync -> SyncTaskTagCommand
+```
 
-Endpoints:
-- GET /task/{taskId}/tag/{tagId} → GetTaskTagQuery
-- PUT /task/{taskId}/tag/{tagId} → UpdateTaskTagCommand
-- PATCH /task/{taskId}/tag/{tagId} → PatchTaskTagCommand
-- DELETE /task/{taskId}/tag/{tagId} → RemoveTaskTagCommand
+## Naming Rules
 
-Optional:
-- POST /task/{taskId}/tag/{tagId}/sync → SyncTaskTagCommand
+- Collection Controller: `TaskController`.
+- Single entity Controller: `SingleTaskController`.
+- Property Controller: `SingleTaskIsCompleteController`.
+- Sub-collection Controller: `TaskTagController`.
+- Relationship instance Controller: `SingleTaskTagController`.
+- Write request: `CreateTaskCommand`, `UpdateTaskCommand`, `DeleteTaskCommand`.
+- Read request: `GetTaskQuery`, `GetTasksQuery`.
 
----
-
-## Controller Naming Rules
-
-- Collection: TaskController
-- Single entity: SingleTaskController
-- Property: SingleTaskIsCompleteController
-- Sub-collection: TaskTagController
-- Relationship instance: SingleTaskTagController
-
----
-
-# 2. Minimal API Design Model
-
-Minimal API is used ONLY for system-level or cross-entity operations.
-
-It MUST NOT represent entity lifecycle operations.
-
----
-
-## Allowed Use Cases
-
-- system orchestration
-- external integrations
-- webhooks
-- batch processing
-- cross-aggregate operations
-- infrastructure endpoints
-
----
-
-## Examples
-
-- POST /webhooks/github
-- POST /sync/external-tasks
-- GET /health
-- POST /batch/recalculate-statistics
-
----
-
-## Rule
-
-If operation belongs to entity lifecycle → Controller
-
-If operation spans multiple entities or is system-level → Minimal API
-
----
-
-# 3. Shared API Rules
-
-## 3.1 No Business Logic
-
-Forbidden in API layer:
-- calculations
-- domain decisions
-- state transitions
-- validation rules
-
-Allowed:
-- request mapping
-- MediatR dispatch
-- response mapping
-
----
-
-## 3.2 No DbContext / EF Core
-
-API layer must NOT:
-- query database
-- use repositories
-- use EF Core
-
-All persistence logic lives in Application/Handlers.
-
----
-
-## 3.3 MediatR Boundary
+## MediatR Boundary
 
 Each endpoint maps to exactly one:
-- Command (write)
-- Query (read)
 
-No mixed responsibilities.
+- Command for write operations.
+- Query for read operations.
 
----
+Do not mix reads and writes in one endpoint. Do not dispatch multiple MediatR requests from one endpoint unless the endpoint is a system-level Minimal API orchestration and the orchestration is explicitly required.
 
-## 3.4 DTO Mapping Rules
+## DTO Mapping Rules
 
-Allowed:
-- Route → Query
-- Body → Command
-- QueryString → DTO
+Allowed mappings:
 
-Forbidden:
-- business transformations
-- domain logic inside mapping
+- Route values to Query or Command identifiers.
+- Request body to Command DTO.
+- Query string to Query DTO.
+- MediatR result to response DTO.
 
----
+Forbidden mappings:
 
-## 3.5 Response Rules
+- Business transformations.
+- Domain decisions.
+- Validation rules.
+- Database lookups.
 
-All responses must be standardized:
-- success → typed DTO
-- errors → ProblemDetails
-- consistent API contract
+## Response Rules
 
----
+All responses must use a consistent API contract:
 
-# 4. Suggested Folder Structure
+- Success returns a typed DTO or `NoContent`.
+- Errors return `ProblemDetails`.
+- Created resources return `CreatedAtAction` or an equivalent typed route response.
+- Validation errors are produced by the Application layer validation pipeline, not by Controller logic.
 
+## Suggested Folder Structure
+
+```text
 /Api
   /Controllers
     /Task
@@ -244,7 +205,6 @@ All responses must be standardized:
       TaskTagController.cs
       SingleTaskTagController.cs
       SingleTaskIsCompleteController.cs
-
   /MinimalApi
     WebhookEndpoints.cs
     SyncEndpoints.cs
@@ -254,31 +214,116 @@ All responses must be standardized:
   /Features
     /Task
       /CreateTask
+        CreateTaskCommand.cs
+        CreateTaskHandler.cs
       /GetTask
+        GetTaskQuery.cs
+        GetTaskHandler.cs
       /UpdateTask
+        UpdateTaskCommand.cs
+        UpdateTaskHandler.cs
       /DeleteTask
+        DeleteTaskCommand.cs
+        DeleteTaskHandler.cs
       /SyncTask
+        SyncTaskCommand.cs
+        SyncTaskHandler.cs
+```
 
----
+# Work steps
 
-# 5. Decision Rule
+1. Classify the operation.
+   Expected output:
 
-## Use Controller when:
-- endpoint belongs to entity lifecycle
-- CRUD or entity mutation exists
-- relationship is explicitly modeled
+   ```text
+   Operation: mark task as complete
+   Classification: entity property operation
+   API surface: Controller
+   Controller: SingleTaskIsCompleteController
+   Route: /task/{id}/is-complete
+   ```
 
-## Use Minimal API when:
-- endpoint is system-level
-- operation spans multiple entities
-- integration / orchestration / infrastructure logic
+2. Select Controller or Minimal API using the API surface selection rule.
+   Expected output:
 
----
+   ```text
+   POST /webhooks/github -> Minimal API because it is an external integration.
+   DELETE /task/{id} -> Controller because it belongs to entity lifecycle.
+   ```
 
-# 6. Summary
+3. Define the route, verb, request, and response contract.
+   Expected output:
 
-- Controllers = entity boundary API
-- Minimal API = system boundary API
-- API layer = thin MediatR adapter
-- no business logic in API
-- no persistence in API
+   ```text
+   POST /task
+   Request: CreateTaskCommand
+   Response: TaskDto
+   Success: 201 Created
+   Error: ProblemDetails
+   ```
+
+4. Place the endpoint in the expected folder.
+   Expected output:
+
+   ```text
+   /Api/Controllers/Task/TaskController.cs
+   /Application/Features/Task/CreateTask/CreateTaskCommand.cs
+   /Application/Features/Task/CreateTask/CreateTaskHandler.cs
+   ```
+
+5. Implement the API endpoint as a thin MediatR adapter.
+   Example:
+
+   ```csharp
+   [ApiController]
+   [Route("task")]
+   public sealed class TaskController : ControllerBase
+   {
+       private readonly ISender _sender;
+
+       public TaskController(ISender sender)
+       {
+           _sender = sender;
+       }
+
+       [HttpPost]
+       [ProducesResponseType(typeof(TaskDto), StatusCodes.Status201Created)]
+       [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+       public async Task<ActionResult<TaskDto>> Create(
+           [FromBody] CreateTaskCommand command,
+           CancellationToken cancellationToken)
+       {
+           var result = await _sender.Send(command, cancellationToken);
+
+           return CreatedAtAction(
+               nameof(SingleTaskController.Get),
+               "SingleTask",
+               new { id = result.Id },
+               result);
+       }
+   }
+   ```
+
+6. Validate that no API endpoint contains forbidden logic.
+   Expected output:
+
+   ```text
+   No DbContext usage in API.
+   No domain calculations in API.
+   One endpoint dispatches one MediatR request.
+   ```
+
+# Check list
+
+- [ ] All required input data is known or explicitly derived from existing code.
+- [ ] The operation is classified as collection, single entity, property, sub-resource, relationship, Minimal API system operation, or Minimal API cross-entity operation.
+- [ ] Entity lifecycle operations use Controllers.
+- [ ] System, webhook, batch, infrastructure, and cross-aggregate operations use Minimal API.
+- [ ] Controller name follows the naming rules.
+- [ ] Route shape matches the selected Controller model.
+- [ ] Each endpoint dispatches exactly one Command or Query.
+- [ ] The API layer contains no business logic, validation logic, persistence logic, or domain rules.
+- [ ] DTO mapping is limited to HTTP input and output mapping.
+- [ ] Responses are standardized with typed success responses and `ProblemDetails` for errors.
+- [ ] Files are placed in the suggested API and Application feature structure or the repository established equivalent.
+- [ ] Examples and expected outputs use real routes, request names, response names, and code.
