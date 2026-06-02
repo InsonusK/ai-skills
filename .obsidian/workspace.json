@@ -203,9 +203,9 @@
   },
   "active": "bff67d8ca9288e97",
   "lastOpenFiles": [
-    "skill-build/SKILL.md",
-    "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md",
     "skills/dotnet/skill-graph/workflows/tesing-feature.md",
+    "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md",
+    "skill-build/SKILL.md",
     "skills/dotnet/skill-graph/developing",
     "skills/dotnet/skill-graph/architecture",
     "skills/dotnet/testing/unittest/SKILL.md",

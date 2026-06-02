@@ -44,6 +44,7 @@ Defaine how agent should build skills
 - All links to another skills must be in 
 	- Obsidian format. Example `[[skill-name]]`
 	- uid link format `[skill_name](skill uid:{{ file property uid }})`
+  
 ## Skill types
 Use 3 skill types
 - workflow skill - define how do task analisis, which skill use next
