@@ -7,7 +7,7 @@ domain: skill
 type: declarative
 tags:
   - dotnet
-  - architectur
+  - architecture
   - structure
 triggers:
   - project initialization
@@ -27,6 +27,7 @@ __This skill:__
 - defines layer separation inside each module
 - defines naming and placement rules for CQRS, domain, infrastructure
 - defines rules for cross-module referencing
+- defines dependency graph
 
 __This skill does NOT:__
 - define business logic
@@ -39,10 +40,13 @@ __This skill does NOT:__
 ## Solution Structure (Solution Level)
 __Structure:__
 - /src
-	- /[Modules](#modules-layer)
-	- /[BuildingBlocks](#buildingblocks-csproj)
-	- /[Shared](#shared-csproj)
-	- /[Host](#host-csproj)
+	- /[[#Modules Layer|Modules]]
+	- /[[#BuildingBlocks (.csproj)|BuildingBlocks]]
+	- /[[#Shared (.csproj)|Shared]]
+	- /[[#App Layer (Composition Root)|App]]
+		- [[#App Host (.csproj)|App.Host]]
+		- [[#App Infrastructure (.csproj)|App.Infrastructure]]
+		- [[#App Infrastructure Migrations (.csproj)|App.Infrastructure Migration]]
 
 ## Modules Layer
 Each module is self-contained and an isolated bounded context.
@@ -62,16 +66,13 @@ Each module is a bounded context and contains multiple .csproj projects.
 
 __Structure:__
 - /Modules/{ModuleName}
-	- /[{ModuleName}.Api](#api-csproj)
-	- /[{ModuleName}.Application](#application-csproj)
-	- /[{ModuleName}.Domain](#domain-csproj)
-	- /[{ModuleName}.Infrastructure](#infrastructure-csproj)
-	- /[{ModuleName}.Infrastructure.Migrations](#infrastructure-migration-csproj)
-	- /[{ModuleName}.Interfaces](#interfaces-csproj)
+	- /[[#Api (.csproj)|{ModuleName}.Api]]
+	- /[[#Application (.csproj)|{ModuleName}.Application]]
+	- /[[#Domain (.csproj)|{ModuleName}.Domain]]
+	- /[[#Interfaces (.csproj)|{ModuleName}.Interfaces]]
 	- /{ModuleName}.Api.Tests
 	- /{ModuleName}.Application.Tests
 	- /{ModuleName}.Domain.Tests
-	- /{ModuleName}.Infrastructure.Tests
 
 __Example:__
 - /Modules
@@ -79,31 +80,25 @@ __Example:__
 		- /Task.Api
 		- /Task.Application
 		- /Task.Domain
-		- /Task.Infrastructure
-		- /Task.Infrastructure.Migrations
 		- /Task.Interfaces
 		- /Task.Api.Tests
 		- /Task.Application.Tests
 		- /Task.Domain.Tests
-		- /Task.Infrastructure.Tests
 	- /TimeLog
 		- /TimeLog.Api
 		- /TimeLog.Application
 		- /TimeLog.Domain
-		- /TimeLog.Infrastructure
-		- /TimeLog.Infrastructure.Migrations
 		- /TimeLog.Interfaces
 		- /TimeLog.Api.Tests
 		- /TimeLog.Application.Tests
 		- /TimeLog.Domain.Tests
-		- /TimeLog.Infrastructure.Tests
 
 ### Test Structure
 Tests are co-located with modules.
 
 __Example:__
 - /Modules/Task
-	-  /Task.Api.Tests
+	- /Task.Api.Tests
 	- /Task.Application.Tests
 	- /Task.Domain.Tests
 	- /Task.Integration.Tests
@@ -140,14 +135,13 @@ Rules:
 - Only MediatR dispatch
 
 Depends on:
-- [Application](#application-csproj)
+- [[#Interfaces (.csproj)|{ModuleName}.Interfaces]] - for call commands, queries
 
 ### Interfaces (.csproj)
 `{ModuleName}.Interfaces.csproj`
 
 __Contains:__
-- Module avaliable commands and notifications
-- Module Contracts
+- Module available commands and notifications
 
 __Structure:__
 - /{ModuleName}.Interfaces  
@@ -155,16 +149,13 @@ __Structure:__
 	- /Queries  
 	- /DTOs  
 	- /Events  
-	- /Contracts
 
 __Rules:__
 - inter-module communication layer
 - stable contract boundary
 - decoupling Application from external usage
 - NO business logic
-
-__Depends on:__
-- [Domain](#domain-csproj)
+- realize cross-module join queries
 
 ### Application (.csproj)
 `{ModuleName}.Application.csproj`
@@ -186,16 +177,21 @@ __Structure:__
 	- {ModuleName}.Application.csproj
 
 __Rules:__
-- No direct Infrastructure usage
 - No DbContext usage
+	- use abstractions:
+		- IRepository
+		- IReadRepository
+		- IUnitOfWork  
+		- IQueryExecutor
 - Orchestration only
-- Only [complex_validator](???)
+- Implements model and complex validators
 
 __Depends on:__
-- [Interfaces](#interfaces-csproj)
-- [Domain](#domain-csproj)
-- [Shared](#shared-csproj)
-- [BuildingBlocks](#buildingblocks-csproj)
+- [[#Interfaces (.csproj)|{ModuleName}.Interfaces]] - implements handlers for commands and in module queries
+- [[#Interfaces (.csproj)|{Other ModuleName}.Interfaces]] - using other moduler command and queries
+- [[#Domain (.csproj)|{ModuleName}.Domain]] - user in handler realization
+- [[#Shared (.csproj)|Shared]]
+- [[#BuildingBlocks (.csproj)|BuildingBlocks]]
 
 ### Domain (.csproj)
 `{ModuleName}.Domain.csproj`
@@ -208,84 +204,19 @@ __Contains:__
 
 __Structure:__
 - /{ModuleName}.Domain
-	- /Entities
-	- /ValueObjects
+	- /[[entity-pattern.skill|Entities]]
+	- /[[value-object-pattern.skill|Value Objects]]
 	- /Services
 	- /Events
+	- /Validators
 	- {ModuleName}.Domain.csproj
 
 __Rules:__
-- No dependency on Application or Infrastructure
-- Must enforce invariants
+- mutation allowed ONLY by internal access methods and setters
+- allow internal access to {ModuleName}.Application
 - Pure business logic only
-
-### Infrastructure (.csproj)
-`{ModuleName}.Infrastructure.csproj`
-
-__Contains:__
-- EF Core DbContext
-- Migrations
-- Repository implementations
-- External integrations
-- Outbox implementation
-
-__Structure:__
-- /{ModuleName}.Infrastructure
-	- /Persistence
-	- /Repositories
-	- /Messaging
-	- /External
-	- {ModuleName}.Infrastructure.csproj
-
-__Example:__
-- /Task.Infrastructure
-	- /Persistence
-		- TaskDbContext.cs
-		- /Configurations
-			- TaskConfiguration.cs
-	- /Repositories
-		- TaskRepository.cs
-	- /Migrations
-	- /Outbox
-		- OutboxMessage.cs
-		- OutboxDispatcher.cs
-	- /Messaging
-		- KafkaProducer.cs
-		- /EventPublishers
-	- /External
-		- /HttpClients
-		- /ExternalServices
-	- /QueryServices
-		- TaskReadService.cs
-
-__Rules:__
-- Depends only on Domain
-- No business logic
-- No orchestration logic
-- EF Core only here, SQL/DBContext only here
-- External IO only hear
-
-__Depends on:__
-- [Domain](#domain-csproj)
-
-### Infrastructure Migration (.csproj)
-`{ModuleName}.Infrastructure.Migration.csproj`
-
-__Structure:__
-- /{ModuleName}.Infrastructure.Migrations  
-	- /Migrations  
-	- {ModuleName}DbContextFactory.cs
-
-__Rule:__
-- design-time DbContext factory
-- EF migrations only
-- CLI tooling target
-- Doesn't contain runtime code
-- Doesn't contain repository
-- ONLY for creating Migrations
-
-__Depends on:__
-- [Infracstructure](#infrastructure-csproj)
+- Must enforce invariants
+- Implements value and property validators
 
 ## Shared / Building Blocks
 
@@ -328,9 +259,66 @@ __Example:__
 	- /Logging  
 		- LoggingBehavior.cs
 
-## Host Layer (Composition Root)
+## App Layer (Composition Root)
+### App Infrastructure (.csproj)
+`App.Infrastructure.csproj`
 
-### Host (.csproj)
+__Responsible for:__
+- Central persistence + external integration layer.  
+  
+__Contains:__  
+- DbContext (shared)  
+- EF Configurations for all modules 
+- Migrations  
+- Outbox implementation
+- Messaging integrations 
+- External integrations  
+- Cross-module query execution (JOIN allowed)
+	- for read models
+	- for reporting
+
+__Structure:__
+- /App.Infrastructure  
+	- /Persistence  
+		- AppDbContext.cs  
+		- /Configuration
+- /Migrations  
+- /Outbox  
+- /Messaging  
+- /Queries  
+- /External
+
+__Rules:__
+- ONLY place allowed to access database
+- Depends only on Domain and realize cross model queries from Interfaces
+- No business logic
+- No orchestration logic
+- External IO only here
+
+__Depends on:__
+- [[#Domain (.csproj)|{All Modules}.Domain]] - get Module entities 
+- [[#Interfaces (.csproj)|{All Modules}.Interfaces]] - realize cross join module queries
+
+### App Infrastructure Migrations (.csproj)
+`App.Infrastructure.Migrations.csproj`
+
+__Structure:__
+- /App.Infrastructure.Migrations  
+	- /Migrations  
+	- DbContextFactory.cs
+
+__Rule:__
+- design-time DbContext factory
+- EF migrations only
+- CLI tooling target
+- Doesn't contain runtime code
+- Doesn't contain repository
+- ONLY for creating Migrations
+
+__Depends on:__
+- [[#App Infrastructure (.csproj)|App Infrastructure]]
+
+### App Host (.csproj)
 `Host.csproj`
 
 __Responsible for:__
@@ -347,7 +335,13 @@ __Structure__:
 	- /Routing
 	- /Program.cs  
 	- /Host.csproj
-### API Composition Rule
+
+__Depends on:__
+- [[#Api (.csproj)|{All Modules}.Api]]
+- [[#App Infrastructure (.csproj)|App.Infrastructure]] - add to DI
+- [[#Application (.csproj)|{ModuleName}.Application]] - add to DI
+
+#### API Composition Rule
 Host exposes unified API surface:
 ```
 Modules/*/Api → Host endpoint registration
@@ -361,31 +355,28 @@ __Host:__
 # Dependency Rules
 
 ## Allowed
-```
-Api → Application → Domain
-Infrastructure → Domain
-Host → Api (all modules)
-Application → Interfaces (of another Module)
-```
+[[#App Host (.csproj)|App.Host]] -> [[#Api (.csproj)|{ModuleName}.Api]]
+[[#App Host (.csproj)|App.Host]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]]
+[[#App Host (.csproj)|App.Host]] -> [[#Application (.csproj)|{ModuleName}.Application]]
+
+[[#Api (.csproj)|{ModuleName}.Api]] -> [[#Interfaces (.csproj)|{ModuleName}.Interfaces]]
+
+[[#App Infrastructure Migrations (.csproj)|App.Infrastructure Migration]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]]
+
+[[#App Infrastructure (.csproj)|App.Infrastructure]] -> [[#Interfaces (.csproj)|{ModuleName}.Interfaces]]
+[[#App Infrastructure (.csproj)|App.Infrastructure]] -> [[#Domain (.csproj)|{ModuleName}.Domain]]
+
+[[#Application (.csproj)|{ModuleName}.Application]] -> [[#Interfaces (.csproj)|{ModuleName}.Interfaces]] 
+[[#Application (.csproj)|{ModuleName}.Application]] ->  [[#Domain (.csproj)|{ModuleName}.Domain]] 
+[[#Application (.csproj)|{ModuleName}.Application]] -> [[#Shared (.csproj)|Shared]]
+[[#Application (.csproj)|{ModuleName}.Application]] -> [[#BuildingBlocks (.csproj)|BuildingBlocks]]
 
 ## Forbidden
-- Domain → Application
-- Domain → Infrastructure
-- Application → Infrastructure
+- [[#Domain (.csproj)|{ModuleName}.Domain]] → [[#Application (.csproj)|{ModuleName}.Application]]
+- [[#Domain (.csproj)|{ModuleName}.Domain]] → [[#App Infrastructure (.csproj)|App.Infrastructure]]
+- [[#Application (.csproj)|{ModuleName}.Application]] → [[#App Infrastructure (.csproj)|App.Infrastructure]]
 - Cross-module Domain references
 - API → Infrastructure directly
-# Cross-Module Rules
-Defines in [[cross-module-interaction]]
-
-## Allowed
-- cross-module reads via Interface layer
-- shared BuildingBlocks usage
-- indirect dependencies through Host composition
-
-## Forbidden
-- direct reference between module domains
-- direct repository usage across modules
-- direct call to Module.Application / Module.Domain
 
 # Anti Goals
 - Do not centralize tests in root folder

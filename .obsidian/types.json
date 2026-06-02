@@ -5,6 +5,7 @@
     "tags": "tags",
     "name": "text",
     "description": "text",
-    "uid": "text"
+    "uid": "text",
+    "status": "text"
   }
 }

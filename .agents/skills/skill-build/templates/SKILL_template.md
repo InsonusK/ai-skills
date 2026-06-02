@@ -13,6 +13,15 @@ triggers:
 # Goal
 {{ Specific, measurable outcome. Not "help user" but "generate X file in Y format" }}
 
+## Skill Scope
+{{ define what skill should define and what it shouldn't}}
+
+This skill:
+- {{ what skill should define}}
+
+This skill does NOT:
+- {{ what skill shouldn't define}}
+
 # Input data
 {{ What agent must define from user before start working }}
 ## Required
@@ -22,7 +31,10 @@ triggers:
 {{ Optional input data }}
 
 # Rules
-{{ Some rules and constrains or anti goals which must be followed during work}}
+{{ Some rules and constrains must be followed during work}}
+
+# Anti Goals
+{{ what shouln't do by the skill }}
 
 # Work steps
 {{ what agent must to by this skill. Must container example of results. }}

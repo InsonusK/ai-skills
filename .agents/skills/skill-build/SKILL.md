@@ -8,7 +8,7 @@ metadata:
 ---
 
 # Goal 
-Defaine how agent should build skills
+Defaine how agent should write new skills for himself or for other agents. This skill should be used as instruction for agent to create new skills. 
 
 # Input data
 ## Required
@@ -33,6 +33,7 @@ Defaine how agent should build skills
 ## Format
 - Skill must follow [Skill template](./templates/SKILL_template.md)
 - All headeres must be filled
+- skill must be written in English
 
 ### How to store skill
 - Small skills, without appended files, must be "Flat skill" - skill does not have own directory it stored in logic folder with name `Skill-name.skill.md`
@@ -44,7 +45,7 @@ Defaine how agent should build skills
 - All links to another skills must be in 
 	- Obsidian format. Example `[[skill-name]]`
 	- uid link format `[skill_name](skill uid:{{ file property uid }})`
-  
+
 ## Skill types
 Use 3 skill types
 - workflow skill - define how do task analisis, which skill use next

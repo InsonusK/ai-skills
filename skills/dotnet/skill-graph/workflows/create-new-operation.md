@@ -1,14 +1,15 @@
 ---
-uid: {{ skill uid }}
-status: {{ skill status todo | draft | in-work | canceled }}
-name: {{ skill-name }}
-description: {{ Describe what skill define}}
+uid: 682498a7-3979-4d70-bbd6-bf70bffe7fe9
+name: create-new-operation
+description: Analis how to 
 domain: skill
-type: {{ kind of skill declarative | workflow | developing | pattern }}
+type:
+  "{ kind of skill declarative | workflow | developing }":
 tags:
-- {{ tag for skill classification }}
+  - "{ tag for skill classification }":
 triggers:
-- {{ when skill should called }}
+  - "{ when skill should called }":
+
 ---
 # Goal
 {{ Specific, measurable outcome. Not "help user" but "generate X file in Y format" }}

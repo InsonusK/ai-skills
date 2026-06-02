@@ -3,5 +3,6 @@
   "strictLineBreaks": false,
   "propertiesInDocument": "source",
   "alwaysUpdateLinks": true,
-  "showUnsupportedFiles": true
+  "showUnsupportedFiles": true,
+  "useMarkdownLinks": false
 }
