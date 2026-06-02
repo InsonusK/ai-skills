@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "skill-build/SKILL.md",
+                "file": "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "SKILL"
+              "title": "create-feature.skill"
             }
           }
         ]
@@ -94,10 +94,10 @@
             "state": {
               "type": "file-properties",
               "state": {
-                "file": "skill-build/SKILL.md"
+                "file": "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md"
               },
               "icon": "lucide-info",
-              "title": "File properties for SKILL"
+              "title": "File properties for create-feature.skill"
             }
           },
           {
@@ -156,7 +156,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "skill-build/SKILL.md",
+                "file": "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -166,7 +166,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for SKILL"
+              "title": "Backlinks for create-feature.skill"
             }
           },
           {
@@ -203,9 +203,9 @@
   },
   "active": "bff67d8ca9288e97",
   "lastOpenFiles": [
+    "skill-build/SKILL.md",
     "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md",
     "skills/dotnet/skill-graph/workflows/tesing-feature.md",
-    "skill-build/SKILL.md",
     "skills/dotnet/skill-graph/developing",
     "skills/dotnet/skill-graph/architecture",
     "skills/dotnet/testing/unittest/SKILL.md",
