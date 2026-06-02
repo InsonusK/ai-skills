@@ -1,21 +1,22 @@
 ---
+uid: a2e022fd-4d3b-4948-930b-995d419c3788
 name: create-feature
 description: Analyze and implement a new backend feature using developing skills.
-metadata:
-    domain: skill
-    type: workflow
-    tags:
-        - dotnet
-        - backend
-    triggers:
-        - user requests new feature
-        - user requests business logic implementation
-        - user requests new API
-        - user requests workflow/process implementation
+domain: skill
+type: workflow
+tags:
+- dotnet
+- backend
+triggers:
+- user requests new feature
+- user requests business logic implementation
+- user requests new API
+- user requests workflow/process implementation
 ---
 
 # Goal
-Analyze business requirements and orchestrate correct implementation flow for a new backend feature.
+- Analyze business requirements.
+- Define kind of changes which must be made during task
 
 # Input data
 
@@ -77,28 +78,24 @@ Determine:
 Output:
 - consistency strategy.
 
-## 6. Select downstream skills
+## 5. Select downstream skills
 Determine which implementation skills are required.
-1. Does new application operation created?
-    Use [create new operation](???)
-2. Does need new API
-    Use [create new api](???)
-3. Always need:
-    - []
-Examples:
+1. New application operation created, use:
+	- [[create new operation]]
+2. New API must be created, use:
+	- [[create new api]]
+3. Change code, use:
+    - [[unittest-testplan.skill]]
+    - [[code-coverage.skill]]
 
-cqrs-command
-cqrs-query
-validation
-domain-model
-specification-pattern
-integration-events
-testing-strategy
-
-Output:
-
-ordered implementation skill list.
-
+## 6. Produce implementation plan
+Produce step-by-step implementation roadmap before generating code.
+Implementation plan must follow [[Impementation plan.md]]
 
 # Check list
-{{ Check list what agent must done and which artifacts create while using skill. Check list is using to validate that agent follow the skill }}
+- [ ] Feature input parameters is defined
+- [ ] Feature return parameters is defined
+- [ ] Feature business flow is defined
+- [ ] Feature business events is defined
+- [ ] Feature business errors is defined
+- [ ] Test plan is defined
