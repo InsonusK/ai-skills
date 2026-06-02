@@ -10,7 +10,7 @@ metadata:
 ---
 # Template of entity
 
-```csharp
+```C#
 using System.ComponentModel.DataAnnotations;
 using InsonusK.Share.Database.Models;
 

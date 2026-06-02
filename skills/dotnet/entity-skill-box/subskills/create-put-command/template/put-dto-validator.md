@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of post dto validator
 
-```csharp
+```C#
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

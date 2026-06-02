@@ -268,7 +268,7 @@ __Responsible for:__
   
 __Contains:__  
 - DbContext (shared)  
-- EF Configurations for all modules 
+- EF Configurations for foreing keys between modules
 - Migrations  
 - Outbox implementation
 - Messaging integrations 

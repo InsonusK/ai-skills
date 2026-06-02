@@ -29,7 +29,7 @@ Define how to model **Value Objects** in domain layer.
 
 ## 2. Structure
 Preferred implementation:
-```CSharp
+```C#
 public record TaskName
 {
     public string Value { get; }
@@ -41,11 +41,11 @@ public record TaskName
 }
 ```
 or simplified:
-```CSharp
+```C#
 public record TaskName(string Value);
 ```
 ## 3. Validation allowed in constructor
-```CSharp
+```C#
 public record TaskName
 {
     public string Value { get; }

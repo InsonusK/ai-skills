@@ -23,7 +23,7 @@ aliases:
 # Goal
 Define rules for designing **domain entities** including identity strategies and lifecycle rules.
 
-# 1. Entity definition
+# Core Principles
 Entity is a domain object with:
 - identity
 - mutable state
@@ -52,7 +52,7 @@ __Rules:__
 - no business mutation
 - no lifecycle transitions
 __Example:__
-```CSharp
+```C#
 public class Currency
 {
     public int Id { get; private set; }
@@ -70,7 +70,7 @@ __Identity rules:__
 __Rules:__
 - editable after creation
 __Example:__
-```CSharp
+```C#
 public class Currency
 {
     public int Id { get; private set; }
@@ -98,7 +98,7 @@ __Rules:__
 - mapping between them is mandatory
 - creation must be idempotent via GUID
 __Example:__
-```CSharp
+```C#
 public class Currency
 {
     public int Id { get; private set; }
@@ -124,7 +124,7 @@ __Rules:__
 - mapping between them is mandatory
 - creation must be idempotent via GUID
 __Example:__
-```CSharp
+```C#
 public class Currency
 {
     public int Id { get; private set; }
@@ -173,7 +173,7 @@ Before executing update:
 4. Proceed to handler
 
 ## 4.4 Example
-```CSharp
+```C#
 public class VersionValidationPipeline<TRequest, TResponse>
 {
     public async Task Handle(...)
@@ -190,7 +190,7 @@ public class VersionValidationPipeline<TRequest, TResponse>
 
 # 5. Invariant enforcement
 Entity must never enter invalid state.
-```CSharp
+```C#
 public void Rename(string name)
 {
     if (string.IsNullOrWhiteSpace(name))

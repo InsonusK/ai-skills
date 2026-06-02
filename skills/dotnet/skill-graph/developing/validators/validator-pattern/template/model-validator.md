@@ -11,7 +11,7 @@ metadata:
 # Template: Model Validator (2.4)
 *Composer only. No inline logic allowed.*
 
-```csharp
+```C#
 using FluentValidation;
 
 namespace {ProjectNamespace}.Validator.{Model|Entity};

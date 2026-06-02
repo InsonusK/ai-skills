@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of patch dto
 
-```csharp
+```C#
 using System;
 using System.ComponentModel.DataAnnotations;
 

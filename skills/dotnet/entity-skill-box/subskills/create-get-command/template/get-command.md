@@ -10,7 +10,7 @@ metadata:
 ---
 # Template of get command
 
-```csharp
+```C#
 using Ardalis.Result;
 using MediatR;
 using {ProjectNamespace}.Entities.{EntityName}Entity.Models;

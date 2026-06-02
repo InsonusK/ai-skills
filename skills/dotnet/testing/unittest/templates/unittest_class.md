@@ -13,7 +13,7 @@ metadata:
 Use this [template](#tempalte) to create unit test
 
 ## Tempalte
-```csharp
+```C#
 using Microsoft.Extensions.Logging;
 using Divergic.Logging.Xunit;
 using Xunit.Abstractions;

@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+                "file": "skills/dotnet/skill-graph/patterns/Module/Domain/entity/entity-concurency-pattern.skill.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "backend-project-structure.skill"
+              "title": "entity-concurency-pattern.skill"
             }
           },
           {
@@ -55,16 +55,16 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+                "file": "templates/Pattern skill.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "backend-project-structure.skill"
+              "title": "Pattern skill"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -97,7 +97,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "bc4fad90-711f-4ffe-a9a2-79f836b8c56e",
+                "query": "```C#",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -118,7 +118,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       },
       {
         "id": "5dd6bd18df6f5ced",
@@ -131,13 +132,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+                "file": "skills/dotnet/skill-graph/patterns/Module/Domain/entity/entity-concurency-pattern.skill.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of backend-project-structure.skill"
+              "title": "Outline of entity-concurency-pattern.skill"
             }
           }
         ]
@@ -160,10 +161,10 @@
             "state": {
               "type": "file-properties",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md"
+                "file": "skills/dotnet/skill-graph/patterns/Module/Domain/entity/entity-concurency-pattern.skill.md"
               },
               "icon": "lucide-info",
-              "title": "File properties for backend-project-structure.skill"
+              "title": "File properties for entity-concurency-pattern.skill"
             }
           },
           {
@@ -207,7 +208,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+                "file": "skills/dotnet/skill-graph/patterns/Module/Domain/entity/entity-concurency-pattern.skill.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -217,7 +218,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for backend-project-structure.skill"
+              "title": "Backlinks for entity-concurency-pattern.skill"
             }
           },
           {
@@ -252,39 +253,43 @@
       "note_uid_generator:Create uid if missing": false
     }
   },
-  "active": "2075744d5097f41d",
+  "active": "853a42b59c2cc2c5",
   "lastOpenFiles": [
-    "skills/dotnet/skill-graph/patterns/entity-pattern.skill.md",
+    "skills/dotnet/skill-graph/patterns/Pipeline/concurency control pattern.skill.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/entity/entity-concurency-pattern.skill.md",
+    "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md",
+    "skills/dotnet/entity-skill-box/subskills/create-entity-extractor/template/extractor.md",
+    "skills/dotnet/entity-skill-box/subskills/create-entity-extractor/SKILL.md",
+    "skills/dotnet/entity-skill-box/subskills/create-entity/SKILL.md",
     "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
-    "skills/dotnet/skill-graph/patterns/value-object-pattern.skill.md",
-    "templates/Workflow skill.md",
+    "skills/dotnet/skill-graph/patterns/Pipeline",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/domain-configuration-pattern.skill.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/domain-csproj.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/entity/entity-pattern.skill.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/entity",
+    "templates/Pattern skill.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/domain-rule-pattern.skill.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/Untitled.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain/value-object-pattern.skill.md",
+    "skills/dotnet/skill-graph/developing/validators/validator-pattern/template/model-validator.md",
     "skills/dotnet/skill-graph/developing/validators/validator-pattern/template/property-validator.md",
+    "templates/Workflow skill.md",
+    "skills/dotnet/skill-graph/patterns/Module/Domain",
+    "skills/dotnet/skill-graph/patterns/Module",
+    "skills/dotnet/skill-graph/developing/validators/validator-pattern/template/complex-validator.md",
+    "skills/dotnet/skill-graph/architecture/database-architecture.md",
     "skills/dotnet/skill-graph/architecture/cross-module-interaction.md",
     "skills/dotnet/skill-graph/architecture/cross-module-interactionю.skill.md",
     "skills/dotnet/skill-graph/patterns",
-    "skills/dotnet/skill-graph/architecture/database-architecture.md",
     "README.md",
     "skills/dotnet/skill-graph/developing/validators/validator-pattern/SKILL.md",
-    "skills/dotnet/skill-graph/developing/validators/validator-pattern/template/complex-validator.md",
     "skills/dotnet/skill-graph/developing/validators",
-    "skills/dotnet/skill-graph/workflows/create-feature/create-feature.skill.md",
     "skills/dotnet/skill-graph/workflows/create-new-operation.md",
-    "skills/dotnet/entity-skill-box/subskills/create-entity/SKILL.md",
     "skills/dotnet/skill-graph/workflows/tesing-feature.md",
     "skill-build/SKILL.md",
     "skills/dotnet/skill-graph/developing",
     "skills/dotnet/skill-graph/architecture",
-    "skills/dotnet/testing/unittest/SKILL.md",
     "Untitled.base",
-    "skills/dotnet/testing/testing-strategy/SKILL.md",
-    "skills/dotnet/skill-graph/workflows/create-feature",
-    "skills/dotnet/skill-graph/workflows/create-feature/templates/Impementation plan.md.md",
-    "skills/dotnet/skill-graph/workflows/create-feature/templates",
-    "skills/workflow/test/unittest-testplan/unittest-testplan.skill.md",
-    "skills/workflow/test/code-coverage.skill.md",
-    "skills/workflow/work-summary/SKILL.md",
-    "skill-build/templates/SKILL_template.md",
-    "skills/workflow/test/unittest-testplan/templates/usecases_list.md",
-    "templates"
+    "skills/dotnet/skill-graph/workflows/create-feature"
   ]
 }
