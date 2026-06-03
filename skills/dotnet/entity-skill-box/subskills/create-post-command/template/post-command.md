@@ -10,7 +10,7 @@ metadata:
 ---
 # Template of property validator
 
-```C#
+```CSharp
 using System;
 using System.Collections.Generic;
 using Ardalis.Result;

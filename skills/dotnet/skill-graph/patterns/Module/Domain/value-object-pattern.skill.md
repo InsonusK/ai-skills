@@ -19,56 +19,59 @@ aliases:
   - ValueObjects
 ---
 # Goal
-Define how to model **Value Objects** in domain layer.
+Define how domain implements value object
 
-# Rules
-## 1. Value Object = immutable concept
-- No identity
-- Equality by value
-- Always immutable
+## Core Principles
+- Semantics belong to types, not primitives
+- Value Object represents a single, meaningful concept with invariants
+- Value Objects are immutable and self-validating
 
-## 2. Structure
-Preferred implementation:
-```C#
-public record TaskName
+## Structure / Contracts
+```CSharp
+public sealed record SomeValueObject
 {
-    public string Value { get; }
+    public int Value { get; }
 
-    public TaskName(string value)
+    public SomeValueObject(int value)
     {
-        Value = value;
-    }
-}
-```
-or simplified:
-```C#
-public record TaskName(string Value);
-```
-## 3. Validation allowed in constructor
-```C#
-public record TaskName
-{
-    public string Value { get; }
-
-    public TaskName(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            throw new DomainException("Task name is required");
+        if (value <= 0 || value > 120)
+            throw new DomainException("Invalid age");
 
         Value = value;
     }
+
+    public static implicit operator int(SomeValueObject age)
+        => age.Value;
+
+    public static implicit operator SomeValueObject(int value)
+        => new(value);
+
+    public override string ToString()
+        => Value.ToString();
 }
 ```
-## 4. Rules
-- no setters
-- no EF tracking logic
-- no services injection
-- no behavior depending on infrastructure
-- small and focused
 
-# Anti-patterns
-- mutable VO  
-- VO with DbContext usage  
-- VO with external dependencies
+## Rules
+MUST:
+- be immutable
+- validate invariants on creation
+SHOULD:
+- encapsulate normalization and formatting
+- represent semantically meaningful concepts
+- use [[domain-rule-pattern.skill]] for implementation of invariant vaidation
+MUST NOT:
+- depend on infrastructure or application services
+
+## Anti-patterns
+- Using primitives for domain concepts with meaning (string, int, decimal everywhere)
+- Allowing invalid state to exist in Value Object
+- Making Value Objects mutable
+- Adding infrastructure or framework dependencies
+- Creating Value Objects without real semantic purpose
+
 # Check list
-{{ Check list what agent must done and which artifacts create while using skill. Check list is using to validate that agent follow the skill }}
+- [ ] Value Object validate invariants
+
+# Unittest TestCases
+- [ ] When create invalid ValueObject Then raise Exception
+- [ ] When create valid ValueObject Then object created

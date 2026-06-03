@@ -1,8 +1,9 @@
 {
   "readableLineLength": true,
   "strictLineBreaks": false,
-  "propertiesInDocument": "source",
+  "propertiesInDocument": "hidden",
   "alwaysUpdateLinks": true,
   "showUnsupportedFiles": true,
-  "useMarkdownLinks": false
+  "useMarkdownLinks": false,
+  "newLinkFormat": "absolute"
 }

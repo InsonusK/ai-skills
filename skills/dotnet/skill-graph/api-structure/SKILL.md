@@ -225,7 +225,7 @@ Every possible response produced by the Command or Query must have a matching `P
 
 Example:
 
-```C#
+```CSharp
 return result.Status switch
 {
     ResultStatus.Created => CreatedAtAction(
@@ -346,7 +346,7 @@ return result.Status switch
 7. Implement the API endpoint as a thin MediatR adapter.
    Example:
 
-   ```C#
+   ```CSharp
    [ApiController]
    [Route("task")]
    public sealed class TaskController : ControllerBase

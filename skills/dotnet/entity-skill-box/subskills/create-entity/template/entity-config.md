@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of entity config
 
-```C#
+```CSharp
 using InsonusK.Shared.DataBase.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

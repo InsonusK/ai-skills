@@ -29,8 +29,9 @@ Entity is a domain object with:
 - mutable state
 - encapsulated behavior
 - invariant enforcement
+- internal `Id` is always system primary identity
 
-# 2. Identity types
+# Entity types
 
 | Create Source\IsEditable             | IsConstant<br>(No RowVersion)  | IsEditable<br>(Has RowVersion)   |
 | ------------------------------------ | ------------------------------ | -------------------------------- |
@@ -44,19 +45,19 @@ __Usage:__
 - predefined types
 - configuration tables
 __Identity rules:__
-- primary key: `int/uint/short` preferred
-- no external identity required
-- no row version 
+- primary key - `int/uint/short` preferred
+- external identity - not required
+- row version - not required
 __Rules:__
 - immutable after creation
 - no business mutation
 - no lifecycle transitions
 __Example:__
-```C#
+```CSharp
 public class Currency
 {
-    public int Id { get; private set; }
-    public string Code { get; private set; }
+    public int Id { get; internal set; }
+    public string Code { get; internal set; }
 }
 ```
 ## Internal Mutable Entity
@@ -64,18 +65,19 @@ Entities created once and never change.
 __Usage:__
 - state entity
 __Identity rules:__
-- primary key: `int/uint/short` preferred
-- no external identity required
-- has row version 
+- primary key - `int/uint/short` preferred
+- external identity - not required
+- row version - required
 __Rules:__
 - editable after creation
+- Implement [[entity-concurrency-pattern.skill]]
 __Example:__
-```C#
+```CSharp
 public class Currency
 {
-    public int Id { get; private set; }
-    public string Code { get; private set; }
-    public int RowVersion {get; private set; }
+    public int Id { get; internal set; }
+    public string Code { get; internal set; }
+    public int RowVersion {get; internal set; }
 }
 ```
 
@@ -84,26 +86,21 @@ Entities created once by external system and never change.
 __Usage:__
 - business event registration
 __Identity rules:__
-- primary key: `int/uint/short` preferred
-- has external correlation key `Guid`
-- external GUID is provided at creation time
-- GUID must be unique
-- no row version 
+- primary key - `int/uint/short` preferred
+- external identity - required
+- row version - not required
 __Rules:__
 - immutable after creation
 - no business mutation
 - no lifecycle transitions
-- system uses `Id` internally
-- external systems use `Guid`
-- mapping between them is mandatory
-- creation must be idempotent via GUID
+- Implement [[external-created-entity.skill]]
 __Example:__
-```C#
+```CSharp
 public class Currency
 {
-    public int Id { get; private set; }
-    public Guid Guid { get; private set; }
-    public string Code { get; private set; }
+    public int Id { get; internal set; }
+    public Guid Guid { get; internal set; }
+    public string Code { get; internal set; }
 }
 ```
 
@@ -112,110 +109,33 @@ Entities created once by external system and never change.
 __Usage:__
 - business event registration
 __Identity rules:__
-- primary key: `int/uint/short` preferred
-- has external correlation key `Guid`
-- external GUID is provided at creation time
-- GUID must be unique
-- has row version 
+- primary key - `int/uint/short` preferred
+- external identity - required
+- row version - required
 __Rules:__
 - editable by any system after creation
 - system uses `Id` internally
-- external systems use `Guid`
-- mapping between them is mandatory
-- creation must be idempotent via GUID
+- Implement [[entity-concurrency-pattern.skill]]
+- Implement [[external-created-entity.skill]]
 __Example:__
-```C#
+```CSharp
 public class Currency
 {
-    public int Id { get; private set; }
-    public Guid Guid { get; private set; }
-    public string Code { get; private set; }
-    public int RowVersion {get; private set; }
+    public int Id { get; internal set; }
+    public Guid Guid { get; internal set; }
+    public string Code { get; internal set; }
+    public int RowVersion {get; internal set; }
 }
 ```
 
-# 3. Identity usage rules
-## 3.1 ID is system identity
-- used in domain logic
-- used in persistence
-- used in relationships
-- used in internal APIs
-## 3.2 GUID is correlation identity only
-- used only for external systems
-- used only for lookup
-- never used in domain logic
-## 3.3 Conversion rule (mandatory)
-- No operation is executed directly on GUID.
-```
-External GUID → always resolved to internal ID first
-```
-- internal ID resolve BEFORE entering Application Layer or Concurrency validation
-# 4. Concurrency model (RowVersion)
-## 4.1 Definition
-System uses:
-> RowVersion as optimistic concurrency token
-## 4.2 Responsibility split
-**Domain layer MUST NOT handle concurrency**
-**Domain:**
-- does NOT validate RowVersion
-- does NOT compare versions
-- is unaware of persistence concurrency model
+# Rules
+- behavior must follow [[entity-behavior.skill]]
+- Identity usage rules
+	- used in domain logic
+	- used in persistence
+	- used in relationships
+	- used in internal APIs
 
-**Infrastructure responsibility**
-Concurrency validation is handled by:
-> VersionValidationPipeline (Infrastructure layer)
-
-## 4.3 Pipeline behavior
-Before executing update:
-1. Load entity by ID
-2. Compare RowVersion
-3. If mismatch → throw ConcurrencyException
-4. Proceed to handler
-
-## 4.4 Example
-```C#
-public class VersionValidationPipeline<TRequest, TResponse>
-{
-    public async Task Handle(...)
-    {
-        var entity = await db.FindAsync(request.Id);
-
-        if (!entity.RowVersion.SequenceEqual(request.RowVersion))
-            throw new ConcurrencyException();
-
-        return await next();
-    }
-}
-```
-
-# 5. Invariant enforcement
-Entity must never enter invalid state.
-```C#
-public void Rename(string name)
-{
-    if (string.IsNullOrWhiteSpace(name))
-        throw new DomainException("Invalid name");
-
-    Name = name;
-}
-```
-
-**Entity mutation rules (unchanged but clarified)**
-- mutations only via internals methods
-- invariants enforced inside entity
-- no awareness of RowVersion
-- no awareness of GUID resolution
-# 6. Critical rule: identity precedence
-- internal `Id` is always system primary identity
-- external `Guid` is only correlation key
-- never use GUID as domain identity internally
-- 
-# 7. Anti-patterns
-- using GUID as PK internally  
-- skipping GUID → ID resolution step
-- using GUID for domain decisions
-- performing concurrency checks inside domain
-- exposing RowVersion to domain behavior  
-- mixing GUID and ID in business rules
-- mutating ExternalId after creation  
-- treating Constant entities as mutable
+# Check list
+- [ ] Entity type defined
+- [ ] All linked patterns applied and check lists passed

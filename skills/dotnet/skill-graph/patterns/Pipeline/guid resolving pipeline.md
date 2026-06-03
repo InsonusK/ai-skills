@@ -1,8 +1,8 @@
 ---
 uid:
-status: skill status todo | draft | implemented | canceled 
+status: todo
 name: skill-name
-description: Describe what skill define
+description: Resolving entity id when resolve guid request
 domain: skill
 type: pattern
 tags:
@@ -10,6 +10,12 @@ tags:
 triggers:
   - when skill should called
 ---
+Conversion rule (mandatory)
+- No operation is executed directly on GUID.
+```
+External GUID → always resolved to internal ID first
+```
+- internal ID resolve BEFORE entering Application Layer or Concurrency validation
 # Goal
 ```
 Maximum:
@@ -92,7 +98,3 @@ Good example:
 Bad example:
 - 100-line tutorial
 ```
-
-# Check list
-
-# Unittest TestCases

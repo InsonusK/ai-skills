@@ -36,27 +36,46 @@ Define a unified pattern for implementing reusable domain rules.
 - Application validation adapters
 - Specifications
 - Authorization policies
-# 1. Core principle
+# Core principle
+- Rule defines business meaning.  
+- Rule does NOT define transport validation or framework behavior.
 
-> Rule defines business meaning.  
-> Rule does NOT define transport validation or framework behavior.
-
-# 2. Rule definition
-A Rule is:
-- pure
-- deterministic
-- stateless
-- framework-agnostic
-
-# 3. Rule contract
-```C#
-public interface IRule<T>
+## Structure / Contracts
+__Project structure:__
+- /Domain
+	- /Rules
+		- IsPositiveRule.cs
+		- IsAdultRule.cs
+		- CanDriveCarRule.cs
+## [[value-object-pattern.skill|Value Object]] Rule
+Rules for [[value-object-pattern.skill|Value Object]] implements as Extension classes
+__Example:__
+```CSharp
+public static class SomeValueObjectRule{
+	public static bool IsOld(this SomeValueObject age){
+		return age > 90;
+	}
+}
+```
+## Contextual Rules
+Rules depending on multiple values.
+__Example__
+```CSharp
+public static class CanDriveCarRule 
 {
-    bool IsSatisfied(T value);
+    public bool IsSatisfied(this (Age Age, Country Country) value)
+    {
+        return value.Country.Code switch
+        {
+            "US" => value.Age.Value >= 16,
+            "NL" => value.Age.Value >= 18,
+            _ => false
+        };
+    }
 }
 ```
 
-# 4. Rule design rules
+# Rules
 __MUST__
 - contain only business logic
 - be deterministic
@@ -69,65 +88,6 @@ __MUST NOT__
 - use HttpContext
 - use external services directly
 - mutate objects
-
-# 5. Rule categories
-
-## 5.1 Primitive Rules
-Atomic reusable predicates.
-__Example:__
-```C#
-public class IsPositiveRule : IRule<int>
-{
-    public bool IsSatisfied(int value)
-        => value > 0;
-}
-```
-
-## 5.2 Semantic Rules
-Business meaning predicates.
-__Example:__
-```C#
-public class IsAdultRule : IRule<Age>
-{
-    public bool IsSatisfied(Age age)
-        => age.Value >= 18;
-}
-```
-
-## 5.3 Contextual Rules
-Rules depending on multiple values.
-__Example__
-```C#
-public class CanDriveCarRule : IRule<(Age Age, Country Country)>
-{
-    public bool IsSatisfied((Age Age, Country Country) value)
-    {
-        return value.Country.Code switch
-        {
-            "US" => value.Age.Value >= 16,
-            "NL" => value.Age.Value >= 18,
-            _ => false
-        };
-    }
-}
-```
-
-# 6. Rule composition
-Rules may be composed from simpler rules.
-
-__Example__
-```C#
-public class IsValidAgeRule : IRule<Age>
-{
-    private readonly IsPositiveRule _isPositive = new();
-
-    public bool IsSatisfied(Age age)
-    {
-        return _isPositive.IsSatisfied(age.Value)
-            && age.Value < 150;
-    }
-}
-```
 
 # 7. Rule usage inside ValueObjects
 ValueObjects may use Rules to enforce invariants.
@@ -151,7 +111,7 @@ public record Age
 # 8. Rule usage inside Entities
 Entities may use Rules internally for invariant protection.
 __Example__
-```C#
+```CSharp
 public class User
 {
     public Age Age { get; private set; }
@@ -169,7 +129,7 @@ public class User
 # 9. Rule usage inside Domain Services
 Rules may be reused by Domain Services.
 __Example__
-```C#
+```CSharp
 public class DriverDomainService
 {
     private readonly CanDriveCarRule _rule = new();
@@ -183,11 +143,7 @@ public class DriverDomainService
 
 # 10. Rule organization
 __Structure__
-- /Domain
-	- /Rules
-		- IsPositiveRule.cs
-		- IsAdultRule.cs
-		- CanDriveCarRule.cs
+
 # 11. Naming rules
 __Rule class naming:__
 

@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of post dto
 
-```C#
+```CSharp
 using System;
 using System.ComponentModel.DataAnnotations;
 using InsonusK.Shared.Models.Common;

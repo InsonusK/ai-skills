@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of post handler
 
-```C#
+```CSharp
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

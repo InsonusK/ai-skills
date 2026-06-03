@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of Complex validator
 
-```C#
+```CSharp
 using FluentValidation;
 
 namespace {ProjectNamespace}.Entities.{EntityName}Entity.Validators.Entity;

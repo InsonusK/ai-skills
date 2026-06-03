@@ -11,7 +11,7 @@ metadata:
 # Template: Complex Validator (2.3)
 *Use for rules involving multiple properties.*
 
-```C#
+```CSharp
 using FluentValidation;
 
 namespace {ProjectNamespace}.Validator.Models;

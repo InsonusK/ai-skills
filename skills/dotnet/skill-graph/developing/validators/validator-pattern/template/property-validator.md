@@ -12,7 +12,7 @@ metadata:
 
 ## [2.2] Custom Property Rule
 *Use for complex logic or external dependencies (Repositories).*
-```C#
+```CSharp
 using FluentValidation;
 using FluentValidation.Validators;
 
@@ -38,7 +38,7 @@ public class Is{Rule}Validator<T> : PropertyValidator<T, {{ Property Type }}>
 ## [2.1] Extension Property Validator
 *Use for wrapping built-in rules with custom metadata.*
 
-```C#
+```CSharp
 using FluentValidation;
 namespace {ProjectNamespace}.Validators.Properties;
 

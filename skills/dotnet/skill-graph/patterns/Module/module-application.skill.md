@@ -1,6 +1,6 @@
 ---
 uid:
-status: skill status todo | draft | implemented | canceled 
+status: todo 
 name: skill-name
 description: Describe what skill define
 domain: skill
@@ -94,5 +94,3 @@ Bad example:
 ```
 
 # Check list
-
-# Unittest TestCases

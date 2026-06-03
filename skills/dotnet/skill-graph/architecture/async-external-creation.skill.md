@@ -1,15 +1,19 @@
 ---
-uid:
-status: skill status todo | draft | implemented | canceled 
+uid: 02c1af73-bafc-4072-b453-51e20cd3a345
+status: todo
 name: skill-name
-description: Describe what skill define
+description: how implement async creation process
 domain: skill
 type: pattern
 tags:
-  - tag for skill classification
+  - entity
+  - creation
+  - architecture
 triggers:
-  - when skill should called
+  - develop async ccreation process
 ---
+
+Описать как работает паттер по асинхронному созданию сущностей
 # Goal
 ```
 Maximum:
@@ -92,7 +96,3 @@ Good example:
 Bad example:
 - 100-line tutorial
 ```
-
-# Check list
-
-# Unittest TestCases
