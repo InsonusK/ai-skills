@@ -18,7 +18,7 @@ triggers:
   - background event dispatcher
 ---
 # Goal
-Define how domain events collected on entities are atomically persisted to the outbox table and dispatched to MediatR by a background service. The outbox guarantees that no event is lost even if the application crashes after a transaction commits. See [[domain-event-architecture.skill]] for the full system flow and the decision behind this approach.
+Define how domain events collected on entities are atomically persisted to the outbox table and dispatched to MediatR by a background service. The outbox guarantees that no event is lost even if the application crashes after a transaction commits. See [[skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill]] for the full system flow and the decision behind this approach.
 
 # Core Principles
 - OutboxMessage written in same transaction as state change — atomicity is the guarantee
@@ -171,7 +171,7 @@ MUST NOT:
 - [ ] When same message processed twice Then handler receives event twice (idempotency is handler's responsibility)
 
 # Relations
-- [[domain-event-architecture.skill]] — system-level flow and architecture decisions
+- [[skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill]] — system-level flow and architecture decisions
 - [[skills/dotnet/skill-graph/Domain Layer/domain-event-pattern.skill]] — event definition and entity collection
 - [[skills/dotnet/skill-graph/Domain Layer/domain-event-handler-pattern.skill]] — handler implementation and idempotency
 - [[skills/dotnet/skill-graph/Domain Layer/domain-configuration-pattern.skill]] — OutboxMessage EF table configuration pattern

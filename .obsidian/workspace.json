@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+                "file": "skills/dotnet/skill-graph/Module/module-layer.skill.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
-              "title": "backend-project-structure.skill"
+              "title": "module-layer.skill"
             }
           },
           {
@@ -61,7 +61,7 @@
       {
         "id": "9467d26c4e94fa7b",
         "type": "tabs",
-        "dimension": 79.77755308392315,
+        "dimension": 52.98281092012134,
         "children": [
           {
             "id": "12bf22c0cfca2cc7",
@@ -108,7 +108,7 @@
       {
         "id": "5dd6bd18df6f5ced",
         "type": "tabs",
-        "dimension": 20.222446916076844,
+        "dimension": 47.01718907987866,
         "children": [
           {
             "id": "71350a63a7be410f",
@@ -116,13 +116,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+                "file": "skills/dotnet/skill-graph/Module/module-layer.skill.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of backend-project-structure.skill"
+              "title": "Outline of module-layer.skill"
             }
           }
         ]
@@ -145,10 +145,10 @@
             "state": {
               "type": "file-properties",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md"
+                "file": "skills/dotnet/skill-graph/Module/module-layer.skill.md"
               },
               "icon": "lucide-info",
-              "title": "File properties for backend-project-structure.skill"
+              "title": "File properties for module-layer.skill"
             }
           },
           {
@@ -192,7 +192,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+                "file": "skills/dotnet/skill-graph/Module/module-layer.skill.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -202,7 +202,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for backend-project-structure.skill"
+              "title": "Backlinks for module-layer.skill"
             }
           },
           {
@@ -239,12 +239,15 @@
   },
   "active": "bff67d8ca9288e97",
   "lastOpenFiles": [
-    "README.md",
-    "skills/dotnet/skill-graph/Application Layer/query-handler-pattern.skill.md",
     "skills/dotnet/skill-graph/architecture/backend-project-structure.skill.md",
+    "README.md",
+    "skills/dotnet/skill-graph/Module/module-layer.skill.md",
+    "skills/dotnet/skill-graph/Module",
+    "skills/dotnet/skill-graph/Domain Layer/domain-event-handler-pattern.skill.md",
+    "skills/dotnet/skill-graph/Application Layer/query-handler-pattern.skill.md",
     "skills/dotnet/skill-graph/Domain Layer/command-handler-pattern.skill.md",
     "skills/dotnet/skill-graph/Application Layer/module-application.skill.md",
-    "skills/dotnet/skill-graph/architecture/adr/domain-event-architecture.skill.md",
+    "skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill.md",
     "templates/Workflow skill.md",
     "templates/Pattern skill.md",
     "skills/dotnet/skill-graph/API Layer/api-structure.skill.md",
@@ -254,7 +257,6 @@
     "skills/dotnet/skill-graph/architecture/cqrs-architecture.skill.md",
     "skills/dotnet/skill-graph/Application Layer/guid-resolving-pipeline.skill.md",
     "skills/dotnet/skill-graph/Application Layer/Untitled.md",
-    "skills/dotnet/skill-graph/Domain Layer/domain-event-handler-pattern.skill.md",
     "skills/dotnet/skill-graph/Domain Layer/domain-event-pattern.skill.md",
     "skills/dotnet/skill-graph/Application Layer/concurrency-control-pattern.skill.md",
     "skills/dotnet/skill-graph/Application Layer/repository-pattern.skill.md",
@@ -266,14 +268,12 @@
     "skills/dotnet/skill-graph/developing/validators/validator-pattern/template/property-validator.md",
     "skills/dotnet/skill-graph/developing/validators/validator-pattern/template/model-validator.md",
     "skills/dotnet/skill-graph/architecture/cross-module-interaction.skill.md",
-    "skills/dotnet/skill-graph/architecture/database-architecture.md",
     "skills/dotnet/skill-graph/Infrastructure Layer",
     "skills/dotnet/skill-graph/patterns/App",
-    "skills/dotnet/skill-graph/architecture/adr",
+    "skills/dotnet/skill-graph/architecture/solution",
     "skills/dotnet/skill-graph/patterns/Module/Domain/value-object",
     "skills/dotnet/skill-graph/patterns/Pipeline",
     "skills/dotnet/skill-graph/Domain Layer/entity",
-    "skills/dotnet/skill-graph/Domain Layer",
-    "skills/dotnet/skill-graph/Module"
+    "skills/dotnet/skill-graph/Domain Layer"
   ]
 }

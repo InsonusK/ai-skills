@@ -23,7 +23,7 @@ aliases:
   - Events
 ---
 # Goal
-Define how to declare a domain event and how an entity raises and collects it. An event is an immutable fact describing something that happened in the domain. The entity never dispatches — it collects. The infrastructure pipeline handles delivery. See [[domain-event-architecture.skill]] for the full system flow.
+Define how to declare a domain event and how an entity raises and collects it. An event is an immutable fact describing something that happened in the domain. The entity never dispatches — it collects. The infrastructure pipeline handles delivery. See [[skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill]] for the full system flow.
 
 # Core Principles
 - Events are immutable facts — past tense, no expectations of response
@@ -115,7 +115,7 @@ MUST NOT:
 - [ ] When event created Then `EventId` is unique and `OccurredAt` is set
 
 # Relations
-- [[domain-event-architecture.skill]] — system-level flow and architecture decisions
+- [[skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill]] — system-level flow and architecture decisions
 - [[skills/dotnet/skill-graph/Infrastructure Layer/outbox-pattern.skill]] — how collected events are persisted and dispatched
 - [[skills/dotnet/skill-graph/Domain Layer/entity/entity-behavior.skill]] — behavior methods are where events are raised
 - [[skills/dotnet/skill-graph/Domain Layer/entity/entity-pattern.skill]] — entities that raise events follow standard entity rules

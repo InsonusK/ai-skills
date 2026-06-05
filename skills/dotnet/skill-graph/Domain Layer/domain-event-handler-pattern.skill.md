@@ -18,7 +18,7 @@ triggers:
 - idempotent handler
 ---
 # Goal
-Define how to implement MediatR notification handlers that react to domain events. Handlers are the only place where cross-module side effects are implemented. Because the outbox may re-deliver events on failure, every handler must be idempotent — processing the same event twice must produce the same result as processing it once. See [[domain-event-architecture.skill]] for the full system flow.
+Define how to implement MediatR notification handlers that react to domain events. Handlers are the only place where cross-module side effects are implemented. Because the outbox may re-deliver events on failure, every handler must be idempotent — processing the same event twice must produce the same result as processing it once. See [[skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill]] for the full system flow.
 
 # Core Principles
 - Handler reacts to a fact — it never assumes the event will arrive exactly once
@@ -111,7 +111,7 @@ SHOULD:
 
 # Relations
 
-- [[domain-event-architecture.skill]] — system-level flow and architecture decisions
+- [[skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill]] — system-level flow and architecture decisions
 - [[skills/dotnet/skill-graph/Domain Layer/domain-event-pattern.skill]] — event definition that this handler subscribes to
 - [[skills/dotnet/skill-graph/Infrastructure Layer/outbox-pattern.skill]] — delivers events to this handler via MediatR
 - [[cross-module-interaction.skill]] — handlers are the cross-module reaction point

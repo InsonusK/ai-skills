@@ -295,7 +295,7 @@ work with [ai-skills-manager](https://github.com/InsonusK/ai-skills-manager)
 Architecture
 ├── [[skills/dotnet/skill-graph/architecture/backend-project-structure.skill|backend-project-structure.skill]]        ← solution layout, dependency rules
 ├── [[skills/dotnet/skill-graph/architecture/cross-module-interaction.skill|cross-module-interaction.skill]]         ← module communication rules
-├── [[skills/dotnet/skill-graph/architecture/adr/domain-event-architecture.skill|domain-event-architecture.skill]]        ← event system ADR (entry point)
+├── [[skills/dotnet/skill-graph/architecture/solution/domain-event-architecture.skill|domain-event-architecture.skill]]        ← event system ADR (entry point)
 └── [[skills/dotnet/skill-graph/architecture/cqrs-architecture.skill|cqrs-architecture.skill]]                ← TODO: CQRS decision record
 
 Domain Layer
@@ -327,134 +327,162 @@ API Layer
 └── [[skills/dotnet/skill-graph/API Layer/api-structure.skill|api-structure.skill]]                    ← Controllers, Minimal API, response mapping
 
 
-### Restructuring plan
+### Complete restructuring plan
 
-#### Phase 1 — Define the new folder structure and root skills
+#### Final skill tree target
 
-**Goal:** establish the skeleton before moving anything.
+```
+/Architecture
+  /Solutions
+    command-handling.solution.skill
+    domain-events.solution.skill
+    guid-resolving.solution.skill
+    concurrency-control.solution.skill
+    cross-module-communication.solution.skill
+  backend-project-structure.skill
 
-Create:
+/Module
+  module-layer.skill
+  /Api
+    module-api.skill
+    /Components
+      api-controller.skill
+      api-minimal-endpoint.skill
+  /Application
+    module-application.skill
+    /Components
+      feature-command-handler.skill
+      feature-query-handler.skill
+      feature-validator.skill
+      event-handler.skill
+      ardalis-specification.skill
+      repository.skill
+  /Domain
+    module-domain.skill
+    /Components
+      entity.skill
+      entity-behavior.skill
+      entity-concurrency.skill
+      external-created-entity.skill
+      value-object.skill
+      domain-rule.skill
+      domain-service.skill
+      domain-event.skill
+      ef-configuration.skill
 
-- `/Architecture/backend-project-structure.skill` — strip to solution layout + dependency rules only, replace layer detail sections with links to layer skills
-- `/Module/module-layer.skill` — extracted from `backend-project-structure`: what a module is, its 4 projects, inter-module rules
+/App
+  /Host
+    app-host.skill
+  /Queries
+    app-queries.skill
+  /Infrastructure
+    app-infrastructure.skill
+    /Components
+      outbox.skill
+      unit-of-work.skill
 
----
+/Shared
+  shared-layer.skill
 
-#### Phase 2 — Extract Domain layer
-
-**Goal:** move all domain knowledge into `/Module/Domain/`
-
-Refactor:
-
-- `backend-project-structure` domain section → `/Module/Domain/module-domain.skill`
-
-Create:
-
-- `/Module/Domain/Components/entity.skill` — from `entity-pattern`
-- `/Module/Domain/Components/entity-behavior.skill` — from `entity-behavior`
-- `/Module/Domain/Components/entity-concurrency.skill` — from `entity-concurrency-pattern`
-- `/Module/Domain/Components/external-created-entity.skill` — from `external-created-entity`
-- `/Module/Domain/Components/value-object.skill` — from `value-object-pattern`
-- `/Module/Domain/Components/domain-rule.skill` — from `domain-rule-pattern`
-- `/Module/Domain/Components/domain-service.skill` — from `domain-service`
-- `/Module/Domain/Components/domain-event.skill` — from `domain-event-pattern`
-- `/Module/Domain/Components/ef-configuration.skill` — from `domain-configuration-pattern`
-
----
-
-#### Phase 3 — Extract Application layer
-
-**Goal:** move all application knowledge into `/Module/Application/`
-
-Refactor:
-
-- `backend-project-structure` application section → `/Module/Application/module-application.skill`
-- `module-application` → split into layer skill + component skills
-
-Create:
-
-- `/Module/Application/Components/feature-command-handler.skill` — from `command-handler-pattern`
-- `/Module/Application/Components/feature-query-handler.skill` — from `query-handler-pattern`
-- `/Module/Application/Components/feature-validator.skill` — extracted from `command-handler-pattern`
-- `/Module/Application/Components/event-handler.skill` — from `domain-event-handler-pattern`
-- `/Module/Application/Components/ardalis-specification.skill` — from `ardalis-specification-pattern`
-- `/Module/Application/Components/repository.skill` — from `repository-pattern`
-
----
-
-#### Phase 4 — Extract API layer
-
-**Goal:** move all API knowledge into `/Module/Api/`
-
-Refactor:
-
-- `backend-project-structure` API section → `/Module/Api/module-api.skill`
-- `api-structure` → split into layer skill + component skills
-
-Create:
-
-- `/Module/Api/Components/api-controller.skill` — entity-centric controller pattern
-- `/Module/Api/Components/api-minimal-endpoint.skill` — system/cross-entity endpoints
+/BuildingBlocks
+  building-blocks.skill
+```
 
 ---
 
-#### Phase 5 — Extract Infrastructure layer
+#### Phase 1 — Root structure + Module layer
 
-**Goal:** move all infrastructure knowledge into `/Infrastructure/`
+**Input:** `backend-project-structure` **Output:**
 
-Refactor:
-
-- `backend-project-structure` infrastructure section → `/Infrastructure/module-infrastructure.skill`
-
-Create:
-
-- `/Infrastructure/Components/outbox.skill` — from `outbox-pattern`
-- `/Infrastructure/Components/unit-of-work.skill` — extracted from `repository-pattern`
-- Add `app-infrastructure.skill`, `app-queries.skill`, `app-host.skill`
+- `/Architecture/backend-project-structure.skill` — stripped to solution layout + dependency graph + links to layer skills only
+- `/Module/module-layer.skill` — what a module is, its 4 projects, inter-module dependency rules
 
 ---
 
-#### Phase 6 — Create Solution skills
+#### Phase 2 — Domain layer
 
-**Goal:** convert existing architecture ADR skills into focused solution skills
+**Input:** `entity-pattern`, `entity-behavior`, `entity-concurrency-pattern`, `external-created-entity`, `value-object-pattern`, `domain-rule-pattern`, `domain-service`, `domain-event-pattern`, `domain-configuration-pattern` **Output:**
 
-Refactor into `/Architecture/Solutions/`:
+- `/Module/Domain/module-domain.skill` — Domain project boundary, structure, rules, what belongs here
+- `/Module/Domain/Components/entity.skill`
+- `/Module/Domain/Components/entity-behavior.skill`
+- `/Module/Domain/Components/entity-concurrency.skill`
+- `/Module/Domain/Components/external-created-entity.skill`
+- `/Module/Domain/Components/value-object.skill`
+- `/Module/Domain/Components/domain-rule.skill`
+- `/Module/Domain/Components/domain-service.skill`
+- `/Module/Domain/Components/domain-event.skill`
+- `/Module/Domain/Components/ef-configuration.skill`
 
-- `cqrs-architecture` → `command-handling.solution.skill`
-- `domain-event-architecture` → `domain-events.solution.skill`
-- `async-external-creation` + `guid-resolving-pipeline` → `guid-resolving.solution.skill`
-- `concurrency-control-pattern` (architecture parts) → `concurrency-control.solution.skill`
-- `cross-module-interaction` → `cross-module-communication.solution.skill`
+---
+
+#### Phase 3 — Application layer
+
+**Input:** `module-application`, `command-handler-pattern`, `query-handler-pattern`, `ardalis-specification-pattern`, `repository-pattern`, `domain-event-handler-pattern` **Output:**
+
+- `/Module/Application/module-application.skill` — Application project boundary, structure, DI registration rules
+- `/Module/Application/Components/feature-command-handler.skill`
+- `/Module/Application/Components/feature-query-handler.skill`
+- `/Module/Application/Components/feature-validator.skill`
+- `/Module/Application/Components/event-handler.skill`
+- `/Module/Application/Components/ardalis-specification.skill`
+- `/Module/Application/Components/repository.skill`
 
 ---
 
-#### Phase 7 — Create BuildingBlocks skill
+#### Phase 4 — API layer
 
-**Goal:** document what lives in BuildingBlocks and why
+**Input:** `api-structure` **Output:**
 
-Create:
-
-- `/BuildingBlocks/building-blocks.skill` — what lives here, registration rules, pipeline behavior contracts
-
----
-#### Phase 8 — Create share skill
-
-**Goal:** document what lives in BuildingBlocks and why
-
-Create:
-
-- `/share/share.skill` — what lives here, registration rules, pipeline behavior contracts
+- `/Module/Api/module-api.skill` — Api project boundary, structure, rules
+- `/Module/Api/Components/api-controller.skill`
+- `/Module/Api/Components/api-minimal-endpoint.skill`
 
 ---
+
+#### Phase 5 — App layer
+
+**Input:** `backend-project-structure` (App sections), `outbox-pattern`, `repository-pattern` (UnitOfWork parts) **Output:**
+
+- `/App/Host/app-host.skill` — composition root, DI registration, pipeline order, module wiring
+- `/App/Queries/app-queries.skill` — cross-module reads, DbContext access, when to use vs module query
+- `/App/Infrastructure/app-infrastructure.skill` — persistence, EF, repository implementations, outbox
+- `/App/Infrastructure/Components/outbox.skill`
+- `/App/Infrastructure/Components/unit-of-work.skill`
+
+---
+
+#### Phase 6 — Shared and BuildingBlocks
+
+**Input:** `backend-project-structure` (Shared + BuildingBlocks sections) **Output:**
+
+- `/Shared/shared-layer.skill` — Result types, Exceptions, base types, what belongs here vs BuildingBlocks
+- `/BuildingBlocks/building-blocks.skill` — pipeline behaviors, spec base, outbox contracts, what belongs here
+
+---
+
+#### Phase 7 — Solution skills
+
+**Input:** `cqrs-architecture`, `domain-event-architecture`, `async-external-creation`, `guid-resolving-pipeline`, `concurrency-control-pattern`, `cross-module-interaction` **Output:**
+
+- `/Architecture/Solutions/command-handling.solution.skill`
+- `/Architecture/Solutions/domain-events.solution.skill`
+- `/Architecture/Solutions/guid-resolving.solution.skill`
+- `/Architecture/Solutions/concurrency-control.solution.skill`
+- `/Architecture/Solutions/cross-module-communication.solution.skill`
+
+---
+
 #### Summary table
 
-|Phase|Input skills|Output skills|
-|---|---|---|
-|1|`backend-project-structure`|`backend-project-structure` (trimmed) + `module-layer.skill`|
-|2|9 domain skills|`module-domain.skill` + 9 component skills|
-|3|6 application skills|`module-application.skill` + 6 component skills|
-|4|`api-structure`|`module-api.skill` + 2 component skills|
-|5|`outbox-pattern`, `repository-pattern`|`module-infrastructure.skill` + 5 component skills|
-|6|5 architecture skills|5 solution skills|
-|7|—|`building-blocks.skill`|
-|8|`api-structure`|Create `shared.skill` and `building-blocks.skill`|
+|Phase|Input skills|New skills created|Skills refactored|
+|---|---|---|---|
+|1|1|1|1|
+|2|9|10|9|
+|3|6|7|6|
+|4|1|3|1|
+|5|2|5|2|
+|6|1|2|1|
+|7|6|5|6|
+
+**Total: 21 existing skills → 33 focused skills in a navigable tree**
