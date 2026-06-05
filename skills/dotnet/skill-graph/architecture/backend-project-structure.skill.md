@@ -52,14 +52,18 @@ __Structure:__
 Each module is self-contained and an isolated bounded context.
 
 __Structure:__
-- /Modules
-	- /{ModuleName}
+```
+/Modules
+	/{ModuleName}
+```
 
 __Example__:
-- /Modules
-	- /Task
-	- /TimeLog
-	- /User
+```
+/Modules
+	/Task
+	/TimeLog
+	/User
+```
 
 ### Module Structure (Project Level)
 Each module is a bounded context and contains multiple .csproj projects.
@@ -75,33 +79,37 @@ __Structure:__
 	- /{ModuleName}.Domain.Tests
 
 __Example:__
-- /Modules
-	- /Task
-		- /Task.Api
-		- /Task.Application
-		- /Task.Domain
-		- /Task.Interfaces
-		- /Task.Api.Tests
-		- /Task.Application.Tests
-		- /Task.Domain.Tests
-	- /TimeLog
-		- /TimeLog.Api
-		- /TimeLog.Application
-		- /TimeLog.Domain
-		- /TimeLog.Interfaces
-		- /TimeLog.Api.Tests
-		- /TimeLog.Application.Tests
-		- /TimeLog.Domain.Tests
+```
+/Modules
+	/Task
+		/Task.Api
+		/Task.Application
+		/Task.Domain
+		/Task.Interfaces
+		/Task.Api.Tests
+		/Task.Application.Tests
+		/Task.Domain.Tests
+	/TimeLog
+		/TimeLog.Api
+		/TimeLog.Application
+		/TimeLog.Domain
+		/TimeLog.Interfaces
+		/TimeLog.Api.Tests
+		/TimeLog.Application.Tests
+		/TimeLog.Domain.Tests
+```
 
 ### Test Structure
 Tests are co-located with modules.
 
 __Example:__
-- /Modules/Task
-	- /Task.Api.Tests
-	- /Task.Application.Tests
-	- /Task.Domain.Tests
-	- /Task.Integration.Tests
+```
+/Modules/Task
+	/Task.Api.Tests
+	/Task.Application.Tests
+	/Task.Domain.Tests
+	/Task.Integration.Tests
+```
 
 __Rules:__
 - Tests live next to production code
@@ -120,14 +128,16 @@ Contains:
 - API mapping layer
 
 __Structure__:
-- /{ModuleName}.Api
-	- /Controllers
-	- /Endpoints (Minimal API optional)
-	- /Contracts
-		- /Requests
-		- /Responses
-	- /Mappings
-	- {ModuleName}.Api.cspoj
+```
+/{ModuleName}.Api
+	/Controllers
+	/Endpoints (Minimal API optional)
+	/Contracts
+		/Requests
+		/Responses
+	/Mappings
+	{ModuleName}.Api.cspoj
+```
 
 Rules:
 - No business logic
@@ -141,50 +151,55 @@ Depends on:
 `{ModuleName}.Interfaces.csproj`
 
 __Contains:__
-- Module available commands and notifications
-
+- Commands
+- Queries
+- DTOs
+- Integration Events
+- 
 __Structure:__
-- /{ModuleName}.Interfaces  
-	- /Commands  
-	- /Queries  
-	- /DTOs  
-	- /Events  
+```
+/{ModuleName}.Interfaces  
+	/Commands  
+	/Queries  
+	/DTOs  
+	/Events  
+```
 
 __Rules:__
-- inter-module communication layer
-- stable contract boundary
-- decoupling Application from external usage
+- Stable public contract boundary — changes here are breaking changes
 - NO business logic
-- realize cross-module join queries
-
+- NO implementation — declarations only
+- Cross-module queries declared here, implemented in [[#App Queries (.csproj)|App.Queries]]
+- Other modules depend on this project, never on Application or Domain directly
 ### Application (.csproj)
 `{ModuleName}.Application.csproj`
 
 __Contains:__
-- Commands
-- Queries
-- Handlers
+- Command handlers
+- Query handlers (single-module queries)
 - Validators
-- Application services
+- Complex Ardalis Specifications (cross-feature or multi-condition)
 
 __Structure:__
-- /{ModuleName}.Application
-	- /Features
-		- /{FeatureName}
-			- {FeatureName}.Command.cs
-			- {FeatureName}.Handler.cs
-			- {FeatureName}.Validator.cs
-	- {ModuleName}.Application.csproj
+```
+/{ModuleName}.Application
+	/Features
+		/{FeatureName}
+			{FeatureName}.Command.cs
+			{FeatureName}.Handler.cs
+			{FeatureName}.Validator.cs
+	/Specifications
+	{ModuleName}.Application.csproj
+```
 
 __Rules:__
-- No DbContext usage
-	- use abstractions:
-		- IRepository
-		- IReadRepository
-		- IUnitOfWork  
-		- IQueryExecutor
-- Orchestration only
-- Implements model and complex validators
+- No DbContext usage — use abstractions only:
+	- IRepository
+	- IReadRepository
+	- IUnitOfWork
+	- IQueryExecutor
+- Orchestration only — loads data, calls domain, saves
+- Complex Ardalis Specifications live here when they span multiple features
 
 __Depends on:__
 - [[#Interfaces (.csproj)|{ModuleName}.Interfaces]] - implements handlers for commands and in module queries
@@ -197,56 +212,73 @@ __Depends on:__
 `{ModuleName}.Domain.csproj`
 
 __Contains:__
-- Entities
-- Value Objects
-- Domain Services
-- Domain Events
+- Entities — see [[skills/dotnet/skill-graph/Domain Layer/entity/entity-pattern.skill|entity-pattern.skill]]
+- Value Objects — see [[skills/dotnet/skill-graph/Domain Layer/value-object-pattern.skill|value-object-pattern.skill]]
+- Domain Services — see [[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|domain-service.skill]]
+- Domain Events — see [[skills/dotnet/skill-graph/Domain Layer/domain-event-pattern.skill]]
+- Rules — see [[skills/dotnet/skill-graph/Domain Layer/domain-rule-pattern.skill|domain-rule-pattern.skill]]
+- EF Configurations — see [[skills/dotnet/skill-graph/Domain Layer/domain-configuration-pattern.skill|domain-configuration-pattern.skill]]
+- Simple Ardalis Specifications (entity-scoped, reusable filters)
 
 __Structure:__
 - /{ModuleName}.Domain
-	- /[[entity-pattern.skill|Entities]]
-	- /[[value-object-pattern.skill|Value Objects]]
-	- /Services
+	- /[[skills/dotnet/skill-graph/Domain Layer/entity/entity-pattern.skill|Entities]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/value-object-pattern.skill|Value Objects]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|Services]]
 	- /Events
-	- /Validators
+	- /[[skills/dotnet/skill-graph/Domain Layer/domain-rule-pattern.skill|Rules]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/domain-configuration-pattern.skill|Configuration]]
+	- /Specifications
 	- {ModuleName}.Domain.csproj
 
 __Rules:__
-- mutation allowed ONLY by internal access methods and setters
-- allow internal access to {ModuleName}.Application
+- Pure business logic only — no orchestration, no IO
 - Pure business logic only
 - Must enforce invariants
-- Implements value and property validators
+- EF Configurations live here — Domain references `Microsoft.EntityFrameworkCore` for `IEntityTypeConfiguration<T>` only; no runtime EF usage
+- Simple Specifications (single-entity filters) live here
+- Complex Specifications (multi-condition, cross-feature) live in Application
+
+__Depends on:__
+- `Microsoft.EntityFrameworkCore` (for IEntityTypeConfiguration only)
+- [[#Shared (.csproj)|Shared]]
 
 ## Shared / Building Blocks
 
 ### Shared (.csproj)
-__Cross-module primitives:__
+Cross-module primitives — no business logic, no infrastructure:
+
+__Contains:__
 - Result types
 - Exceptions
 - Logging abstractions
 - Common base types
 
 __Example__:
-- /Shared 
-	- /Common 
-		- Result.cs  
-		- Error.cs  
-	- /Exceptions  
-		- DomainException.cs  
-	- /Primitives  
-		- Entity.cs  
-		- ValueObject.cs  
-	- /Abstractions  
-		- IClock.cs
+```
+/Shared 
+	/Common 
+		Result.cs  
+		Error.cs  
+	/Exceptions  
+		DomainException.cs  
+	/Primitives  
+		Entity.cs  
+		ValueObject.cs  
+	/Abstractions  
+		IClock.cs
+```
 ### BuildingBlocks (.csproj)
-Reusable infrastructure patterns:
+Reusable infrastructure patterns — framework-level, not business-level:
+
+__Contains:__
 - MediatR pipelines
 - Specification base
 - Outbox base
 - EF extensions
 
 __Example:__
+```
 - /BuildingBlocks  
 	- /MediatR  
 		- /PipelineBehaviors
@@ -258,62 +290,101 @@ __Example:__
 		- DbContextExtensions.cs  
 	- /Logging  
 		- LoggingBehavior.cs
+```
 
 ## App Layer (Composition Root)
 ### App Infrastructure (.csproj)
 `App.Infrastructure.csproj`
 
 __Responsible for:__
-- Central persistence + external integration layer.  
+- Central persistence and external integration layer.  
   
 __Contains:__  
-- DbContext (shared)  
-- EF Configurations for foreing keys between modules
+- DbContext (single shared context)
+- EF Configurations cross-module foreign keys only
 - Migrations  
-- Outbox implementation
-- Messaging integrations 
-- External integrations  
-- Cross-module query execution (JOIN allowed)
-	- for read models
-	- for reporting
+- Outbox implementation 
+- Messaging integrations (MediatR -> outbox -> message broker)
+- Repository implementations
+- Unit of Work implementation
 
 __Structure:__
-- /App.Infrastructure  
-	- /Persistence  
-		- AppDbContext.cs  
-		- /Configuration
-- /Migrations  
-- /Outbox  
-- /Messaging  
-- /Queries  
-- /External
+```
+/App.Infrastructure  
+	/Persistence  
+		AppDbContext.cs  
+		/Configuration ← cross-module FK configs only
+/Migrations  
+/Outbox  
+/Messaging  
+/Queries  
+/External
+```
 
 __Rules:__
-- ONLY place allowed to access database
-- Depends only on Domain and realize cross model queries from Interfaces
+- ONLY place allowed to access DbContext at runtime
+- Depends only on Domain and implements cross model queries from Interfaces
 - No business logic
 - No orchestration logic
-- External IO only here
+- Cross-module FK configurations live here — all other EF configs live in Domain
+- Outbox pattern used for all integration events — see [[skills/dotnet/skill-graph/Domain Layer/domain-event-pattern.skill]]
 
 __Depends on:__
 - [[#Domain (.csproj)|{All Modules}.Domain]] - get Module entities 
 - [[#Interfaces (.csproj)|{All Modules}.Interfaces]] - realize cross join module queries
+- [[#BuildingBlocks (.csproj)|BuildingBlocks]]
+
+### App Queries (.csproj)
+`App.Queries.csproj`
+
+__Responsible for:__
+- Cross-module read model execution
+- Reporting projections
+- Any query requiring JOINs across module boundaries
+
+__Contains:__
+- Implementations of cross-module queries declared in `{Module}.Interfaces`
+- Complex Ardalis Specifications that join across module boundaries
+- Read-only DTOs for projections
+
+__Structure:__
+```
+/App.Queries
+    /Queries
+        /{ModuleName}
+            {QueryName}Handler.cs
+    /Specifications
+    App.Queries.csproj
+```
+
+__Rules:__
+- Read-only — no writes, no commands
+- No business logic — projection and mapping only
+- Implements query contracts declared in `{Module}.Interfaces`
+- Cross-module JOINs allowed and expected here
+- Must not implement queries that can be served by a single module
+
+__Depends on:__
+- [[#App Infrastructure (.csproj)|App.Infrastructure]] - accesses DbContext for query execution
+- [[#Interfaces (.csproj)|{All Modules}.Interfaces]] - implements cross-module query contracts
+- [[#Domain (.csproj)|{All Modules}.Domain]] - accesses entities for projections
 
 ### App Infrastructure Migrations (.csproj)
 `App.Infrastructure.Migrations.csproj`
 
 __Structure:__
-- /App.Infrastructure.Migrations  
-	- /Migrations  
-	- DbContextFactory.cs
+```
+/App.Infrastructure.Migrations  
+	/Migrations  
+	DbContextFactory.cs
+```
 
 __Rule:__
-- design-time DbContext factory
-- EF migrations only
-- CLI tooling target
-- Doesn't contain runtime code
-- Doesn't contain repository
-- ONLY for creating Migrations
+- design-time DbContext factory only
+- EF migrations only — CLI tooling target
+- No runtime code
+- No repositories
+- ONLY for generating and applying migrations
 
 __Depends on:__
 - [[#App Infrastructure (.csproj)|App Infrastructure]]
@@ -328,23 +399,30 @@ __Responsible for:__
 - API aggregation
 
 __Structure__:
-- /Host  
-	- /DependencyInjection  
-	- /ModuleRegistration  
-	- /Middleware  
-	- /Routing
-	- /Program.cs  
-	- /Host.csproj
+```
+/Host  
+	/DependencyInjection  
+	/ModuleRegistration  
+	/Middleware  
+	/Routing
+	/Program.cs  
+	/Host.csproj
+```
+
+__Rules:__
+- Composition root only — no business logic, no queries
+- Registers all modules, infrastructure, and queries into DI container
 
 __Depends on:__
 - [[#Api (.csproj)|{All Modules}.Api]]
-- [[#App Infrastructure (.csproj)|App.Infrastructure]] - add to DI
-- [[#Application (.csproj)|{ModuleName}.Application]] - add to DI
+- [[#Application (.csproj)|{All Modules}.Application]] - registers handlers
+- [[#App Infrastructure (.csproj)|App.Infrastructure]] - registers persistence
+- [[#App Queries (.csproj)|App.Queries]] - registers cross-module query handlers
 
 #### API Composition Rule
 Host exposes unified API surface:
 ```
-Modules/*/Api → Host endpoint registration
+Modules/*/Api -> Host endpoint registration
 ```
 
 __Host:__
@@ -358,40 +436,57 @@ __Host:__
 [[#App Host (.csproj)|App.Host]] -> [[#Api (.csproj)|{ModuleName}.Api]]
 [[#App Host (.csproj)|App.Host]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]]
 [[#App Host (.csproj)|App.Host]] -> [[#Application (.csproj)|{ModuleName}.Application]]
+[[#App Host (.csproj)|App.Host]] -> [[#App Queries (.csproj)|App.Queries]]
 
 [[#Api (.csproj)|{ModuleName}.Api]] -> [[#Interfaces (.csproj)|{ModuleName}.Interfaces]]
 
 [[#App Infrastructure Migrations (.csproj)|App.Infrastructure Migration]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]]
 
+[[#App Queries (.csproj)|App.Queries]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]] 
+[[#App Queries (.csproj)|App.Queries]] -> [[#Domain (.csproj)|{ModuleName}.Domain]]
+[[#App Queries (.csproj)|App.Queries]] -> [[#Interfaces (.csproj)|{ModuleName}.Interfaces]]
+
 [[#App Infrastructure (.csproj)|App.Infrastructure]] -> [[#Interfaces (.csproj)|{ModuleName}.Interfaces]]
 [[#App Infrastructure (.csproj)|App.Infrastructure]] -> [[#Domain (.csproj)|{ModuleName}.Domain]]
+[[#App Infrastructure (.csproj)|App.Infrastructure]] -> [[#BuildingBlocks (.csproj)|BuildingBlocks]]
 
 [[#Application (.csproj)|{ModuleName}.Application]] -> [[#Interfaces (.csproj)|{ModuleName}.Interfaces]] 
 [[#Application (.csproj)|{ModuleName}.Application]] ->  [[#Domain (.csproj)|{ModuleName}.Domain]] 
 [[#Application (.csproj)|{ModuleName}.Application]] -> [[#Shared (.csproj)|Shared]]
 [[#Application (.csproj)|{ModuleName}.Application]] -> [[#BuildingBlocks (.csproj)|BuildingBlocks]]
 
+[[#Domain (.csproj)|{ModuleName}.Domain]] -> [[#Shared (.csproj)|Shared]]
+[[#Domain (.csproj)|{ModuleName}.Domain]] -> Microsoft.EntityFrameworkCore (IEntityTypeConfiguration only)
 ## Forbidden
-- [[#Domain (.csproj)|{ModuleName}.Domain]] → [[#Application (.csproj)|{ModuleName}.Application]]
-- [[#Domain (.csproj)|{ModuleName}.Domain]] → [[#App Infrastructure (.csproj)|App.Infrastructure]]
-- [[#Application (.csproj)|{ModuleName}.Application]] → [[#App Infrastructure (.csproj)|App.Infrastructure]]
-- Cross-module Domain references
-- API → Infrastructure directly
+- [[#Domain (.csproj)|{ModuleName}.Domain]] -> [[#Application (.csproj)|{ModuleName}.Application]]
+- [[#Domain (.csproj)|{ModuleName}.Domain]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]]
+- [[#Domain (.csproj)|{ModuleName}.Domain]] -> [[#App Queries (.csproj)|App.Queries]]
+- [[#Domain (.csproj)|{ModuleName}.Domain]] -> [[#Domain (.csproj)|{OtherModuleName}.Domain]] (cross-module domain reference)
+- [[#Application (.csproj)|{ModuleName}.Application]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]]
+- [[#Application (.csproj)|{ModuleName}.Application]] ->[[#App Queries (.csproj)|App.Queries]]
+- [[#Application (.csproj)|{ModuleName}.Application]] -> [[#Application (.csproj)|{OtherModuleName}.Application]] 
+- [[#Api (.csproj)|{ModuleName}.Api]] -> [[#App Infrastructure (.csproj)|App.Infrastructure]] 
+- [[#Api (.csproj)|{ModuleName}.Api]] ->[[#App Queries (.csproj)|App.Queries]]
 
 # Anti Goals
 - Do not centralize tests in root folder
 - Do not bypass Host composition layer
-- Do not mix module APIs directly
-- Do not reference Infrastructure from Application or API
+- Do not reference Infrastructure from Application, Domain, or API
+- Do not put cross-module JOINs in Application or Domain
+- Do not put business logic in App.Queries
 - Do not collapse modules into shared monolith
 - Do not flatten structure into only layers without modules
+- Do not mix module APIs directly
 
 # Check List
 - [ ] Each module has its own .csproj separation
 - [ ] Domain is pure and independent    
 - [ ] Application does not depend on Infrastructure    
 - [ ] API is thin and dispatch-only    
-- [ ] Host composes all module APIs    
-- [ ] Tests are colocated with modules    
-- [ ] No cross-module direct dependencies    
-- [ ] File placement follows rules consistently
+- [ ]  Cross-module queries implemented in App.Queries, declared in Interfaces
+- [ ]  EF entity configurations live in Domain/Configurations
+- [ ]  Cross-module FK configurations live in App.Infrastructure only
+- [ ]  Host composes all module APIs, infrastructure, and queries
+- [ ]  Tests are colocated with modules
+- [ ]  No cross-module Domain references
+- [ ]  File placement follows rules consistently

@@ -291,3 +291,170 @@ work with [ai-skills-manager](https://github.com/InsonusK/ai-skills-manager)
 
 Если хочешь, следующий шаг логично сделать так:  
 собрать **минимальный набор developing skills (5–7 штук)** и от них построить первый полный execution pipeline.
+
+Architecture
+├── [[skills/dotnet/skill-graph/architecture/backend-project-structure.skill|backend-project-structure.skill]]        ← solution layout, dependency rules
+├── [[skills/dotnet/skill-graph/architecture/cross-module-interaction.skill|cross-module-interaction.skill]]         ← module communication rules
+├── [[skills/dotnet/skill-graph/architecture/adr/domain-event-architecture.skill|domain-event-architecture.skill]]        ← event system ADR (entry point)
+└── [[skills/dotnet/skill-graph/architecture/cqrs-architecture.skill|cqrs-architecture.skill]]                ← TODO: CQRS decision record
+
+Domain Layer
+├── [[skills/dotnet/skill-graph/Domain Layer/entity/entity-pattern.skill|entity-pattern.skill]]                   ← entity types, identity matrix
+│   ├── [[skills/dotnet/skill-graph/Domain Layer/entity/entity-behavior.skill|entity-behavior.skill]]              ← invariant enforcement
+│   ├── [[skills/dotnet/skill-graph/Domain Layer/entity/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]]   ← RowVersion / xmin
+│   └── [[skills/dotnet/skill-graph/Domain Layer/entity/external-created-entity.skill|external-created-entity.skill]]      ← Guid property, unique index
+├── [[skills/dotnet/skill-graph/Domain Layer/value-object-pattern.skill|value-object-pattern.skill]]             ← immutable VO, single/multi-property
+├── [[skills/dotnet/skill-graph/Domain Layer/domain-rule-pattern.skill|domain-rule-pattern.skill]]              ← static predicates, no throw
+├── [[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|domain-service.skill]]                   ← pure logic extraction
+├── [[skills/dotnet/skill-graph/Domain Layer/domain-event-pattern.skill|domain-event-pattern.skill]]             ← define + raise events on entity
+└── [[skills/dotnet/skill-graph/Domain Layer/domain-configuration-pattern.skill|domain-configuration-pattern.skill]]    ← EF IEntityTypeConfiguration
+
+Application Layer
+├── [[skills/dotnet/skill-graph/Application Layer/module-application.skill|module-application.skill]]               ← TODO: CQRS handler structure
+├── [[skills/dotnet/skill-graph/Domain Layer/command-handler-pattern.skill|command-handler-pattern.skill]]          ← TODO: load→domain→save pattern
+├── [[skills/dotnet/skill-graph/Application Layer/query-handler-pattern.skill|query-handler-pattern.skill]]            ← TODO: single-module vs cross-module
+├── [[skills/dotnet/skill-graph/Application Layer/ardalis-specification-pattern.skill|ardalis-specification-pattern.skill]]    ← TODO: simple (Domain) vs complex (App)
+├── [[skills/dotnet/skill-graph/Application Layer/repository-pattern.skill|repository-pattern.skill]]               ← TODO: IRepository, IReadRepository, IUnitOfWork
+├── [[skills/dotnet/skill-graph/Domain Layer/domain-event-handler-pattern.skill|domain-event-handler-pattern.skill]]     ← INotificationHandler + idempotency
+├── [[skills/dotnet/skill-graph/Application Layer/concurrency-control-pattern.skill|concurrency-control-pattern.skill]]      ← TODO: MediatR pipeline Version check
+└── [[skills/dotnet/skill-graph/Application Layer/guid-resolving-pipeline.skill|guid-resolving-pipeline.skill]]          ← TODO: Guid→Id before handler runs
+
+Infrastructure Layer
+├── [[skills/dotnet/skill-graph/Infrastructure Layer/outbox-pattern.skill|outbox-pattern.skill]]                   ← OutboxMessage, interceptor, dispatcher
+└── [[skills/dotnet/skill-graph/Infrastructure Layer/async-external-creation.skill|async-external-creation.skill]]          ← client Guid, 409, GuidResolvingBehavior
+
+API Layer
+└── [[skills/dotnet/skill-graph/API Layer/api-structure.skill|api-structure.skill]]                    ← Controllers, Minimal API, response mapping
+
+
+### Restructuring plan
+
+#### Phase 1 — Define the new folder structure and root skills
+
+**Goal:** establish the skeleton before moving anything.
+
+Create:
+
+- `/Architecture/backend-project-structure.skill` — strip to solution layout + dependency rules only, replace layer detail sections with links to layer skills
+- `/Module/module-layer.skill` — extracted from `backend-project-structure`: what a module is, its 4 projects, inter-module rules
+
+---
+
+#### Phase 2 — Extract Domain layer
+
+**Goal:** move all domain knowledge into `/Module/Domain/`
+
+Refactor:
+
+- `backend-project-structure` domain section → `/Module/Domain/module-domain.skill`
+
+Create:
+
+- `/Module/Domain/Components/entity.skill` — from `entity-pattern`
+- `/Module/Domain/Components/entity-behavior.skill` — from `entity-behavior`
+- `/Module/Domain/Components/entity-concurrency.skill` — from `entity-concurrency-pattern`
+- `/Module/Domain/Components/external-created-entity.skill` — from `external-created-entity`
+- `/Module/Domain/Components/value-object.skill` — from `value-object-pattern`
+- `/Module/Domain/Components/domain-rule.skill` — from `domain-rule-pattern`
+- `/Module/Domain/Components/domain-service.skill` — from `domain-service`
+- `/Module/Domain/Components/domain-event.skill` — from `domain-event-pattern`
+- `/Module/Domain/Components/ef-configuration.skill` — from `domain-configuration-pattern`
+
+---
+
+#### Phase 3 — Extract Application layer
+
+**Goal:** move all application knowledge into `/Module/Application/`
+
+Refactor:
+
+- `backend-project-structure` application section → `/Module/Application/module-application.skill`
+- `module-application` → split into layer skill + component skills
+
+Create:
+
+- `/Module/Application/Components/feature-command-handler.skill` — from `command-handler-pattern`
+- `/Module/Application/Components/feature-query-handler.skill` — from `query-handler-pattern`
+- `/Module/Application/Components/feature-validator.skill` — extracted from `command-handler-pattern`
+- `/Module/Application/Components/event-handler.skill` — from `domain-event-handler-pattern`
+- `/Module/Application/Components/ardalis-specification.skill` — from `ardalis-specification-pattern`
+- `/Module/Application/Components/repository.skill` — from `repository-pattern`
+
+---
+
+#### Phase 4 — Extract API layer
+
+**Goal:** move all API knowledge into `/Module/Api/`
+
+Refactor:
+
+- `backend-project-structure` API section → `/Module/Api/module-api.skill`
+- `api-structure` → split into layer skill + component skills
+
+Create:
+
+- `/Module/Api/Components/api-controller.skill` — entity-centric controller pattern
+- `/Module/Api/Components/api-minimal-endpoint.skill` — system/cross-entity endpoints
+
+---
+
+#### Phase 5 — Extract Infrastructure layer
+
+**Goal:** move all infrastructure knowledge into `/Infrastructure/`
+
+Refactor:
+
+- `backend-project-structure` infrastructure section → `/Infrastructure/module-infrastructure.skill`
+
+Create:
+
+- `/Infrastructure/Components/outbox.skill` — from `outbox-pattern`
+- `/Infrastructure/Components/unit-of-work.skill` — extracted from `repository-pattern`
+- Add `app-infrastructure.skill`, `app-queries.skill`, `app-host.skill`
+
+---
+
+#### Phase 6 — Create Solution skills
+
+**Goal:** convert existing architecture ADR skills into focused solution skills
+
+Refactor into `/Architecture/Solutions/`:
+
+- `cqrs-architecture` → `command-handling.solution.skill`
+- `domain-event-architecture` → `domain-events.solution.skill`
+- `async-external-creation` + `guid-resolving-pipeline` → `guid-resolving.solution.skill`
+- `concurrency-control-pattern` (architecture parts) → `concurrency-control.solution.skill`
+- `cross-module-interaction` → `cross-module-communication.solution.skill`
+
+---
+
+#### Phase 7 — Create BuildingBlocks skill
+
+**Goal:** document what lives in BuildingBlocks and why
+
+Create:
+
+- `/BuildingBlocks/building-blocks.skill` — what lives here, registration rules, pipeline behavior contracts
+
+---
+#### Phase 8 — Create share skill
+
+**Goal:** document what lives in BuildingBlocks and why
+
+Create:
+
+- `/share/share.skill` — what lives here, registration rules, pipeline behavior contracts
+
+---
+#### Summary table
+
+|Phase|Input skills|Output skills|
+|---|---|---|
+|1|`backend-project-structure`|`backend-project-structure` (trimmed) + `module-layer.skill`|
+|2|9 domain skills|`module-domain.skill` + 9 component skills|
+|3|6 application skills|`module-application.skill` + 6 component skills|
+|4|`api-structure`|`module-api.skill` + 2 component skills|
+|5|`outbox-pattern`, `repository-pattern`|`module-infrastructure.skill` + 5 component skills|
+|6|5 architecture skills|5 solution skills|
+|7|—|`building-blocks.skill`|
+|8|`api-structure`|Create `shared.skill` and `building-blocks.skill`|

@@ -19,7 +19,7 @@ Defines:
 - what architectural responsibility it owns
 ```
 
-## Core Principles
+# Core Principles
 ```
 Most important section.
 Defines:
@@ -35,7 +35,7 @@ Example:
 This section gives more value than 50 examples.
 ```
 
-## Structure / Contracts
+# Structure / Contracts
 ```
 Defines:
 - interfaces
@@ -49,7 +49,7 @@ Should be:
 - predictable
 ```
 
-## Rules
+# Rules
 ```
 Defines:
 - MUST
@@ -65,7 +65,7 @@ Prefer:
 instead of long prose.
 ```
 
-## Anti-patterns
+# Anti-patterns
 
 ```
 Critical section.
@@ -78,7 +78,7 @@ AI understands constraints better through:
 Anti-patterns often provide more value than examples.
 ```
 
-## Minimal examples only
+# Minimal examples only
 
 ```
 Examples should:
@@ -94,5 +94,16 @@ Bad example:
 ```
 
 # Check list
+```
+what must be true before this pattern is considered correctly applied?
+```
 
 # Unittest TestCases
+```
+Name cases by boundary, not just happy/sad path. Format: When [context] Then [outcome]
+```
+
+# Relations
+```
+- links to related skill - reason for relation
+```

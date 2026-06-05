@@ -11,6 +11,8 @@ tags:
   - csproj
 triggers:
   - create domain cs project
+aliases:
+  - "{Module}.Domain"
 ---
 # Goal
 - Define content of module domain csproj
@@ -23,12 +25,14 @@ triggers:
 
 ## Structure / Contracts
 - /{ModuleName}.Domain
-	- /Configuration
-	- /[[entity-pattern.skill|Entities]]
-	- /[[value-object-pattern.skill|Value Objects]]
-	- /Services
-	- /Events
+	- /[[skills/dotnet/skill-graph/Domain Layer/domain-configuration-pattern.skill|Configuration]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/entity/entity-pattern.skill|Entities]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/value-object-pattern.skill|ValueObjects]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/domain-rule-pattern.skill|Rules]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|Services]]
+	- /[[skills/dotnet/skill-graph/Domain Layer/domain-event-pattern.skill|Events]]
 	- {ModuleName}.Domain.csproj
+
 ## Rules
 - Must
 	- Define Domain entities

@@ -12,7 +12,8 @@ triggers:
   - implement entity befaviour
 ---
 # Goal
-Define how [[entity-pattern.skill|Entity]] implement there behavior
+Define how [[skills/dotnet/skill-graph/Domain Layer/entity/entity-pattern.skill|entity-pattern.skill]] implement there behavior. without this, invariant enforcement scatters across the codebase and the entity can be put into invalid state from any caller.
+
 # Core Principles
 - Entity realize invariant enforcement
 - Domain entity realize domain behavior
@@ -23,7 +24,6 @@ Define how [[entity-pattern.skill|Entity]] implement there behavior
 - Where state is valid
 
 # Structure / Contracts
-## Configure access to behavior
 ## Implement invariant enforcement
 - All setters and methods must prevent to invalid state off entity
 - If property has public setter, it must prevent invalid state
@@ -34,9 +34,9 @@ public class SomeDomainEntity
     public uint SomeField { 
 	    get => _someField;
 		internal set {
-		    if (string.IsNullOrWhiteSpace(value))
-		        throw new DomainException("Invalid name");
-		    _someField = value
+		    if (value == 0)
+		        throw new DomainException("Invalid value");
+		    _someField = value;
 		} 
 	}
 }
@@ -47,14 +47,16 @@ public class SomeDomainEntity
 {
 	public uint SomeField { get; internal set; }
 	internal uint SomeMethodChangeEntityField(uint newValue){
-	    if (string.IsNullOrWhiteSpace(newValue))
+	    if (value == 0)
 			throw new DomainException("Invalid value");
-		SomeField = newValue
+		SomeField = newValue;
+		return SomeField;
     }
 }
 ```
+
 ## Split behavior to service
-Large behavior logic could be extract to separate service in [[domain-csproj]]
+Large behavior logic could be extract to separate service in [[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|domain-service]]
 - service class
 ```CSharp
 public class SomeDomainEntity
@@ -64,9 +66,9 @@ public class SomeDomainEntity
 
 public class SomeDomainBusinessLogicService{
 	public void MakeSomeChanges(SomeDomainEntity entity, uint newValue){
-		if (string.IsNullOrWhiteSpace(newValue))
+		if (value == 0)
 			throw new DomainException("Invalid value");
-		entity.SomeField = newValue
+		entity.SomeField = newValue;
 	}
 }
 ```
@@ -81,10 +83,11 @@ public static class SomeDomainBusinessLogicService{
 	public static void MakeSomeChanges(this SomeDomainEntity entity, uint newValue){
 		if (string.IsNullOrWhiteSpace(newValue))
 			throw new DomainException("Invalid value");
-		entity.SomeField = newValue
+		entity.SomeField = newValue;
 	}
 }
 ```
+
 # Rules
 MUST
 - Entity prevent invalid state 
@@ -100,5 +103,11 @@ MUST NOT:
 - [ ] Entity prevent invalid state
 - [ ] Entity realize domain behavior
 - [ ] unit test usecases implemented and passed
-	- [ ] When change entity to invalid state Then raise DomainException 
-	- [ ] When call entity behavior Then get expected result
+
+# Unittest TestCases
+- [ ] When change entity to invalid state Then raise DomainException 
+- [ ] When call entity behavior Then get expected result
+
+# Relations
+- [[skills/dotnet/skill-graph/Domain Layer/entity/entity-pattern.skill|entity-pattern.skill]] - base skill for entity implementation
+- [[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|domain-service.skill]] - define implementation of business logic service in domain. Uses for splitting code in entity
