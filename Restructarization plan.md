@@ -29,8 +29,8 @@
       ardalis-specification.skill
       repository.skill
   /Domain
-    module-domain.skill
-    /Components
+	  module-domain.skill
+	  /Components
       entity.skill
       entity-behavior.skill
       entity-concurrency.skill
@@ -157,3 +157,6 @@
 |7|6|5|6|
 
 **Total: 21 existing skills → 33 focused skills in a navigable tree**
+
+
+- Нет описание где хранится `_domainEvent` в  enity

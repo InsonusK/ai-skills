@@ -306,18 +306,18 @@ Domain Layer
 ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object-pattern.skill]]             ← immutable VO, single/multi-property
 ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]]              ← static predicates, no throw
 ├── [[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|domain-service.skill]]                   ← pure logic extraction
-├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill|domain-event-pattern.skill]]             ← define + raise events on entity
-└── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-configuration-pattern.skill|domain-configuration-pattern.skill]]    ← EF IEntityTypeConfiguration
+├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event-pattern.skill]]             ← define + raise events on entity
+└── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|domain-configuration-pattern.skill]]    ← EF IEntityTypeConfiguration
 
 Application Layer
-├── [[skills/dotnet/skill-graph/developing/Module/Application Layer/module-application.skill|module-application.skill]]               ← TODO: CQRS handler structure
-├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill|command-handler-pattern.skill]]          ← TODO: load→domain→save pattern
-├── [[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill|query-handler-pattern.skill]]            ← TODO: single-module vs cross-module
-├── [[skills/dotnet/skill-graph/developing/Module/Application Layer/ardalis-specification-pattern.skill|ardalis-specification-pattern.skill]]    ← TODO: simple (Domain) vs complex (App)
-├── [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill|repository-pattern.skill]]               ← TODO: IRepository, IReadRepository, IUnitOfWork
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill|module-application.skill]]               ← TODO: CQRS handler structure
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill|command-handler-pattern.skill]]          ← TODO: load→domain→save pattern
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill|query-handler-pattern.skill]]            ← TODO: single-module vs cross-module
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill|ardalis-specification-pattern.skill]]    ← TODO: simple (Domain) vs complex (App)
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill|repository-pattern.skill]]               ← TODO: IRepository, IReadRepository, IUnitOfWork
 ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill|domain-event-handler-pattern.skill]]     ← INotificationHandler + idempotency
-├── [[skills/dotnet/skill-graph/developing/Module/Application Layer/concurrency-control-pattern.skill|concurrency-control-pattern.skill]]      ← TODO: MediatR pipeline Version check
-└── [[skills/dotnet/skill-graph/developing/Module/Application Layer/guid-resolving-pipeline.skill|guid-resolving-pipeline.skill]]          ← TODO: Guid→Id before handler runs
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill|concurrency-control-pattern.skill]]      ← TODO: MediatR pipeline Version check
+└── [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill|guid-resolving-pipeline.skill]]          ← TODO: Guid→Id before handler runs
 
 Infrastructure Layer
 ├── [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill|outbox-pattern.skill]]                   ← OutboxMessage, interceptor, dispatcher
