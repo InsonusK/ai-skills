@@ -6,11 +6,11 @@
     "emojiStyle": "native",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "LiInbox",
       "LiFileCodeCorner",
       "LiCodepen",
       "LiBoxes",
-      "LiBox",
-      "LiActivity"
+      "LiBox"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -36,14 +36,22 @@
   },
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill.md": "LiFileCodeCorner",
   "skills/dotnet/skill-graph/developing/Module/module-layer.skill.md": "LiBoxes",
-  "templates/Solution Pattern skill.md": "LiFileCodeCorner",
-  "templates/CSProj Pattern skill.md": "LiBox",
-  "templates/Class Pattern skill.md": "LiCodepen",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill.md": "LiFileCodeCorner",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill.md": "LiFileCodeCorner",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/rule-usage.skill.md": "LiFileCodeCorner",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill.md": "LiBox",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill.md": "LiCodepen",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill.md": "LiCodepen"
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill.md": "LiCodepen",
+  "input heap": "LiInbox",
+  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-resolver.class.skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-di.class.skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill.md": "LiBox",
+  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-validator.class.skill.md": "LiCodepen",
+  "templates/patterns/Class Pattern.class.skill.md": "LiCodepen",
+  "templates/patterns/CSProj Pattern.csproj.skill.md": "LiBox",
+  "templates/architecture/Solution Pattern.solution.skill.md": "LiFileCodeCorner"
 }

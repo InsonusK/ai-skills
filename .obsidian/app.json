@@ -7,5 +7,10 @@
   "useMarkdownLinks": false,
   "newLinkFormat": "absolute",
   "showLineNumber": true,
-  "showInlineTitle": false
+  "showInlineTitle": false,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "input heap",
+  "attachmentFolderPath": "./",
+  "tabSize": 2,
+  "useTab": true
 }
