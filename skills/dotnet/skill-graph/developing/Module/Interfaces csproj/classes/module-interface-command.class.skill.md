@@ -1,0 +1,4 @@
+---
+aliases:
+  - "{ModuleName}.Interfaces/Commands"
+---

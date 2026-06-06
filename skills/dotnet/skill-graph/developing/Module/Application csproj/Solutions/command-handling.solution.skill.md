@@ -230,7 +230,7 @@ MUST:
 - Handler never contains business rules — domain layer decides
 - Handler returns `Result<T>` — no exceptions for flow control
 - Sub-commands dispatched via `_mediator.Send()` — never called directly
-- Sub-commands must be safe inside an existing unit of work — see [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]] 
+- Sub-commands must be safe inside an existing unit of work — see [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] 
 SHOULD:
 - Handler follow load → guard → domain call → stage → return structure
 - Guard checks return early with typed result before domain call 
@@ -266,9 +266,9 @@ MUST NOT:
 - [ ] When handler throws Then UnitOfWorkBehavior does not commit
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]] — IRepository, IUnitOfWork, UnitOfWorkBehavior
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/ardalis-specification-pattern.skill]] — all entity loading uses specifications
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill]] — domain calls inside handler raise events collected by entity
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — IRepository, IUnitOfWork, UnitOfWorkBehavior
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]] — all entity loading uses specifications
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]] — domain calls inside handler raise events collected by entity
 - [[skills/dotnet/skill-graph/developing/API Layer/api-structure.skill]] — Result status mapped to HTTP responses in controller
 - [[skills/dotnet/skill-graph/developing/Architecture/cross-module-interaction.skill]] — sub-commands are the cross-module write mechanism
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — handler and validator placement in Application/Features

@@ -20,6 +20,7 @@ aliases:
   - Domain Validation Rule
   - ValueObject Validator Rule
   - Rules
+  - Domain rule
 ---
 # Goal
 Define a unified pattern for implementing reusable, framework-independent domain rules. A Rule encodes a single business predicate — a semantic condition that can be reused across Value Objects, Entities, Domain Services, and application adapters. Without this pattern, business conditions scatter into validators, controllers, and services — making the domain logic untestable and non-reusable.
@@ -166,4 +167,4 @@ MUST NOT:
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object-pattern.skill]] — VOs use Rules for invariant validation in constructor
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity-pattern.skill]] — Entities use Rules for invariant protection in setters and methods
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|domain-service.skill]] — Domain Services compose Rules for multi-value business decisions
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]] — Domain Services compose Rules for multi-value business decisions

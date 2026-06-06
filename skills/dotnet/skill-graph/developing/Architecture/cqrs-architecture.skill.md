@@ -95,22 +95,22 @@ API Controller — maps Result<T> to HTTP response
 
 |Component|Lives in|Skill|
 |---|---|---|
-|`ICommand<T>` marker interface|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]]|
-|`IQuery<T>` marker interface|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill]]|
-|`ValidationBehavior`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]]|
-|`GuidResolvingBehavior`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application Layer/guid-resolving-pipeline.skill]]|
-|`ConcurrencyBehavior`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application Layer/concurrency-control-pattern.skill]]|
-|`UnitOfWorkBehavior` + `UnitOfWorkContext`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]]|
-|`IRepository<T>` / `IReadRepository<T>`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]]|
-|`IUnitOfWork`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]]|
-|Command declaration|`{Module}.Interfaces/Commands`|[[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]]|
-|Query declaration|`{Module}.Interfaces/Queries`|[[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill]]|
-|DTO declaration|`{Module}.Interfaces/DTOs`|[[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill]]|
-|Command handler|`{Module}.Application/Features`|[[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]]|
-|Query handler (single-module)|`{Module}.Application/Features`|[[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill]]|
-|Query handler (cross-module)|`App.Queries/Queries`|[[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill]]|
-|Validator|`{Module}.Application/Features`|[[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]]|
-|Ardalis Specification|`{Module}.Domain` or `{Module}.Application`|[[skills/dotnet/skill-graph/developing/Module/Application Layer/ardalis-specification-pattern.skill]]|
+|`ICommand<T>` marker interface|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]]|
+|`IQuery<T>` marker interface|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]]|
+|`ValidationBehavior`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]]|
+|`GuidResolvingBehavior`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill]]|
+|`ConcurrencyBehavior`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill]]|
+|`UnitOfWorkBehavior` + `UnitOfWorkContext`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]]|
+|`IRepository<T>` / `IReadRepository<T>`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]]|
+|`IUnitOfWork`|BuildingBlocks|[[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]]|
+|Command declaration|`{Module}.Interfaces/Commands`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]]|
+|Query declaration|`{Module}.Interfaces/Queries`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]]|
+|DTO declaration|`{Module}.Interfaces/DTOs`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]]|
+|Command handler|`{Module}.Application/Features`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]]|
+|Query handler (single-module)|`{Module}.Application/Features`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]]|
+|Query handler (cross-module)|`App.Queries/Queries`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]]|
+|Validator|`{Module}.Application/Features`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]]|
+|Ardalis Specification|`{Module}.Domain` or `{Module}.Application`|[[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]]|
 
 # Pipeline Registration Order
 
@@ -171,13 +171,13 @@ Order matters — behaviors execute in registration order.
 
 # Relations
 
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]] — command structure, validation, handler pattern
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill]] — query structure, single-module vs cross-module
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]] — IRepository, IReadRepository, UnitOfWork, UnitOfWorkBehavior
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/ardalis-specification-pattern.skill]] — query descriptors used in all read operations
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/module-application.skill]] — Application layer structure and DI registration
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — command structure, validation, handler pattern
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]] — query structure, single-module vs cross-module
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — IRepository, IReadRepository, UnitOfWork, UnitOfWorkBehavior
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]] — query descriptors used in all read operations
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill]] — Application layer structure and DI registration
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — where each component lives in the solution
 - [[skills/dotnet/skill-graph/developing/Architecture/cross-module-interaction.skill]] — cross-module command and query contracts
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/concurrency-control-pattern.skill]] — ConcurrencyBehavior in the pipeline
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/guid-resolving-pipeline.skill]] — GuidResolvingBehavior in the pipeline
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill]] — ConcurrencyBehavior in the pipeline
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill]] — GuidResolvingBehavior in the pipeline
 - [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill]] — Guid identity rules for creation

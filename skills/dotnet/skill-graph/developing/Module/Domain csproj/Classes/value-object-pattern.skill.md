@@ -31,7 +31,7 @@ Eliminate primitive obsession by encoding domain semantics into types. A Value O
 - Value Object represents a single, meaningful concept with invariants
 - Equality is structural, not referential
 - Multi-property VOs require a private parameterless constructor for EF materialization
-- Multi-property VOs require `OwnsOne` EF mapping — see [[files/ef-configuration.skill|ef-configuration.skill]]
+- Multi-property VOs require `OwnsOne` EF mapping — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill#Multi-property Value Object mapping (OwnsOne)|domain configuration multi property mapping]]
 
 # Place in csproj
 Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]

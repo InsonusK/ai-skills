@@ -81,9 +81,9 @@ Both types travel the same pipeline. Scope and placement differ — transport do
 
 | Component                                | Lives in                   | Skill                                  |
 | ---------------------------------------- | -------------------------- | -------------------------------------- |
-| `IDomainEvent` base interface            | `Shared`                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill]]         |
-| Event definition (`record`)              | `{Module}.Domain/Events`   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill]]         |
-| Entity `_domainEvents` collection        | `{Module}.Domain/Entities` | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill]]         |
+| `IDomainEvent` base interface            | `Shared`                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]         |
+| Event definition (`record`)              | `{Module}.Domain/Events`   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]         |
+| Entity `_domainEvents` collection        | `{Module}.Domain/Entities` | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]         |
 | `OutboxMessage` class                    | `BuildingBlocks`           | [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]]               |
 | `DomainEventInterceptor`                 | `App.Infrastructure`       | [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]]               |
 | `OutboxDispatcher` background service    | `App.Infrastructure`       | [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]]               |
@@ -113,7 +113,7 @@ Message broker consumer (App.Infrastructure)
 - Same event class used for both domain and integration scope — placement determines scope
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill]] — how to define events and raise them on entities
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]] — how to define events and raise them on entities
 - [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]] — OutboxMessage, interceptor, background dispatcher
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — how to write handlers, idempotency rules
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — where each component lives in the solution

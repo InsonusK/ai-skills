@@ -43,16 +43,17 @@ Defined in [[skills/dotnet/skill-graph/developing/Architecture/backend-project-s
   /Specifications
   {ModuleName}.Domain.csproj
 ```
+Directory and there classes from `{ModuleName}.Domain` belong patterns: 
 
-| Directory       | Description                                       | Pattern skill                                                                                                                        |
-| --------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| /Configuration  | EF Core entity type configurations                | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-configuration-pattern.skill\|domain-configuration-pattern.skill]] |
-| /Entities       | domain entities                                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill\|entity-pattern.skill]]                      |
+| Directory       | Description                                       | Pattern skill                                                                                                                                |
+| --------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| /Configuration  | EF Core entity type configurations                | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill\|domain-configuration-pattern.skill]] |
+| /Entities       | domain entities                                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill\|entity-pattern.skill]]                                     |
 | /ValueObjects   | value objects                                     | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill\|value-object-pattern.skill]]                 |
-| /Rules          | domain rules and predicates                       | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill\|domain-rule.skill]]                                                                                       |
-| /Services       | domain services for complex or multi-entity logic | [[files/domain-service.skill\|domain-service.skill]]                                                                                 |
-| /Events         | domain event definitions                          | [[files/domain-event.skill\|domain-event.skill]]                                                                                     |
-| /Specifications | simple single-condition Ardalis specs             | [[domain-specification.skill]]                                                                                                       |
+| /Rules          | domain rules and predicates                       | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill\|domain-rule.skill]]                           |
+| /Services       | domain services for complex or multi-entity logic | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill\|domain-service.skill]]                             |
+| /Events         | domain event definitions                          | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill\|domain-event.skill]]                         |
+| /Specifications | simple single-condition Ardalis specs             | [[domain-specification.skill]]                                                                                                               |
 
 # What Does NOT Belong Here
 - Command handlers, query handlers — belong in Application
@@ -91,7 +92,7 @@ MUST NOT:
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — entity definitions live here
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object.skill]] — value objects live here
-- [[files/domain-event.skill|domain-event.skill]] — event definitions live here
-- [[files/ef-configuration.skill|ef-configuration.skill]] — EF configurations live here
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event.skill]] — event definitions live here
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — EF configurations live here
 - [[skills/dotnet/skill-graph/developing/Module/module-layer.skill|module-layer.skill]] — Domain is one of four module projects
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill|backend-project-structure.skill]] — dependency rules at solution level

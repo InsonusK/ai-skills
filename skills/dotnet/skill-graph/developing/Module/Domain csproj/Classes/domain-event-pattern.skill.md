@@ -1,8 +1,7 @@
 ---
-uid:
-status: draft
+uid: dbe44586-572a-46e6-9773-0990f7976726
 name: domain-event-pattern
-description: rules for defining, raising, and dispatching domain events in the domain layer
+description: rules for defining domain events
 domain: skill
 type: pattern
 tags:
@@ -12,30 +11,41 @@ tags:
   - events
   - outbox
   - mediatR
+  - skill/pattern/class
 triggers:
   - domain event design
+  - entity raises event
   - entity state change notification
   - cross-module event communication
   - outbox pattern
+  - domain event collection
 aliases:
   - DomainEvent
   - Domain Event
   - Events
 ---
 # Goal
-Define how to declare a domain event and how an entity raises and collects it. An event is an immutable fact describing something that happened in the domain. The entity never dispatches — it collects. The infrastructure pipeline handles delivery. See [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill]] for the full system flow.
+Define how to declare a domain event and how an entity raises and collects it. An event is an immutable fact describing something that happened in the domain. The entity never dispatches — it collects. The infrastructure pipeline handles delivery. See [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill|domain-event-architecture.skill]] and [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill|outbox-pattern.skill]] for the full system flow.
 
 # Core Principles
 - Events are immutable facts — past tense, no expectations of response
 - Entity collects events in a private list — never dispatches directly
 - Domain layer has no reference to MediatR or any dispatcher
 - Domain event defined in `{Module}.Domain/Events`
-- Integration event contract declared in `{Module}.Interfaces/Events`
+- Integration event contract (cross-module) are declared in `{Module}.Interfaces/Events`
 
-# Structure / Contracts
+# Place in csproj
+Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]
+```
+/{ModuleName}.Domain
+	/Events
+		TaskAssignedEvent.cs
+	{ModuleName}.Domain.csproj
+```
+# Contracts
 
-## Base interface — Shared
-
+## Base interface — Shared project
+Store in [[shared-layer.skill]]
 ```csharp
 // Shared/Events/IDomainEvent.cs
 public interface IDomainEvent : INotification
@@ -45,8 +55,7 @@ public interface IDomainEvent : INotification
 }
 ```
 
-## Event definition — [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill|{ModuleName}.Domain]]/Events
-
+## Event definition
 ```csharp
 // Task.Domain/Events/TaskAssignedEvent.cs
 public record TaskAssignedEvent(
@@ -60,7 +69,6 @@ public record TaskAssignedEvent(
 ```
 
 ## Entity raises and collects events
-
 ```csharp
 public class TodoTask
 {
@@ -115,7 +123,7 @@ MUST NOT:
 - [ ] When event created Then `EventId` is unique and `OccurredAt` is set
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill]] — system-level flow and architecture decisions
-- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]] — how collected events are persisted and dispatched
-- [[skills/dotnet/skill-graph/Domain Layer/entity/entity-behavior.skill]] — behavior methods are where events are raised
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill]] — entities that raise events follow standard entity rules
+- [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill|domain-event-architecture.skill]] — system-level flow and architecture decisions
+- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill|outbox-pattern.skill]] — how collected events are persisted and dispatched
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill|entity-behavior.skill]] — behavior methods are where events are raised
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — entities that raise events follow standard entity rules

@@ -35,17 +35,17 @@ Define the top-level structure of the backend solution — what layers exist, wh
 
 # Layers Overview
 
-| Layer                | Path                         | Project                    | Responsibility                                              | Detail                                                                                     |
-| -------------------- | ---------------------------- | -------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Module — Api         | `/src/Modules/{ModuleName}/` | `{ModuleName}.Api`         | HTTP endpoints, MediatR dispatch                            | [[module-api.skill]]                                                                       |
-| Module — Interfaces  | `/src/Modules/{ModuleName}/` | `{ModuleName}.Interfaces`  | Public contracts — commands, queries, DTOs, events          | [[skills/dotnet/skill-graph/developing/Module/module-layer.skill]]                         |
-| Module — Application | `/src/Modules/{ModuleName}/` | `{ModuleName}.Application` | Orchestration — handlers, validators, specs                 | [[skills/dotnet/skill-graph/developing/Module/Application Layer/module-application.skill]] |
-| Module — Domain      | `/src/Modules/{ModuleName}/` | `{ModuleName}.Domain`      | Business logic — entities, VOs, rules, events               | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill]]   |
-| App.Host             | `/src/App/`                  | `App.Host`                 | Composition root — DI, pipeline, module wiring              | [[app-host.skill]]                                                                         |
-| App.Infrastructure   | `/src/App/`                  | `App.Infrastructure`       | Persistence — DbContext, repos, outbox, messaging           | [[app-infrastructure.skill]]                                                               |
-| App.Queries          | `/src/App/`                  | `App.Queries`              | Cross-module read models and JOIN queries                   | [[app-queries.skill]]                                                                      |
-| Shared               | `/src/`                      | `Shared`                   | Cross-cutting primitives — Result, Exceptions               | [[shared-layer.skill]]                                                                     |
-| BuildingBlocks       | `/src/`                      | `BuildingBlocks`           | Reusable framework patterns — pipeline behaviors, spec base | [[building-blocks.skill]]                                                                  |
+| Layer                | Path                         | Project                    | Responsibility                                              | Detail                                                                                             |
+| -------------------- | ---------------------------- | -------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Module — Api         | `/src/Modules/{ModuleName}/` | `{ModuleName}.Api`         | HTTP endpoints, MediatR dispatch                            | [[module-api.skill]]                                                                               |
+| Module — Interfaces  | `/src/Modules/{ModuleName}/` | `{ModuleName}.Interfaces`  | Public contracts — commands, queries, DTOs, events          | [[skills/dotnet/skill-graph/developing/Module/module-layer.skill]]                                 |
+| Module — Application | `/src/Modules/{ModuleName}/` | `{ModuleName}.Application` | Orchestration — handlers, validators, specs                 | [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill]] |
+| Module — Domain      | `/src/Modules/{ModuleName}/` | `{ModuleName}.Domain`      | Business logic — entities, VOs, rules, events               | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill]]           |
+| App.Host             | `/src/App/`                  | `App.Host`                 | Composition root — DI, pipeline, module wiring              | [[app-host.skill]]                                                                                 |
+| App.Infrastructure   | `/src/App/`                  | `App.Infrastructure`       | Persistence — DbContext, repos, outbox, messaging           | [[app-infrastructure.skill]]                                                                       |
+| App.Queries          | `/src/App/`                  | `App.Queries`              | Cross-module read models and JOIN queries                   | [[app-queries.skill]]                                                                              |
+| Shared               | `/src/`                      | `Shared`                   | Cross-cutting primitives — Result, Exceptions               | [[shared-layer.skill]]                                                                             |
+| BuildingBlocks       | `/src/`                      | `BuildingBlocks`           | Reusable framework patterns — pipeline behaviors, spec base | [[building-blocks.skill]]                                                                          |
 
 # Dependency Rules
 
@@ -128,7 +128,7 @@ Tests are co-located with modules — no global `/tests` folder.
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/module-layer.skill]] — module structure, 4 projects, inter-module rules
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill]] — Domain project detail
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/module-application.skill]] — Application project detail
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill]] — Application project detail
 - [[module-api.skill]] — Api project detail
 - [[app-host.skill]] — Host project detail
 - [[app-infrastructure.skill]] — Infrastructure project detail

@@ -210,8 +210,8 @@ Specs are tested via integration tests against a real DB — not in isolation.
 - [ ] When idempotency spec used Then duplicate event detected correctly
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]] — IRepository and IReadRepository execute specifications
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — IRepository and IReadRepository execute specifications
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — idempotency specs used in event handlers
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]] — command handlers load entities via specs
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/query-handler-pattern.skill]] — query handlers return results via projection specs
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — command handlers load entities via specs
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]] — query handlers return results via projection specs
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill]] — specs filter entities defined in Domain

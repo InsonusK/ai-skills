@@ -1,8 +1,7 @@
 ---
 uid: 63ee3f0b-7b1e-4a5d-b0b1-5b0ef7a8aa00
-status: draft
 name: domain-configuration-pattern
-description: rules for implementing EF Core entity type configurations
+description: rules for implementing EF Core entity type configurations in the Domain project
 domain: skill
 type: pattern
 tags:
@@ -11,34 +10,42 @@ tags:
   - ddd
   - ef-core
   - configuration
+  - persistence-mapping
+  - skill/pattern/class
 triggers:
-  - ef core entity configuration
+  - entity framework configuration
+  - entity type configuration
   - entity mapping
   - database schema definition
   - index configuration
+  - persistence mapping
 aliases:
   - EF Configuration
   - EntityTypeConfiguration
   - Configuration
 ---
 # Goal
-Define a unified pattern for implementing EF Core entity type configurations. A configuration class owns all persistence concerns for one entity — indexes, relations, concurrency tokens, and value object mappings — keeping the domain entity itself free of infrastructure attributes and annotations. Without this pattern, mapping logic scatters across DbContext, entity classes, and data annotations, making persistence rules invisible and hard to enforce.
+Define how to write EF Core entity type configurations. One configuration class owns all persistence concerns for one entity — table name, indexes, relations, concurrency tokens, and value object mappings. The domain entity itself has zero EF attributes. Without this, mapping logic scatters and constraint names become magic strings impossible to reference in error handling or tests.
 
 # Core Principles
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
-- Configuration owns all persistence concerns; entity owns all domain concerns
-- Index names are constants defined on the config class — never magic strings
+- All index names are `public static string` constants on the config class — never magic strings
 - Domain entity must have zero EF attributes (`[Column]`, `[Index]`, etc.)
 - Configuration is the only place that knows about column names, table names, and constraints
+- Configuration registered via assembly scan — never manually per entity
+- Cross-module foreign keys are configured in App.Infrastructure only
 
-# Structure / Contracts
-## File location
+# Place in csproj
+Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]
 ```
-/Domain
+/{ModuleName}.Domain
 	/Configurations
-		TodoTaskConfig.cs
-		OrderConfig.cs
+		TaskConfig.cs
+    	OrderConfig.cs
+	{ModuleName}.Domain.csproj
 ```
+
+# Contracts
 
 ## Base shape
 ```CSharp
@@ -119,12 +126,11 @@ MUST:
 - `OwnsOne` configured for every multi-property Value Object property
 - `IsConcurrencyToken()` configured for every mutable entity `Version` field
 - registered via `ApplyConfigurationsFromAssembly` 
-COULD:
-- Cross module relations could be made in incfrastructure project
 MUST NOT:
 - use EF data annotations on domain entity (`[Column]`, `[Index]`, `[ForeignKey]`, etc.)
 - define table names, column names, or constraint names as inline strings
 - put mapping logic in `DbContext.OnModelCreating` directly
+- Configure cross-module foreign keys here — that belongs in App.Infrastructu
 
 # Anti-patterns
 - Mapping multi-property VO properties individually without `OwnsOne` — EF will fail to map or create a shadow table
@@ -134,7 +140,6 @@ MUST NOT:
 
 # Checklist
 - [ ]  One config class exists per entity
-- [ ]  Config class is in `/Domain/Configurations/`
 - [ ]  Table-level index names defined as `public static string` constants
 - [ ]  All unique indexes configured with `HasDatabaseName(ConstantName)`
 - [ ]  All relations configured (`HasMany`/`HasOne`, `HasForeignKey`, `OnDelete`)
@@ -143,12 +148,12 @@ MUST NOT:
 - [ ]  No EF attributes on the domain entity class
 
 # Unittest TestCases
-- [ ]  When insert entity with duplicate Guid Then throws DbUpdateException with correct constraint name
-- [ ]  When two contexts update same mutable entity concurrently Then second throws DbUpdateConcurrencyException
+- [ ]  When insert entity with duplicate `Guid` Then throws `DbUpdateException` with correct constraint name
+- [ ]  When two contexts update same mutable entity concurrently Then second throws `DbUpdateConcurrencyException`
 - [ ]  When insert entity with multi-property VO Then columns are persisted flat on entity table
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill]] — defines which entity types require which configuration pieces
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill]] — requires Version field registered as IsConcurrencyToken
-- [[skills/dotnet/skill-graph/Domain Layer/entity/external-created-entity.skill]] — requires unique index on Guid field
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill]] — multi-property VOs require OwnsOne mapping here
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — defines which entity types require which configuration pieces
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]] — requires Version field registered as `IsConcurrencyToken`
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill|external-created-entity.skill]] — requires unique index on `Guid` field
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object-pattern.skill]] — multi-property VOs require `OwnsOne` mapping here

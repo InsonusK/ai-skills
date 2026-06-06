@@ -23,7 +23,7 @@ Define how [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/e
 - Entity is the single point of truth for its own state validity
 - Every method or setter that changes state must validate before changing
 - Invalid state must never be reachable — throw `DomainException` if attempted
-- Large or multi-entity behavior is extracted to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|domain-service.skill]]
+- Large or multi-entity behavior is extracted to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]]
 - Rules logic is extracted to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] to avoid duplication
 
 # Patterns
@@ -60,7 +60,7 @@ public class SomeDomainEntity
 ```
 
 ## Extract to domain service
-Large behavior logic could be extract to separate service in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|domain-service.skill]]
+Large behavior logic could be extract to separate service in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]]
 ### To public domain service
 ```CSharp
 public class SomeDomainEntity
@@ -122,6 +122,6 @@ MUST NOT:
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — entity structure this behavior sits on
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] — reusable predicates used inside behavior methods
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|domain-service.skill]] — extraction point for large or multi-entity behavior
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill|domain-event-pattern.skill]] — behavior methods raise domain events
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]] — extraction point for large or multi-entity behavior
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event-pattern.skill]] — behavior methods raise domain events
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity-pattern.skill]] - base skill for entity implementation

@@ -39,7 +39,7 @@ public class SomeEditableDomainEntity
 }
 ```
 ## EF Configuration — Map as Concurrency Token
-- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-configuration-pattern.skill|domain-configuration-pattern.skill]] must implement setup `Version` property as `concurrencyToken`
+- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|domain-configuration-pattern.skill]] must implement setup `Version` property as `concurrencyToken`
 ```CSharp
 public class SomeEditableDomainEntityConfig 
 	: IEntityTypeConfiguration<SomeEditableDomainEntity>
@@ -56,7 +56,7 @@ public class SomeEditableDomainEntityConfig
 }
 ```
 ## Setup Concurrency validation
-- Implemetned [[skills/dotnet/skill-graph/developing/Module/Application Layer/concurrency-control-pattern.skill|concurrency-control-pattern.skill]]
+- Implemetned [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill|concurrency-control-pattern.skill]]
 
 # Rules
 MUST:
@@ -75,7 +75,7 @@ MUST NOT:
 - [ ] EF configuration maps `Version` to `xmin`
 - [ ] `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()` configured
 - [ ] No public setter on `Version`
-- [ ] [[skills/dotnet/skill-graph/developing/Module/Application Layer/concurrency-control-pattern.skill|concurrency-control-pattern.skill]] implemented
+- [ ] [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill|concurrency-control-pattern.skill]] implemented
 
 # Unittest TestCases
 - [ ] When entity saved Then Version is non-zero
@@ -84,5 +84,5 @@ MUST NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — identifies which entity types require this pattern
-- [[files/ef-configuration.skill|ef-configuration.skill]] — EF mapping for the Version field goes in the config class
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/concurrency-control-pattern.skill|concurrency-control-pattern.skill]] — pipeline behavior that reads Version for HTTP-level conflict detection
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — EF mapping for the Version field goes in the config class
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill|concurrency-control-pattern.skill]] — pipeline behavior that reads Version for HTTP-level conflict detection

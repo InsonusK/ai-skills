@@ -75,7 +75,8 @@ Each module implements this for its own entity type. Returns the existing result
 
 ```csharp
 // BuildingBlocks/MediatR/IGuidResolver.cs
-public interface IGuidResolver<TResult>
+public interface IGuidResolver<TRequest, TResponse> 
+	where TRequest : ICommand<TResponse>, IHasGuid
 {
     Task<TResult?> ResolveAsync(Guid guid, CancellationToken ct);
 }
@@ -105,7 +106,7 @@ Generic pipeline behavior. Activates only for commands implementing `IHasGuid`.
 // BuildingBlocks/MediatR/GuidResolvingBehavior.cs
 public class GuidResolvingBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IHasGuid
+    where TRequest : ICommand<TResponse>, IHasGuid
 {
     private readonly IGuidResolver<TResponse> _resolver;
 
@@ -266,7 +267,7 @@ MUST:
 
 - [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill]] — architecture and client flow this pipeline implements
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill]] — entity Guid property and unique index
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/ardalis-specification-pattern.skill]] — TaskByGuidSpec used by resolver
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]] — IReadRepository used in IGuidResolver implementation
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]] — commands that use this pipeline implement IHasGuid
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-configuration-pattern.skill]] — unique index on Guid enforces DB-level idempotency
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]] — TaskByGuidSpec used by resolver
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — IReadRepository used in IGuidResolver implementation
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — commands that use this pipeline implement IHasGuid
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill]] — unique index on Guid enforces DB-level idempotency

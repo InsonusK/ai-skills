@@ -312,7 +312,7 @@ MUST NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill]] — Version field on entity, IsConcurrencyToken EF config
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]] — update commands implement IHasVersions
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]] — ConcurrencyBehavior uses IReadRepository to load entities
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — update commands implement IHasVersions
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — ConcurrencyBehavior uses IReadRepository to load entities
 - [[skills/dotnet/skill-graph/developing/API Layer/api-structure.skill]] — ETag on GET, If-Match on PUT/PATCH, 412 response
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — IHasVersions in BuildingBlocks, resolver in App.Infrastructure

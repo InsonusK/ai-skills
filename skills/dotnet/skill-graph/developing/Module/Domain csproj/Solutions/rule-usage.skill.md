@@ -19,7 +19,7 @@ triggers:
   - add validation to entity
 ---
 # Goal
-Define solution that [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|Domain Validation Rule]] are reused in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|Value Object]], [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|Entity]], [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|Domain Service]] validation
+Define solution that [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|Domain Validation Rule]] are reused in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|Value Object]], [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|Entity]], [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|Domain Service]] validation
 
 # Core Principles
 - Rule is single source of truth per predicate — VO and entity rules delegate to primitive rules
@@ -28,7 +28,7 @@ Define solution that [[skills/dotnet/skill-graph/developing/Module/Domain csproj
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|Rules]] - reused in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|Entity]] and [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|Value Object]]
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|Entity]] - use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|Rules]] to prevent invalid state
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|Value Object]] - use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|Rules]] to prevent invariants
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|Domain Service]] - use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|Rules]] to prevent invalid state
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|Domain Service]] - use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|Rules]] to prevent invalid state
 - [[shared-layer.skill]] - extraction point of common rules for several [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill|module-domain-csproj.skill]] 
 
 # Contracts
@@ -73,7 +73,7 @@ public class User
 ```
 
 ## Rule usage inside Domain Service
-[[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|DomainService]] compose rules for multi-entity or contextual business decisions.
+[[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|DomainService]] compose rules for multi-entity or contextual business decisions.
 ```CSharp
 public static class DriverDomainService
 {
@@ -100,5 +100,5 @@ MUST NOT:
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] - reusable validation rule
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object-pattern.skill]] - value objects which use rules for validation
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] - entity which use rules for validation
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-service.skill|domain-service.skill]] - services which use rules for validation
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]] - services which use rules for validation
 - [[shared-layer.skill]] - shared cs project with common rules

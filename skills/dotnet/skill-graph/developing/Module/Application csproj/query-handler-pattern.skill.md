@@ -231,9 +231,9 @@ MUST NOT:
 - [ ] When projection spec used Then DTO fields are correctly mapped
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/repository-pattern.skill]] — IReadRepository used in single-module handlers
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/ardalis-specification-pattern.skill]] — specs used for filtering and projection
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/command-handler-pattern.skill]] — counterpart for write operations
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — IReadRepository used in single-module handlers
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]] — specs used for filtering and projection
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — counterpart for write operations
 - [[skills/dotnet/skill-graph/developing/API Layer/api-structure.skill]] — Result status mapped to HTTP responses in controller
 - [[skills/dotnet/skill-graph/developing/Architecture/cross-module-interaction.skill]] — cross-module queries declared in Interfaces, implemented in App.Queries
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — placement rules for Application vs App.Queries

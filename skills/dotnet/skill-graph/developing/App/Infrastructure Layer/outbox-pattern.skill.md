@@ -141,7 +141,7 @@ MUST:
 - `ProcessedAt` set only after successful `_mediator.Publish`
 - `DomainEventInterceptor` registered on DbContext in App.Infrastructure
 - `OutboxDispatcher` registered as hosted service in App.Host
-- Entity implements `IHasDomainEvents` — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill]] 
+- Entity implements `IHasDomainEvents` — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]] 
 MUST NOT:
 - Dispatch events directly from application layer after SaveChanges
 - Set `ProcessedAt` before publish — prevents retry on failure
@@ -172,6 +172,6 @@ MUST NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill]] — system-level flow and architecture decisions
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-pattern.skill]] — event definition and entity collection
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]] — event definition and entity collection
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — handler implementation and idempotency
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-configuration-pattern.skill]] — OutboxMessage EF table configuration pattern
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill]] — OutboxMessage EF table configuration pattern

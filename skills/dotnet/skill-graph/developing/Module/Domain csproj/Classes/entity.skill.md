@@ -136,5 +136,5 @@ MUST NOT:
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill|entity-behavior.skill]] — how entity enforces invariants and exposes behavior
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]] — Version field and EF concurrency token for mutable entities
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill|external-created-entity.skill]] — Guid field and unique index for externally created entities
-- [[files/ef-configuration.skill|ef-configuration.skill]] — persistence mapping for every entity
-- [[files/domain-event.skill|domain-event.skill]] — entities raise and collect domain events
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — persistence mapping for every entity
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event.skill]] — entities raise and collect domain events

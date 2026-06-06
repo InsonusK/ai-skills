@@ -127,6 +127,6 @@ MUST NOT:
 # Relations
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill|backend-project-structure.skill]] — solution-level structure this module fits into
 - [[module-api.skill]] — Api project detail
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/module-application.skill|module-application.skill]] — Application project detail
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill|module-application.skill]] — Application project detail
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill|module-domain.skill]] — Domain project detail
 - [[cross-module-communication.solution.skill]] — inter-module interaction rules in depth

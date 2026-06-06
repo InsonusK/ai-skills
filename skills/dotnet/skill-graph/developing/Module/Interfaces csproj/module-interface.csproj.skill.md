@@ -4,9 +4,10 @@ name: skill-name
 description: Describe what skill define
 domain: skill
 type: pattern
+version: 20260606
 tags:
+  - skill/pattern/csproj
   - tag for skill classification
-  - skill/pattern/solution
 triggers:
   - when skill should called
 ---
@@ -35,21 +36,37 @@ Example:
 This section gives more value than 50 examples.
 ```
 
-# Affected objects
-# Contracts
+# Structure
+## Solution place
+`Where defined place in solution`
 ```
-Defines:
-- interfaces
-- filesystem structure
-- naming conventions
-- dependency contracts
-
-Should be:
-- compact
-- declarative
-- predictable
+Where does it store in solution
+/src
+	/ProjectName
+```
+## Structure
+```
+What is project structure
+```
+```
+/ProjectName
+	/DirectoryName
+		ClassesInDirectory.cs
+	ProjectName.csproj
 ```
 
+## Directory and class skills
+
+| Directory or files in directory | Description                                    | Pattern skill          |
+| ------------------------------- | ---------------------------------------------- | ---------------------- |
+| /DirectoryName                  | Directory description                          | link to folder pattern |
+| ClassInDirectory.cs             | Description of class inside of directory above | link to file patter    |
+## What Does NOT Belong Here
+- component - where it should be
+## Allowed Dependencies
+```
+dependency which allowe to cspproj
+```
 # Rules
 ```
 Defines:
@@ -77,21 +94,6 @@ AI understands constraints better through:
 - boundary violations
 
 Anti-patterns often provide more value than examples.
-```
-
-# Minimal examples only
-
-```
-Examples should:
-- demonstrate shape
-- demonstrate intent
-- not teach framework
-
-Good example:
-- 5-20 lines
-
-Bad example:
-- 100-line tutorial
 ```
 
 # Check list

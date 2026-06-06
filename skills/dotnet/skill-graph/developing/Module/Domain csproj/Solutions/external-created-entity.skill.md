@@ -42,7 +42,7 @@ public class SomeExternalCreatedEntity
 }
 ```
 ## EF Configuration — Add Unique Index
-- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-configuration-pattern.skill|domain-configuration-pattern.skill]] must implement unique index on field Guid
+- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|domain-configuration-pattern.skill]] must implement unique index on field Guid
 - Index name is a constant so it can be referenced in error handling and tests.
 ```CSharp
 public class SomeExternalCreatedEntityConfig 
@@ -62,7 +62,7 @@ public class SomeExternalCreatedEntityConfig
 }
 ```
 ## Setup Concurrency validation
-- Implemented [[skills/dotnet/skill-graph/developing/Module/Application Layer/guid-resolving-pipeline.skill|guid-resolving-pipeline]]
+- Implemented [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill|guid-resolving-pipeline]]
 
 # Rules
 MUST:
@@ -83,7 +83,7 @@ SHOULD NOT:
 - [ ] Unique index configured in EF configuration class
 - [ ] Index name stored as `public static string` constant on config class
 - [ ] Guid set only during entity creation — no subsequent mutation
-- [ ] [[skills/dotnet/skill-graph/developing/Module/Application Layer/guid-resolving-pipeline.skill|guid-resolving-pipeline.skill]] implemented
+- [ ] [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill|guid-resolving-pipeline.skill]] implemented
 
 # Unittest TestCases
 - [ ] When entity inserted with duplicate `Guid` Then `DbUpdateException` thrown with `UX_Guid` constraint name
@@ -91,6 +91,6 @@ SHOULD NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill|async-external-creation.skill]] - architecture pattern for async creation
-- [[skills/dotnet/skill-graph/developing/Module/Application Layer/guid-resolving-pipeline.skill|guid-resolving-pipeline]] -  pipeline behavior that checks Guid before handler runs
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill|guid-resolving-pipeline]] -  pipeline behavior that checks Guid before handler runs
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — identifies External Immutable and External Mutable as requiring this pattern
-- [[files/ef-configuration.skill|ef-configuration.skill]] — unique index goes in the entity's EF configuration class
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — unique index goes in the entity's EF configuration class
