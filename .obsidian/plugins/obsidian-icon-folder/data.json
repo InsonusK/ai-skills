@@ -1,0 +1,49 @@
+{
+  "settings": {
+    "migrated": 6,
+    "iconPacksPath": ".obsidian/icons",
+    "fontSize": 16,
+    "emojiStyle": "native",
+    "iconColor": null,
+    "recentlyUsedIcons": [
+      "LiFileCodeCorner",
+      "LiCodepen",
+      "LiBoxes",
+      "LiBox",
+      "LiActivity"
+    ],
+    "recentlyUsedIconsSize": 5,
+    "rules": [],
+    "extraMargin": {
+      "top": 0,
+      "right": 4,
+      "bottom": 0,
+      "left": 0
+    },
+    "iconInTabsEnabled": true,
+    "iconInTitleEnabled": false,
+    "iconInTitlePosition": "above",
+    "iconInFrontmatterEnabled": false,
+    "iconInFrontmatterFieldName": "icon",
+    "iconColorInFrontmatterFieldName": "iconColor",
+    "iconsBackgroundCheckEnabled": false,
+    "iconsInNotesEnabled": true,
+    "iconsInLinksEnabled": true,
+    "iconIdentifier": ":",
+    "lucideIconPackType": "native",
+    "debugMode": false,
+    "useInternalPlugins": false
+  },
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill.md": "LiFileCodeCorner",
+  "skills/dotnet/skill-graph/developing/Module/module-layer.skill.md": "LiBoxes",
+  "templates/Solution Pattern skill.md": "LiFileCodeCorner",
+  "templates/CSProj Pattern skill.md": "LiBox",
+  "templates/Class Pattern skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill.md": "LiFileCodeCorner",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill.md": "LiFileCodeCorner",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/rule-usage.skill.md": "LiFileCodeCorner",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill.md": "LiBox",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill.md": "LiCodepen",
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill.md": "LiCodepen"
+}
