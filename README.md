@@ -303,11 +303,11 @@ Domain Layer
 │   ├── [[skills/dotnet/skill-graph/Domain Layer/entity/entity-behavior.skill|entity-behavior.skill]]              ← invariant enforcement
 │   ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]]   ← RowVersion / xmin
 │   └── [[skills/dotnet/skill-graph/Domain Layer/entity/external-created-entity.skill|external-created-entity.skill]]      ← Guid property, unique index
-├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object-pattern.skill]]             ← immutable VO, single/multi-property
-├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]]              ← static predicates, no throw
+├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|value-object-pattern.skill]]             ← immutable VO, single/multi-property
+├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule-pattern.skill]]              ← static predicates, no throw
 ├── [[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|domain-service.skill]]                   ← pure logic extraction
 ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event-pattern.skill]]             ← define + raise events on entity
-└── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|domain-configuration-pattern.skill]]    ← EF IEntityTypeConfiguration
+└── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|domain-configuration-pattern.skill]]    ← EF IEntityTypeConfiguration
 
 Application Layer
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill|module-application.skill]]               ← TODO: CQRS handler structure
@@ -315,13 +315,13 @@ Application Layer
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill|query-handler-pattern.skill]]            ← TODO: single-module vs cross-module
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill|ardalis-specification-pattern.skill]]    ← TODO: simple (Domain) vs complex (App)
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill|repository-pattern.skill]]               ← TODO: IRepository, IReadRepository, IUnitOfWork
-├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill|domain-event-handler-pattern.skill]]     ← INotificationHandler + idempotency
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill|domain-event-handler-pattern.skill]]     ← INotificationHandler + idempotency
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill|concurrency-control-pattern.skill]]      ← TODO: MediatR pipeline Version check
 └── [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill|guid-resolving-pipeline.skill]]          ← TODO: Guid→Id before handler runs
 
 Infrastructure Layer
-├── [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill|outbox-pattern.skill]]                   ← OutboxMessage, interceptor, dispatcher
-└── [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill|async-external-creation.skill]]          ← client Guid, 409, GuidResolvingBehavior
+├── [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill|outbox-pattern.skill]]                   ← OutboxMessage, interceptor, dispatcher
+└── [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/async-external-creation.skill|async-external-creation.skill]]          ← client Guid, 409, GuidResolvingBehavior
 
 API Layer
 └── [[skills/dotnet/skill-graph/developing/API Layer/api-structure.skill|api-structure.skill]]                    ← Controllers, Minimal API, response mapping
