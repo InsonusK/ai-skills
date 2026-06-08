@@ -3,13 +3,13 @@
 ```mermaid
 flowchart TD
 D_skill([domain: skill])
-D_skill --> T_P(type:pattern)
+D_skill --> T_P(type:template)
 D_skill --> T_A(type:architecture)
 
 T_P --> T_P_tags[/
 tags:
--skill/pattern/class
--skill/pattern/csproj
+-skill/template/class
+-skill/template/csproj
 /]
 
 T_A --> T_A_tags[/
@@ -20,9 +20,9 @@ tags:
 ```
 
 - `domain:skill`
-	- `type: pattern` - define how write code
-		- `tag: skill/pattern/csproj` - define how write csproj
-		- `tag: skill/pattern/class` - define how write classes
+	- `type: template` - define how write code
+		- `tag: skill/template/csproj` - define how write csproj
+		- `tag: skill/template/class` - define how write classes
 	- `type: architecture` - define architecture pattern
 		- `tag: skill/architecture/core` - core architecture principals
 		- `tag: skill/architecture/solution` - architecture solution how organize workflow

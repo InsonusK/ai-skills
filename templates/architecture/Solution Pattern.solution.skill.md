@@ -4,96 +4,260 @@ name: skill-name
 description: Describe what skill define
 domain: skill
 type: architecture
-version: 20260606
+version: 20260610
 tags:
   - skill/architecture/solution
-  #- tag for skill classification
+  # any other tags
 triggers:
-  - when skill should called
+  #What kind of task should agent do to use this solution  
+  #- when skill should called
+creates:
+	#List of classes or project which created by this solution
+  #They will have this solution as their created_by
+  #Example:
+  #- "[[Link]]"
+extends:
+  #List of classes or project which extended or effected by this solution
+  #They will have this solution in their extended_by
+  #Example:
+  #- "[[Link]]"
+depends_on:
+  #List of other architecture solutions which is used by this solution
+  #Example:
+  #- "[[Link]]"
 ---
+**AUTHORING RULE**: Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
 # Goal
+```hint
+List of goals that are pursued by the creation of this solution.
+RECOMENDATION:
+- Prefer bullet list
 ```
-Maximum:
-- 3-7 lines
-Defines:
-- what problem skill solves
-- what architectural responsibility it owns
+```example
+- Define the system-level architecture for domain events — how events are raised, persisted, and dispatched across the application
 ```
 
 # Core Principles
+```hint
+Core principalse that a solution should follow
+RECOMENDATION:
+- Prefer bullet list
 ```
-Most important section.
-Defines:
-- invariants
-- mental model
-- architecture decisions
-
-Example:
-- Rules define business predicates. 
+```example
+- Rules define business predicates
 - Entities define consistency.
-- Validators define transport correctness.
-
-This section gives more value than 50 examples.
 ```
 
-# Affected objects
+# Depend on solutions
+```hint
+Detail description of dependencies to other solution
+RECOMENDATION:
+- Prefer bullet list
 ```
-list of effected class patterns - how does class effected
+```example
+- [[other colustion]] - use `IHasGuid` interface
 ```
-# Contracts
-```
-Defines:
-- interfaces
-- filesystem structure
-- naming conventions
-- dependency contracts
 
-Should be:
-- compact
-- declarative
-- predictable
+# Implementation
+## {Project name}
+### Project extension
+#### Goal
+```hint
+Define how solution EXTENDS project goal
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- encapsulate domain logic
+```
+
+#### Core Principal
+```hint
+Define how solution EXTENDS project core principals
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- Entities define consistency.
+```
+
+#### Structure
+##### Project Structure
+```hint
+Define how solution EXTENDS project structure
+```
+```example
+/ProjectName
+	/DirectoryName
+		ClassesInDirectory.cs
+```
+
+##### Directory and class skills
+```hint
+Define how solution EXTENDS project directory and files
+```
+```example
+| `Directory|file`  | Description                                    | Pattern skill          |
+| ------------------- | ---------------------------------------------- | ---------------------- |
+| /DirectoryName      | Directory description                          | [[link to folder pattern]] |
+| ClassInDirectory.cs | Description of class inside of directory above | [[link to file patter]]    |
+```
+
+| `Directory|file` | Description | Pattern skill |
+| ---------------- | ----------- | ------------- |
+|                  |             |               |
+
+#### What Does NOT Belong Here
+```hint
+Define how solution EXTENDS project components which doesnot belong to it
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- Commands - belong to [[Other csproj skill]]
+```
+
+#### Allowed Dependencies
+```hint
+Define how solution EXTENDS allowed dependencies that project may have
+RECOMENDATION:
+- Prefer bullet list
+ATTENTION:
+- Solution should not change allowed dependencies. Confirm extension from user before add.
+```
+```example
+- [[Shared]]
+```
+
+#### Rules
+```hint
+Define how solution EXTENDS project MUST, SHOULD, SHOULD NOT, MUST NOT rules
+```
+```example
+MUST:
+	- ...
+SHOULD:
+	- ...
+SHOULD NOT:
+	- ...
+MUST NOT:
+	- ...
+```
+
+#### Anti-patterns
+```hint
+What mean that solution applyed wrong.
+```
+```example
+- Domain service duplicates invariant already enforced in entity setter or method
+```
+
+#### Check list
+```hint
+Define how solution EXTENDS project check list
+RECOMENDATION:
+- Prefer checkbox list
+```
+```example
+- [ ] `int Id` with `internal set` present
+```
+
+### Class extesion
+#### {Class name}
+##### Goal
+```hint
+Define how solution EXTENDS class goal
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- Prevent duplicate creation via Guid uniqueness check 
+```
+
+##### Core Principal
+```hint
+Define how solution EXTENDS class core principals
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- Entities define consistency.
+```
+
+##### Implementation changes
+```hint
+Define how solution EXTENDS class implementation
+```
+```example
+[[Class skill]] must ...
+```
+```code example
+public class SomeEntity: IGuidEntity{
+	public int Id {get; internal set;}
+	public Guid Guid {get; internal set;}
+}
+```
+
+##### Rule changes
+```hint
+Define how solution EXTENDS class rules
+```
+```example
+MUST:
+	- ...
+SHOULD:
+	- ...
+SHOULD NOT:
+	- ...
+MUST NOT:
+	- ...
 ```
 
 # Rules
+```hint
+define MUST, SHOULD, SHOULD NOT, MUST NOT rules
 ```
-Defines:
-- MUST
-- SHOULD
-- MUST NOT
-
-Prefer:
-- MUST:
+```example
+MUST:
 	- ...
-- MUST NOT:
+SHOULD:
 	- ...
-
-instead of long prose.
+SHOULD NOT:
+	- ...
+MUST NOT:
+	- ...
 ```
 
 # Anti-patterns
-
+```hint
+What mean that soltion applyed wrong. 
+RECOMENDATION:
+- Prefer bullet list
 ```
-Critical section.
-
-AI understands constraints better through:
-- forbidden patterns
-- invalid examples
-- boundary violations
-
-Anti-patterns often provide more value than examples.
+```example
+- Domain service duplicates invariant already enforced in entity setter or method
 ```
 
 # Check list
+```hint
+what must be true before this solution is considered correctly applied?
+RECOMENDATION:
+- Prefer checkbox list
 ```
-what must be true before this pattern is considered correctly applied?
+```example
+- [ ] `int Id` with `internal set` present in Entity
 ```
 
 # Unittest TestCases
+```hint
+list of unittests which must be created to test solution. 
+RECOMENDATION:
+- Prefer checkbox list
+- Prefer integration tests
 ```
-Name cases by boundary, not just happy/sad path. Format: When [context] Then [outcome]
-```
-
-# Relations
-```
-- links to related skill - reason for relation
+```example
+- [ ] WHEN call command with event THEN
+	- [ ] event fill domain event in entity
+	- [ ] `DomainEventInterceptor` catch `SaveChanges` and add event to `outbox`
+	- [ ] `OutboxDispatcher` read `outbox` and send `Notification`
 ```
