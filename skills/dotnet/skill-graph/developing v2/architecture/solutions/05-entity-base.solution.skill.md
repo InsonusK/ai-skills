@@ -17,7 +17,7 @@ triggers:
   - choose entity type
   - define aggregate
 creates:
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entities/Entity.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill]]"
 extends:
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
 depends_on:
@@ -77,7 +77,7 @@ depends_on:
 
 |Directory \| file|Description|Pattern skill|
 |---|---|---|
-|/Entities|All entity types for this module|[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entities/Entity.class.skill]]|
+|/Entities|All entity types for this module|[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill]]|
 
 #### Rules
 
@@ -96,7 +96,7 @@ MUST:
 
 ### Class extension
 
-#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entities/Entity.class.skill|Entity.class.skill]]
+#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity.class.skill]]
 
 ##### Goals
 

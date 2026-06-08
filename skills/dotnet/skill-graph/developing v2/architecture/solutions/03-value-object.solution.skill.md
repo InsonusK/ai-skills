@@ -17,11 +17,11 @@ triggers:
   - encode domain concept as type
   - design immutable domain type
 creates:
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/ValueObjects/ValueObject.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/ValueObject.class.skill|ValueObject.class.skill]]"
 extends:
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill|{Module}.Domain.csproj.skill]]"
 depends_on:
-  - "[[02-solution-layer-structure.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill|02-solution-layer-structure.solution.skill]]"
 ---
 
 # Goal
@@ -63,9 +63,9 @@ depends_on:
 ```
 
 ##### Directory and class skills
-| `Directory\|file` | Description | Pattern skill |
-| --- | --- | --- |
-| /ValueObjects | All Value Object types for this module | |
+| `Directory\|file` | Description                            | Pattern skill                                                                                                                                     |
+| ----------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /ValueObjects     | All Value Object types for this module | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/ValueObject.class.skill\|ValueObject.class.skill]] |
 
 #### Rules
 MUST:

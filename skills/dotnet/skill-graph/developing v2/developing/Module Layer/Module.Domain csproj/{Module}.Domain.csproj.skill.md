@@ -106,11 +106,11 @@ __Applied solutions:__
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
-| /Entities | All entity types for this module | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entities/Entity.class.skill\|Entity.class.skill]] |
-| /ValueObjects | All Value Object types for this module | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/ValueObjects/ValueObject.class.skill\|ValueObject.class.skill]] |
+| /Entities | All entity types for this module | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill\|Entity.class.skill]] |
+| /ValueObjects | All Value Object types for this module | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/ValueObject.class.skill\|ValueObject.class.skill]] |
 | /Rules | All domain rule static classes for this module | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/PrimitiveRule.class.skill\|PrimitiveRule.class.skill]], [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ValueObjectRule.class.skill\|ValueObjectRule.class.skill]], [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ContextualRule.class.skill\|ContextualRule.class.skill]] |
 | /Events | Domain events raised by this module | |
-| /Configurations | One EF config class per entity | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Configurations/EntityConfiguration.class.skill\|EntityConfiguration.class.skill]] |
+| /Configurations | One EF config class per entity | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/EntityConfiguration.class.skill\|EntityConfiguration.class.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]

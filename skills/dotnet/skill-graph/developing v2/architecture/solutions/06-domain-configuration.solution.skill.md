@@ -19,10 +19,10 @@ triggers:
   - configure index
   - configure relation
 creates:
-  - "[[EntityConfiguration.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/EntityConfiguration.class.skill]]"
 extends:
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entities/Entity.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill]]"
 depends_on:
   - "[[01-module-boundary.solution.skill]]"
   - "[[02-solution-layer-structure.solution.skill]]"
@@ -79,7 +79,7 @@ depends_on:
 ##### Directory and class skills
 | Directory \| file | Description | Pattern skill |
 | --- | --- | --- |
-| /Configurations | One EF config class per entity | [[EntityConfiguration.class.skill]] |
+| /Configurations | One EF config class per entity | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/EntityConfiguration.class.skill]] |
 
 #### Rules
 MUST:
@@ -214,7 +214,7 @@ MUST NOT:
 
 ---
 
-#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entities/Entity.class.skill|Entity]] (extended)
+#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity]] (extended)
 
 ##### Goals
 - Ensure domain entity remains free of EF attributes — all persistence mapping delegated to config class
