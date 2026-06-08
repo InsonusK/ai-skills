@@ -63,7 +63,7 @@ RECOMENDATION:
 - definition of `interface IHasGuid` - solution [[external guid pattern solution]] define IHasGuid interface
 ```
 
-# Implementation
+# Template Skill Mutations
 
 ## App Repository (.sln)
 
@@ -110,11 +110,17 @@ MUST NOT:
 
 ## {Project name} (.csproj) 
 ```hint
-add suffix (extended) if project extended by the solution
+Add this block for each created or extended project in repository.
+After each "{Project name} (.csproj)" add suffix
+- (created) if solution create new template of project. Name of project must be added into creates property in the header of solution
+- (extended) if solution extend existent template of project. Link to project must be added into extends property in the header of solution
 ```
 ```example
+## {Project name} (.csproj) (created)
+...
 ## {Project name} (.csproj) (extended)
 ```
+
 ### Project extension
 #### Goals
 ```hint
@@ -224,12 +230,17 @@ RECOMENDATION:
 ```
 
 ### Class extension
-#### {Class name}
+#### {Class name} 
 ```hint
-add suffix (extended) if project extended by the solution
+Add this block for each created or extended class in project.
+After each "{Class name}" add suffix 
+- (created) if solution create new template of class. Name of class must be added into creates property in the header of solution
+- (extended) if solution extend existent template of class. Link of class must be added into extends property in the header of solution
 ```
 ```example
-## {Class name} (extended)
+## {Class name 1} (created)
+...
+## {Class name 2} (extended)
 ```
 ##### Goals
 ```hint
