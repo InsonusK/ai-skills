@@ -1,5 +1,6 @@
 ---
 uid: bb207021-4cea-4004-a37b-12d042489744
+order: 5
 name: domain-rule
 description: Defines the Domain Rule pattern — stateless deterministic predicates that encode reusable business conditions as static extension methods
 domain: skill
@@ -25,7 +26,6 @@ extends:
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill|02-solution-layer-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill|04-value-object.solution.skill]]"
-order: 5
 ---
 # Goal
 - Define a single reusable pattern for encoding business predicates that can be used across Value Objects, Entities, and Domain Services
@@ -226,6 +226,73 @@ MUST:
 MUST NOT:
 - VO overload reimplement logic from primitive overload
 - Throw exceptions internally
+
+---
+
+#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity.class.skill]] (extended)
+
+##### Goal
+- Enforce entity invariants and prevent invalid state by using domain rules inside entity behavior methods
+- Keep entity validation logic DRY by delegating to reusable domain rules instead of inline conditions
+
+##### Core Principles
+- Entity defines consistency — it decides when and how to enforce invariants
+- Entity methods call domain rules to validate state transitions before applying changes
+- Rule returns `bool` — entity decides whether to throw `DomainException` or reject the change
+- Multiple related conditions are composed from individual rules — not reimplemented inline
+
+##### Implementation changes
+Entity behavior methods must use domain rules to guard state changes:
+
+```csharp
+public class Order
+{
+    public int Id { get; internal set; }
+    public string Comment { get; internal set; }
+    public uint Version { get; internal set; }
+
+    public void UpdateComment(string comment)
+    {
+        if (!comment.IsNotEmpty())
+            throw new DomainException("Comment must not be empty.");
+
+        if (!comment.IsMaxLength(500))
+            throw new DomainException("Comment must not exceed 500 characters.");
+
+        Comment = comment;
+    }
+}
+```
+
+Entity can compose multiple rules for complex invariants:
+
+```csharp
+public class Driver
+{
+    public int Id { get; internal set; }
+    public Age Age { get; internal set; }
+    public Country Country { get; internal set; }
+
+    public void AssignLicense()
+    {
+        if (!(Age, Country).IsSatisfied())
+            throw new DomainException("Driver does not meet licensing requirements for this country.");
+
+        // ... assign license
+    }
+}
+```
+
+##### Rule changes
+MUST:
+- Call domain rules inside entity methods before mutating state
+- Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
+- Use the most specific rule available (primitive, VO, or contextual) for the condition being checked
+
+MUST NOT:
+- Reimplement rule logic inline inside entity methods — always delegate to existing rules
+- Mutate state before validating with rules
+- Allow invalid state to persist silently
 
 ---
 
