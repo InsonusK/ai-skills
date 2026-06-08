@@ -16,7 +16,7 @@ triggers:
   - design aggregate
 created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill]]"
 extended_by:
-  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill]]"
 aliases:
   - Entity
 ---
@@ -28,7 +28,7 @@ aliases:
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#Entity (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Core Principles
 - Entity has stable identity — `int Id` is always the system primary identity
@@ -49,7 +49,7 @@ Entity type matrix:
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#Entity (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Structure
 
@@ -131,7 +131,7 @@ public class TodoTask
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#Entity (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Rules
 
@@ -152,7 +152,7 @@ MUST NOT:
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#Entity (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Anti-patterns
 - `public string Title { get; set; }` — public setter allows invalid state from any caller
@@ -164,7 +164,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#Entity (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Check list
 - [ ] Entity type selected from the matrix
@@ -177,7 +177,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#Entity (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Unittest TestCases
 - [ ] When entity created Then Id is default (0) until persisted

@@ -1,5 +1,6 @@
 ---
-uid:
+uid: 57df5ef0-5cc6-40d0-883b-8bd4f0d3b879
+orde: "3"
 name: domain-configuration
 description: Defines the EF Core entity type configuration pattern — one configuration class per entity that owns all persistence concerns, keeping domain entities free of infrastructure attributes
 domain: skill
@@ -19,14 +20,15 @@ triggers:
   - configure index
   - configure relation
 creates:
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/EntityConfiguration.class.skill]]"
+  - Module EntityConfiguration 
+  - App EntityConfiguration
 extends:
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill]]"
 depends_on:
   - "[[01-module-boundary.solution.skill]]"
   - "[[02-solution-layer-structure.solution.skill]]"
-  - "[[03-value-object.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill]]"
   - "[[05-entity-base.solution.skill]]"
 ---
 # Goal
@@ -42,14 +44,11 @@ depends_on:
 - Domain entity must have zero EF attributes (`[Column]`, `[Index]`, `[ForeignKey]`, etc.)
 - Configuration is the only place that knows about column names, table names, and constraints
 - All configurations registered via `ApplyConfigurationsFromAssembly` — never manually
-- Multi-property Value Object properties require `OwnsOne` mapping in the config class
-- Cross-module foreign key configurations live in App.Infrastructure — not in Domain config
+- Cross-module foreign key configurations live in [[skills/dotnet/skill-graph/developing v2/developing/App Layer/App.Infrastructure/App.Infrastructure.csproj.skill|App.Infrastructure.csproj.skill]] — not in Domain config
 
 # Depend on solutions
-- [[01-module-boundary.solution.skill]] — configuration classes live in {Module}.Domain
-- [[02-solution-layer-structure.solution.skill]] — App.Infrastructure owns cross-module FK configs
-- [[03-value-object.solution.skill]] — multi-property VOs require OwnsOne mapping here
-- [[05-entity-base.solution.skill]] — every entity defined by this solution gets exactly one config class
+- [[01-module-boundary.solution.skill]] — configuration classes live in [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill|{Module}.Domain]]
+- [[02-solution-layer-structure.solution.skill]] — [[skills/dotnet/skill-graph/developing v2/developing/App Layer/App.Infrastructure/App.Infrastructure.csproj.skill|App.Infrastructure.csproj.skill]] owns cross-module FK configs
 
 # Implementation
 
@@ -77,9 +76,9 @@ depends_on:
 ```
 
 ##### Directory and class skills
-| Directory \| file | Description | Pattern skill |
-| --- | --- | --- |
-| /Configurations | One EF config class per entity | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/EntityConfiguration.class.skill]] |
+| Directory \| file | Description                    | Pattern skill                                                                                                                                                     |
+| ----------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /Configurations   | One EF config class per entity | [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/EntityConfiguration.class.skill\|EntityConfiguration.class.skill]] |
 
 #### Rules
 MUST:
@@ -123,6 +122,11 @@ MUST NOT:
 - Configuration is the only place that knows about column names, table names, and constraints
 - Multi-property Value Object properties require `OwnsOne` mapping here
 - Cross-module foreign key configurations live in App.Infrastructure — not here
+##### Naming convention
+
+| use case                | class name pattern | class name     | file name pattern  | file name          |
+| ----------------------- | ------------------ | -------------- | ------------------ | ------------------ |
+| Entity EF configuration | {Entity}Config     | TodoTaskConfig | {Entity}.Config.cs | TodoTask.Config.cs |
 
 ##### Implementation changes
 EntityConfiguration must implement `IEntityTypeConfiguration<TEntity>`. Index names must be `public static string` constants. All mapping defined in `Configure` method.
@@ -257,6 +261,101 @@ MUST NOT:
 - [ ] No EF attributes present on entity class or any of its properties
 
 ---
+
+
+## [[skills/dotnet/skill-graph/developing v2/developing/App Layer/App.Infrastructure/App.Infrastructure.csproj.skill|App.Infrastructure (.csproj)]] (extended)
+
+### Project extension
+#### Goals
+- Host cross-module foreign key configurations that span multiple bounded contexts
+- Register all module entity configurations via `ApplyConfigurationsFromAssembly` in AppDbContext
+
+#### Core Principals
+- App.Infrastructure is the only place where cross-module foreign key relationships are configured
+- DbContext uses `ApplyConfigurationsFromAssembly` to automatically discover all `IEntityTypeConfiguration<T>` implementations from module Domain assemblies
+- App.Infrastructure references all module Domain projects to access entities for cross-module configuration
+
+#### Structure
+##### Project Structure
+```
+/App.Infrastructure
+  /Persistence
+    /Configurations
+      CrossModuleFkConfig.cs
+```
+
+##### Directory and class skills
+| Directory \| file           | Description                                              | Pattern skill |
+| --------------------------- | -------------------------------------------------------- | ------------- |
+| /Persistence/Configurations | Cross-module foreign key and relationship configurations |               |
+
+#### What Does NOT Belong Here
+- Intra-module entity configurations — belong in respective `{Module}.Domain/Configurations`
+- Domain entities — belong in `{Module}.Domain`
+- Value Object definitions — belong in `{Module}.Domain/ValueObjects`
+
+#### Allowed Dependencies
+- `{ModuleName}.Domain` (all modules) — required to access entities and their configurations
+
+#### Rules
+MUST:
+- Register all configurations via `ApplyConfigurationsFromAssembly` scanning all module Domain assemblies in DbContext
+- Place cross-module foreign key configurations in `/Persistence/Configurations`
+
+MUST NOT:
+- Define intra-module entity configurations here — those belong in `{Module}.Domain/Configurations`
+- Register configurations manually one by one in `OnModelCreating`
+
+#### Anti-patterns
+- Putting module-internal entity configuration in App.Infrastructure — violates separation of concerns
+- Manually registering each config class in `OnModelCreating` instead of using assembly scan
+
+#### Check list
+- [ ] DbContext uses `ApplyConfigurationsFromAssembly` on all module Domain assemblies
+- [ ] Cross-module FK configs live in `/Persistence/Configurations`
+- [ ] No intra-module entity config placed in App.Infrastructure
+
+### Class extension
+#### EntityConfiguration (extended)
+
+##### Goals
+- Configure foreign key relationships and mappings that cross module boundaries
+
+##### Core Principals
+- Cross-module configuration references entities from multiple modules without redefining their intra-module mapping
+- Cross-module config composes on top of existing Domain configs, never duplicates them
+##### Naming convention
+
+| use case                   | class name pattern         | class name           | file name pattern              | file name                |
+| -------------------------- | -------------------------- | -------------------- | ------------------------------ | ------------------------ |
+| Relation between 2 modules | {Module1}To{Module2}Config | OrderToPaymentConfig | {Module1}To{Module2}.Config.cs | OrderToPayment.Config.cs |
+
+##### Implementation changes
+Cross-module foreign key configuration lives in App.Infrastructure:
+
+```csharp
+public class OrderToPaymentConfig : IEntityTypeConfiguration<Order>
+{
+    public void Configure(EntityTypeBuilder<Order> builder)
+    {
+        builder
+            .HasOne<Payment>()
+            .WithMany()
+            .HasForeignKey("PaymentId")
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+```
+
+##### Rule changes
+MUST:
+- Configure only cross-module foreign keys and relationships
+- Reference existing entity configs from Domain, not redefine intra-module mapping
+
+MUST NOT:
+- Redefine table names, column names, or indexes already owned by Domain config
+- Configure intra-module relationships here
+
 
 # Rules
 MUST:

@@ -14,7 +14,7 @@ triggers:
   - create value object
   - implement value object
   - eliminate primitive obsession
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill]]"
 extended_by:
 ---
 
@@ -24,8 +24,8 @@ extended_by:
 - Ensure equality is based on value, not reference
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (single-property)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (multi-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (single-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (multi-property)]]
 
 # Core Principles
 - Semantics belong to types, not primitives
@@ -38,8 +38,8 @@ __Applied solutions:__
 - Single-property VO should provide implicit conversion operators for ergonomic usage
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (single-property)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (multi-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (single-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (multi-property)]]
 
 # Structure
 
@@ -102,8 +102,8 @@ public sealed record Money
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (single-property)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (multi-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (single-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (multi-property)]]
 
 # Rules
 
@@ -129,8 +129,8 @@ MUST NOT:
 - Primitive used in place of VO when the primitive carries business meaning
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (single-property)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (multi-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (single-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (multi-property)]]
 
 # Anti-patterns
 - `string Email` on entity instead of `Email` VO — loses invariant enforcement
@@ -142,8 +142,8 @@ __Applied solutions:__
 - Reusing same VO type across modules — each module defines its own VO types
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (single-property)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (multi-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (single-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (multi-property)]]
 
 # Check list
 - [ ] Declared as `sealed record`
@@ -158,8 +158,8 @@ __Applied solutions:__
 - [ ] Lives in /{Module}.Domain/ValueObjects
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (single-property)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (multi-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (single-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (multi-property)]]
 
 # Unittest TestCases
 - [ ] When value is below lower bound Then constructor throws DomainException
@@ -173,5 +173,5 @@ __Applied solutions:__
 - [ ] When multi-property VO persisted and loaded Then all properties materialize correctly
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (single-property)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#ValueObject (multi-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (single-property)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#ValueObject (multi-property)]]

@@ -1,5 +1,6 @@
 ---
 uid: f35f923e-960f-42d4-a724-24ee9e70bf23
+order: 2
 name: solution-layer-structure
 description: Defines the full solution folder structure, all non-module layers, their responsibilities, and the complete dependency rules between all layers
 domain: skill
@@ -17,17 +18,17 @@ triggers:
   - decide file placement
   - define project dependencies
 creates:
-  - Shared csproj skill
-  - BuildingBlocks csproj skill
-  - App.Host csproj skill
-  - App.Infrastructure csproj skill
-  - App.Infrastructure.Migrations csproj skill
-  - App.Queries csproj skill
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Shared cpsroj/Shared.csproj.skill|Shared.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/BuildingBlocks csproj/BuildingBlocks.csproj.skill|BuildingBlocks.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/App Layer/App.Host csproj/App.Host.csproj.skill|App.Host.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/App Layer/App.Infrastructure/App.Infrastructure.csproj.skill|App.Infrastructure.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/App Layer/App.Infrastructure.Migrations/App.Infrastructure.Migrations.csproj.skill|App.Infrastructure.Migrations.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/App Layer/App.Queries/App.Queries.csproj.skill|App.Queries.csproj.skill]]"
 extends:
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Interface csproj/{Module}.Interfaces.csproj.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Application csproj/{Module}.Application.csproj.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Api csproj/{Module}.Api.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill|{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Interface csproj/{Module}.Interfaces.csproj.skill|{Module}.Interfaces.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Application csproj/{Module}.Application.csproj.skill|{Module}.Application.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Api csproj/{Module}.Api.csproj.skill|{Module}.Api.csproj.skill]]"
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill|01-module-boundary.solution.skill]]"
 ---
@@ -47,7 +48,7 @@ depends_on:
 - App.Infrastructure is the only layer that knows about persistence implementation — DbContext, EF Core, outbox
 
 # Depend on solutions
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill]] — defines the module projects that this solution places and connects within the full solution structure
+- definition of `Module project` - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill|01-module-boundary.solution.skill]] defines the module projects that this solution places and connects within the full solution structure
 
 # Implementation
 

@@ -15,7 +15,7 @@ triggers:
   - create value object rule
   - implement VO domain rule
   - encode VO predicate
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill]]"
 extended_by:
 ---
 
@@ -24,7 +24,7 @@ extended_by:
 - Delegate to the corresponding primitive rule — never duplicate logic
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ValueObjectRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ValueObjectRule]]
 
 # Core Principles
 - Static class with extension methods on the VO type
@@ -32,7 +32,7 @@ __Applied solutions:__
 - Named `{VOType}Rules`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ValueObjectRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ValueObjectRule]]
 
 # Structure
 
@@ -65,7 +65,7 @@ public static class AgeRules
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ValueObjectRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ValueObjectRule]]
 
 # Rules
 
@@ -80,14 +80,14 @@ MUST NOT:
 - Throw exceptions — return bool only
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ValueObjectRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ValueObjectRule]]
 
 # Anti-patterns
 - VO rule reimplements primitive rule logic — always delegate to primitive overload
 - Rule throws exceptions internally
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ValueObjectRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ValueObjectRule]]
 
 # Check list
 - [ ] Rule is a static class with static extension methods
@@ -98,7 +98,7 @@ __Applied solutions:__
 - [ ] No infrastructure dependencies
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ValueObjectRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ValueObjectRule]]
 
 # Unittest TestCases
 - [ ] When VO overload called Then delegates to primitive overload — same result
@@ -106,4 +106,4 @@ __Applied solutions:__
 - [ ] Rule has no side effects
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ValueObjectRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ValueObjectRule]]

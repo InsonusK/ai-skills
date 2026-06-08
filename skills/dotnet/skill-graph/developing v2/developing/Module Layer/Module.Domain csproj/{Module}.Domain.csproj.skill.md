@@ -14,13 +14,13 @@ triggers:
   - create {Module}.Domain project
   - add domain layer
   - implement domain project
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill|01-module-boundary.solution.skill]]"
 extended_by:
-  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill|02-solution-layer-structure.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill|04-value-object.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill]]"
 aliases:
   - "{Module}.Domain"
   - "{Module}.Domain (.csproj)"
@@ -39,10 +39,10 @@ aliases:
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
 
 # Core Principles
 - Domain is the innermost layer — pure business logic, no infrastructure dependencies
@@ -69,10 +69,10 @@ __Applied solutions:__
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
 
 # Structure
 
@@ -98,10 +98,10 @@ Defined in [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-m
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
@@ -114,10 +114,10 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
 
 ## What Does NOT Belong Here
 - Transport validation — belongs to module Application validators
@@ -194,10 +194,10 @@ MUST NOT:
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
 
 # Anti-patterns
 - Injecting DbContext into a domain class — domain has no persistence dependency
@@ -224,10 +224,10 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
 
 # Check list
 - [ ] Domain.csproj references only Shared and EF Core
@@ -263,7 +263,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill#{Module}.Domain (.csproj)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#{Module}.Domain (.csproj) (extended)]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#{Module}.Domain (.csproj) (extended)]]
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#{Module}.Domain (.csproj) (extended)]]

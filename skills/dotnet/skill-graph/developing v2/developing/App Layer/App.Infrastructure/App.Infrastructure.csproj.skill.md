@@ -16,8 +16,9 @@ triggers:
   - implement persistence
 created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill]]"
 extended_by:
+aliases:
+  - App.Infrastructure (.csproj)
 ---
-
 # Goal
 - Provide all persistence implementation — DbContext, repository implementations, outbox interceptor, background dispatcher
 - Be the only layer that knows EF Core implementation details

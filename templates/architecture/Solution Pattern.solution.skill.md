@@ -1,5 +1,6 @@
 ---
 uid:
+order: 
 name: skill-name
 description: Describe what skill define
 domain: skill
@@ -26,7 +27,9 @@ depends_on:
   #Example:
   #- "[[Link]]"
 ---
-**AUTHORING RULE**: Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
+**AUTHORING RULE**: 
+- Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
+- header property `depends_on` couldn't have links to solution with order is greater or equal order in this solution. If it happend ask user to solve this problem.
 # Goal
 ```hint
 List of goals that are pursued by the creation of this solution.
@@ -48,14 +51,16 @@ RECOMENDATION:
 - Entities define consistency.
 ```
 
-# Depend on solutions
+# Requirements
 ```hint
-Detail description of dependencies to other solution
+List of requirements for solution appling
+MUST:
+- couldn't have link to solution with order number greater that order number of this solution. If it happend ask user to solve this problem.
 RECOMENDATION:
 - Prefer bullet list
 ```
 ```example
-- [[other colustion]] - use `IHasGuid` interface
+- definition of `interface IHasGuid` - solution [[external guid pattern solution]] define IHasGuid interface
 ```
 
 # Implementation
@@ -249,6 +254,19 @@ RECOMENDATION:
 ```example
 - Entities define consistency.
 ```
+##### Naming convention
+```hint
+class naming convension. Fill table
+- use case - when apply naming convesion
+- class name oattern - mask of class name. Example: Is{Rule}
+- class name - example of class name. Example: IsEvent
+- file name pattern - file name pattern. Example: Is{Rule}.cs
+- file name - example of file name. Example: IsEven.cs
+```
+
+| use case | class name pattern | class name | file name pattern | file name |
+| -------- | ------------------ | ---------- | ----------------- | --------- |
+|          |                    |            |                   |           |
 
 ##### Implementation changes
 ```hint

@@ -17,7 +17,7 @@ triggers:
   - define database schema
   - configure index
   - configure relation
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill]]"
 extended_by:
 aliases:
   - EntityConfiguration
@@ -30,7 +30,7 @@ aliases:
 - Define one EF Core configuration class per entity that owns all persistence concerns
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#EntityConfiguration]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#EntityConfiguration]]
 
 # Core Principles
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
@@ -42,7 +42,7 @@ __Applied solutions:__
 - Cross-module foreign key configurations live in App.Infrastructure — not here
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#EntityConfiguration]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#EntityConfiguration]]
 
 # Structure
 
@@ -111,7 +111,7 @@ entityBuilder.OwnsOne(e => e.Cash, money =>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#EntityConfiguration]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#EntityConfiguration]]
 
 # Rules
 
@@ -129,7 +129,7 @@ MUST NOT:
 - Configure cross-module foreign keys here — those belong in App.Infrastructure
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#EntityConfiguration]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#EntityConfiguration]]
 
 # Anti-patterns
 - Mapping multi-property VO properties individually without `OwnsOne` — EF will fail to map or create a shadow table
@@ -139,7 +139,7 @@ __Applied solutions:__
 - Cross-module FK configured in Domain config — belongs in App.Infrastructure
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#EntityConfiguration]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#EntityConfiguration]]
 
 # Check list
 - [ ] One config class exists per entity
@@ -152,7 +152,7 @@ __Applied solutions:__
 - [ ] No EF attributes on the domain entity class
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#EntityConfiguration]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#EntityConfiguration]]
 
 # Unittest TestCases
 - [ ] When insert entity with duplicate unique-indexed field Then throws DbUpdateException with correct constraint name matching the constant
@@ -160,4 +160,4 @@ __Applied solutions:__
 - [ ] When entity relation configured Then navigating the relation returns correct related entities
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/06-domain-configuration.solution.skill#EntityConfiguration]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#EntityConfiguration]]

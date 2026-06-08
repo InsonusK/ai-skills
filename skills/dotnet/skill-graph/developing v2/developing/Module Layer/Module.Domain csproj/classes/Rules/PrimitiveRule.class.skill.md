@@ -14,7 +14,7 @@ triggers:
   - create primitive rule
   - implement domain rule on primitive
   - encode business predicate
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill]]"
 extended_by:
 ---
 
@@ -23,7 +23,7 @@ extended_by:
 - Serve as the implementation delegate for all VO overloads of the same rule
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#PrimitiveRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#PrimitiveRule]]
 
 # Core Principles
 - Rule defines business meaning — not transport behavior, not framework behavior
@@ -32,7 +32,7 @@ __Applied solutions:__
 - Primitive rule is the single source of truth — VO overloads delegate here, never duplicate
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#PrimitiveRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#PrimitiveRule]]
 
 # Structure
 
@@ -68,7 +68,7 @@ public static class StringRules
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#PrimitiveRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#PrimitiveRule]]
 
 # Rules
 
@@ -85,7 +85,7 @@ MUST NOT:
 - Duplicate logic that already exists in another primitive rule
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#PrimitiveRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#PrimitiveRule]]
 
 # Anti-patterns
 - Rule throws `DomainException` itself — rule returns `bool`, the VO or entity caller throws
@@ -94,7 +94,7 @@ __Applied solutions:__
 - Rule has instance state — all rules must be stateless
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#PrimitiveRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#PrimitiveRule]]
 
 # Check list
 - [ ] Rule is a static class with static extension methods
@@ -105,7 +105,7 @@ __Applied solutions:__
 - [ ] No infrastructure dependencies
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#PrimitiveRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#PrimitiveRule]]
 
 # Unittest TestCases
 - [ ] When value satisfies rule Then returns true
@@ -116,4 +116,4 @@ __Applied solutions:__
 - [ ] Rule has no side effects — calling it twice produces no observable difference
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#PrimitiveRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#PrimitiveRule]]

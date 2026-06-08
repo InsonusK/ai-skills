@@ -17,16 +17,16 @@ triggers:
   - extract business condition
   - reusable domain validation
 creates:
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/PrimitiveRule.class.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ValueObjectRule.class.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ContextualRule.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/PrimitiveRule.class.skill|PrimitiveRule.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ValueObjectRule.class.skill|ValueObjectRule.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ContextualRule.class.skill|ContextualRule.class.skill]]"
 extends:
-  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill|{Module}.Domain.csproj.skill]]"
 depends_on:
-  - "[[02-solution-layer-structure.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill|02-solution-layer-structure.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill|04-value-object.solution.skill]]"
+order: 5
 ---
-
 # Goal
 - Define a single reusable pattern for encoding business predicates that can be used across Value Objects, Entities, and Domain Services
 - Prevent business condition duplication across controllers, validators, services, and entities
@@ -44,7 +44,7 @@ depends_on:
 
 # Depend on solutions
 - [[02-solution-layer-structure.solution.skill]] — rules live in {Module}.Domain, placement defined by layer structure
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill|03-value-object.solution.skill]] — VO-scoped rules extend Value Object types defined by this solution
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill|03-value-object.solution.skill]] — VO-scoped rules extend Value Object types defined by this solution
 
 # Implementation
 

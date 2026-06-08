@@ -23,7 +23,7 @@ extends:
 depends_on:
   - "[[01-module-boundary.solution.skill]]"
   - "[[02-solution-layer-structure.solution.skill]]"
-  - "[[03-value-object.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill]]"
 ---
 # Goal
 
@@ -46,7 +46,7 @@ depends_on:
 
 - [[01-module-boundary.solution.skill]] — entities live in {Module}.Domain defined by this solution
 - [[02-solution-layer-structure.solution.skill]] — placement rules for Domain project
-- [[03-value-object.solution.skill]] — entities may own Value Object properties
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill]] — entities may own Value Object properties
 
 # Implementation
 

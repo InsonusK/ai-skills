@@ -20,10 +20,11 @@ creates:
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/ValueObject.class.skill|ValueObject.class.skill]]"
 extends:
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill|{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity.class.skill]]"
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill|02-solution-layer-structure.solution.skill]]"
+order: 4
 ---
-
 # Goal
 - Eliminate primitive obsession by encoding domain semantics into dedicated types
 - Prevent invalid domain state by making Value Objects self-validating at construction time
@@ -36,6 +37,7 @@ depends_on:
 - Value Object is self-validating — invalid state cannot exist, constructor throws on violation
 - Equality is structural — two instances with same values are equal
 - Value Object has no identity — it is defined entirely by its value
+- Prefer Value Object over primitive on [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity]] properties when the value has invariant state
 - Value Object has no infrastructure or application dependencies — pure domain concept
 - Multi-property VO requires a private parameterless constructor for EF Core materialization
 - Single-property VO should provide implicit conversion operators for ergonomic usage
@@ -189,6 +191,61 @@ MUST NOT:
 
 ---
 
+
+#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity.class.skill]] (extend)
+##### Goals
+- Encapsulate invariant state on Entity properties into dedicated Value Object types
+- Keep Entity focused on identity, lifecycle, and aggregate consistency while delegating value-level validation to Value Objects
+
+##### Core Principals
+- Entity properties that carry business meaning or invariant constraints use Value Objects instead of primitives
+- Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state
+- Equality of value properties on Entities is evaluated by Value Object structural equality
+
+##### Implementation changes
+Entity must use Value Object types for properties that have invariant state or business semantics:
+
+```csharp
+public class Order
+{
+    public int Id { get; internal set; }
+    public Money Total { get; internal set; }
+    public Email CustomerEmail { get; internal set; }
+}
+```
+##### Rule changes
+MUST:
+- Use Value Object on Entity property when the value has invariant state or carries business semantics
+- Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
+
+MUST NOT:
+- Use primitive type on Entity property when the value carries business meaning or invariant constraints
+
+#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/EntityConfiguration.class.skill|EntityConfiguration.class.skill]]
+##### Goals
+- Define Multi-property Value Objects in EF
+
+##### Core Principals
+- Multi-property Value Objects used in Entities register in EF Core only in Configuration
+
+##### Implementation changes
+Multi-property Value Objects persisted via EF Core `OwnsOne`:
+
+```csharp
+public class OrderConfiguration : IEntityTypeConfiguration<Order>
+{
+    public void Configure(EntityTypeBuilder<Order> builder)
+    {
+        builder.OwnsOne(o => o.Total);
+        builder.OwnsOne(o => o.CustomerEmail);
+    }
+}
+```
+
+##### Rule changes
+MUST:
+- Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
+
 # Rules
 
 MUST:
@@ -203,6 +260,7 @@ SHOULD:
 - Single-property VO has implicit conversion operators
 - All VOs override ToString() when used in logs or UI
 - Complex invariant logic extracted to domain rule — see domain-rule solution
+- Use Value Object for entity properties when the value has invariant state or carries business semantics — see [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity]]
 
 MUST NOT:
 - Value Object depend on infrastructure, repositories, or application services
@@ -211,7 +269,7 @@ MUST NOT:
 - Primitive used in place of VO when the primitive carries business meaning
 
 # Anti-patterns
-- `string Email` on entity instead of `Email` VO — loses invariant enforcement
+- Primitive on [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity]] instead of Value Object when the value has invariant state — loses invariant enforcement
 - VO with public setter — allows post-construction mutation, invalidates immutability guarantee
 - VO that throws on ToString() when null internal state — private constructor must not leave fields unset for EF
 - Multi-property VO without private parameterless constructor — EF materialization fails silently

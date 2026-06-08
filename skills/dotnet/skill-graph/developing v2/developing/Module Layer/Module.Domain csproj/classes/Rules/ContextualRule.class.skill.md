@@ -15,7 +15,7 @@ triggers:
   - create contextual rule
   - implement multi-value domain rule
   - encode business condition
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill]]"
 extended_by:
 ---
 
@@ -24,7 +24,7 @@ extended_by:
 - Provide both primitive and VO overloads — VO overload delegates to primitive overload
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ContextualRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ContextualRule]]
 
 # Core Principles
 - Implemented as tuple extension methods — `(Type1, Type2).IsSatisfied()`
@@ -33,7 +33,7 @@ __Applied solutions:__
 - Named `{Condition}Rule`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ContextualRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ContextualRule]]
 
 # Structure
 
@@ -72,7 +72,7 @@ public static class CanDriveCarRule
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ContextualRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ContextualRule]]
 
 # Rules
 
@@ -87,14 +87,14 @@ MUST NOT:
 - Throw exceptions internally
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ContextualRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ContextualRule]]
 
 # Anti-patterns
 - VO overload reimplements primitive overload logic
 - Rule throws exceptions internally
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ContextualRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ContextualRule]]
 
 # Check list
 - [ ] Rule is a static class with static extension methods
@@ -105,7 +105,7 @@ __Applied solutions:__
 - [ ] No infrastructure dependencies
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ContextualRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ContextualRule]]
 
 # Unittest TestCases
 - [ ] When value satisfies rule Then returns true
@@ -115,4 +115,4 @@ __Applied solutions:__
 - [ ] Rule has no side effects
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-domain-rule.solution.skill#ContextualRule]]
+- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-domain-rule.solution.skill#ContextualRule]]
