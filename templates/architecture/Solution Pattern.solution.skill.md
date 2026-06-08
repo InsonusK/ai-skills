@@ -59,7 +59,57 @@ RECOMENDATION:
 ```
 
 # Implementation
-## {Project name}
+
+## App Repository (.sln)
+
+### Structure
+
+#### Project Structure
+```hint
+Define how solution EXTENDS repository structure
+```
+```example
+/src
+	/App
+		/App.Host 
+```
+
+#### Directory and class skills
+```hint
+Define how solution EXTENDS repository directory and files
+```
+```example
+| Directory \| file | Description        | Pattern skill    |
+| ----------------- | ------------------ | ---------------- |
+| /src/App          | project desciption | [[pattern link]] |
+```
+
+| Directory \| file | Description | Pattern skill |
+| ----------------- | ----------- | ------------- |
+|                   |             |               |
+
+### Rules
+```hint
+Define how solution EXTENDS repository MUST, SHOULD, SHOULD NOT, MUST NOT rules
+```
+```example
+MUST:
+	- ...
+SHOULD:
+	- ...
+SHOULD NOT:
+	- ...
+MUST NOT:
+	- ...
+```
+
+## {Project name} (.csproj) 
+```hint
+add suffix (extended) if project extended by the solution
+```
+```example
+## {Project name} (.csproj) (extended)
+```
 ### Project extension
 #### Goal
 ```hint
@@ -97,15 +147,15 @@ Define how solution EXTENDS project structure
 Define how solution EXTENDS project directory and files
 ```
 ```example
-| `Directory|file`  | Description                                    | Pattern skill          |
-| ------------------- | ---------------------------------------------- | ---------------------- |
-| /DirectoryName      | Directory description                          | [[link to folder pattern]] |
-| ClassInDirectory.cs | Description of class inside of directory above | [[link to file patter]]    |
+| Directory \| file   | Description           | Pattern skill       |
+| ------------------- | --------------------- | ------------------- |
+| /DirectoryName      | Directory description | [[link to pattern]] |
+| ClassInDirectory.cs | Class description     | [[link to pattern]] |
 ```
 
-| `Directory|file` | Description | Pattern skill |
-| ---------------- | ----------- | ------------- |
-|                  |             |               |
+| Directory \| file | Description | Pattern skill |
+| ----------------- | ----------- | ------------- |
+|                   |             |               |
 
 #### What Does NOT Belong Here
 ```hint
