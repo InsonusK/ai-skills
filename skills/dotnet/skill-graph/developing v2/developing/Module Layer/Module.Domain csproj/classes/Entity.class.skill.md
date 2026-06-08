@@ -14,7 +14,7 @@ triggers:
   - create entity
   - implement domain entity
   - design aggregate
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill]]"
+created_by: "[[files/05-entity-base.solution.skill]]"
 extended_by:
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill]]"
 aliases:
@@ -27,7 +27,7 @@ aliases:
 - Ensure domain entity remains free of EF attributes — all persistence mapping delegated to config class
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
+- [[files/05-entity-base.solution.skill#Entity]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Core Principles
@@ -48,7 +48,7 @@ Entity type matrix:
 | External (has Guid) | External Immutable | External Mutable |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
+- [[files/05-entity-base.solution.skill#Entity]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Structure
@@ -130,7 +130,7 @@ public class TodoTask
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
+- [[files/05-entity-base.solution.skill#Entity]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Rules
@@ -151,7 +151,7 @@ MUST NOT:
 - Entity have any EF attributes (`[Table]`, `[Column]`, `[Key]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]`)
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
+- [[files/05-entity-base.solution.skill#Entity]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Anti-patterns
@@ -163,7 +163,7 @@ __Applied solutions:__
 - `[Table("TodoTasks")]` on entity class — table naming belongs in config class
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
+- [[files/05-entity-base.solution.skill#Entity]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Check list
@@ -176,7 +176,7 @@ __Applied solutions:__
 - [ ] No EF attributes present on entity class or any of its properties
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
+- [[files/05-entity-base.solution.skill#Entity]]
 - [[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-domain-configuration.solution.skill#Entity (extended)]]
 
 # Unittest TestCases
@@ -187,4 +187,4 @@ __Applied solutions:__
 - [ ] When External entity created Then Guid property present and immutable after creation
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v2/architecture/solutions/05-entity-base.solution.skill#Entity]]
+- [[files/05-entity-base.solution.skill#Entity]]

@@ -20,7 +20,7 @@ triggers:
   - configure index
   - configure relation
 creates:
-  - Module EntityConfiguration 
+  - Module EntityConfiguration
   - App EntityConfiguration
 extends:
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
@@ -29,7 +29,7 @@ depends_on:
   - "[[01-module-boundary.solution.skill]]"
   - "[[02-solution-layer-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/04-value-object.solution.skill]]"
-  - "[[05-entity-base.solution.skill]]"
+  - "[[files/05-entity-base.solution.skill]]"
 ---
 # Goal
 - Define one EF Core configuration class per entity that owns all persistence concerns — indexes, relations, concurrency tokens, and value object mappings
