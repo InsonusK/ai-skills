@@ -3,10 +3,10 @@ uid:
 name: skill-name
 description: Describe what skill define
 domain: skill
-type: pattern
+type: template
 version: 20260608
 tags:
-  - skill/pattern/class
+  - skill/template/class
   - tag for skill classification
 triggers:
   - when skill should called
@@ -75,6 +75,17 @@ Should be:
 - declarative
 - predictable
 ```
+# Result status mapping
+
+| Result                   | HTTP meaning              |
+| ------------------------ | ------------------------- |
+| `Result.Created(value)`  | 201 — entity created      |
+| `Result.Success(value)`  | 200 — operation succeeded |
+| `Result.NoContent()`     | 204 — succeeded, no body  |
+| `Result.NotFound()`      | 404 — entity not found    |
+| `Result.Conflict(msg)`   | 409 — business conflict   |
+| `Result.Invalid(errors)` | 400 — validation failed   |
+| `Result.Error(msg)`      | 500 — unexpected failure  |
 
 # Rules
 ```

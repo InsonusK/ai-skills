@@ -3,13 +3,14 @@ uid: 89c9a8ed-0695-48ff-a925-0896324278e8
 name: domain-service
 description: rules for implementing domain services that encapsulate complex domain logic outside entities
 domain: skill
-type: pattern
+type: template
+version: 20260609
 tags:
   - dotnet
   - domain
   - ddd
   - domain-service
-  - skill/pattern/class
+  - skill/template/class
 triggers:
   - extract entity behavior to service
   - domain service design
@@ -27,12 +28,16 @@ Define where and how to move domain logic out of an entity when that logic spans
 
 # Core Principles
 - Domain Service is pure — all inputs passed as parameters, no fetching
-- Domain Service has no infrastructure dependencies — no repositories, no DbContext, no HTTP
+- Domain Service has no infrastructure dependencies — no repositories, no `DbContext`, no HTTP
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill|Application Layer]] is responsible for loading data; domain service is responsible for deciding
 - Prefer extension method form when logic is scoped to one primary entity
 - Prefer static class form when logic coordinates multiple entities or has no clear owner
 
-# Place in csproj
+# Governed by
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill|entity-behavior.skill]] — defines the boundary between entity behavior and domain service and requirements of invariant validation
+
+# Structure
+## Place in csproj
 Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]
 ```
 /{ModuleName}.Domain
@@ -41,9 +46,19 @@ Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-do
     DriverEligibilityService.cs
 ```
 
-# Contracts
+## Naming convention
+- class name
+	- rule: Entity + Service suffix
+	- pattern: {Entity}Service
+	- example: OrderService
+- file name:
+	- rule: Entity  + .Service.cs
+	- pattern: {Entity }.Service.cs
+	- example: Order.Service.cs 
 
-## Extension method form
+## Implementation
+
+### Extension method form
 Use when logic operates primarily on one entity but is too large for the entity itself.
 ```CSharp
 public static class OrderDomainService
@@ -58,7 +73,7 @@ public static class OrderDomainService
 }
 ```
 
-## Static class form
+### Static class form
 Use when logic coordinates multiple entities or has no single clear owner.
 ```CSharp
 public static class TransferDomainService
@@ -74,7 +89,7 @@ public static class TransferDomainService
 }
 ```
 
-## Application layer loads, domain service decides
+### Application layer loads, domain service decides
 Domain service never fetches. [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill|Application Layer]] resolves all required data first.
 ```CSharp
 // Application layer (command handler)
@@ -91,7 +106,7 @@ MUST:
 - be pure — all inputs passed as parameters
 - operate only on domain objects (entities, value objects)
 - throw `DomainException` when invariant is violated
-- use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] for reusable predicate logic 
+- use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule-pattern.skill]] for reusable predicate logic 
 SHOULD:
 - be extension method when scoped to one primary entity
 - be static class when coordinating multiple entities 
@@ -125,4 +140,4 @@ MUST NOT:
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity-pattern.skill]] — domain service extracts behavior that would otherwise bloat the entity
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill|entity-behavior.skill]] — defines the boundary between entity behavior and domain service
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] — domain services compose rules for multi-value business decisions
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule.class.skill]] — domain services compose rules for multi-value business decisions

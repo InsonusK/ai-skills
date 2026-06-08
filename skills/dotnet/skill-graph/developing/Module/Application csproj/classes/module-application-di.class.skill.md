@@ -5,7 +5,7 @@ description: defines how to implement the DI registration class for a module's A
 domain: skill
 type: class
 tags:
-  - skill/pattern/class
+  - skill/template/class
   - dotnet
   - application
   - dependency-injection
@@ -22,7 +22,7 @@ Define how to implement the single DI registration entry point for a module's Ap
 - One registration class per module — [[input heap/app-host-di-registration.class.skill|app-host-di-registration.class.skill]] calls it, knows nothing else about the module internals
 - Handlers and validators registered via assembly scan — never manually one by one
 - Pipeline behaviors NOT registered here — that belongs in [[input heap/app-host-di-registration.class.skill|app-host-di-registration.class.skill]]
-- `services.AddDbContext` NOT registered here — that belongs in [[app-infrastructure.csproj.skill|App.Infrastructure]] registration
+- `services.AddDbContext` NOT registered here — that belongs in [[input heap/app-infrastructure.csproj.skill|App.Infrastructure]] registration
 - Module-specific services ([[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-resolver.class.skill|IGuidResolver Implementation]]) registered explicitly here
 
 # Structure

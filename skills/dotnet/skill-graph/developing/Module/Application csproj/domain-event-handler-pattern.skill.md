@@ -4,7 +4,7 @@ status: draft
 name: domain-event-handler-pattern 
 description: rules for implementing domain event handlers and ensuring idempotency 
 domain: skill 
-type: pattern 
+type: template 
 tags:
 - dotnet
 - application
@@ -113,5 +113,5 @@ SHOULD:
 
 - [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill]] — system-level flow and architecture decisions
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]] — event definition that this handler subscribes to
-- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]] — delivers events to this handler via MediatR
+- [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill]] — delivers events to this handler via MediatR
 - [[skills/dotnet/skill-graph/developing/Architecture/cross-module-interaction.skill]] — handlers are the cross-module reaction point

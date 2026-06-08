@@ -3,13 +3,14 @@ uid: 9d4d8583-80ca-4e87-891d-a709cc9ade17
 name: value-object-pattern
 description: rules for designing and implementing domain value objects
 domain: skill
-type: pattern
+type: template
+version: 20260609
 tags:
   - dotnet
   - domain
   - ddd
   - value-object
-  - skill/pattern/class
+  - skill/template/class
 triggers:
   - value object design
   - domain modeling
@@ -20,6 +21,7 @@ aliases:
   - Value Object
   - ValueObjects
   - VO
+  - Multi-property Value Object
 ---
 # Goal
 Eliminate primitive obsession by encoding domain semantics into types. A Value Object owns its invariants, normalization, and equality — preventing invalid state from ever entering the domain model. Replaces raw primitives (string, int, decimal) where those primitives carry business meaning (Age, Money, Email, Percentage).
@@ -31,9 +33,10 @@ Eliminate primitive obsession by encoding domain semantics into types. A Value O
 - Value Object represents a single, meaningful concept with invariants
 - Equality is structural, not referential
 - Multi-property VOs require a private parameterless constructor for EF materialization
-- Multi-property VOs require `OwnsOne` EF mapping — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill#Multi-property Value Object mapping (OwnsOne)|domain configuration multi property mapping]]
+- Multi-property VOs require `OwnsOne` EF mapping — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill#Multi-property Value Object mapping (OwnsOne)|domain configuration multi property mapping]]
 
-# Place in csproj
+# Structure
+## Place in csproj
 Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]
 ```
 /{ModuleName}.Domain
@@ -43,9 +46,20 @@ Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-do
 	{ModuleName}.Domain.csproj
 ```
 
-# Contracts
+## Naming convention
 
-## Single-property Value Object
+- class name
+	- rule: Use business meaning
+	- pattern: {Business meaning}
+	- example: Age
+- file name:
+	- rule: Use business meaning + .cs
+	- pattern: {Business meaning}.cs
+	- example: Age.cs 
+
+## Implementation
+
+### Single-property Value Object
 ```CSharp
 public sealed record Age
 {
@@ -64,7 +78,7 @@ public sealed record Age
 }
 ```
 
-## Multi-propery Value Object
+### Multi-propery Value Object
 ```csharp
 public sealed record Money
 {
@@ -95,7 +109,7 @@ MUST:
 - Multi-property VO has private parameterless constructor
 SHOULD:
 - Single-property VO has implicit conversion operators
-- Use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule.skill]] for complex invariant predicates
+- Use [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule.skill]] for complex invariant predicates
 - have implicit operator for single-property VOs
 - encapsulate normalization and formatting
 - represent semantically meaningful concepts
@@ -117,7 +131,7 @@ MUST NOT:
 - [ ] No infrastructure or service dependencies
 - [ ] Equality based on value, not identity 
 - [ ] ToString() implemented if used in logs/UI
-- [ ] Linked to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] for complex invariants
+- [ ] Linked to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule.class.skill]] for complex invariants
 - [ ]  Multi-property VO has `private` parameterless constructor
 - [ ]  Multi-property VO has `OwnsOne` EF configuration in entity mapping
 
@@ -131,4 +145,5 @@ MUST NOT:
 - [ ] Implicit conversion round-trips losslessly (if operators defined)
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] - implementation of value object invariant validation rule
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule-pattern.skill]] - implementation of value object invariant validation rule
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/rule-usage.skill|rule-usage.skill]] - define using rules for invariant validation

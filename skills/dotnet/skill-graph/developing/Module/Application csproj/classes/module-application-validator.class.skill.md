@@ -2,10 +2,10 @@
 name: feature-validator
 description: rules for implementing FluentValidation validators for command handlers and query handlers
 domain: skill
-type: pattern
+type: template
 version: 20260606
 tags:
-  - skill/pattern/class
+  - skill/template/class
   - dotnet
   - application
   - validation
@@ -25,7 +25,7 @@ Define how to write a `FluentValidation` validator for a command and query. The 
 - Validator uses domain rules directly — no duplication, domain rules are the single source of truth
 - Validator may inject `IReadRepository<T>` — cross-entity existence and business rule checks belong here
 - All errors collected and returned together — never one error at a time
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|Value Object]] constructors are the last line of defense — they should never throw if validator did its job
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|Value Object]] constructors are the last line of defense — they should never throw if validator did its job
 - One validator per command — required
 - Query validators are optional — add one when the query has enforceable constraints (pagination limits, max range size, required filter combinations)
 
@@ -34,7 +34,7 @@ Define how to write a `FluentValidation` validator for a command and query. The 
 | Concern                                                  | How                                                                                                                                            |
 | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | Field not null/empty                                     | FluentValidation built-in rules                                                                                                                |
-| VO invariant (email format, positive value, max length)  | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill\|Domain rule]] via `Must(x => x.IsValidEmail())` |
+| VO invariant (email format, positive value, max length)  | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill\|Domain rule]] via `Must(x => x.IsValidEmail())` |
 | Cross-entity existence check ("assignee exists")         | `MustAsync` with `IReadRepository<T>`                                                                                                          |
 | Business rule requiring DB ("task has no open subtasks") | `MustAsync` with `IReadRepository<T>`                                                                                                          |
 | Entity state transition guard                            | Domain entity method — last line of defense                                                                                                    |
@@ -121,7 +121,7 @@ MUST NOT:
 - [ ]  When referenced entity does not exist Then error collected
 - [ ]  When all fields valid Then handler executes
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] — domain rules used inside validator for VO invariant checks
-- [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/feature-command-handler.skill|feature-command-handler.skill]] — handler that runs after this validator passes
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule-pattern.skill]] — domain rules used inside validator for VO invariant checks
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-command-handler.class.skill|feature-command-handler.skill]] — handler that runs after this validator passes
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — `ValidationBehavior` pipeline position
 - [[files/repository.skill|repository.skill]] — IReadRepository injected for DB checks

@@ -3,13 +3,14 @@ uid: c3e7b1be-9e3d-4cac-b518-60ccd49dae2b
 name: module-domain-csproj
 description: defines the Domain project boundary, its structure, what belongs inside it, and what is forbidden
 domain: skill
-type: pattern
+type: template
+version: 20260607
 tags:
   - dotnet
   - domain
   - ddd
   - module
-  - skill/pattern/csproj
+  - skill/template/csproj
 triggers:
   - create domain project
   - what belongs in domain
@@ -29,9 +30,11 @@ Define what the `{ModuleName}.Domain` project (`.csproj`) is, what it contains, 
 - EF Core is the only infrastructure reference allowed — only for `IEntityTypeConfiguration<T>`
 - Everything in Domain is owned by this module — no shared domain model across modules
 
-# Solution Place
-Defined in [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill#Layers Overview|backend-project-structure.skill]]
 # Structure
+## Solution Place
+Defined in [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill#Layers Overview|backend-project-structure.skill]]
+
+## Project Structure
 ```
 /{ModuleName}.Domain
   /Configurations
@@ -40,20 +43,18 @@ Defined in [[skills/dotnet/skill-graph/developing/Architecture/backend-project-s
   /Rules
   /Services
   /Events
-  /Specifications
   {ModuleName}.Domain.csproj
 ```
-Directory and there classes from `{ModuleName}.Domain` belong patterns: 
+## Directory and class skills
 
-| Directory       | Description                                       | Pattern skill                                                                                                                                |
-| --------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| /Configuration  | EF Core entity type configurations                | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill\|domain-configuration-pattern.skill]] |
-| /Entities       | domain entities                                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill\|entity-pattern.skill]]                                     |
-| /ValueObjects   | value objects                                     | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill\|value-object-pattern.skill]]                 |
-| /Rules          | domain rules and predicates                       | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill\|domain-rule.skill]]                           |
-| /Services       | domain services for complex or multi-entity logic | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill\|domain-service.skill]]                             |
-| /Events         | domain event definitions                          | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill\|domain-event.skill]]                         |
-| /Specifications | simple single-condition Ardalis specs             | [[domain-specification.skill]]                                                                                                               |
+| Directory      | Description                                       | Pattern skill                                                                                                                                |
+| -------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| /Configuration | EF Core entity type configurations                | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill\|domain-configuration-pattern.skill]] |
+| /Entities      | domain entities                                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill\|entity-pattern.skill]]                                     |
+| /ValueObjects  | value objects                                     | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill\|value-object-pattern.skill]]                 |
+| /Rules         | domain rules and predicates                       | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill\|domain-rule.skill]]                           |
+| /Services      | domain services for complex or multi-entity logic | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill\|domain-service.skill]]                             |
+| /Events        | domain event definitions                          | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill\|domain-event.skill]]                         |
 
 # What Does NOT Belong Here
 - Command handlers, query handlers — belong in Application
@@ -75,8 +76,7 @@ MUST:
 - One `.csproj` per module Domain — never shared
 - All entity invariants enforced inside Domain
 - EF configurations in `/Configurations` — never annotations on entities
-- Domain events defined as `record` implementing `IDomainEvent`
-- Simple specs (single condition) live in `/Specifications`
+- Domain events defined as `record` implementing `IDomainEvent
 MUST NOT:
 - Reference `{ModuleName}.Application` or `App.Infrastructure`
 - Reference any other module's Domain
@@ -85,14 +85,14 @@ MUST NOT:
 
 # Checklist
 - [ ] Project has no runtime infrastructure dependencies
-- [ ] All folders present: Configurations, Entities, ValueObjects, Rules, Services, Events, Specifications
+- [ ] All folders present: Configurations, Entities, ValueObjects, Rules, Services, Events
 - [ ] No Application or Infrastructure references in .csproj
 - [ ] No cross-module Domain references
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — entity definitions live here
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object.skill]] — value objects live here
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|value-object.skill]] — value objects live here
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event.skill]] — event definitions live here
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — EF configurations live here
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|ef-configuration.skill]] — EF configurations live here
 - [[skills/dotnet/skill-graph/developing/Module/module-layer.skill|module-layer.skill]] — Domain is one of four module projects
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill|backend-project-structure.skill]] — dependency rules at solution level

@@ -3,14 +3,15 @@ uid: a6e0c3fa-3059-4e75-b569-bb15f5183f00
 name: entity
 description: rules for designing domain entities — identity strategies, type selection, and which linked patterns apply
 domain: skill
-type: pattern
+type: template
+version: 20260609
 tags:
   - dotnet
   - domain
   - ddd
   - entity
   - identity
-  - skill/pattern/class
+  - skill/template/class
 triggers:
   - design entity
   - create domain entity
@@ -22,12 +23,18 @@ aliases:
 Define how to declare a domain entity, select its identity strategy, and determine which companion patterns are required. An entity is a domain object with stable identity and mutable or immutable state. Selecting the wrong type leads to missing concurrency control, leaked Guids, or invalid persistence configuration.
 
 # Core Principles
-- Internal `int Id` is always the system primary identity — never Guid
+- Internal `int Id` is always the system primary identity — never `Guid`
 - Guid appears only on externally created entities — as a correlation handle, never domain logic
 - Mutable entities require a `Version` field for concurrency control
 - Entity behavior and invariant enforcement are defined separately in entity-behavior.skill
 
-# Place in csproj
+# Governed by
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]] - define using `RowVersion` to prevent concurrency errors
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill|external-created-entity.skill]] - define using `Guid` for external created entities
+- [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill|domain-event-architecture.skill]] - define using 
+
+# Structure
+## Place in csproj
 Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]
 ```
 /{ModuleName}.Domain
@@ -36,14 +43,26 @@ Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-do
 		Order.cs
 	{ModuleName}.Domain.csproj
 ```
-# Entity Type Matrix
+
+## Naming convention
+- class name
+	- rule: Business name
+	- pattern: {Business name}Validator
+	- example: Currency
+- file name:
+	- rule: Business name + .cs
+	- pattern: {Business name}.cs
+	- example: Currency.cs 
+
+## Implementation
+### Entity Type Matrix
 
 | Created by \ Editable | Immutable (no Version)  | Mutable (has Version) |
 | --------------------- | ----------------------- | --------------------- |
 | Internal system       | [[#Internal Immutable]] | [[#Internal Mutable]] |
 | External system       | [[#External Mutable]]   | [[#External Mutable]] |
 
-## Internal Immutable
+#### Internal Immutable
 System dictionaries, predefined types, configuration tables. Created once, never changed.
 __Rules:__
 - internal creation
@@ -56,7 +75,7 @@ public class Currency
 }
 ```
 
-## Internal Mutable
+#### Internal Mutable
 State entities created and edited by the system. Requires `Version` — see entity-concurrency.skill.
 __Rules:__
 - internal creation
@@ -72,7 +91,7 @@ public class Order
 }
 ```
 
-## External Immutable
+#### External Immutable
 Business event registrations created once by an external system. Requires `Guid` — see external-created-entity.skill.
 __Rules:__
 - external creation
@@ -88,7 +107,7 @@ public class PaymentEvent
 }
 ```
 
-## External Mutable
+#### External Mutable
 Entities created by external system and editable after creation. Requires both `Guid` and `Version`.
 __Rules:__
 - external creation
@@ -106,6 +125,27 @@ public class ExternalOrder
 }
 ```
 
+### Domain events storage
+```csharp
+public class TodoTask
+{
+    private readonly List<IDomainEvent> _domainEvents = new();
+    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents;
+
+    public int AssigneeId { get; internal set; }
+
+    internal void Assign(int assigneeId)
+    {
+        if (assigneeId <= 0)
+            throw new DomainException("Invalid assignee");
+
+        AssigneeId = assigneeId;
+        _domainEvents.Add(new TaskAssignedEvent(Id, assigneeId));
+    }
+
+    public void ClearDomainEvents() => _domainEvents.Clear();
+}
+```
 # Rules
 MUST:
 - Primary key is `int Id` with `internal set`
@@ -136,5 +176,5 @@ MUST NOT:
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill|entity-behavior.skill]] — how entity enforces invariants and exposes behavior
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]] — Version field and EF concurrency token for mutable entities
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill|external-created-entity.skill]] — Guid field and unique index for externally created entities
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — persistence mapping for every entity
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|ef-configuration.skill]] — persistence mapping for every entity
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event.skill]] — entities raise and collect domain events

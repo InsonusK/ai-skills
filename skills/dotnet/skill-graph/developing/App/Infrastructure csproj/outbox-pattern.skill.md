@@ -4,7 +4,7 @@ status: draft
 name: outbox-pattern
 description: rules for implementing the transactional outbox — interceptor, OutboxMessage, and background dispatcher
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - infrastructure
@@ -173,5 +173,5 @@ MUST NOT:
 # Relations
 - [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill]] — system-level flow and architecture decisions
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]] — event definition and entity collection
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — handler implementation and idempotency
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill]] — OutboxMessage EF table configuration pattern
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill]] — handler implementation and idempotency
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill]] — OutboxMessage EF table configuration pattern

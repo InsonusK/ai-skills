@@ -1,16 +1,18 @@
 ---
 uid:
 name: skill-name
-description: Describe what skill define
+description: rules for implementing EF Core entity type configurations for cross module relations
 domain: skill
 type: template
-version: 20260606
+version: 20260609
 tags:
-  - skill/template/csproj
-  - tag for skill classification
+  - skill/template/class
 triggers:
   - when skill should called
+aliases:
+  - App.Infrastructure EF configuration
 ---
+[[skills/dotnet/skill-graph/developing/Architecture/solution/cross-module-communication.solution.skill]]
 # Goal
 ```
 Maximum:
@@ -36,37 +38,46 @@ Example:
 This section gives more value than 50 examples.
 ```
 
+# Governed by
+```list of solution which effect on class
+- link - 
+```
+
 # Structure
-## Solution place
-`Where defined place in solution`
-```
-Where does it store in solution
-/src
-	/ProjectName
-```
-## Structure
-```
-What is project structure
-```
+## Place in csproj
+Defined in `link to project skill`
 ```
 /ProjectName
-	/DirectoryName
-		ClassesInDirectory.cs
-	ProjectName.csproj
+/Folder
+		classByPattern.cs
+	ProjectNams.csproj
+```
+## Naming convention
+```example
+- class name
+	- rule: CommandName + Validator suffix
+	- pattern: {CommandName}Validator
+	- example: DoTaskValidator
+- file name:
+	- rule: CommandName + .Validator.cs
+	- pattern: {CommandName}.Validator.cs
+	- example: DoTask.Validator.cs 
 ```
 
-## Directory and class skills
+## Implementation
+```
+Defines:
+- interfaces
+- filesystem structure
+- naming conventions
+- dependency contracts
 
-| Directory or files in directory | Description                                    | Pattern skill          |
-| ------------------------------- | ---------------------------------------------- | ---------------------- |
-| /DirectoryName                  | Directory description                          | link to folder pattern |
-| ClassInDirectory.cs             | Description of class inside of directory above | link to file patter    |
-## What Does NOT Belong Here
-- component - where it should be
-## Allowed Dependencies
+Should be:
+- compact
+- declarative
+- predictable
 ```
-dependency which allowe to cspproj
-```
+
 # Rules
 ```
 Defines:

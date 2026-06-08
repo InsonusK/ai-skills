@@ -3,7 +3,7 @@ uid: dbe44586-572a-46e6-9773-0990f7976726
 name: domain-event-pattern
 description: rules for defining domain events
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - domain
@@ -11,7 +11,7 @@ tags:
   - events
   - outbox
   - mediatR
-  - skill/pattern/class
+  - skill/template/class
 triggers:
   - domain event design
   - entity raises event
@@ -25,7 +25,7 @@ aliases:
   - Events
 ---
 # Goal
-Define how to declare a domain event and how an entity raises and collects it. An event is an immutable fact describing something that happened in the domain. The entity never dispatches — it collects. The infrastructure pipeline handles delivery. See [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill|domain-event-architecture.skill]] and [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill|outbox-pattern.skill]] for the full system flow.
+Define how to declare a domain event and how an entity raises and collects it. An event is an immutable fact describing something that happened in the domain. The entity never dispatches — it collects. The infrastructure pipeline handles delivery. See [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill|domain-event-architecture.skill]] and [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill|outbox-pattern.skill]] for the full system flow.
 
 # Core Principles
 - Events are immutable facts — past tense, no expectations of response
@@ -124,6 +124,6 @@ MUST NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Architecture/solution/domain-event-architecture.skill|domain-event-architecture.skill]] — system-level flow and architecture decisions
-- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill|outbox-pattern.skill]] — how collected events are persisted and dispatched
+- [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill|outbox-pattern.skill]] — how collected events are persisted and dispatched
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill|entity-behavior.skill]] — behavior methods are where events are raised
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — entities that raise events follow standard entity rules

@@ -4,7 +4,7 @@ status: draft
 name: concurrency-control-pattern
 description: rules for implementing optimistic concurrency control via ETag, If-Match, and MediatR pipeline version checking
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - application

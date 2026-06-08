@@ -89,7 +89,7 @@ Interfaces → (no dependencies)
 ```
 
 # Inter-module Interaction Rules
-Modules communicate only through contracts. See [[cross-module-communication.solution.skill]] for full rules.
+Modules communicate only through contracts. See [[skills/dotnet/skill-graph/developing/Architecture/solution/cross-module-communication.solution.skill]] for full rules.
 
 |Interaction type|Mechanism|Example|
 |---|---|---|
@@ -129,4 +129,4 @@ MUST NOT:
 - [[module-api.skill]] — Api project detail
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill|module-application.skill]] — Application project detail
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill|module-domain.skill]] — Domain project detail
-- [[cross-module-communication.solution.skill]] — inter-module interaction rules in depth
+- [[skills/dotnet/skill-graph/developing/Architecture/solution/cross-module-communication.solution.skill]] — inter-module interaction rules in depth

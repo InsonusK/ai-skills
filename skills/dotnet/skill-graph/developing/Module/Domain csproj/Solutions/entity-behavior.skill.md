@@ -3,7 +3,7 @@ uid: 8b9910e6-8c0e-473a-b5d4-daa9459b85b0
 name: entity-behavior
 description: rules for implementing domain behavior and invariant enforcement on entities
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - domain
@@ -24,7 +24,7 @@ Define how [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/e
 - Every method or setter that changes state must validate before changing
 - Invalid state must never be reachable — throw `DomainException` if attempted
 - Large or multi-entity behavior is extracted to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]]
-- Rules logic is extracted to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] to avoid duplication
+- Rules logic is extracted to [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule-pattern.skill]] to avoid duplication
 
 # Patterns
 ## Setter with validation
@@ -121,7 +121,7 @@ MUST NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — entity structure this behavior sits on
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule-pattern.skill|domain-rule-pattern.skill]] — reusable predicates used inside behavior methods
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule-pattern.skill]] — reusable predicates used inside behavior methods
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]] — extraction point for large or multi-entity behavior
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event-pattern.skill]] — behavior methods raise domain events
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity-pattern.skill]] - base skill for entity implementation

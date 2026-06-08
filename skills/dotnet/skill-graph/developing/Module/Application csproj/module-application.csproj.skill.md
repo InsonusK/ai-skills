@@ -3,14 +3,14 @@ uid: 0bc550f2-f583-45ca-8c81-ba86cae3e241
 name: module-application
 description: defines the Application project boundary, its structure, responsibilities, and DI registration rules
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - application
   - cqrs
   - module
   - mediatr
-  - skill/pattern/csproj
+  - skill/template/csproj
 triggers:
   - implement module application layer
   - structure module application
@@ -20,6 +20,7 @@ triggers:
 aliases:
   - Application Layer
   - Module Application
+  - "{ModuleName}.Application"
 ---
 # Goal
 Define what the `{ModuleName}.Application` project is, what it contains, and how it registers itself into DI. Application is the orchestration layer — it connects API contracts from Interfaces to the domain model via handlers, loads data through repositories, and reacts to domain events. Without this pattern, handler placement and naming become inconsistent across modules.
@@ -67,21 +68,21 @@ Defined in [[skills/dotnet/skill-graph/developing/Architecture/backend-project-s
 ```
 __Directory and there classes belong patterns:__
 
-| Directory or files in directory        | Description                                | Pattern skill                                                                                                                                  |
-| -------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| {ModuleName}ApplicationRegistration.cs | Registration Application module components | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-di.class.skill\|module-application-di.class.skill]] |
-| /Commands/{CommandName}                | Concrete command handler                   |                                                                                                                                                |
-| {CommandName}.Handler.cs               | Command handler                            | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/feature-command-handler.skill\|feature-command-handler.skill]]                                                                         |
-| {CommandName}.Validator.cs             | Command request validator                  | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-validator.class.skill\|feature-validator.skill]]               |
-| /Queries/{QueryName}                   | Concrete Query handler                     |                                                                                                                                                |
-| {QueryName}.Handler.cs                 | Query handler                              | [[files/feature-query-handler.skill\|feature-query-handler.skill]]                                                                             |
-| {QueryName}.Validator.cs               | Query request validator                    | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-validator.class.skill\|feature-validator.skill]]               |
-| /EventHandlers                         | Handlers of events                         |                                                                                                                                                |
-| {EventName}.EventHandler.cs            | Event handler                              | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill\|domain-event-handler-pattern.skill]]           |
-| /Specifications                        | Domain Specifications                      |                                                                                                                                                |
-| {SpecificationName}.Spec.cs.           | Application specification                  | [[input heap/application-specification.skill\|application-specification.skill]]                                                                |
-| /Resolvers                             | Guid resolvers for entites                 |                                                                                                                                                |
-| {Entity}Guid.Resolver.cs               | Guid resolver for concrete entity          | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-resolver.class.skill]]                              |
+| Directory or files in directory        | Description                                | Pattern skill                                                                                                                                                             |
+| -------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| {ModuleName}ApplicationRegistration.cs | Registration Application module components | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-di.class.skill\|module-application-di.class.skill]]                           |
+| /Commands/{CommandName}                | Concrete command handler                   |                                                                                                                                                                           |
+| {CommandName}.Handler.cs               | Command handler                            | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-command-handler.class.skill\|module-application-command-handler.class.skill]] |
+| {CommandName}.Validator.cs             | Command request validator                  | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-validator.class.skill\|module-application-validator.class.skill]]             |
+| /Queries/{QueryName}                   | Concrete Query handler                     |                                                                                                                                                                           |
+| {QueryName}.Handler.cs                 | Query handler                              | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-query-handler.skill\|feature-query-handler.skill]]                                                                                                        |
+| {QueryName}.Validator.cs               | Query request validator                    | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-validator.class.skill\|feature-validator.skill]]                              |
+| /EventHandlers                         | Handlers of events                         |                                                                                                                                                                           |
+| {EventName}.EventHandler.cs            | Event handler                              | [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill\|domain-event-handler-pattern.skill]]                                      |
+| /Specifications                        | Domain Specifications                      |                                                                                                                                                                           |
+| {SpecificationName}.Spec.cs.           | Application specification                  | [[input heap/application-specification.skill\|application-specification.skill]]                                                                                           |
+| /Resolvers                             | Guid resolvers for entites                 |                                                                                                                                                                           |
+| {Entity}Guid.Resolver.cs               | Guid resolver for concrete entity          | [[skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-resolver.class.skill]]                                                        |
 # What Does NOT Belong Here
 - Business logic — belongs in Domain
 - DbContext — belongs in App.Infrastructure
@@ -201,7 +202,7 @@ MUST NOT:
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — structure and rules for command handlers
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]] — structure and rules for query handlers
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — event handlers in /EventHandlers
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill]] — event handlers in /EventHandlers
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]] — complex specs in /Specifications
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — repository and UnitOfWork abstractions used here
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — Application layer in module structure

@@ -4,7 +4,7 @@ status: draft
 name: command-handler-pattern
 description: rules for implementing MediatR command handlers in the application layer
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - application

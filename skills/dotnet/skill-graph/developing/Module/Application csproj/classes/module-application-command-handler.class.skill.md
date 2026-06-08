@@ -2,15 +2,15 @@
 name: feature-command-handler
 description: rules for implementing MediatR command handlers in the Application layer
 domain: skill
-type: pattern
+type: template
 version: 20260607
 tags:
   - dotnet
   - application
   - cqrs
-  - mediatr
+  - mediatR
   - command
-  - skill/pattern/class
+  - skill/template/class
 triggers:
   - implement command handler
   - write command handler
@@ -40,17 +40,7 @@ Define how to implement a command handler in `{ModuleName}.Application`. A comma
 
 # Command Declaration
 Commands live in [[skills/dotnet/skill-graph/developing/Module/Interfaces csproj/classes/module-interface-command.class.skill|{ModuleName}.Interfaces/Commands]] — not in Application.
-
-```csharp
-// Task.Interfaces/Commands/CreateTaskCommand.cs
-public record CreateTaskCommand(
-    Guid Guid,
-    string Title,
-    int AssigneeId
-) : ICommand<Result<CreateTaskResult>>;
-
-public record CreateTaskResult(int Id);
-```
+![[skills/dotnet/skill-graph/developing/Module/Interfaces csproj/classes/module-interface-command.class.skill#Implementation|{ModuleName}.Interfaces/Commands]]
 
 # Handler Structure
 Standard flow: **load → guard → domain call → stage → return result**
@@ -114,28 +104,18 @@ public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, Result<Cre
 ```
 
 # Result Status Reference
-
-| Result | HTTP meaning |
-|---|---|
-| `Result.Created(value)` | 201 — entity created |
-| `Result.Success(value)` | 200 — operation succeeded |
-| `Result.NoContent()` | 204 — succeeded, no body |
-| `Result.NotFound()` | 404 — entity not found |
-| `Result.Conflict(msg)` | 409 — business conflict |
-| `Result.Invalid(errors)` | 400 — validation failed |
-| `Result.Error(msg)` | 500 — unexpected failure |
+![[skills/dotnet/skill-graph/developing/App/Host csproj/class/app-host-result-mapper.class.skill#Result status mapping|app-host-result-mapper.class.skill]]
 
 HTTP mapping is the API layer's responsibility — see [[skills/dotnet/skill-graph/developing/App/Host csproj/class/app-host-result-mapper.class.skill|app-host-result-mapper.class.skill]].
-
 # Rules
 MUST:
-- Command implements `ICommand<Result<T>>` — activates UnitOfWorkBehavior
+- Command implements `ICommand<Result<T>>` — activates `UnitOfWorkBehavior`
 - Handler follows load → guard → domain call → stage → return structure
-- Handler injects `IRepository<T>` — never DbContext
+- Handler injects `IRepository<T>` — never `DbContext`
 - Handler returns `Result<T>` for every outcome
 - Sub-commands dispatched via `_mediator.Send()`
 MUST NOT:
-- Call `SaveChangesAsync` — UnitOfWorkBehavior owns this
+- Call `SaveChangesAsync` — `UnitOfWorkBehavior` owns this
 - Contain business rules — delegate to entity or domain service
 - Reference other module's Domain or Application directly
 

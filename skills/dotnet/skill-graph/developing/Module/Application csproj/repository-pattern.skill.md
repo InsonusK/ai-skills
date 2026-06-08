@@ -4,7 +4,7 @@ status: draft
 name: repository-pattern
 description: rules for defining and using repository abstractions in the application layer
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - application
@@ -285,5 +285,5 @@ MUST NOT:
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — handlers use IRepository and IUnitOfWork via this pattern
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]] — query handlers use IReadRepository
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]] — all repository queries use specifications
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — event handlers also use IRepository + IUnitOfWork
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill]] — event handlers also use IRepository + IUnitOfWork
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — interfaces in BuildingBlocks, implementation in App.Infrastructure

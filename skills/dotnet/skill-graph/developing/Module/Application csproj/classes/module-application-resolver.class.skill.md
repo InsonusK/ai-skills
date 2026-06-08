@@ -3,10 +3,10 @@ uid: 6a06b898-f9cc-4977-8ec1-1d0466f8bee9
 name: module-application-resolver
 description: defines how to implement IGuidResolver for a command that carries a client-generated Guid
 domain: skill
-type: pattern
+type: template
 version: 20260606
 tags:
-  - skill/pattern/class
+  - skill/template/class
   - dotnet
   - application
   - guid

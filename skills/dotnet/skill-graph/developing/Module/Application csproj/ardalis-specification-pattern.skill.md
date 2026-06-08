@@ -4,7 +4,7 @@ status: draft
 name: ardalis-specification-pattern
 description: rules for defining and placing Ardalis specifications for entity queries and projections
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - domain
@@ -211,7 +211,7 @@ Specs are tested via integration tests against a real DB — not in isolation.
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — IRepository and IReadRepository execute specifications
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — idempotency specs used in event handlers
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill]] — idempotency specs used in event handlers
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — command handlers load entities via specs
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill]] — query handlers return results via projection specs
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill]] — specs filter entities defined in Domain

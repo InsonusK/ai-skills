@@ -79,15 +79,15 @@ Both types travel the same pipeline. Scope and placement differ — transport do
 
 # Component Map
 
-| Component                                | Lives in                   | Skill                                  |
-| ---------------------------------------- | -------------------------- | -------------------------------------- |
-| `IDomainEvent` base interface            | `Shared`                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]         |
-| Event definition (`record`)              | `{Module}.Domain/Events`   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]         |
-| Entity `_domainEvents` collection        | `{Module}.Domain/Entities` | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]         |
-| `OutboxMessage` class                    | `BuildingBlocks`           | [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]]               |
-| `DomainEventInterceptor`                 | `App.Infrastructure`       | [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]]               |
-| `OutboxDispatcher` background service    | `App.Infrastructure`       | [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]]               |
-| `INotificationHandler<T>` implementation | `{Module}.Application`     | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] |
+| Component                                | Lives in                   | Skill                                                                                                 |
+| ---------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `IDomainEvent` base interface            | `Shared`                   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]      |
+| Event definition (`record`)              | `{Module}.Domain/Events`   | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]      |
+| Entity `_domainEvents` collection        | `{Module}.Domain/Entities` | [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]]      |
+| `OutboxMessage` class                    | `BuildingBlocks`           | [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill]]               |
+| `DomainEventInterceptor`                 | `App.Infrastructure`       | [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill]]               |
+| `OutboxDispatcher` background service    | `App.Infrastructure`       | [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill]]               |
+| `INotificationHandler<T>` implementation | `{Module}.Application`     | [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill]] |
 
 # Future: splitting to separate repos
 When a module moves to its own repo, no domain or handler code changes. Add one component in the sending repo:
@@ -114,7 +114,7 @@ Message broker consumer (App.Infrastructure)
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill]] — how to define events and raise them on entities
-- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/outbox-pattern.skill]] — OutboxMessage, interceptor, background dispatcher
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/domain-event-handler-pattern.skill]] — how to write handlers, idempotency rules
+- [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/outbox-pattern.skill]] — OutboxMessage, interceptor, background dispatcher
+- [[skills/dotnet/skill-graph/developing/Module/Application csproj/domain-event-handler-pattern.skill]] — how to write handlers, idempotency rules
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — where each component lives in the solution
 - [[skills/dotnet/skill-graph/developing/Architecture/cross-module-interaction.skill]] — integration events as cross-module communication

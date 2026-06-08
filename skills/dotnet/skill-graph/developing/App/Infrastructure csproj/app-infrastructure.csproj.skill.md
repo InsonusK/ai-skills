@@ -4,10 +4,10 @@ name: skill-name
 description: Describe what skill define
 domain: skill
 type: template
-version: 20260606
+version: 20260607
 tags:
   - skill/template/csproj
-  - tag for skill classification
+  #- tag for skill classification
 triggers:
   - when skill should called
 ---
@@ -44,7 +44,7 @@ Where does it store in solution
 /src
 	/ProjectName
 ```
-## Structure
+## Project Structure
 ```
 What is project structure
 ```

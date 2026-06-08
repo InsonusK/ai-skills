@@ -128,7 +128,7 @@ Order matters — behaviors execute in registration order.
 - Entities are addressed by `int Id` in all operations after creation
 - `Guid` appears only on creation commands — correlation handle for external systems
 - `Guid` never appears in routes, query strings, or update commands
-- See [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill]] for the creation flow
+- See [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/async-external-creation.skill]] for the creation flow
 
 # Read Stack Design
 
@@ -180,4 +180,4 @@ Order matters — behaviors execute in registration order.
 - [[skills/dotnet/skill-graph/developing/Architecture/cross-module-interaction.skill]] — cross-module command and query contracts
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill]] — ConcurrencyBehavior in the pipeline
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill]] — GuidResolvingBehavior in the pipeline
-- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill]] — Guid identity rules for creation
+- [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/async-external-creation.skill]] — Guid identity rules for creation

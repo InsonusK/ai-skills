@@ -3,7 +3,8 @@ uid: 7457c571-268f-4968-a90d-2ee3a0d58314
 name: domain-rule-pattern
 description: rules for implementing reusable domain predicates as static extension methods
 domain: skill
-type: pattern
+type: template
+version: 20260609
 tags:
   - dotnet
   - domain
@@ -11,7 +12,7 @@ tags:
   - ddd
   - rules
   - predicates
-  - skill/pattern/class
+  - skill/template/class
 triggers:
   - domain rule design
   - business predicate
@@ -31,7 +32,8 @@ Define a unified pattern for implementing reusable, framework-independent domain
 - Rules are stateless, deterministic, and side-effect free
 - Rules have no infrastructure or framework dependencies
 
-# Place in csproj
+# Structure
+## Place in csproj
 Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]
 ```
 /{ModuleName}.Domain
@@ -41,9 +43,19 @@ Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-do
 		CanDriveCarRule.cs
 	{ModuleName}.Domain.csproj
 ```
-# Contracts		  
-## Value Object Rule
-Rules scoped to a single [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|Value Object]] are implemented as static extension methods on that VO type.
+
+## Naming convention
+Rule class naming: `{Condition}Rule` for contextual rules, `{Type}Rules` for VO extension classes.
+
+| Type               | Example                                |
+| ------------------ | -------------------------------------- |
+| VO extension class | `AgeRules`, `MoneyRules`               |
+| Contextual rule    | `CanDriveCarRule`, `HasPermissionRule` |
+| Primitive rule     | `IntRules`, `StringRules`              |
+
+## Implementation	  
+### Value Object Rule
+Rules scoped to a single [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|Value Object]] are implemented as static extension methods on that VO type.
 ```CSharp
 public static class AgeRules
 {
@@ -51,7 +63,7 @@ public static class AgeRules
     public static bool IsOld(this Age age) => age.Value > 90;
 }
 ```
-## Primitive rule — single source of truth
+### Primitive rule — single source of truth
 Primitive rule holds the logic. [[#Value Object Rule|VO rules]] delegate to it — no duplication.
 ```csharp
 public static class IntRules
@@ -64,7 +76,7 @@ public static class AgeRules
     public static bool IsPositive(this Age age) => age.Value.IsPositive();
 }
 ```
-## Contextual Rules — multiple values
+### Contextual Rules — multiple values
 Rules depending on multiple values use a tuple extension method.
 ```CSharp
 public static class CanDriveCarRule
@@ -81,8 +93,8 @@ public static class CanDriveCarRule
 }
 ```
 
-## Duplicated rules
-Same rule for different type of ValueObjects and primitives must have only one validation implementation
+### Duplicated rules
+Same rule for different type of [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|Value Object]] and primitives must have only one validation implementation
 ```CSharp
 // Primitive rule is the single source of truth
 public static class IntRules
@@ -116,14 +128,6 @@ public static class CanDriveCarRule
 }
 ```
 
-# Naming
-Rule class naming: `{Condition}Rule` for contextual rules, `{Type}Rules` for VO extension classes.
-
-|Type|Example|
-|---|---|
-|VO extension class|`AgeRules`, `MoneyRules`|
-|Contextual rule|`CanDriveCarRule`, `HasPermissionRule`|
-|Primitive rule|`IntRules`, `StringRules`|
 
 # Rules
 MUST:
@@ -165,6 +169,6 @@ MUST NOT:
 - [ ]  Rule is pure — same input always returns same output
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object-pattern.skill]] — VOs use Rules for invariant validation in constructor
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|value-object-pattern.skill]] — VOs use Rules for invariant validation in constructor
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity-pattern.skill]] — Entities use Rules for invariant protection in setters and methods
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill|domain-service.skill]] — Domain Services compose Rules for multi-value business decisions

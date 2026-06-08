@@ -3,7 +3,7 @@ uid: 0d4baf72-1689-49d3-81e8-5ee93b22bb28
 name: entity-concurrency-pattern
 description: rules for adding the Version field and configuring the EF concurrency token on mutable entities
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - domain
@@ -39,7 +39,7 @@ public class SomeEditableDomainEntity
 }
 ```
 ## EF Configuration — Map as Concurrency Token
-- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|domain-configuration-pattern.skill]] must implement setup `Version` property as `concurrencyToken`
+- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|domain-configuration-pattern.skill]] must implement setup `Version` property as `concurrencyToken`
 ```CSharp
 public class SomeEditableDomainEntityConfig 
 	: IEntityTypeConfiguration<SomeEditableDomainEntity>
@@ -84,5 +84,5 @@ MUST NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — identifies which entity types require this pattern
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — EF mapping for the Version field goes in the config class
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|ef-configuration.skill]] — EF mapping for the Version field goes in the config class
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/concurrency-control-pattern.skill|concurrency-control-pattern.skill]] — pipeline behavior that reads Version for HTTP-level conflict detection

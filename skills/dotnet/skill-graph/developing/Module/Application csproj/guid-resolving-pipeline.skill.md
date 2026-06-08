@@ -4,7 +4,7 @@ status: draft
 name: guid-resolving-pipeline
 description: rules for resolving client-generated Guid to internal Id before handler runs via MediatR pipeline
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - application
@@ -23,7 +23,7 @@ aliases:
   - IHasGuid
 ---
 # Goal
-Define how client-generated Guids are resolved to internal entity Ids before the command handler runs. The pipeline behavior intercepts any command carrying a Guid, checks if the entity already exists, and short-circuits with 409 Conflict if it does — returning the existing entity so the client can recover without a second GET request. See [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill]] for the full client-side flow and architecture decisions behind this pattern.
+Define how client-generated Guids are resolved to internal entity Ids before the command handler runs. The pipeline behavior intercepts any command carrying a Guid, checks if the entity already exists, and short-circuits with 409 Conflict if it does — returning the existing entity so the client can recover without a second GET request. See [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/async-external-creation.skill]] for the full client-side flow and architecture decisions behind this pattern.
 
 # Core Principles
 - Guid resolution happens in the pipeline — handler never sees duplicate requests
@@ -265,9 +265,9 @@ MUST:
 
 # Relations
 
-- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill]] — architecture and client flow this pipeline implements
+- [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/async-external-creation.skill]] — architecture and client flow this pipeline implements
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill]] — entity Guid property and unique index
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill]] — TaskByGuidSpec used by resolver
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill]] — IReadRepository used in IGuidResolver implementation
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill]] — commands that use this pipeline implement IHasGuid
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill]] — unique index on Guid enforces DB-level idempotency
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill]] — unique index on Guid enforces DB-level idempotency

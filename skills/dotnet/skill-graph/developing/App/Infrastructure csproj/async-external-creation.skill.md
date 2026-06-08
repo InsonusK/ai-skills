@@ -4,7 +4,7 @@ status: draft
 name: async-external-creation
 description: pattern for handling async entity creation initiated by an external system using client-generated Guid
 domain: skill
-type: pattern
+type: template
 tags:
   - entity
   - creation
@@ -168,7 +168,7 @@ catch (ConflictException<CreateTaskResult> ex)
 
 ## EF unique index — {Module}.Domain/Configurations
 
-See [[skills/dotnet/skill-graph/Domain Layer/entity/external-created-entity.skill]] and [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill]].
+See [[skills/dotnet/skill-graph/Domain Layer/entity/external-created-entity.skill]] and [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill]].
 
 ```csharp
 public class TodoTaskConfig : IEntityTypeConfiguration<TodoTask>
@@ -210,7 +210,7 @@ MUST NOT:
 
 # Checklist
 - [ ] Entity has `Guid` property — immutable after creation
-- [ ] Unique index configured on `Guid` — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill]]
+- [ ] Unique index configured on `Guid` — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill]]
 - [ ] Command implements `IHasGuid`
 - [ ] `GuidResolvingBehavior` registered in MediatR pipeline
 - [ ] `IGuidResolver<TResult>` implemented in Application for this command
@@ -228,6 +228,6 @@ MUST NOT:
 
 # Relations
 - [[skills/dotnet/skill-graph/Domain Layer/entity/external-created-entity.skill]] — defines Guid property and unique index on entity
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill]] — defines EF unique index configuration
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill]] — defines EF unique index configuration
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill]] — external created entities follow external entity type rules
 - [[skills/dotnet/skill-graph/developing/Architecture/backend-project-structure.skill]] — GuidResolvingBehavior lives in BuildingBlocks, resolver in Application

@@ -4,7 +4,7 @@ status: implemented
 name: external-created-entity
 description: rules for adding the Guid field and unique index to entities created by an external system
 domain: skill
-type: pattern
+type: template
 tags:
   - dotnet
   - domain
@@ -29,7 +29,7 @@ Define how to add a client-generated Guid to an entity that is created by an ext
 - Guid is a correlation handle only — never used in domain logic or relations
 - Unique index on Guid is the database-level idempotency guard
 - Internal `Id` is still the only identity used inside the domain after creation
-- Follow [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill|async-external-creation.skill]] solution
+- Follow [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/async-external-creation.skill|async-external-creation.skill]] solution
 
 # Solution
 ## Setup Domain — Guid Field 
@@ -42,7 +42,7 @@ public class SomeExternalCreatedEntity
 }
 ```
 ## EF Configuration — Add Unique Index
-- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|domain-configuration-pattern.skill]] must implement unique index on field Guid
+- Inside [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|domain-configuration-pattern.skill]] must implement unique index on field Guid
 - Index name is a constant so it can be referenced in error handling and tests.
 ```CSharp
 public class SomeExternalCreatedEntityConfig 
@@ -90,7 +90,7 @@ SHOULD NOT:
 - [ ] When entity created Then `Guid` matches the value provided at creation
 
 # Relations
-- [[skills/dotnet/skill-graph/developing/App/Infrastructure Layer/async-external-creation.skill|async-external-creation.skill]] - architecture pattern for async creation
+- [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/async-external-creation.skill|async-external-creation.skill]] - architecture pattern for async creation
 - [[skills/dotnet/skill-graph/developing/Module/Application csproj/guid-resolving-pipeline.skill|guid-resolving-pipeline]] -  pipeline behavior that checks Guid before handler runs
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — identifies External Immutable and External Mutable as requiring this pattern
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration-pattern.skill|ef-configuration.skill]] — unique index goes in the entity's EF configuration class
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|ef-configuration.skill]] — unique index goes in the entity's EF configuration class

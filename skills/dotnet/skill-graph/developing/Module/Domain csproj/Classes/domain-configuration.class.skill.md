@@ -3,7 +3,8 @@ uid: 63ee3f0b-7b1e-4a5d-b0b1-5b0ef7a8aa00
 name: domain-configuration-pattern
 description: rules for implementing EF Core entity type configurations in the Domain project
 domain: skill
-type: pattern
+type: template
+version: 20260609
 tags:
   - dotnet
   - domain
@@ -11,7 +12,7 @@ tags:
   - ef-core
   - configuration
   - persistence-mapping
-  - skill/pattern/class
+  - skill/template/class
 triggers:
   - entity framework configuration
   - entity type configuration
@@ -33,9 +34,15 @@ Define how to write EF Core entity type configurations. One configuration class 
 - Domain entity must have zero EF attributes (`[Column]`, `[Index]`, etc.)
 - Configuration is the only place that knows about column names, table names, and constraints
 - Configuration registered via assembly scan — never manually per entity
-- Cross-module foreign keys are configured in App.Infrastructure only
+- Cross-module foreign keys are configured in [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/class/app-infreastructure-ef-configuration.skill.md|App.Infrastructure EF configuration]] only
 
-# Place in csproj
+# Governed by
+- [[skills/dotnet/skill-graph/developing/Architecture/solution/cross-module-communication.solution.skill|cross-module-relation-ef-configuratio.solution.skill]] - define that cross module relation define in [[skills/dotnet/skill-graph/developing/App/Infrastructure csproj/app-infrastructure.csproj.skill|app-infrastructure.csproj.skill]]
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]] — define configuration Version field as `IsConcurrencyToken`
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill|external-created-entity.skill]] — define requirement of unique index on `Guid` field
+
+# Structure
+## Place in csproj
 Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill#Structure|module-domain-csproj.skill]]
 ```
 /{ModuleName}.Domain
@@ -45,9 +52,19 @@ Defined in [[skills/dotnet/skill-graph/developing/Module/Domain csproj/module-do
 	{ModuleName}.Domain.csproj
 ```
 
-# Contracts
+## Naming convention
+- class name
+	- rule: EntityName + Config
+	- pattern: {EntityName}Config
+	- example: TodoTaskConfig
+- file name:
+	- rule: EntityName + .Config.cs
+	- pattern: {EntityName}.Config.cs
+	- example: TodoTask.Config.cs
 
-## Base shape
+## Implementation
+
+### Base shape
 ```CSharp
 public class TodoTaskConfig : IEntityTypeConfiguration<TodoTask>
 {
@@ -60,7 +77,7 @@ public class TodoTaskConfig : IEntityTypeConfiguration<TodoTask>
 }
 ```
 
-## Index definition
+### Index definition
 Index names are static constants on the config class — referenced in tests and error handling.
 ```CSharp
 public class TodoTaskConfig : IEntityTypeConfiguration<TodoTask>
@@ -78,7 +95,7 @@ public class TodoTaskConfig : IEntityTypeConfiguration<TodoTask>
 }
 ```
 
-## Relation definition
+### Relation definition
 ```CSharp
 entityBuilder
     .HasMany(e => e.SubTasks)
@@ -88,8 +105,8 @@ entityBuilder
     .OnDelete(DeleteBehavior.Cascade);
 ```
 
-## Multi-property Value Object mapping (OwnsOne)
-Required for any entity that holds a multi-property VO — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill]].
+### Multi-property Value Object mapping (OwnsOne)
+Required for any entity that holds a multi-property VO — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill]].
 ```CSharp
 entityBuilder.OwnsOne(e => e.Cash, money =>
 {
@@ -98,7 +115,7 @@ entityBuilder.OwnsOne(e => e.Cash, money =>
 });
 ```
 
-## Concurrency token (RowVersion)
+### Concurrency token (RowVersion)
 Required for all mutable entities — see [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill]].
 ```CSharp
 entityBuilder
@@ -108,7 +125,7 @@ entityBuilder
     .ValueGeneratedOnAddOrUpdate();
 ```
 
-## Registration in DbContext
+### Registration in DbContext
 All configurations are registered via assembly scan — never manually per entity.
 ```CSharp
 protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -156,4 +173,4 @@ MUST NOT:
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill|entity.skill]] — defines which entity types require which configuration pieces
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]] — requires Version field registered as `IsConcurrencyToken`
 - [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill|external-created-entity.skill]] — requires unique index on `Guid` field
-- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object-pattern.skill|value-object-pattern.skill]] — multi-property VOs require `OwnsOne` mapping here
+- [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|value-object-pattern.skill]] — multi-property VOs require `OwnsOne` mapping here
