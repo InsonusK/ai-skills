@@ -22,40 +22,62 @@ extended_by:
 **AUTHORING RULE**: Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 # Goal
 ```hint
-List of goals that are pursued by the creation of this skill.
-Formed as summary of all goals from the solutions which create or extend this class
+List of Goals that are pursued by the creation of this skill.
+Formed as summary of all Goals from the solutions which create or extend this class
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this class extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Class extension.{Class name}
+- Under class extension header take subheader Goals
+- Summarize all finded Goals
+
+MUST:
+- If Goals conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
 
-and then Applied solutions with links to all solutions which effect to this goals
+After summarized list add Applied solutions list with links to all solutions which effect to this Goals. Link must follow to header "Implementation.{Project name} (.csproj).Class extension.{Class name}" in solution
 ```
 ```example
 - Enforce transport validation before command handler executes 
 - Prevent duplicate creation via Guid uniqueness check 
 
 __Applied solutions:__
-- [[solution from created by#header where define goals for this class]]
-- [[solution from extended by#header where define goals for this class]] 
+- [[solution from created by#{Class name}]]
+- [[solution from extended by#{Class name}]] 
 ```
 
-# Core Principles
+# Core Principals
 ```hint
-Core principalse that a class should follow
-Formed as summary of all principals from the solutions which create or extend this class
+List of Core Principals that are pursued by the creation of this skill.
+Formed as summary of all Core Principals from the solutions which create or extend this class
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this class extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Class extension.{Class name}
+- Under class extension header take subheader Core Principal
+- Summarize all finded Core Principals
+
+MUST:
+- If Core Principals conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
-  
-and then Applied solutions with links to all solutions which effect to this core principasl
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Core Principals. Link must follow to header "Implementation.{Project name} (.csproj).Class extension.{Class name}" in solution
 ```
 ```example
 - Rules define business predicates
 - Entities define consistency.
 
 __Applied solutions:__
-- [[solution from created by#header where define core principal for this class]]
-- [[solution from extended by#header where define core principal for this class]]
+- [[solution from created by#{Class name}]]
+- [[solution from extended by#{Class name}]]
 ```
 
 # Structure
@@ -84,9 +106,24 @@ class naming convension. Fill table
 
 ## Implementation
 ```hint
-Implementation after applying all solutions (created_by and extended_by)
+Implementation after applying all solutions
 
-and then Applied solutions with links to all applied solutions for result implementation
+HOW TO SUMMARIZED IMPLEMENTATION:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this class extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Class extension.{Class name}
+- Under class extension header take subheader Implementation changes
+- Summarize all finded Implementation changes
+
+MUST:
+- If Implementation changes conflicted to each other as user to solve the problem
+
+RECOMENDATION:
+- Prefer bullet list
+- Prefer pure copy with out changing
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Implementation. Link must follow to header "Implementation.{Project name} (.csproj).Class extension.{Class name}" in solution
+
 ```
 ```example
 public class SomeEntity: IGuidEntity{
@@ -95,18 +132,30 @@ public class SomeEntity: IGuidEntity{
 }
 
 __Applied solutions:__
-- [[solution link from created_by#header with implementation of this class]]
-- [[solution link from extended_by#header with implementation of this class]]
+- [[solution link from created_by#{Class name}]]
+- [[solution link from extended_by#{Class name}]]
 ```
 
 # Rules
 ```hint
-define MUST, SHOULD, SHOULD NOT, MUST NOT rules
-Formed as summary of all rules for this class from the solutions which create or extend this class
-RECOMENDATION: 
-- prefer pure copy from solution
+List of Rules that are pursued by the creation of this skill.
+Formed as summary of all Rules from the solutions which create or extend this class
 
-and then Applied solutions with links to all applied solutions where get rules
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this class extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Class extension.{Class name}
+- Under class extension header take subheader Rules
+- Summarize all finded Rules
+
+MUST:
+- If Rules conflicted to each other as user to solve the problem
+
+RECOMENDATION:
+- Prefer bullet list
+- Prefer pure copy with out changing
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Rules. Link must follow to header "Implementation.{Project name} (.csproj).Class extension.{Class name}" in solution
 ```
 ```example
 MUST:
@@ -126,12 +175,23 @@ __Applied solutions:__
 # Anti-patterns
 ```hint
 What mean that skill applyed wrong. 
-Formed as summary of all anti-patterns for this class from the solutions which create or extend this class
+Formed as summary of all Anti-patterns from the solutions which create or extend this class
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this class extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Class extension.{Class name}
+- Under class extension header take subheader Anti-patterns
+- Summarize all finded Anti-patterns
+
+MUST:
+- If Anti-patterns conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
 
-and then Applied solutions with links to all applied solutions where get anti patterns marks
+After summarized list add Applied solutions list with links to all solutions which effect to this Anti-patterns. Link must follow to header "Implementation.{Project name} (.csproj).Class extension.{Class name}" in solution
 ```
 ```example
 - Domain service takes `IRepository` parameter — application layer loads, domain decides
@@ -145,12 +205,23 @@ __Applied solutions:__
 # Check list
 ```hint
 what must be true before this template is considered correctly applied?
-Formed as summary of all check lists for this class from the solutions which create or extend this class
+Formed as summary of all Check list from the solutions which create or extend this class
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this class extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Class extension.{Class name}
+- Under class extension header take subheader Check list
+- Summarize all finded Check list
+
+MUST:
+- If Check list conflicted to each other as user to solve the problem
+
 RECOMENDATION:
-- Prefer checkbox list
+- Prefer bullet list
 - Prefer pure copy with out changing
 
-and then Applied solutions with links to all applied solutions from where we get check list points
+After summarized list add Applied solutions list with links to all solutions which effect to this Check list. Link must follow to header "Implementation.{Project name} (.csproj).Class extension.{Class name}" in solution
 ```
 ```example
 - [ ] Entity type selected from the matrix
@@ -164,12 +235,23 @@ __Applied solutions:__
 # Unittest TestCases
 ```hint
 list of unittests which must be created to test class
-Formed as summary of all testcases list for this class from the solutions which create or extend this class
+Formed as summary of all Check list from the solutions which create or extend this class
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this class extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Class extension.{Class name}
+- Under class extension header take subheader Check list
+- Summarize all finded Check list
+
+MUST:
+- If Check list conflicted to each other as user to solve the problem
+
 RECOMENDATION:
-- Prefer checkbox list
+- Prefer bullet list
 - Prefer pure copy with out changing
-  
-and then Applied solutions with links to all applied solutions from where we get test case list points
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Check list. Link must follow to header "Implementation.{Project name} (.csproj).Class extension.{Class name}" in solution
 ```
 ```example
 - [ ] Entity type selected from the matrix

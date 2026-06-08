@@ -1,5 +1,5 @@
 ---
-uid:
+uid: f35f923e-960f-42d4-a724-24ee9e70bf23
 name: solution-layer-structure
 description: Defines the full solution folder structure, all non-module layers, their responsibilities, and the complete dependency rules between all layers
 domain: skill
@@ -24,10 +24,10 @@ creates:
   - App.Infrastructure.Migrations csproj skill
   - App.Queries csproj skill
 extends:
-  - "[[{Module}.Domain.csproj.skill]]"
-  - "[[{Module}.Interfaces.csproj.skill]]"
-  - "[[{Module}.Application.csproj.skill]]"
-  - "[[{Module}.Api.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Interface csproj/{Module}.Interfaces.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Application csproj/{Module}.Application.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Api csproj/{Module}.Api.csproj.skill]]"
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/01-module-boundary.solution.skill|01-module-boundary.solution.skill]]"
 ---

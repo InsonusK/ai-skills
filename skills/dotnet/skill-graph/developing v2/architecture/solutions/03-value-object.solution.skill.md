@@ -1,5 +1,5 @@
 ---
-uid:
+uid: 662a73ac-4d9b-4b7b-b6f4-b7cc1da4d44f
 name: value-object
 description: Defines the Value Object pattern — immutable self-validating types that encode domain semantics and eliminate primitive obsession
 domain: skill
@@ -17,9 +17,9 @@ triggers:
   - encode domain concept as type
   - design immutable domain type
 creates:
-  - "[[ValueObject.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/ValueObjects/ValueObject.class.skill]]"
 extends:
-  - "[[{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
 depends_on:
   - "[[02-solution-layer-structure.solution.skill]]"
 ---

@@ -1,5 +1,5 @@
 ---
-uid:
+uid: bb207021-4cea-4004-a37b-12d042489744
 name: domain-rule
 description: Defines the Domain Rule pattern — stateless deterministic predicates that encode reusable business conditions as static extension methods
 domain: skill
@@ -17,11 +17,11 @@ triggers:
   - extract business condition
   - reusable domain validation
 creates:
-  - "[[PrimitiveRule.class.skill]]"
-  - "[[ValueObjectRule.class.skill]]"
-  - "[[ContextualRule.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/PrimitiveRule.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ValueObjectRule.class.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Rules/ContextualRule.class.skill]]"
 extends:
-  - "[[{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
 depends_on:
   - "[[02-solution-layer-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/03-value-object.solution.skill]]"
@@ -54,6 +54,9 @@ depends_on:
 
 #### Goal
 - Store all domain rule types for this bounded context
+
+#### Core Principles
+- Rules define predicates — Entities define consistency — Value Objects define correctness
 
 #### Structure
 
@@ -90,6 +93,8 @@ MUST:
 - Static class with static extension methods on primitive types (`int`, `string`, `decimal`)
 - Single implementation — all VO overloads delegate here, never duplicate
 - Returns `bool` — never throws
+- Defines business meaning — not transport behavior, not framework behavior
+- Are Stateless, deterministic, and side-effect free
 
 ##### Implementation changes
 PrimitiveRule must be a static class with extension methods on the primitive type:
@@ -138,7 +143,9 @@ MUST NOT:
 - Static class with extension methods on the VO type
 - Always delegates to primitive overload — never reimplements logic
 - Named `{VOType}Rules` — e.g. `AgeRules`, `MoneyRules`
-
+- Defines business meaning — not transport behavior, not framework behavior
+- Are Stateless, deterministic, and side-effect free
+- Returns `bool` — never throws
 ##### Implementation changes
 ValueObjectRule must delegate to the primitive rule:
 
@@ -181,6 +188,9 @@ MUST NOT:
 - Primitive tuple overload holds the logic
 - VO tuple overload delegates to primitive tuple overload
 - Named `{Condition}Rule` — e.g. `CanDriveCarRule`, `HasPermissionRule`
+- Defines business meaning — not transport behavior, not framework behavior
+- Are Stateless, deterministic, and side-effect free
+- Returns `bool` — never throws
 
 ##### Implementation changes
 ContextualRule must use tuple extension methods with primitive overload as source of truth:

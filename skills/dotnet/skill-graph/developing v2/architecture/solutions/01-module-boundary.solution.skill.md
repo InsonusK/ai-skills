@@ -1,5 +1,5 @@
 ---
-uid:
+uid: 481d9975-77c6-433c-a48f-454622a64ef3
 name: module-boundary
 description: Defines what a module is, its four-project internal structure, folder placement in solution, and inter-module interaction rules
 domain: skill
@@ -16,10 +16,10 @@ triggers:
   - design module boundary
   - define bounded context structure
 creates:
-  - "[[{Module}.Domain.csproj.skill]]"
-  - "[[{Module}.Interfaces.csproj.skill]]"
-  - "[[{Module}.Application.csproj.skill]]"
-  - "[[{Module}.Api.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/{Module}.Domain.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Interface csproj/{Module}.Interfaces.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Application csproj/{Module}.Application.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Api csproj/{Module}.Api.csproj.skill]]"
 extends:
 depends_on:
 ---

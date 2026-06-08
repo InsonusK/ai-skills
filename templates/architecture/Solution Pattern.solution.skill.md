@@ -37,7 +37,7 @@ RECOMENDATION:
 - Define the system-level architecture for domain events — how events are raised, persisted, and dispatched across the application
 ```
 
-# Core Principles
+# Core Principals
 ```hint
 Core principalse that a solution should follow
 RECOMENDATION:
@@ -111,9 +111,11 @@ add suffix (extended) if project extended by the solution
 ## {Project name} (.csproj) (extended)
 ```
 ### Project extension
-#### Goal
+#### Goals
 ```hint
-Define how solution EXTENDS project goal
+Define how solution EXTENDS project goal.
+MUST:
+- show all added goals
 RECOMENDATION:
 - Prefer bullet list
 ```
@@ -121,9 +123,11 @@ RECOMENDATION:
 - encapsulate domain logic
 ```
 
-#### Core Principal
+#### Core Principals
 ```hint
 Define how solution EXTENDS project core principals
+MUST:
+- show all added Core Principals
 RECOMENDATION:
 - Prefer bullet list
 ```
@@ -182,6 +186,8 @@ ATTENTION:
 #### Rules
 ```hint
 Define how solution EXTENDS project MUST, SHOULD, SHOULD NOT, MUST NOT rules
+MUST:
+- show all added Rules
 ```
 ```example
 MUST:
@@ -220,9 +226,11 @@ add suffix (extended) if project extended by the solution
 ```example
 ## {Class name} (extended)
 ```
-##### Goal
+##### Goals
 ```hint
 Define how solution EXTENDS class goal
+MUST:
+- show all added Goals
 RECOMENDATION:
 - Prefer bullet list
 ```
@@ -230,9 +238,11 @@ RECOMENDATION:
 - Prevent duplicate creation via Guid uniqueness check 
 ```
 
-##### Core Principal
+##### Core Principals
 ```hint
 Define how solution EXTENDS class core principals
+MUST:
+- show all added Core Principals
 RECOMENDATION:
 - Prefer bullet list
 ```
@@ -257,6 +267,8 @@ public class SomeEntity: IGuidEntity{
 ##### Rule changes
 ```hint
 Define how solution EXTENDS class rules
+MUST:
+- show all added Rules
 ```
 ```example
 MUST:

@@ -21,13 +21,24 @@ extended_by:
 **AUTHORING RULE**: Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 # Goal
 ```hint
-List of goals that are pursued by the creation of this project.
-Formed as summary of all goals from the solutions which create or extend this project
+List of Goals that are pursued by the creation of this skill.
+Formed as summary of all Goals from the solutions which create or extend this project
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader Goals
+- Summarize all finded Goals
+
+MUST:
+- If Goals conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
 
-and then Applied solutions with links to all solutions which effect to this goals
+After summarized list add Applied solutions list with links to all solutions which effect to this Goals. Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 - store Entity, ValueObject
@@ -38,15 +49,26 @@ __Applied solutions:__
 - [[solution from extended by#header where define goals for this project]] 
 ```
 
-# Core Principles
+# Core Principals
 ```hint
-Core principalse that a project should follow
-Formed as summary of all principals from the solutions which create or extend this project
+List of Core Principals that are pursued by the creation of this skill.
+Formed as summary of all Core Principals from the solutions which create or extend this project
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader Core Principals
+- Summarize all finded Core Principals
+
+MUST:
+- If Core Principals conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
-  
-and then Applied solutions with links to all solutions which effect to this core principasl
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Core Principals. Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 - Rules define business predicates
@@ -70,7 +92,21 @@ Where does it store in solution
 What is project structure
 Formed as summary of all directory and files which was defined in solutions from created_by and extented_by
 
-and then Applied solutions with links to all solutions which effect to project
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader Project Structure
+- Summarize all finded Project Structure
+
+MUST:
+- If Project Structure conflicted to each other as user to solve the problem
+
+RECOMENDATION:
+- Prefer bullet list
+- Prefer pure copy with out changing
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Project Structure. Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 /ProjectName
@@ -88,8 +124,22 @@ __Applied solutions:__
 ```hint
 Table with directory and files which implement in project
 Formed as summary of all directory and files which was defined in solutions from created_by and extented_by
-  
-and then Applied solutions with links to all solutions which effect to project
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader Directory and class skills
+- Summarize all finded Directory and class skills
+
+MUST:
+- If Directory and class skills conflicted to each other as user to solve the problem
+
+RECOMENDATION:
+- Prefer bullet list
+- Prefer pure copy with out changing
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Directory and class skills. Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 | `Directory|file`  | Description                                    | Pattern skill          |
@@ -108,13 +158,24 @@ __Applied solutions:__
 
 ## What Does NOT Belong Here
 ```hint
-components which doesnot bolong to this project 
-Formed as summary of 'does not belog list' from the solutions which create or extend this project
+components which doesnot belong to this project 
+Formed as summary of all "What Does NOT Belong Here" from the solutions which create or extend this project
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader "What Does NOT Belong Here"
+- Summarize all finded "What Does NOT Belong Here"
+
+MUST:
+- If "What Does NOT Belong Here" conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
-  
-and then Applied solutions with links to all solutions which effect to this core principasl
+
+After summarized list add Applied solutions list with links to all solutions which effect to this "What Does NOT Belong Here". Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 - Command Handler - belong to [[Other csproj skill]]
@@ -128,14 +189,23 @@ __Applied solutions:__
 ## Allowed Dependencies
 ```hint
 Allowed dependencies that project may have
-Formed as summary of allowed dependency from the solutions which create or extend this project
+Formed as summary of all "Allowed dependencies" from the solutions which create or extend this project
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader "Allowed dependencies"
+- Summarize all finded "Allowed dependencies"
+
+MUST:
+- If "Allowed dependencies" conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
-ATTENTION:
-- It should not be changed by extended_by solution. Confirm extension from user  
-  
-and then Applied solutions with links to all solutions which effect to this core principasl
+
+After summarized list add Applied solutions list with links to all solutions which effect to this "Allowed dependencies". Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 - [[Shared]]
@@ -149,11 +219,23 @@ __Applied solutions:__
 # Rules
 ```hint
 define MUST, SHOULD, SHOULD NOT, MUST NOT rules
-Formed as summary of all rules for this project from the solutions which create or extend this project
-RECOMENDATION: 
-- prefer pure copy from solution
+Formed as summary of all Rules from the solutions which create or extend this project
 
-and then Applied solutions with links to all applied solutions where get rules
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader Rules
+- Summarize all finded Rules
+
+MUST:
+- If Rules conflicted to each other as user to solve the problem
+
+RECOMENDATION:
+- Prefer bullet list
+- Prefer pure copy with out changing
+
+After summarized list add Applied solutions list with links to all solutions which effect to this Rules. Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 MUST:
@@ -175,12 +257,24 @@ MUST NOT:
 # Anti-patterns
 ```hint
 What mean that skill applyed wrong. 
-Formed as summary of all anti-patterns for this project from the solutions which create or extend this project
+Allowed dependencies that project may have
+Formed as summary of all "Anti-patterns" from the solutions which create or extend this project
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader "Anti-patterns"
+- Summarize all finded "Anti-patterns"
+
+MUST:
+- If "Anti-patterns" conflicted to each other as user to solve the problem
+
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
 
-and then Applied solutions with links to all applied solutions where get anti patterns marks
+After summarized list add Applied solutions list with links to all solutions which effect to this "Anti-patterns". Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 - Domain service takes `IRepository` parameter — application layer loads, domain decides
@@ -194,12 +288,23 @@ __Applied solutions:__
 # Check list
 ```hint
 what must be true before this template is considered correctly applied?
-Formed as summary of all check lists for this project from the solutions which create or extend this project
+Formed as summary of all "Check list" from the solutions which create or extend this project
+
+HOW TO SUMMARIZED LIST:
+- get all soltuins from created_by and extended_by list
+- in each solution find header about this project extension. 
+  It will by on path: Implementation.{Project name} (.csproj).Project extension
+- Under class extension header take subheader "Check list"
+- Summarize all finded "Check list"
+
+MUST:
+- If "Check list" conflicted to each other as user to solve the problem
+
 RECOMENDATION:
-- Prefer checkbox list
+- Prefer bullet list
 - Prefer pure copy with out changing
 
-and then Applied solutions with links to all applied solutions from where we get check list points
+After summarized list add Applied solutions list with links to all solutions which effect to this "Check list". Link must follow to header "Implementation.{Project name} (.csproj)" in solution
 ```
 ```example
 - [ ] Entity type selected from the matrix
