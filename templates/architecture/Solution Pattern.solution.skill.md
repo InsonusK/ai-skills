@@ -212,8 +212,14 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 ```
 
-### Class extesion
+### Class extension
 #### {Class name}
+```hint
+add suffix (extended) if project extended by the solution
+```
+```example
+## {Class name} (extended)
+```
 ##### Goal
 ```hint
 Define how solution EXTENDS class goal
