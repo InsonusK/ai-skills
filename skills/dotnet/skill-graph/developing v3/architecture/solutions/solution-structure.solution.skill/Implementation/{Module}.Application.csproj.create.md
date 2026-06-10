@@ -44,7 +44,6 @@ change_kind: create
 - {Module}.Domain (own module)
 - {OtherModule}.Interfaces (other modules — contracts only)
 - Shared
-- BuildingBlocks
 
 # Rules
 

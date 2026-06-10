@@ -36,7 +36,7 @@ change_kind: create
 
 # Allowed Dependencies
 - {Module}.Interfaces (own module only)
-- BuildingBlocks (for shared API utilities)
+- Shared
 
 # Rules
 

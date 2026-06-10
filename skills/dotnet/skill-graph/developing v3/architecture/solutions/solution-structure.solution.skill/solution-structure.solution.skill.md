@@ -56,7 +56,7 @@ depends_on:
 - Every project belongs to exactly one layer — no project spans multiple layers
 - Dependencies flow inward — outer layers depend on inner layers, never the reverse
 - App.Host is the only composition root — it is the single place that wires everything together
-- Shared and BuildingBlocks have no business logic — they are framework primitives and cross-cutting utilities
+- Shared and BuildingBlocks have no business logic — Shared defines common contracts, BuildingBlocks implements technical patterns
 - Cross-module JOIN queries belong exclusively in App.Queries — never in Application or Domain
 - App.Infrastructure is the only layer that knows about persistence implementation — DbContext, EF Core, outbox
 
@@ -69,8 +69,8 @@ REPOSITORY
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Repository.create|App Repository structure]]
 
 PROJECT
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create|Shared.csproj]] - create - Cross-cutting primitives project
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]] - create - Reusable framework patterns project
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create|Shared.csproj]] - create - Defines common cross-cutting interfaces (e.g., IRepository, IUnitOfWork, IDomainEvent). No implementation, no business logic.
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]] - create - Implements application technical patterns (e.g., EF repositories, MediatR behaviors, outbox dispatchers). Does NOT define common interfaces — consumes interfaces from Shared.
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Interfaces.csproj.create|{Module}.Interfaces.csproj]] - create - Module public contracts project
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create|{Module}.Domain.csproj]] - create - Module business logic project
 	- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Entity}.cs.create|Entity.class.skill]] - create - Domain entity class
@@ -95,6 +95,8 @@ MUST:
 - App.Queries is the only place for cross-module JOIN queries
 - Shared has no project dependencies
 - BuildingBlocks depends only on Shared
+- BuildingBlocks does not define common interfaces — only implements patterns using interfaces from Shared
+- App.Host references BuildingBlocks; modules and other layers reference Shared directly to implement or consume interfaces
 - Pipeline behaviors registered once in App.Host
 
 MUST NOT:
@@ -115,7 +117,7 @@ MUST NOT:
 - Cross-module JOIN logic in Application — belongs in App.Queries
 - Global tests folder — tests live next to their module
 - Cross-module JOIN in module Application — belongs in App.Queries
-- DbContext referenced from module Application — use IRepository from BuildingBlocks
+- DbContext referenced from module Application — use IRepository from Shared (implemented in BuildingBlocks)
 - Pipeline behaviors registered inside module registration — register once in App.Host
 - Business logic in App.Host — wiring only
 
@@ -129,8 +131,9 @@ MUST NOT:
 - [ ] No direct dependency on another module's Application or Domain
 - [ ] Tests colocated with module projects
 - [ ] Solution folder structure matches defined layout
-- [ ] Shared.csproj has no project references
-- [ ] BuildingBlocks.csproj references only Shared
+- [ ] Shared.csproj has no project references and contains only interface definitions
+- [ ] BuildingBlocks.csproj references only Shared and contains only pattern implementations
+- [ ] App.Host references BuildingBlocks and does not directly reference Shared
 - [ ] App.Infrastructure is the only project with DbContext
 - [ ] App.Queries contains only cross-module JOIN handlers
 - [ ] App.Host is the only project referencing all modules
@@ -153,3 +156,4 @@ Not applicable — architecture is validated via architecture tests, not runtime
 - [ ] When module Api references Domain directly Then architecture test fails
 - [ ] When Shared has any project reference Then architecture test fails
 - [ ] When BuildingBlocks references anything other than Shared Then architecture test fails
+- [ ] When App.Host directly references Shared Then architecture test fails

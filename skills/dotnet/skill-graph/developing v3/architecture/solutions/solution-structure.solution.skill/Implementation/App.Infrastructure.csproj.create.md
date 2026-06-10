@@ -10,7 +10,7 @@ change_kind: create
 
 # Core Principals
 - App.Infrastructure is the only project with a concrete DbContext
-- App.Infrastructure implements interfaces defined in BuildingBlocks
+- App.Infrastructure implements interfaces defined in Shared
 - No module Application or Domain layer references App.Infrastructure
 
 # Structure
@@ -70,7 +70,7 @@ MUST NOT:
 - App.Infrastructure be referenced by App.Queries directly for DbContext
 
 # Anti-patterns
-- Module Application referencing App.Infrastructure — use repository abstractions from BuildingBlocks
+- Module Application referencing App.Infrastructure — use repository abstractions from Shared
 - Putting cross-module JOIN queries in App.Infrastructure — belongs in App.Queries
 
 # Check list

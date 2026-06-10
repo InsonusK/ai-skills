@@ -1,17 +1,18 @@
 ---
-description: Provide reusable framework-level patterns used by Application layer and infrastructure across all modules
+description: Implement reusable framework-level patterns consumed by App.Host and infrastructure across all modules
 name: BuildingBlocks.csproj
 change_kind: create
 ---
 
 # Goals
-- Provide reusable framework-level patterns used by Application layer and infrastructure across all modules
-- Define pipeline behavior contracts and base implementations
+- Implement application technical patterns used by App.Host and infrastructure across all modules
+- Provide pipeline behaviors, repository implementations, and cross-cutting utilities
 
 # Core Principals
-- BuildingBlocks contains reusable technical patterns, not business logic
+- BuildingBlocks implements reusable technical patterns, not business logic
 - BuildingBlocks depends only on Shared
-- All pipeline behaviors live here — registered once in App.Host, used by all modules
+- BuildingBlocks does NOT define common interfaces — it consumes interfaces from Shared
+- All pipeline behavior implementations live here — registered once in App.Host, used by all modules
 
 # Structure
 
@@ -19,32 +20,24 @@ change_kind: create
 ```
 /BuildingBlocks
   /MediatR
-    ICommand.cs
-    IQuery.cs
     UnitOfWorkContext.cs
-  /Repositories
-    IRepository.cs
-    IReadRepository.cs
-  /UnitOfWork
-    IUnitOfWork.cs
+    UnitOfWorkBehavior.cs
+    ValidationBehavior.cs
   /Outbox
     OutboxMessage.cs
-    IHasDomainEvents.cs
+    OutboxDispatcher.cs
   /Concurrency
-    IHasVersions.cs
-    IEntityVersionResolver.cs
     ETagEncoder.cs
+    EntityVersionResolver.cs
   BuildingBlocks.csproj
 ```
 
 ## Directory and class skills
-| `Directory\|file` | Description                                             |
-| ----------------- | ------------------------------------------------------- |
-| /MediatR          | Command/Query markers, pipeline behavior base contracts |
-| /Repositories     | IRepository and IReadRepository abstractions            |
-| /UnitOfWork       | IUnitOfWork abstraction                                 |
-| /Outbox           | OutboxMessage and IHasDomainEvents                      |
-| /Concurrency      | ETag, version interfaces                                |
+| `Directory\|file` | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| /MediatR          | Pipeline behavior implementations and context  |
+| /Outbox           | OutboxMessage model and dispatcher             |
+| /Concurrency      | ETag encoder and entity version resolver       |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
@@ -52,8 +45,8 @@ change_kind: create
 
 # What Does NOT Belong Here
 - Business logic — belongs to Domain
-- Infrastructure implementations — belongs to App.Infrastructure
 - Module-specific handlers or validators — belong to module Application
+- Common interface definitions — belong to Shared
 
 # Allowed Dependencies
 - Shared
@@ -61,21 +54,21 @@ change_kind: create
 # Rules
 
 MUST:
-- All pipeline behavior contracts defined here
-- IRepository, IReadRepository, IUnitOfWork defined here
+- All pipeline behavior implementations defined here
 - BuildingBlocks depends only on Shared
 
 MUST NOT:
 - BuildingBlocks reference any module project
 - BuildingBlocks reference App.Infrastructure or App.Queries
 - BuildingBlocks contain business logic
+- BuildingBlocks define common interfaces — only Shared defines interfaces
 
 # Anti-patterns
 - Placing domain entities in BuildingBlocks — they belong in module Domain
-- Placing infrastructure implementations in BuildingBlocks — they belong in App.Infrastructure
 - Adding module-specific handlers or validators in BuildingBlocks
+- Defining common interfaces in BuildingBlocks — they belong in Shared
 
 # Check list
 - [ ] BuildingBlocks.csproj references only Shared
-- [ ] IRepository, IReadRepository, IUnitOfWork present
-- [ ] ICommand, IQuery markers present
+- [ ] BuildingBlocks.csproj contains only pattern implementations
+- [ ] No common interface definitions in BuildingBlocks

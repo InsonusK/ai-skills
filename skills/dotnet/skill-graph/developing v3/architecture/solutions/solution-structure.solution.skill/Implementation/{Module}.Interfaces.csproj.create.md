@@ -42,7 +42,6 @@ change_kind: create
 - Infrastructure concerns — belongs to App.Infrastructure
 
 # Allowed Dependencies
-- None — Interfaces has no project dependencies
 - Shared
 
 # Rules
@@ -67,5 +66,5 @@ MUST NOT:
 - [ ] /Queries folder exists
 - [ ] /DTOs folder exists
 - [ ] /Events folder exists
-- [ ] No project references in Interfaces.csproj
+- [ ] Interfaces.csproj references only Shared
 - [ ] No implementation code in any file
