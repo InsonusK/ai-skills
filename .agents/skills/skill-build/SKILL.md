@@ -14,3 +14,10 @@ whenToUse: when you write a skill
   - Authoring rules are defined in ```hint``` blocks. 
   - Authoring examples are provided in ```example``` blocks.
   - After filling template with real content remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file.
+
+# Rules
+MUST:
+- Remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file.
+- Follow "# Who Apply this template" rules defined in template.
+MUST NOT:
+- Change other skills except the one you are building without explicit instruction in the template.

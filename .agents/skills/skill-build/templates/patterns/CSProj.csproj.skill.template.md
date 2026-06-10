@@ -18,7 +18,9 @@ extended_by:
   #Example:
   #- "[[link]]"
 ---
-**AUTHORING RULE**: Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
+# Who Apply this template
+- Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
+
 # Goal
 ```hint
 List of Goals that are pursued by the creation of this skill.
