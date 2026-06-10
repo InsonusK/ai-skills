@@ -1,0 +1,123 @@
+---
+description: Pipeline behavior that commits at depth 1 after handler completes
+project_name: BuildingBlocks
+name: UnitOfWorkBehavior.cs
+change_kind: create
+---
+
+# Goals
+- Automatically commit all staged changes after the top-level command handler completes
+- Prevent sub-commands from committing prematurely by checking `UnitOfWorkContext.Depth`
+- Guarantee that if the handler throws, `SaveChangesAsync` is never called — changes are discarded
+
+# Core Principles
+- Increments `UnitOfWorkContext.Depth` on entry, decrements in `finally` — depth always restored even on exception
+- Calls `SaveChangesAsync` only when `Depth == 1` — the outermost command in the current request
+- Sub-commands reach this behavior with `Depth > 1` — they stage changes but do not commit
+- **No catch/rollback block** — EF Core uses implicit transactions. When `SaveChangesAsync` is not called (because handler threw), the DbContext is disposed at end of request scope and all pending changes are silently abandoned. No explicit rollback is necessary. If explicit transactions are introduced in the future, a catch/rollback block must be added at that point.
+- `try/finally` ensures depth counter is always restored — no leaked depth on exception
+- Constrained to `where TRequest : ICommand` — never activates for query requests
+
+# Naming convention
+| use case | class name pattern | class name | file name pattern | file name |
+| --- | --- | --- | --- | --- |
+| UoW pipeline behavior | `UnitOfWorkBehavior<TRequest, TResponse>` | `UnitOfWorkBehavior<AssignTaskCommand, Result>` | `UnitOfWorkBehavior.cs` | `UnitOfWorkBehavior.cs` |
+
+# Implementation changes
+
+```csharp
+// BuildingBlocks/MediatR/UnitOfWorkBehavior.cs
+using MediatR;
+using Shared.MediatR;
+using Shared.UnitOfWork;
+
+namespace BuildingBlocks.MediatR;
+
+public class UnitOfWorkBehavior<TRequest, TResponse>
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : ICommand
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly UnitOfWorkContext _context;
+
+    public UnitOfWorkBehavior(IUnitOfWork unitOfWork, UnitOfWorkContext context)
+    {
+        _unitOfWork = unitOfWork;
+        _context = context;
+    }
+
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken ct)
+    {
+        _context.Depth++;
+        try
+        {
+            var response = await next();
+
+            // only the outermost command commits
+            if (_context.Depth == 1)
+                await _unitOfWork.SaveChangesAsync(ct);
+
+            return response;
+        }
+        finally
+        {
+            // always restore depth — even on exception
+            _context.Depth--;
+        }
+    }
+}
+```
+
+## Nesting depth flow
+```
+HTTP Request arrives
+    ↓
+UnitOfWorkBehavior: Depth++ → Depth = 1   (root command)
+    ↓
+Handler dispatches sub-command via _mediator.Send()
+    ↓
+UnitOfWorkBehavior: Depth++ → Depth = 2   (sub-command)
+    ↓
+Sub-command handler completes — stages changes
+    ↓
+UnitOfWorkBehavior: Depth == 2 → skip SaveChanges
+UnitOfWorkBehavior: Depth-- → Depth = 1   (finally)
+    ↓
+Root handler continues — stages its own changes
+    ↓
+UnitOfWorkBehavior: Depth == 1 → call SaveChangesAsync  ← single atomic commit
+UnitOfWorkBehavior: Depth-- → Depth = 0   (finally)
+
+On handler exception:
+    ↓
+UnitOfWorkBehavior: Depth == 1 → SaveChangesAsync NOT called (response = await next() threw)
+UnitOfWorkBehavior: Depth-- → Depth = 0   (finally)
+DbContext disposed at request scope end → all pending changes abandoned automatically
+```
+
+# Rules
+
+MUST:
+- Constrained to `where TRequest : ICommand` — never activates on queries
+- Use `try/finally` to guarantee depth counter is always restored
+- Call `SaveChangesAsync` only when `Depth == 1`
+- Increment depth before `next()` — decrement in `finally`
+
+MUST NOT:
+- Call `SaveChangesAsync` when `Depth > 1` — sub-commands must not commit
+- Add a catch/rollback block — EF implicit transactions do not require it; adding one without explicit transaction management would be incorrect
+- Catch exceptions to swallow them — let them propagate, `SaveChangesAsync` is skipped naturally
+
+# Anti-patterns
+- `UnitOfWorkBehavior` without depth counter — sub-commands commit prematurely, breaking atomicity
+- `catch { rollback }` without explicit `BeginTransaction` — false safety, EF Core already provides implicit transactions
+- Catching exceptions to swallow them — breaks error propagation
+
+# Check list
+- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
+- [ ] `try/finally` wraps the entire handler invocation
+- [ ] `SaveChangesAsync` called only when `_context.Depth == 1`
+- [ ] Depth incremented before `next()` and decremented in `finally`
