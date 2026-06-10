@@ -41,7 +41,6 @@ extends:
   - "{Module}.Domain.csproj"
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]"
 ---
 # Goal
 - Decouple Application layer handlers from EF Core and DbContext by providing repository abstractions powered by Ardalis
@@ -71,7 +70,7 @@ depends_on:
 - `Ardalis.Specification` NuGet package — provides `ISpecification<T>`, `Specification<T>`, `IReadRepositoryBase<T>`, `IRepositoryBase<T>`
 - `Ardalis.Specification.EntityFrameworkCore` NuGet package — provides `RepositoryBase<T>`
 - definition of `module project structure` — [[solution-structure.solution.skill]] defines the projects where repositories and specs live
-- definition of `Entity` — [[domain-configuration.solution.skill]] defines how entities are configured before specs can filter them
+- definition of `Entity` — [[solution-structure.solution.skill]] defines the entity pattern that specifications filter
 - `Ardalis.Specification` NuGet package — provides `Specification<T>` and `ISpecification<T>` base types
 
 # Template Skill Mutations
