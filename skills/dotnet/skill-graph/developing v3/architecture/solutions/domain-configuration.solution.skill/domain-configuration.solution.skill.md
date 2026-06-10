@@ -4,7 +4,7 @@ name: domain-configuration
 description: Defines the EF Core entity type configuration pattern — one configuration class per entity that owns all persistence concerns, keeping domain entities free of infrastructure attributes
 domain: skill
 type: architecture
-version: 20260610
+version: 20260611
 tags:
   - skill/architecture/solution
   - dotnet

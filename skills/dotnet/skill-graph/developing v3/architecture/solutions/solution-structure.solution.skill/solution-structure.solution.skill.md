@@ -4,7 +4,7 @@ name: solution-structure
 description: Defines the full solution architecture including module boundaries, all non-module layers, their responsibilities, folder placement, and the complete dependency rules between all layers
 domain: skill
 type: architecture
-version: 20260610
+version: 20260611
 tags:
   - skill/architecture/solution
   - dotnet
