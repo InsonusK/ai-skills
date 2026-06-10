@@ -21,14 +21,14 @@ Define how solution EXTENDS repository structure
 Define how solution EXTENDS repository directory and files
 ```
 ```example
-| Directory \| file | Description        | Pattern skill    |
-| ----------------- | ------------------ | ---------------- |
-| /src/App          | project desciption | [[pattern link]] |
+| Directory \| file | Description        |
+| ----------------- | ------------------ |
+| /src/App          | project desciption |
 ```
 
-| Directory \| file | Description | Pattern skill |
-| ----------------- | ----------- | ------------- |
-|                   |             |               |
+| Directory \| file | Description |
+| ----------------- | ----------- |
+|                   |             |
 
 # Rules
 ```hint

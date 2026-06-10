@@ -1,5 +1,5 @@
 ---
-description: Short description waht must be made while creation or change in project
+description: Short description what must be made while creation or change in project
 name: #Project name
 change_kind: #create | extend
 #- create if solution create new template of project. Name of project must be added into creates property in the header of solution
@@ -49,15 +49,15 @@ Define how solution EXTENDS project structure
 Define how solution EXTENDS project directory and files
 ```
 ```example
-| Directory \| file   | Description           | Pattern skill       |
-| ------------------- | --------------------- | ------------------- |
-| /DirectoryName      | Directory description | [[link to pattern]] |
-| ClassInDirectory.cs | Class description     | [[link to pattern]] |
+| Directory \| file   | Description           |
+| ------------------- | --------------------- |
+| /DirectoryName      | Directory description |
+| ClassInDirectory.cs | Class description     |
 ```
 
-| Directory \| file | Description | Pattern skill |
-| ----------------- | ----------- | ------------- |
-|                   |             |               |
+| Directory \| file | Description |
+| ----------------- | ----------- |
+|                   |             |
 
 # NuGet Packages 
 ```hint
@@ -69,9 +69,9 @@ Define how solution EXTENDS project nuget dependencies
 | Ardalis   | >= 8.0             | SpecificationEvaluator |
 ```
 
-| Package                                   | Version constraint | Purpose                               |
-| ----------------------------------------- | ------------------ | ------------------------------------- |
-|                                           |                    |                                       |
+| Package | Version constraint | Purpose |
+| ------- | ------------------ | ------- |
+|         |                    |         |
 
 # What Does NOT Belong Here
 ```hint
