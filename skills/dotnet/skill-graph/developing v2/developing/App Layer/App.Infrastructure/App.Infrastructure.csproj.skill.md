@@ -14,7 +14,7 @@ triggers:
   - create App.Infrastructure project
   - add infrastructure layer
   - implement persistence
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill|02-solution-layer-structure.solution.skill]]"
 extended_by:
 aliases:
   - App.Infrastructure (.csproj)

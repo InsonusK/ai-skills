@@ -21,6 +21,7 @@ creates:
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Interface csproj/{Module}.Interfaces.csproj.skill|{Module}.Interfaces.csproj.skill]]"
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Application csproj/{Module}.Application.csproj.skill|{Module}.Application.csproj.skill]]"
   - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Api csproj/{Module}.Api.csproj.skill|{Module}.Api.csproj.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity]]"
 extends:
 depends_on:
 ---
@@ -159,19 +160,39 @@ MUST NOT:
 ### Project extension
 
 #### Goal
-- Own the business logic, entities, value objects, rules, and domain events for this bounded context
-
+- Own the entities, value objects, rules, and domain events for this bounded context
+- Store all entity types for this bounded context
+- Own the business logic and invariant enforcement for all entities in this module
 #### Core Principal
 - Domain is the innermost layer — pure business logic, no infrastructure dependencies
 - Domain has no knowledge of other modules
-
+- All entities live in /{Module}.Domain/Entities
+- Domain is the only layer that contains entity definitions
 #### Allowed Dependencies
 - Shared
 - Microsoft.EntityFrameworkCore (IEntityTypeConfiguration only)
+#### Structure
+##### Project Structure
+```
+/{Module}.Domain
+  /Entities
+    InternalImmutableEntity.cs
+    InternalMutableEntity.cs
+    ExternalImmutableEntity.cs
+    ExternalMutableEntity.cs
+```
+
+##### Directory and class skills
+
+|Directory \| file|Description|Pattern skill|
+|---|---|---|
+|/Entities|All entity types for this module|[[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill]]|
 
 #### Rules
 MUST:
 - Domain depends only on Shared and EF Core (for IEntityTypeConfiguration only)
+- All entities live in /{Module}.Domain/Entities
+
 MUST NOT:
 - Domain reference any other module's project
 - Domain use EF Core beyond IEntityTypeConfiguration
@@ -180,13 +201,100 @@ MUST NOT:
 - Injecting DbContext into a domain class — domain has no persistence dependency
 - Referencing another module's Domain for shared entity types — each module owns its own entities
 - Using EF Core attributes on domain entities — use configuration classes instead
+- Placing entities outside /Entities folder — breaks navigation and discoverability
+- Defining entities in Application or Interfaces — entities belong in Domain only
 
 #### Check list
-- [ ]  Domain.csproj references only EF Core
-- [ ]  No DbContext reference in any domain class
-- [ ]  No cross-module domain references
+- [ ] Domain.csproj references only EF Core
+- [ ] No DbContext reference in any domain class
+- [ ] No cross-module domain references
+- [ ] /Entities folder exists in {Module}.Domain
+- [ ] All entity classes placed in /Entities
 
 ---
+
+
+### Class extension
+
+#### [[skills/dotnet/skill-graph/developing v2/developing/Module Layer/Module.Domain csproj/classes/Entity.class.skill|Entity.class.skill]]
+
+##### Goals
+- Represent a domain object with stable identity, mutable state, encapsulated behavior, and invariant enforcement
+- Select the correct entity type from the type matrix before implementation
+- Define a domain entity as an object with stable identity where identity — not value — determines equality
+- Ensure every entity is assigned to exactly one type so the correct set of patterns is applied
+- Prevent invalid state by enforcing that all entity properties are accessible only through controlled access modifiers
+
+##### Core Principals
+
+- Entity has stable identity — `int Id` is always the system primary identity
+- Entity has mutable state — unlike Value Objects, state changes over time
+- Entity encapsulates behavior — state changes happen through methods, not direct property assignment from outside
+- Entity enforces invariants — invalid state must never be reachable
+- `Id` is always `internal set` — only persistence layer assigns it, never application code
+- Entity type is selected from the type matrix before implementation begins — not discovered during coding
+- All public setters or method must validate to prevent invalid state
+
+##### Naming convention
+
+| use case | class name pattern | class name | file name pattern | file name |
+| -------- | ------------------ | ---------- | ----------------- | --------- |
+| Entity   | {EntityName}       | Order      | {EntityName}.cs   | Order.cs  |
+
+##### Implementation changes
+
+Entity must be a class with `int Id` as primary identity. 
+
+```csharp
+public class Currency
+{
+    public int Id { get; internal set; }
+    private string _code;
+    public string Code {
+	    public get => this._code;
+      public set {
+		    if (value == "")
+		        throw new DomainException("Invalid code");
+		    this._code = value;
+		  }  
+		}
+    
+		public int Amount {get; internal set;}   
+    internal void SetAmount(int amount)
+    {
+        if (amount <= 0)
+            throw new DomainException("Invalid amount");
+
+        this.Amount = amount;
+    }
+
+}
+```
+
+##### Rule changes
+
+MUST:
+- Entity has `int Id` with `internal set`
+- All public property setters or methods must validation state
+- `Id` used in all domain logic, persistence, relationships, and internal APIs
+
+MUST NOT:
+- Use `public` setters on any entity property
+
+##### Anti-patterns (extended)
+
+- `public string Title { get; set; }` — public setter without validation
+- Placing entity in Application or Interfaces project — entities belong in Domain only
+
+##### Check list (extended)
+- [ ]  Entity type selected from the matrix
+- [ ]  `int Id` with `internal set` present
+- [ ]  All public property setters and methods has validation
+- [ ]  Entity placed in /{Module}.Domain/Entities
+
+##### Unittest TestCases (extended)
+
+- [ ]  When entity created Then Id is default (0) until persisted
 
 ## {Module}.Application (.csproj) 
 

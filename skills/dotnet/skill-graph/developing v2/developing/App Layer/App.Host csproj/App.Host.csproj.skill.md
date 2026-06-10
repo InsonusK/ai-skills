@@ -14,7 +14,7 @@ triggers:
   - create App.Host project
   - add host layer
   - implement composition root
-created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill]]"
+created_by: "[[skills/dotnet/skill-graph/developing v2/architecture/solutions/02-solution-layer-structure.solution.skill|02-solution-layer-structure.solution.skill]]"
 extended_by:
 ---
 
