@@ -95,3 +95,24 @@
 40. classes: App.Queries
 41. classes: {Module}.Api
 ```
+
+
+
+| #      | Solution name                 | Key creates                                                                    |
+| ------ | ----------------------------- | ------------------------------------------------------------------------------ |
+| 01     | `module-boundary`             | Module 4-project structure                                                     |
+| 02     | `solution-layer-structure` ✅  | App.Host, App.Infrastructure, BuildingBlocks, Shared, App.Queries              |
+| 03     | `domain-configuration` ✅      | EF IEntityTypeConfiguration                                                    |
+| 04     | `value-object` ✅              | VO sealed record                                                               |
+| 05     | `domain-rule` ✅               | Static rule extension methods                                                  |
+| 06     | `domain-behaviour` ✅          | Entity behavior methods + invariant enforcement                                |
+| **07** | **`ardalis-specification`**   | `Specification<T>`, `Specification<T,TResult>`, placement rules                |
+| **08** | **`repository`**              | `IRepository<T>`, `IReadRepository<T>` interfaces + `Repository<T>` impl       |
+| **09** | **`command-handler`**         | `ICommand`, Command record, CommandHandler, feature folder structure           |
+| **10** | **`validation`**              | `AbstractValidator`, `ValidationBehavior`, pipeline registration               |
+| **11** | **`unit-of-work`**            | `IUnitOfWork`, `UnitOfWorkContext`, `UnitOfWorkBehavior`, DI wiring            |
+| **12** | **`query-handler`**           | `IQuery`, QueryHandler, single-module + cross-module (App.Queries)             |
+| **13** | **`api-structure`**           | Controllers, Minimal API, MediatR adapter, ETag/response mapping               |
+| **14** | **`entity-concurrency`**      | `Version`/xmin, `IHasVersions`, `ConcurrencyBehavior`, ETag flow               |
+| **15** | **`external-created-entity`** | `Guid` on entity, `IHasGuid`, `GuidResolvingBehavior`, 409 flow                |
+| **16** | **`domain-event`**            | `IDomainEvent`, outbox, `DomainEventInterceptor`, `OutboxDispatcher`, handlers |
