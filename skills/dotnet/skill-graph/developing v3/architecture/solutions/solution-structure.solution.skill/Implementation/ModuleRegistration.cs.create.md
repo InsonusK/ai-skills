@@ -61,5 +61,5 @@ MUST:
 - Call every registered module's registration extension
 
 MUST NOT:
-- Register pipeline behaviors — belongs in `PipelineRegistration`
+- Register pipeline behaviors — belongs in App.Host pipeline registration
 - Register infrastructure services — belongs in App.Infrastructure registration

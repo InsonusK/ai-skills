@@ -30,6 +30,7 @@ creates:
   - Shared.csproj
   - BuildingBlocks.csproj
   - App.Host.csproj
+  - App.Host.DependencyInjection.ModuleRegistration.cs
   - App.Infrastructure.csproj
   - App.Infrastructure.Migrations.csproj
   - App.Queries.csproj
@@ -79,6 +80,7 @@ PROJECT
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create|App.Infrastructure.csproj]] - create - Persistence implementation project
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Queries.csproj.create|App.Queries.csproj]] - create - Cross-module query project
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create|App.Host.csproj]] - create - Composition root project
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/ModuleRegistration.cs.create|ModuleRegistration.cs]] - create - Centralized module registration extension
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]] - create - EF Core migrations project
 
 # Rules

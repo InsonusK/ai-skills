@@ -19,8 +19,8 @@ change_kind: extend
 ```
 /App.Host
   /DependencyInjection
-    ModuleRegistration.cs    ← command-integration
-    PipelineRegistration.cs  ← command-integration
+    ModuleRegistration.cs    ← solution-structure
+    PipelineRegistration.cs  ← validation-behavior
   Program.cs
 ```
 

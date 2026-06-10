@@ -11,7 +11,7 @@ change_kind: create
 
 # Core Principles
 - Behaviors registered in execution order — first registered runs first
-- `ValidationBehavior` is registered first so invalid commands are rejected before any other behavior activates
+- `ValidationBehavior` is registered first so invalid requests are rejected before any other behavior activates
 - `Transient` lifetime — new behavior instance per pipeline invocation
 
 # Structure

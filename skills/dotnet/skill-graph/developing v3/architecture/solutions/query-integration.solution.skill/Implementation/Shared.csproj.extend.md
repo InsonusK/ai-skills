@@ -5,13 +5,12 @@ change_kind: extend
 ---
 
 # Goals
-- Own the `IQuery<TResponse>` marker interface — the read-side counterpart to `ICommand<TResponse>`
+- Own the `IQuery<TResponse>` marker interface for read-only operations
 - Make the read-only operation marker available to every layer without coupling to BuildingBlocks
 
 # Core Principles
 - Shared defines only interfaces and markers — no implementations
 - `IQuery<TResponse>` extends MediatR `IRequest<TResponse>` so MediatR can route queries automatically
-- Not implementing `ICommand` is what excludes queries from `ValidationBehavior`
 - Any layer may depend on Shared safely
 
 # Structure
@@ -20,7 +19,6 @@ change_kind: extend
 ```
 /Shared
   /MediatR
-    ICommand.cs           ← command-integration
     IQuery.cs
   /Repositories
     IReadRepository.cs    ← repository-integration
@@ -52,11 +50,11 @@ MUST:
 MUST NOT:
 - Add FluentValidation, Ardalis.Result, or EF Core packages to Shared
 - Add implementation code to Shared
-- `IQuery` extend `ICommand` — queries must be excluded from write-side pipeline behaviors
+- `IQuery` extend `ICommand` — queries must remain distinct from write-side markers
 
 # Anti-patterns
 - Defining `IQuery` in BuildingBlocks — forces modules to reference BuildingBlocks for contracts
-- `IQuery` extending `ICommand` — would include queries in validation and unit-of-work behaviors
+- `IQuery` extending `ICommand` — would blur the boundary between read and write operations
 
 # Check list
 - [ ] `MediatR` referenced in `Shared.csproj`

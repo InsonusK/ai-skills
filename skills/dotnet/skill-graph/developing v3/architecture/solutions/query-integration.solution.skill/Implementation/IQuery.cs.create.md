@@ -7,12 +7,12 @@ change_kind: create
 
 # Goals
 - Mark a MediatR request as a read-only operation
-- Exclude the request from `ValidationBehavior` by not implementing `ICommand`
+- Keep read-side markers distinct from write-side markers
 
 # Core Principles
 - Interface only — no properties, no methods
 - Extends `IRequest<TResponse>` so MediatR routes it to a handler
-- Does NOT extend `ICommand` — this is the mechanism that excludes it from write-side behaviors
+- Does NOT extend `ICommand` — queries are read-only operations and must remain distinct from write-side markers
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |

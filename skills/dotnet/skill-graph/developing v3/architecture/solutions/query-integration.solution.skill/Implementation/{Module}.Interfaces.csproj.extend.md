@@ -19,7 +19,6 @@ change_kind: extend
 ## Project Structure
 ```
 /{Module}.Interfaces
-  /Commands        ← command-integration
   /Queries
     Get{Entity}Query.cs
     Get{Entities}Query.cs

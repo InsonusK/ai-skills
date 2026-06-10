@@ -42,20 +42,20 @@ extends:
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
 ---
 
 # Goal
-- Define `IQuery<TResponse>` in Shared as the marker that identifies read-only operations and excludes them from write-side pipeline behaviors
+- Define `IQuery<TResponse>` in Shared as the marker that identifies read-only operations and keeps them distinct from write-side markers
 - Define where Queries and DTOs are declared — as records in `/{Module}.Interfaces/Queries` and `/{Module}.Interfaces/DTOs`
 - Define two handler locations: single-module handlers in `/{Module}.Application/Queries` using `IReadRepository<T>` and specs, cross-module handlers in `App.Queries` using DbContext directly
 - Define when to use projection spec vs in-handler mapping — projection spec for flat DTOs, in-handler mapping for computed or conditional DTOs
 - Register App.Queries handlers via assembly scan in App.Host
 
 # Core Principles
-- `IQuery<TResponse>` lives in Shared — same as `ICommand`, consistent placement of all MediatR markers
+- `IQuery<TResponse>` lives in Shared — consistent placement of all MediatR markers
 - Query handlers are strictly read-only — no entity mutation, no `SaveChangesAsync`, no `IRepository<T>`
-- `ValidationBehavior` activates for queries — transport correctness is validated before the handler runs
+- `ValidationBehavior` activates for queries — transport correctness is validated before the handler runs because queries implement `IRequest<TResponse>`
 - Single-module handlers use `IReadRepository<T>` from Shared — never DbContext, never `IRepository<T>`
 - Cross-module handlers live in `App.Queries` — the only layer with access to all module entity types simultaneously
 - Cross-module handlers use DbContext directly with `AsNoTracking()` — no repository abstraction needed here
@@ -69,12 +69,12 @@ depends_on:
 - `Microsoft.EntityFrameworkCore` NuGet package — provides `DbContext`, `AsNoTracking`, LINQ extensions used in App.Queries
 - definition of `module project structure` — [[solution-structure.solution.skill]] defines the projects where queries, handlers, and DTOs live
 - definition of `repository abstractions` — [[repository-integration.solution.skill]] defines `IReadRepository<T>` and specification patterns used by single-module handlers
-- definition of `command pipeline` — [[command-integration.solution.skill]] defines `ICommand` marker and `ValidationBehavior` that also activates for `IQuery` requests
+- definition of `validation pipeline` — [[validation-behavior.solution.skill]] defines `ValidationBehavior` that activates for any `IRequest<TResponse>` including queries
 
 # Template Skill Mutations
 
 PROJECT:
-- [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add the `IQuery<TResponse>` marker interface alongside `ICommand`
+- [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add the `IQuery<TResponse>` marker interface
   - [[./Implementation/IQuery.cs.create.md|IQuery.cs]] - create - Read-only operation marker interface
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add query record conventions in `/Queries` and DTO shapes in `/DTOs`
   - [[./Implementation/{Query}.cs.create.md|{Query}.cs]] - create - Query record declaration
@@ -90,7 +90,7 @@ PROJECT:
 
 MUST:
 - `IQuery<TResponse>` defined in Shared — not BuildingBlocks, not any module
-- `IQuery` does not extend `ICommand` — queries must be excluded from all write-side pipeline behaviors
+- `IQuery` does not extend `ICommand` — queries are read-only operations and must remain distinct from write-side markers
 - All queries implement `IQuery<Result<T>>` — not `IRequest<T>` directly
 - Queries declared as `record` in `/{Module}.Interfaces/Queries`
 - DTOs declared as `record` in `/{Module}.Interfaces/DTOs`
@@ -109,8 +109,8 @@ MUST NOT:
 - Single-module handler use DbContext directly — use `IReadRepository<T>`
 - Cross-module handler live in `{Module}.Application` — Application has no multi-module DB access
 - DTOs expose domain entity types
-- Query handlers skip business validation but may have transport validators — input must be structurally correct
-- `IQuery` extend `ICommand` — must be excluded from write-side pipeline behaviors
+- Query handlers may have transport validators — `ValidationBehavior` validates structural correctness before the handler runs
+- `IQuery` extend `ICommand` — queries must remain distinct from write-side markers
 - Cross-module handlers do not use `Include()` — all mapping is done in handler via `Select()` or manual projection
 
 SHOULD:
@@ -127,7 +127,7 @@ SHOULD:
 
 # Check list
 - [ ] `IQuery<TResponse>` defined in `Shared/MediatR/IQuery.cs`
-- [ ] `IQuery` does not extend `ICommand`
+- [ ] `IQuery` does not extend `ICommand` — queries remain distinct from write-side markers
 - [ ] All queries declared as `record` implementing `IQuery<Result<T>>`
 - [ ] All queries in `/{Module}.Interfaces/Queries`
 - [ ] All DTOs declared as `record` in `/{Module}.Interfaces/DTOs`

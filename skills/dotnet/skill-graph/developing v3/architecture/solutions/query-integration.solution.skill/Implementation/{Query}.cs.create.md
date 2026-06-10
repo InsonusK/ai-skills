@@ -7,7 +7,7 @@ change_kind: create
 
 # Goals
 - Express a named read intent as an immutable record that carries all filter/selection input needed for the operation
-- Implement `IQuery<Result<T>>` so MediatR routes it to the correct handler and excludes it from write-side behaviors
+- Implement `IQuery<Result<T>>` so MediatR routes it to the correct handler
 
 # Core Principles
 - Declared as `record` — immutable, structural equality
@@ -71,4 +71,4 @@ MUST:
 MUST NOT:
 - Contain methods or logic
 - Reference domain entity types as properties
-- Extend `ICommand` or `ICommand<TResponse>`
+- Extend `ICommand` or `ICommand<TResponse>` — queries must remain distinct from write-side markers

@@ -19,6 +19,7 @@ change_kind: create
 ```
 /App.Host
   /DependencyInjection
+    ModuleRegistration.cs
     PipelineRegistration.cs
     InfrastructureRegistration.cs
   Program.cs
@@ -29,6 +30,7 @@ change_kind: create
 | `Directory\|file`    | Description                         |
 | -------------------- | ----------------------------------- |
 | /DependencyInjection | DI registrations and pipeline setup |
+| ModuleRegistration.cs | Centralized module registration extension |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |

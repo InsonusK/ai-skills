@@ -1,12 +1,12 @@
 ---
-description: Pipeline behavior that validates ICommand requests
+description: Pipeline behavior that validates any MediatR request
 name: ValidationBehavior.cs
 change_kind: create
 ---
 
 # Goals
-- Intercept every `ICommand` request before the handler runs
-- Collect all validation errors from all registered validators for the command
+- Intercept every `IRequest<TResponse>` before the handler runs
+- Collect all validation errors from all registered validators for the request
 - Short-circuit with `Result.Invalid(errors)` if any errors exist — handler never runs for invalid input
 - Pass through to the handler if no validators are registered or all validators pass
 
@@ -14,7 +14,7 @@ change_kind: create
 - Receives `IEnumerable<IValidator<TRequest>>` via DI — zero, one, or multiple validators supported
 - Runs all validators and collects all errors before short-circuiting — full error list, not fail-fast per field
 - Maps FluentValidation `ValidationFailure` to `Ardalis.Result` `ValidationError`
-- Constrained to `where TRequest : ICommand` and `where TResponse : IResult` — only activates on write operations that return a Result
+- Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult` — activates on any MediatR request that returns a Result, including commands and queries
 
 # Structure
 
@@ -37,13 +37,12 @@ change_kind: create
 using Ardalis.Result;
 using FluentValidation;
 using MediatR;
-using Shared.MediatR;
 
 namespace BuildingBlocks.MediatR;
 
 public class ValidationBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICommand
+    where TRequest : IRequest<TResponse>
     where TResponse : IResult
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
@@ -77,11 +76,11 @@ public class ValidationBehavior<TRequest, TResponse>
 # Rules
 
 MUST:
-- Constrained to `where TRequest : ICommand` and `where TResponse : IResult`
+- Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
 - Collect all errors from all validators before returning — full error set, not first-error-only
 - Return `Result.Invalid(errors)` on failure — not throw an exception
 - Pass through when no validators registered — missing validator is not a fault
 
 MUST NOT:
-- Contain any command-specific conditions
+- Contain any request-specific conditions
 - Throw `ValidationException` — always return typed `Result.Invalid`

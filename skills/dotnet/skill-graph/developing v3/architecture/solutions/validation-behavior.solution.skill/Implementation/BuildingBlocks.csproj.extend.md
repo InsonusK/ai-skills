@@ -5,13 +5,13 @@ change_kind: extend
 ---
 
 # Goals
-- Own the generic `ValidationBehavior` pipeline behavior that intercepts all `ICommand` requests
-- Keep command input validation as a cross-cutting technical concern implemented once and reused across modules
+- Own the generic `ValidationBehavior` pipeline behavior that intercepts any `IRequest<TResponse>`
+- Keep input validation as a cross-cutting technical concern implemented once and reused across modules
 
 # Core Principles
-- BuildingBlocks implements technical patterns using interfaces defined in Shared
-- `ValidationBehavior` is generic — one implementation handles all commands across all modules
-- BuildingBlocks does not define `ICommand` — it consumes the marker from Shared
+- BuildingBlocks implements technical patterns using interfaces defined in Shared or provided by MediatR
+- `ValidationBehavior` is generic — one implementation handles all commands and queries across all modules
+- BuildingBlocks does not define request markers — it consumes `IRequest<T>` from MediatR
 
 # Structure
 
@@ -26,14 +26,14 @@ change_kind: extend
 | Directory \| file | Description |
 | ----------------- | ----------- |
 | /MediatR | MediatR pipeline behaviors |
-| ValidationBehavior.cs | Pipeline behavior that validates `ICommand` requests |
+| ValidationBehavior.cs | Pipeline behavior that validates any `IRequest<TResponse>` |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
 | --- | --- | --- |
 | `FluentValidation` | latest stable | Provides `IValidator<T>` injected into `ValidationBehavior` |
-| `MediatR` | latest stable | Provides `IPipelineBehavior<TRequest, TResponse>` |
-| `Ardalis.Result` | latest stable | Provides `Result.Invalid` and `ValidationError` |
+| `MediatR` | latest stable | Provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>` |
+| `Ardalis.Result` | latest stable | Provides `Result.Invalid`, `ValidationError`, and `IResult` |
 
 # Allowed Dependencies
 - Shared
@@ -43,14 +43,14 @@ change_kind: extend
 MUST:
 - `FluentValidation`, `MediatR`, and `Ardalis.Result` packages referenced in `BuildingBlocks.csproj`
 - `ValidationBehavior` placed in `/BuildingBlocks/MediatR`
-- `ValidationBehavior` references `ICommand` from Shared
+- `ValidationBehavior` constrained to `IRequest<TResponse>` from MediatR
 
 MUST NOT:
-- Add business logic or command-specific conditions to `ValidationBehavior`
+- Add business logic or request-specific conditions to `ValidationBehavior`
 - Throw exceptions for validation failures — always return `Result.Invalid`
 
 # Anti-patterns
-- Implementing per-command validation logic inside `ValidationBehavior`
+- Implementing per-request validation logic inside `ValidationBehavior`
 - Returning exceptions instead of `Result.Invalid`
 
 # Check list
