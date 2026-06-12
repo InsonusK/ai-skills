@@ -30,7 +30,7 @@ extends:
   #- "{Module}.Domain.cspoj"
   #- "{Module}.Domain.Entities.{EntityName}.cs"
 depends_on:
-  #List of other architecture solutions which is used by this solution
+  #List of other architecture solutions which is used by this solution and must be implemented before this solution
   #Example:
   #- "[[Link]]"
 mention:
