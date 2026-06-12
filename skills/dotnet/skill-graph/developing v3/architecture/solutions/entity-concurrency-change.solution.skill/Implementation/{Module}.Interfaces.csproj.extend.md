@@ -24,7 +24,6 @@ change_kind: extend
 
 # Allowed Dependencies
 - Shared
-- BuildingBlocks
 
 # Rules
 

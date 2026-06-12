@@ -36,6 +36,7 @@ change_kind: create
   /Outbox
     IHasDomainEvents.cs
   /Concurrency
+    IVersioned.cs
     IHasVersions.cs
     IEntityVersionResolver.cs
   Shared.csproj
@@ -50,7 +51,7 @@ change_kind: create
 | /Repositories     | Repository abstractions                   |
 | /UnitOfWork       | Unit of work abstraction                  |
 | /Outbox           | Domain events marker interface            |
-| /Concurrency      | Version and ETag resolver interfaces      |
+| /Concurrency      | Version marker, version carrier, and entity resolver interfaces |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |

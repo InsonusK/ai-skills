@@ -18,6 +18,7 @@ change_kind: create
 - Compares loaded `entity.Version` against `expectedVersion` from command — returns `Result.Conflict` on mismatch
 - Checks all entities before deciding — first mismatch short-circuits entire command
 - Does not call `SaveChangesAsync` — purely a read and guard operation
+- Entities expose `Version` through `IVersioned` from Shared — no reflection needed
 
 # Pipeline position
 ```
@@ -39,6 +40,12 @@ Handler
 
 ```csharp
 // BuildingBlocks/MediatR/ConcurrencyBehavior.cs
+using BuildingBlocks.Specifications;
+using Shared.Concurrency;
+using Shared.Repositories;
+
+namespace BuildingBlocks.MediatR;
+
 public class ConcurrencyBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IHasVersions
@@ -79,9 +86,7 @@ public class ConcurrencyBehavior<TRequest, TResponse>
                     return (TResponse)Result.NotFound();
 
                 // compare versions — mismatch means client has stale data
-                var actualVersion = (uint)entityType
-                    .GetProperty(nameof(IVersioned.Version))!
-                    .GetValue(entity)!;
+                var actualVersion = ((IVersioned)entity).Version;
 
                 if (actualVersion != expectedVersion)
                     return (TResponse)Result.Conflict(
@@ -93,7 +98,7 @@ public class ConcurrencyBehavior<TRequest, TResponse>
         return await next();
     }
 
-    private static async Task<object?> LoadEntityAsync(
+    private static async Task<IVersioned?> LoadEntityAsync(
         object repo, Type entityType, int id, CancellationToken ct)
     {
         // invoke FirstOrDefaultAsync via reflection — entity type known only at runtime
@@ -108,20 +113,10 @@ public class ConcurrencyBehavior<TRequest, TResponse>
         var task = (Task)method.Invoke(repo, new[] { spec, ct })!;
         await task.ConfigureAwait(false);
 
-        return ((dynamic)task).Result;
+        return ((dynamic)task).Result as IVersioned;
     }
 }
 ```
-
-> **Note on `IVersioned`:** Entities accessed by `ConcurrencyBehavior` must expose `Version` via a shared interface or the behavior uses reflection. A clean alternative is to define `IVersioned` in Shared:
-> ```csharp
-> // Shared/Concurrency/IVersioned.cs
-> public interface IVersioned
-> {
->     uint Version { get; }
-> }
-> ```
-> All mutable entities implement `IVersioned`. `ConcurrencyBehavior` casts loaded entities to `IVersioned` instead of using reflection. This is the recommended approach.
 
 # Rules
 
@@ -131,6 +126,7 @@ MUST:
 - Returns `Result.NotFound` if entity missing during version check
 - Returns `Result.Error` for unknown entity name
 - Never calls `SaveChangesAsync`
+- Casts loaded entities to `IVersioned` from Shared — no reflection on `Version`
 
 MUST NOT:
 - Activate on commands without `IHasVersions` — only update/patch commands carry versions
@@ -139,6 +135,7 @@ MUST NOT:
 # Anti-patterns
 - `ConcurrencyBehavior` registered after `UnitOfWorkBehavior` — stale commands open a unit of work unnecessarily
 - Handler catches `DbUpdateConcurrencyException` instead of relying on `ConcurrencyBehavior`
+- Reading `Version` via reflection instead of `IVersioned`
 
 # Check list
 - [ ] `ConcurrencyBehavior` constrained to `where TRequest : IHasVersions`
@@ -146,6 +143,7 @@ MUST NOT:
 - [ ] Returns `Result.NotFound` if entity missing during version check
 - [ ] Returns `Result.Error` for unknown entity name
 - [ ] Never calls `SaveChangesAsync`
+- [ ] Uses `IVersioned` from Shared to read `Version`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Validate all entity versions carried by an update command before the handler runs
@@ -157,9 +155,11 @@ MUST NOT:
 - [ ] WHEN applied THEN Compares loaded entity.Version against expectedVersion from command — returns Result.Conflict on mismatch
 - [ ] WHEN applied THEN Checks all entities before deciding — first mismatch short-circuits entire command
 - [ ] WHEN applied THEN Does not call SaveChangesAsync — purely a read and guard operation
+- [ ] WHEN applied THEN Casts loaded entities to IVersioned from Shared — no reflection on Version
 - [ ] WHEN verified THEN ConcurrencyBehavior constrained to where TRequest : IHasVersions
 - [ ] WHEN verified THEN Returns Result.Conflict on version mismatch
 - [ ] WHEN verified THEN Returns Result.NotFound if entity missing during version check
 - [ ] WHEN verified THEN Returns Result.Error for unknown entity name
 - [ ] WHEN verified THEN Never calls SaveChangesAsync
+- [ ] WHEN verified THEN Uses IVersioned from Shared to read Version
 - [ ] WHEN naming 'Concurrency pipeline behavior' THEN pattern matches convention

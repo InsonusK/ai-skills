@@ -1,6 +1,6 @@
 ---
 description: Interface for update commands carrying client-supplied version information
-project_name: BuildingBlocks
+project_name: Shared
 name: IHasVersions.cs
 element_kind: class
 change_kind: create
@@ -14,7 +14,7 @@ change_kind: create
 - Dictionary structure: entity name string → (entity Id → expected version)
 - Supports multi-entity updates — a single command can carry versions for multiple entities
 - Entity name keys are stable business strings — `"Task"`, `"TimeLog"` — never C# type names
-- Declared in BuildingBlocks — update commands in `{Module}.Interfaces` implement this
+- Declared in Shared — update commands in `{Module}.Interfaces` implement this without referencing BuildingBlocks
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -24,7 +24,9 @@ change_kind: create
 # Implementation changes
 
 ```csharp
-// BuildingBlocks/Concurrency/IHasVersions.cs
+// Shared/Concurrency/IHasVersions.cs
+namespace Shared.Concurrency;
+
 public interface IHasVersions
 {
     // entity name → (entity id → expected row version)
@@ -46,7 +48,7 @@ MUST NOT:
 - `Versions` as a flat dictionary without entity name grouping — does not support multi-entity updates
 
 # Check list
-- [ ] `IHasVersions` defined in `BuildingBlocks/Concurrency/IHasVersions.cs`
+- [ ] `IHasVersions` defined in `Shared/Concurrency/IHasVersions.cs`
 - [ ] Dictionary keys are stable business strings
 - [ ] Only update and patch commands implement this interface
 
@@ -56,8 +58,8 @@ MUST NOT:
 - [ ] WHEN applied THEN Dictionary structure: entity name string → (entity Id → expected version)
 - [ ] WHEN applied THEN Supports multi-entity updates — a single command can carry versions for multiple entities
 - [ ] WHEN applied THEN Entity name keys are stable business strings — "Task", "TimeLog" — never C# type names
-- [ ] WHEN applied THEN Declared in BuildingBlocks — update commands in {Module}.Interfaces implement this
-- [ ] WHEN verified THEN IHasVersions defined in BuildingBlocks/Concurrency/IHasVersions.cs
+- [ ] WHEN applied THEN Declared in Shared — update commands in {Module}.Interfaces implement this without referencing BuildingBlocks
+- [ ] WHEN verified THEN IHasVersions defined in Shared/Concurrency/IHasVersions.cs
 - [ ] WHEN verified THEN Dictionary keys are stable business strings
 - [ ] WHEN verified THEN Only update and patch commands implement this interface
 - [ ] WHEN naming 'Version carrier interface' THEN pattern matches convention

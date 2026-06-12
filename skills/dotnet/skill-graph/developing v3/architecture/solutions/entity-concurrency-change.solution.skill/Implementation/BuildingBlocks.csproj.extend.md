@@ -1,17 +1,17 @@
 ---
-description: Add IHasVersions, IEntityVersionResolver, ETagEncoder, and ConcurrencyBehavior
+description: Add ETagEncoder and ConcurrencyBehavior to BuildingBlocks
 name: BuildingBlocks.csproj
 element_kind: project
 change_kind: extend
 ---
 
 # Goals
-- Own `IHasVersions`, `IEntityVersionResolver`, `ETagEncoder`, and `ConcurrencyBehavior` — the full client-facing concurrency contract and pipeline enforcement
-- Reference `IReadRepository<T>` from Shared for version loading in `ConcurrencyBehavior`
+- Own `ETagEncoder` and `ConcurrencyBehavior` — the concrete client-facing concurrency helpers and pipeline enforcement
+- Reference `IReadRepository<T>`, `IHasVersions`, `IEntityVersionResolver`, and `IVersioned` from Shared for version loading in `ConcurrencyBehavior`
 
 # Core Principles
-- `IHasVersions` and `ETagEncoder` live in BuildingBlocks — referenced by both Application and Api layers
-- `IEntityVersionResolver` lives in BuildingBlocks — implementation lives in App.Infrastructure
+- `ETagEncoder` lives in BuildingBlocks — referenced by Api layers
+- `ConcurrencyBehavior` lives in BuildingBlocks — consumes contracts from Shared
 - `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions` — only update commands are checked
 
 # Structure
@@ -20,20 +20,19 @@ change_kind: extend
 ```
 /BuildingBlocks
   /Concurrency
-    IHasVersions.cs
-    IEntityVersionResolver.cs
     ETagEncoder.cs
   /MediatR
     ConcurrencyBehavior.cs
+  /Specifications
+    EntityByIdSpec.cs
 ```
 
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
-| /Concurrency/IHasVersions.cs | Interface carried by all update commands |
-| /Concurrency/IEntityVersionResolver.cs | Maps string entity name to C# Type |
 | /Concurrency/ETagEncoder.cs | Encodes/decodes entity versions as base64 JSON ETag |
 | /MediatR/ConcurrencyBehavior.cs | Pipeline behavior validating versions before handler runs |
+| /Specifications/EntityByIdSpec.cs | Generic by-Id spec used by ConcurrencyBehavior at runtime |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
@@ -47,19 +46,29 @@ change_kind: extend
 # Rules
 
 MUST:
-- All four components defined in BuildingBlocks
+- `ETagEncoder`, `EntityByIdSpec<T>`, and `ConcurrencyBehavior` defined in BuildingBlocks
 - `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions`
-- `ETagEncoder` and `IHasVersions` available to both Application and Api layers via BuildingBlocks reference
+- `ETagEncoder` available to Api layers via BuildingBlocks reference
 
 MUST NOT:
 - Add EF Core dependency to BuildingBlocks
+- Define `IHasVersions`, `IEntityVersionResolver`, or `IVersioned` in BuildingBlocks — they belong in Shared
 
 # Anti-patterns
 - `ConcurrencyBehavior` constrained on `IRequest<T>` instead of `IHasVersions` — would check all commands including queries
+- Defining common concurrency contracts in BuildingBlocks — forces modules to reference BuildingBlocks for contracts
 
 # Check list
-- [ ] `IHasVersions` defined in `BuildingBlocks/Concurrency/IHasVersions.cs`
-- [ ] `IEntityVersionResolver` defined in `BuildingBlocks/Concurrency/IEntityVersionResolver.cs`
 - [ ] `ETagEncoder` defined in `BuildingBlocks/Concurrency/ETagEncoder.cs`
+- [ ] `EntityByIdSpec<T>` defined in `BuildingBlocks/Specifications/EntityByIdSpec.cs`
 - [ ] `ConcurrencyBehavior` defined in `BuildingBlocks/MediatR/ConcurrencyBehavior.cs`
 - [ ] No EF Core reference in BuildingBlocks
+- [ ] `IHasVersions`, `IEntityVersionResolver`, and `IVersioned` imported from Shared, not defined in BuildingBlocks
+
+# Unittest TestCases
+- [ ] WHEN applied THEN Own ETagEncoder, EntityByIdSpec<T>, and ConcurrencyBehavior — the concrete client-facing concurrency helpers and pipeline enforcement
+- [ ] WHEN applied THEN Reference IReadRepository<T>, IHasVersions, IEntityVersionResolver, and IVersioned from Shared for version loading in ConcurrencyBehavior
+- [ ] WHEN verified THEN ETagEncoder defined in BuildingBlocks/Concurrency/ETagEncoder.cs
+- [ ] WHEN verified THEN EntityByIdSpec<T> defined in BuildingBlocks/Specifications/EntityByIdSpec.cs
+- [ ] WHEN verified THEN ConcurrencyBehavior defined in BuildingBlocks/MediatR/ConcurrencyBehavior.cs
+- [ ] WHEN verified THEN No EF Core reference in BuildingBlocks

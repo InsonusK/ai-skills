@@ -6,7 +6,7 @@ change_kind: extend
 ---
 
 # Goals
-- Add `Version` concurrency token to every mutable entity and configure it as the PostgreSQL `xmin` system column
+- Add `Version` concurrency token to every mutable entity, implement `IVersioned`, and configure it as the PostgreSQL `xmin` system column
 
 # Core Principles
 - `xmin` is a PostgreSQL system column — automatically incremented on every row update
@@ -27,7 +27,7 @@ change_kind: extend
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
-| /Entities/{EntityName}.cs | Mutable entity with uint Version property |
+| /Entities/{EntityName}.cs | Mutable entity with uint Version property implementing IVersioned |
 | /Configurations/{EntityName}Config.cs | EF configuration mapping Version to xmin |
 
 # NuGet Packages
@@ -42,6 +42,7 @@ change_kind: extend
 
 MUST:
 - Every mutable entity has a `Version` property
+- Every mutable entity implements `IVersioned`
 - `Version` configured as `IsConcurrencyToken()` mapping to `xmin` in EF configuration
 
 MUST NOT:
@@ -52,4 +53,5 @@ MUST NOT:
 
 # Check list
 - [ ] `uint Version { get; internal set; }` present on every mutable entity
+- [ ] Every mutable entity implements `IVersioned`
 - [ ] `Version` mapped to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()` in entity configuration
