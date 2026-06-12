@@ -85,22 +85,22 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Version concurrency token to every mutable entity
-  - [[./Implementation/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add uint Version property with internal set
-  - [[./Implementation/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Map Version to xmin with IsConcurrencyToken and ValueGeneratedOnAddOrUpdate
+  - [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add uint Version property with internal set
+  - [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Map Version to xmin with IsConcurrencyToken and ValueGeneratedOnAddOrUpdate
 - [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add IHasVersions, IEntityVersionResolver, ETagEncoder, and ConcurrencyBehavior
-  - [[./Implementation/IHasVersions.cs.create.md|IHasVersions.cs]] - create - Interface for update commands carrying client-supplied version information
-  - [[./Implementation/IEntityVersionResolver.cs.create.md|IEntityVersionResolver.cs]] - create - Maps stable string entity names to C# types
-  - [[./Implementation/ETagEncoder.cs.create.md|ETagEncoder.cs]] - create - Encodes/decodes entity versions as base64 JSON ETags
-  - [[./Implementation/ConcurrencyBehavior.cs.create.md|ConcurrencyBehavior.cs]] - create - Pipeline behavior validating versions before handler runs
+  - [[./Implementation/BuildingBlocks.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs]] - create - Interface for update commands carrying client-supplied version information
+  - [[./Implementation/BuildingBlocks.csproj.extend/IEntityVersionResolver.cs.create.md|IEntityVersionResolver.cs]] - create - Maps stable string entity names to C# types
+  - [[./Implementation/BuildingBlocks.csproj.extend/ETagEncoder.cs.create.md|ETagEncoder.cs]] - create - Encodes/decodes entity versions as base64 JSON ETags
+  - [[./Implementation/BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md|ConcurrencyBehavior.cs]] - create - Pipeline behavior validating versions before handler runs
 - [[./Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - extend - Add EntityVersionResolver implementation
-  - [[./Implementation/EntityVersionResolver.cs.create.md|EntityVersionResolver.cs]] - create - Maps stable business entity names to C# types
+  - [[./Implementation/App.Infrastructure.csproj.extend/EntityVersionResolver.cs.create.md|EntityVersionResolver.cs]] - create - Maps stable business entity names to C# types
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Require update and patch commands to implement IHasVersions
-  - [[./Implementation/{Command}.cs.extend.md|{Command}.cs]] - extend - Update/patch command implements IHasVersions
+  - [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md|{Command}.cs]] - extend - Update/patch command implements IHasVersions
 - [[./Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - extend - Add ETag header to GET responses and If-Match guard to PUT/PATCH
-  - [[./Implementation/Single{Entity}Controller.cs.extend.md|Single{Entity}Controller.cs]] - extend - Add ETag encoding on GET and If-Match decoding on PUT/PATCH
+  - [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md|Single{Entity}Controller.cs]] - extend - Add ETag encoding on GET and If-Match decoding on PUT/PATCH
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register IEntityVersionResolver and ConcurrencyBehavior in pipeline
-  - [[./Implementation/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert ConcurrencyBehavior between ValidationBehavior and UnitOfWorkBehavior
-  - [[./Implementation/RepositoryRegistration.cs.extend.md|RepositoryRegistration.cs]] - extend - Register IEntityVersionResolver as Singleton
+  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert ConcurrencyBehavior between ValidationBehavior and UnitOfWorkBehavior
+  - [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend.md|RepositoryRegistration.cs]] - extend - Register IEntityVersionResolver as Singleton
 
 # Rules
 

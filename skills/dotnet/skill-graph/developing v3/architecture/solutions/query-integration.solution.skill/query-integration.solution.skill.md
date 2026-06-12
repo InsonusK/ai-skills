@@ -75,15 +75,15 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add the `IQuery<TResponse>` marker interface
-  - [[./Implementation/IQuery.cs.create.md|IQuery.cs]] - create - Read-only operation marker interface
+  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs]] - create - Read-only operation marker interface
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add query record conventions in `/Queries` and DTO shapes in `/DTOs`
-  - [[./Implementation/{Query}.cs.create.md|{Query}.cs]] - create - Query record declaration
-  - [[./Implementation/{Dto}.cs.create.md|{Dto}.cs]] - create - DTO response shape declaration
+  - [[./Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs]] - create - Query record declaration
+  - [[./Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs]] - create - DTO response shape declaration
 - [[./Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add single-module query handler in feature folder
-  - [[./Implementation/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs]] - create - Single-module query handler implementation
+  - [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs]] - create - Single-module query handler implementation
 - [[./Implementation/App.Queries.csproj.extend.md|App.Queries.csproj]] - extend - Add cross-module query handlers and DI registration
-  - [[./Implementation/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs]] - create - App.Queries assembly scan registration
-  - [[./Implementation/CrossModuleQueryHandler.cs.create.md|CrossModuleQueryHandler.cs]] - create - Cross-module JOIN query handler implementation
+  - [[./Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs]] - create - App.Queries assembly scan registration
+  - [[./Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md|CrossModuleQueryHandler.cs]] - create - Cross-module JOIN query handler implementation
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire App.Queries registration into the composition root
 
 # Rules

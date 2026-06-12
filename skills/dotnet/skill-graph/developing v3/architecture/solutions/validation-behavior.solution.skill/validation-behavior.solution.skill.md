@@ -56,9 +56,9 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add FluentValidation, MediatR, and Ardalis.Result packages for the ValidationBehavior
-  - [[./Implementation/ValidationBehavior.cs.create.md|ValidationBehavior.cs]] - create - Pipeline behavior that validates any `IRequest<TResponse>`
+  - [[./Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs]] - create - Pipeline behavior that validates any `IRequest<TResponse>`
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire pipeline behavior registration in the composition root
-  - [[./Implementation/PipelineRegistration.cs.create.md|PipelineRegistration.cs]] - create - Pipeline behavior registration extension
+  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md|PipelineRegistration.cs]] - create - Pipeline behavior registration extension
 
 # Rules
 

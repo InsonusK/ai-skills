@@ -1,6 +1,7 @@
 ---
 description: Add cross-module foreign key configuration support to App.Infrastructure
 name: "App.Infrastructure.csproj"
+element_kind: project
 change_kind: extend
 ---
 

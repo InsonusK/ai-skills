@@ -1,6 +1,7 @@
 ---
 description: Add EntityVersionResolver implementation
 name: App.Infrastructure.csproj
+element_kind: project
 change_kind: extend
 ---
 

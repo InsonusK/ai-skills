@@ -1,6 +1,7 @@
 ---
 description: Add Version concurrency token to every mutable entity
 name: "{Module}.Domain.csproj"
+element_kind: project
 change_kind: extend
 ---
 

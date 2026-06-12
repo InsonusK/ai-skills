@@ -1,6 +1,7 @@
 ---
 description: Add Services folder and domain behavior patterns to module Domain project
 name: "{Module}.Domain.csproj"
+element_kind: project
 change_kind: extend
 ---
 

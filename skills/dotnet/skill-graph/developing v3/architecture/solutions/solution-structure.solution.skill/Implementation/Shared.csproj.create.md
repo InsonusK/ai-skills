@@ -1,6 +1,7 @@
 ---
 description: Define common cross-cutting interfaces and primitives that every layer can safely depend on without creating coupling
 name: Shared.csproj
+element_kind: project
 change_kind: create
 ---
 

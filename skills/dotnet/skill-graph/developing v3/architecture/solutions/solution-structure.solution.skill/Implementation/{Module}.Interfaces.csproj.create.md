@@ -1,6 +1,7 @@
 ---
 description: Provide the single stable public surface through which other modules interact with this module
 name: "{Module}.Interfaces.csproj"
+element_kind: project
 change_kind: create
 ---
 # Goals

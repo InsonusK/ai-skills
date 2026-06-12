@@ -73,13 +73,13 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add MediatR package and the `ICommand` marker interfaces
-  - [[./Implementation/ICommand.cs.create.md|ICommand.cs]] - create - Write operation marker interfaces
+  - [[./Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - create - Write operation marker interfaces
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add command record conventions in `/Commands`
-  - [[./Implementation/{Command}.cs.create.md|{Command}.cs]] - create - Command and result record declaration
+  - [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs]] - create - Command and result record declaration
 - [[./Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add feature folder layout, handlers, validators, and module registration
-  - [[./Implementation/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs]] - create - Command handler implementation
-  - [[./Implementation/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs]] - create - Transport correctness validator
-  - [[./Implementation/{Module}ApplicationRegistration.cs.create.md|{Module}ApplicationRegistration.cs]] - create - Module DI self-registration extension
+  - [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs]] - create - Command handler implementation
+  - [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs]] - create - Transport correctness validator
+  - [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md|{Module}ApplicationRegistration.cs]] - create - Module DI self-registration extension
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire module registrations in the composition root
 
 # Rules

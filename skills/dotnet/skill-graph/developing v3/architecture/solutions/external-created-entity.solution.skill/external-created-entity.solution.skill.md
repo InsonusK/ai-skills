@@ -92,24 +92,24 @@ See [[./doc/full-idempotent-creation-flow.mmd|full-idempotent-creation-flow.mmd]
 
 PROJECT:
 - [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add `ConflictException`, `IHasGuid`, and `IGuidResolver`
-  - [[./Implementation/ConflictException.cs.create.md|ConflictException.cs]] - create - Exception carrying existing entity result for 409 responses
-  - [[./Implementation/IHasGuid.cs.create.md|IHasGuid.cs]] - create - Marker interface for commands carrying a client-generated Guid
-  - [[./Implementation/IGuidResolver.cs.create.md|IGuidResolver.cs]] - create - Per-entity resolver contract
+  - [[./Implementation/Shared.csproj.extend/ConflictException.cs.create.md|ConflictException.cs]] - create - Exception carrying existing entity result for 409 responses
+  - [[./Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs]] - create - Marker interface for commands carrying a client-generated Guid
+  - [[./Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs]] - create - Per-entity resolver contract
 - [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add `GuidResolvingBehavior` and `ConflictExceptionMiddleware`
-  - [[./Implementation/GuidResolvingBehavior.cs.create.md|GuidResolvingBehavior.cs]] - create - Pipeline behavior that short-circuits on duplicate Guid
-  - [[./Implementation/ConflictExceptionMiddleware.cs.create.md|ConflictExceptionMiddleware.cs]] - create - Middleware that catches ConflictException and writes 409
+  - [[./Implementation/BuildingBlocks.csproj.extend/GuidResolvingBehavior.cs.create.md|GuidResolvingBehavior.cs]] - create - Pipeline behavior that short-circuits on duplicate Guid
+  - [[./Implementation/BuildingBlocks.csproj.extend/ConflictExceptionMiddleware.cs.create.md|ConflictExceptionMiddleware.cs]] - create - Middleware that catches ConflictException and writes 409
 - [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Guid property and unique index to externally-created entities
-  - [[./Implementation/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add Guid property with internal set
-  - [[./Implementation/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Configure unique index on Guid with named constant
+  - [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add Guid property with internal set
+  - [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Configure unique index on Guid with named constant
 - [[./Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add {Entity}ByGuidSpec and Create{Entity}GuidResolver
-  - [[./Implementation/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs]] - create - Specification for looking up entity by Guid
-  - [[./Implementation/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs]] - create - Per-entity IGuidResolver implementation
-  - [[./Implementation/{Module}ApplicationRegistration.cs.extend.md|{Module}ApplicationRegistration.cs]] - extend - Register IGuidResolver in module DI
+  - [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs]] - create - Specification for looking up entity by Guid
+  - [[./Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs]] - create - Per-entity IGuidResolver implementation
+  - [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.extend.md|{Module}ApplicationRegistration.cs]] - extend - Register IGuidResolver in module DI
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add IHasGuid to create commands for externally-created entities
-  - [[./Implementation/{Command}.cs.extend.md|{Command}.cs]] - extend - Create command implements IHasGuid
+  - [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md|{Command}.cs]] - extend - Create command implements IHasGuid
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register GuidResolvingBehavior in pipeline and ConflictExceptionMiddleware in HTTP pipeline
-  - [[./Implementation/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert GuidResolvingBehavior between ValidationBehavior and ConcurrencyBehavior
-  - [[./Implementation/MiddlewareRegistration.cs.create.md|MiddlewareRegistration.cs]] - create - Register ConflictExceptionMiddleware in the HTTP pipeline
+  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert GuidResolvingBehavior between ValidationBehavior and ConcurrencyBehavior
+  - [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create.md|MiddlewareRegistration.cs]] - create - Register ConflictExceptionMiddleware in the HTTP pipeline
 
 # Rules
 

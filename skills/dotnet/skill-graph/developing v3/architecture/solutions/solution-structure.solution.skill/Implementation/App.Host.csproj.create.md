@@ -1,6 +1,7 @@
 ---
 description: Be the single composition root — wire all modules, infrastructure, pipeline behaviors, and DI registrations together
 name: App.Host.csproj
+element_kind: project
 change_kind: create
 ---
 # Goals

@@ -1,6 +1,7 @@
 ---
 description: Wire module registrations in the composition root
 name: App.Host.csproj
+element_kind: project
 change_kind: extend
 ---
 

@@ -1,6 +1,7 @@
 ---
 description: EF Core migrations only — separated from App.Infrastructure to keep the main infrastructure project clean
 name: App.Infrastructure.Migrations.csproj
+element_kind: project
 change_kind: create
 ---
 

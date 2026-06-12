@@ -77,15 +77,15 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add Ardalis.Specification package and repository abstractions
-  - [[./Implementation/IReadRepository.cs.create.md|IReadRepository.cs]] - create - Read-only repository contract inheriting Ardalis `IReadRepositoryBase<T>`
-  - [[./Implementation/IRepository.cs.create.md|IRepository.cs]] - create - Read-write repository contract inheriting Ardalis `IRepositoryBase<T>`
+  - [[./Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - create - Read-only repository contract inheriting Ardalis `IReadRepositoryBase<T>`
+  - [[./Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs]] - create - Read-write repository contract inheriting Ardalis `IRepositoryBase<T>`
 - [[./Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - extend - Add Ardalis.Specification.EntityFrameworkCore package
-  - [[./Implementation/Repository.cs.create.md|Repository.cs]] - create - Generic EF Core repository inheriting Ardalis `RepositoryBase<T>`
+  - [[./Implementation/App.Infrastructure.csproj.extend/Repository.cs.create.md|Repository.cs]] - create - Generic EF Core repository inheriting Ardalis `RepositoryBase<T>`
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire repository DI registration
-  - [[./Implementation/RepositoryRegistration.cs.create.md|RepositoryRegistration.cs]] - create - Open-generic DI registration extension
+  - [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md|RepositoryRegistration.cs]] - create - Open-generic DI registration extension
 - [[./Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Enforce repository usage in handlers and host all specifications
-  - [[./Implementation/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs]] - create - Example single-condition spec loading entity by Id
-  - [[./Implementation/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs]] - create - Example Application projection spec
+  - [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs]] - create - Example single-condition spec loading entity by Id
+  - [[./Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs]] - create - Example Application projection spec
 
 # Rules
 

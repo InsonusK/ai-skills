@@ -1,6 +1,7 @@
 ---
 description: Add cross-module reusable Value Objects and rules to Shared project
 name: Shared.csproj
+element_kind: project
 change_kind: extend
 ---
 

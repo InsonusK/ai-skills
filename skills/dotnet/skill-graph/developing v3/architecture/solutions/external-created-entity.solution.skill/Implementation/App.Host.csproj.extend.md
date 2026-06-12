@@ -1,6 +1,7 @@
 ---
 description: Register GuidResolvingBehavior in pipeline and ConflictExceptionMiddleware in HTTP pipeline
 name: App.Host.csproj
+element_kind: project
 change_kind: extend
 ---
 

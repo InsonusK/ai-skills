@@ -1,7 +1,8 @@
 ---
 description: Add Ardalis.Specification package and repository abstractions to Shared
-create: Shared.csproj
+element_kind: project
 change_kind: extend
+create: Shared.csproj
 ---
 
 # Goals

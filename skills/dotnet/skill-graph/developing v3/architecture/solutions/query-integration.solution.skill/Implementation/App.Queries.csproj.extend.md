@@ -1,6 +1,7 @@
 ---
 description: Add cross-module query handlers and DI registration to App.Queries
 name: App.Queries.csproj
+element_kind: project
 change_kind: extend
 ---
 

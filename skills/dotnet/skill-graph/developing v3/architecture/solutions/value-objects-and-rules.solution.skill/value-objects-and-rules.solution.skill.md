@@ -71,12 +71,12 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add ValueObjects and Rules folders
-  - [[./Implementation/{ValueObject}.cs.create.md|{ValueObject}.cs]] - create - Value Object type (single or multi-property)
-  - [[./Implementation/{Rule}.cs.create.md|{Rule}.cs]] - create - Domain rule static class
-  - [[./Implementation/{Entity}.cs.extend.md|{Entity}.cs]] - extend - Use Value Objects on entity properties and rules in entity methods
+  - [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs]] - create - Value Object type (single or multi-property)
+  - [[./Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs]] - create - Domain rule static class
+  - [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]] - extend - Use Value Objects on entity properties and rules in entity methods
 - [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add cross-module reusable Value Objects and rules
-  - [[./Implementation/{ValueObject}.cs.create.md|{ValueObject}.cs]] - create - Shared Value Object type when cross-module
-  - [[./Implementation/{Rule}.cs.create.md|{Rule}.cs]] - create - Shared domain rule when cross-module
+  - [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs]] - create - Shared Value Object type when cross-module
+  - [[./Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs]] - create - Shared domain rule when cross-module
 
 # Rules
 

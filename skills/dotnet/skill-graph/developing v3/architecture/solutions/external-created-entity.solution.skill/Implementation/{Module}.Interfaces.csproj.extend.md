@@ -1,6 +1,7 @@
 ---
 description: Add IHasGuid to create commands for externally-created entities
 name: "{Module}.Interfaces.csproj"
+element_kind: project
 change_kind: extend
 ---
 

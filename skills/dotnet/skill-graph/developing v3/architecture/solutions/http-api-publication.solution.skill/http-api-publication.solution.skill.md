@@ -74,15 +74,15 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - extend - Add controllers, extensions, and minimal API endpoints
-  - [[./Implementation/ResultExtensions.cs.create.md|ResultExtensions.cs]] - create - ToProblemDetails helper for Result error mapping
-  - [[./Implementation/{Entity}Controller.cs.create.md|{Entity}Controller.cs]] - create - Collection root controller
-  - [[./Implementation/Single{Entity}Controller.cs.create.md|Single{Entity}Controller.cs]] - create - Single entity lifecycle controller
-  - [[./Implementation/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs]] - create - Addressable property controller
-  - [[./Implementation/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs]] - create - Sub-collection controller
-  - [[./Implementation/Single{Entity}{Related}Controller.cs.create.md|Single{Entity}{Related}Controller.cs]] - create - Relationship instance controller
-  - [[./Implementation/{System}Endpoints.cs.create.md|{System}Endpoints.cs]] - create - System, webhook, batch, cross-aggregate endpoints
+  - [[./Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md|ResultExtensions.cs]] - create - ToProblemDetails helper for Result error mapping
+  - [[./Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md|{Entity}Controller.cs]] - create - Collection root controller
+  - [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md|Single{Entity}Controller.cs]] - create - Single entity lifecycle controller
+  - [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs]] - create - Addressable property controller
+  - [[./Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs]] - create - Sub-collection controller
+  - [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md|Single{Entity}{Related}Controller.cs]] - create - Relationship instance controller
+  - [[./Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md|{System}Endpoints.cs]] - create - System, webhook, batch, cross-aggregate endpoints
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire API registration into the composition root
-  - [[./Implementation/ApiRegistration.cs.create.md|ApiRegistration.cs]] - create - Controller and middleware registration
+  - [[./Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md|ApiRegistration.cs]] - create - Controller and middleware registration
 
 # Rules
 

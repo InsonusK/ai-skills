@@ -1,6 +1,7 @@
 ---
 description: Provide cross-module read model handlers that require JOIN queries across module boundaries
 name: App.Queries.csproj
+element_kind: project
 change_kind: create
 ---
 

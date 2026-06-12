@@ -1,6 +1,7 @@
 ---
 description: Register IUnitOfWork, UnitOfWorkContext, and wire UnitOfWorkBehavior after ValidationBehavior
 name: App.Host.csproj
+element_kind: project
 change_kind: extend
 ---
 

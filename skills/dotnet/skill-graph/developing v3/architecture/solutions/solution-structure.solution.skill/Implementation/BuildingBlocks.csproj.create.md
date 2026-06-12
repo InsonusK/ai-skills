@@ -1,6 +1,7 @@
 ---
 description: Implement reusable framework-level patterns consumed by App.Host and infrastructure across all modules
 name: BuildingBlocks.csproj
+element_kind: project
 change_kind: create
 ---
 

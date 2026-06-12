@@ -1,6 +1,7 @@
 ---
 description: Add ETag header to GET responses and If-Match guard to PUT/PATCH
 name: "{Module}.Api.csproj"
+element_kind: project
 change_kind: extend
 ---
 

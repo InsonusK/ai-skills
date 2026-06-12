@@ -1,6 +1,7 @@
 ---
 description: Register IEntityVersionResolver and ConcurrencyBehavior in pipeline
 name: App.Host.csproj
+element_kind: project
 change_kind: extend
 ---
 

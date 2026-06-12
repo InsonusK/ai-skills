@@ -1,5 +1,7 @@
 ---
 description: Defines the full solution folder structure including modules, app layers, shared, and building blocks
+element_kind: repository
+change_kind: create
 ---
 
 # Structure

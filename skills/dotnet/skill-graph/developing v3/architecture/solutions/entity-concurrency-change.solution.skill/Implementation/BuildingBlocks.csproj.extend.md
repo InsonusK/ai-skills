@@ -1,6 +1,7 @@
 ---
 description: Add IHasVersions, IEntityVersionResolver, ETagEncoder, and ConcurrencyBehavior
 name: BuildingBlocks.csproj
+element_kind: project
 change_kind: extend
 ---
 

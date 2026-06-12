@@ -51,8 +51,8 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Services folder for static domain service extensions
-  - [[./Implementation/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add behavior methods that enforce invariants through domain rules
-  - [[./Implementation/{Behavior}Service.cs.create.md|{Behavior}Service.cs]] - create - Static extension methods for bulky entity behavior
+  - [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add behavior methods that enforce invariants through domain rules
+  - [[./Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs]] - create - Static extension methods for bulky entity behavior
 
 # Rules
 

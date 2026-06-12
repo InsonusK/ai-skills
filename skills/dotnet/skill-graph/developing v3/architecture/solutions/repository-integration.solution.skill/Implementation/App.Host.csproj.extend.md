@@ -1,6 +1,7 @@
 ---
 description: Ensure App.Host calls AddRepositories during composition
 name: App.Host.csproj
+element_kind: project
 change_kind: extend
 ---
 

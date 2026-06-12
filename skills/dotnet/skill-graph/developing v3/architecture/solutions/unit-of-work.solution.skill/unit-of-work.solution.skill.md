@@ -66,15 +66,15 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add IUnitOfWork commit contract without infrastructure coupling
-  - [[./Implementation/IUnitOfWork.cs.create.md|IUnitOfWork.cs]] - create - Single-method commit contract accessible by every layer
+  - [[./Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs]] - create - Single-method commit contract accessible by every layer
 - [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add UnitOfWorkContext and UnitOfWorkBehavior pipeline components
-  - [[./Implementation/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs]] - create - Scoped nesting depth counter preventing premature sub-command commit
-  - [[./Implementation/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs]] - create - Pipeline behavior that commits at depth 1 after handler completes
+  - [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs]] - create - Scoped nesting depth counter preventing premature sub-command commit
+  - [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs]] - create - Pipeline behavior that commits at depth 1 after handler completes
 - [[./Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - extend - Add UnitOfWork EF Core implementation
-  - [[./Implementation/UnitOfWork.cs.create.md|UnitOfWork.cs]] - create - IUnitOfWork implementation delegating to AppDbContext
+  - [[./Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs]] - create - IUnitOfWork implementation delegating to AppDbContext
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register IUnitOfWork, UnitOfWorkContext, and wire UnitOfWorkBehavior after ValidationBehavior
-  - [[./Implementation/RepositoryRegistration.cs.extend.md|RepositoryRegistration.cs]] - extend - Add IUnitOfWork and UnitOfWorkContext scoped registrations
-  - [[./Implementation/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Add UnitOfWorkBehavior registration after ValidationBehavior
+  - [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend.md|RepositoryRegistration.cs]] - extend - Add IUnitOfWork and UnitOfWorkContext scoped registrations
+  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Add UnitOfWorkBehavior registration after ValidationBehavior
 
 # Rules
 

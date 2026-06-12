@@ -1,6 +1,7 @@
 ---
 description: Expose HTTP endpoints as thin MediatR adapters for this module
 name: "{Module}.Api.csproj"
+element_kind: project
 change_kind: create
 ---
 

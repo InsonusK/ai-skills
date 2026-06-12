@@ -1,6 +1,7 @@
 ---
 description: Add GuidResolvingBehavior and ConflictExceptionMiddleware
 name: BuildingBlocks.csproj
+element_kind: project
 change_kind: extend
 ---
 

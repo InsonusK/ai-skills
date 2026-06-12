@@ -53,10 +53,10 @@ depends_on:
 
 PROJECT:
 - [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Configurations folder and EF config pattern
-	- [[./Implementation/{Entity}Config.cs.create.md|{Entity}Config.cs]] - create - One EF config class per entity
-	- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Entity}.cs.extend|{Entity}.cs]] - extend - Zero EF attributes on domain entity
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs]] - create - One EF config class per entity
+	- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]] - extend - Zero EF attributes on domain entity
 - [[./Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - extend - Add cross-module FK configuration support
-	- [[./Implementation/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs]] - create - Cross-module FK configuration class
+	- [[./Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs]] - create - Cross-module FK configuration class
 
 # Rules
 

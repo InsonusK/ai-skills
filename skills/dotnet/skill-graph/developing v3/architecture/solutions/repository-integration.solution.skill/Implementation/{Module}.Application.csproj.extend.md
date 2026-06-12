@@ -1,6 +1,7 @@
 ---
 description: Enforce repository abstraction usage in Application layer handlers and host all specifications
 name: "{Module}.Application.csproj"
+element_kind: project
 change_kind: extend
 ---
 

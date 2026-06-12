@@ -1,6 +1,7 @@
 ---
 description: Orchestrate use cases by connecting the API contract to the domain model
 name: "{Module}.Application.csproj"
+element_kind: project
 change_kind: create
 ---
 

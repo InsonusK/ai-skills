@@ -1,6 +1,7 @@
 ---
 description: Add UnitOfWorkContext and UnitOfWorkBehavior pipeline components
 name: BuildingBlocks.csproj
+element_kind: project
 change_kind: extend
 ---
 

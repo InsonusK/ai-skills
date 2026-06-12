@@ -1,6 +1,7 @@
 ---
 description: Add UnitOfWork EF Core implementation
 name: App.Infrastructure.csproj
+element_kind: project
 change_kind: extend
 ---
 

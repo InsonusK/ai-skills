@@ -1,6 +1,7 @@
 ---
 description: Add Guid property and unique index to externally-created entities
 name: "{Module}.Domain.csproj"
+element_kind: project
 change_kind: extend
 ---
 

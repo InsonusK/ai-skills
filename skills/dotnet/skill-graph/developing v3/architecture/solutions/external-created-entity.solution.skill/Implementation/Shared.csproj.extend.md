@@ -1,6 +1,7 @@
 ---
 description: Add ConflictException, IHasGuid, and IGuidResolver
 name: Shared.csproj
+element_kind: project
 change_kind: extend
 ---
 

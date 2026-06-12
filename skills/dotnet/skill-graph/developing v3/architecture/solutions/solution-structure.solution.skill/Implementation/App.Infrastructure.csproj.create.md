@@ -1,6 +1,7 @@
 ---
 description: Provide all persistence implementation — DbContext, repository implementations, outbox interceptor, background dispatcher
 name: App.Infrastructure.csproj
+element_kind: project
 change_kind: create
 ---
 

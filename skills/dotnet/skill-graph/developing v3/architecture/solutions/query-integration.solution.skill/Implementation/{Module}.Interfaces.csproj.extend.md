@@ -1,6 +1,7 @@
 ---
 description: Add query record conventions in /Queries and DTO shapes in /DTOs
 name: "{Module}.Interfaces.csproj"
+element_kind: project
 change_kind: extend
 ---
 

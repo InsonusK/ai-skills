@@ -1,6 +1,7 @@
 ---
 description: Add feature folder layout, handlers, validators, and module DI self-registration
 name: "{Module}.Application.csproj"
+element_kind: project
 change_kind: extend
 ---
 

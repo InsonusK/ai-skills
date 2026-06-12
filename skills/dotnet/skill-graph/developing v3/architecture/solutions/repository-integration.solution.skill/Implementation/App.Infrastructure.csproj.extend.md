@@ -1,6 +1,7 @@
 ---
 description: Add Ardalis.Specification.EntityFrameworkCore and implement Repository<T>
 name: App.Infrastructure.csproj
+element_kind: project
 change_kind: extend
 ---
 

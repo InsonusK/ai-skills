@@ -1,6 +1,7 @@
 ---
 description: Add controllers, extensions, and minimal API endpoints to {Module}.Api
 name: "{Module}.Api.csproj"
+element_kind: project
 change_kind: extend
 ---
 

@@ -1,6 +1,7 @@
 ---
 description: Own the entities, value objects, rules, and domain events for this bounded context
 name: "{Module}.Domain.csproj"
+element_kind: project
 change_kind: create
 ---
 # Goals

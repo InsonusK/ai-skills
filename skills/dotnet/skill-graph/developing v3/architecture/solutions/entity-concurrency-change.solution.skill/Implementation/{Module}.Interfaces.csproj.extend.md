@@ -1,6 +1,7 @@
 ---
 description: Require update and patch commands to implement IHasVersions
 name: "{Module}.Interfaces.csproj"
+element_kind: project
 change_kind: extend
 ---
 
