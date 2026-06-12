@@ -62,13 +62,27 @@ depends_on:
 - API layer never references `IRepository<T>`, `IUnitOfWork`, DbContext, or any domain entity type
 
 # Requirements
-- `Microsoft.AspNetCore.Mvc` — provides `ControllerBase`, `[ApiController]`, `[Route]`, `ActionResult`, `ProblemDetails`
-- `MediatR` — provides `ISender` injected into controllers
-- `Ardalis.Result` — provides `Result<T>`, `ResultStatus` mapped to HTTP responses
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines `{Module}.Api` project boundary and allowed dependencies
-- definition of `validation pipeline` — [[validation-behavior.solution.skill]] defines `ValidationBehavior` that produces `Result.Invalid` mapped to 400
-- definition of `repository abstractions` — [[repository-integration.solution.skill]] defines `IRepository<T>` and `IReadRepository<T>` used by handlers; commit happens transparently, controller never calls `SaveChanges`
-- **At least one of [[query-integration.solution.skill]] or [[command-integration.solution.skill]] must be applied** — the API layer dispatches commands and/or queries via `ISender`; without at least one handler solution there are no MediatR targets to call
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj]] - hosts controllers, Minimal API endpoints, and result extensions
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts API and controller registration
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that produces `Result.Invalid` mapped to 400
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - defines `IRepository<T>` and `IReadRepository<T>` used by handlers
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs]] - handlers stage changes; controllers never call `SaveChanges`
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - handlers use read-only repository; commit is transparent
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IQuery<T>` marker for read operations
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs]] - controllers dispatch queries via `ISender`
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker for write operations
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - controllers dispatch commands via `ISender`
+
+NUGET:
+- `Microsoft.AspNetCore.Mvc` {version} - provides `ControllerBase`, `[ApiController]`, `[Route]`, `ActionResult`, `ProblemDetails`
+- `MediatR` {version} - provides `ISender` injected into controllers
+- `Ardalis.Result` {version} - provides `Result<T>`, `ResultStatus` mapped to HTTP responses
 
 # Template Skill Mutations
 

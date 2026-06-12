@@ -43,9 +43,17 @@ depends_on:
 - A property must not have multiple uncoordinated mutation points
 
 # Requirements
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines the module projects that this solution extends
-- definition of `Entity` — [[solution-structure.solution.skill]] defines the entity pattern this solution extends
-- definition of `domain rules` — [[value-objects-and-rules.solution.skill]] defines the domain rule pattern used for validation
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entities and domain services
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with behavior methods
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides Value Object and domain rule patterns
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs]] - domain rules used to validate state changes
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs]] - immutable Value Objects used by entity behavior
+
+NUGET:
+- None — relies only on patterns defined by dependency solutions.
 
 # Template Skill Mutations
 

@@ -64,12 +64,23 @@ depends_on:
 - Query handlers may have transport validators — `ValidationBehavior` validates structural correctness before the handler runs
 
 # Requirements
-- `MediatR` NuGet package — provides `IRequest<T>`, `IRequestHandler<TRequest, TResponse>`, `ISender`
-- `Ardalis.Result` NuGet package — provides `Result<T>`, `Result.Success`, `Result.NotFound`
-- `Microsoft.EntityFrameworkCore` NuGet package — provides `DbContext`, `AsNoTracking`, LINQ extensions used in App.Queries
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines the projects where queries, handlers, and DTOs live
-- definition of `repository abstractions` — [[repository-integration.solution.skill]] defines `IReadRepository<T>` and specification patterns used by single-module handlers
-- definition of `validation pipeline` — [[validation-behavior.solution.skill]] defines `ValidationBehavior` that activates for any `IRequest<TResponse>` including queries
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts `IQuery<TResponse>` marker interface
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj]] - hosts query records and DTOs
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts single-module query handlers
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj]] - hosts cross-module query handlers
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts App.Queries registration
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IReadRepository<T>` and specification patterns
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - used by single-module handlers
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that activates for any `IRequest<TResponse>` including queries
+
+NUGET:
+- `MediatR` {version} - provides `IRequest<T>`, `IRequestHandler<TRequest, TResponse>`, `ISender`
+- `Ardalis.Result` {version} - provides `Result<T>`, `Result.Success`, `Result.NotFound`
+- `Microsoft.EntityFrameworkCore` {version} - provides `DbContext`, `AsNoTracking`, LINQ extensions used in App.Queries
 
 # Template Skill Mutations
 

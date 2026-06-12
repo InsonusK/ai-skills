@@ -63,9 +63,17 @@ depends_on:
 - Value Objects and Rules used by two or more modules belong in Shared.csproj, not duplicated in each module
 
 # Requirements
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines the module projects that this solution extends
-- definition of `Entity` — [[solution-structure.solution.skill]] defines the entity pattern this solution extends
-- definition of `EF Core configuration` — [[domain-configuration.solution.skill]] defines how multi-property VOs are mapped with OwnsOne
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts Value Objects, Rules, and entities
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with Value Object properties and rule calls
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts cross-module reusable Value Objects and Rules
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides EF Core configuration pattern for multi-property Value Objects
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs]] - configures `OwnsOne` for multi-property Value Objects
+
+NUGET:
+- None — relies only on patterns defined by dependency solutions.
 
 # Template Skill Mutations
 

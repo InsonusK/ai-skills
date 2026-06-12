@@ -45,9 +45,14 @@ depends_on:
 - Cross-module foreign key configurations live in App.Infrastructure — not in Domain config
 
 # Requirements
-- definition of `Module project` — [[solution-structure.solution.skill]] defines the module projects that this solution extends
-- definition of `App.Infrastructure project` — [[solution-structure.solution.skill]] defines App.Infrastructure where cross-module FK configs live
-- definition of `Entity` — [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill|solution-structure.solution.skill]] defines the entity pattern this configuration extends
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entity configurations and owns persistence mapping
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with EF Core configuration
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts cross-module foreign-key configurations
+
+NUGET:
+- `Microsoft.EntityFrameworkCore` {version} - provides `IEntityTypeConfiguration<T>`, `EntityTypeBuilder<T>`, `ApplyConfigurationsFromAssembly`
 
 # Template Skill Mutations
 

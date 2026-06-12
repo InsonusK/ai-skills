@@ -71,16 +71,36 @@ depends_on:
 - ETag encodes ALL entity versions involved in the operation — not only the primary entity
 
 # Requirements
-- `System.Text.Json` — provides `JsonSerializer` used in `ETagEncoder`
-- `Microsoft.EntityFrameworkCore` — provides `IsConcurrencyToken()` for `Version` EF configuration
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines BuildingBlocks, App.Infrastructure, App.Host, and module project boundaries
-- definition of `domain configuration` — [[domain-configuration.solution.skill]] provides the EF configuration pattern for `Version` mapping
-- definition of `domain behaviour` — [[domain-behaviour.solution.skill]] defines mutable entities that need concurrency control
-- definition of `IReadRepository<T>` — [[repository-integration.solution.skill]] used by `ConcurrencyBehavior` to load entities for version checking
-- definition of `command pipeline` — [[command-integration.solution.skill]] provides update commands extended with `IHasVersions`
-- definition of `validation pipeline` — [[validation-behavior.solution.skill]] runs before `ConcurrencyBehavior` — pipeline order dependency
-- definition of `unit of work` — [[unit-of-work.solution.skill]] runs after `ConcurrencyBehavior` — pipeline order dependency
-- definition of `API layer` — [[http-api-publication.solution.skill]] provides controller structure for ETag and If-Match handling
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts cross-cutting pipeline behaviors
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts `EntityVersionResolver` implementation
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts pipeline and resolver registrations
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj]] - hosts ETag and If-Match controller handling
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj]] - hosts update/patch commands implementing `IHasVersions`
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides EF Core configuration pattern for `Version` mapping
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs]] - maps `Version` to `xmin` with `IsConcurrencyToken`
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - defines mutable entities that require concurrency control
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IReadRepository<T>` used to load entities for version checking
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - used by `ConcurrencyBehavior` to read entity versions
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker extended with `IHasVersions`
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - marker interface for commands that `ConcurrencyBehavior` constrains on
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that must run before `ConcurrencyBehavior`
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `UnitOfWorkBehavior` that must run after `ConcurrencyBehavior`
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - provides controller structure for ETag and If-Match handling
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `ConcurrencyBehavior` is ordered
+
+NUGET:
+- `System.Text.Json` {version} - provides `JsonSerializer` used in `ETagEncoder`
+- `Microsoft.EntityFrameworkCore` {version} - provides `IsConcurrencyToken()` for `Version` EF configuration
 
 # Template Skill Mutations
 

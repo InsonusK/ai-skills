@@ -61,13 +61,25 @@ depends_on:
 - One validator per command — co-located with the handler in the same feature folder
 
 # Requirements
-- `Ardalis.Result` NuGet package — provides `Result<T>`, `Result.Created`, `Result.NotFound`, `Result.Conflict`, `Result.Error`, `Result.Invalid`
-- `MediatR` NuGet package — provides `IRequest<T>`, `IRequestHandler<TRequest, TResponse>`, `ISender`, `IMediator`
-- `FluentValidation` NuGet package — provides `AbstractValidator<T>`, `RuleFor`, validation rule DSL
-- `FluentValidation.DependencyInjectionExtensions` NuGet package — provides `AddValidatorsFromAssembly`
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines the projects where commands, handlers, and validators live
-- definition of `IRepository<T>` — [[repository-integration.solution.skill]] defines the repository abstraction used by handlers to load and stage entities
-- definition of `validation pipeline` — [[validation-behavior.solution.skill]] defines the `ValidationBehavior` that intercepts and validates commands before handlers run
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts the `ICommand<T>` marker interface project
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj]] - hosts command and result records
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts handlers, validators, and module registration
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts composition-root wiring
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IRepository<T>` and `IReadRepository<T>` abstractions
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs]] - used by command handlers to stage entity changes
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - used by command handlers for read-only guard checks
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` pipeline behavior
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs]] - intercepts and validates commands before handlers run
+
+NUGET:
+- `Ardalis.Result` {version} - provides `Result<T>`, `Result.Created`, `Result.NotFound`, `Result.Conflict`, `Result.Error`, `Result.Invalid`
+- `MediatR` {version} - provides `IRequest<T>`, `IRequestHandler<TRequest, TResponse>`, `ISender`, `IMediator`
+- `FluentValidation` {version} - provides `AbstractValidator<T>`, `RuleFor`, validation rule DSL
+- `FluentValidation.DependencyInjectionExtensions` {version} - provides `AddValidatorsFromAssembly`
 
 # Template Skill Mutations
 

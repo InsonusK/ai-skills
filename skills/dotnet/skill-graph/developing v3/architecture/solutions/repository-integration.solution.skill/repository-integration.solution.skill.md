@@ -67,11 +67,17 @@ depends_on:
 - Spec name reflects intent, not implementation — `TaskByIdSpec` not `TaskWhereId`
 
 # Requirements
-- `Ardalis.Specification` NuGet package — provides `ISpecification<T>`, `Specification<T>`, `IReadRepositoryBase<T>`, `IRepositoryBase<T>`
-- `Ardalis.Specification.EntityFrameworkCore` NuGet package — provides `RepositoryBase<T>`
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines the projects where repositories and specs live
-- definition of `Entity` — [[solution-structure.solution.skill]] defines the entity pattern that specifications filter
-- `Ardalis.Specification` NuGet package — provides `Specification<T>` and `ISpecification<T>` base types
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts repository abstractions
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts generic `Repository<T>` implementation
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts repository DI registration
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts module specifications
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entity pattern filtered by specifications
+
+NUGET:
+- `Ardalis.Specification` {version} - provides `ISpecification<T>`, `Specification<T>`, `IReadRepositoryBase<T>`, `IRepositoryBase<T>`
+- `Ardalis.Specification.EntityFrameworkCore` {version} - provides `RepositoryBase<T>` for the generic `Repository<T>` implementation
 
 # Template Skill Mutations
 

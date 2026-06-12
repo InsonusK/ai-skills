@@ -49,10 +49,19 @@ depends_on:
 - Passes through when no validators registered — missing validator is not a fault
 
 # Requirements
-- `FluentValidation` NuGet package — provides `IValidator<T>` injected into `ValidationBehavior`
-- `MediatR` NuGet package — provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>` marker
-- `Ardalis.Result` NuGet package — provides `Result.Invalid`, `ValidationError`, and `IResult` marker
-- definition of `centralized pipeline registration` — [[pipeline-registration.solution.skill]] provides `PipelineRegistration.AddPipeline()` where `ValidationBehavior` is registered
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts `ValidationBehavior`
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts centralized pipeline registration
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - indirectly referenced because handlers return `Result<T>` via Ardalis patterns
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides `PipelineRegistration.AddPipeline()` where `ValidationBehavior` is registered first
+
+NUGET:
+- `FluentValidation` {version} - provides `IValidator<T>` injected into `ValidationBehavior`
+- `MediatR` {version} - provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>` marker
+- `Ardalis.Result` {version} - provides `Result.Invalid`, `ValidationError`, and `IResult` marker
 
 # Template Skill Mutations
 

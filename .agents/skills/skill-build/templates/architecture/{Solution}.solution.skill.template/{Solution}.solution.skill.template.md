@@ -68,14 +68,28 @@ RECOMENDATION:
 
 # Requirements
 ```hint
-List of requirements for solution appling
-MUST:
-- couldn't have link to solution with order number greater that order number of this solution. If it happend ask user to solve this problem.
+List of requirements for solution appling and Nuget packages. Define what solution uses from dependensies
 RECOMENDATION:
 - Prefer bullet list
+- Use [[Link|Property Name]] format in link
+
+TEMPLATE:
+SOLUTION:
+- [[DependencySolution.solution.skill.md|{name}]]
+  - [[LinkToProject.csproj.{change_kind}.md|{name}]]
+    - [[ProjectClass.class.{change_kine}.md|{name}]] - description how does it used in solution
+NUGET
+- {Nuget package name} {version}
+  - {Classs} - description how does it used in solution
 ```
 ```example
-- definition of `interface IHasGuid` - solution [[external guid pattern solution]] define IHasGuid interface
+SOLUTION:
+- [[repository-structure.solution.skill.md|Repository structure solution]]
+  - [[app-host.csproj.extended.md|App.Host]]
+    - [[command.class.created.md|Command]] - add extension `IRequest` to `Command` classs
+NUGET
+- IMediatR
+  - IRequest - added to `Command` class
 ```
 
 # Template Skill Mutations

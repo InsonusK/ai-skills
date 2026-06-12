@@ -57,12 +57,26 @@ depends_on:
 - `UnitOfWorkContext` is registered as `Scoped` — one instance per HTTP request, shared across all nested command dispatches within that request
 
 # Requirements
-- `MediatR` NuGet package — provides `IPipelineBehavior<TRequest, TResponse>`
-- `Microsoft.EntityFrameworkCore` NuGet package — provides `DbContext.SaveChangesAsync` called by `UnitOfWork`
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines BuildingBlocks, App.Infrastructure, and App.Host project boundaries
-- definition of `IRepository<T>` — [[repository-integration.solution.skill]] stages changes that `IUnitOfWork` commits
-- definition of `command pipeline` — [[command-integration.solution.skill]] provides `ICommand` marker that `UnitOfWorkBehavior` constrains on and handler structure that never calls `SaveChangesAsync`
-- pipeline order: `UnitOfWorkBehavior` must be registered after `ValidationBehavior` — invalid commands must be rejected before the unit of work opens
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts `IUnitOfWork` commit contract
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts `UnitOfWorkContext` and `UnitOfWorkBehavior`
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts `UnitOfWork` EF Core implementation
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts `IUnitOfWork`, `UnitOfWorkContext`, and pipeline registrations
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IRepository<T>` that stages changes for `IUnitOfWork` to commit
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs]] - write-side repository used by command handlers
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker that `UnitOfWorkBehavior` constrains on
+    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - marker interface limiting `UnitOfWorkBehavior` to writes
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that must run before `UnitOfWorkBehavior`
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `UnitOfWorkBehavior` is ordered after `ValidationBehavior`
+
+NUGET:
+- `MediatR` {version} - provides `IPipelineBehavior<TRequest, TResponse>`
+- `Microsoft.EntityFrameworkCore` {version} - provides `DbContext.SaveChangesAsync` called by `UnitOfWork`
 
 # Template Skill Mutations
 

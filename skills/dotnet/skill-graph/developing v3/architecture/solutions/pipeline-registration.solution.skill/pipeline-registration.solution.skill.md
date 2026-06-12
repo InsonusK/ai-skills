@@ -36,8 +36,12 @@ depends_on:
 - `AddPipeline()` is called once from `Program.cs`
 
 # Requirements
-- `MediatR` NuGet package — required by behaviors that extend `AddPipeline()` to register `IPipelineBehavior<,>`
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines App.Host project and `/DependencyInjection` folder
+SOLUTION:
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts `PipelineRegistration` and `Program.cs` composition root
+
+NUGET:
+- `MediatR` {version} - required by behaviors that extend `AddPipeline()` to register `IPipelineBehavior<,>`
 
 # Template Skill Mutations
 
