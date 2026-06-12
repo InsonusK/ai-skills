@@ -4,7 +4,7 @@ name: skill-name
 description: Short description of skill goal
 domain: skill
 type: architecture
-version: 20260611
+version: 20260612
 tags:
   - skill/architecture/solution
   # any other tags
@@ -86,6 +86,12 @@ RECOMENDATION:
 	1. For Repository.template - Repository.{File property change_kind}.md
 	2. For Project.template - {ProjectName}.csproj.{File property change_kind}.md
 	3. For Class.template - {ClassName}.cs.{File property change_kind}.md
+4. Implementation file must be put into folder "Implemetation" following this structure
+- Implementation
+-- Repository.{File property change_kind}.md
+-- {ProjectName}.csproj.{File property change_kind}.md
+-- /{ProjectName}.csproj.{File property change_kind}
+--- {ClassName}.cs.{File property change_kind}.md
 ATTENSION for dynamic names like Module name or Entity name. Prefer using {Module} or {Entity} notation. It shows that Module or Entity is not constant name.
 
 Add links to created files as shown bellow:

@@ -78,3 +78,15 @@ MUST NOT:
 	- ...
 ```
 
+# Unittest TestCases
+```hint
+Define how solution EXTENDS class unittests
+RECOMENDATION:
+- Prefer checkbox list
+```
+```example
+- [ ] WHEN call command with event THEN
+	- [ ] event fill domain event in entity
+	- [ ] `DomainEventInterceptor` catch `SaveChanges` and add event to `outbox`
+	- [ ] `OutboxDispatcher` read `outbox` and send `Notification`
+```
