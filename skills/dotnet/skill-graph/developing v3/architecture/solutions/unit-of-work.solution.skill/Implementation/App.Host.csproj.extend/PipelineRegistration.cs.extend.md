@@ -26,7 +26,7 @@ change_kind: extend
 
 # Implementation changes
 
-Extend `PipelineRegistration` from [[validation-behavior.solution.skill]] with `UnitOfWorkBehavior`:
+Extend `PipelineRegistration` from [[pipeline-registration.solution.skill]] with `UnitOfWorkBehavior`:
 
 ```csharp
 // App.Host/DependencyInjection/PipelineRegistration.cs

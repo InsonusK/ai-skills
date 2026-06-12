@@ -23,13 +23,14 @@ triggers:
   - validate mediatr request
 creates:
   - BuildingBlocks.MediatR.ValidationBehavior.cs
-  - App.Host.DependencyInjection.PipelineRegistration.cs
 extends:
   - BuildingBlocks.csproj
   - App.Host.csproj
+  - App.Host.DependencyInjection.PipelineRegistration.cs
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
 ---
 
 # Goal
@@ -51,14 +52,15 @@ depends_on:
 - `FluentValidation` NuGet package — provides `IValidator<T>` injected into `ValidationBehavior`
 - `MediatR` NuGet package — provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>` marker
 - `Ardalis.Result` NuGet package — provides `Result.Invalid`, `ValidationError`, and `IResult` marker
+- definition of `centralized pipeline registration` — [[pipeline-registration.solution.skill]] provides `PipelineRegistration.AddPipeline()` where `ValidationBehavior` is registered
 
 # Template Skill Mutations
 
 PROJECT:
 - [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add FluentValidation, MediatR, and Ardalis.Result packages for the ValidationBehavior
   - [[./Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs]] - create - Pipeline behavior that validates any `IRequest<TResponse>`
-- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire pipeline behavior registration in the composition root
-  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md|PipelineRegistration.cs]] - create - Pipeline behavior registration extension
+- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Add ValidationBehavior to the centralized pipeline registration
+  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Add ValidationBehavior as the first pipeline behavior
 
 # Rules
 

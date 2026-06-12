@@ -26,6 +26,8 @@ change_kind: extend
 
 # Implementation changes
 
+Extend `PipelineRegistration` from [[pipeline-registration.solution.skill]] with `GuidResolvingBehavior`:
+
 ```csharp
 // App.Host/DependencyInjection/PipelineRegistration.cs
 public static class PipelineRegistration

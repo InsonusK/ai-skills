@@ -54,6 +54,7 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
 ---
 
 # Goal
@@ -108,7 +109,7 @@ PROJECT:
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add IHasGuid to create commands for externally-created entities
   - [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md|{Command}.cs]] - extend - Create command implements IHasGuid
 - [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register GuidResolvingBehavior in pipeline and ConflictExceptionMiddleware in HTTP pipeline
-  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert GuidResolvingBehavior between ValidationBehavior and ConcurrencyBehavior
+  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert GuidResolvingBehavior between ValidationBehavior and ConcurrencyBehavior in centralized pipeline registration
   - [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create.md|MiddlewareRegistration.cs]] - create - Register ConflictExceptionMiddleware in the HTTP pipeline
 
 # Rules

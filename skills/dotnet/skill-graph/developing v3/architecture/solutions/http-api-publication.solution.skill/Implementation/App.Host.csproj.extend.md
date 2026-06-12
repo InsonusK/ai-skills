@@ -17,7 +17,7 @@ change_kind: extend
 /App.Host
   /DependencyInjection
     RepositoryRegistration.cs    ← repository-integration
-    PipelineRegistration.cs      ← validation-behavior
+    PipelineRegistration.cs      ← pipeline-registration
     ApiRegistration.cs
   Program.cs
 ```
