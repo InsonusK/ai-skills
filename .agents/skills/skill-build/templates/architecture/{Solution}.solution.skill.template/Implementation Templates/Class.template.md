@@ -2,6 +2,7 @@
 description: Short description waht must be made while creation or change in class
 project_name: #The project in which the class is located
 name: #Class name
+element_kind: #repository | project | class
 change_kind: #create | extend
 #- create if solution create new template of project. Name of project must be added into creates property in the header of solution
 #- extend if solution extend existent template of project. Link to project must be added into extends property in the header of solution

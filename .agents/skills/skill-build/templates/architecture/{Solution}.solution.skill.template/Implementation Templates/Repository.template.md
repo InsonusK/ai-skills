@@ -1,5 +1,7 @@
 ---
 description: Short description waht must be made while creation or change in repository
+element_kind: #repository | project | class
+change_kind: #create | extend
 ---
 **AUTHORING RULE**: 
 - Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
