@@ -45,6 +45,7 @@ extends:
   - "{Module}.Application.{Module}ApplicationRegistration.cs"
   - App.Host.csproj
   - App.Host.DependencyInjection.PipelineRegistration.cs
+  - App.Host.DependencyInjection.MiddlewareRegistration.cs
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]"
@@ -55,6 +56,7 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/middleware-registration.solution.skill.md|middleware-registration.solution.skill]]"
 ---
 
 # Goal
@@ -113,6 +115,8 @@ SOLUTION:
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ConcurrencyBehavior` that `GuidResolvingBehavior` runs before
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `GuidResolvingBehavior` is ordered
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/middleware-registration.solution.skill.md|middleware-registration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `MiddlewareRegistration` where `ConflictExceptionMiddleware` is registered
 
 NUGET:
 - None — relies only on patterns and packages already required by dependency solutions.
@@ -136,9 +140,9 @@ PROJECT:
   - [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.extend.md|{Module}ApplicationRegistration.cs]] - extend - Register IGuidResolver in module DI
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add IHasGuid to create commands for externally-created entities
   - [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md|{Command}.cs]] - extend - Create command implements IHasGuid
-- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register GuidResolvingBehavior in pipeline and ConflictExceptionMiddleware in HTTP pipeline
+- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register GuidResolvingBehavior in pipeline and extend MiddlewareRegistration with ConflictExceptionMiddleware
   - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert GuidResolvingBehavior between ValidationBehavior and ConcurrencyBehavior in centralized pipeline registration
-  - [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create.md|MiddlewareRegistration.cs]] - create - Register ConflictExceptionMiddleware in the HTTP pipeline
+  - [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.extend.md|MiddlewareRegistration.cs]] - extend - Register ConflictExceptionMiddleware in the centralized HTTP middleware pipeline
 
 # Rules
 
