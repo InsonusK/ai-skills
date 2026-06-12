@@ -1,0 +1,117 @@
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant Ctrl as {Entity}Controller
+    participant VB as ValidationBehavior
+    participant GB as GuidResolvingBehavior
+    participant CB as ConcurrencyBehavior
+    participant UWB as UnitOfWorkBehavior
+    participant H as Create{Entity}Handler
+    participant R as Create{Entity}GuidResolver
+    participant DB as Database
+
+    Note over C: Client generates Guid<br/>(e.g. frontend NgRx optimistic store)
+
+    rect rgb(230, 245, 255)
+    Note over C,DB: Flow 1 — new Guid, first request
+    C->>Ctrl: POST /{entity} { guid, title, assigneeId }
+    activate Ctrl
+    Ctrl->>VB: Send(Create{Entity}Command)
+    activate VB
+    VB->>GB: validate input
+    activate GB
+    GB->>R: ResolveAsync(guid)
+    activate R
+    R->>DB: SELECT ... WHERE Guid = guid
+    activate DB
+    DB-->>R: null (not found)
+    deactivate DB
+    R-->>GB: null
+    deactivate R
+    GB->>CB: next()
+    activate CB
+    Note right of CB: create commands do not<br/>implement IHasVersions — skips
+    CB->>UWB: next()
+    activate UWB
+    UWB->>H: depth++
+    activate H
+    H->>H: create entity, store Guid
+    H-->>UWB: Result.Created(Create{Entity}Result)
+    deactivate H
+    UWB->>DB: SaveChangesAsync(depth == 1)
+    activate DB
+    DB-->>UWB: success
+    deactivate DB
+    UWB-->>Ctrl: Result.Created(Create{Entity}Result)
+    deactivate UWB
+    deactivate CB
+    deactivate GB
+    deactivate VB
+    Ctrl-->>C: 201 Created { id: 42 }
+    deactivate Ctrl
+    Note over C: Client stores internal Id
+    end
+
+    rect rgb(255, 245, 230)
+    Note over C,DB: Flow 2 — duplicate Guid, retry after transient failure
+    C->>Ctrl: POST /{entity} { guid, title, assigneeId }
+    activate Ctrl
+    Ctrl->>VB: Send(Create{Entity}Command)
+    activate VB
+    VB->>GB: validate input
+    activate GB
+    GB->>R: ResolveAsync(guid)
+    activate R
+    R->>DB: SELECT ... WHERE Guid = guid
+    activate DB
+    DB-->>R: existing entity
+    deactivate DB
+    R-->>GB: Result.Success(Create{Entity}Result)
+    deactivate R
+    GB->>GB: throw ConflictException<Result<Create{Entity}Result>>
+    GB--xCtrl: ConflictException<Result<Create{Entity}Result>>
+    deactivate GB
+    deactivate VB
+    Ctrl->>Ctrl: catch (ConflictException ex)
+    Ctrl-->>C: 409 Conflict { id: 42 }
+    deactivate Ctrl
+    Note over C: Client recovers without second GET
+    end
+
+    rect rgb(255, 230, 230)
+    Note over C,DB: Flow 3 — concurrent requests bypass pipeline check
+    C->>Ctrl: POST /{entity} { guid, ... }
+    activate Ctrl
+    C->>Ctrl: POST /{entity} { guid, ... }
+    Ctrl->>GB: both reach GuidResolvingBehavior
+    activate GB
+    GB->>R: ResolveAsync(guid) — both
+    activate R
+    R->>DB: both return null (race condition)
+    activate DB
+    DB-->>R: null
+    deactivate DB
+    R-->>GB: null
+    deactivate R
+    GB->>UWB: both proceed to handler
+    activate UWB
+    UWB->>H: both create entity, store Guid
+    activate H
+    H->>H: process
+    H-->>UWB: both return Result.Created
+    deactivate H
+    UWB->>DB: SaveChangesAsync (first)
+    activate DB
+    DB-->>UWB: success
+    deactivate DB
+    UWB->>DB: SaveChangesAsync (second)
+    activate DB
+    DB--xUWB: PostgresException 23505<br/>unique index UX_{EntityName}_Guid
+    deactivate DB
+    UWB--xCtrl: exception
+    deactivate UWB
+    deactivate GB
+    deactivate Ctrl
+    Ctrl-->>C: 500 (or mapped 409 via middleware)
+    Note over DB: DB unique index is the last line of defence
+    end
