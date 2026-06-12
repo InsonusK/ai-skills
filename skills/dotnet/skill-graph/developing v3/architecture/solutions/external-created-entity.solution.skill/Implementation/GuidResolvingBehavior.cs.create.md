@@ -13,7 +13,7 @@ change_kind: create
 - Constrained on `where TRequest : IHasGuid` — only activates for commands carrying a Guid; `IHasGuid` is defined in Shared
 - Resolves `IGuidResolver<TResponse>` from DI — the resolver is specific to the command's result type; `IGuidResolver<TResult>` is defined in Shared
 - Throws `ConflictException<TResponse>` on duplicate — never returns a result directly from the behavior
-- The exception carries the full existing result — controller extracts `.Existing.Value` for the 409 body
+- The exception carries the full existing result — `ConflictExceptionMiddleware` extracts the entity body via `.GetValue()` for the 409 response
 - Does not call `SaveChangesAsync` — purely a read and guard operation
 
 # Pipeline position
@@ -73,7 +73,7 @@ MUST:
 MUST NOT:
 - Be registered as open generic — DI resolves per concrete `TRequest`/`TResponse` pair
 - Call `SaveChangesAsync`
-- Swallow the `ConflictException` — it must propagate to the controller
+- Swallow the `ConflictException` — it must propagate to `ConflictExceptionMiddleware`
 
 # Anti-patterns
 - `GuidResolvingBehavior` registered after `UnitOfWorkBehavior` — duplicate commands open a unit of work unnecessarily

@@ -3,47 +3,82 @@ description: Exception carrying existing entity result for 409 responses
 name: ConflictException.cs
 change_kind: create
 ---
-
 # Goals
-- Carry the existing entity result from `GuidResolvingBehavior` to the API controller
-- Enable the controller to return the existing entity in the 409 response body — client recovers without a second GET
+- Carry the existing entity result from `GuidResolvingBehavior` to the `ConflictExceptionMiddleware`
+- Enable the middleware to write the existing entity in the 409 response body — client recovers without a second GET
+- Provide a non-generic base class so middleware can catch all `ConflictException<T>` instances without knowing `T`
 
 # Core Principles
-- Generic on result type `T` — typed to the command's result type (e.g. `Result<CreateTaskResult>`)
-- Single property: `Existing` — the resolved result from `IGuidResolver<T>`
-- Controller catches this specific type and extracts `Existing.Value` for the 409 body
+- Non-generic `ConflictException` base class lives in Shared — middleware catches this type
+- Generic `ConflictException<T>` carries the typed existing result and implements `GetValue()` to extract the body
+- `GetValue()` unwraps `Result<T>.Value` when `T` is an Ardalis `Result<>`; otherwise returns the object itself
+- Generic on the result type `T` — typed to the command's result type (e.g. `Result<CreateTaskResult>`)
+- Not a domain exception — it is a pipeline coordination exception
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
+| Guid conflict exception base | `ConflictException` | `ConflictException` | `ConflictException.cs` | `ConflictException.cs` |
 | Guid conflict exception | `ConflictException<T>` | `ConflictException<Result<CreateTaskResult>>` | `ConflictException.cs` | `ConflictException.cs` |
 
 # Implementation changes
 
 ```csharp
 // Shared/Exceptions/ConflictException.cs
-public class ConflictException<T> : Exception
+using System.Reflection;
+
+public abstract class ConflictException : Exception
+{
+    protected ConflictException(string message)
+        : base(message) { }
+
+    public abstract object? GetValue();
+}
+
+public class ConflictException<T> : ConflictException
 {
     public T Existing { get; }
 
     public ConflictException(T existing)
         : base("Entity with this Guid already exists.")
         => Existing = existing;
+
+    public override object? GetValue()
+    {
+        if (Existing is null)
+            return null;
+
+        var type = typeof(T);
+        var valueProperty = type.GetProperty(
+            "Value",
+            BindingFlags.Public | BindingFlags.Instance);
+
+        if (valueProperty is not null)
+            return valueProperty.GetValue(Existing);
+
+        return Existing;
+    }
 }
 ```
 
 # Rules
 
 MUST:
+- Non-generic `ConflictException` base class defined in Shared
+- `ConflictException<T>` defined in Shared
 - `Existing` property carries the full resolved result — never just an Id
-- Message always the same — controller never reads the message, only `Existing`
+- `GetValue()` extracts the entity body from `Result<T>` wrappers
+- Message always the same — middleware never reads the message, only `GetValue()`
 
 MUST NOT:
-- Carry only the Id — the full result shape is required for client recovery
+- Carry only the Id — the full result shape is required so middleware can extract the entity body
+- Define in BuildingBlocks — it is caught by both BuildingBlocks middleware and potentially other layers
 
 # Anti-patterns
-- `ConflictException` without generic parameter — controller loses typed access to the existing entity
+- `ConflictException` without non-generic base — middleware would need reflection or generic type matching to catch all instances
+- `ConflictException<T>` carrying only an Id — client loses the full existing entity needed for recovery
 
 # Check list
+- [ ] `ConflictException` non-generic base defined in `Shared/Exceptions/ConflictException.cs`
 - [ ] `ConflictException<T>` defined in `Shared/Exceptions/ConflictException.cs`
-- [ ] `Existing` property carries full result type
+- [ ] `GetValue()` unwraps `Result<T>.Value`

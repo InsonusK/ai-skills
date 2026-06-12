@@ -1,7 +1,7 @@
 ---
 uid: 9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f
 name: external-created-entity
-description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver in Shared, ConflictException in Shared, GuidResolvingBehavior in BuildingBlocks inserted between ValidationBehavior and ConcurrencyBehavior, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application, and controller catching ConflictException to return 409 with existing entity body
+description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver in Shared, ConflictException in Shared, GuidResolvingBehavior in BuildingBlocks inserted between ValidationBehavior and ConcurrencyBehavior, ConflictExceptionMiddleware in BuildingBlocks that catches ConflictException and writes 409 with existing entity body, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application
 domain: skill
 type: architecture
 version: 20260611
@@ -15,6 +15,9 @@ tags:
   - idempotency
   - mediatr
   - pipeline
+  - middleware
+  - conflict
+  - exception-handling
 triggers:
   - external created entity
   - client-generated guid
@@ -28,6 +31,7 @@ creates:
   - Shared.Guid.IHasGuid.cs
   - Shared.Guid.IGuidResolver.cs
   - BuildingBlocks.MediatR.GuidResolvingBehavior.cs
+  - BuildingBlocks.Middleware.ConflictExceptionMiddleware.cs
   - "{Module}.Application.Specifications.{Entity}ByGuidSpec.cs"
   - "{Module}.Application.Resolvers.Create{Entity}GuidResolver.cs"
 extends:
@@ -39,9 +43,8 @@ extends:
   - "{Module}.Interfaces.csproj"
   - "{Module}.Application.csproj"
   - "{Module}.Application.{Module}ApplicationRegistration.cs"
-  - "{Module}.Api.csproj"
-  - "{Module}.Api.Controllers.{Entity}Controller.cs"
   - App.Host.csproj
+  - App.Host.DependencyInjection.PipelineRegistration.cs
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]"
@@ -50,7 +53,6 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
 ---
 
@@ -59,7 +61,8 @@ depends_on:
 - Define a unique database index on `Guid` as the final idempotency guard — duplicate requests that bypass the pipeline are rejected at the DB level
 - Define `IHasGuid` and `IGuidResolver<TResult>` in `Shared` as the command marker and resolver contract
 - Define `GuidResolvingBehavior` in `BuildingBlocks` as the pipeline behavior that short-circuits with `ConflictException<TResult>` when the `Guid` already exists
-- Define `ConflictException<T>` in `Shared` — carries the existing entity result so the controller can return 409 with a body the client can use to recover without a second GET
+- Define `ConflictException<T>` in `Shared` — carries the existing entity result so middleware can return 409 with a body the client can use to recover without a second GET
+- Define `ConflictExceptionMiddleware` in `BuildingBlocks` — catches any `ConflictException` thrown during a request and writes 409 with the existing entity body
 - Define `{Entity}ByGuidSpec` in `{Module}.Application/Specifications` — the spec used by the resolver
 - Define `Create{Entity}GuidResolver` in `{Module}.Application/Resolvers` — one resolver per external-created entity type
 - Insert `GuidResolvingBehavior` into the pipeline between `ValidationBehavior` and `ConcurrencyBehavior`
@@ -71,16 +74,19 @@ depends_on:
 - 409 response body contains the existing entity result — client recovers without a second GET request
 - `GuidResolvingBehavior` is generic — one implementation handles all entity types via `IGuidResolver<TResult>` resolved from DI
 - `IGuidResolver<TResult>` is NOT registered as open generic — each external-created entity type registers its own concrete resolver
-- `ConflictException<T>` is thrown by the behavior — the controller catches it and maps to 409
+- `ConflictException<T>` is thrown by the behavior — the middleware catches it and maps to 409
+- `ConflictExceptionMiddleware` is centralized in BuildingBlocks — no per-controller try/catch required
+- Middleware extracts the existing entity body from `ConflictException.GetValue()` so the response shape is consistent across all endpoints
 - The unique database index on `Guid` is the last line of defence — it catches duplicate Guids that bypass the pipeline (e.g. concurrent requests that both pass the pipeline check simultaneously)
 - `GuidResolvingBehavior` runs after `ValidationBehavior` — invalid commands are rejected before the DB lookup
 - `GuidResolvingBehavior` runs before `ConcurrencyBehavior` — duplicate creation is caught before any version check
 
 # Full idempotent creation flow
-[[skills/dotnet/skill-graph/developing v3/architecture/solutions/external-created-entity.solution.skill/doc/full-idempotent-creation-flow.mmd|full-idempotent-creation-flow]]
+
+See [[./doc/full-idempotent-creation-flow.mmd|full-idempotent-creation-flow.mmd]] for the Mermaid sequence diagram.
 
 # Requirements
-- No additional NuGet packages — all dependencies already present from earlier solutions
+- No additional NuGet packages beyond those already required for ASP.NET Core middleware and JSON serialization — all other dependencies already present from earlier solutions
 
 # Template Skill Mutations
 
@@ -89,21 +95,21 @@ PROJECT:
   - [[./Implementation/ConflictException.cs.create.md|ConflictException.cs]] - create - Exception carrying existing entity result for 409 responses
   - [[./Implementation/IHasGuid.cs.create.md|IHasGuid.cs]] - create - Marker interface for commands carrying a client-generated Guid
   - [[./Implementation/IGuidResolver.cs.create.md|IGuidResolver.cs]] - create - Per-entity resolver contract
-- [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add `GuidResolvingBehavior`
-  - [[./Implementation/GuidResolvingBehavior.cs.create.md|GuidResolvingBehavior.cs]] - create - Pipeline behavior that short-circuits on duplicate `Guid`
-- [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add `Guid` property and unique index to externally-created entities
-  - [[./Implementation/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add `Guid` property with internal set
-  - [[./Implementation/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Configure unique index on `Guid` with named constant
+- [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add `GuidResolvingBehavior` and `ConflictExceptionMiddleware`
+  - [[./Implementation/GuidResolvingBehavior.cs.create.md|GuidResolvingBehavior.cs]] - create - Pipeline behavior that short-circuits on duplicate Guid
+  - [[./Implementation/ConflictExceptionMiddleware.cs.create.md|ConflictExceptionMiddleware.cs]] - create - Middleware that catches ConflictException and writes 409
+- [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Guid property and unique index to externally-created entities
+  - [[./Implementation/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add Guid property with internal set
+  - [[./Implementation/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Configure unique index on Guid with named constant
 - [[./Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add {Entity}ByGuidSpec and Create{Entity}GuidResolver
-  - [[./Implementation/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs]] - create - Specification for looking up entity by `Guid`
-  - [[./Implementation/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs]] - create - Per-entity `IGuidResolver` implementation
-  - [[./Implementation/{Module}ApplicationRegistration.cs.extend.md|{Module}ApplicationRegistration.cs]] - extend - Register `IGuidResolver` in module DI
-- [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add `IHasGuid` to create commands for externally-created entities
-  - [[./Implementation/{Command}.cs.extend.md|{Command}.cs]] - extend - Create command implements `IHasGuid`
-- [[./Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - extend - Add `ConflictException` catch to collection controller POST
-  - [[./Implementation/{Entity}Controller.cs.extend.md|{Entity}Controller.cs]] - extend - Catch `ConflictException` and return 409 with existing entity body
-- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register `GuidResolvingBehavior `in pipeline
-  - [[./Implementation/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert `GuidResolvingBehavior` between `ValidationBehavior` and `ConcurrencyBehavior`
+  - [[./Implementation/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs]] - create - Specification for looking up entity by Guid
+  - [[./Implementation/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs]] - create - Per-entity IGuidResolver implementation
+  - [[./Implementation/{Module}ApplicationRegistration.cs.extend.md|{Module}ApplicationRegistration.cs]] - extend - Register IGuidResolver in module DI
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add IHasGuid to create commands for externally-created entities
+  - [[./Implementation/{Command}.cs.extend.md|{Command}.cs]] - extend - Create command implements IHasGuid
+- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register GuidResolvingBehavior in pipeline and ConflictExceptionMiddleware in HTTP pipeline
+  - [[./Implementation/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert GuidResolvingBehavior between ValidationBehavior and ConcurrencyBehavior
+  - [[./Implementation/MiddlewareRegistration.cs.create.md|MiddlewareRegistration.cs]] - create - Register ConflictExceptionMiddleware in the HTTP pipeline
 
 # Rules
 
@@ -113,14 +119,15 @@ MUST:
 - Unique index on `Guid` configured with named constant `UX_Guid` in entity configuration
 - `{Entity}ByGuidSpec` defined in `/{Module}.Application/Specifications`
 - `IHasGuid`, `IGuidResolver<TResult>` defined in Shared
-- `GuidResolvingBehavior` defined in BuildingBlocks
-- `ConflictException<T>` defined in Shared
+- `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
+- `ConflictException<T>` defined in `Shared/Exceptions/ConflictException.cs` with non-generic `ConflictException` base class
+- `ConflictExceptionMiddleware` defined in `BuildingBlocks/Middleware/ConflictExceptionMiddleware.cs`
+- `ConflictExceptionMiddleware` registered in the HTTP pipeline in App.Host
 - Create commands for external-created entities implement both `ICommand<Result<T>>` and `IHasGuid`
 - One `Create{Entity}GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
 - Each `IGuidResolver<TResult>` registered as `Scoped` in module DI registration
 - `GuidResolvingBehavior` registered after `ValidationBehavior` and before `ConcurrencyBehavior`
-- Controller POST action wraps `_sender.Send()` in `try/catch (ConflictException<Result<T>> ex)`
-- 409 response body is `ex.Existing.Value` — the existing entity, not `ProblemDetails`
+- `ConflictExceptionMiddleware` writes 409 with the existing entity body extracted via `ConflictException.GetValue()`
 - `Guid` is first property in create command record
 
 MUST NOT:
@@ -130,7 +137,8 @@ MUST NOT:
 - `IGuidResolver` registered as open generic — each entity type registers its own concrete resolver
 - `GuidResolvingBehavior` registered after `UnitOfWorkBehavior`
 - Resolver throw exceptions — null means not found, non-null means exists
-- 409 response return empty body — client must receive existing entity to recover
+- `ConflictException<T>` carry only the Id — must carry the full result so middleware can extract the entity body
+- Per-controller try/catch for `ConflictException` — handling is centralized in middleware
 
 SHOULD:
 - `Guid` be the first property in the command record — signals external-created entity at a glance
@@ -144,6 +152,8 @@ SHOULD:
 - `Guid` used as foreign key in a relation — leaks external identity into domain relationships
 - `Guid` route parameter after creation — internal `Id` is the only identity in routes
 - `IHasGuid` or `IGuidResolver<TResult>` defined in BuildingBlocks — they are contracts that belong in Shared per solution-structure.solution.skill
+- Per-controller `try/catch` for `ConflictException` instead of using `ConflictExceptionMiddleware`
+- `ConflictExceptionMiddleware` not registered before `MapControllers()` or endpoint routing
 
 # Check list
 - [ ] `Guid Guid { get; internal set; }` on every external-created entity
@@ -154,7 +164,9 @@ SHOULD:
 - [ ] `IHasGuid` defined in `Shared/Guid/IHasGuid.cs`
 - [ ] `IGuidResolver<TResult>` defined in `Shared/Guid/IGuidResolver.cs`
 - [ ] `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
-- [ ] `ConflictException<T>` defined in `Shared/Exceptions/ConflictException.cs`
+- [ ] `ConflictException<T>` defined in `Shared/Exceptions/ConflictException.cs` with non-generic base
+- [ ] `ConflictExceptionMiddleware` defined in `BuildingBlocks/Middleware/ConflictExceptionMiddleware.cs`
+- [ ] `ConflictExceptionMiddleware` registered in App.Host HTTP pipeline
 - [ ] `Create{Entity}GuidResolver` in `/{Module}.Application/Resolvers`
 - [ ] Resolver uses `IReadRepository<T>` and `{Entity}ByGuidSpec` — no inline LINQ
 - [ ] Resolver returns null when not found, `Result.Success(...)` when found
@@ -162,14 +174,13 @@ SHOULD:
 - [ ] Create command implements `ICommand<Result<T>>` and `IHasGuid`
 - [ ] `Guid` is first property in create command record
 - [ ] `GuidResolvingBehavior` registered 2nd in pipeline (after Validation, before Concurrency)
-- [ ] Controller POST catches `ConflictException<Result<Create{Entity}Result>>`
-- [ ] 409 `[ProducesResponseType]` uses `typeof(Create{Entity}Result)` — not `ProblemDetails`
-- [ ] 409 response returns `Conflict(ex.Existing.Value)` — existing entity body
+- [ ] `ConflictExceptionMiddleware` writes 409 with existing entity body from `GetValue()`
 
 # Unittest TestCases
 - [ ] When create command with new Guid Then resolver returns null — handler runs — 201 Created returned
-- [ ] When create command with duplicate Guid Then resolver returns existing — `ConflictException` thrown — 409 returned
+- [ ] When create command with duplicate Guid Then resolver returns existing — `ConflictException` thrown — middleware writes 409 returned
 - [ ] When 409 returned Then response body contains existing entity Id — not empty, not ProblemDetails
 - [ ] When two concurrent requests with same Guid both pass pipeline Then unique index raises `DbUpdateException` with `PostgresException` where `SqlState == "23505"` and `ConstraintName == {EntityName}Config.UX_Guid`
 - [ ] When entity created Then `Guid` is immutable — update attempt has no effect on Guid property
 - [ ] When `GuidResolvingBehavior` registered before `UnitOfWorkBehavior` Then duplicate command never calls `SaveChangesAsync`
+- [ ] When `ConflictExceptionMiddleware` is registered Then any `ConflictException<T>` thrown from any endpoint returns 409 without controller catch
