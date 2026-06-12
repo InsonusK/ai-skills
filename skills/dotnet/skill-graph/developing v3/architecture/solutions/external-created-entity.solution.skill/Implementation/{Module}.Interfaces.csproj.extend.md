@@ -23,7 +23,6 @@ change_kind: extend
 
 # Allowed Dependencies
 - Shared
-- BuildingBlocks
 
 # Rules
 
@@ -33,10 +32,12 @@ MUST:
 - `Guid` typed as `System.Guid` — never `string` or `int`
 
 MUST NOT:
+- Reference BuildingBlocks — commands implement interfaces from Shared only
 - Update, delete, or internal-create commands implement `IHasGuid`
 
 # Anti-patterns
 - `Guid` not as first property — signals external-created entity at a glance
+- `{Module}.Interfaces` referencing BuildingBlocks just to implement `IHasGuid`
 
 # Check list
 - [ ] Create command implements `IHasGuid`

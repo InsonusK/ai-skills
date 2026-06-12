@@ -13,6 +13,7 @@ change_kind: create
 - Returns `TResult?` — null means Guid not found (first request), non-null means already exists (retry)
 - One implementation per external-created entity type — registered in module DI registration
 - Uses `IReadRepository<T>` and a `{Entity}ByGuidSpec` — never hits the DB directly
+- Lives in Shared so `{Module}.Application` resolvers and BuildingBlocks behavior can both consume it
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -22,7 +23,7 @@ change_kind: create
 # Implementation changes
 
 ```csharp
-// BuildingBlocks/Guid/IGuidResolver.cs
+// Shared/Guid/IGuidResolver.cs
 public interface IGuidResolver<TResult>
 {
     Task<TResult?> ResolveAsync(Guid guid, CancellationToken ct);
@@ -38,10 +39,12 @@ MUST:
 
 MUST NOT:
 - Throw exceptions — null is the only "not found" signal
+- Be defined in BuildingBlocks — it is a contract consumed by multiple layers
 
 # Anti-patterns
 - `IGuidResolver` without generic parameter — would require casting and lose type safety
+- `IGuidResolver` defined in BuildingBlocks — forces module Application to reference BuildingBlocks for a contract
 
 # Check list
-- [ ] `IGuidResolver<TResult>` defined in `BuildingBlocks/Guid/IGuidResolver.cs`
+- [ ] `IGuidResolver<TResult>` defined in `Shared/Guid/IGuidResolver.cs`
 - [ ] Returns `Task<TResult?>`

@@ -1,7 +1,7 @@
 ---
 uid: 9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f
 name: external-created-entity
-description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver in BuildingBlocks, ConflictException in Shared, GuidResolvingBehavior in BuildingBlocks inserted between ValidationBehavior and ConcurrencyBehavior, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application, and controller catching ConflictException to return 409 with existing entity body
+description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver in Shared, ConflictException in Shared, GuidResolvingBehavior in BuildingBlocks inserted between ValidationBehavior and ConcurrencyBehavior, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application, and controller catching ConflictException to return 409 with existing entity body
 domain: skill
 type: architecture
 version: 20260611
@@ -25,8 +25,8 @@ triggers:
   - IHasGuid
 creates:
   - Shared.Exceptions.ConflictException.cs
-  - BuildingBlocks.Guid.IHasGuid.cs
-  - BuildingBlocks.Guid.IGuidResolver.cs
+  - Shared.Guid.IHasGuid.cs
+  - Shared.Guid.IGuidResolver.cs
   - BuildingBlocks.MediatR.GuidResolvingBehavior.cs
   - "{Module}.Application.Specifications.{Entity}ByGuidSpec.cs"
   - "{Module}.Application.Resolvers.Create{Entity}GuidResolver.cs"
@@ -57,7 +57,7 @@ depends_on:
 # Goal
 - Define `Guid` as an immutable correlation property on externally-created entities — set once on creation, never changed
 - Define a unique database index on `Guid` as the final idempotency guard — duplicate requests that bypass the pipeline are rejected at the DB level
-- Define `IHasGuid` and `IGuidResolver<TResult>` in `BuildingBlocks` as the command marker and resolver contract
+- Define `IHasGuid` and `IGuidResolver<TResult>` in `Shared` as the command marker and resolver contract
 - Define `GuidResolvingBehavior` in `BuildingBlocks` as the pipeline behavior that short-circuits with `ConflictException<TResult>` when the `Guid` already exists
 - Define `ConflictException<T>` in `Shared` — carries the existing entity result so the controller can return 409 with a body the client can use to recover without a second GET
 - Define `{Entity}ByGuidSpec` in `{Module}.Application/Specifications` — the spec used by the resolver
@@ -85,11 +85,11 @@ depends_on:
 # Template Skill Mutations
 
 PROJECT:
-- [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add `ConflictException` exception class
+- [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add `ConflictException`, `IHasGuid`, and `IGuidResolver`
   - [[./Implementation/ConflictException.cs.create.md|ConflictException.cs]] - create - Exception carrying existing entity result for 409 responses
-- [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add `IHasGuid`, `IGuidResolver`, and `GuidResolvingBehavior`
-  - [[./Implementation/IHasGuid.cs.create.md|IHasGuid.cs]] - create - Marker interface for commands carrying a client-generated `Guid`
+  - [[./Implementation/IHasGuid.cs.create.md|IHasGuid.cs]] - create - Marker interface for commands carrying a client-generated Guid
   - [[./Implementation/IGuidResolver.cs.create.md|IGuidResolver.cs]] - create - Per-entity resolver contract
+- [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add `GuidResolvingBehavior`
   - [[./Implementation/GuidResolvingBehavior.cs.create.md|GuidResolvingBehavior.cs]] - create - Pipeline behavior that short-circuits on duplicate `Guid`
 - [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add `Guid` property and unique index to externally-created entities
   - [[./Implementation/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add `Guid` property with internal set
@@ -112,7 +112,8 @@ MUST:
 - `Guid` set exactly once in the entity factory method — never reassigned
 - Unique index on `Guid` configured with named constant `UX_Guid` in entity configuration
 - `{Entity}ByGuidSpec` defined in `/{Module}.Application/Specifications`
-- `IHasGuid`, `IGuidResolver<TResult>`, `GuidResolvingBehavior` defined in BuildingBlocks
+- `IHasGuid`, `IGuidResolver<TResult>` defined in Shared
+- `GuidResolvingBehavior` defined in BuildingBlocks
 - `ConflictException<T>` defined in Shared
 - Create commands for external-created entities implement both `ICommand<Result<T>>` and `IHasGuid`
 - One `Create{Entity}GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
@@ -142,6 +143,7 @@ SHOULD:
 - `IGuidResolver` registered as open generic — breaks DI resolution per command result type
 - `Guid` used as foreign key in a relation — leaks external identity into domain relationships
 - `Guid` route parameter after creation — internal `Id` is the only identity in routes
+- `IHasGuid` or `IGuidResolver<TResult>` defined in BuildingBlocks — they are contracts that belong in Shared per solution-structure.solution.skill
 
 # Check list
 - [ ] `Guid Guid { get; internal set; }` on every external-created entity
@@ -149,8 +151,8 @@ SHOULD:
 - [ ] `UX_Guid` constant defined on entity configuration class
 - [ ] Unique index on `Guid` configured with `HasDatabaseName(UX_Guid)` and `IsUnique()`
 - [ ] `{Entity}ByGuidSpec` in `/{Module}.Application/Specifications`
-- [ ] `IHasGuid` defined in `BuildingBlocks/Guid/IHasGuid.cs`
-- [ ] `IGuidResolver<TResult>` defined in `BuildingBlocks/Guid/IGuidResolver.cs`
+- [ ] `IHasGuid` defined in `Shared/Guid/IHasGuid.cs`
+- [ ] `IGuidResolver<TResult>` defined in `Shared/Guid/IGuidResolver.cs`
 - [ ] `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
 - [ ] `ConflictException<T>` defined in `Shared/Exceptions/ConflictException.cs`
 - [ ] `Create{Entity}GuidResolver` in `/{Module}.Application/Resolvers`

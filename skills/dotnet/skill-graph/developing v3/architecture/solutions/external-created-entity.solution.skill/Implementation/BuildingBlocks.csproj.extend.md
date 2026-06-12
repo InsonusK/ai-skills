@@ -1,20 +1,17 @@
 ---
-description: Add IHasGuid, IGuidResolver, and GuidResolvingBehavior
+description: Add GuidResolvingBehavior
 name: BuildingBlocks.csproj
 change_kind: extend
 ---
 
 # Goals
-- Own `IHasGuid`, `IGuidResolver<TResult>`, and `GuidResolvingBehavior` — the Guid pipeline contract and enforcement
+- Own `GuidResolvingBehavior` — the pipeline behavior that consumes `IHasGuid` and `IGuidResolver<TResult>` from Shared
 
 # Structure
 
 ## Project Structure
 ```
 /BuildingBlocks
-  /Guid
-    IHasGuid.cs
-    IGuidResolver.cs
   /MediatR
     ValidationBehavior.cs      ← validation-behavior.solution.skill
     GuidResolvingBehavior.cs
@@ -26,8 +23,6 @@ change_kind: extend
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
-| /Guid/IHasGuid.cs | Marker interface for commands carrying a client-generated Guid |
-| /Guid/IGuidResolver.cs | Per-entity resolver contract — checks if Guid already exists |
 | /MediatR/GuidResolvingBehavior.cs | Pipeline behavior that short-circuits on duplicate Guid |
 
 # Allowed Dependencies
@@ -36,16 +31,18 @@ change_kind: extend
 # Rules
 
 MUST:
-- `IHasGuid`, `IGuidResolver<TResult>`, `GuidResolvingBehavior` defined in BuildingBlocks
+- `GuidResolvingBehavior` defined in BuildingBlocks
+- `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResult>` from Shared
 - `GuidResolvingBehavior` throws `ConflictException<TResponse>` from Shared — never returns a result directly
 
 MUST NOT:
+- `IHasGuid` or `IGuidResolver<TResult>` defined in BuildingBlocks — they are contracts that belong in Shared
 - `GuidResolvingBehavior` registered as open generic — DI resolves `IGuidResolver<TResult>` per concrete command result type
 
 # Anti-patterns
 - `GuidResolvingBehavior` registered as open generic — breaks DI resolution per command result type
+- Defining `IHasGuid` or `IGuidResolver<TResult>` in BuildingBlocks — violates the rule that BuildingBlocks consumes interfaces from Shared
 
 # Check list
-- [ ] `IHasGuid` defined in `BuildingBlocks/Guid/IHasGuid.cs`
-- [ ] `IGuidResolver<TResult>` defined in `BuildingBlocks/Guid/IGuidResolver.cs`
 - [ ] `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
+- [ ] `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResult>` from Shared

@@ -11,6 +11,7 @@ change_kind: extend
 # Core Principles
 - `Guid` is the first property — signals to the reader that this is an external-created entity
 - Command carries the client-generated Guid — never a server-generated value
+- Command implements `IHasGuid` from Shared — `{Module}.Interfaces` does not reference BuildingBlocks
 - Result record unchanged from command-integration.solution.skill — still just `{Entity}Id`
 
 # Naming convention

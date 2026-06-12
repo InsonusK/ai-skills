@@ -12,6 +12,7 @@ change_kind: create
 - Single property: `Guid Guid { get; }`
 - Implemented by create commands for externally-created entity types only
 - Not implemented by update, delete, or internal-create commands
+- Lives in Shared so `{Module}.Interfaces` can implement it without referencing BuildingBlocks
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -21,7 +22,7 @@ change_kind: create
 # Implementation changes
 
 ```csharp
-// BuildingBlocks/Guid/IHasGuid.cs
+// Shared/Guid/IHasGuid.cs
 public interface IHasGuid
 {
     Guid Guid { get; }
@@ -38,7 +39,8 @@ MUST NOT:
 
 # Anti-patterns
 - `IHasGuid` on query objects — has no meaning for reads
+- `IHasGuid` defined in BuildingBlocks — forces module Interfaces to reference BuildingBlocks
 
 # Check list
-- [ ] `IHasGuid` defined in `BuildingBlocks/Guid/IHasGuid.cs`
+- [ ] `IHasGuid` defined in `Shared/Guid/IHasGuid.cs`
 - [ ] Only create commands for external-created entities implement it

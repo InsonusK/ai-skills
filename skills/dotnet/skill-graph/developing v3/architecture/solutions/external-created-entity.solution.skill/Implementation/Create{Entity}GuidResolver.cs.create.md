@@ -10,7 +10,7 @@ change_kind: create
 - Return the existing result if found, null if not found
 
 # Core Principles
-- Implements `IGuidResolver<Result<Create{Entity}Result>>`
+- Implements `IGuidResolver<Result<Create{Entity}Result>>` from Shared
 - Injects `IReadRepository<T>` from Shared — read-only lookup
 - Uses `{Entity}ByGuidSpec` from Application — no inline LINQ
 - Maps found entity to the command result type — same shape the handler would return on success

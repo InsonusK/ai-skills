@@ -10,8 +10,8 @@ change_kind: create
 - Pass through to the next behavior if Guid not found — first request proceeds normally
 
 # Core Principles
-- Constrained on `where TRequest : IHasGuid` — only activates for commands carrying a Guid
-- Resolves `IGuidResolver<TResponse>` from DI — the resolver is specific to the command's result type
+- Constrained on `where TRequest : IHasGuid` — only activates for commands carrying a Guid; `IHasGuid` is defined in Shared
+- Resolves `IGuidResolver<TResponse>` from DI — the resolver is specific to the command's result type; `IGuidResolver<TResult>` is defined in Shared
 - Throws `ConflictException<TResponse>` on duplicate — never returns a result directly from the behavior
 - The exception carries the full existing result — controller extracts `.Existing.Value` for the 409 body
 - Does not call `SaveChangesAsync` — purely a read and guard operation
@@ -66,6 +66,7 @@ public class GuidResolvingBehavior<TRequest, TResponse>
 
 MUST:
 - Constrained to `where TRequest : IHasGuid`
+- Consume `IHasGuid` and `IGuidResolver<TResult>` from Shared — BuildingBlocks does not define these contracts
 - Throw `ConflictException<TResponse>` when resolver returns non-null — never return a result directly
 - Pass through (`return await next()`) when resolver returns null
 
