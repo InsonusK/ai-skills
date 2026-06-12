@@ -75,7 +75,7 @@ depends_on:
 - EF concurrency token is the final guard — `ConcurrencyBehavior` is the early client-friendly check that gives a meaningful 409 before EF raises `DbUpdateConcurrencyException`
 - All version mismatches return `Result.Conflict` from the behavior — handler never runs for stale updates
 - ETag encodes ALL entity versions involved in the operation — not only the primary entity
-- `EntityVersionResolver` discovers versioned entities automatically by scanning module Domain assemblies for `IVersioned` implementations
+- `EntityVersionResolver` discovers versioned entities automatically by scanning module Domain assemblies for `IEntityTypeConfiguration<T>` config classes whose entity implements `IVersioned`
 
 # Requirements
 SOLUTION:
@@ -139,12 +139,12 @@ PROJECT:
 MUST:
 - Every mutable entity has `public uint Version { get; internal set; }`
 - Every mutable entity implements `IVersioned`
-- Every mutable entity declares a public `VersionedEntityName` constant with its stable business name
+- Every mutable entity config class declares a public `const string VersionedEntityName` with the stable business name
 - Every mutable entity configuration maps `Version` to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()`
 - All update and patch commands implement `IHasVersions`
 - `IVersioned`, `IHasVersions`, and `IEntityVersionResolver` live in Shared
 - `ETagEncoder` and `ConcurrencyBehavior` live in BuildingBlocks
-- `EntityVersionResolver` lives in App.Infrastructure and discovers mutable entity types by scanning assemblies for `IVersioned`
+- `EntityVersionResolver` lives in App.Infrastructure and discovers mutable entity types by scanning `IEntityTypeConfiguration<T>` config classes for entities that implement `IVersioned`
 - `EntityVersionResolver` registered as `Singleton` in App.Host via `EntityVersionResolverRegistration`
 - `EntityVersionResolver` receives all module Domain assemblies from App.Host
 - Entity name keys in `IHasVersions` and `EntityVersionResolver` are stable business strings — never C# type names
@@ -171,13 +171,13 @@ MUST NOT:
 - ETag encoding only primary entity version — misses secondary entity conflicts when command touches multiple entities
 - `ConcurrencyBehavior` registered after `UnitOfWorkBehavior` — stale commands open a unit of work unnecessarily
 - `EntityVersionResolver` key using `nameof(TodoTask)` — fragile, breaks on class rename; use a stable business string constant
-- Hardcoded entity dictionary in `EntityVersionResolver` — duplicates the entity list and is easy to forget; scan assemblies for `IVersioned` instead
+- Hardcoded entity dictionary in `EntityVersionResolver` — duplicates the entity list and is easy to forget; scan config classes instead
 - Defining `IHasVersions` or `IEntityVersionResolver` in BuildingBlocks — violates the rule that common contracts live in Shared
 
 # Check list
 - [ ] `uint Version { get; internal set; }` on every mutable entity
 - [ ] Every mutable entity implements `IVersioned`
-- [ ] Every mutable entity declares a public `VersionedEntityName` constant
+- [ ] Every mutable entity config class declares a public `const string VersionedEntityName`
 - [ ] `Version` mapped to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()` in entity configuration
 - [ ] `IVersioned` defined in `Shared/Concurrency/IVersioned.cs`
 - [ ] `IHasVersions` defined in `Shared/Concurrency/IHasVersions.cs`
@@ -187,7 +187,7 @@ MUST NOT:
 - [ ] `ConcurrencyBehavior` defined in `BuildingBlocks/MediatR/ConcurrencyBehavior.cs`
 - [ ] `EntityVersionResolver` defined in `App.Infrastructure/Concurrency/EntityVersionResolver.cs`
 - [ ] `EntityVersionResolver` constructor accepts `IEnumerable<Assembly>`
-- [ ] `EntityVersionResolver` scans supplied assemblies for `IVersioned` implementations
+- [ ] `EntityVersionResolver` scans supplied assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
 - [ ] `EntityVersionResolver` registered as `Singleton` in App.Host
 - [ ] `EntityVersionResolver` receives module Domain assemblies from App.Host
 - [ ] `ConcurrencyBehavior` registered between `ValidationBehavior` and `UnitOfWorkBehavior`
@@ -201,7 +201,7 @@ MUST NOT:
 # Unittest TestCases
 - [ ] When entity saved Then `Version` (xmin) is non-zero
 - [ ] When entity updated Then `Version` changes
-- [ ] When mutable entity inspected Then it declares a public `VersionedEntityName` constant
+- [ ] When mutable entity config inspected Then it declares a public `const string VersionedEntityName`
 - [ ] When two DbContexts load same entity, first saves, second saves Then `DbUpdateConcurrencyException` thrown
 - [ ] When `ETagEncoder.Encode` called Then produces valid base64 string
 - [ ] When `ETagEncoder.Decode` called with valid ETag Then returns correct versions dictionary

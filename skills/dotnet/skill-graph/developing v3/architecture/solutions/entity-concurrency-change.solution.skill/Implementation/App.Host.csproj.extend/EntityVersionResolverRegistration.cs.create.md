@@ -45,7 +45,7 @@ public static class EntityVersionResolverRegistration
 }
 ```
 
-> **Note:** Call this from `Program.cs` alongside `AddRepositories()`:
+> **Note:** Call this from `Program.cs` alongside `AddRepositories()`. Pass the module Domain assemblies that contain the `{Entity}Config` classes:
 > ```csharp
 > builder.Services
 >     .AddRepositories()

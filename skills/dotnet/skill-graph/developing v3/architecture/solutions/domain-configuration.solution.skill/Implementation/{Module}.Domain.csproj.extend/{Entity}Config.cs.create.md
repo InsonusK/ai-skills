@@ -15,7 +15,7 @@ change_kind: create
 # Core Principals
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
 - Configuration class owns all persistence concerns — entity owns all domain concerns
-- Index and constraint names are `public static string` constants on the config class
+- `TableName`, index, and constraint names are `public const string` constants on the config class
 - Domain entity must have zero EF attributes
 - Configuration is the only place that knows about column names, table names, and constraints
 - Multi-property Value Object properties require `OwnsOne` mapping here
@@ -29,13 +29,13 @@ change_kind: create
 
 # Implementation changes
 
-{Entity}Config must implement `IEntityTypeConfiguration<{Entity}>`. Index names must be `public static string` constants. All mapping defined in `Configure` method.
+{Entity}Config must implement `IEntityTypeConfiguration<{Entity}>`. `TableName`, index, and constraint names must be `public const string` constants. All mapping defined in `Configure` method.
 
 Base shape:
 ```csharp
 public class TodoTaskConfig : IEntityTypeConfiguration<TodoTask>
 {
-    public static string TableName = nameof(TodoTask);
+    public const string TableName = nameof(TodoTask);
 
     public void Configure(EntityTypeBuilder<TodoTask> entityBuilder)
     {
@@ -48,8 +48,8 @@ Index definition — names as constants:
 ```csharp
 public class TodoTaskConfig : IEntityTypeConfiguration<TodoTask>
 {
-    public static string TableName = nameof(TodoTask);
-    public static string UX_Guid = $"UX_{TableName}_Guid";
+    public const string TableName = nameof(TodoTask);
+    public const string UX_Guid = $"UX_{TableName}_Guid";
 
     public void Configure(EntityTypeBuilder<TodoTask> entityBuilder)
     {
@@ -84,7 +84,8 @@ entityBuilder.OwnsOne(e => e.Cash, money =>
 
 MUST:
 - One config class per entity
-- All index and constraint names defined as `public static string` constants on the config class
+- `TableName` defined as `public const string`
+- All index and constraint names defined as `public const string` constants on the config class
 - `OwnsOne` configured for every multi-property Value Object property on this entity
 - All relations configured with `HasMany`/`HasOne`, `HasForeignKey`, and `OnDelete`
 - Registered via `ApplyConfigurationsFromAssembly` — never manually
@@ -92,6 +93,7 @@ MUST:
 MUST NOT:
 - Use EF data annotations on the domain entity (`[Column]`, `[Index]`, `[ForeignKey]`, etc.)
 - Define table names, column names, or constraint names as inline strings
+- Use `static` instead of `const` for `TableName`, index, or constraint names
 - Put mapping logic in `DbContext.OnModelCreating` directly
 - Configure cross-module foreign keys here — those belong in App.Infrastructure
 
@@ -105,8 +107,8 @@ MUST NOT:
 # Check list
 - [ ] One config class exists per entity
 - [ ] Config class is in /{Module}.Domain/Configurations
-- [ ] `TableName` defined as `public static string` constant
-- [ ] All index and constraint names defined as `public static string` constants
+- [ ] `TableName` defined as `public const string`
+- [ ] All index and constraint names defined as `public const string`
 - [ ] All unique indexes configured with `HasDatabaseName(ConstantName)`
 - [ ] All intra-module relations configured with `HasForeignKey` and `OnDelete`
 - [ ] `OwnsOne` configured for every multi-property VO property

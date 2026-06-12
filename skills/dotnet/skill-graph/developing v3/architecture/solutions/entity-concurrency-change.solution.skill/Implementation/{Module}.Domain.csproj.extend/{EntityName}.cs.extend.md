@@ -23,7 +23,7 @@ change_kind: extend
 
 # Implementation changes
 
-Mutable entity must declare `Version`, implement `IVersioned`, and expose a stable business name constant:
+Mutable entity must declare `Version` and implement `IVersioned`:
 
 ```csharp
 // {Module}.Domain/Entities/{EntityName}.cs
@@ -31,10 +31,6 @@ using Shared.Concurrency;
 
 public class {EntityName} : IVersioned
 {
-    // Stable business name used by EntityVersionResolver, IHasVersions, and ETagEncoder.
-    // Changing this value is a breaking API change.
-    public const string VersionedEntityName = "{Entity}";
-
     public int Id { get; internal set; }
     // ... other properties
     public uint Version { get; internal set; }   // ← added by this solution
@@ -43,12 +39,13 @@ public class {EntityName} : IVersioned
 }
 ```
 
+> **Note:** The stable business name used by `EntityVersionResolver`, `IHasVersions`, and `ETagEncoder` lives in `{EntityName}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
+
 # Rules
 
 MUST:
 - All mutable entities have `public uint Version { get; internal set; }`
 - All mutable entities implement `IVersioned`
-- All mutable entities declare a public `VersionedEntityName` constant with the stable business name
 
 MUST NOT:
 - Immutable entities have `Version` — they are never updated
@@ -61,7 +58,6 @@ MUST NOT:
 # Check list
 - [ ] `uint Version { get; internal set; }` present on mutable entity
 - [ ] Mutable entity implements `IVersioned`
-- [ ] Mutable entity declares `VersionedEntityName` constant
 - [ ] Immutable entities do not have `Version`
 
 # Unittest TestCases
@@ -70,9 +66,7 @@ MUST NOT:
 - [ ] WHEN applied THEN Present on Internal Mutable and External Mutable entity types — absent on Immutable entities
 - [ ] WHEN applied THEN Read by ConcurrencyBehavior via the entity loaded from the repository — never passed as a domain parameter
 - [ ] WHEN applied THEN All mutable entities implement IVersioned
-- [ ] WHEN applied THEN All mutable entities declare a public VersionedEntityName constant with the stable business name
 - [ ] WHEN verified THEN uint Version { get; internal set; } present on mutable entity
 - [ ] WHEN verified THEN Mutable entity implements IVersioned
-- [ ] WHEN verified THEN Mutable entity declares VersionedEntityName constant
 - [ ] WHEN verified THEN Immutable entities do not have Version
 - [ ] WHEN naming 'Concurrency token' THEN pattern matches convention

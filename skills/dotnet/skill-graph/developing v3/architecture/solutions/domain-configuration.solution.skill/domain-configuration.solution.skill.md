@@ -38,7 +38,7 @@ depends_on:
 # Core Principals
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
 - Configuration class owns all persistence concerns — entity owns all domain concerns
-- Index and constraint names are `public static string` constants on the config class
+- `TableName`, index, and constraint names are `public const string` constants on the config class
 - Domain entity must have zero EF attributes (`[Column]`, `[Index]`, `[ForeignKey]`, etc.)
 - Configuration is the only place that knows about column names, table names, and constraints
 - All configurations registered via `ApplyConfigurationsFromAssembly` — never manually
@@ -67,14 +67,16 @@ PROJECT:
 
 MUST:
 - One `IEntityTypeConfiguration<T>` per entity
-- All index and constraint names defined as `public static string` constants
+- `TableName` defined as `public const string`
+- All index and constraint names defined as `public const string` constants
 - `OwnsOne` configured for every multi-property VO property
 - All configurations registered via `ApplyConfigurationsFromAssembly`
 - Domain entities have zero EF attributes
 
 MUST NOT:
 - Use EF data annotations on domain entities
-- Define constraint names as inline strings
+- Define table, index, or constraint names as inline strings
+- Use `static` instead of `const` for `TableName`, index, or constraint names
 - Put mapping logic in `DbContext.OnModelCreating` directly
 - Configure cross-module foreign keys in Domain config
 
@@ -89,7 +91,8 @@ MUST NOT:
 
 # Check list
 - [ ] One config class per entity in /{Module}.Domain/Configurations
-- [ ] All index names defined as `public static string` constants
+- [ ] `TableName` defined as `public const string`
+- [ ] All index names defined as `public const string` constants
 - [ ] All unique indexes use `HasDatabaseName(ConstantName)`
 - [ ] All intra-module relations configured
 - [ ] `OwnsOne` configured for every multi-property VO
