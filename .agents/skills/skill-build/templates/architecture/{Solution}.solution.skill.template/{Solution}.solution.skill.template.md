@@ -33,6 +33,10 @@ depends_on:
   #List of other architecture solutions which is used by this solution and must be implemented before this solution
   #Example:
   #- "[[Link]]"
+adr:
+  #List of architecture decision records which was made due to this solution
+  #Example:
+  #- "[[Link]]"
 ---
 # Who Apply this template
 - Writing solution create folder with name {SolutionName}.solution.skill and add this template into this folder with name {SolutionName}.solution.skill.md
@@ -64,6 +68,20 @@ RECOMENDATION:
 ```example
 - Rules define business predicates
 - Entities define consistency.
+```
+
+# Adr
+```hint 
+If there were architecrute decision record while build solution or edit solution.
+1. Add folder ADR in solution solder
+2. Add ADR record using [[./adr/adr.template.md]]
+3. Add created adr into list of architecrute decision record andvariant which was choosen.
+RECOMENDATION:
+- Prefer bullet list
+```
+```examle
+- [[Adr link|Adr property name]] 
+  - bulets from [[Adr link#Selected variant]]
 ```
 
 # Requirements

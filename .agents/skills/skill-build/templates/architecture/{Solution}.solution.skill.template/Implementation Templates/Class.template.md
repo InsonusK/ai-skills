@@ -1,5 +1,5 @@
 ---
-description: Short description waht must be made while creation or change in class
+description: Short description what must be made while creation or change in class
 project_name: #The project in which the class is located
 name: #Class name
 element_kind: #repository | project | class
