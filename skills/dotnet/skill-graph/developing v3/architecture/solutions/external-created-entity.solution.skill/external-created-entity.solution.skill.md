@@ -52,6 +52,7 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/middleware-registration.solution.skill.md|middleware-registration.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
 ---
 
 # Goal
@@ -101,6 +102,8 @@ SOLUTION:
     - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - create commands implement both `ICommand<Result<T>>` and `IHasGuid`
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/middleware-registration.solution.skill.md|middleware-registration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `MiddlewareRegistration` where `ConflictExceptionMiddleware` is registered
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `GuidResolvingBehavior` is registered
 
 NUGET:
 - None — relies only on patterns and packages already required by dependency solutions.
@@ -144,6 +147,7 @@ MUST:
 - Each `IGuidResolver<TResult>` registered as `Scoped` in module DI registration
 - `ConflictExceptionMiddleware` writes 409 with the existing entity body extracted via `ConflictException.GetValue()`
 - `Guid` is first property in create command record
+- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
 
 MUST NOT:
 - Guid used in domain logic, domain events, relationships, or routes after creation

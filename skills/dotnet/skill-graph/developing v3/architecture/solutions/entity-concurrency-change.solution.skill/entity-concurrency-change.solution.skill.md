@@ -49,6 +49,7 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
 ---
 
 # Goal
@@ -95,6 +96,8 @@ SOLUTION:
     - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - marker interface for commands that `ConcurrencyBehavior` constrains on
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - provides controller structure for ETag and If-Match handling
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `ConcurrencyBehavior` is registered
 
 NUGET:
 - `System.Text.Json` {version} - provides `JsonSerializer` used in `ETagEncoder`
@@ -137,6 +140,7 @@ MUST:
 - `EntityVersionResolver` registered as `Singleton` in App.Host via `EntityVersionResolverRegistration`
 - `EntityVersionResolver` receives all module Domain assemblies from App.Host
 - Entity name keys in `IHasVersions` and `EntityVersionResolver` are stable business strings — never C# type names
+- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
 - GET responses for mutable entities include `ETag` header with encoded versions
 - PUT/PATCH endpoints check `If-Match` presence — return 412 if missing or malformed
 - DTOs returned by GET for mutable entities include `Version` field
