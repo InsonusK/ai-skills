@@ -1,7 +1,6 @@
 sequenceDiagram
     autonumber
     participant C as Client
-    participant MW as ConflictExceptionMiddleware
     participant Ctrl as {Entity}Controller
     participant VB as ValidationBehavior
     participant GB as GuidResolvingBehavior
@@ -15,9 +14,7 @@ sequenceDiagram
 
     rect rgb(230, 245, 255)
     Note over C,DB: Flow 1 — new Guid, first request
-    C->>MW: POST /{entity} { guid, title, assigneeId }
-    activate MW
-    MW->>Ctrl: invoke next()
+    C->>Ctrl: POST /{entity} { guid, title, assigneeId }
     activate Ctrl
     Ctrl->>VB: Send(Create{Entity}Command)
     activate VB
@@ -50,18 +47,14 @@ sequenceDiagram
     deactivate CB
     deactivate GB
     deactivate VB
-    Ctrl-->>MW: 201 Created result
+    Ctrl-->>C: 201 Created { id: 42 }
     deactivate Ctrl
-    MW-->>C: 201 Created { id: 42 }
-    deactivate MW
     Note over C: Client stores internal Id
     end
 
     rect rgb(255, 245, 230)
     Note over C,DB: Flow 2 — duplicate Guid, retry after transient failure
-    C->>MW: POST /{entity} { guid, title, assigneeId }
-    activate MW
-    MW->>Ctrl: invoke next()
+    C->>Ctrl: POST /{entity} { guid, title, assigneeId }
     activate Ctrl
     Ctrl->>VB: Send(Create{Entity}Command)
     activate VB
@@ -73,27 +66,22 @@ sequenceDiagram
     activate DB
     DB-->>R: existing entity
     deactivate DB
-    R-->>GB: Result.Success(Create{Entity}Result)
+    R-->>GB: ConflictResult<Create{Entity}Result>
     deactivate R
-    GB->>GB: throw ConflictException<Result<Create{Entity}Result>>
-    GB--xCtrl: ConflictException<Result<Create{Entity}Result>>
+    GB-->>Ctrl: ConflictResult<Create{Entity}Result>
     deactivate GB
     deactivate VB
-    Ctrl--xMW: exception propagates
+    Ctrl->>Ctrl: map ConflictResult<T> to 409
+    Ctrl-->>C: 409 Conflict { id: 42 }
     deactivate Ctrl
-    MW->>MW: catch ConflictException, extract ex.GetValue()
-    MW-->>C: 409 Conflict { id: 42 }
-    deactivate MW
-    Note over C: Client recovers without second GET
+    Note over C: Client calls GET /{entity}/42 if full data is needed
     end
 
     rect rgb(255, 230, 230)
     Note over C,DB: Flow 3 — concurrent requests bypass pipeline check
-    C->>MW: POST /{entity} { guid, ... }
-    activate MW
-    C->>MW: POST /{entity} { guid, ... }
-    MW->>Ctrl: both requests invoke next()
+    C->>Ctrl: POST /{entity} { guid, ... }
     activate Ctrl
+    C->>Ctrl: POST /{entity} { guid, ... }
     Ctrl->>GB: both reach GuidResolvingBehavior
     activate GB
     GB->>R: ResolveAsync(guid) — both
@@ -121,10 +109,8 @@ sequenceDiagram
     deactivate DB
     UWB--xCtrl: exception
     deactivate UWB
-    Ctrl--xMW: exception propagates
+    deactivate GB
+    Ctrl--xC: 500 (or mapped 409 via global exception handler)
     deactivate Ctrl
-    MW->>MW: not a ConflictException, rethrow
-    MW--xC: 500 (or mapped 409 via middleware/exception handler)
-    deactivate MW
     Note over DB: DB unique index is the last line of defence
     end

@@ -40,20 +40,25 @@ public static class {Module}ApplicationRegistration
 # Rules
 
 MUST:
-- Each `IGuidResolver<TResult>` registered explicitly as `Scoped` — not auto-scanned
+- Each `IGuidResolver<TResponse>` registered explicitly as `Scoped` — not auto-scanned
 - One registration per external-created entity type
+- `TResponse` matches the command handler response type exactly
 
 MUST NOT:
 - `IGuidResolver` registrations omitted — `GuidResolvingBehavior` will throw at runtime if resolver not found
+- `IGuidResolver` registered as open generic — breaks DI resolution per command result type
 
 # Anti-patterns
 - `IGuidResolver` registered as open generic — breaks DI resolution per command result type
+- Resolver registered with mismatched `TResponse` — handler and resolver return different types
 
 # Check list
 - [ ] `IGuidResolver<Result<Create{Entity}Result>>` registered as `Scoped`
 - [ ] One registration per external-created entity type
+- [ ] `TResponse` matches command handler response type
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Register each GuidResolver in the module's DI registration
 - [ ] WHEN verified THEN IGuidResolver<Result<Create{Entity}Result>> registered as Scoped
 - [ ] WHEN verified THEN One registration per external-created entity type
+- [ ] WHEN verified THEN TResponse matches command handler response type

@@ -1,13 +1,12 @@
 ---
-description: Add GuidResolvingBehavior and ConflictExceptionMiddleware
+description: Add GuidResolvingBehavior
 name: BuildingBlocks.csproj
 element_kind: project
 change_kind: extend
 ---
 
 # Goals
-- Own `GuidResolvingBehavior` — the MediatR pipeline behavior that consumes `IHasGuid` and `IGuidResolver<TResult>` from Shared
-- Own `ConflictExceptionMiddleware` — the HTTP middleware that catches `ConflictException` and writes 409 with the existing entity body
+- Own `GuidResolvingBehavior` — the MediatR pipeline behavior that consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
 
 # Structure
 
@@ -20,42 +19,37 @@ change_kind: extend
     ConcurrencyBehavior.cs     ← entity-concurrency-change.solution.skill
     UnitOfWorkContext.cs       ← unit-of-work.solution.skill
     UnitOfWorkBehavior.cs      ← unit-of-work.solution.skill
-  /Middleware
-    ConflictExceptionMiddleware.cs
 ```
 
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
 | /MediatR/GuidResolvingBehavior.cs | Pipeline behavior that short-circuits on duplicate Guid |
-| /Middleware/ConflictExceptionMiddleware.cs | HTTP middleware that catches ConflictException and writes 409 |
 
 # Allowed Dependencies
 - Shared
-- ASP.NET Core HTTP abstractions (for middleware)
-- System.Text.Json (for response serialization)
+- Ardalis.Result
+- MediatR
 
 # Rules
 
 MUST:
 - `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
-- `ConflictExceptionMiddleware` defined in `BuildingBlocks/Middleware/ConflictExceptionMiddleware.cs`
-- `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResult>` from Shared
-- `GuidResolvingBehavior` throws `ConflictException<TResponse>` from Shared — never returns a result directly
-- `ConflictExceptionMiddleware` catches non-generic `ConflictException` and writes 409 with `ex.GetValue()`
+- `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
+- `GuidResolvingBehavior` returns the resolver's conflict result — never throws an exception
 
 MUST NOT:
-- `IHasGuid` or `IGuidResolver<TResult>` defined in BuildingBlocks — they are contracts that belong in Shared
-- `GuidResolvingBehavior` registered as open generic — DI resolves `IGuidResolver<TResult>` per concrete command result type
-- `ConflictExceptionMiddleware` defined in App.Host or `{Module}.Api` — centralized in BuildingBlocks
+- `IHasGuid` or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are contracts that belong in Shared
+- `GuidResolvingBehavior` registered as open generic — DI resolves `IGuidResolver<TResponse>` per concrete command result type
+- Define HTTP middleware for conflict handling — conflicts are expressed as `Result<T>` and mapped by the API layer
 
 # Anti-patterns
 - `GuidResolvingBehavior` registered as open generic — breaks DI resolution per command result type
-- Defining `IHasGuid` or `IGuidResolver<TResult>` in BuildingBlocks — violates the rule that BuildingBlocks consumes interfaces from Shared
-- Per-controller try/catch for `ConflictException` — duplicates middleware logic
+- Defining `IHasGuid` or `IGuidResolver<TResponse>` in BuildingBlocks — violates the rule that BuildingBlocks consumes interfaces from Shared
+- Throwing exceptions from `GuidResolvingBehavior` — breaks the command-integration principle of no exceptions for flow control
 
 # Check list
 - [ ] `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
-- [ ] `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResult>` from Shared
-- [ ] `ConflictExceptionMiddleware` defined in `BuildingBlocks/Middleware/ConflictExceptionMiddleware.cs`
-- [ ] BuildingBlocks references ASP.NET Core HTTP abstractions for middleware support
+- [ ] `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
+- [ ] `GuidResolvingBehavior` returns the resolver's conflict result on duplicate Guid
+- [ ] No `ConflictExceptionMiddleware` defined in BuildingBlocks

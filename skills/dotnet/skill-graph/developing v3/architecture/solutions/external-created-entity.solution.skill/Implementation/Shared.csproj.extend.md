@@ -1,30 +1,29 @@
 ---
-description: Add ConflictException, IHasGuid, and IGuidResolver
+description: Add ConflictResult, IHasGuid, and IGuidResolver
 name: Shared.csproj
 element_kind: project
 change_kind: extend
 ---
 
 # Goals
-- Own `ConflictException<T>` and non-generic `ConflictException` base — the exception thrown by `GuidResolvingBehavior` and caught by `ConflictExceptionMiddleware`
+- Own `ConflictResult<T>` — the result type used by resolvers to express a duplicate Guid conflict
 - Own `IHasGuid` — the marker interface for commands carrying a client-generated Guid
-- Own `IGuidResolver<TResult>` — the per-entity resolver contract consumed by `GuidResolvingBehavior`
+- Own `IGuidResolver<TResponse>` — the per-entity resolver contract consumed by `GuidResolvingBehavior`
 
 # Core Principles
-- All four live in Shared — they are contracts implemented or consumed by multiple layers
-- `ConflictException` base class is accessible by BuildingBlocks middleware (caught)
-- `ConflictException<T>` is accessible by BuildingBlocks (thrown) and middleware (caught via base class)
+- All three live in Shared — they are contracts or primitives implemented/consumed by multiple layers
+- `ConflictResult<T>` is accessible by module Application resolvers (created) and BuildingBlocks behavior (returned)
 - `IHasGuid` is implemented by commands in `{Module}.Interfaces`
-- `IGuidResolver<TResult>` is implemented by resolvers in `{Module}.Application` and consumed by `GuidResolvingBehavior` in BuildingBlocks
-- Shared defines common cross-cutting interfaces only — no implementation, no business logic
+- `IGuidResolver<TResponse>` is implemented by resolvers in `{Module}.Application` and consumed by `GuidResolvingBehavior` in BuildingBlocks
+- Shared defines common cross-cutting primitives only — no business logic, no pipeline implementations
 
 # Structure
 
 ## Project Structure
 ```
 /Shared
-  /Exceptions
-    ConflictException.cs
+  /Results
+    ConflictResult.cs
   /Guid
     IHasGuid.cs
     IGuidResolver.cs
@@ -33,28 +32,31 @@ change_kind: extend
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
-| /Exceptions/ConflictException.cs | Exception base class and generic `ConflictException<T>` carrying existing entity result for 409 responses |
+| /Results/ConflictResult.cs | `Result<T>` subclass carrying the existing entity result for 409 responses |
 | /Guid/IHasGuid.cs | Marker interface for commands carrying a client-generated Guid |
-| /Guid/IGuidResolver.cs | Per-entity resolver contract — checks if Guid already exists |
+| /Guid/IGuidResolver.cs | Per-entity resolver contract — resolves Guid to existing command response |
 
 # Allowed Dependencies
-- None
+- `Ardalis.Result` — required for `ConflictResult<T>` to inherit from `Result<T>`
 
 # Rules
 
 MUST:
-- `ConflictException`, `ConflictException<T>`, `IHasGuid`, `IGuidResolver<TResult>` defined in Shared
-- All four are contracts with no implementation
+- `ConflictResult<T>`, `IHasGuid`, `IGuidResolver<TResponse>` defined in Shared
+- `ConflictResult<T>` inherits from `Ardalis.Result.Result<T>` and sets `Status` to `ResultStatus.Conflict`
+- `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, non-null means conflict
+- `TResponse` of `IGuidResolver` matches the command handler response type exactly
 
 MUST NOT:
-- `ConflictException`, `ConflictException<T>`, `IHasGuid`, or `IGuidResolver<TResult>` defined in BuildingBlocks — they are contracts consumed by multiple layers
+- `ConflictResult<T>`, `IHasGuid`, or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are consumed by multiple layers
 - Shared reference any other project
 
 # Anti-patterns
 - Guid contracts defined in BuildingBlocks — forces `{Module}.Interfaces` and `{Module}.Application` to reference BuildingBlocks for contracts
+- `IGuidResolver` returning a different response type than the command handler
 
 # Check list
-- [ ] `ConflictException` base class defined in `Shared/Exceptions/ConflictException.cs`
-- [ ] `ConflictException<T>` defined in `Shared/Exceptions/ConflictException.cs`
+- [ ] `ConflictResult<T>` defined in `Shared/Results/ConflictResult.cs`
 - [ ] `IHasGuid` defined in `Shared/Guid/IHasGuid.cs`
-- [ ] `IGuidResolver<TResult>` defined in `Shared/Guid/IGuidResolver.cs`
+- [ ] `IGuidResolver<TResponse>` defined in `Shared/Guid/IGuidResolver.cs`
+- [ ] `Shared.csproj` references `Ardalis.Result`

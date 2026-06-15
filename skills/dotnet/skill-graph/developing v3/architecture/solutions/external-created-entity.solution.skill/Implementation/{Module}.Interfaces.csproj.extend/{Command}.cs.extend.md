@@ -15,6 +15,7 @@ change_kind: extend
 - Command carries the client-generated Guid — never a server-generated value
 - Command implements `IHasGuid` from Shared — `{Module}.Interfaces` does not reference BuildingBlocks
 - Result record unchanged from command-integration.solution.skill — still just `{Entity}Id`
+- Both 201 Created and 409 Conflict return the same response type (`Result<Create{Entity}Result>`)
 
 # Naming convention
 | use case | record name pattern | record name | file name pattern | file name |
@@ -40,16 +41,22 @@ MUST:
 - `Guid` is the first property on the command record
 - Command implements both `ICommand<Result<T>>` and `IHasGuid`
 - `Guid` typed as `System.Guid` — never `string` or `int`
+- Result record co-located with the command
+- Resolver response type matches `Result<Create{Entity}Result>` exactly
 
 MUST NOT:
 - Update, delete, or internal-create commands implement `IHasGuid`
+- Resolver return a different response type than the command handler
 
 # Anti-patterns
 - `Guid` not as first property — signals external-created entity at a glance
+- Resolver response type different from command handler response type — breaks 201/409 symmetry
 
 # Check list
 - [ ] `Guid` is first property in create command record
 - [ ] Command implements `ICommand<Result<T>>` and `IHasGuid`
+- [ ] Result record co-located with command
+- [ ] Resolver response type matches command handler response type
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Add Guid as a required property on create commands for externally-created entity types
@@ -58,6 +65,7 @@ MUST NOT:
 - [ ] WHEN applied THEN Command carries the client-generated Guid — never a server-generated value
 - [ ] WHEN applied THEN Command implements IHasGuid from Shared — {Module}.Interfaces does not reference BuildingBlocks
 - [ ] WHEN applied THEN Result record unchanged from command-integration.solution.skill — still just {Entity}Id
+- [ ] WHEN applied THEN Both 201 Created and 409 Conflict return the same response type
 - [ ] WHEN verified THEN Guid is first property in create command record
 - [ ] WHEN verified THEN Command implements ICommand<Result<T>> and IHasGuid
 - [ ] WHEN naming 'Create command' THEN pattern matches convention

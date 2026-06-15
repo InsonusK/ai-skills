@@ -7,15 +7,16 @@ change_kind: create
 ---
 
 # Goals
-- Implement `IGuidResolver<TResult>` for one specific external-created entity type
+- Implement `IGuidResolver<TResponse>` for one specific external-created entity type
 - Look up the entity by Guid using `IReadRepository<T>` and `{Entity}ByGuidSpec`
-- Return the existing result if found, null if not found
+- Return a conflict result with the existing entity Id if found, null if not found
 
 # Core Principles
 - Implements `IGuidResolver<Result<Create{Entity}Result>>` from Shared
 - Injects `IReadRepository<T>` from Shared — read-only lookup
 - Uses `{Entity}ByGuidSpec` from Application — no inline LINQ
 - Maps found entity to the command result type — same shape the handler would return on success
+- Returns `ConflictResult<Create{Entity}Result>` when entity exists — same response type as handler, but marked as conflict
 - Returns null when not found — `GuidResolvingBehavior` proceeds to handler on null
 
 # Naming convention
@@ -27,6 +28,10 @@ change_kind: create
 
 ```csharp
 // {Module}.Application/Resolvers/Create{Entity}GuidResolver.cs
+using Ardalis.Result;
+using Shared.Guid;
+using Shared.Results;
+
 public class Create{Entity}GuidResolver
     : IGuidResolver<Result<Create{Entity}Result>>
 {
@@ -45,9 +50,10 @@ public class Create{Entity}GuidResolver
         if (entity is null)
             return null;
 
-        // non-null — Guid already exists, return existing result
-        // GuidResolvingBehavior will throw ConflictException with this value
-        return Result.Success(new Create{Entity}Result(entity.Id));
+        // non-null — Guid already exists, return conflict result with same shape as handler success
+        // GuidResolvingBehavior will return this result directly
+        return new ConflictResult<Create{Entity}Result>(
+            new Create{Entity}Result(entity.Id));
     }
 }
 ```
@@ -56,33 +62,37 @@ public class Create{Entity}GuidResolver
 
 MUST:
 - Return null when entity not found — never throw
-- Return `Result.Success(new Create{Entity}Result(...))` when entity found — same shape as handler success
+- Return `ConflictResult<Create{Entity}Result>` when entity found — same type as handler response
 - Inject `IReadRepository<T>` — never `IRepository<T>` or DbContext
 - Use `{Entity}ByGuidSpec` — never inline LINQ
 
 MUST NOT:
 - Throw exceptions — null signals not found, non-null signals exists
+- Return a different response type than the command handler
 - Return `Result.NotFound()` — null is the "not found" signal in this contract
 
 # Anti-patterns
 - Inline LINQ in resolver instead of named spec
-- Returning `Result.NotFound()` instead of null
+- Returning `Result.Success(...)` instead of `ConflictResult<...>` — would make the API return 200/201 for a duplicate
+- Resolver returning a response type different from the command handler
 
 # Check list
 - [ ] Returns null when entity not found
-- [ ] Returns `Result.Success(...)` when entity found
+- [ ] Returns `ConflictResult<Create{Entity}Result>` when entity found
 - [ ] Uses `IReadRepository<T>` and `{Entity}ByGuidSpec`
+- [ ] Response type matches command handler response type
 
 # Unittest TestCases
-- [ ] WHEN inspected THEN it implement IGuidResolver<TResult> for one specific external-created entity type
+- [ ] WHEN inspected THEN it implement IGuidResolver<TResponse> for one specific external-created entity type
 - [ ] WHEN applied THEN Look up the entity by Guid using IReadRepository<T> and {Entity}ByGuidSpec
-- [ ] WHEN applied THEN Return the existing result if found, null if not found
+- [ ] WHEN applied THEN Return the existing conflict result if found, null if not found
 - [ ] WHEN applied THEN Implements IGuidResolver<Result<Create{Entity}Result>> from Shared
 - [ ] WHEN applied THEN Injects IReadRepository<T> from Shared — read-only lookup
 - [ ] WHEN applied THEN Uses {Entity}ByGuidSpec from Application — no inline LINQ
-- [ ] WHEN applied THEN Maps found entity to the command result type — same shape the handler would return on success
+- [ ] WHEN applied THEN Maps found entity to the command result type — same shape as handler success
 - [ ] WHEN applied THEN Returns null when not found — GuidResolvingBehavior proceeds to handler on null
 - [ ] WHEN verified THEN Returns null when entity not found
-- [ ] WHEN verified THEN Returns Result.Success(...) when entity found
+- [ ] WHEN verified THEN Returns ConflictResult<Create{Entity}Result> when entity found
 - [ ] WHEN verified THEN Uses IReadRepository<T> and {Entity}ByGuidSpec
+- [ ] WHEN verified THEN Response type matches command handler response type
 - [ ] WHEN naming 'Guid resolver implementation' THEN pattern matches convention

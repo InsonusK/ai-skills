@@ -10,7 +10,7 @@ change_kind: create
 - Provide base types and contracts used across module and infrastructure boundaries
 
 # Core Principals
-- Shared defines common interfaces — it has no implementations
+- Shared defines common interfaces and primitives — it has no implementations beyond lightweight result/contract helpers
 - Shared has no business logic — only framework-level contracts and primitives
 - Shared has no dependencies on any other project in this solution
 - Any project at any layer may depend on Shared
@@ -22,15 +22,17 @@ change_kind: create
 /Shared
   /Events
     IDomainEvent.cs
-  /Exceptions
-    DomainException.cs
-    ConflictException.cs
+  /Guid
+    IHasGuid.cs           ← external-created-entity.solution.skill
+    IGuidResolver.cs      ← external-created-entity.solution.skill
   /MediatR
     ICommand.cs
     IQuery.cs
   /Repositories
     IRepository.cs
     IReadRepository.cs
+  /Results
+    ConflictResult.cs     ← external-created-entity.solution.skill
   /UnitOfWork
     IUnitOfWork.cs
   /Outbox
@@ -46,9 +48,10 @@ change_kind: create
 | `Directory\|file` | Description                               |
 | ----------------- | ----------------------------------------- |
 | /Events           | Base event interfaces                     |
-| /Exceptions       | Shared exception types used across layers |
+| /Guid             | External-created entity marker and resolver contracts |
 | /MediatR          | Command and query marker interfaces       |
 | /Repositories     | Repository abstractions                   |
+| /Results          | Result primitives and helpers             |
 | /UnitOfWork       | Unit of work abstraction                  |
 | /Outbox           | Domain events marker interface            |
 | /Concurrency      | Version marker, version carrier, and entity resolver interfaces |
@@ -56,6 +59,7 @@ change_kind: create
 # NuGet Packages
 | Package | Version constraint | Purpose |
 | --- | --- | --- |
+| Ardalis.Result | {version} | Provides `Result<T>` base for `ConflictResult<T>` |
 
 # What Does NOT Belong Here
 - Business logic — belongs to Domain
@@ -64,13 +68,15 @@ change_kind: create
 - Repository or unit-of-work implementations — belong to BuildingBlocks or App.Infrastructure
 
 # Allowed Dependencies
-- None — Shared has no project dependencies
+- `Ardalis.Result` — required by `ConflictResult<T>` from external-created-entity.solution.skill
+- None — Shared has no project references
 
 # Rules
 
 MUST:
 - Shared has zero project references
 - All types in Shared are purely cross-cutting primitives
+- `Shared.csproj` references `Ardalis.Result` when `ConflictResult<T>` is used
 
 MUST NOT:
 - Shared reference any module, BuildingBlocks, or infrastructure project
@@ -87,3 +93,4 @@ MUST NOT:
 - [ ] Shared.csproj has no project references
 - [ ] Shared.csproj contains only interfaces and primitives
 - [ ] No business logic in any Shared class
+- [ ] Shared.csproj references `Ardalis.Result` when external-created-entity.solution.skill is used
