@@ -34,8 +34,6 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
 ---
 
 # Goal
@@ -62,17 +60,14 @@ SOLUTION:
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts `IUnitOfWork` commit contract
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts `UnitOfWorkContext` and `UnitOfWorkBehavior`
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts `UnitOfWork` EF Core implementation
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts `IUnitOfWork`, `UnitOfWorkContext`, and pipeline registrations
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts `IUnitOfWork` and `UnitOfWorkContext` registrations
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IRepository<T>` that stages changes for `IUnitOfWork` to commit
     - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs]] - write-side repository used by command handlers
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker that `UnitOfWorkBehavior` constrains on
     - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - marker interface limiting `UnitOfWorkBehavior` to writes
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that must run before `UnitOfWorkBehavior`
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `UnitOfWorkBehavior` is ordered after `ValidationBehavior`
+
 
 NUGET:
 - `MediatR` {version} - provides `IPipelineBehavior<TRequest, TResponse>`
@@ -88,9 +83,8 @@ PROJECT:
   - [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs]] - create - Pipeline behavior that commits at depth 1 after handler completes
 - [[./Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - extend - Add UnitOfWork EF Core implementation
   - [[./Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs]] - create - IUnitOfWork implementation delegating to AppDbContext
-- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register IUnitOfWork, UnitOfWorkContext, and wire UnitOfWorkBehavior after ValidationBehavior
+- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register IUnitOfWork and UnitOfWorkContext with scoped lifetimes
   - [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend.md|RepositoryRegistration.cs]] - extend - Add IUnitOfWork and UnitOfWorkContext scoped registrations
-  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Add UnitOfWorkBehavior registration after ValidationBehavior in centralized pipeline registration
 
 # Rules
 
@@ -101,14 +95,12 @@ MUST:
 - `UnitOfWork` implementation in App.Infrastructure
 - `UnitOfWorkBehavior` uses `try/finally` — depth always restored on exception
 - `UnitOfWorkBehavior` commits only when `Depth == 1`
-- `UnitOfWorkBehavior` registered after `ValidationBehavior` in pipeline — invalid commands never open a unit of work
 - `IUnitOfWork` and `UnitOfWorkContext` registered as `Scoped`
 - Sub-commands safe to dispatch from handlers — depth counter prevents premature commit
 
 MUST NOT:
 - Any handler call `SaveChangesAsync` or inject `IUnitOfWork`
 - `UnitOfWorkBehavior` activate on queries — constrained to `ICommand`
-- `UnitOfWorkBehavior` registered before `ValidationBehavior`
 - `UnitOfWorkContext` registered as `Singleton` or `Transient`
 - `UnitOfWork` contain logic beyond `DbContext.SaveChangesAsync` delegation
 - `UnitOfWorkBehavior` contain a catch/rollback block — EF implicit transactions do not require it
@@ -132,7 +124,6 @@ MUST NOT:
 - [ ] `UnitOfWork` implemented in `App.Infrastructure/UnitOfWork/UnitOfWork.cs`
 - [ ] `UnitOfWork` registered as `Scoped` in App.Host
 - [ ] `UnitOfWorkContext` registered as `Scoped` in App.Host
-- [ ] `UnitOfWorkBehavior` registered after `ValidationBehavior` in pipeline
 - [ ] No `SaveChangesAsync` call in any handler
 - [ ] No `IUnitOfWork` injection in any handler
 

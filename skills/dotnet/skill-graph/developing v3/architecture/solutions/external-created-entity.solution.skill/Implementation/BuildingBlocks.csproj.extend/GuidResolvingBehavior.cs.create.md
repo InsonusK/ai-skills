@@ -18,19 +18,6 @@ change_kind: create
 - The exception carries the full existing result — `ConflictExceptionMiddleware` extracts the entity body via `.GetValue()` for the 409 response
 - Does not call `SaveChangesAsync` — purely a read and guard operation
 
-# Pipeline position
-```
-ValidationBehavior         ← validation-behavior.solution.skill — rejects invalid input
-    ↓
-GuidResolvingBehavior      ← this solution — rejects duplicate Guid (create only)
-    ↓
-ConcurrencyBehavior        ← entity-concurrency-change.solution.skill — rejects stale versions (update only)
-    ↓
-UnitOfWorkBehavior         ← unit-of-work.solution.skill — commits after handler
-    ↓
-Handler
-```
-
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
@@ -78,7 +65,6 @@ MUST NOT:
 - Swallow the `ConflictException` — it must propagate to `ConflictExceptionMiddleware`
 
 # Anti-patterns
-- `GuidResolvingBehavior` registered after `UnitOfWorkBehavior` — duplicate commands open a unit of work unnecessarily
 - `GuidResolvingBehavior` constrained on `IRequest<T>` instead of `IHasGuid` — would check all commands including queries
 
 # Check list

@@ -1,7 +1,7 @@
 ---
 uid: 8ae45d1d-feb8-44fc-b207-a97c69c45522
 name: entity-concurrency-change
-description: Defines the optimistic concurrency control stack for mutable entities — Version/xmin concurrency token on every mutable entity, IVersioned marker on entities, IHasVersions interface on update commands, ETagEncoder for HTTP transport, IEntityVersionResolver in Shared with App.Infrastructure implementation, ConcurrencyBehavior pipeline guard inserted between ValidationBehavior and UnitOfWorkBehavior, ETag on GET responses, and 412 Precondition Failed on missing or malformed If-Match
+description: Defines the optimistic concurrency control stack for mutable entities — Version/xmin concurrency token on every mutable entity, IVersioned marker on entities, IHasVersions interface on update commands, ETagEncoder for HTTP transport, IEntityVersionResolver in Shared with App.Infrastructure implementation, ConcurrencyBehavior pipeline guard, ETag on GET responses, and 412 Precondition Failed on missing or malformed If-Match
 domain: skill
 type: architecture
 version: 20260612
@@ -48,10 +48,7 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
 ---
 
 # Goal
@@ -60,7 +57,7 @@ depends_on:
 - Define `IHasVersions` in Shared as the interface all update commands implement to carry client-supplied version information
 - Define `IEntityVersionResolver` in Shared and `EntityVersionResolver` in App.Infrastructure to map stable string entity names to C# types for version checking
 - Define `ETagEncoder` in BuildingBlocks to encode entity versions as base64 JSON ETags for HTTP transport
-- Define `ConcurrencyBehavior` in BuildingBlocks as the pipeline behavior that validates all versions before the handler runs — inserted between `ValidationBehavior` and `UnitOfWorkBehavior`
+- Define `ConcurrencyBehavior` in BuildingBlocks as the pipeline behavior that validates all versions before the handler runs
 - Define the full ETag flow: GET encodes version into `ETag` header, PUT/PATCH decodes `If-Match` header, missing or malformed `If-Match` returns 412 before MediatR dispatch
 
 # Core Principles
@@ -70,7 +67,6 @@ depends_on:
 - `IEntityVersionResolver` implementation lives in App.Infrastructure
 - Entity name string keys in `IHasVersions` are stable business names — never C# type names or namespaces — decouples HTTP contract from assembly structure
 - `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions` — only update commands are checked, not all commands
-- `ConcurrencyBehavior` runs after `ValidationBehavior` and before `UnitOfWorkBehavior` — invalid or stale commands never open a unit of work
 - Missing `If-Match` returns 412 Precondition Failed — not 400 (bad input) or 409 (conflict) — 412 means precondition not supplied
 - EF concurrency token is the final guard — `ConcurrencyBehavior` is the early client-friendly check that gives a meaningful 409 before EF raises `DbUpdateConcurrencyException`
 - All version mismatches return `Result.Conflict` from the behavior — handler never runs for stale updates
@@ -83,7 +79,7 @@ SOLUTION:
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts common concurrency contracts (`IVersioned`, `IHasVersions`, `IEntityVersionResolver`)
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts `ETagEncoder` and `ConcurrencyBehavior`
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts `EntityVersionResolver` implementation
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts pipeline and resolver registrations
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts resolver registration
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj]] - hosts ETag and If-Match controller handling
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj]] - hosts update/patch commands implementing `IHasVersions`
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
@@ -97,14 +93,8 @@ SOLUTION:
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker extended with `IHasVersions`
     - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - marker interface for commands that `ConcurrencyBehavior` constrains on
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that must run before `ConcurrencyBehavior`
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `UnitOfWorkBehavior` that must run after `ConcurrencyBehavior`
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - provides controller structure for ETag and If-Match handling
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `ConcurrencyBehavior` is ordered
 
 NUGET:
 - `System.Text.Json` {version} - provides `JsonSerializer` used in `ETagEncoder`
@@ -130,8 +120,7 @@ PROJECT:
   - [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md|{Command}.cs]] - extend - Update/patch command implements IHasVersions
 - [[./Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - extend - Add ETag header to GET responses and If-Match guard to PUT/PATCH
   - [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md|Single{Entity}Controller.cs]] - extend - Add ETag encoding on GET and If-Match decoding on PUT/PATCH
-- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register IEntityVersionResolver and ConcurrencyBehavior in pipeline
-  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert ConcurrencyBehavior between ValidationBehavior and UnitOfWorkBehavior in centralized pipeline registration
+- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register IEntityVersionResolver in App.Host
   - [[./Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md|EntityVersionResolverRegistration.cs]] - create - Register IEntityVersionResolver as Singleton with module Domain assemblies
 
 # Rules
@@ -148,7 +137,6 @@ MUST:
 - `EntityVersionResolver` registered as `Singleton` in App.Host via `EntityVersionResolverRegistration`
 - `EntityVersionResolver` receives all module Domain assemblies from App.Host
 - Entity name keys in `IHasVersions` and `EntityVersionResolver` are stable business strings — never C# type names
-- `ConcurrencyBehavior` registered after `ValidationBehavior` and before `UnitOfWorkBehavior`
 - GET responses for mutable entities include `ETag` header with encoded versions
 - PUT/PATCH endpoints check `If-Match` presence — return 412 if missing or malformed
 - DTOs returned by GET for mutable entities include `Version` field
@@ -169,7 +157,6 @@ MUST NOT:
 - `Version` as plain `uint` on command property instead of `IHasVersions` — does not scale to multi-entity updates
 - Handler catches `DbUpdateConcurrencyException` and returns conflict — `ConcurrencyBehavior` should catch this earlier at the application level
 - ETag encoding only primary entity version — misses secondary entity conflicts when command touches multiple entities
-- `ConcurrencyBehavior` registered after `UnitOfWorkBehavior` — stale commands open a unit of work unnecessarily
 - `EntityVersionResolver` key using `nameof(TodoTask)` — fragile, breaks on class rename; use a stable business string constant
 - Hardcoded entity dictionary in `EntityVersionResolver` — duplicates the entity list and is easy to forget; scan config classes instead
 - Defining `IHasVersions` or `IEntityVersionResolver` in BuildingBlocks — violates the rule that common contracts live in Shared
@@ -190,7 +177,6 @@ MUST NOT:
 - [ ] `EntityVersionResolver` scans supplied assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
 - [ ] `EntityVersionResolver` registered as `Singleton` in App.Host
 - [ ] `EntityVersionResolver` receives module Domain assemblies from App.Host
-- [ ] `ConcurrencyBehavior` registered between `ValidationBehavior` and `UnitOfWorkBehavior`
 - [ ] All update and patch commands implement `IHasVersions`
 - [ ] GET for mutable entity sets `Response.Headers.ETag`
 - [ ] DTO for mutable entity includes `Version` field

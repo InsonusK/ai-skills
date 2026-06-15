@@ -1,5 +1,5 @@
 ---
-description: Register IUnitOfWork, UnitOfWorkContext, and wire UnitOfWorkBehavior after ValidationBehavior
+description: Register IUnitOfWork and UnitOfWorkContext with scoped lifetimes
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
@@ -7,11 +7,9 @@ change_kind: extend
 
 # Goals
 - Register `IUnitOfWork` and `UnitOfWorkContext` with correct lifetimes
-- Register `UnitOfWorkBehavior` in the pipeline after `ValidationBehavior`
 
 # Core Principles
 - `IUnitOfWork` and `UnitOfWorkContext` share `Scoped` lifetime with `DbContext` and `Repository<T>`
-- Pipeline behaviors registered in execution order — `ValidationBehavior` first, then `UnitOfWorkBehavior`
 
 # Structure
 
@@ -20,7 +18,6 @@ change_kind: extend
 /App.Host
   /DependencyInjection
     RepositoryRegistration.cs
-    PipelineRegistration.cs
 ```
 
 # Allowed Dependencies
@@ -33,18 +30,13 @@ change_kind: extend
 MUST:
 - `IUnitOfWork` registered as `Scoped`
 - `UnitOfWorkContext` registered as `Scoped`
-- `UnitOfWorkBehavior` registered after `ValidationBehavior` in pipeline
 
 MUST NOT:
-- Register pipeline behaviors inside module registration methods
-- Change pipeline order in multiple files
+- Register `IUnitOfWork` or `UnitOfWorkContext` inside module registration methods
 
 # Anti-patterns
-- `UnitOfWorkBehavior` registered before `ValidationBehavior` — would waste a commit attempt on invalid input
-- Registering behaviors in module registration — pipeline is global, belongs in App.Host
+- Registering `IUnitOfWork` or `UnitOfWorkContext` in module registration — these are global services, belong in App.Host
 
 # Check list
 - [ ] `IUnitOfWork` registered as `Scoped`
 - [ ] `UnitOfWorkContext` registered as `Scoped`
-- [ ] `UnitOfWorkBehavior` registered after `ValidationBehavior`
-- [ ] All pipeline registrations centralized in App.Host

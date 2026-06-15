@@ -9,7 +9,6 @@ change_kind: create
 # Goals
 - Validate all entity versions carried by an update command before the handler runs
 - Return `Result.Conflict` immediately on any version mismatch — handler never executes for stale updates
-- Run after `ValidationBehavior` and before `UnitOfWorkBehavior` — stale commands never open a unit of work
 
 # Core Principles
 - Constrained on `where TRequest : IHasVersions` — only activates for commands that carry versions
@@ -19,17 +18,6 @@ change_kind: create
 - Checks all entities before deciding — first mismatch short-circuits entire command
 - Does not call `SaveChangesAsync` — purely a read and guard operation
 - Entities expose `Version` through `IVersioned` from Shared — no reflection needed
-
-# Pipeline position
-```
-ValidationBehavior      ← validation-behavior.solution.skill — rejects invalid input
-    ↓
-ConcurrencyBehavior     ← this solution — rejects stale versions
-    ↓
-UnitOfWorkBehavior      ← unit-of-work.solution.skill — commits on success
-    ↓
-Handler
-```
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -133,7 +121,6 @@ MUST NOT:
 - Modify any entity state during version check
 
 # Anti-patterns
-- `ConcurrencyBehavior` registered after `UnitOfWorkBehavior` — stale commands open a unit of work unnecessarily
 - Handler catches `DbUpdateConcurrencyException` instead of relying on `ConcurrencyBehavior`
 - Reading `Version` via reflection instead of `IVersioned`
 
@@ -148,7 +135,6 @@ MUST NOT:
 # Unittest TestCases
 - [ ] WHEN applied THEN Validate all entity versions carried by an update command before the handler runs
 - [ ] WHEN applied THEN Return Result.Conflict immediately on any version mismatch — handler never executes for stale updates
-- [ ] WHEN applied THEN Run after ValidationBehavior and before UnitOfWorkBehavior — stale commands never open a unit of work
 - [ ] WHEN applied THEN Constrained on where TRequest : IHasVersions — only activates for commands that carry versions
 - [ ] WHEN applied THEN Resolves IReadRepository<TEntity> from DI dynamically using IServiceProvider — entity type known only at runtime
 - [ ] WHEN applied THEN Loads each entity by Id using a ByIdSpec — returns Result.NotFound if entity missing during version check

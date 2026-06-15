@@ -1,7 +1,7 @@
 ---
 uid: 9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f
 name: external-created-entity
-description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver in Shared, ConflictException in Shared, GuidResolvingBehavior in BuildingBlocks inserted between ValidationBehavior and ConcurrencyBehavior, ConflictExceptionMiddleware in BuildingBlocks that catches ConflictException and writes 409 with existing entity body, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application
+description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver in Shared, ConflictException in Shared, GuidResolvingBehavior in BuildingBlocks, ConflictExceptionMiddleware in BuildingBlocks that catches ConflictException and writes 409 with existing entity body, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application
 domain: skill
 type: architecture
 version: 20260611
@@ -44,7 +44,6 @@ extends:
   - "{Module}.Application.csproj"
   - "{Module}.Application.{Module}ApplicationRegistration.cs"
   - App.Host.csproj
-  - App.Host.DependencyInjection.PipelineRegistration.cs
   - App.Host.DependencyInjection.MiddlewareRegistration.cs
 depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
@@ -52,10 +51,6 @@ depends_on:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/middleware-registration.solution.skill.md|middleware-registration.solution.skill]]"
 ---
 
@@ -68,7 +63,6 @@ depends_on:
 - Define `ConflictExceptionMiddleware` in `BuildingBlocks` — catches any `ConflictException` thrown during a request and writes 409 with the existing entity body
 - Define `{Entity}ByGuidSpec` in `{Module}.Application/Specifications` — the spec used by the resolver
 - Define `Create{Entity}GuidResolver` in `{Module}.Application/Resolvers` — one resolver per external-created entity type
-- Insert `GuidResolvingBehavior` into the pipeline between `ValidationBehavior` and `ConcurrencyBehavior`
 
 # Core Principles
 - External system (frontend, partner API) generates the `Guid` — the backend never generates it for external creation flows
@@ -81,8 +75,6 @@ depends_on:
 - `ConflictExceptionMiddleware` is centralized in BuildingBlocks — no per-controller try/catch required
 - Middleware extracts the existing entity body from `ConflictException.GetValue()` so the response shape is consistent across all endpoints
 - The unique database index on `Guid` is the last line of defence — it catches duplicate Guids that bypass the pipeline (e.g. concurrent requests that both pass the pipeline check simultaneously)
-- `GuidResolvingBehavior` runs after `ValidationBehavior` — invalid commands are rejected before the DB lookup
-- `GuidResolvingBehavior` runs before `ConcurrencyBehavior` — duplicate creation is caught before any version check
 
 # Full idempotent creation flow
 
@@ -95,7 +87,7 @@ SOLUTION:
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts `GuidResolvingBehavior` and `ConflictExceptionMiddleware`
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts `{Entity}ByGuidSpec` and `Create{Entity}GuidResolver`
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj]] - hosts create commands implementing `IHasGuid`
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts pipeline and middleware registrations
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts middleware registration
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides EF Core configuration pattern for unique `Guid` index
     - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs]] - configures unique index on `Guid` with named constant
@@ -107,14 +99,6 @@ SOLUTION:
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker for create commands
     - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - create commands implement both `ICommand<Result<T>>` and `IHasGuid`
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that must run before `GuidResolvingBehavior`
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `UnitOfWorkBehavior` that must run after `GuidResolvingBehavior`
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ConcurrencyBehavior` that `GuidResolvingBehavior` runs before
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `GuidResolvingBehavior` is ordered
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/middleware-registration.solution.skill.md|middleware-registration.solution.skill]]
   - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/middleware-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `MiddlewareRegistration` where `ConflictExceptionMiddleware` is registered
 
@@ -140,8 +124,7 @@ PROJECT:
   - [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.extend.md|{Module}ApplicationRegistration.cs]] - extend - Register IGuidResolver in module DI
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add IHasGuid to create commands for externally-created entities
   - [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md|{Command}.cs]] - extend - Create command implements IHasGuid
-- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Register GuidResolvingBehavior in pipeline and extend MiddlewareRegistration with ConflictExceptionMiddleware
-  - [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs]] - extend - Insert GuidResolvingBehavior between ValidationBehavior and ConcurrencyBehavior in centralized pipeline registration
+- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Extend MiddlewareRegistration with ConflictExceptionMiddleware
   - [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.extend.md|MiddlewareRegistration.cs]] - extend - Register ConflictExceptionMiddleware in the centralized HTTP middleware pipeline
 
 # Rules
@@ -159,7 +142,6 @@ MUST:
 - Create commands for external-created entities implement both `ICommand<Result<T>>` and `IHasGuid`
 - One `Create{Entity}GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
 - Each `IGuidResolver<TResult>` registered as `Scoped` in module DI registration
-- `GuidResolvingBehavior` registered after `ValidationBehavior` and before `ConcurrencyBehavior`
 - `ConflictExceptionMiddleware` writes 409 with the existing entity body extracted via `ConflictException.GetValue()`
 - `Guid` is first property in create command record
 
@@ -168,7 +150,6 @@ MUST NOT:
 - Guid regenerated or changed after entity creation
 - Update, delete, or internal-create commands implement `IHasGuid`
 - `IGuidResolver` registered as open generic — each entity type registers its own concrete resolver
-- `GuidResolvingBehavior` registered after `UnitOfWorkBehavior`
 - Resolver throw exceptions — null means not found, non-null means exists
 - `ConflictException<T>` carry only the Id — must carry the full result so middleware can extract the entity body
 - Per-controller try/catch for `ConflictException` — handling is centralized in middleware
@@ -180,7 +161,6 @@ SHOULD:
 - Handler checks for duplicate Guid manually — duplicates pipeline logic, not reusable
 - 409 returns `ProblemDetails` instead of existing entity — client forced to make a second GET to recover
 - `IGuidResolver` implemented in Domain — resolver uses `IReadRepository<T>`, belongs in Application
-- `GuidResolvingBehavior` registered after `UnitOfWorkBehavior` — duplicate commands open a unit of work
 - `IGuidResolver` registered as open generic — breaks DI resolution per command result type
 - `Guid` used as foreign key in a relation — leaks external identity into domain relationships
 - `Guid` route parameter after creation — internal `Id` is the only identity in routes
@@ -206,7 +186,6 @@ SHOULD:
 - [ ] `IGuidResolver<Result<Create{Entity}Result>>` registered as `Scoped` in module registration
 - [ ] Create command implements `ICommand<Result<T>>` and `IHasGuid`
 - [ ] `Guid` is first property in create command record
-- [ ] `GuidResolvingBehavior` registered 2nd in pipeline (after Validation, before Concurrency)
 - [ ] `ConflictExceptionMiddleware` writes 409 with existing entity body from `GetValue()`
 
 # Unittest TestCases
@@ -215,5 +194,4 @@ SHOULD:
 - [ ] When 409 returned Then response body contains existing entity Id — not empty, not ProblemDetails
 - [ ] When two concurrent requests with same Guid both pass pipeline Then unique index raises `DbUpdateException` with `PostgresException` where `SqlState == "23505"` and `ConstraintName == {EntityName}Config.UX_Guid`
 - [ ] When entity created Then `Guid` is immutable — update attempt has no effect on Guid property
-- [ ] When `GuidResolvingBehavior` registered before `UnitOfWorkBehavior` Then duplicate command never calls `SaveChangesAsync`
 - [ ] When `ConflictExceptionMiddleware` is registered Then any `ConflictException<T>` thrown from any endpoint returns 409 without controller catch
