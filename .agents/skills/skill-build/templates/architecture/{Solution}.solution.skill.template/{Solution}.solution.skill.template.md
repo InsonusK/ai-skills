@@ -33,10 +33,6 @@ depends_on:
   #List of other architecture solutions which is used by this solution and must be implemented before this solution
   #Example:
   #- "[[Link]]"
-mention:
-  #List of other architecture solutions which is mentioned by this solution BUT THIS solution DOES NOT depend on solution implementation 
-  #Example:
-  #- "[[Link]]"
 ---
 # Who Apply this template
 - Writing solution create folder with name {SolutionName}.solution.skill and add this template into this folder with name {SolutionName}.solution.skill.md
@@ -82,10 +78,6 @@ SOLUTION:
 - [[DependencySolution.solution.skill.md|{name}]]
   - [[LinkToProject.csproj.{change_kind}.md|{name}]]
     - [[ProjectClass.class.{change_kind}.md|{name}]] - description how does it used in solution
-MENTIONED SOLUTION:
-- [[DependencySolution.solution.skill.md|{name}]]
-  - [[LinkToProject.csproj.{change_kind}.md|{name}]]
-    - [[ProjectClass.class.{change_kind}.md|{name}]] - description how does it mention in solution
 NUGET
 - {Nuget package name} {version}
   - {Classs} - description how does it used in solution
@@ -95,10 +87,6 @@ SOLUTION:
 - [[repository-structure.solution.skill.md|Repository structure solution]]
   - [[app-host.csproj.extended.md|App.Host]]
     - [[command.class.created.md|Command]] - add extension `IRequest` to `Command` classs
-MENTIONED SOLUTION:
-- [[concurency.solution.skill.md|Concurency solution]]
-  - [[app-concurency.csproj.extended.md|App.Concurency]]
-    - [[concurency.class.created.md|Concurency]] -  provides ConcurrencyBehavior that CommandBehavior runs before
 NUGET
 - IMediatR
   - IRequest - added to `Command` class
