@@ -42,8 +42,8 @@ depends_on:
 # Template Skill Mutations
 
 PROJECT:
-- [[./Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire centralized HTTP middleware registration in the application pipeline
-  - [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create.md|MiddlewareRegistration.cs]] - create - Centralized HTTP middleware registration extension
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🗑️deprecated/middleware-registration.solution.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Wire centralized HTTP middleware registration in the application pipeline
+  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🗑️deprecated/middleware-registration.solution.skill/Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create|MiddlewareRegistration.cs]] - create - Centralized HTTP middleware registration extension
 
 # Rules
 
