@@ -6,7 +6,7 @@ change_kind: #create | extend
 #- create if solution create new template of project. Name of project must be added into creates property in the header of solution
 #- extend if solution extend existent template of project. Link to project must be added into extends property in the header of solution
 ---
-**AUTHORING RULE**: 
+# How Apply this template
 - Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
 - header property `depends_on` couldn't have links to solution with order is greater or equal order in this solution. If it happend ask user to solve this problem.
 

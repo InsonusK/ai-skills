@@ -1,12 +1,12 @@
 ---
-name: skill-build
-description: Define how build skill by patterns
-whenToUse: when you write a skill
+name: create-solution-build
+description: Define how create new solution by patterns
+whenToUse: when you write a solution skill
 ---
 
 # How to build a skill
 1. Define type of skill and use template acourding to the type. 
-  - All skill templates you can find in [templates](./templates) folder.
+  - All solution skill templates you can find in [templates](./templates) folder.
   - Tempaletes name has pattern *.{type}.skill.template.md. Example: class.skill.template.md
   - If you don't find template for your skill type, Ask user what should you do.
 2. Fill skill template with real content.
@@ -17,7 +17,7 @@ whenToUse: when you write a skill
 
 # Rules
 MUST:
-- Remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file.
-- Follow "# Who Apply this template" rules defined in template.
+- Follow "# How Apply this template" rules defined in template.
+- Remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file. Remove block "# How Apply this template"
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.

@@ -38,7 +38,7 @@ adr:
   #Example:
   #- "[[Link]]"
 ---
-# Who Apply this template
+# How Apply this template
 - Writing solution create folder with name {SolutionName}.solution.skill and add this template into this folder with name {SolutionName}.solution.skill.md
 - Fill template using 
 	- ```hint``` - how template should be filled
