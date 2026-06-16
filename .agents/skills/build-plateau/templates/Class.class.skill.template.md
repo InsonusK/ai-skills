@@ -30,6 +30,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -42,7 +43,7 @@ After summarized list add Applied solutions list with links to all solutions whi
 - Prevent duplicate creation via Guid uniqueness check 
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Core Principals
@@ -53,6 +54,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principals conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -63,7 +65,7 @@ RECOMENDATION:
 - Entities define consistency.
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Naming convention
@@ -92,6 +94,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Implementation changes conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -104,7 +107,7 @@ public class SomeEntity: IGuidEntity{
 }
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Rules
@@ -115,6 +118,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -131,7 +135,7 @@ MUST NOT:
 	- ...
 	  
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Anti-patterns
@@ -142,6 +146,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Anti-patterns" conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -152,7 +157,7 @@ RECOMENDATION:
 - Domain service duplicates invariant already enforced in entity setter or method
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Check list
@@ -163,6 +168,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Check list" conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -173,7 +179,7 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Unittest TestCases
@@ -184,6 +190,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Check list conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -194,5 +201,5 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Class.template.md link]]
 ```

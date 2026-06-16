@@ -29,6 +29,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -39,7 +40,7 @@ RECOMENDATION:
 - encapsulate domain logic
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Core Principals
@@ -50,6 +51,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principals conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -60,7 +62,7 @@ RECOMENDATION:
 - Entities define consistency.
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Structure
@@ -79,6 +81,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Project Structure conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -92,7 +95,7 @@ RECOMENDATION:
 ```
 ```example
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 ## Directory and class skills
@@ -103,6 +106,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Directory and class skills conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -115,7 +119,7 @@ RECOMENDATION:
 | ClassInDirectory.cs | Description of class inside of directory above | [[link to file patter]]    |
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 | `Directory|file` | Description | Pattern skill |
@@ -130,6 +134,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Directory and class skills conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer pure copy with out changing
@@ -140,7 +145,7 @@ RECOMENDATION:
 | Ardalis   | >= 8.0             | SpecificationEvaluator |
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 | Package                                   | Version constraint | Purpose                               |
@@ -155,6 +160,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "What Does NOT Belong Here" conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -165,7 +171,7 @@ RECOMENDATION:
 - Commands - belong to [[Other csproj skill]]
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 ## Allowed Dependencies
@@ -176,6 +182,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Allowed dependencies" conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -186,7 +193,7 @@ RECOMENDATION:
 - [[BuildingBlocks]]
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Rules
@@ -197,6 +204,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -213,7 +221,7 @@ MUST NOT:
 	- ...
 	  
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 MUST NOT:
 - extended_by solution modify Allowed Dependencies without explicit user confirmation
@@ -226,6 +234,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Anti-patterns" conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -236,7 +245,7 @@ RECOMENDATION:
 - Domain service duplicates invariant already enforced in entity setter or method
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Check list
@@ -247,6 +256,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Check list" conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 
 RECOMENDATION:
 - Prefer bullet list
@@ -257,5 +267,5 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- [[Solution link]] - [[Repository.template.md link]]
+- [[Solution link]] - [[Project.template.md link]]
 ```

@@ -31,6 +31,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 ```
 ```example
 /src
@@ -49,6 +50,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 ```
 ```example
 | Directory \| file | Description        |
@@ -71,6 +73,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
+- Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
 ```
 ```example
 MUST:
