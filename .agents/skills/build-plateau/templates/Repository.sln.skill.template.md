@@ -32,6 +32,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If solution conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only repository-level content here. Show only project folders.
 ```
 ```example
 /src
@@ -51,16 +52,17 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If solution conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only repository-level content here. Show only project directory, project template file and link to it
 ```
 ```example
-| Directory \| file | Description        |
-| ----------------- | ------------------ |
-| /src/App          | project desciption |
+| Directory \| file | template link     | Description        |
+| ----------------- | ----------------- | ------------------ |
+| /src/App          | [[template link]] | project desciption |
 ```
 
-| Directory \| file | Description |
-| ----------------- | ----------- |
-|                   |             |
+| Directory \| file | template link | Description |
+| ----------------- | ------------- | ----------- |
+|                   |               |             |
 
 __Applied solutions:__
 - [[Solution link]] - [[Repository.template.md link]]
@@ -74,6 +76,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If solution conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only repository-level content here. Do not include Rules that belong to a specific project or class.
 ```
 ```example
 MUST:

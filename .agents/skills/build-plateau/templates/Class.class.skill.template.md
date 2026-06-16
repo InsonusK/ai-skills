@@ -31,6 +31,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If Goals conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
 - Prefer bullet list
@@ -55,6 +56,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If Core Principals conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
 - Prefer bullet list
@@ -95,6 +97,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If Implementation changes conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
 - Prefer bullet list
@@ -119,6 +122,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If Rules conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
 - Prefer bullet list
@@ -147,6 +151,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If "Anti-patterns" conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
 - Prefer bullet list
@@ -169,6 +174,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If "Check list" conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
 - Prefer bullet list
@@ -191,6 +197,7 @@ At the end of block writes list to all used templates to build block.
 MUST:
 - If Check list conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see build-plateau SKILL.md "Applied solutions list format")
+- Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
 - Prefer bullet list

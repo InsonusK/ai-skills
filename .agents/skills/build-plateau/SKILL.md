@@ -14,12 +14,15 @@ whenToUse: when you write skills for building plateau
   - If folder exist ask user: Does he want to replace exist plateau. 
 2. Create in {output} folder new folder with name {plateau-name}
 3. Using all {solution} create in created folder
-  - [Repository skill file](./templates/Repository.sln.skill.template.md)
+  - [Repository skill file](./templates/Repository.sln.skill.template.md) — must contain **only** repository-level content from `Repository.template.md` files
   - /{CSProject name}
-    - [CSProject skill file](./templates/CSProj.csproj.skill.template.md)
+    - [CSProject skill file](./templates/CSProj.csproj.skill.template.md) — must contain project-level content from `Project.template.md` files
     - /{folder by csproject structure}
-      - [class skill file](./templates/Class.class.skill.template.md)
+      - [class skill file](./templates/Class.class.skill.template.md) — must contain class-level content from `Class.template.md` files
 4. Fill skill template with real content.
+  - Repository skill: keep Goals, Core Principles, Rules, Anti-patterns, and Check list that apply to the **whole solution only**.
+  - Project/Class skills: keep content that applies to the **specific project or class**.
+  - Do not copy project-level or class-level details into the repository skill.
 3. Follow "# How Apply this template" which are defined in each section of template. 
   - Authoring rules are defined in ```hint``` blocks. 
   - Authoring examples are provided in ```example``` blocks.
@@ -44,11 +47,32 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]]
 ```
 
+# Repository skill structure
+The repository skill describes the whole solution. Its sections must stay at the repository level.
+
+`## Project Structure`:
+- Show **only project folders**.
+- Do not list class files or sub-folders inside projects.
+
+`## Directory and class skills`:
+- Show **only project directories**, the matching project template skill file, and a short description.
+- Do not list individual class skill files in this table.
+
+```example
+| `Directory\|file` | template link | Description |
+| ---------------- | ------------- | ----------- |
+| /Shared | [[Shared.csproj.skill.md\|Shared.csproj.skill]] | Cross-cutting primitives |
+| /{Module}.Domain | [[{Module}.Domain.csproj.skill.md\|{Module}.Domain.csproj.skill]] | Business logic |
+```
+
 # Rules
 MUST:
 - Remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file.
 - Follow "# Who Apply this template" rules defined in template.
 - Write every `__Applied solutions:__` bullet as `[[solution skill link]] - [[implementation/template link]]` when an implementation/template file exists.
+- Keep repository skill `## Project Structure` limited to project folders only.
+- Keep repository skill `## Directory and class skills` limited to project directories and project template links.
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Omit the parent solution skill link from `__Applied solutions:__` bullets.
+- List class skill files in the repository skill `## Directory and class skills` table.
