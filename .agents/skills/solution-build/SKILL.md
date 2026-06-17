@@ -19,5 +19,8 @@ whenToUse: when you write a solution skill
 MUST:
 - Follow "# How Apply this template" rules defined in template.
 - Remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file. Remove block "# How Apply this template"
+- Create an `Implementation/` folder and provide concrete implementation files for every solution skill, including classification, decision, policy, or taxonomy skills. Even when the skill primarily selects between existing solutions, it must still show how each selected variant manifests in code, configuration, or project structure.
+- When the skill depends on other solutions, each implementation variant or section must explicitly state which dependency solution(s) are applied and which are intentionally not applied.
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
+- Leave the `Implementation/` folder empty or claim "no direct mutations" unless the solution truly produces no code, configuration, or project changes.

@@ -125,6 +125,8 @@ NUGET
 -- /{ProjectName}.csproj.{File property change_kind}
 --- {ClassName}.cs.{File property change_kind}.md
 ATTENSION for dynamic names like Module name or Entity name. Prefer using {Module} or {Entity} notation. It shows that Module or Entity is not constant name.
+5. Every solution skill must provide concrete implementation files, including classification, decision, policy, or taxonomy skills. If the skill selects between variants, provide an implementation file for each variant that shows the resulting code or configuration.
+6. When this skill depends on other solutions, each implementation variant or section must explicitly state which dependency solution(s) are applied and which are intentionally not applied.
 
 Add links to created files as shown bellow:
 REPOSITORY:
