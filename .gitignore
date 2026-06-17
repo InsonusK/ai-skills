@@ -1,0 +1,3 @@
+# Ignore the Obsidian workspace file, which contains user-specific settings and should not be shared across different environments.
+.obsidian/workspace.json
+__pycache__

@@ -10,7 +10,7 @@ metadata:
 ---
 # Template of delete command
 
-```csharp
+```CSharp
 using System;
 using System.Collections.Generic;
 using Ardalis.Result;

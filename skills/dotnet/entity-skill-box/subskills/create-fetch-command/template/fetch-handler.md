@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of fetch handler
 
-```csharp
+```CSharp
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.Result;

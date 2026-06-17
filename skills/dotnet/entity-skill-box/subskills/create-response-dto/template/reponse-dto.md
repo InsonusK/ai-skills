@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of response dto
 
-```csharp
+```CSharp
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;

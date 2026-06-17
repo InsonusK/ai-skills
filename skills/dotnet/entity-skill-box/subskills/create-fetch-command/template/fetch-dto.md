@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of delete dto
 
-```csharp
+```CSharp
 using InsonusK.Shared.Models.Template;
 
 namespace {ProjectNamespace}.Entities.{EntityName}Entity.Models;

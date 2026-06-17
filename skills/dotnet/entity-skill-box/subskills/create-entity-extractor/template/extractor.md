@@ -8,7 +8,7 @@ metadata:
     - skill-box
     - extractor
 ---
-```csharp
+```CSharp
 using InsonusK.Shared.AnnotationsForDI;
 using Ardalis.Result;
 using InsonusK.Shared.DataBase.Spec;

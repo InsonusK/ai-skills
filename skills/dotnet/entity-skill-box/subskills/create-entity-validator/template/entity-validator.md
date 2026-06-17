@@ -11,7 +11,7 @@ metadata:
 ---
 # Template of entity validator
 
-```csharp
+```CSharp
 using FluentValidation;
 
 namespace {ProjectNamespace}.Entities.{EntityName}Entity.Validators.Entity;

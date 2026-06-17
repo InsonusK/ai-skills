@@ -22,7 +22,7 @@ You must follow this naming convension for validation error code: `{EntityName}.
 When you need to realise complex custom logic **that is not available in built-in FluentValidation rules**.
 > **DO NOT** create a custom `PropertyValidator` just to wrap a built-in FluentValidation rule (e.g. `NotEmpty`, `MaximumLength`, `Must`). Use built-in rules directly in the validator class instead.
 ### Template
-```csharp
+```CSharp
 using FluentValidation;
 using FluentValidation.Validators;
 
@@ -50,7 +50,7 @@ When you need to compose **multiple built-in FluentValidation rules** together w
 > The `T` type constraint (`where T : {EntityName}.IBody`) is optional: use it only if the extension logically applies exclusively to objects implementing that interface. For DTOs that mirror the entity's properties without implementing `IBody`, omit the constraint.
 ### Template
 
-```csharp
+```CSharp
 using FluentValidation;
 namespace {ProjectNamespace}.Entities.{EntityName}Entity.Validators.Properties;
 
