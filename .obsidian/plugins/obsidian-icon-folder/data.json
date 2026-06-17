@@ -48,12 +48,9 @@
   "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-di.class.skill.md": "LiCodepen",
   "skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill.md": "LiBox",
   "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-validator.class.skill.md": "LiCodepen",
-  "templates/patterns/CSProj Pattern.csproj.skill.md": "LiBox",
-  "templates/architecture/Solution Pattern.solution.skill.md": "LiFileCodeCorner",
   "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-command-handler.class.skill.md": "LiCodepen",
   "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-query-handler.skill.md": "LiCodepen",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill.md": "LiCodepen",
   "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill.md": "LiCodepen",
-  "templates/patterns/Class template.class.skill.md": "LiCodepen"
+  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill.md": "LiCodepen"
 }
