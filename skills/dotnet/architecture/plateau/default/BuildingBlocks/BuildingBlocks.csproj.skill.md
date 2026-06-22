@@ -4,7 +4,7 @@ name: buildingblocks-csproj
 description: Implement reusable framework-level patterns consumed by App.Host and infrastructure across all modules
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/csproj
 created_by:
@@ -24,7 +24,7 @@ created_by:
 - Provide pipeline behaviors, repository implementations, and cross-cutting utilities
 - Own `GuidResolvingBehavior` — the MediatR pipeline behavior that consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
 - Own `ETagEncoder` and `ConcurrencyBehavior` — the concrete client-facing concurrency helpers and pipeline enforcement
-- Reference `IReadRepository<T>`, `IHasVersions`, `IEntityVersionResolver`, and `IVersioned` from Shared for version loading in `ConcurrencyBehavior`
+- Reference `IHasVersions` and `IEntityVersionResolverFactory` from Shared for version checking in `ConcurrencyBehavior`
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]
@@ -44,8 +44,9 @@ __Applied solutions:__
 - BuildingBlocks does NOT define common interfaces — it consumes interfaces from Shared
 - All pipeline behavior implementations live here — registered once in App.Host, used by all modules
 - `ETagEncoder` lives in BuildingBlocks — referenced by Api layers
-- `ConcurrencyBehavior` lives in BuildingBlocks — consumes contracts from Shared
+- `ConcurrencyBehavior` lives in BuildingBlocks — consumes `IEntityVersionResolverFactory` from Shared
 - `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions` — only update commands are checked
+- No per-entity loading logic in BuildingBlocks — version loading is delegated to `IEntityVersionResolver` implementations in module Application projects
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]
@@ -87,7 +88,6 @@ __Applied solutions:__
     OutboxDispatcher.cs
   /Concurrency
     ETagEncoder.cs
-    EntityVersionResolver.cs
   BuildingBlocks.csproj
 ```
 
@@ -107,8 +107,6 @@ __Applied solutions:__
     ETagEncoder.cs
   /MediatR
     ConcurrencyBehavior.cs
-  /Specifications
-    EntityByIdSpec.cs
 ```
 
 __Applied solutions:__
@@ -128,11 +126,10 @@ __Applied solutions:__
 | UnitOfWorkBehavior.cs | Pipeline behavior that commits at depth 1 after handler completes | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/BuildingBlocks/classes/UnitOfWorkBehavior.class.skill.md|UnitOfWorkBehavior.class.skill]] |
 | /MediatR | Pipeline behavior implementations and context |  |
 | /Outbox | OutboxMessage model and dispatcher |  |
-| /Concurrency | ETag encoder and entity version resolver |  |
+| /Concurrency | ETag encoder |  |
 | /MediatR/GuidResolvingBehavior.cs | Pipeline behavior that short-circuits on duplicate Guid | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/BuildingBlocks/classes/GuidResolvingBehavior.class.skill.md|GuidResolvingBehavior.class.skill]] |
 | /Concurrency/ETagEncoder.cs | Encodes/decodes entity versions as base64 JSON ETag | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/BuildingBlocks/classes/ETagEncoder.class.skill.md|ETagEncoder.class.skill]] |
 | /MediatR/ConcurrencyBehavior.cs | Pipeline behavior validating versions before handler runs | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/BuildingBlocks/classes/ConcurrencyBehavior.class.skill.md|ConcurrencyBehavior.class.skill]] |
-| /Specifications/EntityByIdSpec.cs | Generic by-Id spec used by ConcurrencyBehavior at runtime | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/BuildingBlocks/classes/EntityByIdSpec.class.skill.md|EntityByIdSpec.class.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]
@@ -195,7 +192,8 @@ MUST:
 	- `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
 	- `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
 	- `GuidResolvingBehavior` returns the resolver's conflict result — never throws an exception
-	- `ETagEncoder`, `EntityByIdSpec<T>`, and `ConcurrencyBehavior` defined in BuildingBlocks
+	- `ETagEncoder` and `ConcurrencyBehavior` defined in BuildingBlocks
+		- `ConcurrencyBehavior` uses `IEntityVersionResolverFactory` from Shared
 	- `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions`
 	- `ETagEncoder` available to Api layers via BuildingBlocks reference
 MUST NOT:
@@ -209,7 +207,8 @@ MUST NOT:
 	- `IHasGuid` or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are contracts that belong in Shared
 	- `GuidResolvingBehavior` registered as open generic — DI resolves `IGuidResolver<TResponse>` per concrete command result type
 	- Define HTTP middleware for conflict handling — conflicts are expressed as `Result<T>` and mapped by the API layer
-	- Define `IHasVersions`, `IEntityVersionResolver`, or `IVersioned` in BuildingBlocks — they belong in Shared
+	- Define `IHasVersions`, `IEntityVersionResolver`, `IEntityVersionResolverFactory`, or `IVersioned` in BuildingBlocks — they belong in Shared
+		- Add a generic `EntityByIdSpec<T>` to BuildingBlocks — per-entity specs belong in module Application projects
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]
@@ -230,6 +229,7 @@ __Applied solutions:__
 - Throwing exceptions from `GuidResolvingBehavior` — breaks the command-integration principle of no exceptions for flow control
 - `ConcurrencyBehavior` constrained on `IRequest<T>` instead of `IHasVersions` — would check all commands including queries
 - Defining common concurrency contracts in BuildingBlocks — forces modules to reference BuildingBlocks for contracts
+- Duplicating `ByIdSpec` logic in BuildingBlocks instead of reusing module Application specs
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]
@@ -255,9 +255,9 @@ __Applied solutions:__
 - [ ] `GuidResolvingBehavior` returns the resolver's conflict result on duplicate Guid
 - [ ] No `ConflictExceptionMiddleware` defined in BuildingBlocks
 - [ ] `ETagEncoder` defined in `BuildingBlocks/Concurrency/ETagEncoder.cs`
-- [ ] `EntityByIdSpec<T>` defined in `BuildingBlocks/Specifications/EntityByIdSpec.cs`
 - [ ] `ConcurrencyBehavior` defined in `BuildingBlocks/MediatR/ConcurrencyBehavior.cs`
-- [ ] `IHasVersions`, `IEntityVersionResolver`, and `IVersioned` imported from Shared, not defined in BuildingBlocks
+- [ ] No EF Core reference in BuildingBlocks
+- [ ] `IHasVersions`, `IEntityVersionResolver`, `IEntityVersionResolverFactory`, and `IVersioned` imported from Shared, not defined in BuildingBlocks
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]

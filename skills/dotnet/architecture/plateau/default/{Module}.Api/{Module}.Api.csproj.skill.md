@@ -4,7 +4,7 @@ name: module-api-csproj
 description: Expose HTTP endpoints as thin MediatR adapters for this module
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/csproj
 created_by:
@@ -44,7 +44,7 @@ __Applied solutions:__
 - Validation and error statuses continue to use `ProblemDetails` via the existing `ResultExtensions` from http-api-publication.solution.skill
 - `Create{Entity}Result` contains only the entity Id, so the 409 body is `{ id: ... }`
 - ETag format: `"<base64>"` — surrounding double quotes are part of the HTTP ETag format
-- `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolver` keys exactly
+- `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolverFactory` keys exactly
 - If `If-Match` missing or `ETagEncoder.Decode` returns null → return `StatusCode(412)` immediately, before `_sender.Send()`
 - `Versions` passed directly as command constructor argument — no manual construction in controller
 

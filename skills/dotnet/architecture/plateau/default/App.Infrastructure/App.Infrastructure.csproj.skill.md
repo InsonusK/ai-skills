@@ -4,7 +4,7 @@ name: app-infrastructure-csproj
 description: Provide all persistence implementation — DbContext, repository implementations, outbox interceptor, background dispatcher
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/csproj
 created_by:
@@ -21,8 +21,8 @@ created_by:
 - Be the only layer that knows EF Core implementation details
 - Provide the single generic `Repository<T>` EF Core implementation
 - Leverage `RepositoryBase<T>` from Ardalis to eliminate boilerplate spec evaluation code
-- Own `EntityVersionResolver` — the mapping from stable string entity names to C# entity types
-- Discover versioned entities automatically by scanning config classes in supplied assemblies
+- Own `EntityVersionResolverFactory` — the factory that maps stable string entity names to Application-layer `IEntityVersionResolver` implementations
+- Discover versioned entities from Domain config classes and resolver implementations from Application assemblies
 - Host cross-module foreign key configurations that span multiple bounded contexts
 - Register all module entity configurations via `ApplyConfigurationsFromAssembly` in AppDbContext
 
@@ -42,9 +42,10 @@ __Applied solutions:__
 - `RepositoryBase<T>` from Ardalis handles all `SpecificationEvaluator` logic internally
 - App.Infrastructure remains the only layer that knows about EF Core implementation details
 - One generic `Repository<T>` class covers all entity types
-- Static readonly dictionary — populated at startup, no runtime modification
-- Keys are stable business names declared in `{Entity}Config.VersionedEntityName` — changing a key is a breaking API change
-- Entity types are discovered from `IEntityTypeConfiguration<T>` config classes in assemblies supplied during registration — typically module Domain assemblies
+- Read-only map — populated at startup, no runtime modification
+- Keys are stable business names declared in `{Entity}Config.VersionedEntityName` and `{Entity}VersionResolver.VersionedEntityName`
+- Domain assemblies supply the list of valid versioned entities
+- Application assemblies supply the resolver implementations
 - Returns `null` for unknown names — `ConcurrencyBehavior` returns `Result.Error` on null
 - App.Infrastructure is the only place where cross-module foreign key relationships are configured
 - DbContext uses `ApplyConfigurationsFromAssembly` to automatically discover all `IEntityTypeConfiguration<T>` implementations from module Domain assemblies
@@ -86,7 +87,7 @@ __Applied solutions:__
     DomainEventInterceptor.cs
     OutboxDispatcher.cs
   /Concurrency
-    EntityVersionResolver.cs
+    EntityVersionResolverFactory.cs
   App.Infrastructure.csproj
 ```
 
@@ -99,7 +100,7 @@ __Applied solutions:__
 ```
 /App.Infrastructure
   /Concurrency
-    EntityVersionResolver.cs
+    EntityVersionResolverFactory.cs
 ```
 
 ```
@@ -125,9 +126,9 @@ __Applied solutions:__
 | /Repositories | Generic Repository<T> implementation |  |
 | /UnitOfWork | UnitOfWork implementation | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Infrastructure/classes/UnitOfWork.class.skill.md|UnitOfWork.class.skill]] |
 | /Outbox | EF interceptor and background dispatcher |  |
-| /Concurrency | EntityVersionResolver mapping strings to types |  |
+| /Concurrency | EntityVersionResolverFactory mapping entity names to Application-layer resolvers |  |
 | /Repositories/Repository.cs | Generic EF Core repository implementation inheriting Ardalis `RepositoryBase<T>` | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Infrastructure/classes/Repository.class.skill.md|Repository.class.skill]] |
-| /Concurrency/EntityVersionResolver.cs | Maps string entity names to C# types for ConcurrencyBehavior by scanning config classes | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Infrastructure/classes/EntityVersionResolver.class.skill.md|EntityVersionResolver.class.skill]] |
+| /Concurrency/EntityVersionResolverFactory.cs | Maps string entity names to Application-layer `IEntityVersionResolver` implementations | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Infrastructure/classes/EntityVersionResolverFactory.class.skill.md|EntityVersionResolverFactory.class.skill]] |
 | /Persistence/Configurations | Cross-module foreign key and relationship configurations |  |
 
 __Applied solutions:__
@@ -194,11 +195,13 @@ MUST:
 	- Single generic `Repository<T>` inheriting `RepositoryBase<T>`
 	- Constructor accept `AppDbContext` and pass it to base
 	- Implement `IRepository<T>` from Shared
-	- `EntityVersionResolver` scans supplied assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
+	- `EntityVersionResolverFactory` scans Domain assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
+		- `EntityVersionResolverFactory` scans Application assemblies for concrete `IEntityVersionResolver` implementations
 	- Every mutable entity implements `IVersioned`
 	- Every mutable entity config class declares `public const string VersionedEntityName`
+		- Every `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching its config
 	- Keys are stable business string names — same strings used in `IHasVersions` commands and ETag encoding
-	- Constructor accepts `IEnumerable<Assembly>` from the composition root
+	- Constructor accepts `IServiceProvider`, `IEnumerable<Assembly>` domainAssemblies, and `IEnumerable<Assembly>` applicationAssemblies
 	- Register all configurations via `ApplyConfigurationsFromAssembly` scanning all module Domain assemblies in DbContext
 	- Place cross-module foreign key configurations in `/Persistence/Configurations`
 MUST NOT:
@@ -209,7 +212,7 @@ MUST NOT:
 	- Call `SaveChangesAsync` inside `Repository<T>`
 	- Create per-entity repository subclasses
 	- Keys be C# type names, namespaces, or assembly-qualified names as the public contract — breaks when entities are renamed
-	- Rely on a hardcoded dictionary of entity types
+	- Rely on a hardcoded dictionary of resolver types
 	- Define intra-module entity configurations here — those belong in `{Module}.Domain/Configurations`
 	- Register configurations manually one by one in `OnModelCreating`
 	- Reference BuildingBlocks directly
@@ -228,8 +231,8 @@ __Applied solutions:__
 - Putting cross-module JOIN queries in App.Infrastructure — belongs in App.Queries
 - `TaskRepository : Repository<TodoTask>` — unnecessary subclass, generic handles all types
 - Manual `SpecificationEvaluator.Default.GetQuery(...)` calls — Ardalis base handles this
-- `EntityVersionResolver` key using `nameof(TodoTask)` — fragile, breaks on class rename
-- Hardcoded dictionary of entity types — duplicates the entity list and is easy to forget when adding new entities
+- `EntityVersionResolverFactory` key using `nameof(TodoTask)` — fragile, breaks on class rename
+- Hardcoded dictionary of resolver types — duplicates the entity list and is easy to forget when adding new entities
 - Scanning `AppDomain.CurrentDomain.GetAssemblies()` without an explicit allow-list — includes unrelated assemblies
 - Putting `VersionedEntityName` on the entity class instead of the config — spreads configuration across the domain
 - Putting module-internal entity configuration in App.Infrastructure — violates separation of concerns
@@ -254,9 +257,11 @@ __Applied solutions:__
 - [ ] Constructor forwards `AppDbContext` to base
 - [ ] `Repository<T>` implements `IRepository<T>`
 - [ ] No `SaveChangesAsync` calls in repository
-- [ ] `EntityVersionResolver` defined in `App.Infrastructure/Concurrency/EntityVersionResolver.cs`
-- [ ] Constructor accepts `IEnumerable<Assembly>`
-- [ ] Scans supplied assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
+- [ ] `EntityVersionResolverFactory` defined in `App.Infrastructure/Concurrency/EntityVersionResolverFactory.cs`
+- [ ] Constructor accepts `IServiceProvider`, Domain assemblies, and Application assemblies
+- [ ] Scans Domain assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
+- [ ] Scans Application assemblies for `IEntityVersionResolver` implementations
+- [ ] Every `{Entity}VersionResolver` declares matching `VersionedEntityName`
 - [ ] Every mutable entity implements `IVersioned`
 - [ ] Every mutable entity config class declares `VersionedEntityName`
 - [ ] Keys are stable business strings
