@@ -149,6 +149,19 @@ PROJECT:
 	- [[./Implementation Templates/Rule.cs.create.md|Rule.cs]] - create - add invariant rules
 ```
 
+# Workflow
+```hint
+add mermaid diagram which show workflow of solution
+```
+````example
+```mermaid
+sequenceDiagram
+  Client->>API: POST /entities
+  API->>Handler: Send(command)
+  Handler-->>API: Result.Created
+```
+````
+
 # Rules
 ```hint
 define MUST, SHOULD, SHOULD NOT, MUST NOT rules

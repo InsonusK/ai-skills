@@ -39,7 +39,7 @@ public class {EntityName} : IVersioned
 }
 ```
 
-> **Note:** The stable business name used by `EntityVersionResolver`, `IHasVersions`, and `ETagEncoder` lives in `{EntityName}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
+> **Note:** The stable business name used by `EntityVersionResolverFactory`, `IHasVersions`, and `ETagEncoder` lives in `{EntityName}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
 
 # Rules
 

@@ -14,7 +14,7 @@ change_kind: extend
 - `xmin` is a PostgreSQL system column — automatically incremented on every row update
 - `IsConcurrencyToken()` tells EF to include `Version` in `WHERE` clause on `UPDATE` — EF raises `DbUpdateConcurrencyException` if zero rows affected
 - `ValueGeneratedOnAddOrUpdate()` tells EF the value comes from the database — never from application code
-- `VersionedEntityName` is the single stable business name used by `EntityVersionResolver`, `IHasVersions`, and `ETagEncoder` — changing it is a breaking API change
+- `VersionedEntityName` is the single stable business name used by `EntityVersionResolverFactory`, `IHasVersions`, and `ETagEncoder` — changing it is a breaking API change
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
