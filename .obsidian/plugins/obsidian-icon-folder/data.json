@@ -34,23 +34,5 @@
     "debugMode": false,
     "useInternalPlugins": false
   },
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-behavior.skill.md": "LiFileCodeCorner",
-  "skills/dotnet/skill-graph/developing/Module/module-layer.skill.md": "LiBoxes",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill.md": "LiFileCodeCorner",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/external-created-entity.skill.md": "LiFileCodeCorner",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/rule-usage.skill.md": "LiFileCodeCorner",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/module-domain-csproj.skill.md": "LiBox",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/entity.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-service.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill.md": "LiCodepen",
-  "input heap": "LiInbox",
-  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-resolver.class.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-di.class.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill.md": "LiBox",
-  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-validator.class.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-command-handler.class.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Application csproj/classes/module-application-query-handler.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill.md": "LiCodepen",
-  "skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill.md": "LiCodepen"
+  "input heap": "LiInbox"
 }
