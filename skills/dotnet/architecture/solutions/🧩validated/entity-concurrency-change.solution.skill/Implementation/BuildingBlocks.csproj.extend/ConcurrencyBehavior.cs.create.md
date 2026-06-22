@@ -12,12 +12,11 @@ change_kind: create
 
 # Core Principles
 - Constrained on `where TRequest : IHasVersions` — only activates for commands that carry versions
-- Resolves `IReadRepository<TEntity>` from DI dynamically using `IServiceProvider` — entity type known only at runtime
-- Loads each entity by Id using a `ByIdSpec` — returns `Result.NotFound` if entity missing during version check
-- Compares loaded `entity.Version` against `expectedVersion` from command — returns `Result.Conflict` on mismatch
+- Gets the correct `IEntityVersionResolver` from `IEntityVersionResolverFactory` per entity name
+- Loads the current version through the resolver — returns `Result.NotFound` if the resolver reports `0`
+- Compares current version against `expectedVersion` from the command — returns `Result.Conflict` on mismatch
 - Checks all entities before deciding — first mismatch short-circuits entire command
-- Does not call `SaveChangesAsync` — purely a read and guard operation
-- Entities expose `Version` through `IVersioned` from Shared — no reflection needed
+- Does not call `SaveChangesAsync` — purely a guard operation
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -28,9 +27,7 @@ change_kind: create
 
 ```csharp
 // BuildingBlocks/MediatR/ConcurrencyBehavior.cs
-using BuildingBlocks.Specifications;
 using Shared.Concurrency;
-using Shared.Repositories;
 
 namespace BuildingBlocks.MediatR;
 
@@ -39,15 +36,11 @@ public class ConcurrencyBehavior<TRequest, TResponse>
     where TRequest : IHasVersions
     where TResponse : IResult
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IEntityVersionResolver _resolver;
+    private readonly IEntityVersionResolverFactory _factory;
 
-    public ConcurrencyBehavior(
-        IServiceProvider serviceProvider,
-        IEntityVersionResolver resolver)
+    public ConcurrencyBehavior(IEntityVersionResolverFactory factory)
     {
-        _serviceProvider = serviceProvider;
-        _resolver = resolver;
+        _factory = factory;
     }
 
     public async Task<TResponse> Handle(
@@ -57,26 +50,18 @@ public class ConcurrencyBehavior<TRequest, TResponse>
     {
         foreach (var (entityName, idVersions) in request.Versions)
         {
-            var entityType = _resolver.Resolve(entityName);
-            if (entityType is null)
-                return (TResponse)Result.Error($"Unknown entity type: '{entityName}'.");
-
-            // resolve IReadRepository<TEntity> from DI at runtime
-            var repoType = typeof(IReadRepository<>).MakeGenericType(entityType);
-            var repo = _serviceProvider.GetRequiredService(repoType);
+            var resolver = _factory.GetFor(entityName);
+            if (resolver is null)
+                return (TResponse)Result.Error($"Unknown entity: '{entityName}'.");
 
             foreach (var (id, expectedVersion) in idVersions)
             {
-                // load entity — uses ByIdSpec resolved dynamically
-                var entity = await LoadEntityAsync(repo, entityType, id, ct);
+                var actualVersion = await resolver.GetCurrentVersionForAsync(id, ct);
 
-                if (entity is null)
+                if (actualVersion == 0)
                     return (TResponse)Result.NotFound();
 
-                // compare versions — mismatch means client has stale data
-                var actualVersion = ((IVersioned)entity).Version;
-
-                if (actualVersion != expectedVersion)
+                if ((uint)actualVersion != expectedVersion)
                     return (TResponse)Result.Conflict(
                         $"'{entityName}' with Id {id} was modified by another user. " +
                         $"Expected version {expectedVersion}, found {actualVersion}.");
@@ -85,24 +70,6 @@ public class ConcurrencyBehavior<TRequest, TResponse>
 
         return await next();
     }
-
-    private static async Task<IVersioned?> LoadEntityAsync(
-        object repo, Type entityType, int id, CancellationToken ct)
-    {
-        // invoke FirstOrDefaultAsync via reflection — entity type known only at runtime
-        var method = repo.GetType()
-            .GetMethod(nameof(IReadRepository<object>.FirstOrDefaultAsync),
-                new[] { typeof(ISpecification<>).MakeGenericType(entityType),
-                        typeof(CancellationToken) })!;
-
-        var specType = typeof(EntityByIdSpec<>).MakeGenericType(entityType);
-        var spec = Activator.CreateInstance(specType, id)!;
-
-        var task = (Task)method.Invoke(repo, new[] { spec, ct })!;
-        await task.ConfigureAwait(false);
-
-        return ((dynamic)task).Result as IVersioned;
-    }
 }
 ```
 
@@ -110,42 +77,42 @@ public class ConcurrencyBehavior<TRequest, TResponse>
 
 MUST:
 - Constrained to `where TRequest : IHasVersions` and `where TResponse : IResult`
+- Uses `IEntityVersionResolverFactory` from Shared
 - Returns `Result.Conflict` on version mismatch — handler never runs
-- Returns `Result.NotFound` if entity missing during version check
+- Returns `Result.NotFound` if resolver reports `0`
 - Returns `Result.Error` for unknown entity name
 - Never calls `SaveChangesAsync`
-- Casts loaded entities to `IVersioned` from Shared — no reflection on `Version`
 
 MUST NOT:
-- Activate on commands without `IHasVersions` — only update/patch commands carry versions
+- Activate on commands without `IHasVersions`
+- Reference EF Core, repositories, or specifications directly
 - Modify any entity state during version check
 
 # Anti-patterns
 - Handler catches `DbUpdateConcurrencyException` instead of relying on `ConcurrencyBehavior`
-- Reading `Version` via reflection instead of `IVersioned`
+- Loading entities inside the behavior instead of delegating to `IEntityVersionResolver`
 
 # Check list
 - [ ] `ConcurrencyBehavior` constrained to `where TRequest : IHasVersions`
+- [ ] Uses `IEntityVersionResolverFactory`
 - [ ] Returns `Result.Conflict` on version mismatch
-- [ ] Returns `Result.NotFound` if entity missing during version check
+- [ ] Returns `Result.NotFound` if resolver reports `0`
 - [ ] Returns `Result.Error` for unknown entity name
 - [ ] Never calls `SaveChangesAsync`
-- [ ] Uses `IVersioned` from Shared to read `Version`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Validate all entity versions carried by an update command before the handler runs
 - [ ] WHEN applied THEN Return Result.Conflict immediately on any version mismatch — handler never executes for stale updates
 - [ ] WHEN applied THEN Constrained on where TRequest : IHasVersions — only activates for commands that carry versions
-- [ ] WHEN applied THEN Resolves IReadRepository<TEntity> from DI dynamically using IServiceProvider — entity type known only at runtime
-- [ ] WHEN applied THEN Loads each entity by Id using a ByIdSpec — returns Result.NotFound if entity missing during version check
-- [ ] WHEN applied THEN Compares loaded entity.Version against expectedVersion from command — returns Result.Conflict on mismatch
+- [ ] WHEN applied THEN Gets the correct IEntityVersionResolver from IEntityVersionResolverFactory per entity name
+- [ ] WHEN applied THEN Loads the current version through the resolver — returns Result.NotFound if the resolver reports 0
+- [ ] WHEN applied THEN Compares current version against expectedVersion from the command — returns Result.Conflict on mismatch
 - [ ] WHEN applied THEN Checks all entities before deciding — first mismatch short-circuits entire command
-- [ ] WHEN applied THEN Does not call SaveChangesAsync — purely a read and guard operation
-- [ ] WHEN applied THEN Casts loaded entities to IVersioned from Shared — no reflection on Version
+- [ ] WHEN applied THEN Does not call SaveChangesAsync — purely a guard operation
 - [ ] WHEN verified THEN ConcurrencyBehavior constrained to where TRequest : IHasVersions
+- [ ] WHEN verified THEN Uses IEntityVersionResolverFactory
 - [ ] WHEN verified THEN Returns Result.Conflict on version mismatch
-- [ ] WHEN verified THEN Returns Result.NotFound if entity missing during version check
+- [ ] WHEN verified THEN Returns Result.NotFound if resolver reports 0
 - [ ] WHEN verified THEN Returns Result.Error for unknown entity name
 - [ ] WHEN verified THEN Never calls SaveChangesAsync
-- [ ] WHEN verified THEN Uses IVersioned from Shared to read Version
 - [ ] WHEN naming 'Concurrency pipeline behavior' THEN pattern matches convention

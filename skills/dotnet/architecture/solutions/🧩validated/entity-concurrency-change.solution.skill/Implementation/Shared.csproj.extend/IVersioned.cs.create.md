@@ -8,7 +8,7 @@ change_kind: create
 
 # Goals
 - Let the concurrency infrastructure recognize mutable entities without using reflection
-- Let `EntityVersionResolver` discover versioned entity types automatically by scanning assemblies
+- Let `EntityVersionResolverFactory` discover versioned entity types automatically by scanning assemblies
 
 # Core Principles
 - Single read-only `Version` property
@@ -54,7 +54,7 @@ MUST NOT:
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Let the concurrency infrastructure recognize mutable entities without using reflection
-- [ ] WHEN applied THEN Let EntityVersionResolver discover versioned entity types automatically by scanning assemblies
+- [ ] WHEN applied THEN Let EntityVersionResolverFactory discover versioned entity types automatically by scanning assemblies
 - [ ] WHEN applied THEN Version is uint and read-only at the interface level
 - [ ] WHEN applied THEN Implemented by every mutable entity in module Domain projects
 - [ ] WHEN applied THEN Declared in Shared so Domain can implement it without referencing BuildingBlocks or App.Infrastructure

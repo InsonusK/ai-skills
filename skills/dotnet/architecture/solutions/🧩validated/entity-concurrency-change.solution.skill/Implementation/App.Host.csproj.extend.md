@@ -1,16 +1,16 @@
 ---
-description: Register IEntityVersionResolver in App.Host
+description: Register IEntityVersionResolverFactory and module IEntityVersionResolver implementations in App.Host
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
 ---
 
 # Goals
-- Register `IEntityVersionResolver` as `Singleton` with module Domain assemblies
+- Register `IEntityVersionResolverFactory` and all module `IEntityVersionResolver` implementations
 
 # Core Principles
-- `EntityVersionResolver` registered as `Singleton` — map is built once at startup, safe for singleton lifetime
-- `EntityVersionResolver` receives module Domain assemblies from App.Host — the only project that references all modules
+- `EntityVersionResolverFactory` registered as `Scoped` — it creates `Scoped` resolvers that depend on `IReadRepository<T>`
+- `EntityVersionResolverFactory` receives module Domain assemblies (validation) and module Application assemblies (resolver discovery) from App.Host
 
 # Structure
 
@@ -18,13 +18,13 @@ change_kind: extend
 ```
 /App.Host
   /DependencyInjection
-    EntityVersionResolverRegistration.cs    ← created to register EntityVersionResolver
+    EntityVersionResolverRegistration.cs    ← created to register the factory and resolvers
 ```
 
 ## Directory and class skills
-| Directory \| file | Description |
+| Directory \ file | Description |
 | ----------------- | ----------- |
-| /DependencyInjection/EntityVersionResolverRegistration.cs | Register IEntityVersionResolver as Singleton with module Domain assemblies |
+| /DependencyInjection/EntityVersionResolverRegistration.cs | Register IEntityVersionResolverFactory and module resolvers |
 
 # Allowed Dependencies
 - Shared
@@ -34,18 +34,24 @@ change_kind: extend
 # Rules
 
 MUST:
-- `EntityVersionResolver` registered as `Singleton`
-- `EntityVersionResolver` receives all module Domain assemblies that contain versioned entities
+- `IEntityVersionResolverFactory` registered as `Scoped`
+- `EntityVersionResolverFactory` receives all module Domain assemblies that contain versioned entities
+- `EntityVersionResolverFactory` receives all module Application assemblies that contain `IEntityVersionResolver` implementations
+- Register every module `IEntityVersionResolver` implementation as `Scoped`
 
 MUST NOT:
+- `IEntityVersionResolverFactory` registered as `Singleton`
 - Change the signature of `RepositoryRegistration.AddRepositories`
 
 # Anti-patterns
-- Passing non-Domain assemblies to `EntityVersionResolver` — scans unrelated types
+- Passing non-Domain or non-Application assemblies to `EntityVersionResolverFactory` — scans unrelated types
+- Registering the factory as `Singleton` — creates captive dependencies on `Scoped` repositories
 
 # Check list
-- [ ] `EntityVersionResolver` registered as `Singleton`
-- [ ] `EntityVersionResolver` receives module Domain assemblies
+- [ ] `IEntityVersionResolverFactory` registered as `Scoped`
+- [ ] `EntityVersionResolverFactory` receives module Domain assemblies
+- [ ] `EntityVersionResolverFactory` receives module Application assemblies
+- [ ] All module `IEntityVersionResolver` implementations registered as `Scoped`
 
 # Unittest TestCases
-- [ ] WHEN applied THEN Register IEntityVersionResolver as Singleton with module Domain assemblies
+- [ ] WHEN applied THEN Register IEntityVersionResolverFactory and module IEntityVersionResolver implementations

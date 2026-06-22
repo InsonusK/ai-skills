@@ -4,7 +4,7 @@ name: singleentitycontroller-class
 description: Single entity lifecycle controller
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/class
 created_by:
@@ -25,7 +25,7 @@ __Applied solutions:__
 
 # Core Principals
 - ETag format: `"<base64>"` — surrounding double quotes are part of the HTTP ETag format
-- `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolver` keys exactly
+- `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolverFactory` keys exactly
 - If `If-Match` missing or `ETagEncoder.Decode` returns null → return `StatusCode(412)` immediately, before `_sender.Send()`
 - `Versions` passed directly as command constructor argument — no manual construction in controller
 
@@ -289,7 +289,7 @@ __Applied solutions:__
 - [ ] WHEN applied THEN Decode If-Match request header and return 412 before dispatch if missing or malformed
 - [ ] WHEN applied THEN Populate Versions on the update command from the decoded If-Match value
 - [ ] WHEN applied THEN ETag format: "<base64>" — surrounding double quotes are part of the HTTP ETag format
-- [ ] WHEN applied THEN ETagEncoder.Encode builds the versions dictionary — entity name string must match EntityVersionResolver keys exactly
+- [ ] WHEN applied THEN `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolverFactory` keys exactly
 - [ ] WHEN applied THEN If If-Match missing or ETagEncoder.Decode returns null → return StatusCode(412) immediately, before _sender.Send()
 - [ ] WHEN applied THEN Versions passed directly as command constructor argument — no manual construction in controller
 - [ ] WHEN verified THEN GET sets Response.Headers.ETag

@@ -4,7 +4,7 @@ name: app-host-csproj
 description: Be the single composition root — wire all modules, infrastructure, pipeline behaviors, and DI registrations together
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/csproj
 created_by:
@@ -33,7 +33,8 @@ created_by:
 - Register controllers from all module Api assemblies
 - Register Minimal API endpoint groups
 - Configure ASP.NET Core JSON and ProblemDetails middleware
-- Register `IEntityVersionResolver` as `Singleton` with module Domain assemblies
+- Register `IEntityVersionResolverFactory` and all module `IEntityVersionResolver` implementations
+- Feed the factory module Domain assemblies (for validation) and module Application assemblies (for resolver discovery)
 - Ensure module registrations are called via the centralized `AddModules()` extension in `Program.cs`
 
 __Applied solutions:__
@@ -61,8 +62,8 @@ __Applied solutions:__
 - Pipeline behavior order is enforced inside `PipelineRegistration.AddPipeline()` — not in `Program.cs`
 - `PipelineRegistration.AddPipeline()` is the single source of truth for behavior order
 - Behaviors are registered in execution order — first registered runs first
-- `EntityVersionResolver` registered as `Singleton` — map is built once at startup, safe for singleton lifetime
-- `EntityVersionResolver` receives module Domain assemblies from App.Host — the only project that references all modules
+- `EntityVersionResolverFactory` registered as `Scoped` — it creates `Scoped` resolvers that depend on `IReadRepository<T>`
+- `EntityVersionResolverFactory` receives module Domain assemblies (validation) and module Application assemblies (resolver discovery) from App.Host — the only project that references all modules
 - `Program.cs` calls `AddModules()` — the centralized registration point created by solution-structure
 - Each module's `Register{ModuleName}Module(configuration)` is called inside `ModuleRegistration.AddModules`
 
@@ -143,7 +144,7 @@ __Applied solutions:__
 ```
 /App.Host
   /DependencyInjection
-    EntityVersionResolverRegistration.cs    ← created to register EntityVersionResolver
+    EntityVersionResolverRegistration.cs    ← created to register the factory and resolvers
 ```
 
 __Applied solutions:__
@@ -165,7 +166,7 @@ __Applied solutions:__
 | /DependencyInjection/PipelineRegistration.cs | Centralized pipeline behavior registration | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Host/classes/PipelineRegistration.class.skill.md|PipelineRegistration.class.skill]] |
 | /DependencyInjection/PipelineRegistration.cs | Centralized pipeline behavior registration with ordered behaviors | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Host/classes/PipelineRegistration.class.skill.md|PipelineRegistration.class.skill]] |
 | /DependencyInjection/ApiRegistration.cs | Controller registration and middleware configuration | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Host/classes/ApiRegistration.class.skill.md|ApiRegistration.class.skill]] |
-| /DependencyInjection/EntityVersionResolverRegistration.cs | Register IEntityVersionResolver as Singleton with module Domain assemblies | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Host/classes/EntityVersionResolverRegistration.class.skill.md|EntityVersionResolverRegistration.class.skill]] |
+| /DependencyInjection/EntityVersionResolverRegistration.cs | Register IEntityVersionResolverFactory and module resolvers as Scoped with Domain and Application assemblies | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Host/classes/EntityVersionResolverRegistration.class.skill.md|EntityVersionResolverRegistration.class.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj.extend]]
@@ -234,8 +235,10 @@ MUST:
 	- All module Api assemblies added as application parts
 	- All Minimal API endpoint groups mapped explicitly
 	- `AddProblemDetails()` registered in DI
-	- `EntityVersionResolver` registered as `Singleton`
-	- `EntityVersionResolver` receives all module Domain assemblies that contain versioned entities
+	- `IEntityVersionResolverFactory` registered as `Scoped`
+	- `EntityVersionResolverFactory` receives all module Domain assemblies that contain versioned entities
+		- `EntityVersionResolverFactory` receives all module Application assemblies that contain `IEntityVersionResolver` implementations
+		- All module `IEntityVersionResolver` implementations registered as `Scoped`
 	- `AddModules()` called in `Program.cs`
 	- All module `Register{ModuleName}Module()` calls made inside `ModuleRegistration.AddModules`
 MUST NOT:
@@ -273,7 +276,8 @@ __Applied solutions:__
 - Calling `AddPipeline()` multiple times
 - Missing `UseExceptionHandler()` before `MapControllers()`
 - Forgetting to map Minimal API endpoint groups
-- Passing non-Domain assemblies to `EntityVersionResolver` — scans unrelated types
+- Passing non-Domain or non-Application assemblies to `EntityVersionResolverFactory` — scans unrelated types
+- Registering the factory as `Singleton` — creates captive dependencies on `Scoped` repositories
 - `Program.cs` listing every module explicitly — centralize module calls in `ModuleRegistration`
 - Scattering module registration across multiple extension methods called from `Program.cs`
 
@@ -304,8 +308,10 @@ __Applied solutions:__
 - [ ] All module Api assemblies added as application parts
 - [ ] `UseExceptionHandler()` before `MapControllers()`
 - [ ] `AddProblemDetails()` registered
-- [ ] `EntityVersionResolver` registered as `Singleton`
-- [ ] `EntityVersionResolver` receives module Domain assemblies
+- [ ] `IEntityVersionResolverFactory` registered as `Scoped`
+- [ ] `EntityVersionResolverFactory` receives module Domain assemblies
+- [ ] `EntityVersionResolverFactory` receives module Application assemblies
+- [ ] All module `IEntityVersionResolver` implementations registered as `Scoped`
 - [ ] `AddModules(builder.Configuration)` called in `Program.cs`
 - [ ] Every registered module is added inside `ModuleRegistration.AddModules`
 

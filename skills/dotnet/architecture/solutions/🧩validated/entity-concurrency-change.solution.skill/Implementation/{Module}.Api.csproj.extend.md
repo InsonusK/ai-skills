@@ -11,7 +11,7 @@ change_kind: extend
 
 # Core Principles
 - ETag format: `"<base64>"` — surrounding double quotes are part of the HTTP ETag format
-- `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolver` keys exactly
+- `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolverFactory` keys exactly
 - If `If-Match` missing or `ETagEncoder.Decode` returns null → return `StatusCode(412)` immediately, before `_sender.Send()`
 - `Versions` passed directly as command constructor argument — no manual construction in controller
 

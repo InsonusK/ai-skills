@@ -1,18 +1,19 @@
 ---
-description: Add EntityVersionResolver implementation
+description: Add EntityVersionResolverFactory factory implementation
 name: App.Infrastructure.csproj
 element_kind: project
 change_kind: extend
 ---
 
 # Goals
-- Own `EntityVersionResolver` — the mapping from stable string entity names to C# entity types
-- Discover versioned entities automatically by scanning config classes in supplied assemblies
+- Own `EntityVersionResolverFactory` — the factory that maps stable string entity names to Application-layer `IEntityVersionResolver` implementations
+- Discover versioned entities from Domain config classes and resolver implementations from Application assemblies
 
 # Core Principles
-- Static readonly dictionary — populated at startup, no runtime modification
-- Keys are stable business names declared in `{Entity}Config.VersionedEntityName` — changing a key is a breaking API change
-- Entity types are discovered from `IEntityTypeConfiguration<T>` config classes in assemblies supplied during registration — typically module Domain assemblies
+- Read-only map — populated once (static/lazy) at first use, no runtime modification
+- Keys are stable business names declared in `{Entity}Config.VersionedEntityName` and `{Entity}VersionResolver.VersionedEntityName`
+- Domain assemblies supply the list of valid versioned entities
+- Application assemblies supply the resolver implementations
 - Returns `null` for unknown names — `ConcurrencyBehavior` returns `Result.Error` on null
 
 # Structure
@@ -21,13 +22,13 @@ change_kind: extend
 ```
 /App.Infrastructure
   /Concurrency
-    EntityVersionResolver.cs
+    EntityVersionResolverFactory.cs
 ```
 
 ## Directory and class skills
-| Directory \| file | Description |
+| Directory \ file | Description |
 | ----------------- | ----------- |
-| /Concurrency/EntityVersionResolver.cs | Maps string entity names to C# types for ConcurrencyBehavior by scanning config classes |
+| /Concurrency/EntityVersionResolverFactory.cs | Maps string entity names to Application-layer IEntityVersionResolver implementations |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
@@ -36,39 +37,44 @@ change_kind: extend
 
 # Allowed Dependencies
 - Shared
-- BuildingBlocks
 - {Module}.Domain (for config classes)
 
 # Rules
 
 MUST:
-- `EntityVersionResolver` scans supplied assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
+- `EntityVersionResolverFactory` scans Domain assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
+- `EntityVersionResolverFactory` scans Application assemblies for concrete `IEntityVersionResolver` implementations
 - Every mutable entity implements `IVersioned`
 - Every mutable entity config class declares `public const string VersionedEntityName`
+- Every `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching its config
 - Keys are stable business string names — same strings used in `IHasVersions` commands and ETag encoding
-- Constructor accepts `IEnumerable<Assembly>` from the composition root
+- Constructor accepts `IServiceProvider`, Domain assemblies, and Application assemblies
+- Build the resolver-type map only once (static, lazy, thread-safe)
 
 MUST NOT:
 - Keys be C# type names, namespaces, or assembly-qualified names as the public contract — breaks when entities are renamed
-- Rely on a hardcoded dictionary of entity types
+- Rely on a hardcoded dictionary of resolver types
 
 # Anti-patterns
-- `EntityVersionResolver` key using `nameof(TodoTask)` — fragile, breaks on class rename
-- Hardcoded dictionary of entity types — duplicates the entity list and is easy to forget when adding new entities
+- `EntityVersionResolverFactory` key using `nameof(TodoTask)` — fragile, breaks on class rename
+- Hardcoded dictionary of resolver types — duplicates the entity list and is easy to forget when adding new entities
 - Scanning `AppDomain.CurrentDomain.GetAssemblies()` without an explicit allow-list — includes unrelated assemblies
 - Putting `VersionedEntityName` on the entity class instead of the config — spreads configuration across the domain
 
 # Check list
-- [ ] `EntityVersionResolver` defined in `App.Infrastructure/Concurrency/EntityVersionResolver.cs`
-- [ ] Constructor accepts `IEnumerable<Assembly>`
-- [ ] Scans supplied assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
-- [ ] Every mutable entity implements `IVersioned`
+- [ ] `EntityVersionResolverFactory` defined in `App.Infrastructure/Concurrency/EntityVersionResolverFactory.cs`
+- [ ] Constructor accepts `IServiceProvider`, Domain assemblies, and Application assemblies
+- [ ] Scans Domain assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
+- [ ] Scans Application assemblies for `IEntityVersionResolver` implementations
 - [ ] Every mutable entity config class declares `VersionedEntityName`
+- [ ] Every `{Entity}VersionResolver` declares matching `VersionedEntityName`
 - [ ] Keys are stable business strings
+- [ ] Resolver-type map is built only once and thread-safe
 
 # Unittest TestCases
-- [ ] WHEN applied THEN Own EntityVersionResolver — the mapping from stable string entity names to C# entity types
-- [ ] WHEN applied THEN Discover versioned entities automatically by scanning config classes in supplied assemblies
-- [ ] WHEN verified THEN EntityVersionResolver defined in App.Infrastructure/Concurrency/EntityVersionResolver.cs
-- [ ] WHEN verified THEN Constructor accepts IEnumerable<Assembly>
-- [ ] WHEN verified THEN Scans supplied assemblies for IEntityTypeConfiguration<T> configs where T implements IVersioned
+- [ ] WHEN applied THEN Own EntityVersionResolverFactory — the factory that maps stable entity names to Application-layer IEntityVersionResolver implementations
+- [ ] WHEN applied THEN Discover versioned entities from Domain config classes and resolver implementations from Application assemblies
+- [ ] WHEN verified THEN EntityVersionResolverFactory defined in App.Infrastructure/Concurrency/EntityVersionResolverFactory.cs
+- [ ] WHEN verified THEN Constructor accepts IServiceProvider, domainAssemblies, and applicationAssemblies
+- [ ] WHEN verified THEN Scans Domain assemblies for IEntityTypeConfiguration<T> configs where T implements IVersioned
+- [ ] WHEN verified THEN Scans Application assemblies for IEntityVersionResolver implementations

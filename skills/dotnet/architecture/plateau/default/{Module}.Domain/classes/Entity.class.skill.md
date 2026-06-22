@@ -4,7 +4,7 @@ name: entity-class
 description: Extend entity to use Value Objects for properties with invariants and domain rules inside behavior methods
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/class
 created_by:
@@ -229,7 +229,7 @@ public class {EntityName} : IVersioned
 }
 ```
 
-> **Note:** The stable business name used by `EntityVersionResolver`, `IHasVersions`, and `ETagEncoder` lives in `{EntityName}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
+> **Note:** The stable business name used by `EntityVersionResolverFactory`, `IHasVersions`, and `ETagEncoder` lives in `{EntityName}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
 
 Entity must not contain any EF attributes:
 ```csharp

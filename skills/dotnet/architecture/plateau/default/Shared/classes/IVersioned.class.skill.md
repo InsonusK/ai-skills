@@ -4,7 +4,7 @@ name: iversioned-class
 description: Marker interface for mutable entities that expose a database-generated concurrency version
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/class
 created_by:
@@ -13,7 +13,7 @@ created_by:
 
 # Goal
 - Let the concurrency infrastructure recognize mutable entities without using reflection
-- Let `EntityVersionResolver` discover versioned entity types automatically by scanning assemblies
+- Let `EntityVersionResolverFactory` discover versioned entity types automatically by scanning assemblies
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create.md|IVersioned.cs.create]]
@@ -77,7 +77,7 @@ __Applied solutions:__
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Let the concurrency infrastructure recognize mutable entities without using reflection
-- [ ] WHEN applied THEN Let EntityVersionResolver discover versioned entity types automatically by scanning assemblies
+- [ ] WHEN applied THEN Let `EntityVersionResolverFactory` discover versioned entity types automatically by scanning assemblies
 - [ ] WHEN applied THEN Version is uint and read-only at the interface level
 - [ ] WHEN applied THEN Implemented by every mutable entity in module Domain projects
 - [ ] WHEN applied THEN Declared in Shared so Domain can implement it without referencing BuildingBlocks or App.Infrastructure

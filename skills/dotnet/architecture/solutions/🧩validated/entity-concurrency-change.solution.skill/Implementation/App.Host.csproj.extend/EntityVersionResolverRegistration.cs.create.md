@@ -1,5 +1,5 @@
 ---
-description: Register IEntityVersionResolver as Singleton with module Domain assemblies
+description: Register IEntityVersionResolverFactory and module IEntityVersionResolver implementations
 project_name: App.Host
 name: EntityVersionResolverRegistration.cs
 element_kind: class
@@ -7,12 +7,13 @@ change_kind: create
 ---
 
 # Goals
-- Register `EntityVersionResolver` as `Singleton` without changing the existing `RepositoryRegistration.AddRepositories` signature
-- Feed the resolver the module Domain assemblies so it can discover `IVersioned` entities automatically
+- Register `IEntityVersionResolverFactory` without changing the existing `RepositoryRegistration.AddRepositories` signature
+- Feed the factory module Domain assemblies (for validation) and module Application assemblies (for resolver discovery)
+- Register every module `IEntityVersionResolver` implementation so the factory can resolve them from DI
 
 # Core Principles
-- `EntityVersionResolver` registered as `Singleton` — map is built once at startup, safe for singleton lifetime
-- Module Domain assemblies are supplied explicitly from the composition root — App.Host is the only project that references all modules
+- `IEntityVersionResolverFactory` registered as `Scoped` — it creates `Scoped` resolvers that depend on `IReadRepository<T>`
+- Module assemblies are supplied explicitly from the composition root — App.Host is the only project that references all modules
 - Keep repository registration separate from concurrency resolver registration
 
 # Naming convention
@@ -35,52 +36,74 @@ public static class EntityVersionResolverRegistration
 {
     public static IServiceCollection AddEntityVersionResolver(
         this IServiceCollection services,
-        IEnumerable<Assembly> versionedEntityAssemblies)
+        IEnumerable<Assembly> domainAssemblies,
+        IEnumerable<Assembly> applicationAssemblies)
     {
-        services.AddSingleton<IEntityVersionResolver>(
-            _ => new EntityVersionResolver(versionedEntityAssemblies));
+        services.AddScoped<IEntityVersionResolverFactory>(
+            sp => new EntityVersionResolverFactory(sp, domainAssemblies, applicationAssemblies));
+
+        foreach (var assembly in applicationAssemblies)
+        {
+            var resolverTypes = assembly.GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract
+                    && typeof(IEntityVersionResolver).IsAssignableFrom(t));
+
+            foreach (var resolverType in resolverTypes)
+            {
+                services.AddScoped(resolverType);
+            }
+        }
 
         return services;
     }
 }
 ```
 
-> **Note:** Call this from `Program.cs` alongside `AddRepositories()`. Pass the module Domain assemblies that contain the `{Entity}Config` classes:
+> **Note:** Call this from `Program.cs` alongside `AddRepositories()`. Pass the module Domain assemblies that contain the `{Entity}Config` classes and the module Application assemblies that contain the `{Entity}VersionResolver` classes:
 > ```csharp
 > builder.Services
 >     .AddRepositories()
->     .AddEntityVersionResolver(new[]
->     {
->         typeof(Task.Domain.Entities.TodoTask).Assembly,
->         typeof(Users.Domain.Entities.User).Assembly,
->     });
+>     .AddEntityVersionResolver(
+>         new[]
+>         {
+>             typeof(Task.Domain.Entities.TodoTask).Assembly,
+>             typeof(Users.Domain.Entities.User).Assembly,
+>         },
+>         new[]
+>         {
+>             typeof(Task.Application.Concurrency.TodoTaskVersionResolver).Assembly,
+>             typeof(Users.Application.Concurrency.UserVersionResolver).Assembly,
+>         });
 > ```
 
 # Rules
 
 MUST:
-- `EntityVersionResolver` registered as `Singleton`
-- `EntityVersionResolver` receives `IEnumerable<Assembly>` containing all module Domain assemblies with versioned entities
+- `IEntityVersionResolverFactory` registered as `Scoped`
+- `EntityVersionResolverFactory` receives Domain assemblies and Application assemblies
+- Register every concrete `IEntityVersionResolver` implementation from Application assemblies as `Scoped`
 - Live under `/App.Host/DependencyInjection`
 
 MUST NOT:
-- `EntityVersionResolver` registered as `Scoped` or `Transient`
+- `IEntityVersionResolverFactory` registered as `Singleton` — would create captive dependencies on `Scoped` repositories
 - Modify the signature of `RepositoryRegistration.AddRepositories`
 
 # Anti-patterns
-- `EntityVersionResolver` registered as `Scoped` or `Transient` — unnecessary overhead for a read-only map
-- Passing Application or Infrastructure assemblies instead of Domain assemblies — would scan non-entity types
+- `IEntityVersionResolverFactory` registered as `Singleton` — resolver instances depend on `Scoped` repositories
+- Passing Infrastructure or Api assemblies instead of Application assemblies — would scan unrelated types
 
 # Check list
 - [ ] `EntityVersionResolverRegistration` defined in `App.Host/DependencyInjection/EntityVersionResolverRegistration.cs`
-- [ ] `EntityVersionResolver` registered as `Singleton`
-- [ ] `EntityVersionResolver` receives module Domain assemblies
+- [ ] `IEntityVersionResolverFactory` registered as `Scoped`
+- [ ] `EntityVersionResolverFactory` receives Domain and Application assemblies
+- [ ] All module `IEntityVersionResolver` implementations registered as `Scoped`
 
 # Unittest TestCases
-- [ ] WHEN applied THEN Register EntityVersionResolver as Singleton without changing RepositoryRegistration.AddRepositories signature
-- [ ] WHEN applied THEN Feed the resolver the module Domain assemblies so it can discover IVersioned entities automatically
-- [ ] WHEN applied THEN EntityVersionResolver registered as Singleton — map is built once at startup, safe for singleton lifetime
+- [ ] WHEN applied THEN Register IEntityVersionResolverFactory without changing RepositoryRegistration.AddRepositories signature
+- [ ] WHEN applied THEN Feed the factory module Domain assemblies and module Application assemblies
+- [ ] WHEN applied THEN IEntityVersionResolverFactory registered as Scoped
+- [ ] WHEN applied THEN Register every module IEntityVersionResolver implementation as Scoped
 - [ ] WHEN verified THEN EntityVersionResolverRegistration defined in App.Host/DependencyInjection/EntityVersionResolverRegistration.cs
-- [ ] WHEN verified THEN EntityVersionResolver registered as Singleton
-- [ ] WHEN verified THEN EntityVersionResolver receives module Domain assemblies
+- [ ] WHEN verified THEN IEntityVersionResolverFactory registered as Scoped
+- [ ] WHEN verified THEN EntityVersionResolverFactory receives Domain and Application assemblies
 - [ ] WHEN naming 'Entity version resolver registration' THEN pattern matches convention

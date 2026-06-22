@@ -4,7 +4,7 @@ name: module-application-csproj
 description: Orchestrate use cases by connecting the API contract to the domain model
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/csproj
 created_by:
@@ -13,6 +13,7 @@ created_by:
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
+  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
   - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification.solution.skill]]"
 ---
 
@@ -28,6 +29,8 @@ created_by:
 - Host `{Entity}ByGuidSpec` in `/Specifications`
 - Register each resolver in the module DI registration
 - Own all CommandHandler implementations, per-command validators, and the module's DI registration
+- Realize `IEntityVersionResolver` for every versioned entity in the module
+- Keep version loading next to the module's specifications and repositories
 - Structure each feature as a vertical slice — handler and validator co-located in one folder
 - Self-register all handlers and validators via assembly scan
 
@@ -37,6 +40,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 # Core Principals
@@ -59,6 +63,9 @@ __Applied solutions:__
 - Validator file named `{FeatureName}.Validator.cs`, class named `{FeatureName}Validator`
 - Each module exposes one `Register{ModuleName}Module()` extension method
 - Pipeline behaviors are NOT registered here — that is App.Host's responsibility
+- Each versioned entity has a dedicated `{Entity}VersionResolver` class in `{Module}.Application/Concurrency`
+- Resolvers use the module's `{Entity}ByIdSpec` and `IReadRepository<{Entity}>` from Shared
+- Resolver's `VersionedEntityName` constant matches the Domain config constant exactly
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj.create]]
@@ -66,6 +73,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 # Structure
@@ -132,6 +140,8 @@ __Applied solutions:__
 
 ```
 /{Module}.Application
+  /Concurrency
+    {Entity}VersionResolver.cs
   /Features
     /{FeatureName}
       {FeatureName}.Handler.cs
@@ -145,6 +155,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 ## Directory and class skills
@@ -161,6 +172,7 @@ __Applied solutions:__
 | /Features/{FeatureName} | One subfolder per feature — handler and validator co-located |  |
 | {FeatureName}.Handler.cs | Command handler implementation | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/{Module}.Application/classes/Feature.Handler.class.skill.md|Feature.Handler.class.skill]] |
 | {FeatureName}.Validator.cs | Transport correctness validator | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/{Module}.Application/classes/Feature.Validator.class.skill.md|Feature.Validator.class.skill]] |
+| /Concurrency/{Entity}VersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/{Module}.Application/classes/{Entity}VersionResolver.class.skill.md|{Entity}VersionResolver.class.skill]] |
 | {Module}ApplicationRegistration.cs | Module DI self-registration extension | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/{Module}.Application/classes/ModuleApplicationRegistration.class.skill.md|ModuleApplicationRegistration.class.skill]] |
 
 __Applied solutions:__
@@ -169,6 +181,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 ## NuGet Packages
@@ -189,6 +202,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 ## What Does NOT Belong Here
@@ -202,6 +216,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 ## Allowed Dependencies
@@ -226,6 +241,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 # Rules
@@ -277,6 +293,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 # Anti-patterns
@@ -300,6 +317,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
 
 # Check list
@@ -320,6 +338,11 @@ __Applied solutions:__
 - [ ] `Create{Entity}GuidResolver` in `/{Module}.Application/Resolvers`
 - [ ] `{Entity}ByGuidSpec` in `/{Module}.Application/Specifications`
 - [ ] Resolver registered in module DI
+- [ ] `{Entity}VersionResolver` exists for every versioned entity
+- [ ] Resolver implements `IEntityVersionResolver`
+- [ ] `VersionedEntityName` constant matches Domain config
+- [ ] Resolver uses `IReadRepository<{Entity}>` and `{Entity}ByIdSpec`
+- [ ] Returns `0` for missing entity
 - [ ] `/Features/{FeatureName}` folder exists for each command
 - [ ] Validator file named `{FeatureName}.Validator.cs`
 - [ ] `{Module}ApplicationRegistration.cs` exists
@@ -332,4 +355,5 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]

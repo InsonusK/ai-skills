@@ -4,7 +4,7 @@ name: shared-csproj
 description: Define common cross-cutting interfaces and primitives that every layer can safely depend on without creating coupling
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/csproj
 created_by:
@@ -34,6 +34,7 @@ created_by:
 - Own `IGuidResolver<TResponse>` — the per-entity resolver contract consumed by `GuidResolvingBehavior`
 - Own the common concurrency contracts that every layer can safely depend on without coupling to BuildingBlocks
 - Provide `IVersioned` so domain entities can declare themselves as versioned and be discovered by infrastructure
+- Provide `IEntityVersionResolverFactory` and `IEntityVersionResolver` so the pipeline behavior can check versions without knowing entity types
 - Make the `ICommand` marker available to every layer without coupling to BuildingBlocks
 - Enable MediatR routing and pipeline behavior constraints for write operations
 
@@ -67,8 +68,9 @@ __Applied solutions:__
 - `IHasGuid` is implemented by commands in `{Module}.Interfaces`
 - `IGuidResolver<TResponse>` is implemented by resolvers in `{Module}.Application` and consumed by `GuidResolvingBehavior` in BuildingBlocks
 - Shared defines common cross-cutting primitives only — no business logic, no pipeline implementations
-- `IHasVersions` and `IEntityVersionResolver` are cross-cutting contracts referenced by both Application and Api layers
+- `IHasVersions` and `IEntityVersionResolverFactory` are cross-cutting contracts referenced by both Application and Api layers
 - `IVersioned` is implemented by mutable entities in module Domain projects
+- `IEntityVersionResolver` is implemented by module Application projects
 - `ICommand<TResponse>` extends MediatR `IRequest<TResponse>` so MediatR can route commands automatically
 
 __Applied solutions:__
@@ -131,6 +133,7 @@ __Applied solutions:__
   /Concurrency
     IVersioned.cs
     IHasVersions.cs
+    IEntityVersionResolverFactory.cs
     IEntityVersionResolver.cs
   Shared.csproj
 ```
@@ -164,6 +167,7 @@ __Applied solutions:__
 /Shared
   /Concurrency
     IHasVersions.cs
+    IEntityVersionResolverFactory.cs
     IEntityVersionResolver.cs
     IVersioned.cs
 ```
@@ -205,7 +209,8 @@ __Applied solutions:__
 | /Guid/IHasGuid.cs | Marker interface for commands carrying a client-generated Guid | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/IHasGuid.class.skill.md|IHasGuid.class.skill]] |
 | /Guid/IGuidResolver.cs | Per-entity resolver contract — resolves Guid to existing command response | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/IGuidResolver.class.skill.md|IGuidResolver.class.skill]] |
 | /Concurrency/IHasVersions.cs | Interface carried by all update commands | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/IHasVersions.class.skill.md|IHasVersions.class.skill]] |
-| /Concurrency/IEntityVersionResolver.cs | Maps string entity name to C# Type | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/IEntityVersionResolver.class.skill.md|IEntityVersionResolver.class.skill]] |
+| /Concurrency/IEntityVersionResolverFactory.cs | Factory that resolves an entity name to an `IEntityVersionResolver` | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/IEntityVersionResolverFactory.class.skill.md|IEntityVersionResolverFactory.class.skill]] |
+| /Concurrency/IEntityVersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/IEntityVersionResolver.class.skill.md|IEntityVersionResolver.class.skill]] |
 | /Concurrency/IVersioned.cs | Marker interface for versioned domain entities | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/IVersioned.class.skill.md|IVersioned.class.skill]] |
 | ICommand.cs | Write operation marker interfaces | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/Shared/classes/ICommand.class.skill.md|ICommand.class.skill]] |
 
@@ -294,7 +299,7 @@ MUST:
 	- `ConflictResult<T>` inherits from `Ardalis.Result.Result<T>` and sets `Status` to `ResultStatus.Conflict`
 	- `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, non-null means conflict
 	- `TResponse` of `IGuidResolver` matches the command handler response type exactly
-	- `IHasVersions`, `IEntityVersionResolver`, and `IVersioned` defined in Shared
+	- `IHasVersions`, `IEntityVersionResolverFactory`, `IEntityVersionResolver`, and `IVersioned` defined in Shared
 	- All three types are interfaces or markers only — no implementation code
 	- `ICommand` and `ICommand<TResponse>` placed in `/Shared/MediatR`
 	- Both interfaces extend MediatR `IRequest` / `IRequest<TResponse>`
@@ -380,6 +385,7 @@ __Applied solutions:__
 - [ ] `IGuidResolver<TResponse>` defined in `Shared/Guid/IGuidResolver.cs`
 - [ ] `Shared.csproj` references `Ardalis.Result`
 - [ ] `IHasVersions` defined in `Shared/Concurrency/IHasVersions.cs`
+- [ ] `IEntityVersionResolverFactory` defined in `Shared/Concurrency/IEntityVersionResolverFactory.cs`
 - [ ] `IEntityVersionResolver` defined in `Shared/Concurrency/IEntityVersionResolver.cs`
 - [ ] `IVersioned` defined in `Shared/Concurrency/IVersioned.cs`
 - [ ] Shared.csproj has no project references and no new NuGet packages for these contracts

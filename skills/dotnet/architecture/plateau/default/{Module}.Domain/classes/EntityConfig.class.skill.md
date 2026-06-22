@@ -4,7 +4,7 @@ name: entityconfig-class
 description: Configure unique index on Guid with named constant
 domain: skill
 type: template
-version: 20260616
+version: 20260622
 tags:
   - skill/template/class
 created_by:
@@ -37,7 +37,7 @@ __Applied solutions:__
 - `xmin` is a PostgreSQL system column — automatically incremented on every row update
 - `IsConcurrencyToken()` tells EF to include `Version` in `WHERE` clause on `UPDATE` — EF raises `DbUpdateConcurrencyException` if zero rows affected
 - `ValueGeneratedOnAddOrUpdate()` tells EF the value comes from the database — never from application code
-- `VersionedEntityName` is the single stable business name used by `EntityVersionResolver`, `IHasVersions`, and `ETagEncoder` — changing it is a breaking API change
+- `VersionedEntityName` is the single stable business name used by `EntityVersionResolverFactory`, `IHasVersions`, and `ETagEncoder` — changing it is a breaking API change
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
 - Configuration class owns all persistence concerns — entity owns all domain concerns
 - `TableName`, index, and constraint names are `public const string` constants on the config class
@@ -233,9 +233,7 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Version)
-            .IsRowVersion()
             .HasColumnName("xmin")
-            .HasColumnType("xid")
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
 
@@ -266,9 +264,7 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
             .IsUnique();
 
         builder.Property(x => x.Version)
-            .IsRowVersion()
             .HasColumnName("xmin")
-            .HasColumnType("xid")
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
 
