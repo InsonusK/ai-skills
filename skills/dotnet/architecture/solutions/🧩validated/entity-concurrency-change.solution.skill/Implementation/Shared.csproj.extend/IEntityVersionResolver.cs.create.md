@@ -50,7 +50,7 @@ MUST NOT:
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Decouple ConcurrencyBehavior from concrete entity types by mapping string names to C# types at runtime
-- [ ] WHEN applied THEN Allow ConcurrencyBehavior to resolve IReadRepository<TEntity> from DI without knowing entity types at compile time
+- [ ] WHEN applied THEN Allow ConcurrencyBehavior to resolve `IReadRepository<TEntity>` from DI without knowing entity types at compile time
 - [ ] WHEN applied THEN Single method: Resolve(string entityName) → Type?
 - [ ] WHEN applied THEN Returns null for unknown entity names — ConcurrencyBehavior returns Result.Error on null
 - [ ] WHEN applied THEN Implementation in App.Infrastructure — Shared owns only the interface
