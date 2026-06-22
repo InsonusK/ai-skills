@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Live in Shared so every layer can reference it without depending on infrastructure
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
 # Core Principals
 - Single method only: `SaveChangesAsync(CancellationToken)` — nothing else
@@ -24,7 +24,7 @@ __Applied solutions:__
 - Registered as `Scoped` — shares the same DbContext instance as `Repository<T>` within the request
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -32,7 +32,7 @@ __Applied solutions:__
 | Unit of work interface | `IUnitOfWork` | `IUnitOfWork` | `IUnitOfWork.cs` | `IUnitOfWork.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
 # Implementation
 ```csharp
@@ -46,7 +46,7 @@ public interface IUnitOfWork
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
 # Rules
 MUST:
@@ -56,7 +56,7 @@ MUST NOT:
 	- Contain any implementation — interface only
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Define the single commit contract — exactly one method, exactly one responsibility
@@ -67,4 +67,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Unit of work interface' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]

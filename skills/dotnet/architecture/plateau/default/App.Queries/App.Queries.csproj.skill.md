@@ -8,8 +8,8 @@ version: 20260616
 tags:
   - skill/template/csproj
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
 ---
 
 # Goal
@@ -19,8 +19,8 @@ created_by:
 - Use DbContext directly with `AsNoTracking()` — no repository abstraction needed for cross-module reads
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 # Core Principals
 - App.Queries has direct DbContext access for cross-module JOINs
@@ -33,8 +33,8 @@ __Applied solutions:__
 - Handlers registered in App.Host via a dedicated `App.Queries` assembly scan — not inside any module registration
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 # Structure
 
@@ -71,8 +71,8 @@ Each query lives in its own folder under `/Queries`. A folder may contain:
 - Handler and validator — when transport correctness validation is needed
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
@@ -80,11 +80,11 @@ __Applied solutions:__
 | /Queries/{ModuleName} | Cross-module query handlers grouped by primary module |  |
 | /Queries/{QueryName} | Cross-module query handler and optional validator |  |
 | /Specifications | Cross-module projection specs |  |
-| AppQueriesRegistration.cs | DI registration for App.Queries assembly | [[skills/dotnet/skill-graph/developing v3/architecture/plateau/default/App.Queries/classes/AppQueriesRegistration.class.skill.md|AppQueriesRegistration.class.skill]] |
+| AppQueriesRegistration.cs | DI registration for App.Queries assembly | [[skills/dotnet/architecture/plateau/default/App.Queries/classes/AppQueriesRegistration.class.skill.md|AppQueriesRegistration.class.skill]] |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -95,8 +95,8 @@ __Applied solutions:__
 | `Ardalis.Specification` | latest stable | Optional — for cross-module projection specs |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Single-module queries — belong in module Application
@@ -104,8 +104,8 @@ __Applied solutions:__
 - Business logic — belongs to Domain
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 ## Allowed Dependencies
 - App.Infrastructure (for DbContext access)
@@ -117,8 +117,8 @@ __Applied solutions:__
 - App.Infrastructure — for `AppDbContext` (or shared DbContext location)
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 # Rules
 MUST:
@@ -137,8 +137,8 @@ MUST NOT:
 	- App.Queries handlers call `SaveChangesAsync`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 # Anti-patterns
 - Putting single-module queries in App.Queries — belongs in module Application
@@ -147,8 +147,8 @@ __Applied solutions:__
 - Cross-module handler placed in `{Module}.Application` — Application has no access to other module's entity types
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
 # Check list
 - [ ] Only cross-module handlers present
@@ -163,5 +163,5 @@ __Applied solutions:__
 - [ ] Query contracts declared in `{Module}.Interfaces`, not in App.Queries
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]

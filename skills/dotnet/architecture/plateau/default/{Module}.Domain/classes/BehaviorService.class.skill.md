@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour.solution.skill]]"
 ---
 
 # Goal
@@ -17,7 +17,7 @@ created_by:
 - Provide a stateless, side-effect free place for complex calculations that still mutate entity state only through guarded entity methods or setters
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
 # Core Principals
 - Implemented as a `static class` with extension methods on the entity type
@@ -27,7 +27,7 @@ __Applied solutions:__
 - A single entity property must not have multiple uncoordinated public mutation points
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -35,7 +35,7 @@ __Applied solutions:__
 | Domain service extension | {Entity}{Behavior}Service or {Behavior}Service | OrderPricingService | {Behavior}Service.cs | OrderPricingService.cs |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
 # Implementation
 Static service extension must use domain rules and delegate mutation to the entity:
@@ -78,7 +78,7 @@ public class Order
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
 # Rules
 MUST:
@@ -93,7 +93,7 @@ MUST NOT:
 	- Hold instance state
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Encapsulate bulky or multi-step domain logic that does not fit naturally inside an entity method
@@ -107,4 +107,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Domain service extension' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/domain-behaviour.solution.skill.md|domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-behaviour.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]

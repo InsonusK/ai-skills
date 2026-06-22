@@ -39,7 +39,7 @@ change_kind: extend
 | ----------------- | ----------- | ------------- |
 | /ValueObjects | All Value Object types for this module | Value Object pattern (this solution) |
 | /Rules | All domain rule static classes for this module | Domain Rule pattern (this solution) |
-| /Entities | Domain entities that use Value Objects and rules | [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]] |
+| /Entities | Domain entities that use Value Objects and rules | [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]] |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
@@ -49,7 +49,7 @@ change_kind: extend
 - Infrastructure implementations — belong to App.Infrastructure or BuildingBlocks
 - Application orchestration — belong to {Module}.Application
 - Cross-module reusable VOs/rules — belong in Shared when used by 2+ modules
-- EF Core configuration classes — belong in {Module}.Domain/Configurations per [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
+- EF Core configuration classes — belong in {Module}.Domain/Configurations per [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
 
 # Allowed Dependencies
 - Shared

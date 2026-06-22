@@ -38,14 +38,14 @@ Each bullet must contain **exactly two wikilinks separated by ` - `**:
 
 ```example
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj extend]]
 ```
 
 When the content comes directly from the solution skill file and there is no separate implementation/template file, list the solution skill file once.
 
 ```example
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]]
 ```
 
 # Repository skill structure

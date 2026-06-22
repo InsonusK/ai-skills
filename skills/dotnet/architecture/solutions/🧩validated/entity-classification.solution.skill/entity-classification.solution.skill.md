@@ -32,8 +32,8 @@ extends:
   - "{Module}.Application.csproj"
   - "{Module}.Api.csproj"
 depends_on:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
 ---
 
 # Goal
@@ -73,16 +73,16 @@ depends_on:
 # Requirements
 
 SOLUTION:
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]
   - Applied only to **Internal Mutable** and **External Mutable** entities.
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Version`, `IVersioned`, and EF `xmin` concurrency token mapping.
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - provides `ETag` and `If-Match` handling for mutable entities.
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/entity-concurrency-change.solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasVersions` for update/patch commands of mutable entities.
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Version`, `IVersioned`, and EF `xmin` concurrency token mapping.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - provides `ETag` and `If-Match` handling for mutable entities.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasVersions` for update/patch commands of mutable entities.
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]
   - Applied only to **External Immutable** and **External Mutable** entities.
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/external-created-entity.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Guid` property and unique index configuration.
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{Entity}ByGuidSpec` and `Create{Entity}GuidResolver`.
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/external-created-entity.solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasGuid` for create commands of external entities.
+  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Guid` property and unique index configuration.
+  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{Entity}ByGuidSpec` and `Create{Entity}GuidResolver`.
+  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasGuid` for create commands of external entities.
 
 # Template Skill Mutations
 
