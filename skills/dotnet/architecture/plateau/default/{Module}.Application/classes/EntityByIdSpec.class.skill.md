@@ -8,14 +8,14 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
 ---
 
 # Goal
 - Provide a reusable named query for loading a single entity by its internal Id
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
 # Core Principals
 - Inherits `Specification<T>` from `Ardalis.Specification`
@@ -23,7 +23,7 @@ __Applied solutions:__
 - Never touches the database — describes what to fetch
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
 # Implementation
 ```csharp
@@ -42,7 +42,7 @@ public class {Entity}ByIdSpec : Specification<{Entity}>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
 # Rules
 MUST:
@@ -54,7 +54,7 @@ MUST NOT:
 	- Contain business logic — filtering only
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
 # Check list
 - [ ] Inherits `Specification<{Entity}>`
@@ -62,7 +62,7 @@ __Applied solutions:__
 - [ ] Lives in Application Specifications folder
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN component is requested THEN it provide a reusable named query for loading a single entity by its internal Id
@@ -74,4 +74,4 @@ __Applied solutions:__
 - [ ] WHEN verified THEN Lives in Application Specifications folder
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]

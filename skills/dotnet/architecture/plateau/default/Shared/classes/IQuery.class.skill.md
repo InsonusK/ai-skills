@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Keep read-side markers distinct from write-side markers
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
 # Core Principals
 - Interface only — no properties, no methods
@@ -24,7 +24,7 @@ __Applied solutions:__
 - Does NOT extend `ICommand` — queries are read-only operations and must remain distinct from write-side markers
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -32,7 +32,7 @@ __Applied solutions:__
 | Query marker | `IQuery<TResponse>` | `IQuery<Result<TaskDto>>` | `IQuery.cs` | `IQuery.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
 # Implementation
 ```csharp
@@ -45,7 +45,7 @@ public interface IQuery<TResponse> : IRequest<TResponse> { }
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
 # Rules
 MUST:
@@ -57,7 +57,7 @@ MUST NOT:
 	- Contain properties or methods
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Mark a MediatR request as a read-only operation
@@ -68,4 +68,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Query marker' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]

@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Opt the command into `GuidResolvingBehavior` — non-Guid commands are unaffected
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Core Principals
 - Single property: `Guid Guid { get; }`
@@ -25,7 +25,7 @@ __Applied solutions:__
 - Lives in Shared so `{Module}.Interfaces` can implement it without referencing BuildingBlocks
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -33,7 +33,7 @@ __Applied solutions:__
 | Guid carrier marker | `IHasGuid` | `IHasGuid` | `IHasGuid.cs` | `IHasGuid.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Implementation
 ```csharp
@@ -45,7 +45,7 @@ public interface IHasGuid
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Rules
 MUST:
@@ -54,21 +54,21 @@ MUST NOT:
 	- Update, delete, or internally-created entity commands implement `IHasGuid`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Anti-patterns
 - `IHasGuid` on query objects — has no meaning for reads
 - `IHasGuid` defined in BuildingBlocks — forces module Interfaces to reference BuildingBlocks
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Check list
 - [ ] `IHasGuid` defined in `Shared/Guid/IHasGuid.cs`
 - [ ] Only create commands for external-created entities implement it
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Mark a create command as carrying a client-generated Guid
@@ -82,4 +82,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Guid carrier marker' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]

@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
 ---
 
 # Goal
@@ -16,14 +16,14 @@ created_by:
 - Called from App.Host — App.Queries does not self-register
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
 # Core Principals
 - `AddMediatR` scans the entire App.Queries assembly — discovers all `IRequestHandler` implementations automatically
 - No separate registration step per handler — assembly scan covers them all
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -31,7 +31,7 @@ __Applied solutions:__
 | App.Queries DI registration | `AppQueriesRegistration` | `AppQueriesRegistration` | `AppQueriesRegistration.cs` | `AppQueriesRegistration.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
 # Implementation
 ```csharp
@@ -55,7 +55,7 @@ public static class AppQueriesRegistration
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
 # Rules
 MUST:
@@ -67,7 +67,7 @@ MUST NOT:
 	- Register pipeline behaviors — behaviors are registered in App.Host
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Register all cross-module query handlers via assembly scan
@@ -77,4 +77,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'App.Queries DI registration' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]

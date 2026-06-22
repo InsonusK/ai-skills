@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Implement `IQuery<Result<T>>` so MediatR routes it to the correct handler
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
 # Core Principals
 - Declared as `record` — immutable, structural equality
@@ -25,7 +25,7 @@ __Applied solutions:__
 - One query per read intent — `GetTaskQuery`, `GetTasksQuery`, `GetTaskWithUserDetailsQuery`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -35,7 +35,7 @@ __Applied solutions:__
 | Cross-module JOIN | `Get{Entity}With{Related}Query` | `GetTaskWithUserDetailsQuery` | `Get{Entity}With{Related}Query.cs` | `GetTaskWithUserDetailsQuery.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
 # Implementation
 Single entity query:
@@ -76,7 +76,7 @@ public record GetTaskWithUserDetailsQuery(int TaskId)
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
 # Rules
 MUST:
@@ -89,7 +89,7 @@ MUST NOT:
 	- Extend `ICommand` or `ICommand<TResponse>` — queries must remain distinct from write-side markers
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Express a named read intent as an immutable record that carries all filter/selection input needed for the operation
@@ -103,4 +103,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Cross-module JOIN' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]

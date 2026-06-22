@@ -26,7 +26,7 @@ extends:
   - "{Module}.Domain.Entities.Entity.cs"
   - App.Infrastructure.csproj
 depends_on:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
 ---
 
 # Goal
@@ -46,10 +46,10 @@ depends_on:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entity configurations and owns persistence mapping
-    - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with EF Core configuration
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts cross-module foreign-key configurations
+- [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entity configurations and owns persistence mapping
+    - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with EF Core configuration
+  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts cross-module foreign-key configurations
 
 NUGET:
 - `Microsoft.EntityFrameworkCore` {version} - provides `IEntityTypeConfiguration<T>`, `EntityTypeBuilder<T>`, `ApplyConfigurationsFromAssembly`
@@ -59,7 +59,7 @@ NUGET:
 PROJECT:
 - [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Configurations folder and EF config pattern
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs]] - create - One EF config class per entity
-	- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]] - extend - Zero EF attributes on domain entity
+	- [[skills/dotnet/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]] - extend - Zero EF attributes on domain entity
 - [[./Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - extend - Add cross-module FK configuration support
 	- [[./Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs]] - create - Cross-module FK configuration class
 

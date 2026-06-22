@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Route: `/{entity}/{id}/{property-name}` — kebab-case property name
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Core Principals
 - `POST /{entity}/{id}/{property}` → set the property → `Set{Entity}{Property}Command`
@@ -24,7 +24,7 @@ __Applied solutions:__
 - Used when a property has meaningful set/unset semantics — e.g. `is-complete`, `is-archived`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -32,7 +32,7 @@ __Applied solutions:__
 | Property controller | `Single{Entity}{Property}Controller` | `SingleTaskIsCompleteController` | `Single{Entity}{Property}Controller.cs` | `SingleTaskIsCompleteController.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Implementation
 ```csharp
@@ -102,7 +102,7 @@ public sealed class Single{Entity}{Property}Controller : ControllerBase
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Rules
 MUST:
@@ -113,14 +113,14 @@ MUST NOT:
 	- Handle properties without set/unset semantics
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Anti-patterns
 - Using PUT instead of POST/DELETE for boolean property toggles
 - Property name in camelCase in the route — use kebab-case
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Check list
 - [ ] Named `Single{Entity}{Property}Controller`
@@ -129,7 +129,7 @@ __Applied solutions:__
 - [ ] DELETE dispatches `Unset{Entity}{Property}Command`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Handle setting and unsetting one addressable boolean or optional property on an entity
@@ -144,4 +144,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Property controller' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]

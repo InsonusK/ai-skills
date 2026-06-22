@@ -21,7 +21,7 @@ creates:
 extends:
   - App.Host.csproj
 depends_on:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
 ---
 
 # Goal
@@ -37,8 +37,8 @@ depends_on:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
-  - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts `PipelineRegistration` and `Program.cs` composition root
+- [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts `PipelineRegistration` and `Program.cs` composition root
 
 NUGET:
 - `MediatR` {version} - required by behaviors that extend `AddPipeline()` to register `IPipelineBehavior<,>`

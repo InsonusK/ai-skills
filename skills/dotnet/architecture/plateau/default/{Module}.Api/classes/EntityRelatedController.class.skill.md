@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication.solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Route: `/{entity}/{id}/{related-entity}`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -24,7 +24,7 @@ __Applied solutions:__
 | Sub-collection controller | `{Entity}{Related}Controller` | `TaskTagController` | `{Entity}{Related}Controller.cs` | `TaskTagController.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
 
 # Implementation
 ```csharp
@@ -107,7 +107,7 @@ public sealed class {Entity}{Related}Controller : ControllerBase
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
 
 # Rules
 MUST:
@@ -118,14 +118,14 @@ MUST NOT:
 	- Handle relationship instance operations — those belong in `Single{Entity}{Related}Controller`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
 
 # Anti-patterns
 - Inline sub-collection logic instead of dispatching a command/query
 - Missing `CreatedAtAction` for POST create
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
 
 # Check list
 - [ ] Named `{Entity}{Related}Controller`
@@ -135,7 +135,7 @@ __Applied solutions:__
 - [ ] 201 Created uses `CreatedAtAction` pointing to `Single{Entity}{Related}Controller.Get`
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Handle a collection of related entities owned by one parent entity
@@ -148,4 +148,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Sub-collection controller' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/http-api-publication.solution.skill.md|http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/http-api-publication.solution.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs.create]]

@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules.solution.skill]]"
 ---
 
 # Goal
@@ -17,7 +17,7 @@ created_by:
 - Guarantee that invalid domain state cannot exist
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
 
 # Core Principals
 - Declared as `sealed record` — immutable and structurally equal by default
@@ -27,7 +27,7 @@ __Applied solutions:__
 - Multi-property VO requires a private parameterless constructor for EF Core materialization
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -36,7 +36,7 @@ __Applied solutions:__
 | Multi-property VO | {Concept} | Money | {Concept}.cs | Money.cs |
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
 
 # Implementation
 ## Single-property ValueObject
@@ -96,7 +96,7 @@ public sealed record Money
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
 
 # Rules
 MUST:
@@ -106,7 +106,7 @@ MUST:
 	- Throw `DomainException` on invariant violation — never return null or bool
 	- Have no infrastructure or application dependencies
 	- Multi-property VO has `private` parameterless constructor for EF materialization
-	- Multi-property VO has `OwnsOne` EF configuration on owning entity (see [[skills/dotnet/skill-graph/developing v3/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]])
+	- Multi-property VO has `OwnsOne` EF configuration on owning entity (see [[skills/dotnet/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]])
 SHOULD:
 	- Provide implicit conversion operators for single-property VOs
 	- Override `ToString()` when used in logs or UI
@@ -117,7 +117,7 @@ MUST NOT:
 	- Contain business logic beyond invariant validation — use domain rules for that
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Encode a domain concept with business meaning and invariant enforcement
@@ -132,4 +132,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Multi-property VO' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
