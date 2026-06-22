@@ -23,7 +23,8 @@ whenToUse: when you write skills for building plateau
   - Repository skill: keep Goals, Core Principles, Rules, Anti-patterns, and Check list that apply to the **whole solution only**.
   - Project/Class skills: keep content that applies to the **specific project or class**.
   - Do not copy project-level or class-level details into the repository skill.
-3. Follow "# How Apply this template" which are defined in each section of template. 
+3. Add `plateau.skill.md` using temolate [Plateau.skill.template.md](./templates/Plateau.skill.template.md)
+4. Follow "# How Apply this template" which are defined in each section of template. 
   - Authoring rules are defined in ```hint``` blocks. 
   - Authoring examples are provided in ```example``` blocks.
   - After filling template with real content remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file.
