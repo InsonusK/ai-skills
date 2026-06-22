@@ -35,11 +35,11 @@ extends:
   - "{Module}.Api.csproj"
   - "App.Host.csproj"
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
 ---
 
 # Goal
@@ -63,21 +63,21 @@ depends_on:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj]] - hosts controllers, Minimal API endpoints, and result extensions
-  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts API and controller registration
-- [[skills/dotnet/architecture/solutions/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that produces `Result.Invalid` mapped to 400
-- [[skills/dotnet/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - defines `IRepository<T>` and `IReadRepository<T>` used by handlers
-    - [[skills/dotnet/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs]] - handlers stage changes; controllers never call `SaveChanges`
-    - [[skills/dotnet/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - handlers use read-only repository; commit is transparent
-- [[skills/dotnet/architecture/solutions/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IQuery<T>` marker for read operations
-    - [[skills/dotnet/architecture/solutions/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs]] - controllers dispatch queries via `ISender`
-- [[skills/dotnet/architecture/solutions/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker for write operations
-    - [[skills/dotnet/architecture/solutions/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - controllers dispatch commands via `ISender`
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj]] - hosts controllers, Minimal API endpoints, and result extensions
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts API and controller registration
+- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that produces `Result.Invalid` mapped to 400
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - defines `IRepository<T>` and `IReadRepository<T>` used by handlers
+    - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs]] - handlers stage changes; controllers never call `SaveChanges`
+    - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - handlers use read-only repository; commit is transparent
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IQuery<T>` marker for read operations
+    - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs]] - controllers dispatch queries via `ISender`
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICommand<T>` marker for write operations
+    - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - controllers dispatch commands via `ISender`
 
 NUGET:
 - `Microsoft.AspNetCore.Mvc` {version} - provides `ControllerBase`, `[ApiController]`, `[Route]`, `ActionResult`, `ProblemDetails`

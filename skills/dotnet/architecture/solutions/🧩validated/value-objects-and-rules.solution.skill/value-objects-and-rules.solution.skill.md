@@ -29,8 +29,8 @@ extends:
   - "{Module}.Domain.Entities.{EntityName}.cs"
   - Shared.csproj
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]"
 ---
 # Goal
 - Eliminate primitive obsession by encoding domain semantics into dedicated Value Object types
@@ -64,13 +64,13 @@ depends_on:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts Value Objects, Rules, and entities
-    - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with Value Object properties and rule calls
-  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts cross-module reusable Value Objects and Rules
-- [[skills/dotnet/architecture/solutions/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides EF Core configuration pattern for multi-property Value Objects
-    - [[skills/dotnet/architecture/solutions/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs]] - configures `OwnsOne` for multi-property Value Objects
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts Value Objects, Rules, and entities
+    - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with Value Object properties and rule calls
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts cross-module reusable Value Objects and Rules
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides EF Core configuration pattern for multi-property Value Objects
+    - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs]] - configures `OwnsOne` for multi-property Value Objects
 
 NUGET:
 - None — relies only on patterns defined by dependency solutions.

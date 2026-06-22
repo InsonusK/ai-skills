@@ -26,9 +26,9 @@ creates:
 extends:
   - BuildingBlocks.csproj
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]"
 ---
 
 # Goal
@@ -46,12 +46,12 @@ depends_on:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts `ValidationBehavior`
-  - [[skills/dotnet/architecture/solutions/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - indirectly referenced because handlers return `Result<T>` via Ardalis patterns
-- [[skills/dotnet/architecture/solutions/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `ValidationBehavior` is registered
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj]] - hosts `ValidationBehavior`
+  - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - indirectly referenced because handlers return `Result<T>` via Ardalis patterns
+- [[skills/dotnet/architecture/solutions/🧩validated/pipeline-registration.solution.skill/pipeline-registration.solution.skill.md|pipeline-registration.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/pipeline-registration.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `ValidationBehavior` is registered
 
 NUGET:
 - `FluentValidation` {version} - provides `IValidator<T>` injected into `ValidationBehavior`
