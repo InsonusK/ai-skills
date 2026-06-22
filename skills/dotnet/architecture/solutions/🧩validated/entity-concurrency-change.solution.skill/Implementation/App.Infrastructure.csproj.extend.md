@@ -10,7 +10,7 @@ change_kind: extend
 - Discover versioned entities from Domain config classes and resolver implementations from Application assemblies
 
 # Core Principles
-- Read-only map — populated at startup, no runtime modification
+- Read-only map — populated once (static/lazy) at first use, no runtime modification
 - Keys are stable business names declared in `{Entity}Config.VersionedEntityName` and `{Entity}VersionResolver.VersionedEntityName`
 - Domain assemblies supply the list of valid versioned entities
 - Application assemblies supply the resolver implementations
@@ -49,6 +49,7 @@ MUST:
 - Every `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching its config
 - Keys are stable business string names — same strings used in `IHasVersions` commands and ETag encoding
 - Constructor accepts `IServiceProvider`, Domain assemblies, and Application assemblies
+- Build the resolver-type map only once (static, lazy, thread-safe)
 
 MUST NOT:
 - Keys be C# type names, namespaces, or assembly-qualified names as the public contract — breaks when entities are renamed
@@ -68,6 +69,7 @@ MUST NOT:
 - [ ] Every mutable entity config class declares `VersionedEntityName`
 - [ ] Every `{Entity}VersionResolver` declares matching `VersionedEntityName`
 - [ ] Keys are stable business strings
+- [ ] Resolver-type map is built only once and thread-safe
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Own EntityVersionResolverFactory — the factory that maps stable entity names to Application-layer IEntityVersionResolver implementations

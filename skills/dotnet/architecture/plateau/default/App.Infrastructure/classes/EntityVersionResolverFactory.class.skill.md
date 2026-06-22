@@ -20,7 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md|EntityVersionResolverFactory.cs.create]]
 
 # Core Principals
-- Read-only map — populated once at startup from supplied assemblies, no runtime modification
+- Read-only map — populated once (static/lazy) from supplied assemblies, no runtime modification
 - Keys are stable business names declared in `{Entity}Config.VersionedEntityName` and repeated on `{Entity}VersionResolver.VersionedEntityName`
 - Domain assemblies are scanned to validate that every resolver references a real versioned entity
 - Application assemblies are scanned for concrete `IEntityVersionResolver` implementations
@@ -48,8 +48,11 @@ namespace App.Infrastructure.Concurrency;
 
 public class EntityVersionResolverFactory : IEntityVersionResolverFactory
 {
+    private static readonly Dictionary<string, Type> _resolverTypes = new(StringComparer.Ordinal);
+    private static readonly object _lock = new();
+    private static bool _initialized;
+
     private readonly IServiceProvider _serviceProvider;
-    private readonly IReadOnlyDictionary<string, Type> _resolverTypes;
 
     public EntityVersionResolverFactory(
         IServiceProvider serviceProvider,
@@ -57,7 +60,7 @@ public class EntityVersionResolverFactory : IEntityVersionResolverFactory
         IEnumerable<Assembly> applicationAssemblies)
     {
         _serviceProvider = serviceProvider;
-        _resolverTypes = BuildMap(domainAssemblies, applicationAssemblies);
+        Initialize(domainAssemblies, applicationAssemblies);
     }
 
     public IEntityVersionResolver? GetFor(string entityName)
@@ -66,6 +69,25 @@ public class EntityVersionResolverFactory : IEntityVersionResolverFactory
             return null;
 
         return (IEntityVersionResolver)_serviceProvider.GetRequiredService(resolverType);
+    }
+
+    private static void Initialize(IEnumerable<Assembly> domainAssemblies, IEnumerable<Assembly> applicationAssemblies)
+    {
+        if (_initialized)
+            return;
+
+        lock (_lock)
+        {
+            if (_initialized)
+                return;
+
+            foreach (var (name, type) in BuildMap(domainAssemblies, applicationAssemblies))
+            {
+                _resolverTypes[name] = type;
+            }
+
+            _initialized = true;
+        }
     }
 
     private static Dictionary<string, Type> BuildMap(
@@ -152,6 +174,8 @@ public class EntityVersionResolverFactory : IEntityVersionResolverFactory
 > }
 > ```
 > `EntityVersionResolverFactory` finds every resolver class, checks that its `VersionedEntityName` matches a versioned entity discovered from Domain configs, and wires the name to the resolver type. Missing the constant or an unknown name causes startup failure.
+>
+> **Note on lifetime:** The resolver-type map is stored in a static dictionary and initialized only once (thread-safe double-check locking). The factory itself remains `Scoped` so it resolves `IEntityVersionResolver` instances from the request's service provider.
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md|EntityVersionResolverFactory.cs.create]]
@@ -163,7 +187,8 @@ MUST:
 - Scan Application assemblies for concrete `IEntityVersionResolver` implementations
 - Validate that every resolver's `VersionedEntityName` maps to a discovered Domain entity
 - Return `null` for unknown entity names
-- Be registered as `Scoped` in DI because it creates `Scoped` resolvers
+- Build the resolver-type map only once (static, lazy, thread-safe)
+- Be registered as `Scoped` in DI because it resolves `Scoped` resolvers from the request service provider
 
 MUST NOT:
 - Use a hardcoded dictionary of resolver types
@@ -188,6 +213,7 @@ __Applied solutions:__
 - [ ] Scans Application assemblies for `IEntityVersionResolver` implementations
 - [ ] Validates resolver `VersionedEntityName` against discovered Domain entities
 - [ ] Returns `null` for unknown entity names
+- [ ] Resolver-type map is built only once and thread-safe
 
 __Applied solutions:__
 - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/skill-graph/developing v3/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md|EntityVersionResolverFactory.cs.create]]

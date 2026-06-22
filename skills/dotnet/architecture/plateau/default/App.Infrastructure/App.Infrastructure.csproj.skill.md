@@ -42,7 +42,7 @@ __Applied solutions:__
 - `RepositoryBase<T>` from Ardalis handles all `SpecificationEvaluator` logic internally
 - App.Infrastructure remains the only layer that knows about EF Core implementation details
 - One generic `Repository<T>` class covers all entity types
-- Read-only map — populated at startup, no runtime modification
+- Read-only map — populated once (static/lazy) at first use, no runtime modification
 - Keys are stable business names declared in `{Entity}Config.VersionedEntityName` and `{Entity}VersionResolver.VersionedEntityName`
 - Domain assemblies supply the list of valid versioned entities
 - Application assemblies supply the resolver implementations
@@ -202,6 +202,7 @@ MUST:
 		- Every `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching its config
 	- Keys are stable business string names — same strings used in `IHasVersions` commands and ETag encoding
 	- Constructor accepts `IServiceProvider`, `IEnumerable<Assembly>` domainAssemblies, and `IEnumerable<Assembly>` applicationAssemblies
+- Build the resolver-type map only once (static, lazy, thread-safe)
 	- Register all configurations via `ApplyConfigurationsFromAssembly` scanning all module Domain assemblies in DbContext
 	- Place cross-module foreign key configurations in `/Persistence/Configurations`
 MUST NOT:
@@ -259,6 +260,7 @@ __Applied solutions:__
 - [ ] No `SaveChangesAsync` calls in repository
 - [ ] `EntityVersionResolverFactory` defined in `App.Infrastructure/Concurrency/EntityVersionResolverFactory.cs`
 - [ ] Constructor accepts `IServiceProvider`, Domain assemblies, and Application assemblies
+- [ ] Resolver-type map is built only once and thread-safe
 - [ ] Scans Domain assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
 - [ ] Scans Application assemblies for `IEntityVersionResolver` implementations
 - [ ] Every `{Entity}VersionResolver` declares matching `VersionedEntityName`
