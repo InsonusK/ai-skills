@@ -1,6 +1,6 @@
 ---
 uid: 0b9f2aac-4f16-4a21-8a78-8463c77490d9
-name: appqueriesregistration-class
+name: app-queries-registration-class
 description: App.Queries assembly scan registration
 domain: skill
 type: template
