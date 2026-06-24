@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/validation-behavior-solution.skill.md|validation-behavior-solution.skill]]"
 ---
 
 # Goal
@@ -18,7 +18,7 @@ created_by:
 - Pass through to the handler if no validators are registered or all validators pass
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/validation-behavior-solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
 # Core Principals
 - Receives `IEnumerable<IValidator<TRequest>>` via DI — zero, one, or multiple validators supported
@@ -27,7 +27,7 @@ __Applied solutions:__
 - Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult` — activates on any MediatR request that returns a Result, including commands and queries
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/validation-behavior-solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -35,7 +35,7 @@ __Applied solutions:__
 | Validation pipeline behavior | `ValidationBehavior<TRequest, TResponse>` | `ValidationBehavior<CreateTaskCommand, Result<CreateTaskResult>>` | `ValidationBehavior.cs` | `ValidationBehavior.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/validation-behavior-solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
 # Implementation
 ```csharp
@@ -80,7 +80,7 @@ public class ValidationBehavior<TRequest, TResponse>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/validation-behavior-solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
 # Rules
 MUST:
@@ -93,7 +93,7 @@ MUST NOT:
 	- Throw `ValidationException` — always return typed `Result.Invalid`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/validation-behavior-solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Intercept every IRequest<TResponse> before the handler runs
@@ -107,4 +107,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Validation pipeline behavior' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/validation-behavior-solution.skill.md|validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/validation-behavior-solution.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]

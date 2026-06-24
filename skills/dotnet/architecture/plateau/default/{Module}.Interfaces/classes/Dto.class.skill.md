@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration-solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Be the only data shape that crosses module and layer boundaries for read operations
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
 
 # Core Principals
 - Declared as `record` — immutable, structural equality
@@ -25,7 +25,7 @@ __Applied solutions:__
 - One DTO per distinct response shape — `TaskDto` for full detail, `TaskSummaryDto` for list items
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -35,7 +35,7 @@ __Applied solutions:__
 | Cross-module projection | `{Entity}With{Related}Dto` | `TaskWithUserDetailsDto` | `{Entity}With{Related}Dto.cs` | `TaskWithUserDetailsDto.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
 
 # Implementation
 Full detail DTO:
@@ -77,7 +77,7 @@ public record TaskWithUserDetailsDto(
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
 
 # Rules
 MUST:
@@ -89,14 +89,14 @@ MUST NOT:
 	- Have public setters — `record` provides immutability
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
 
 # Anti-patterns
 - DTO containing a domain entity — always project to flat primitives
 - DTO with mutable properties — use `record` for immutability
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Define the response shape returned by a query handler — a flat, read-only projection of domain data
@@ -110,4 +110,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Cross-module projection' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs.create]]

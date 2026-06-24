@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work-solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Allow `UnitOfWorkBehavior` to determine whether it is the outermost command (`Depth == 1`) and therefore responsible for committing
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Core Principals
 - Plain class — no interfaces, no base classes, no infrastructure dependencies
@@ -25,7 +25,7 @@ __Applied solutions:__
 - Never used directly in handlers — only `UnitOfWorkBehavior` reads and writes this
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -33,7 +33,7 @@ __Applied solutions:__
 | Nesting depth tracker | `UnitOfWorkContext` | `UnitOfWorkContext` | `UnitOfWorkContext.cs` | `UnitOfWorkContext.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Implementation
 ```csharp
@@ -47,7 +47,7 @@ public class UnitOfWorkContext
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Rules
 MUST:
@@ -58,7 +58,7 @@ MUST NOT:
 	- Be used to share state between handlers beyond depth tracking
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Anti-patterns
 - `UnitOfWorkContext` registered as `Singleton` — depth leaks across HTTP requests
@@ -66,7 +66,7 @@ __Applied solutions:__
 - Handler directly references `UnitOfWorkContext` — breaks separation of concerns
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Check list
 - [ ] `UnitOfWorkContext` is a plain class with single `Depth` property
@@ -74,7 +74,7 @@ __Applied solutions:__
 - [ ] Never injected into handlers
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Track the nesting depth of active command pipeline invocations within a single request scope
@@ -89,4 +89,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Nesting depth tracker' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]

@@ -8,10 +8,10 @@ version: 20260622
 tags:
   - skill/template/sln
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]]"
 ---
 
 # Structure
@@ -39,7 +39,7 @@ created_by:
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Repository.create.md|Repository.create]]
 
 ## Directory and class skills
 | `Directory\|file`              | template link                                                                                                                                                                                 | Description                                                    |
@@ -56,18 +56,18 @@ __Applied solutions:__
 | /{Module}.Api                  | [[skills/dotnet/architecture/plateau/default/{Module}.Api/{Module}.Api.csproj.skill\|{Module}.Api.csproj.skill]]                                                    | HTTP endpoints, MediatR dispatch, ETag/If-Match handling       |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Goal
 
 - Provide a single, unambiguous decision framework for classifying every domain entity into one of four orthogonal types.
-- Map each entity type to the exact subset of `entity-concurrency-change.solution.skill` and `external-created-entity.solution.skill` that must be implemented.
+- Map each entity type to the exact subset of `entity-concurrency-change-solution.skill` and `external-created-entity-solution.skill` that must be implemented.
 - Prevent over-engineering by forbidding concurrency control on immutable entities and forbidding external-created infrastructure on internal entities.
 - Ensure that mutable and/or externally-created entities receive all required infrastructure consistently across every module.
 - Make the classification decision explicit and reviewable for every entity before implementation begins.
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
 
 # Core Principles
 
@@ -87,7 +87,7 @@ __Applied solutions:__
 - The classification decision must be documented and treated as an architecture decision for every entity.
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
 
 # Entity Type Matrix
 
@@ -99,31 +99,31 @@ __Applied solutions:__
 | **External Mutable** | External | Mutable | Implement | Implement |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
 
 # Requirements
 
 SOLUTION:
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change-solution.skill]]
   - Applied only to **Internal Mutable** and **External Mutable** entities.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IVersioned`, `IHasVersions`, `IEntityVersionResolverFactory`, and `IEntityVersionResolver` concurrency contracts.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ETagEncoder` and `ConcurrencyBehavior`.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - provides `EntityVersionResolverFactory` that maps stable business entity names to Application-layer resolvers.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - registers `IEntityVersionResolverFactory` and all module `IEntityVersionResolver` implementations.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Version`, `IVersioned`, and EF `xmin` concurrency token mapping.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{Entity}VersionResolver` for each mutable entity.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasVersions` for update/patch commands of mutable entities.
-  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - provides `ETag` and `If-Match` handling for mutable entities.
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IVersioned`, `IHasVersions`, `IEntityVersionResolverFactory`, and `IEntityVersionResolver` concurrency contracts.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ETagEncoder` and `ConcurrencyBehavior`.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - provides `EntityVersionResolverFactory` that maps stable business entity names to Application-layer resolvers.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - registers `IEntityVersionResolverFactory` and all module `IEntityVersionResolver` implementations.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Version`, `IVersioned`, and EF `xmin` concurrency token mapping.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{Entity}VersionResolver` for each mutable entity.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasVersions` for update/patch commands of mutable entities.
+  - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - provides `ETag` and `If-Match` handling for mutable entities.
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity-solution.skill]]
   - Applied only to **External Immutable** and **External Mutable** entities.
-  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Guid` property and unique index configuration.
-  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{Entity}ByGuidSpec` and `Create{Entity}GuidResolver`.
-  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasGuid` for create commands of external entities.
+  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Guid` property and unique index configuration.
+  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{Entity}ByGuidSpec` and `Create{Entity}GuidResolver`.
+  - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasGuid` for create commands of external entities.
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]]
 
 # Rules
 
@@ -133,30 +133,30 @@ MUST:
   - Have only the internal `int Id` identity.
   - Do not have a `Version` property or implement `IVersioned`.
   - Do not have a `Guid` property or implement `IHasGuid`.
-  - Do not apply `entity-concurrency-change.solution.skill` or `external-created-entity.solution.skill`.
+  - Do not apply `entity-concurrency-change-solution.skill` or `external-created-entity-solution.skill`.
 - **External Immutable** entities:
   - Have `public Guid Guid { get; internal set; }` set once in the factory method.
   - Have a unique database index on `Guid`.
-  - Implement `external-created-entity.solution.skill` fully.
+  - Implement `external-created-entity-solution.skill` fully.
   - Do not have a `Version` property or implement `IVersioned`.
-  - Do not apply `entity-concurrency-change.solution.skill`.
+  - Do not apply `entity-concurrency-change-solution.skill`.
 - **Internal Mutable** entities:
   - Have `public uint Version { get; internal set; }` mapped to PostgreSQL `xmin`.
   - Implement `IVersioned`.
   - Update and patch commands implement `IHasVersions`.
-  - Implement `entity-concurrency-change.solution.skill` fully.
+  - Implement `entity-concurrency-change-solution.skill` fully.
   - Do not have a `Guid` property or implement `IHasGuid`.
-  - Do not apply `external-created-entity.solution.skill`.
+  - Do not apply `external-created-entity-solution.skill`.
 - **External Mutable** entities:
   - Have both `public Guid Guid { get; internal set; }` and `public uint Version { get; internal set; }`.
   - Implement both `IVersioned` and `IHasGuid` where applicable.
-  - Apply both `entity-concurrency-change.solution.skill` and `external-created-entity.solution.skill` fully.
+  - Apply both `entity-concurrency-change-solution.skill` and `external-created-entity-solution.skill` fully.
 - Document the classification decision for every entity in a discoverable location (e.g., entity config XML comment, module ADR, or team wiki).
 - Re-evaluate classification when the entity's ownership or mutability requirements change.
 
 MUST NOT:
-- Apply `entity-concurrency-change.solution.skill` to immutable entities.
-- Apply `external-created-entity.solution.skill` to internal entities.
+- Apply `entity-concurrency-change-solution.skill` to immutable entities.
+- Apply `external-created-entity-solution.skill` to internal entities.
 - Apply a dependency solution partially or omit required parts for a classified type.
 - Use `Guid` as the primary domain identity or foreign key for internal entities.
 - Use `Version` / `IVersioned` for entities that never change after creation.
@@ -169,7 +169,7 @@ SHOULD:
 - Treat external `Guid` as a correlation handle and internal `Id` as the domain identity, even when both are present.
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
 
 # Anti-patterns
 
@@ -182,14 +182,14 @@ __Applied solutions:__
 - Documenting classification only in transient places (chat, PR comments) instead of alongside the entity definition.
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
 
 # Check list
 
 - [ ] Every domain entity has a documented classification: Internal Immutable, External Immutable, Internal Mutable, or External Mutable.
 - [ ] Internal Immutable entities have no `Version` and no `Guid`.
-- [ ] External Immutable entities have `Guid` and unique index, and implement `external-created-entity.solution.skill` only.
-- [ ] Internal Mutable entities have `Version`, `IVersioned`, and implement `entity-concurrency-change.solution.skill` only.
+- [ ] External Immutable entities have `Guid` and unique index, and implement `external-created-entity-solution.skill` only.
+- [ ] Internal Mutable entities have `Version`, `IVersioned`, and implement `entity-concurrency-change-solution.skill` only.
 - [ ] External Mutable entities have both `Version` and `Guid`, and implement both dependency solutions.
 - [ ] Create commands for external entities implement `IHasGuid`.
 - [ ] Update/patch commands for mutable entities implement `IHasVersions`.
@@ -197,7 +197,7 @@ __Applied solutions:__
 - [ ] Classification was reviewed when entity ownership or mutability changed.
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
 
 # Unittest TestCases
 
@@ -209,4 +209,4 @@ __Applied solutions:__
 - [ ] When an internal entity create command is inspected Then `GuidResolvingBehavior` does not constrain it.
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification.solution.skill/entity-classification.solution.skill.md|entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]

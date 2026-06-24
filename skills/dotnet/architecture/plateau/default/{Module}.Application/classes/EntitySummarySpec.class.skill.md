@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration-solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Avoid loading full entity when only read data is needed
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
 # Core Principals
 - Inherits `Specification<T, TResult>` — second type parameter is the DTO
@@ -24,7 +24,7 @@ __Applied solutions:__
 - Repository executes projection at the database level
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
 # Implementation
 ```csharp
@@ -45,7 +45,7 @@ public class {Entity}SummarySpec : Specification<{Entity}, {Entity}SummaryDto>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
 # Rules
 MUST:
@@ -57,7 +57,7 @@ MUST NOT:
 	- Define DTO inline in the spec — DTO belongs in Interfaces
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
 # Check list
 - [ ] Inherits `Specification<{Entity}, {Entity}SummaryDto>`
@@ -65,7 +65,7 @@ __Applied solutions:__
 - [ ] Lives in Application Specifications folder
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Project entity data directly to a DTO inside the query
@@ -78,4 +78,4 @@ __Applied solutions:__
 - [ ] WHEN verified THEN Lives in Application Specifications folder
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]

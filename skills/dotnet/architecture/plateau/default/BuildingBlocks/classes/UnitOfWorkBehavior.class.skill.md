@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work-solution.skill]]"
 ---
 
 # Goal
@@ -17,7 +17,7 @@ created_by:
 - Guarantee that if the handler throws, `SaveChangesAsync` is never called — changes are discarded
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Core Principals
 - Increments `UnitOfWorkContext.Depth` on entry, decrements in `finally` — depth always restored even on exception
@@ -28,7 +28,7 @@ __Applied solutions:__
 - Constrained to `where TRequest : ICommand` — never activates for query requests
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -36,7 +36,7 @@ __Applied solutions:__
 | UoW pipeline behavior | `UnitOfWorkBehavior<TRequest, TResponse>` | `UnitOfWorkBehavior<AssignTaskCommand, Result>` | `UnitOfWorkBehavior.cs` | `UnitOfWorkBehavior.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Implementation
 ```csharp
@@ -113,7 +113,7 @@ DbContext disposed at request scope end → all pending changes abandoned automa
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Rules
 MUST:
@@ -127,7 +127,7 @@ MUST NOT:
 	- Catch exceptions to swallow them — let them propagate, `SaveChangesAsync` is skipped naturally
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Anti-patterns
 - `UnitOfWorkBehavior` without depth counter — sub-commands commit prematurely, breaking atomicity
@@ -135,7 +135,7 @@ __Applied solutions:__
 - Catching exceptions to swallow them — breaks error propagation
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Check list
 - [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
@@ -144,7 +144,7 @@ __Applied solutions:__
 - [ ] Depth incremented before `next()` and decremented in `finally`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Automatically commit all staged changes after the top-level command handler completes
@@ -163,4 +163,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'UoW pipeline behavior' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]

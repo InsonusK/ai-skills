@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change-solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Enable `ConcurrencyBehavior` to activate selectively on commands that carry versions — not all commands
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Core Principals
 - Dictionary structure: entity name string → (entity Id → expected version)
@@ -25,7 +25,7 @@ __Applied solutions:__
 - Declared in Shared — update commands in `{Module}.Interfaces` implement this without referencing BuildingBlocks
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -33,7 +33,7 @@ __Applied solutions:__
 | Version carrier interface | `IHasVersions` | `IHasVersions` | `IHasVersions.cs` | `IHasVersions.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Implementation
 ```csharp
@@ -49,7 +49,7 @@ public interface IHasVersions
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Rules
 MUST:
@@ -59,13 +59,13 @@ MUST NOT:
 	- Use C# `Type` as the dictionary key — breaks when entities are renamed
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Anti-patterns
 - `Versions` as a flat dictionary without entity name grouping — does not support multi-entity updates
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Check list
 - [ ] `IHasVersions` defined in `Shared/Concurrency/IHasVersions.cs`
@@ -73,7 +73,7 @@ __Applied solutions:__
 - [ ] Only update and patch commands implement this interface
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN component is requested THEN it provide a typed contract for update commands to carry client-supplied version information
@@ -88,4 +88,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Version carrier interface' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]

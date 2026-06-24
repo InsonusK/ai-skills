@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity-solution.skill]]"
 ---
 
 # Goal
@@ -17,7 +17,7 @@ created_by:
 - Allow the API layer to map conflict results to a 409 response containing the existing entity result
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Core Principals
 - Lives in `Shared` so both `{Module}.Application` resolvers and BuildingBlocks behavior can reference it
@@ -27,7 +27,7 @@ __Applied solutions:__
 - Generic on `T` so it can be reused for any idempotent-create response type
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -35,7 +35,7 @@ __Applied solutions:__
 | Conflict result | `ConflictResult<T>` | `ConflictResult<CreateTaskResult>` | `ConflictResult.cs` | `ConflictResult.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Implementation
 ```csharp
@@ -55,7 +55,7 @@ public class ConflictResult<T> : Result<T>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Rules
 MUST:
@@ -69,7 +69,7 @@ MUST NOT:
 	- Be defined in BuildingBlocks — it is a primitive used by both Application and BuildingBlocks layers
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Anti-patterns
 - Returning `Result<T>.Conflict()` and losing the existing entity result
@@ -77,7 +77,7 @@ __Applied solutions:__
 - Defining `ConflictResult<T>` in BuildingBlocks — forces Shared to reference BuildingBlocks
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Check list
 - [ ] `ConflictResult<T>` defined in `Shared/Results/ConflictResult.cs`
@@ -86,7 +86,7 @@ __Applied solutions:__
 - [ ] `Status` is `ResultStatus.Conflict`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN it carries the existing entity result in `Value`
@@ -96,4 +96,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Conflict result' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]

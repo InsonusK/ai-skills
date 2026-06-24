@@ -8,14 +8,14 @@ version: 20260622
 tags:
   - skill/template/csproj
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration-solution.skill]]"
 ---
 
 # Goal
@@ -39,14 +39,14 @@ created_by:
 - Enable MediatR routing and pipeline behavior constraints for write operations
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Core Principals
 - Shared contains only cross-cutting primitives — no business logic specific to a single module
@@ -74,14 +74,14 @@ __Applied solutions:__
 - `ICommand<TResponse>` extends MediatR `IRequest<TResponse>` so MediatR can route commands automatically
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Structure
 
@@ -116,8 +116,8 @@ __Applied solutions:__
   /Events
     IDomainEvent.cs
   /Guid
-    IHasGuid.cs           ← external-created-entity.solution.skill
-    IGuidResolver.cs      ← external-created-entity.solution.skill
+    IHasGuid.cs           ← external-created-entity-solution.skill
+    IGuidResolver.cs      ← external-created-entity-solution.skill
   /MediatR
     ICommand.cs
     IQuery.cs
@@ -125,7 +125,7 @@ __Applied solutions:__
     IRepository.cs
     IReadRepository.cs
   /Results
-    ConflictResult.cs     ← external-created-entity.solution.skill
+    ConflictResult.cs     ← external-created-entity-solution.skill
   /UnitOfWork
     IUnitOfWork.cs
   /Outbox
@@ -179,14 +179,14 @@ __Applied solutions:__
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
@@ -215,14 +215,14 @@ __Applied solutions:__
 | ICommand.cs | Write operation marker interfaces | [[skills/dotnet/architecture/plateau/default/Shared/classes/ICommand.class.skill.md|ICommand.class.skill]] |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -234,14 +234,14 @@ __Applied solutions:__
 | `MediatR` | latest stable | Provides `IRequest<T>` that `ICommand<T>` extends |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Module-specific Value Objects — belong in respective `{Module}.Domain/ValueObjects`
@@ -253,30 +253,30 @@ __Applied solutions:__
 - Repository or unit-of-work implementations — belong to BuildingBlocks or App.Infrastructure
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## Allowed Dependencies
 - None — Shared has no project dependencies
-- `Ardalis.Result` — required by `ConflictResult<T>` from external-created-entity.solution.skill
+- `Ardalis.Result` — required by `ConflictResult<T>` from external-created-entity-solution.skill
 - None — Shared has no project references
 - `Ardalis.Result` — required for `ConflictResult<T>` to inherit from `Result<T>`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Rules
 MUST:
@@ -322,14 +322,14 @@ MUST NOT:
 	- Place implementations in Shared
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Anti-patterns
 - Putting every VO/rule in Shared "just in case" — Shared should stay minimal
@@ -352,14 +352,14 @@ __Applied solutions:__
 - Adding behavior logic to a marker interface
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Check list
 - [ ] /ValueObjects folder exists in Shared
@@ -371,7 +371,7 @@ __Applied solutions:__
 - [ ] No EF Core reference in Shared
 - [ ] Shared.csproj contains only interfaces and primitives
 - [ ] No business logic in any Shared class
-- [ ] Shared.csproj references `Ardalis.Result` when external-created-entity.solution.skill is used
+- [ ] Shared.csproj references `Ardalis.Result` when external-created-entity-solution.skill is used
 - [ ] `Ardalis.Specification` referenced in `Shared.csproj`
 - [ ] `/Repositories` folder exists
 - [ ] `IReadRepository<T>` inherits `IReadRepositoryBase<T>`
@@ -394,11 +394,11 @@ __Applied solutions:__
 - [ ] `ICommand<TResponse>` extends `IRequest<TResponse>`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/unit-of-work.solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/query-integration.solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/entity-concurrency-change.solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/unit-of-work-solution.skill.md|unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/unit-of-work-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/query-integration-solution.skill.md|query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/query-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/entity-concurrency-change-solution.skill.md|entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/entity-concurrency-change-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]

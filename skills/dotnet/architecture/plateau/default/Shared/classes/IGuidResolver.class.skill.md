@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity-solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Keep `GuidResolvingBehavior` generic — each entity type provides its own resolver implementation
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Core Principals
 - Generic on `TResponse` — matches the command's response type exactly
@@ -27,7 +27,7 @@ __Applied solutions:__
 - Lives in Shared so `{Module}.Application` resolvers and BuildingBlocks behavior can both consume it
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -35,7 +35,7 @@ __Applied solutions:__
 | Guid resolver interface | `IGuidResolver<TResponse>` | `IGuidResolver<Result<CreateTaskResult>>` | `IGuidResolver.cs` | `IGuidResolver.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Implementation
 ```csharp
@@ -49,7 +49,7 @@ public interface IGuidResolver<TResponse>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Rules
 MUST:
@@ -62,7 +62,7 @@ MUST NOT:
 	- Be defined in BuildingBlocks — it is a contract consumed by multiple layers
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Anti-patterns
 - `IGuidResolver` without generic parameter — would require casting and lose type safety
@@ -70,7 +70,7 @@ __Applied solutions:__
 - Resolver returning a response type different from the command handler
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Check list
 - [ ] `IGuidResolver<TResponse>` defined in `Shared/Guid/IGuidResolver.cs`
@@ -78,7 +78,7 @@ __Applied solutions:__
 - [ ] `TResponse` matches command handler response type
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Define the per-entity contract for checking whether a Guid already exists and returning the existing command response
@@ -94,4 +94,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Guid resolver interface' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/external-created-entity.solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity.solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/external-created-entity-solution.skill.md|external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/external-created-entity-solution.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
