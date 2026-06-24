@@ -14,11 +14,11 @@ change_kind: extend
 ```
 /BuildingBlocks
   /MediatR
-    ValidationBehavior.cs      ← validation-behavior.solution.skill
+    ValidationBehavior.cs      ← validation-behavior-solution.skill
     GuidResolvingBehavior.cs
-    ConcurrencyBehavior.cs     ← entity-concurrency-change.solution.skill
-    UnitOfWorkContext.cs       ← unit-of-work.solution.skill
-    UnitOfWorkBehavior.cs      ← unit-of-work.solution.skill
+    ConcurrencyBehavior.cs     ← entity-concurrency-change-solution.skill
+    UnitOfWorkContext.cs       ← unit-of-work-solution.skill
+    UnitOfWorkBehavior.cs      ← unit-of-work-solution.skill
 ```
 
 ## Directory and class skills

@@ -40,7 +40,7 @@ extends:
   - "{Module}.Application.csproj"
   - "{Module}.Domain.csproj"
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure-solution.skill]]"
 ---
 # Goal
 - Decouple Application layer handlers from EF Core and DbContext by providing repository abstractions powered by Ardalis
@@ -68,12 +68,12 @@ depends_on:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts repository abstractions
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts generic `Repository<T>` implementation
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts repository DI registration
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts module specifications
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entity pattern filtered by specifications
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure-solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts repository abstractions
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/App.Infrastructure.csproj.create.md|App.Infrastructure.csproj]] - hosts generic `Repository<T>` implementation
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts repository DI registration
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts module specifications
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entity pattern filtered by specifications
 
 NUGET:
 - `Ardalis.Specification` {version} - provides `ISpecification<T>`, `Specification<T>`, `IReadRepositoryBase<T>`, `IRepositoryBase<T>`

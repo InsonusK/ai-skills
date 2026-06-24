@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration-solution.skill]]"
 ---
 
 # Goal
@@ -16,7 +16,7 @@ created_by:
 - Provide two variants: `ICommand` for commands with no response value, `ICommand<TResponse>` for commands that return a result
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
 # Core Principals
 - Interface only — no properties, no methods
@@ -24,7 +24,7 @@ __Applied solutions:__
 - Pipeline behaviors in BuildingBlocks use `where TRequest : ICommand` to activate only for write operations
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -33,7 +33,7 @@ __Applied solutions:__
 | Command marker (with return) | `ICommand<TResponse>` | `ICommand<Result<CreateTaskResult>>` | `ICommand.cs` | `ICommand.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
 # Implementation
 Both variants defined in one file:
@@ -50,7 +50,7 @@ public interface ICommand<TResponse> : IRequest<TResponse> { }
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
 # Rules
 MUST:
@@ -61,7 +61,7 @@ MUST NOT:
 	- Add methods or properties to the marker interfaces
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Mark a MediatR request as a write operation so pipeline behaviors can activate selectively on commands only
@@ -73,4 +73,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Command marker (with return)' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/command-integration.solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration.solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/command-integration-solution.skill.md|command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/command-integration-solution.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]

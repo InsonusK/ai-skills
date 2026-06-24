@@ -8,7 +8,7 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration-solution.skill]]"
 ---
 
 # Goal
@@ -16,14 +16,14 @@ created_by:
 - Extend `IReadRepository<T>` so command handlers have both read and write access through one injection
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
 # Core Principals
 - All write methods are inherited from `IRepositoryBase<T>` — no custom signatures needed
 - `SaveChangesAsync` is intentionally absent — committing is the responsibility of the Unit of Work
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
 # Implementation
 ```csharp
@@ -39,7 +39,7 @@ public interface IRepository<T> : IRepositoryBase<T>, IReadRepository<T>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
 # Rules
 MUST:
@@ -51,7 +51,7 @@ MUST NOT:
 	- Expose `SaveChangesAsync`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
 # Check list
 - [ ] Inherits `IRepositoryBase<T>`
@@ -60,7 +60,7 @@ __Applied solutions:__
 - [ ] No `SaveChangesAsync` declared
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN component is requested THEN it provide a write-staging contract for command handlers
@@ -73,4 +73,4 @@ __Applied solutions:__
 - [ ] WHEN verified THEN No SaveChangesAsync declared
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/repository-integration-solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration-solution.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]

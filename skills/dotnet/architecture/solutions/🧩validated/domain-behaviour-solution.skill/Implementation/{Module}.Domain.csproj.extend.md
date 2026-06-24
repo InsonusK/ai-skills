@@ -33,12 +33,12 @@ change_kind: extend
 ## Directory and class skills
 | Directory \| file | Description | Pattern skill |
 | --- | --- | --- |
-| /Entities | All entity types for this module | [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md\|solution-structure.solution.skill]] |
-| /ValueObjects | All Value Object types for this module | [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md\|value-objects-and-rules.solution.skill]] |
-| /Rules | All domain rule static classes for this module | [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md\|value-objects-and-rules.solution.skill]] |
+| /Entities | All entity types for this module | [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md\|solution-structure-solution.skill]] |
+| /ValueObjects | All Value Object types for this module | [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md\|value-objects-and-rules-solution.skill]] |
+| /Rules | All domain rule static classes for this module | [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md\|value-objects-and-rules-solution.skill]] |
 | /Services | Static domain service extension methods for bulky entity behavior | Domain service pattern (this solution) |
 | /Events | Domain events raised by this module | |
-| /Configurations | One EF config class per entity | [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md\|domain-configuration.solution.skill]] |
+| /Configurations | One EF config class per entity | [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md\|domain-configuration-solution.skill]] |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |

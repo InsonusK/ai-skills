@@ -8,21 +8,21 @@ version: 20260616
 tags:
   - skill/template/class
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration-solution.skill]]"
 ---
 
 # Goal
 - Configure foreign key relationships and mappings that cross module boundaries
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
 # Core Principals
 - Cross-module configuration references entities from multiple modules without redefining their intra-module mapping
 - Cross-module config composes on top of existing Domain configs, never duplicates them
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -30,7 +30,7 @@ __Applied solutions:__
 | Relation between 2 modules | {Module1}To{Module2}Config | OrderToPaymentConfig | {Module1}To{Module2}.Config.cs | OrderToPayment.Config.cs |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
 # Implementation
 Cross-module foreign key configuration lives in App.Infrastructure:
@@ -50,7 +50,7 @@ public class OrderToPaymentConfig : IEntityTypeConfiguration<Order>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
 # Rules
 MUST:
@@ -61,7 +61,7 @@ MUST NOT:
 	- Configure intra-module relationships here
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Configure foreign key relationships and mappings that cross module boundaries
@@ -70,4 +70,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Relation between 2 modules' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/domain-configuration.solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration.solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]

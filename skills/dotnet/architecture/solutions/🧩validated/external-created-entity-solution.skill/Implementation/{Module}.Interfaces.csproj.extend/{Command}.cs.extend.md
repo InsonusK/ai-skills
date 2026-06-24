@@ -14,7 +14,7 @@ change_kind: extend
 - `Guid` is the first property — signals to the reader that this is an external-created entity
 - Command carries the client-generated Guid — never a server-generated value
 - Command implements `IHasGuid` from Shared — `{Module}.Interfaces` does not reference BuildingBlocks
-- Result record unchanged from command-integration.solution.skill — still just `{Entity}Id`
+- Result record unchanged from command-integration-solution.skill — still just `{Entity}Id`
 - Both 201 Created and 409 Conflict return the same response type (`Result<Create{Entity}Result>`)
 
 # Naming convention
@@ -64,7 +64,7 @@ MUST NOT:
 - [ ] WHEN applied THEN Guid is the first property — signals to the reader that this is an external-created entity
 - [ ] WHEN applied THEN Command carries the client-generated Guid — never a server-generated value
 - [ ] WHEN applied THEN Command implements IHasGuid from Shared — {Module}.Interfaces does not reference BuildingBlocks
-- [ ] WHEN applied THEN Result record unchanged from command-integration.solution.skill — still just {Entity}Id
+- [ ] WHEN applied THEN Result record unchanged from command-integration-solution.skill — still just {Entity}Id
 - [ ] WHEN applied THEN Both 201 Created and 409 Conflict return the same response type
 - [ ] WHEN verified THEN Guid is first property in create command record
 - [ ] WHEN verified THEN Command implements ICommand<Result<T>> and IHasGuid

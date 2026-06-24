@@ -10,7 +10,7 @@ decision: Use a custom `ConflictResult<T>` that inherits from `Ardalis.Result.Re
 External-created entity commands use a client-generated `Guid` as an idempotency key. The pipeline must detect when this Guid already exists and short-circuit before the handler runs. The API layer must then return HTTP 409 with information the client can use to recover.
 
 Key constraints:
-- The solution must not use exceptions for flow control (command-integration.solution.skill principle).
+- The solution must not use exceptions for flow control (command-integration-solution.skill principle).
 - The resolver must return the same response type as the command handler so that 201 Created and 409 Conflict have a symmetric API contract.
 - The 409 response body should contain only the existing entity Id.
 - No dedicated HTTP middleware should be required for conflict handling.
@@ -40,7 +40,7 @@ Key constraints:
 - Uses exceptions for expected, non-exceptional control flow (duplicate Guid is a normal idempotency outcome).
 - Requires an additional middleware component and its registration in App.Host.
 - Adds a cross-cutting dependency on the exception type in both Shared and BuildingBlocks.
-- Violates the command-integration.solution.skill principle that handlers/behaviors should not use exceptions for flow control.
+- Violates the command-integration-solution.skill principle that handlers/behaviors should not use exceptions for flow control.
 
 ## Return plain `Result<T>.Conflict()` without a value
 
