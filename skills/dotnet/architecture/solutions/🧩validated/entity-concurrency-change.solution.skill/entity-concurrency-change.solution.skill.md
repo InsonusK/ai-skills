@@ -1,6 +1,6 @@
 ---
 uid: 8ae45d1d-feb8-44fc-b207-a97c69c45522
-name: entity-concurrency-change
+name: entity-concurrency-change.solution
 description: Defines the optimistic concurrency control stack for mutable entities — Version/xmin concurrency token on every mutable entity, IVersioned marker on entities, IHasVersions interface on update commands, ETagEncoder for HTTP transport, IEntityVersionResolverFactory/IEntityVersionResolver in Shared with App.Infrastructure factory and module Application resolvers, ConcurrencyBehavior pipeline guard, ETag on GET responses, and 412 Precondition Failed on missing or malformed If-Match
 domain: skill
 type: architecture

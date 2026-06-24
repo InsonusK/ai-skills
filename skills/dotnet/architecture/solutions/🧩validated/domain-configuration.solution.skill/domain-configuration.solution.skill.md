@@ -1,6 +1,6 @@
 ---
 uid: f5aeeabe-b8cc-4378-aeac-cbaa44d06b6b
-name: domain-configuration
+name: domain-configuration.solution
 description: Defines the EF Core entity type configuration pattern — one configuration class per entity that owns all persistence concerns, keeping domain entities free of infrastructure attributes
 domain: skill
 type: architecture
