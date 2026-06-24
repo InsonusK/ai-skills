@@ -120,15 +120,15 @@ __Applied solutions:__
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
-| /UnitOfWork | Unit of work implementations | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/UnitOfWork.class.skill.md|UnitOfWork.class.skill]] |
-| UnitOfWork.cs | EF Core SaveChangesAsync implementation | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/UnitOfWork.class.skill.md|UnitOfWork.class.skill]] |
+| /UnitOfWork | Unit of work implementations | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/unit-of-work-class.skill.md|UnitOfWork.class.skill]] |
+| UnitOfWork.cs | EF Core SaveChangesAsync implementation | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/unit-of-work-class.skill.md|UnitOfWork.class.skill]] |
 | /Persistence | DbContext and EF configurations |  |
 | /Repositories | Generic Repository<T> implementation |  |
-| /UnitOfWork | UnitOfWork implementation | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/UnitOfWork.class.skill.md|UnitOfWork.class.skill]] |
+| /UnitOfWork | UnitOfWork implementation | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/unit-of-work-class.skill.md|UnitOfWork.class.skill]] |
 | /Outbox | EF interceptor and background dispatcher |  |
 | /Concurrency | EntityVersionResolverFactory mapping entity names to Application-layer resolvers |  |
-| /Repositories/Repository.cs | Generic EF Core repository implementation inheriting Ardalis `RepositoryBase<T>` | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/Repository.class.skill.md|Repository.class.skill]] |
-| /Concurrency/EntityVersionResolverFactory.cs | Maps string entity names to Application-layer `IEntityVersionResolver` implementations | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/EntityVersionResolverFactory.class.skill.md|EntityVersionResolverFactory.class.skill]] |
+| /Repositories/Repository.cs | Generic EF Core repository implementation inheriting Ardalis `RepositoryBase<T>` | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/repository-class.skill.md|Repository.class.skill]] |
+| /Concurrency/EntityVersionResolverFactory.cs | Maps string entity names to Application-layer `IEntityVersionResolver` implementations | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/classes/entity-version-resolver-factory-class.skill.md|EntityVersionResolverFactory.class.skill]] |
 | /Persistence/Configurations | Cross-module foreign key and relationship configurations |  |
 
 __Applied solutions:__

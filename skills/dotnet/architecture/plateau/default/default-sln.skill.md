@@ -53,7 +53,7 @@ __Applied solutions:__
 | /{Module}.Interfaces           | [[skills/dotnet/architecture/plateau/default/{Module}.Interfaces/module-interfaces-csproj.skill\|{Module}.Interfaces.csproj.skill]]                               | Public contracts — commands, queries, DTOs, events             |
 | /{Module}.Domain               | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/module-domain-csproj.skill\|{Module}.Domain.csproj.skill]]                                           | Business logic — entities, VOs, rules, events                  |
 | /{Module}.Application          | [[skills/dotnet/architecture/plateau/default/{Module}.Application/module-application-csproj.skill\|{Module}.Application.csproj.skill]]                            | Orchestration — handlers, validators, specs, version resolvers |
-| /{Module}.Api                  | [[skills/dotnet/architecture/plateau/default/{Module}.Api/{Module}.Api.csproj.skill\|{Module}.Api.csproj.skill]]                                                    | HTTP endpoints, MediatR dispatch, ETag/If-Match handling       |
+| /{Module}.Api                  | [[skills/dotnet/architecture/plateau/default/{Module}.Api/module-api-csproj.skill\|{Module}.Api.csproj.skill]]                                                    | HTTP endpoints, MediatR dispatch, ETag/If-Match handling       |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/Repository.create.md|Repository.create]]

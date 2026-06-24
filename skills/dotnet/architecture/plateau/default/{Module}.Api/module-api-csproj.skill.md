@@ -109,14 +109,14 @@ __Applied solutions:__
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
 | /Controllers | HTTP endpoints |  |
-| /Controllers/{Entity}/{Entity}Controller.cs | Collection root — POST create, GET list | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/EntityController.class.skill.md|EntityController.class.skill]] |
-| /Controllers/{Entity}/Single{Entity}Controller.cs | Single entity lifecycle — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/SingleEntityController.class.skill.md|SingleEntityController.class.skill]] |
+| /Controllers/{Entity}/{Entity}Controller.cs | Collection root — POST create, GET list | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/entity-controller-class.skill.md|EntityController.class.skill]] |
+| /Controllers/{Entity}/Single{Entity}Controller.cs | Single entity lifecycle — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/single-entity-controller-class.skill.md|SingleEntityController.class.skill]] |
 | /Controllers/{Entity}/Single{Entity}{Property}Controller.cs | Addressable property — POST set, DELETE unset | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/SingleEntityPropertyController.class.skill.md|SingleEntityPropertyController.class.skill]] |
-| /Controllers/{Entity}/{Related}/{Entity}{Related}Controller.cs | Sub-collection — GET list, POST add | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/EntityRelatedController.class.skill.md|EntityRelatedController.class.skill]] |
-| /Controllers/{Entity}/{Related}/Single{Entity}{Related}Controller.cs | Relationship instance — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/SingleEntityRelatedController.class.skill.md|SingleEntityRelatedController.class.skill]] |
-| /MinimalApi/{System}Endpoints.cs | System, webhook, batch, cross-aggregate endpoints | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/SystemEndpoints.class.skill.md|SystemEndpoints.class.skill]] |
-| /Extensions/ResultExtensions.cs | ToProblemDetails helper for Result error mapping | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/ResultExtensions.class.skill.md|ResultExtensions.class.skill]] |
-| /Extensions/ConflictResultExtensions.cs | Maps `ConflictResult<T>` to HTTP 409 with existing entity result body | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/ConflictResultExtensions.class.skill.md|ConflictResultExtensions.class.skill]] |
+| /Controllers/{Entity}/{Related}/{Entity}{Related}Controller.cs | Sub-collection — GET list, POST add | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/entity-related-controller-class.skill.md|EntityRelatedController.class.skill]] |
+| /Controllers/{Entity}/{Related}/Single{Entity}{Related}Controller.cs | Relationship instance — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/single-entity-related-controller-class.skill.md|SingleEntityRelatedController.class.skill]] |
+| /MinimalApi/{System}Endpoints.cs | System, webhook, batch, cross-aggregate endpoints | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/system-endpoints-class.skill.md|SystemEndpoints.class.skill]] |
+| /Extensions/ResultExtensions.cs | ToProblemDetails helper for Result error mapping | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/result-extensions-class.skill.md|ResultExtensions.class.skill]] |
+| /Extensions/ConflictResultExtensions.cs | Maps `ConflictResult<T>` to HTTP 409 with existing entity result body | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/conflict-result-extensions-class.skill.md|ConflictResultExtensions.class.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
