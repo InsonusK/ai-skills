@@ -114,17 +114,17 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/entity-classification-solution.skill/entity-classification-solution.skill.md|entity-classification]]
 
 ## Directory and class skills
-| `Directory|file` | Description | Pattern skill |
-| ---------------- | ----------- | ------------- |
-| /Commands | Write intent contracts |  |
-| /Queries | Read intent contracts |  |
-| /DTOs | Response shapes |  |
-| /Events | Integration event contracts |  |
-| /Queries | Read intent contract declarations for this module |  |
-| /DTOs | Response shape declarations consumed by query handlers and API |  |
-| /Commands/Create{Entity}Command.cs | Create command with Guid and IHasGuid |  |
-| /Commands | Write intent contract declarations for this module |  |
-| {Command}.cs | Command record and its result record | [[skills/dotnet/architecture/plateau/default/{Module}.Interfaces/classes/Command.class.skill.md|Command.class.skill]] |
+| `Directory                         | file`                                                          | Description                                                                                                         | Pattern skill |
+| ---------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------- |
+| /Commands                          | Write intent contracts                                         |                                                                                                                     |               |
+| /Queries                           | Read intent contracts                                          |                                                                                                                     |               |
+| /DTOs                              | Response shapes                                                |                                                                                                                     |               |
+| /Events                            | Integration event contracts                                    |                                                                                                                     |               |
+| /Queries                           | Read intent contract declarations for this module              |                                                                                                                     |               |
+| /DTOs                              | Response shape declarations consumed by query handlers and API |                                                                                                                     |               |
+| /Commands/Create{Entity}Command.cs | Create command with Guid and IHasGuid                          |                                                                                                                     |               |
+| /Commands                          | Write intent contract declarations for this module             |                                                                                                                     |               |
+| {Command}.cs                       | Command record and its result record                           | [[skills/dotnet/architecture/plateau/default/{Module}.Interfaces/classes/command-class.skill\|Command.class.skill]] |               |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj.create]]

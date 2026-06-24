@@ -106,7 +106,7 @@ MUST:
 	- Throw `DomainException` on invariant violation — never return null or bool
 	- Have no infrastructure or application dependencies
 	- Multi-property VO has `private` parameterless constructor for EF materialization
-	- Multi-property VO has `OwnsOne` EF configuration on owning entity (see [[skills/dotnet/architecture/solutions/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration-solution.skill]])
+	- Multi-property VO has `OwnsOne` EF configuration on owning entity (see [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill|domain-configuration-solution.skill]])
 SHOULD:
 	- Provide implicit conversion operators for single-property VOs
 	- Override `ToString()` when used in logs or UI

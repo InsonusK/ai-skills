@@ -151,7 +151,7 @@ public class Driver
 }
 ```
 
-Multi-property Value Objects persisted via EF Core `OwnsOne` must be configured in the entity's EF configuration (see [[skills/dotnet/architecture/solutions/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration-solution.skill]]):
+Multi-property Value Objects persisted via EF Core `OwnsOne` must be configured in the entity's EF configuration (see [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill|domain-configuration-solution.skill]]):
 
 ```csharp
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
