@@ -80,7 +80,7 @@ __Applied solutions:__
 | /Queries/{ModuleName} | Cross-module query handlers grouped by primary module |  |
 | /Queries/{QueryName} | Cross-module query handler and optional validator |  |
 | /Specifications | Cross-module projection specs |  |
-| AppQueriesRegistration.cs | DI registration for App.Queries assembly | [[skills/dotnet/architecture/plateau/default/App.Queries/classes/AppQueriesRegistration.class.skill.md|AppQueriesRegistration.class.skill]] |
+| AppQueriesRegistration.cs | DI registration for App.Queries assembly | [[skills/dotnet/architecture/plateau/default/App.Queries/classes/app-queries-registration-class.skill.md|AppQueriesRegistration.class.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/App.Queries.csproj.create.md|App.Queries.csproj.create]]

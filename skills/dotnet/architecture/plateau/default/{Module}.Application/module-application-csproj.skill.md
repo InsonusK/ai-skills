@@ -170,10 +170,10 @@ __Applied solutions:__
 | /Specifications/{Entity}ByGuidSpec.cs | Specification for looking up entity by Guid | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/entity-by-guid-spec-class.skill.md|EntityByGuidSpec.class.skill]] |
 | /Resolvers/Create{Entity}GuidResolver.cs | Per-entity IGuidResolver implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/create-entity-guid-resolver-class.skill|CreateEntityGuidResolver.class.skill]] |
 | /Features/{FeatureName} | One subfolder per feature — handler and validator co-located |  |
-| {FeatureName}.Handler.cs | Command handler implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/Feature.Handler.class.skill.md|Feature.Handler.class.skill]] |
-| {FeatureName}.Validator.cs | Transport correctness validator | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/Feature.Validator.class.skill.md|Feature.Validator.class.skill]] |
-| /Concurrency/{Entity}VersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/{Entity}VersionResolver.class.skill.md|{Entity}VersionResolver.class.skill]] |
-| {Module}ApplicationRegistration.cs | Module DI self-registration extension | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/ModuleApplicationRegistration.class.skill.md|ModuleApplicationRegistration.class.skill]] |
+| {FeatureName}.Handler.cs | Command handler implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/feature-handler-class.skill|Feature.Handler.class.skill]] |
+| {FeatureName}.Validator.cs | Transport correctness validator | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/feature-validator-class.skill.md|Feature.Validator.class.skill]] |
+| /Concurrency/{Entity}VersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/entity-version-resolver-class.skill.md|{Entity}VersionResolver.class.skill]] |
+| {Module}ApplicationRegistration.cs | Module DI self-registration extension | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/module-application-registration-class.skill.md|ModuleApplicationRegistration.class.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj.create]]

@@ -194,7 +194,7 @@ __Applied solutions:__
 | /ValueObjects | Cross-module reusable Value Object types |  |
 | /Rules | Cross-module reusable domain rule static classes |  |
 | /UnitOfWork | Unit of work contracts |  |
-| IUnitOfWork.cs | Commit contract — single SaveChangesAsync method | [[skills/dotnet/architecture/plateau/default/Shared/classes/IUnitOfWork.class.skill.md|IUnitOfWork.class.skill]] |
+| IUnitOfWork.cs | Commit contract — single SaveChangesAsync method | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-unit-of-work-class.skill.md|IUnitOfWork.class.skill]] |
 | /Events | Base event interfaces |  |
 | /Guid | External-created entity marker and resolver contracts |  |
 | /MediatR | Command and query marker interfaces |  |
@@ -204,15 +204,15 @@ __Applied solutions:__
 | /Outbox | Domain events marker interface |  |
 | /Concurrency | Version marker, version carrier, and entity resolver interfaces |  |
 | /MediatR | MediatR marker interfaces |  |
-| IQuery.cs | Read-only operation marker interface | [[skills/dotnet/architecture/plateau/default/Shared/classes/IQuery.class.skill.md|IQuery.class.skill]] |
-| /Results/ConflictResult.cs | `Result<T>` subclass carrying the existing entity result for 409 responses | [[skills/dotnet/architecture/plateau/default/Shared/classes/ConflictResult.class.skill.md|ConflictResult.class.skill]] |
-| /Guid/IHasGuid.cs | Marker interface for commands carrying a client-generated Guid | [[skills/dotnet/architecture/plateau/default/Shared/classes/IHasGuid.class.skill.md|IHasGuid.class.skill]] |
-| /Guid/IGuidResolver.cs | Per-entity resolver contract — resolves Guid to existing command response | [[skills/dotnet/architecture/plateau/default/Shared/classes/IGuidResolver.class.skill.md|IGuidResolver.class.skill]] |
-| /Concurrency/IHasVersions.cs | Interface carried by all update commands | [[skills/dotnet/architecture/plateau/default/Shared/classes/IHasVersions.class.skill.md|IHasVersions.class.skill]] |
-| /Concurrency/IEntityVersionResolverFactory.cs | Factory that resolves an entity name to an `IEntityVersionResolver` | [[skills/dotnet/architecture/plateau/default/Shared/classes/IEntityVersionResolverFactory.class.skill.md|IEntityVersionResolverFactory.class.skill]] |
+| IQuery.cs | Read-only operation marker interface | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-query-class.skill.md|IQuery.class.skill]] |
+| /Results/ConflictResult.cs | `Result<T>` subclass carrying the existing entity result for 409 responses | [[skills/dotnet/architecture/plateau/default/Shared/classes/conflict-result-class.skill.md|ConflictResult.class.skill]] |
+| /Guid/IHasGuid.cs | Marker interface for commands carrying a client-generated Guid | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-has-guid-class.skill.md|IHasGuid.class.skill]] |
+| /Guid/IGuidResolver.cs | Per-entity resolver contract — resolves Guid to existing command response | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-guid-resolver-class.skill.md|IGuidResolver.class.skill]] |
+| /Concurrency/IHasVersions.cs | Interface carried by all update commands | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-has-versions-class.skill.md|IHasVersions.class.skill]] |
+| /Concurrency/IEntityVersionResolverFactory.cs | Factory that resolves an entity name to an `IEntityVersionResolver` | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-entity-version-resolver-factory-class.skill.md|IEntityVersionResolverFactory.class.skill]] |
 | /Concurrency/IEntityVersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/Shared/classes/IEntityVersionResolver.class.skill.md|IEntityVersionResolver.class.skill]] |
-| /Concurrency/IVersioned.cs | Marker interface for versioned domain entities | [[skills/dotnet/architecture/plateau/default/Shared/classes/IVersioned.class.skill.md|IVersioned.class.skill]] |
-| ICommand.cs | Write operation marker interfaces | [[skills/dotnet/architecture/plateau/default/Shared/classes/ICommand.class.skill.md|ICommand.class.skill]] |
+| /Concurrency/IVersioned.cs | Marker interface for versioned domain entities | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-versioned-class.skill.md|IVersioned.class.skill]] |
+| ICommand.cs | Write operation marker interfaces | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-command-class.skill.md|ICommand.class.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
