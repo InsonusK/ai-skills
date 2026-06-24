@@ -180,10 +180,10 @@ __Applied solutions:__
 | /Rules | All domain rule static classes for this module |  |
 | /Entities | Domain entities that use Value Objects and rules |  |
 | /Entities | All entity types for this module |  |
-| /Entities/{EntityName}.cs | External-created entity with Guid property | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/Entity.class.skill.md|Entity.class.skill]] |
-| /Configurations/{EntityName}Config.cs | Unique index on Guid configuration | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/EntityConfig.class.skill.md|EntityConfig.class.skill]] |
-| /Entities/{EntityName}.cs | Mutable entity with uint Version property implementing IVersioned | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/Entity.class.skill.md|Entity.class.skill]] |
-| /Configurations/{EntityName}Config.cs | EF configuration mapping Version to xmin and declaring VersionedEntityName | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/EntityConfig.class.skill.md|EntityConfig.class.skill]] |
+| /Entities/{EntityName}.cs | External-created entity with Guid property | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/entity-class.skill.md|Entity.class.skill]] |
+| /Configurations/{EntityName}Config.cs | Unique index on Guid configuration | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/entity-config-class.skill.md|EntityConfig.class.skill]] |
+| /Entities/{EntityName}.cs | Mutable entity with uint Version property implementing IVersioned | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/entity-class.skill.md|Entity.class.skill]] |
+| /Configurations/{EntityName}Config.cs | EF configuration mapping Version to xmin and declaring VersionedEntityName | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/entity-config-class.skill.md|EntityConfig.class.skill]] |
 | /Configurations | One EF config class per entity |  |
 | /Entities | All entity types for this module |  |
 | /ValueObjects | All Value Object types for this module |  |
@@ -220,7 +220,7 @@ __Applied solutions:__
 - Infrastructure implementations — belong to App.Infrastructure or BuildingBlocks
 - Application orchestration — belong to {Module}.Application
 - Cross-module reusable VOs/rules — belong in Shared when used by 2+ modules
-- EF Core configuration classes — belong in {Module}.Domain/Configurations per [[skills/dotnet/architecture/solutions/domain-configuration-solution.skill/domain-configuration-solution.skill.md|domain-configuration-solution.skill]]
+- EF Core configuration classes — belong in {Module}.Domain/Configurations per [[skills/dotnet/architecture/solutions/🧩validated/domain-configuration-solution.skill/domain-configuration-solution.skill|domain-configuration-solution.skill]]
 - Business logic orchestration — belongs to Application
 - Infrastructure implementations — belongs to App.Infrastructure
 - Cross-module queries — belongs to App.Queries

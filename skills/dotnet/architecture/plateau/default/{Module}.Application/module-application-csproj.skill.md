@@ -167,8 +167,8 @@ __Applied solutions:__
 | /Specifications | All module specifications — single-condition, multi-condition, projection, idempotency |  |
 | /Queries/{FeatureName} | One folder per query feature; contains handler and optional transport validator |  |
 | /Specifications | Named reusable specifications for entity loading and projection |  |
-| /Specifications/{Entity}ByGuidSpec.cs | Specification for looking up entity by Guid | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/EntityByGuidSpec.class.skill.md|EntityByGuidSpec.class.skill]] |
-| /Resolvers/Create{Entity}GuidResolver.cs | Per-entity IGuidResolver implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/CreateEntityGuidResolver.class.skill.md|CreateEntityGuidResolver.class.skill]] |
+| /Specifications/{Entity}ByGuidSpec.cs | Specification for looking up entity by Guid | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/entity-by-guid-spec-class.skill.md|EntityByGuidSpec.class.skill]] |
+| /Resolvers/Create{Entity}GuidResolver.cs | Per-entity IGuidResolver implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/create-entity-guid-resolver-class.skill|CreateEntityGuidResolver.class.skill]] |
 | /Features/{FeatureName} | One subfolder per feature — handler and validator co-located |  |
 | {FeatureName}.Handler.cs | Command handler implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/Feature.Handler.class.skill.md|Feature.Handler.class.skill]] |
 | {FeatureName}.Validator.cs | Transport correctness validator | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/Feature.Validator.class.skill.md|Feature.Validator.class.skill]] |

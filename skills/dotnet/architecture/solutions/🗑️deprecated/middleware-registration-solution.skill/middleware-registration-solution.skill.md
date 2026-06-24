@@ -21,7 +21,7 @@ creates:
 extends:
   - App.Host.csproj
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill|solution-structure-solution.skill]]"
 ---
 
 # Goal
