@@ -31,7 +31,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill.md|repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md|RepositoryRegistration.cs.create]]
 
 # Implementation
-Extend `RepositoryRegistration` from [[repository-integration.solution.skill]] with `IUnitOfWork` and `UnitOfWorkContext`:
+Extend `RepositoryRegistration` from [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill|repository-integration.solution.skill]] with `IUnitOfWork` and `UnitOfWorkContext`:
 
 ```csharp
 // App.Host/DependencyInjection/RepositoryRegistration.cs

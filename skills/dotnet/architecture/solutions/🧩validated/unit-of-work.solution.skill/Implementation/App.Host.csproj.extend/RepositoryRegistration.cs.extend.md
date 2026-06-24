@@ -24,7 +24,7 @@ change_kind: extend
 
 # Implementation changes
 
-Extend `RepositoryRegistration` from [[repository-integration.solution.skill]] with `IUnitOfWork` and `UnitOfWorkContext`:
+Extend `RepositoryRegistration` from [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill|repository-integration.solution.skill]] with `IUnitOfWork` and `UnitOfWorkContext`:
 
 ```csharp
 // App.Host/DependencyInjection/RepositoryRegistration.cs

@@ -37,7 +37,7 @@ depends_on:
 
 # Requirements
 - `Microsoft.AspNetCore.Http.Abstractions` NuGet package — provides `IApplicationBuilder` and `UseMiddleware<T>()`
-- definition of `module project structure` — [[solution-structure.solution.skill]] defines App.Host project and `/DependencyInjection` folder
+- definition of `module project structure` — [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill|solution-structure.solution.skill]] defines App.Host project and `/DependencyInjection` folder
 
 # Template Skill Mutations
 

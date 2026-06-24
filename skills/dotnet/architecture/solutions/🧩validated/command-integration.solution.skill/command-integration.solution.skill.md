@@ -103,7 +103,7 @@ MUST:
 - Result records declared in the same file as their command
 - One handler per command — `IRequestHandler<TCommand, Result<T>>`
 - Handler structure: load → guard → domain call → stage → return result
-- All entity loading in handlers uses named specs from [[repository-integration.solution.skill]]
+- All entity loading in handlers uses named specs from [[skills/dotnet/architecture/solutions/🧩validated/repository-integration.solution.skill/repository-integration.solution.skill|repository-integration.solution.skill]]
 - Handlers inject `IRepository<T>` from Shared — never `DbContext`
 - Cross-module writes dispatched via `_mediator.Send()` — never direct calls
 - Each module has `Register{ModuleName}Module()` extension method
