@@ -1,6 +1,6 @@
 ---
 uid: 95ddb3de-2d54-4890-b075-e86bab2e38c0
-name: domain-behaviour
+name: domain-behaviour.solution
 description: Defines how domain entities change state, enforce invariants through domain rules, and extract bulky logic into static domain service extension methods
 domain: skill
 type: architecture

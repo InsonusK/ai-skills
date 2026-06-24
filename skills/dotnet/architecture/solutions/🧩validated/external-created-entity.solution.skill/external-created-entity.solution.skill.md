@@ -1,6 +1,6 @@
 ---
 uid: 9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f
-name: external-created-entity
+name: external-created-entity.solution
 description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver<TResponse> in Shared, ConflictResult<T> in Shared, GuidResolvingBehavior in BuildingBlocks that returns the resolver's ConflictResult<TResponse> on duplicate Guid, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application
 domain: skill
 type: architecture

@@ -1,6 +1,6 @@
 ---
 uid: 9449536e-6300-484a-b0b3-66a00a1929e1
-name: command-integration
+name: command-integration.solution
 description: Defines the integrated command pipeline — ICommand marker in Shared, command records in {Module}.Interfaces, handler and validator co-location in {Module}.Application/Features, module DI self-registration, and App.Host composition-root wiring
 domain: skill
 type: architecture

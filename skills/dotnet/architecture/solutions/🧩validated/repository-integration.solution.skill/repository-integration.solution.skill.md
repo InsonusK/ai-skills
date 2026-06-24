@@ -1,6 +1,6 @@
 ---
 uid: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
-name: repository-integration
+name: repository-integration.solution
 description: Merges the Ardalis Specification pattern with repository abstractions — defines IReadRepository<T> and IRepository<T> as thin wrappers around Ardalis base interfaces in Shared, provides a generic Repository<T> implementation in App.Infrastructure inheriting Ardalis.RepositoryBase<T>, and governs specification placement across Application and App.Queries
 domain: skill
 type: architecture

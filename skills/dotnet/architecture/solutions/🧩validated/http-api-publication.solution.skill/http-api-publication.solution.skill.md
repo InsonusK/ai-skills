@@ -1,6 +1,6 @@
 ---
 uid: 7f3e9a2b-4c1d-4e8f-9a3b-2c1d4e8f9a3b
-name: http-api-publication
+name: http-api-publication.solution
 description: Defines the HTTP API publication layer — entity-centric Controllers as thin MediatR adapters, Minimal API for system operations, controller naming and folder conventions, Result-to-HTTP mapping with ProblemDetails, and App.Host wiring for the API layer. Requires at least one of query-integration or command-integration to provide MediatR handler targets.
 domain: skill
 type: architecture
@@ -30,10 +30,10 @@ creates:
   - "{Module}.Api.Controllers.Single{Entity}{Related}Controller.cs"
   - "{Module}.Api.MinimalApi.{System}Endpoints.cs"
   - "{Module}.Api.Extensions.ResultExtensions.cs"
-  - "App.Host.DependencyInjection.ApiRegistration.cs"
+  - App.Host.DependencyInjection.ApiRegistration.cs
 extends:
   - "{Module}.Api.csproj"
-  - "App.Host.csproj"
+  - App.Host.csproj
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/validation-behavior.solution.skill/validation-behavior.solution.skill.md|validation-behavior.solution.skill]]"

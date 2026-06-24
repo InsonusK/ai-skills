@@ -1,6 +1,6 @@
 ---
 uid: 4f8b2c1e-9d3a-4e7f-b8a1-2c4d6e8f0a2b
-name: value-objects-and-rules
+name: value-objects-and-rules.solution
 description: Defines the Value Object and Domain Rule patterns — immutable self-validating types that encode domain semantics, and stateless deterministic predicates that encode reusable business conditions as static extension methods. Also governs extraction of reusable VOs and rules into Shared.csproj.
 domain: skill
 type: architecture

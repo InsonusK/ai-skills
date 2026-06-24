@@ -1,6 +1,6 @@
 ---
 uid: 90a22d4c-6797-4ee2-bc99-84eb24852c5e
-name: middleware-registration
+name: middleware-registration.solution
 description: Defines the centralized HTTP middleware registration in App.Host — the single MiddlewareRegistration class and UseMiddlewarePipeline extension method where all custom HTTP middleware are registered in the correct pipeline order
 domain: skill
 type: architecture

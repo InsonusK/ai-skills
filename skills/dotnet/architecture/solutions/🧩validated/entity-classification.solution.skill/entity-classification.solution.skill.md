@@ -1,6 +1,6 @@
 ---
 uid: 7f6e5d4c-3b2a-1f0e-9d8c-7b6a5f4e3d2c
-name: entity-classification
+name: entity-classification.solution
 description: Defines the four-type entity classification taxonomy for the domain model — Internal Immutable, External Immutable, Internal Mutable, and External Mutable — and maps each type to the exact combination of entity-concurrency-change.solution.skill and external-created-entity.solution.skill that must be applied.
 domain: skill
 type: architecture
