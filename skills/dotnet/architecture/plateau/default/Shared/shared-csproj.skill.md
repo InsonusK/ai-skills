@@ -210,7 +210,7 @@ __Applied solutions:__
 | /Guid/IGuidResolver.cs | Per-entity resolver contract — resolves Guid to existing command response | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-guid-resolver-class.skill.md|IGuidResolver.class.skill]] |
 | /Concurrency/IHasVersions.cs | Interface carried by all update commands | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-has-versions-class.skill.md|IHasVersions.class.skill]] |
 | /Concurrency/IEntityVersionResolverFactory.cs | Factory that resolves an entity name to an `IEntityVersionResolver` | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-entity-version-resolver-factory-class.skill.md|IEntityVersionResolverFactory.class.skill]] |
-| /Concurrency/IEntityVersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/Shared/classes/IEntityVersionResolver.class.skill.md|IEntityVersionResolver.class.skill]] |
+| /Concurrency/IEntityVersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-entity-version-resolver-class.skill.md|IEntityVersionResolver.class.skill]] |
 | /Concurrency/IVersioned.cs | Marker interface for versioned domain entities | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-versioned-class.skill.md|IVersioned.class.skill]] |
 | ICommand.cs | Write operation marker interfaces | [[skills/dotnet/architecture/plateau/default/Shared/classes/i-command-class.skill.md|ICommand.class.skill]] |
 
