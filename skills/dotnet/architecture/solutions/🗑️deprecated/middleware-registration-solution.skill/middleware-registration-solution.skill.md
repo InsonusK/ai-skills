@@ -21,7 +21,7 @@ creates:
 extends:
   - App.Host.csproj
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure-solution.skill]]"
 ---
 
 # Goal
@@ -37,13 +37,13 @@ depends_on:
 
 # Requirements
 - `Microsoft.AspNetCore.Http.Abstractions` NuGet package — provides `IApplicationBuilder` and `UseMiddleware<T>()`
-- definition of `module project structure` — [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill|solution-structure.solution.skill]] defines App.Host project and `/DependencyInjection` folder
+- definition of `module project structure` — [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill|solution-structure-solution.skill]] defines App.Host project and `/DependencyInjection` folder
 
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/solutions/🗑️deprecated/middleware-registration.solution.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Wire centralized HTTP middleware registration in the application pipeline
-  - [[skills/dotnet/architecture/solutions/🗑️deprecated/middleware-registration.solution.skill/Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create|MiddlewareRegistration.cs]] - create - Centralized HTTP middleware registration extension
+- [[skills/dotnet/architecture/solutions/🗑️deprecated/middleware-registration-solution.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Wire centralized HTTP middleware registration in the application pipeline
+  - [[skills/dotnet/architecture/solutions/🗑️deprecated/middleware-registration-solution.skill/Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create|MiddlewareRegistration.cs]] - create - Centralized HTTP middleware registration extension
 
 # Rules
 

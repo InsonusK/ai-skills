@@ -30,7 +30,7 @@ public class {EntityName}
     public int Id { get; internal set; }
     public Guid Guid { get; internal set; }    // ← added by this solution
     // ... other properties
-    public uint Version { get; internal set; }  // ← entity-concurrency-change.solution.skill (if mutable)
+    public uint Version { get; internal set; }  // ← entity-concurrency-change-solution.skill (if mutable)
 
     // factory method receives client-generated Guid
     public static {EntityName} Create(Guid guid, /* ... */)

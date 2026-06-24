@@ -13,7 +13,7 @@ change_kind: extend
 - API layer is still a thin adapter — no business logic, no domain rules
 - `ConflictResult<Create{Entity}Result>` is detected by type and mapped to a 409 response
 - Successful creation returns 201 Created with the entity result and a `Location` header pointing to the GET endpoint
-- Validation and error statuses continue to use `ProblemDetails` via the existing `ResultExtensions` from http-api-publication.solution.skill
+- Validation and error statuses continue to use `ProblemDetails` via the existing `ResultExtensions` from http-api-publication-solution.skill
 - `Create{Entity}Result` contains only the entity Id, so the 409 body is `{ id: ... }`
 
 # Structure

@@ -13,7 +13,7 @@ change_kind: create
 # Core Principles
 - Single-condition spec — filters by `Guid` property only
 - Lives in `{Module}.Application/Specifications` — reusable across resolver and any feature that needs Guid lookup
-- Follows naming convention from repository-integration.solution.skill: `{Entity}ByGuidSpec`
+- Follows naming convention from repository-integration-solution.skill: `{Entity}ByGuidSpec`
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -40,7 +40,7 @@ MUST:
 - Used only by `GuidResolver` and any feature that explicitly needs Guid-based lookup
 
 MUST NOT:
-- Placed in Domain — all specs belong in Application per repository-integration.solution.skill
+- Placed in Domain — all specs belong in Application per repository-integration-solution.skill
 
 # Anti-patterns
 - Inline LINQ in resolver instead of named spec
@@ -54,7 +54,7 @@ MUST NOT:
 - [ ] WHEN applied THEN Used by GuidResolver to look up the entity by its client-generated Guid
 - [ ] WHEN applied THEN Single-condition spec — filters by Guid property only
 - [ ] WHEN applied THEN Lives in {Module}.Application/Specifications — reusable across resolver and any feature that needs Guid lookup
-- [ ] WHEN applied THEN Follows naming convention from repository-integration.solution.skill: {Entity}ByGuidSpec
+- [ ] WHEN applied THEN Follows naming convention from repository-integration-solution.skill: {Entity}ByGuidSpec
 - [ ] WHEN verified THEN {Entity}ByGuidSpec in /{Module}.Application/Specifications
 - [ ] WHEN verified THEN Filters by Guid property only
 - [ ] WHEN naming 'Guid lookup spec' THEN pattern matches convention

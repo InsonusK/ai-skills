@@ -6,7 +6,7 @@ Extend the entity class to match the selected classification. Only the parts req
 
 No changes beyond the base entity. The entity has only the internal `int Id` identity.
 
-**Dependencies**: do not implement `entity-concurrency-change.solution.skill` or `external-created-entity.solution.skill`.
+**Dependencies**: do not implement `entity-concurrency-change-solution.skill` or `external-created-entity-solution.skill`.
 
 ```csharp
 public class {EntityName}
@@ -21,7 +21,7 @@ public class {EntityName}
 
 Add the `Guid` property and set it exactly once in the factory method. The entity has no `Version` and does not implement `IVersioned`.
 
-**Dependencies**: implement `external-created-entity.solution.skill`; do not implement `entity-concurrency-change.solution.skill`.
+**Dependencies**: implement `external-created-entity-solution.skill`; do not implement `entity-concurrency-change-solution.skill`.
 
 ```csharp
 public class {EntityName}
@@ -44,7 +44,7 @@ public class {EntityName}
 
 Add the `Version` property and implement `IVersioned`. The entity has no `Guid` and does not implement `IHasGuid`.
 
-**Dependencies**: implement `entity-concurrency-change.solution.skill`; do not implement `external-created-entity.solution.skill`.
+**Dependencies**: implement `entity-concurrency-change-solution.skill`; do not implement `external-created-entity-solution.skill`.
 
 ```csharp
 public class {EntityName} : IVersioned
@@ -60,7 +60,7 @@ public class {EntityName} : IVersioned
 
 Add both `Guid` and `Version`, implement `IVersioned`, and set the `Guid` once in the factory method.
 
-**Dependencies**: implement both `entity-concurrency-change.solution.skill` and `external-created-entity.solution.skill`.
+**Dependencies**: implement both `entity-concurrency-change-solution.skill` and `external-created-entity-solution.skill`.
 
 ```csharp
 public class {EntityName} : IVersioned

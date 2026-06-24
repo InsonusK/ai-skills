@@ -23,8 +23,8 @@ change_kind: create
   /Events
     IDomainEvent.cs
   /Guid
-    IHasGuid.cs           ← external-created-entity.solution.skill
-    IGuidResolver.cs      ← external-created-entity.solution.skill
+    IHasGuid.cs           ← external-created-entity-solution.skill
+    IGuidResolver.cs      ← external-created-entity-solution.skill
   /MediatR
     ICommand.cs
     IQuery.cs
@@ -32,7 +32,7 @@ change_kind: create
     IRepository.cs
     IReadRepository.cs
   /Results
-    ConflictResult.cs     ← external-created-entity.solution.skill
+    ConflictResult.cs     ← external-created-entity-solution.skill
   /UnitOfWork
     IUnitOfWork.cs
   /Outbox
@@ -68,7 +68,7 @@ change_kind: create
 - Repository or unit-of-work implementations — belong to BuildingBlocks or App.Infrastructure
 
 # Allowed Dependencies
-- `Ardalis.Result` — required by `ConflictResult<T>` from external-created-entity.solution.skill
+- `Ardalis.Result` — required by `ConflictResult<T>` from external-created-entity-solution.skill
 - None — Shared has no project references
 
 # Rules
@@ -93,4 +93,4 @@ MUST NOT:
 - [ ] Shared.csproj has no project references
 - [ ] Shared.csproj contains only interfaces and primitives
 - [ ] No business logic in any Shared class
-- [ ] Shared.csproj references `Ardalis.Result` when external-created-entity.solution.skill is used
+- [ ] Shared.csproj references `Ardalis.Result` when external-created-entity-solution.skill is used

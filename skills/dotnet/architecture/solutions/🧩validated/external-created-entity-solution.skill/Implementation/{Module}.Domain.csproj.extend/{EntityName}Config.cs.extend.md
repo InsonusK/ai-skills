@@ -37,7 +37,7 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
             .IsUnique()
             .HasDatabaseName(UX_Guid);
 
-        // Version concurrency token — entity-concurrency-change.solution.skill (if mutable)
+        // Version concurrency token — entity-concurrency-change-solution.skill (if mutable)
         builder
             .Property(e => e.Version)
             .HasColumnName("xmin")

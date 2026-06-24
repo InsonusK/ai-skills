@@ -24,8 +24,8 @@ extends:
   - "{Module}.Domain.csproj"
   - "{Module}.Domain.Entities.{EntityName}.cs"
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules.solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure-solution.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules-solution.skill]]"
 ---
 
 # Goal
@@ -44,13 +44,13 @@ depends_on:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/solution-structure.solution.skill.md|solution-structure.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entities and domain services
-    - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure.solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with behavior methods
-- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/value-objects-and-rules.solution.skill.md|value-objects-and-rules.solution.skill]]
-  - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides Value Object and domain rule patterns
-    - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs]] - domain rules used to validate state changes
-    - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules.solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs]] - immutable Value Objects used by entity behavior
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/solution-structure-solution.skill.md|solution-structure-solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj]] - hosts entities and domain services
+    - [[skills/dotnet/architecture/solutions/🧩validated/solution-structure-solution.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - entity pattern extended with behavior methods
+- [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/value-objects-and-rules-solution.skill.md|value-objects-and-rules-solution.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides Value Object and domain rule patterns
+    - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs]] - domain rules used to validate state changes
+    - [[skills/dotnet/architecture/solutions/🧩validated/value-objects-and-rules-solution.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs]] - immutable Value Objects used by entity behavior
 
 NUGET:
 - None — relies only on patterns defined by dependency solutions.
