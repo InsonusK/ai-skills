@@ -304,14 +304,14 @@ Domain Layer
 │   ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Solutions/entity-concurrency-pattern.skill|entity-concurrency-pattern.skill]]   ← RowVersion / xmin
 │   └── [[skills/dotnet/skill-graph/Domain Layer/entity/external-created-entity.skill|external-created-entity.skill]]      ← Guid property, unique index
 ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/value-object.skill.skill|value-object-pattern.skill]]             ← immutable VO, single/multi-property
-├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-rule.class.skill|domain-rule-pattern.skill]]              ← static predicates, no throw
+├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/class-domain-rule.skill|domain-rule-pattern.skill]]              ← static predicates, no throw
 ├── [[skills/dotnet/skill-graph/Domain Layer/domain-service.skill|domain-service.skill]]                   ← pure logic extraction
 ├── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-event-pattern.skill|domain-event-pattern.skill]]             ← define + raise events on entity
-└── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/domain-configuration.class.skill|domain-configuration-pattern.skill]]    ← EF IEntityTypeConfiguration
+└── [[skills/dotnet/skill-graph/developing/Module/Domain csproj/Classes/class-domain-configuration.skill|domain-configuration-pattern.skill]]    ← EF IEntityTypeConfiguration
 
 Application Layer
-├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/module-application.csproj.skill|module-application.skill]]               ← TODO: CQRS handler structure
-├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/command-handling.solution.skill|command-handler-pattern.skill]]          ← TODO: load→domain→save pattern
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/csproj-module-application.skill|module-application.skill]]               ← TODO: CQRS handler structure
+├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/Solutions/solution-command-handling.skill|command-handler-pattern.skill]]          ← TODO: load→domain→save pattern
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/query-handler-pattern.skill|query-handler-pattern.skill]]            ← TODO: single-module vs cross-module
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/ardalis-specification-pattern.skill|ardalis-specification-pattern.skill]]    ← TODO: simple (Domain) vs complex (App)
 ├── [[skills/dotnet/skill-graph/developing/Module/Application csproj/repository-pattern.skill|repository-pattern.skill]]               ← TODO: IRepository, IReadRepository, IUnitOfWork

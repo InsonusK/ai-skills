@@ -107,4 +107,4 @@ MUST NOT:
 - domain-event.skill — event definition this handler subscribes to
 - ardalis-specification.skill — idempotency spec used in check-before-act guard
 - repository.skill — IRepository used to stage side effect changes
-- domain-events.solution.skill — full outbox delivery flow
+- solution-domain-events.skill — full outbox delivery flow

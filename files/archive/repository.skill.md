@@ -128,4 +128,4 @@ MUST NOT:
 - feature-query-handler.skill — query handlers use IReadRepository<T>
 - ardalis-specification.skill — all queries passed to repository use specifications
 - unit-of-work.skill — UnitOfWorkBehavior and IUnitOfWork implementation detail
-- command-handling.solution.skill — full pipeline including UnitOfWorkBehavior
+- solution-command-handling.skill — full pipeline including UnitOfWorkBehavior
