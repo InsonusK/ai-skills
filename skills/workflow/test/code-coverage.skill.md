@@ -1,6 +1,6 @@
 ---
 uid: bc4fad90-711f-4ffe-a9a2-79f836b8c56e
-name: Code coverage
+name: code-coverage
 description: How many codes must be codered by unittest
 whenToUse: write code or write test
 ---
