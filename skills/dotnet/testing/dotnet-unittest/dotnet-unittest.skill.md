@@ -1,24 +1,17 @@
 ---
 name: dotnet-unittest
-
 description: Guidelines for writing .NET unit tests with mock separation and folder mirroring. Enforces 80% coverage and structured test class organization.
-
-metadata:
-  domain: dotnet
-  tags:
-  - dotnet
-  - unit-testing
-  - xunit
-  - mocks
-  - coverage
-  version: 1.0.0
-  ai_hints:
-    category: guide
+whenToUse: write dotnet unit tests
+tags:
+- dotnet
+- unit-testing
+- xunit
+- mocks
+- coverage
 ---
 
-# When to use this skill
-
-Use this skill when you want to create a .net unit test for project.
+# Goal 
+- Define template of unittes classes
 
 # Have the following information ready before using this skill:
 - list of class and method you need to cover
@@ -28,8 +21,8 @@ Use this skill when you want to create a .net unit test for project.
 None
 
 # How to use it
-1. Prepare list of usecases which you need to cover. You can use [usecases_list.md](./templates/usecases_list.md) template to show them to user for confirmation
-2. Create unit test using [unittest_class.md](./templates/unittest_class.md) template
+1. Prepare list of usecases which you need to cover. Use [workflow-unittest-testplan skill](../../../workflow/test/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill.md)
+2. Create unit test using [unittest_class.md](skills/dotnet/testing/dotnet-unittest/templates/unittest_class.md) template
 
 # Rules
 - Use ITestOutputHelper Output method BuildLoggerFor<Type>() to create logger
