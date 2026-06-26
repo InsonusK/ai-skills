@@ -2,10 +2,8 @@
 uid: bc4fad90-711f-4ffe-a9a2-79f836b8c56e
 name: Code coverage
 description: How many codes must be codered by unittest
+whenToUse: write code or write test
 ---
-
-# When to use skill
-When you write code or write test
 
 # How to use it
 1. Unittest test is required. Unless user ask to skip it. 

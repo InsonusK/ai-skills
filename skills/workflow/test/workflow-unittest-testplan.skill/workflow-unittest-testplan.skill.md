@@ -1,22 +1,12 @@
 ---
 name: workflow-unittest-testplan
 description: Describes how to write test cases and test plans for unit testing. Covers use cases, edge cases, and business-critical scenarios.
-metadata:
-  domain: workflow
-  tags:
-    - testing
-    - test-plan
-    - use-cases
-    - edge-cases
-    - coverage
-  version: 1.0.0
-  ai_hints:
-    category: guide
+whenToUse: writing unit test
 ---
 
-# When to use this skill
-
-Use this skill when you need to write test cases for unit testing. This skill will help you to create a test plan which includes list of usecases and test cases for each usecase.
+# Goal
+- Define unit test writing form
+- Define code coverage rule
 
 # Requirements
 - list of class and method you need to cover
@@ -24,7 +14,7 @@ Use this skill when you need to write test cases for unit testing. This skill wi
 
 # How to use it
 1. Prepare list of usecases which you need to cover. 
-  1. Cover 80+% of code.
+  1. Follow [code coverage skill](../code-coverage.skill.md)
   2. Cover corner cases, edge cases, and happy path.
   3. Cover cases which are easy to be missed by developers. For example, if there is a method which has a parameter with default value, you need to cover the case when the parameter is not passed.
   4. Cover cases which are easy to be wrong. For example, if there is a method which has a parameter with default value, you need to cover the case when the parameter is passed with wrong value.
