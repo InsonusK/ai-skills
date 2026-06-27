@@ -23,21 +23,24 @@ created_by:
 
 # Structure
 
-## Project Structure
+## Repository Structure
 ```hint
-Define how solution structure. Summarize all Project Structure from all finded Repository.template.md. 
+Define solution structure. Summarize all project structure from applied `Repository.created` or `Repository.extended` files. If find project structure in other files also applyed here.
 
 At the end of block writes list to all used templates to build block.
 
 MUST:
-- If solution conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only repository-level content here. Show only project folders.
+- If solution conflicted to each other as user to solve the problem
+- For project structure block:
+  - use link to files which define project
+- For Applied solutions block:
+	- Each bullet must be `[[solution skill link]] - [[Repository.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 ```
 ```example
-/src
-	/App
-		/App.Host 
+- /src
+	- /App
+		- /[App.Host](./App.Host/csproj-app-host.skill.md)
 
 __Applied solutions:__
 - [[Solution link]] - [[Repository.template.md link]]

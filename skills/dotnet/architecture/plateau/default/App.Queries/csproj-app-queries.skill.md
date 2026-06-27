@@ -44,26 +44,19 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/App.Queries
-  /Queries
-    /{ModuleName}
-      GetTaskWithUserDetailsHandler.cs
-  App.Queries.csproj
-```
-
-```
-/App.Queries
-  /Queries
-    /GetTaskWithUserDetails
-      GetTaskWithUserDetails.Handler.cs
-    /GetOrderWithCustomer
-      GetOrderWithCustomer.Handler.cs
-      GetOrderWithCustomer.Validator.cs   ← optional transport validator
-  /Specifications
-    TaskWithUserDetailsSpec.cs        ← cross-module projection specs
-  AppQueriesRegistration.cs
-```
+- /App.Queries
+  - /Queries
+    - /{ModuleName}
+      - [GetTaskWithUserDetails.Handler.cs](./classes/class-cross-module-query-handler.skill.md)
+    - /GetTaskWithUserDetails
+      - [GetTaskWithUserDetails.Handler.cs](./classes/class-cross-module-query-handler.skill.md)
+    - /GetOrderWithCustomer
+      - [GetOrderWithCustomer.Handler.cs](./classes/class-cross-module-query-handler.skill.md)
+      - GetOrderWithCustomer.Validator.cs
+  - /Specifications
+    - TaskWithUserDetailsSpec.cs
+  - [AppQueriesRegistration.cs](./classes/class-app-queries-registration.skill.md)
+  - App.Queries.csproj
 
 Each query lives in its own folder under `/Queries`. A folder may contain:
 - Only the handler — when the query has no transport validation rules

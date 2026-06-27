@@ -65,44 +65,20 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/{ModuleName}.Interfaces
-  /Commands
-  /Queries
-  /DTOs
-  /Events
-  {ModuleName}.Interfaces.csproj
-```
-
-```
-/{Module}.Interfaces
-  /Queries
-    Get{Entity}Query.cs
-    Get{Entities}Query.cs
-    Get{Entity}With{Related}Query.cs
-  /DTOs
-    {Entity}Dto.cs
-    {Entity}SummaryDto.cs
-    {Entity}With{Related}Dto.cs
-```
-
-```
-/{Module}.Interfaces
-  /Commands
-    Create{Entity}Command.cs
-```
-
-```
-/{Module}.Interfaces
-  /Commands
-    {Command}.cs    ← extended with IHasVersions
-```
-
-```
-/{Module}.Interfaces
-  /Commands
-    {Command}.cs
-```
+- /{Module}.Interfaces
+  - /Commands
+    - [{Command}.cs](./classes/class-command.skill.md)
+  - /Queries
+    - [Get{Entity}Query.cs](./classes/class-query.skill.md)
+    - [Get{Entities}Query.cs](./classes/class-query.skill.md)
+    - [Get{Entity}With{Related}Query.cs](./classes/class-query.skill.md)
+  - /DTOs
+    - [{Entity}Dto.cs](./classes/class-dto.skill.md)
+    - [{Entity}SummaryDto.cs](./classes/class-dto.skill.md)
+    - [{Entity}With{Related}Dto.cs](./classes/class-dto.skill.md)
+  - /Events
+    - {IntegrationEvent}.cs
+  - {Module}.Interfaces.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj.create]]

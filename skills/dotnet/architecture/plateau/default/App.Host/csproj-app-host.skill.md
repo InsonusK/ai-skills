@@ -86,65 +86,16 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/App.Host
-  /DependencyInjection
-    RepositoryRegistration.cs
-```
-
-```
-/App.Host
-  /DependencyInjection
-    ModuleRegistration.cs
-    PipelineRegistration.cs
-    InfrastructureRegistration.cs
-  Program.cs
-  App.Host.csproj
-```
-
-```
-/App.Host
-  /DependencyInjection
-    RepositoryRegistration.cs
-  Program.cs
-```
-
-```
-/App.Host
-  /DependencyInjection
-    ModuleRegistration.cs    ← solution-structure
-    PipelineRegistration.cs  ← pipeline-registration
-  Program.cs
-```
-
-```
-/App.Host
-  /DependencyInjection
-    PipelineRegistration.cs
-  Program.cs
-```
-
-```
-/App.Host
-  /DependencyInjection
-    PipelineRegistration.cs
-  Program.cs
-```
-
-```
-/App.Host
-  /DependencyInjection
-    RepositoryRegistration.cs    ← repository-integration
-    PipelineRegistration.cs      ← pipeline-registration
-    ApiRegistration.cs
-  Program.cs
-```
-
-```
-/App.Host
-  /DependencyInjection
-    EntityVersionResolverRegistration.cs    ← created to register the factory and resolvers
-```
+- /App.Host
+  - /DependencyInjection
+    - [ModuleRegistration.cs](./classes/class-module-registration.skill.md)
+    - [PipelineRegistration.cs](./classes/class-pipeline-registration.skill.md)
+    - [RepositoryRegistration.cs](./classes/class-repository-registration.skill.md)
+    - [ApiRegistration.cs](./classes/class-api-registration.skill.md)
+    - [EntityVersionResolverRegistration.cs](./classes/class-entity-version-resolver-registration.skill.md)
+    - InfrastructureRegistration.cs
+  - Program.cs
+  - App.Host.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj.extend]]

@@ -15,27 +15,25 @@ created_by:
 
 # Structure
 
-## Project Structure
-```
-/src
-  /Modules
-    /{ModuleName}
-      /{ModuleName}.Api
-      /{ModuleName}.Application
-      /{ModuleName}.Domain
-      /{ModuleName}.Interfaces
-      /{ModuleName}.Api.Tests
-      /{ModuleName}.Application.Tests
-      /{ModuleName}.Domain.Tests
-      /{ModuleName}.Integration.Tests
-  /App
-    /App.Host
-    /App.Infrastructure
-    /App.Infrastructure.Migrations
-    /App.Queries
-  /Shared
-  /BuildingBlocks
-```
+## Repository Structure
+- /src
+  - /Modules
+    - /{ModuleName}
+      - /[{ModuleName}.Api](./{Module}.Api/csproj-module-api.skill.md)
+      - /[{ModuleName}.Application](./{Module}.Application/csproj-module-application.skill.md)
+      - /[{ModuleName}.Domain](./{Module}.Domain/csproj-module-domain.skill.md)
+      - /[{ModuleName}.Interfaces](./{Module}.Interfaces/csproj-module-interfaces.skill.md)
+      - /{ModuleName}.Api.Tests
+      - /{ModuleName}.Application.Tests
+      - /{ModuleName}.Domain.Tests
+      - /{ModuleName}.Integration.Tests
+  - /App
+    - /[App.Host](./App.Host/csproj-app-host.skill.md)
+    - /[App.Infrastructure](./App.Infrastructure/csproj-app-infrastructure.skill.md)
+    - /[App.Infrastructure.Migrations](./App.Infrastructure.Migrations/csproj-app-infrastructure-migrations.skill.md)
+    - /[App.Queries](./App.Queries/csproj-app-queries.skill.md)
+  - /[Shared](./Shared/csproj-shared.skill.md)
+  - /[BuildingBlocks](./BuildingBlocks/csproj-building-blocks.skill.md)
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/Repository.create.md|Repository.create]]

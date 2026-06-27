@@ -66,48 +66,22 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/App.Infrastructure
-  /UnitOfWork
-    UnitOfWork.cs
-```
-
-```
-/App.Infrastructure
-  /Persistence
-    AppDbContext.cs
-    /Configurations
-      OutboxMessageConfig.cs
-  /Repositories
-    Repository.cs
-  /UnitOfWork
-    UnitOfWork.cs
-  /Outbox
-    DomainEventInterceptor.cs
-    OutboxDispatcher.cs
-  /Concurrency
-    EntityVersionResolverFactory.cs
-  App.Infrastructure.csproj
-```
-
-```
-/App.Infrastructure
-  /Repositories
-    Repository.cs
-```
-
-```
-/App.Infrastructure
-  /Concurrency
-    EntityVersionResolverFactory.cs
-```
-
-```
-/App.Infrastructure
-  /Persistence
-    /Configurations
-      CrossModuleFkConfig.cs
-```
+- /App.Infrastructure
+  - /Persistence
+    - AppDbContext.cs
+    - /Configurations
+      - [CrossModuleFkConfig.cs](./classes/class-module-to-module-config.skill.md)
+      - OutboxMessageConfig.cs
+  - /Repositories
+    - [Repository.cs](./classes/class-repository.skill.md)
+  - /UnitOfWork
+    - [UnitOfWork.cs](./classes/class-unit-of-work.skill.md)
+  - /Outbox
+    - DomainEventInterceptor.cs
+    - OutboxDispatcher.cs
+  - /Concurrency
+    - [EntityVersionResolverFactory.cs](./classes/class-entity-version-resolver-factory.skill.md)
+  - App.Infrastructure.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]

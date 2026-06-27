@@ -63,50 +63,19 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/BuildingBlocks
-  /MediatR
-    ValidationBehavior.cs
-```
-
-```
-/BuildingBlocks
-  /MediatR
-    UnitOfWorkContext.cs
-    UnitOfWorkBehavior.cs
-```
-
-```
-/BuildingBlocks
-  /MediatR
-    UnitOfWorkContext.cs
-    UnitOfWorkBehavior.cs
-    ValidationBehavior.cs
-  /Outbox
-    OutboxMessage.cs
-    OutboxDispatcher.cs
-  /Concurrency
-    ETagEncoder.cs
-  BuildingBlocks.csproj
-```
-
-```
-/BuildingBlocks
-  /MediatR
-    ValidationBehavior.cs      ← solution-validation-behavior.skill
-    GuidResolvingBehavior.cs
-    ConcurrencyBehavior.cs     ← solution-entity-concurrency-change.skill
-    UnitOfWorkContext.cs       ← solution-unit-of-work.skill
-    UnitOfWorkBehavior.cs      ← solution-unit-of-work.skill
-```
-
-```
-/BuildingBlocks
-  /Concurrency
-    ETagEncoder.cs
-  /MediatR
-    ConcurrencyBehavior.cs
-```
+- /BuildingBlocks
+  - /MediatR
+    - [ValidationBehavior.cs](./classes/class-validation-behavior.skill.md)
+    - [GuidResolvingBehavior.cs](./classes/class-guid-resolving-behavior.skill.md)
+    - [ConcurrencyBehavior.cs](./classes/class-concurrency-behavior.skill.md)
+    - [UnitOfWorkContext.cs](./classes/class-unit-of-work-context.skill.md)
+    - [UnitOfWorkBehavior.cs](./classes/class-unit-of-work-behavior.skill.md)
+  - /Outbox
+    - OutboxMessage.cs
+    - OutboxDispatcher.cs
+  - /Concurrency
+    - [ETagEncoder.cs](./classes/class-etag-encoder.skill.md)
+  - BuildingBlocks.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|class-validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]

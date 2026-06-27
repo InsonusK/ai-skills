@@ -63,39 +63,21 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/{ModuleName}.Api
-  /Controllers
-  {ModuleName}.Api.csproj
-```
-
-```
-/{Module}.Api
-  /Controllers
-    /{Entity}
-      {Entity}Controller.cs               ← collection: POST + GET collection
-      Single{Entity}Controller.cs         ← single entity: GET + PUT + PATCH + DELETE
-      Single{Entity}{Property}Controller.cs ← addressable property: POST + DELETE
-      /{RelatedEntity}
-        {Entity}{RelatedEntity}Controller.cs       ← sub-collection: GET + POST
-        Single{Entity}{RelatedEntity}Controller.cs ← relationship instance: GET + PUT + PATCH + DELETE
-  /MinimalApi
-    {System}Endpoints.cs
-  /Extensions
-    ResultExtensions.cs
-```
-
-```
-/{Module}.Api
-  /Extensions
-    ConflictResultExtensions.cs
-```
-
-```
-/{Module}.Api
-  /Controllers
-    Single{Entity}Controller.cs    ← extended with ETag and If-Match handling
-```
+- /{Module}.Api
+  - /Controllers
+    - /{Entity}
+      - [{Entity}Controller.cs](./classes/class-entity-controller.skill.md)
+      - [Single{Entity}Controller.cs](./classes/class-single-entity-controller.skill.md)
+      - [Single{Entity}{Property}Controller.cs](./classes/class-single-entity-property-controller.skill.md)
+      - /{RelatedEntity}
+        - [{Entity}{RelatedEntity}Controller.cs](./classes/class-entity-related-controller.skill.md)
+        - [Single{Entity}{RelatedEntity}Controller.cs](./classes/class-single-entity-related-controller.skill.md)
+  - /MinimalApi
+    - [{System}Endpoints.cs](./classes/class-system-endpoints.skill.md)
+  - /Extensions
+    - [ResultExtensions.cs](./classes/class-result-extensions.skill.md)
+    - [ConflictResultExtensions.cs](./classes/class-conflict-result-extensions.skill.md)
+  - {Module}.Api.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]

@@ -84,69 +84,30 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/{ModuleName}.Application
-  /Handlers
-  /Validators
-  /Specifications
-  {ModuleName}.Application.csproj
-```
-
-```
-/{Module}.Application
-  /Specifications
-    {Entity}ByIdSpec.cs
-    {Entity}ByGuidSpec.cs
-    Active{Entities}Spec.cs
-    Active{Entities}By{Owner}Spec.cs
-    {Entity}SummarySpec.cs
-    {Entity}ByEventIdSpec.cs
-  /Features
-    /{FeatureName}
-      {Command}Handler.cs
-      {Query}Handler.cs
-```
-
-```
-/{Module}.Application
-  /Features
-    /CreateTask
-      CreateTask.Handler.cs     ← command handler
-      CreateTask.Validator.cs   ← command validator
-  /Queries
-    /GetTask
-      GetTask.Handler.cs        ← query handler
-      GetTask.Validator.cs      ← optional transport validator
-    /GetTasks
-      GetTasks.Handler.cs       ← query handler
-  /Specifications
-    TaskByIdSpec.cs             ← repository-integration
-    TaskSummarySpec.cs          ← repository-integration
-```
-
-```
-/{Module}.Application
-  /Features
-    /Create{Entity}
-      Create{Entity}.Handler.cs
-      Create{Entity}.Validator.cs
-  /Specifications
-    {Entity}ByGuidSpec.cs
-  /Resolvers
-    Create{Entity}GuidResolver.cs
-  {Module}ApplicationRegistration.cs
-```
-
-```
-/{Module}.Application
-  /Concurrency
-    {Entity}VersionResolver.cs
-  /Features
-    /{FeatureName}
-      {FeatureName}.Handler.cs
-      {FeatureName}.Validator.cs
-  {Module}ApplicationRegistration.cs
-```
+- /{Module}.Application
+  - /Features
+    - /{FeatureName}
+      - [{FeatureName}.Handler.cs](./classes/class-feature-handler.skill.md)
+      - [{FeatureName}.Validator.cs](./classes/class-feature-validator.skill.md)
+  - /Queries
+    - /GetTask
+      - [GetTask.Handler.cs](./classes/class-feature-handler.skill.md)
+      - GetTask.Validator.cs
+    - /GetTasks
+      - [GetTasks.Handler.cs](./classes/class-feature-handler.skill.md)
+  - /Specifications
+    - [{Entity}ByIdSpec.cs](./classes/class-entity-by-id-spec.skill.md)
+    - [{Entity}ByGuidSpec.cs](./classes/class-entity-by-guid-spec.skill.md)
+    - [{Entity}SummarySpec.cs](./classes/class-entity-summary-spec.skill.md)
+    - Active{Entities}Spec.cs
+    - Active{Entities}By{Owner}Spec.cs
+    - {Entity}ByEventIdSpec.cs
+  - /Resolvers
+    - [Create{Entity}GuidResolver.cs](./classes/class-create-entity-guid-resolver.skill.md)
+  - /Concurrency
+    - [{Entity}VersionResolver.cs](./classes/class-entity-version-resolver.skill.md)
+  - [{Module}ApplicationRegistration.cs](./classes/class-module-application-registration.skill.md)
+  - {Module}.Application.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj.create]]

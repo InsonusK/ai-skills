@@ -77,23 +77,22 @@ Where does it store in solution
 ```
 ## Project Structure
 ```hint
-Define project structure. Summarize all project structure from all finded Project.template.md.
+Define project structure. Summarize all project structure from applied `{ProjectName}.csproj.created` or `{ProjectName}.csproj.extended` files. If find project structure in other files also applyed here.
 
-At the end of block writes list to all used templates to build block.
+At the end of block writes list to all used files to build block.
 
 MUST:
-- If Project Structure conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
-
-RECOMENDATION:
-- Prefer bullet list
-- Prefer pure copy with out changing
+- If solution conflicted to each other as user to solve the problem
+- For project structure block:
+  - use link to files which define class
+- For Applied solutions block:
+	- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 ```
 ```example
-/ProjectName
-	/DirectoryName
-		ClassesInDirectory.cs
+- /ProjectName
+	- /DirectoryName
+		- [ClassesInDirectory.cs](./classes/classes-in-directory.skill.md)
 	ProjectName.csproj
 ```
 ```example

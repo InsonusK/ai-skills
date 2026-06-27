@@ -81,64 +81,25 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/{Module}.Domain
-  /ValueObjects
-    Age.cs
-    Money.cs
-    Email.cs
-  /Rules
-    IntRules.cs
-    StringRules.cs
-    AgeRules.cs
-    CanDriveCarRule.cs
-  /Entities
-    Order.cs
-    Driver.cs
-```
-
-```
-/{Module}.Domain
-  /Entities
-    InternalImmutableEntity.cs
-    InternalMutableEntity.cs
-    ExternalImmutableEntity.cs
-    ExternalMutableEntity.cs
-```
-
-```
-/{Module}.Domain
-  /Entities
-    {EntityName}.cs
-  /Configurations
-    {EntityName}Config.cs
-```
-
-```
-/{Module}.Domain
-  /Entities
-    {EntityName}.cs          ← extended with Version property
-  /Configurations
-    {EntityName}Config.cs    ← extended with Version mapping
-```
-
-```
-/{Module}.Domain
-  /Configurations
-    TodoTaskConfig.cs
-    OrderConfig.cs
-```
-
-```
-/{ModuleName}.Domain
-  /Entities
-  /ValueObjects
-  /Rules
-  /Services
-  /Events
-  /Configurations
-  {ModuleName}.Domain.csproj
-```
+- /{Module}.Domain
+  - /Entities
+    - [{EntityName}.cs](./classes/class-entity.skill.md)
+  - /ValueObjects
+    - [Age.cs](./classes/class-value-object.skill.md)
+    - [Money.cs](./classes/class-value-object.skill.md)
+    - [Email.cs](./classes/class-value-object.skill.md)
+  - /Rules
+    - [IntRules.cs](./classes/class-rule.skill.md)
+    - [StringRules.cs](./classes/class-rule.skill.md)
+    - [AgeRules.cs](./classes/class-rule.skill.md)
+    - [CanDriveCarRule.cs](./classes/class-rule.skill.md)
+  - /Services
+    - [{Behavior}Service.cs](./classes/class-behavior-service.skill.md)
+  - /Events
+    - {DomainEvent}.cs
+  - /Configurations
+    - [{EntityName}Config.cs](./classes/class-entity-config.skill.md)
+  - {Module}.Domain.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]

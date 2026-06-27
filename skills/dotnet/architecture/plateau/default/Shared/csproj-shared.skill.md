@@ -91,91 +91,38 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/Shared
-  /ValueObjects
-    Email.cs
-    Money.cs
-  /Rules
-    StringRules.cs
-    IntRules.cs
-  /Exceptions
-    DomainException.cs
-  Shared.csproj
-```
-
-```
-/Shared
-  /UnitOfWork
-    IUnitOfWork.cs
-```
-
-```
-/Shared
-  /Events
-    IDomainEvent.cs
-  /Guid
-    IHasGuid.cs           ← solution-external-created-entity.skill
-    IGuidResolver.cs      ← solution-external-created-entity.skill
-  /MediatR
-    ICommand.cs
-    IQuery.cs
-  /Repositories
-    IRepository.cs
-    IReadRepository.cs
-  /Results
-    ConflictResult.cs     ← solution-external-created-entity.skill
-  /UnitOfWork
-    IUnitOfWork.cs
-  /Outbox
-    IHasDomainEvents.cs
-  /Concurrency
-    IVersioned.cs
-    IHasVersions.cs
-    IEntityVersionResolverFactory.cs
-    IEntityVersionResolver.cs
-  Shared.csproj
-```
-
-```
-/Shared
-  /Repositories
-    IReadRepository.cs
-    IRepository.cs
-```
-
-```
-/Shared
-  /MediatR
-    IQuery.cs
-  /Repositories
-    IReadRepository.cs    ← repository-integration
-    IRepository.cs        ← repository-integration
-```
-
-```
-/Shared
-  /Results
-    ConflictResult.cs
-  /Guid
-    IHasGuid.cs
-    IGuidResolver.cs
-```
-
-```
-/Shared
-  /Concurrency
-    IHasVersions.cs
-    IEntityVersionResolverFactory.cs
-    IEntityVersionResolver.cs
-    IVersioned.cs
-```
-
-```
-/Shared
-  /MediatR
-    ICommand.cs
-```
+- /Shared
+  - /ValueObjects
+    - Email.cs
+    - Money.cs
+  - /Rules
+    - StringRules.cs
+    - IntRules.cs
+  - /Exceptions
+    - DomainException.cs
+  - /Events
+    - IDomainEvent.cs
+  - /Guid
+    - [IHasGuid.cs](./classes/class-i-has-guid.skill.md)
+    - [IGuidResolver.cs](./classes/class-i-guid-resolver.skill.md)
+  - /MediatR
+    - [ICommand.cs](./classes/class-i-command.skill.md)
+    - [IQuery.cs](./classes/class-i-query.skill.md)
+  - /Repositories
+    - [IReadRepository.cs](./classes/class-i-read-repository.skill.md)
+    - [IRepository.cs](./classes/class-i-repository.skill.md)
+  - /Results
+    - [ConflictResult.cs](./classes/class-conflict-result.skill.md)
+  - /UnitOfWork
+    - [IUnitOfWork.cs](./classes/class-i-unit-of-work.skill.md)
+  - /Outbox
+    - IHasDomainEvents.cs
+  - /Concurrency
+    - [IHasVersions.cs](./classes/class-i-has-versions.skill.md)
+    - [IEntityVersionResolverFactory.cs](./classes/class-i-entity-version-resolver-factory.skill.md)
+    - [IEntityVersionResolver.cs](./classes/class-i-entity-version-resolver.skill.md)
+    - [IVersioned.cs](./classes/class-i-versioned.skill.md)
+  - Shared.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]

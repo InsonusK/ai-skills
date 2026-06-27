@@ -32,10 +32,8 @@ __Applied solutions:__
 
 
 ## Project Structure
-```
-/App.Infrastructure.Migrations
-  App.Infrastructure.Migrations.csproj
-```
+- /App.Infrastructure.Migrations
+  - App.Infrastructure.Migrations.csproj
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create.md|App.Infrastructure.Migrations.csproj.create]]
