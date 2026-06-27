@@ -6,7 +6,7 @@ whenToUse: when you write a solution skill
 
 # How to build a skill
 1. Define type of skill and use template acourding to the type. 
-  - All solution skill templates you can find in [templates](./templates) folder.
+  - All solution skill templates you can find in [templates](../../../templates/solution-build/solution-{Solution}.skill.template) folder.
   - Tempaletes name has pattern {type}-*.{type}.skill.template.md. Example: class-Class.skill.template.md
   - If you don't find template for your skill type, Ask user what should you do.
 2. Fill skill template with real content.
