@@ -3,22 +3,14 @@ name: skill-name
 description: Describe what skill define
 domain: skill
 type: template
-version: 20260615
+plateau:
+version:
 tags:
   - skill/template/class
-  #- tag for skill classification
-triggers:
-  #What kind of task should agent do to use this class
-  #- create {ClassName}
-  #- write {ClassName}
-  #- implememt {ClassName}
 created_by:
-  #List of solution which must be implemented in this plateau
-  #Example:
-  #- "[[link]]"
 ---
 # How Apply this template
-- Find in all solutions from created_by files made by Class.template.md
+- Find in all solutions from `created_by` files made by Class.template.md
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 
 # Goal

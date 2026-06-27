@@ -3,14 +3,10 @@ name: plateau-name
 description: Describe which plateau does skill describe
 domain: skill
 type: template
-version: 20260615
+version:
 tags:
   - skill/template/plateau
-  #- tag for skill classification
 created_by:
-  #List of ALL solution which must be implemented in this plateau
-  #Example:
-  #- "[[link]]"
 ---
 
 # Core Principals

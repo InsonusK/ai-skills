@@ -3,18 +3,11 @@ name: plateau-sln-name
 description: Describe which plateau repository does skill describe
 domain: skill
 type: template
-version: 20260615
+plateau:
+version:
 tags:
   - skill/template/sln
-  #- tag for skill classification
-triggers:
-  #What kind of task should agent do to use this repository 
-  #- create {Repository}
-  #- implement {Repository}
 created_by:
-  #List of solution which must be implemented in this plateau
-  #Example:
-  #- "[[link]]"
 ---
 # How Apply this template
 - Find in all solutions from created_by files made by Repository.template.md

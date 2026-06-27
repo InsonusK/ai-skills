@@ -3,18 +3,11 @@ name: plateau-proj-name
 description: Describe which plateau csproj does skill describe
 domain: skill
 type: template
-version: 20260615
+plateau:
+version:
 tags:
   - skill/template/csproj
-  #- tag for skill classification
-triggers:
-  #What kind of task should agent do to use this project  
-  #- create {Project}
-  #- implement {Project}
 created_by:
-  #List of solution which must be implemented in this plateau
-  #Example:
-  #- "[[link]]"
 ---
 # How Apply this template
 - Find in all solutions from created_by files made by Project.template.md
