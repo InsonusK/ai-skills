@@ -1,5 +1,4 @@
 ---
-uid: baead65b-3491-4a41-9b63-312f3baf686b
 name: csproj-shared
 description: Define common cross-cutting interfaces and primitives that every layer can safely depend on without creating coupling
 domain: skill

@@ -1,5 +1,4 @@
 ---
-uid: 351cf444-d5bb-41a8-b7e1-de34ceb25149
 name: class-entity-version-resolver-registration
 description: Register IEntityVersionResolverFactory and module IEntityVersionResolver implementations in App.Host
 domain: skill

@@ -1,5 +1,4 @@
 ---
-uid: 79b2fb8b-35f2-4930-be5d-6e76eb79af28
 name: class-validation-behavior
 description: Pipeline behavior that validates any MediatR request
 domain: skill

@@ -1,0 +1,1 @@
+![[skills/dotnet/architecture/solutions/🧩validated/Validated solutions.base]]

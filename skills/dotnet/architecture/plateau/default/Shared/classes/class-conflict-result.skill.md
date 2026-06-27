@@ -1,5 +1,4 @@
 ---
-uid: d862d8a8-f5aa-41a4-8da5-12c0388060b7
 name: class-conflict-result
 description: Result carrying the existing entity result for 409 Conflict responses
 domain: skill

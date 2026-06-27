@@ -1,5 +1,4 @@
 ---
-uid: 1a3f4f78-1385-4c75-94ef-388dfa0b51ac
 name: class-entity
 description: Extend entity to use Value Objects for properties with invariants and domain rules inside behavior methods
 domain: skill

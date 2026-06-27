@@ -1,5 +1,4 @@
 ---
-uid: 0b9f2aac-4f16-4a21-8a78-8463c77490d9
 name: class-app-queries-registration
 description: App.Queries assembly scan registration
 domain: skill

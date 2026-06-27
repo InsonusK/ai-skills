@@ -1,5 +1,4 @@
 ---
-uid: 7c3a9b2e-5d1f-4e8a-9c3b-2d4e6f8a1b3c
 name: solution-validation-behavior
 description: Defines the cross-cutting validation pipeline behavior — ValidationBehavior in BuildingBlocks intercepts any MediatR IRequest<TResponse>, collects all validation errors from registered FluentValidation validators, and short-circuits with Result.Invalid before the handler runs
 domain: skill

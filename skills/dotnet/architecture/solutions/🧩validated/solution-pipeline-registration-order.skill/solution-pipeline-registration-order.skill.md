@@ -1,5 +1,4 @@
 ---
-uid: 7d4e8c2a-9b1f-4a6e-8d3c-5e7f9a2b4c1d
 name: solution-pipeline-registration-order
 description: Defines the canonical execution order of all MediatR pipeline behaviors in App.Host.PipelineRegistration — ValidationBehavior first, then GuidResolvingBehavior, then ConcurrencyBehavior, and UnitOfWorkBehavior last
 domain: skill

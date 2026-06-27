@@ -1,5 +1,4 @@
 ---
-uid: 91ca4894-c1d3-4b60-ab77-7c9b368027ec
 name: class-i-guid-resolver
 description: Per-entity resolver contract
 domain: skill

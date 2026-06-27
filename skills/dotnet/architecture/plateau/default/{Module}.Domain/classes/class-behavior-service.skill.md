@@ -1,5 +1,4 @@
 ---
-uid: 1a7d22bd-cba5-4e8c-bcdc-75612952a02f
 name: class-behavior-service
 description: Create static domain service extension methods for bulky or multi-step entity behavior
 domain: skill

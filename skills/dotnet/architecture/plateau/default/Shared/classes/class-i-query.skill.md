@@ -1,5 +1,4 @@
 ---
-uid: 1d7b88ff-3a7e-4656-8d90-3f7581df4703
 name: class-i-query
 description: Read-only operation marker interface
 domain: skill

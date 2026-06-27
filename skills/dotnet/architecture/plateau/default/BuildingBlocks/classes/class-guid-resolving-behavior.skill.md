@@ -1,5 +1,4 @@
 ---
-uid: b8c44b7b-6079-4a98-8f22-4f0eeada7b77
 name: class-guid-resolving-behavior
 description: Pipeline behavior that short-circuits on duplicate Guid
 domain: skill

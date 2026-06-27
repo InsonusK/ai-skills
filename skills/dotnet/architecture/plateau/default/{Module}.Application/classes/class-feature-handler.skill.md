@@ -1,5 +1,4 @@
 ---
-uid: aca65212-1e02-4bc2-bcb0-b6208839575b
 name: class-feature-handler
 description: Single-module query handler implementation
 domain: skill

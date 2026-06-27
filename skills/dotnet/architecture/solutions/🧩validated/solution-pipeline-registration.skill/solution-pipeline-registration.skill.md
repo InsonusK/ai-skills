@@ -1,5 +1,4 @@
 ---
-uid: 266689e4-12cc-42e9-a9ea-4aa32271e1ee
 name: solution-pipeline-registration
 description: Defines the centralized MediatR pipeline registration in App.Host — the single AddPipeline extension method where all cross-cutting pipeline behaviors are registered in execution order
 domain: skill

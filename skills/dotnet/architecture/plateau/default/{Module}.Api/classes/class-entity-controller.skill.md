@@ -1,5 +1,4 @@
 ---
-uid: 3c52df6b-2212-4efb-8036-0a38980942f2
 name: class-entity-controller
 description: Collection root controller
 domain: skill

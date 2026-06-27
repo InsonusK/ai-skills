@@ -1,5 +1,4 @@
 ---
-uid: 272bbcee-7417-4d62-8244-2e902f68d334
 name: class-concurrency-behavior
 description: Pipeline behavior validating versions before handler runs
 domain: skill

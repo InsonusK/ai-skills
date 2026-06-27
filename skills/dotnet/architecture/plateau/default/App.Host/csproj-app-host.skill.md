@@ -1,5 +1,4 @@
 ---
-uid: 69f2ba24-7e98-4626-a234-dea3d0a2794a
 name: csproj-app-host
 description: Be the single composition root — wire all modules, infrastructure, pipeline behaviors, and DI registrations together
 domain: skill

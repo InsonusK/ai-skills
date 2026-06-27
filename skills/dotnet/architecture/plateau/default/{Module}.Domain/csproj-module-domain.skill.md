@@ -1,5 +1,4 @@
 ---
-uid: b990cd13-23ea-424d-8bf7-a4886e44575e
 name: csproj-module-domain
 description: Own the entities, value objects, rules, and domain events for this bounded context
 domain: skill

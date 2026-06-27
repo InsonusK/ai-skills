@@ -1,5 +1,4 @@
 ---
-uid: 29625cd2-6c8b-49af-9315-5e398ae61311
 name: class-module-registration
 description: Centralized module registration extension
 domain: skill

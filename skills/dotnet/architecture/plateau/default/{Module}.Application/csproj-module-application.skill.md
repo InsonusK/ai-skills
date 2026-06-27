@@ -1,5 +1,4 @@
 ---
-uid: f563cd3b-7156-437a-9e39-77b7af130fe1
 name: csproj-module-application
 description: Orchestrate use cases by connecting the API contract to the domain model
 domain: skill

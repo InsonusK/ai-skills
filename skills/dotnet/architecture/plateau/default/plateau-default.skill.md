@@ -1,5 +1,4 @@
 ---
-uid: 7f8e9d2c-3b4a-4c5d-9e6f-0a1b2c3d4e5f
 name: plateau-default
 description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, command/query integration, repository abstractions, and centralized pipeline/host wiring
 domain: skill

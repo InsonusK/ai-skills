@@ -1,5 +1,4 @@
 ---
-uid: 4911cd7e-033f-4037-ab7f-de063aaf2735
 name: class-single-entity-property-controller
 description: Addressable property controller
 domain: skill

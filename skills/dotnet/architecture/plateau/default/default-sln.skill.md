@@ -1,5 +1,4 @@
 ---
-uid: eb0d94ce-ac79-4d31-ad62-14378feaa5f8
 name: default-sln
 description: Default plateau — full solution architecture composed from all validated v3 architecture solutions
 domain: skill

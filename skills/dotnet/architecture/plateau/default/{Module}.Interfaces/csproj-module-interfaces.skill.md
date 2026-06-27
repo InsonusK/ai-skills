@@ -1,5 +1,4 @@
 ---
-uid: 501df86e-716b-4e5c-bc5f-f376c3709d12
 name: csproj-module-interfaces
 description: Provide the single stable public surface through which other modules interact with this module
 domain: skill

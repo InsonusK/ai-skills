@@ -1,5 +1,4 @@
 ---
-uid: c86adb4a-156a-4fff-bd9d-600c7d0643e7
 name: class-i-unit-of-work
 description: Single-method commit contract accessible by every layer
 domain: skill

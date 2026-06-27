@@ -1,5 +1,4 @@
 ---
-uid: 7f3e9a2b-4c1d-4e8f-9a3b-2c1d4e8f9a3b
 name: solution-http-api-publication
 description: Defines the HTTP API publication layer — entity-centric Controllers as thin MediatR adapters, Minimal API for system operations, controller naming and folder conventions, Result-to-HTTP mapping with ProblemDetails, and App.Host wiring for the API layer. Requires at least one of query-integration or command-integration to provide MediatR handler targets.
 domain: skill

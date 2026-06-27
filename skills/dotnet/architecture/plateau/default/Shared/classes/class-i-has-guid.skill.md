@@ -1,5 +1,4 @@
 ---
-uid: 9a33b160-3b60-4b83-88c4-078b9f7061a7
 name: class-i-has-guid
 description: Marker interface for commands carrying a client-generated Guid
 domain: skill

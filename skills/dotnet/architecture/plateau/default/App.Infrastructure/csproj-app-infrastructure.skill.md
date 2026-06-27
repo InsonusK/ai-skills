@@ -1,5 +1,4 @@
 ---
-uid: 9d9e08d7-0d36-4750-a2f2-b85049ba567b
 name: csproj-app-infrastructure
 description: Provide all persistence implementation — DbContext, repository implementations, outbox interceptor, background dispatcher
 domain: skill

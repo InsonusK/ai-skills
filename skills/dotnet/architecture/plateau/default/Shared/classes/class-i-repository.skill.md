@@ -1,5 +1,4 @@
 ---
-uid: ace8c35d-4fa7-43d0-a080-0c97ca2d68cf
 name: class-i-repository
 description: Read-write repository contract inheriting Ardalis IRepositoryBase<T>
 domain: skill

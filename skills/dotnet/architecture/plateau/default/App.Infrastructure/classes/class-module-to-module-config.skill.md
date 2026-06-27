@@ -1,5 +1,4 @@
 ---
-uid: c61232f3-2181-4fd2-912f-1fb0a9d0af07
 name: class-module-to-module-config
 description: Configure foreign key relationships and mappings that cross module boundaries
 domain: skill

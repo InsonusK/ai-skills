@@ -1,5 +1,4 @@
 ---
-uid: d347a5b6-d388-49a4-99ed-69c60ba5605e
 name: class-i-has-versions
 description: Interface for update commands carrying client-supplied version information
 domain: skill

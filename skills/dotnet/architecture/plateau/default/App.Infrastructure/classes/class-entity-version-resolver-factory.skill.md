@@ -1,5 +1,4 @@
 ---
-uid: 5f2d9e6a-7b8c-4d9e-a0f1-2b3c4d5e6f7a
 name: class-entity-version-resolver-factory
 description: Factory that maps stable business entity names to Application-layer IEntityVersionResolver implementations
 domain: skill

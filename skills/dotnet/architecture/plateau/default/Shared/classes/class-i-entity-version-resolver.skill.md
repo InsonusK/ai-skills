@@ -1,5 +1,4 @@
 ---
-uid: 076b10b7-62f4-49f6-8847-1b5f958e5b9b
 name: class-i-entity-version-resolver
 description: Reads the current concurrency version for a single versioned entity
 domain: skill

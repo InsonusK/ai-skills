@@ -1,5 +1,4 @@
 ---
-uid: 5bcf46b7-e406-4dca-8216-9590a2bb67c8
 name: class-i-command
 description: Write operation marker interfaces
 domain: skill

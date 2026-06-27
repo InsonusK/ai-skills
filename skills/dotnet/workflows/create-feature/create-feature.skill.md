@@ -1,5 +1,4 @@
 ---
-uid: a2e022fd-4d3b-4948-930b-995d419c3788
 name: create-feature
 description: Analyze and implement a new backend feature using skills.
 domain: skill

@@ -1,5 +1,4 @@
 ---
-uid: 1ab94d77-f065-4853-aab5-9266b23bf0a5
 name: class-etag-encoder
 description: Encodes/decodes entity versions as base64 JSON ETags
 domain: skill

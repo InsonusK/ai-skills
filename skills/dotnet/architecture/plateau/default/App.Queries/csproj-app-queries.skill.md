@@ -1,5 +1,4 @@
 ---
-uid: 1622dc53-770d-4883-845d-d858864d3111
 name: csproj-app-queries
 description: Provide cross-module read model handlers that require JOIN queries across module boundaries
 domain: skill

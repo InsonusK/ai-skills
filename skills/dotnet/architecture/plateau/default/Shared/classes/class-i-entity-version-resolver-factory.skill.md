@@ -1,5 +1,4 @@
 ---
-uid: 4e1c8d5f-6a7b-4c8d-9e0f-1a2b3c4d5e6f
 name: class-i-entity-version-resolver-factory
 description: Factory contract that maps stable business entity names to IEntityVersionResolver implementations
 domain: skill

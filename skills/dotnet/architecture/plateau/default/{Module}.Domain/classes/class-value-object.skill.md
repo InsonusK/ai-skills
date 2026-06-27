@@ -1,5 +1,4 @@
 ---
-uid: 621ed05e-8c3b-4761-af9f-b9ba17ab9d64
 name: class-value-object
 description: Create a Value Object type — immutable self-validating record that encodes domain semantics
 domain: skill

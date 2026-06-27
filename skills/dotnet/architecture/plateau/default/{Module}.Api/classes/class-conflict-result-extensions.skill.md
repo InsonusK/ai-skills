@@ -1,5 +1,4 @@
 ---
-uid: b734acb5-0450-4fe4-ac4c-31046c97ccf6
 name: class-conflict-result-extensions
 description: Maps ConflictResult<T> to HTTP 409 with existing entity result body
 domain: skill

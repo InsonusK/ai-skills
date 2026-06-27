@@ -1,5 +1,4 @@
 ---
-uid: 6e894086-873c-47e5-bd65-9d994962a408
 name: class-repository
 description: Generic EF Core repository inheriting Ardalis RepositoryBase<T>
 domain: skill

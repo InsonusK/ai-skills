@@ -1,5 +1,4 @@
 ---
-uid: 0db65d10-12b3-49ff-bc14-5e7ab731657b
 name: class-rule
 description: Create a domain rule — stateless deterministic predicate implemented as static extension methods
 domain: skill

@@ -1,5 +1,4 @@
 ---
-uid: c5d2d4b7-018c-48ca-9c1b-15d586365897
 name: csproj-module-api
 description: Expose HTTP endpoints as thin MediatR adapters for this module
 domain: skill

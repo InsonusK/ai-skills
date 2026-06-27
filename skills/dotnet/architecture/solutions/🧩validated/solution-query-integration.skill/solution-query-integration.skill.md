@@ -1,5 +1,4 @@
 ---
-uid: 2b7d4e9f-8c3a-4d1b-a6f0-d5e9c2b8a1f3
 name: solution-query-integration
 description: Defines IQuery<TResponse> in Shared as the read-only operation marker, query records and DTOs in {Module}.Interfaces, single-module query handlers in {Module}.Application using IReadRepository and named specs, cross-module query handlers in App.Queries using DbContext directly with AsNoTracking, and App.Queries DI registration in App.Host
 domain: skill

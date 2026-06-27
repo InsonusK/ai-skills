@@ -1,5 +1,4 @@
 ---
-uid: 3c4d45f7-b43d-4560-af12-5f40fc7df123
 name: class-entity-related-controller
 description: Sub-collection controller
 domain: skill

@@ -1,5 +1,4 @@
 ---
-uid: c3f91680-d598-4f4f-a4d1-23bcbbd25341
 name: class-cross-module-query-handler
 description: Cross-module JOIN query handler implementation
 domain: skill

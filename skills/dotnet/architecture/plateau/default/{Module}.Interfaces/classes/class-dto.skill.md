@@ -1,5 +1,4 @@
 ---
-uid: a36897d9-c533-48c3-9866-3317a4fd217e
 name: class-dto
 description: DTO response shape declaration
 domain: skill

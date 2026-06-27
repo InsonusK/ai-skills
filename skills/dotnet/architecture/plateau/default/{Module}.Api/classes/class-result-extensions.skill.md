@@ -1,5 +1,4 @@
 ---
-uid: 37562799-e86d-4ce1-96b2-b3f96c335d04
 name: class-result-extensions
 description: ToProblemDetails helper for Result error mapping
 domain: skill

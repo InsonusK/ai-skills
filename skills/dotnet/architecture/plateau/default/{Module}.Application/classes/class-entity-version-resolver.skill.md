@@ -1,5 +1,4 @@
 ---
-uid: 6a3e0f7b-8c9d-4eaf-b1f2-3c4d5e6f7a8b
 name: class-entity-version-resolver
 description: Per-entity IEntityVersionResolver implementation that reads the current version using the module's specification and read repository
 domain: skill

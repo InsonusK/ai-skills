@@ -1,5 +1,4 @@
 ---
-uid: 69ac0f34-0e68-4468-8b2f-79200a6ba6b1
 name: class-entity-by-guid-spec
 description: Specification for looking up entity by Guid
 domain: skill

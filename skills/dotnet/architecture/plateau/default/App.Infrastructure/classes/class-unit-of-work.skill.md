@@ -1,5 +1,4 @@
 ---
-uid: 05b55744-ba12-4d1b-bdc1-6a95ed9f527b
 name: class-unit-of-work
 description: IUnitOfWork implementation delegating to AppDbContext
 domain: skill

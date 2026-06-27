@@ -1,5 +1,4 @@
 ---
-uid: 00b8e3ff-0f48-4da5-ad95-fae927430124
 name: class-command
 description: Create command implements IHasGuid
 domain: skill

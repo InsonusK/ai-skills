@@ -1,5 +1,4 @@
 ---
-uid: 3ad2845e-5a32-49df-9d1c-ef22bbb05a8a
 name: class-pipeline-registration
 description: Centralized pipeline behavior registration extension
 domain: skill

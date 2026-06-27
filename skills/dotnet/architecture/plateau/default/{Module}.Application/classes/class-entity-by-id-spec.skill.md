@@ -1,5 +1,4 @@
 ---
-uid: 55e8595f-b749-41d0-8047-39dfb97806e3
 name: class-entity-by-id-spec
 description: Simple single-condition specification to load an entity by Id
 domain: skill

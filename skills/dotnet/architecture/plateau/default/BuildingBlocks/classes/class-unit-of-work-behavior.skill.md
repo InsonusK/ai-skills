@@ -1,5 +1,4 @@
 ---
-uid: 603c7e65-8c17-4b0f-805c-87a2f6e6eca9
 name: class-unit-of-work-behavior
 description: Pipeline behavior that commits at depth 1 after handler completes
 domain: skill

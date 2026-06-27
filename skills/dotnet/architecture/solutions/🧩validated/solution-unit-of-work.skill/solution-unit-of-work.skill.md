@@ -1,5 +1,4 @@
 ---
-uid: 4b7e2c9a-1f5d-4a8b-c3e6-d9f1a4b2e7c6
 name: solution-unit-of-work
 description: Defines IUnitOfWork, UnitOfWorkContext, and UnitOfWorkBehavior — the pipeline mechanism that commits all staged entity changes atomically after the top-level command handler completes, ensuring sub-commands never commit prematurely
 domain: skill

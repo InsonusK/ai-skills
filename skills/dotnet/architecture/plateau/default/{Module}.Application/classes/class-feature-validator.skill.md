@@ -1,5 +1,4 @@
 ---
-uid: 2c8e47cf-7be5-44bb-a5fc-dba32a848e8a
 name: class-feature-validator
 description: Transport correctness validator
 domain: skill

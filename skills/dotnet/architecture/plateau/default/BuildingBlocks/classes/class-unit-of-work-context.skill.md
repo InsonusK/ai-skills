@@ -1,5 +1,4 @@
 ---
-uid: 107140e5-8e4b-43ba-a027-fe1642ba8f9d
 name: class-unit-of-work-context
 description: Scoped nesting depth counter preventing premature sub-command commit
 domain: skill

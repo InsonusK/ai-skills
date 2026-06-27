@@ -1,5 +1,4 @@
 ---
-uid: f04c4d22-1b0e-41db-9a42-28c3502ac03f
 name: class-i-read-repository
 description: Read-only repository contract inheriting Ardalis IReadRepositoryBase<T>
 domain: skill

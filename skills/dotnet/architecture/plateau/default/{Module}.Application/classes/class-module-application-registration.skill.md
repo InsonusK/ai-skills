@@ -1,5 +1,4 @@
 ---
-uid: 51c69d92-d0ea-4848-9820-f245f43ccb08
 name: class-module-application-registration
 description: Register IGuidResolver in module DI
 domain: skill

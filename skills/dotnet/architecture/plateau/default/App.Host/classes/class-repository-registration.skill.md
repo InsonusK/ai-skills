@@ -1,5 +1,4 @@
 ---
-uid: d425524e-8e7f-4a06-a79d-254d0ff7fe0f
 name: class-repository-registration
 description: Add IUnitOfWork and UnitOfWorkContext scoped registrations
 domain: skill

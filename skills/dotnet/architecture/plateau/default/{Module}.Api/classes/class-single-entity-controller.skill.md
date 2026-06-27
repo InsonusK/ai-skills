@@ -1,5 +1,4 @@
 ---
-uid: b2f92742-d018-432e-b702-7cbd71888a7f
 name: class-single-entity-controller
 description: Single entity lifecycle controller
 domain: skill

@@ -1,5 +1,4 @@
 ---
-uid: 3e20f00a-5780-4fa2-b858-2254cb8590ac
 name: class-system-endpoints
 description: System, webhook, batch, cross-aggregate endpoints
 domain: skill

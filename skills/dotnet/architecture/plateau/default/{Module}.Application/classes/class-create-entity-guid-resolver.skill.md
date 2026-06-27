@@ -1,5 +1,4 @@
 ---
-uid: f0a26e8e-0dd0-4a16-a6d7-9e268a12fe50
 name: class-create-entity-guid-resolver
 description: Per-entity IGuidResolver implementation
 domain: skill

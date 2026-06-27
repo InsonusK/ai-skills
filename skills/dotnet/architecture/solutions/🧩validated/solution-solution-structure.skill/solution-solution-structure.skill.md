@@ -1,5 +1,4 @@
 ---
-uid: 743c1e5b-ff89-4a73-9b0c-71688d0c4e40
 name: solution-solution-structure
 description: Defines the full solution architecture including module boundaries, all non-module layers, their responsibilities, folder placement, and the complete dependency rules between all layers
 domain: skill

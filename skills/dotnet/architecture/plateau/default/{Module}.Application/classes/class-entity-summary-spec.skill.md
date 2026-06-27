@@ -1,5 +1,4 @@
 ---
-uid: 9e767174-941b-430d-9748-e9a4868d07be
 name: class-entity-summary-spec
 description: Application-layer projection specification mapping entity to DTO
 domain: skill

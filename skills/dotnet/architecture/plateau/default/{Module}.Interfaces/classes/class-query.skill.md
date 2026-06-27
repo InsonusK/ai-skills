@@ -1,5 +1,4 @@
 ---
-uid: 41c2d21b-4cb7-41a7-993d-9a8b54939054
 name: class-query
 description: Query record declaration
 domain: skill

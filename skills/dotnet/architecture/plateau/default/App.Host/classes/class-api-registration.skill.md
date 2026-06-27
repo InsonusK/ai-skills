@@ -1,5 +1,4 @@
 ---
-uid: da3458f1-893d-4af5-97da-91d490ac2142
 name: class-api-registration
 description: Controller and middleware registration
 domain: skill

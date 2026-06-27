@@ -1,5 +1,4 @@
 ---
-uid: 2a2570c1-3d97-43e7-bdc0-420f9a823c29
 name: csproj-app-infrastructure-migrations
 description: EF Core migrations only — separated from App.Infrastructure to keep the main infrastructure project clean
 domain: skill

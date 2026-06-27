@@ -1,5 +1,4 @@
 ---
-uid: c5bd4105-6930-4857-9da1-6f5553ea8588
 name: class-single-entity-related-controller
 description: Relationship instance controller
 domain: skill

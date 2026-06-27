@@ -1,5 +1,4 @@
 ---
-uid: a7816fc9-bccb-4c80-9b88-7a0fc69a5f0b
 name: csproj-building-blocks
 description: Implement reusable framework-level patterns consumed by App.Host and infrastructure across all modules
 domain: skill

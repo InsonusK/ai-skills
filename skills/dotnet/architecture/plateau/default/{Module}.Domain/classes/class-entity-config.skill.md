@@ -1,5 +1,4 @@
 ---
-uid: 486aa46c-b837-4455-a8de-19f5ecaee780
 name: class-entity-config
 description: Configure unique index on Guid with named constant
 domain: skill

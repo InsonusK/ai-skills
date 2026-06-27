@@ -1,5 +1,4 @@
 ---
-uid: c24b69f7-107f-46e9-912c-149da36274d5
 name: class-i-versioned
 description: Marker interface for mutable entities that expose a database-generated concurrency version
 domain: skill
