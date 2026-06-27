@@ -1,5 +1,4 @@
 ---
-uid:
 name: plateau-sln-name
 description: Describe which plateau repository does skill describe
 domain: skill

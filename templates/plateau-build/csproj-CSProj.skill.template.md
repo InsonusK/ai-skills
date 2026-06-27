@@ -1,5 +1,4 @@
 ---
-uid:
 name: plateau-proj-name
 description: Describe which plateau csproj does skill describe
 domain: skill

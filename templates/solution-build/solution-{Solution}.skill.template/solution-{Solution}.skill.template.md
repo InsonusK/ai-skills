@@ -1,5 +1,4 @@
 ---
-uid:
 name: skill-name
 description: Short description of skill goal
 domain: skill

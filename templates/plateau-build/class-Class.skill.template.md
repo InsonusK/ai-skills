@@ -1,5 +1,4 @@
 ---
-uid:
 name: skill-name
 description: Describe what skill define
 domain: skill

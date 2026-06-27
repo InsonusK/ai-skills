@@ -1,5 +1,4 @@
 ---
-uid:
 name: plateau-name
 description: Describe which plateau does skill describe
 domain: skill
