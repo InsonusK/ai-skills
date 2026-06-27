@@ -3,17 +3,19 @@ name: class-module-application-registration
 description: Register IGuidResolver in module DI
 domain: skill
 type: template
-version: 20260616
+version: 20260627
 tags:
   - skill/template/class
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
 ---
 
 # Goal
 - Register each `GuidResolver` in the module's DI registration
 - Self-register all handlers and validators in this module's assembly via scan
+- Register all property validators and DTO validators through the existing FluentValidation assembly scan
 - Give App.Host a single call surface for wiring up the module — no module internals exposed
 
 __Applied solutions:__
@@ -23,7 +25,7 @@ __Applied solutions:__
 # Core Principals
 - One static extension method per module — `Register{ModuleName}Module`
 - `AddMediatR` scans the Application assembly — all `IRequestHandler` implementations registered automatically
-- `AddValidatorsFromAssembly` scans the Application assembly — all `AbstractValidator<T>` registered automatically
+- `AddValidatorsFromAssembly` scans the Application assembly — all `AbstractValidator<T>` registered automatically, including `{ValueObject}PropertyValidator` and `{Dto}Validator`
 - Pipeline behaviors NOT registered here — that is App.Host's responsibility
 
 __Applied solutions:__

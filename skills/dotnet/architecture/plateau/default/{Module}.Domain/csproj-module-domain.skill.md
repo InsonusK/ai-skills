@@ -3,7 +3,7 @@ name: csproj-module-domain
 description: Own the entities, value objects, rules, and domain events for this bounded context
 domain: skill
 type: template
-version: 20260616
+version: 20260627
 tags:
   - skill/template/csproj
 created_by:
@@ -14,6 +14,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
 ---
 
 # Goal
@@ -31,6 +32,7 @@ created_by:
 - Own all entity behavior and invariant enforcement for the bounded context
 - Provide a place to extract bulky entity logic without scattering mutation points
 - Keep entities small and focused on single-responsibility state transitions
+- Reference `{Module}.Interfaces` so Domain Value Objects can inherit from `Soft{ValueObject}` base types
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
@@ -40,11 +42,13 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Core Principals
 - Value Objects define correctness — they encode domain semantics and enforce invariants at construction time
 - Rules define predicates — they encode reusable business conditions without deciding enforcement
 - Entities define consistency — they decide when and how to enforce invariants using VOs and rules
+- When a value object shape is shared across modules, the Domain VO inherits from `Soft{ValueObject}` declared in `{Module}.Interfaces`
 - Domain is the innermost layer — pure business logic, no infrastructure dependencies
 - Domain has no knowledge of other modules
 - All entities live in /{Module}.Domain/Entities
@@ -71,6 +75,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Structure
 
@@ -109,6 +114,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## Classification variants
 
@@ -132,11 +138,12 @@ Apply entity classification at the domain layer by choosing the correct entity c
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
-| /ValueObjects | All Value Object types for this module |  |
+| /ValueObjects | All Value Object types for this module; VOs exposed to other modules inherit from `Soft{ValueObject}` defined in `{Module}.Interfaces` |  |
 | /Rules | All domain rule static classes for this module |  |
 | /Entities | Domain entities that use Value Objects and rules |  |
 | /Entities | All entity types for this module |  |
@@ -146,7 +153,6 @@ __Applied solutions:__
 | /Configurations/{EntityName}Config.cs | EF configuration mapping Version to xmin and declaring VersionedEntityName | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/class-entity-config.skill.md|class-EntityConfig.skill]] |
 | /Configurations | One EF config class per entity |  |
 | /Entities | All entity types for this module |  |
-| /ValueObjects | All Value Object types for this module |  |
 | /Rules | All domain rule static classes for this module |  |
 | /Services | Static domain service extension methods for bulky entity behavior |  |
 | /Events | Domain events raised by this module |  |
@@ -160,6 +166,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -175,6 +182,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Infrastructure implementations — belong to App.Infrastructure or BuildingBlocks
@@ -201,9 +209,11 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## Allowed Dependencies
 - Shared
+- `{Module}.Interfaces` (for `Soft{ValueObject}` base types)
 - Microsoft.EntityFrameworkCore (for multi-property VO `OwnsOne` configuration only)
 - Microsoft.EntityFrameworkCore (IEntityTypeConfiguration only)
 - EF Core configuration packages
@@ -217,13 +227,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Rules
 MUST:
 	- All Value Objects live in `/{Module}.Domain/ValueObjects`
 	- All domain rules live in `/{Module}.Domain/Rules`
 	- Only module-specific VOs and rules live here — cross-cutting ones belong in Shared
-	- Domain depends only on Shared and EF Core (for IEntityTypeConfiguration only)
+	- Domain depends only on Shared, its own `{Module}.Interfaces` (for `Soft{ValueObject}` base types), and EF Core (for IEntityTypeConfiguration only)
+	- Every Domain Value Object exposed to other modules inherits from `Soft{ValueObject}`
 	- All entities live in /{Module}.Domain/Entities
 	- `Guid` declared as `public Guid Guid { get; internal set; }`
 	- Set exactly once in the entity factory method — never reassigned
@@ -248,6 +260,8 @@ MUST NOT:
 	- Place rule definitions outside /Rules folder
 	- Put module-specific VO or rule in Shared
 	- Domain reference any other module's project
+	- Domain Value Object not inherit from `Soft{ValueObject}` when the shape is shared across modules
+	- Use FluentValidation types directly in Domain
 	- Domain use EF Core beyond IEntityTypeConfiguration
 	- `Guid` used in domain logic, domain events, or as a foreign key in relationships
 	- `Guid` reassigned after entity creation
@@ -270,10 +284,12 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Anti-patterns
 - Scattering VO or rule classes across arbitrary folders in Domain
 - Putting cross-module VO in {Module}.Domain instead of Shared
+- Duplicating `Soft{ValueObject}` shape in Domain instead of inheriting
 - Keeping duplicated copies of the same VO/rule in multiple module Domain projects
 - Injecting DbContext into a domain class — domain has no persistence dependency
 - Referencing another module's Domain for shared entity types — each module owns its own entities
@@ -300,10 +316,13 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Check list
 - [ ] /ValueObjects folder exists in {Module}.Domain
 - [ ] /Rules folder exists in {Module}.Domain
+- [ ] `{Module}.Domain.csproj` references `{Module}.Interfaces.csproj`
+- [ ] Every Domain Value Object exposed to other modules inherits from `Soft{ValueObject}`
 - [ ] All VOs are in /ValueObjects
 - [ ] All rules are in /Rules
 - [ ] No cross-module VO/rule duplicated here when it already exists in Shared
@@ -337,3 +356,4 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]

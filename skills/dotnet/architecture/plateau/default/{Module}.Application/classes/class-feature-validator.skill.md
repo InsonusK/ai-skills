@@ -3,16 +3,18 @@ name: class-feature-validator
 description: Transport correctness validator
 domain: skill
 type: template
-version: 20260616
+version: 20260627
 tags:
   - skill/template/class
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
 ---
 
 # Goal
 - Validate transport correctness of one command's input before it reaches the handler
 - Express validation rules as a declarative FluentValidation rule set — not imperative checks
+- This is the per-command validator; for `Soft{ValueObject}` property validators and public DTO validators see [[class-property-validator.skill.md|class-PropertyValidator]] and [[class-dto-validator.skill.md|class-DtoValidator]]
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]
@@ -21,8 +23,10 @@ __Applied solutions:__
 - Extends `AbstractValidator<TCommand>`
 - Rules defined in constructor via `RuleFor(...)`
 - Transport correctness only: `NotEmpty`, `NotNull`, `MaximumLength`, `GreaterThan`, `InclusiveBetween`, email format, regex format
+- Uses `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
 - No database access, no repository injection — purely declarative on the command's properties
 - No business logic — existence and state checks belong in handler guard or domain
+- Distinct from `{ValueObject}PropertyValidator` (validates a `Soft{ValueObject}`) and `{Dto}Validator` (validates a public DTO)
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]
@@ -87,6 +91,7 @@ MUST:
 	- Enforce transport correctness only — presence, length, format, numeric range
 	- Be named `{FeatureName}Validator`
 	- Live in `/{Module}.Application/Features/{FeatureName}/{FeatureName}.Validator.cs`
+	- Use `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO command properties
 MUST NOT:
 	- Inject repositories, `DbContext`, or any service — purely declarative on command properties
 	- Contain business rules — entity existence checks, state checks, or invariant enforcement

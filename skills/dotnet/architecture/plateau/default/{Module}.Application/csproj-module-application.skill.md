@@ -3,7 +3,7 @@ name: csproj-module-application
 description: Orchestrate use cases by connecting the API contract to the domain model
 domain: skill
 type: template
-version: 20260622
+version: 20260627
 tags:
   - skill/template/csproj
 created_by:
@@ -14,6 +14,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
 ---
 
 # Goal
@@ -32,6 +33,8 @@ created_by:
 - Keep version loading next to the module's specifications and repositories
 - Structure each feature as a vertical slice — handler and validator co-located in one folder
 - Self-register all handlers and validators via assembly scan
+- Own all property validators for `Soft{ValueObject}` types in `/Validators`
+- Own all validators for public DTOs declared in `{Module}.Interfaces` in `/Validators`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj.create]]
@@ -41,6 +44,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Core Principals
 - Application coordinates — it never contains business logic
@@ -62,6 +66,7 @@ __Applied solutions:__
 - Validator file named `{FeatureName}.Validator.cs`, class named `{FeatureName}Validator`
 - Each module exposes one `Register{ModuleName}Module()` extension method
 - Pipeline behaviors are NOT registered here — that is App.Host's responsibility
+- Property validators and DTO validators are registered through the existing FluentValidation assembly scan
 - Each versioned entity has a dedicated `{Entity}VersionResolver` class in `{Module}.Application/Concurrency`
 - Resolvers use the module's `{Entity}ByIdSpec` and `IReadRepository<{Entity}>` from Shared
 - Resolver's `VersionedEntityName` constant matches the Domain config constant exactly
@@ -74,6 +79,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Structure
 
@@ -95,6 +101,9 @@ __Applied solutions:__
       - GetTask.Validator.cs
     - /GetTasks
       - [GetTasks.Handler.cs](./classes/class-feature-handler.skill.md)
+  - /Validators
+    - [{ValueObject}PropertyValidator.cs](./classes/class-property-validator.skill.md)
+    - [{Dto}Validator.cs](./classes/class-dto-validator.skill.md)
   - /Specifications
     - [{Entity}ByIdSpec.cs](./classes/class-entity-by-id-spec.skill.md)
     - [{Entity}ByGuidSpec.cs](./classes/class-entity-by-guid-spec.skill.md)
@@ -117,12 +126,13 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
 | /Handlers | Command and query handlers |  |
-| /Validators | Input validation |  |
+| /Validators | Property validators for Soft VOs and validators for public DTOs | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-property-validator.skill.md|class-PropertyValidator.skill]] [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-dto-validator.skill.md|class-DtoValidator.skill]] |
 | /Specifications | Query specifications |  |
 | /Specifications | All module specifications — single-condition, multi-condition, projection, idempotency |  |
 | /Queries/{FeatureName} | One folder per query feature; contains handler and optional transport validator |  |
@@ -143,6 +153,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -164,6 +175,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Business logic — belongs to Domain
@@ -178,6 +190,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## Allowed Dependencies
 - {Module}.Interfaces (own module)
@@ -203,10 +216,14 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Rules
 MUST:
 	- Application references only own Interfaces, own Domain
+	- All property validators for `Soft{ValueObject}` types live in `/{Module}.Application/Validators`
+	- All DTO validators live in `/{Module}.Application/Validators`
+	- Every `Soft{ValueObject}` has a matching `{ValueObject}PropertyValidator`
 	- Command handlers inject `IRepository<T>` from Shared
 	- Query handlers inject `IReadRepository<T>` from Shared
 	- All entity loading uses named specs — no inline `Where(...)` LINQ
@@ -234,6 +251,8 @@ MUST NOT:
 	- Application contain business logic — delegate to Domain
 	- Any Application class reference `AppDbContext`
 	- Query handlers inject `IRepository<T>`
+	- Property or DTO validators inject repositories, `DbContext`, or services
+	- Property or DTO validators contain business rules
 	- Specs placed in `{Module}.Domain` — Application is the single spec location
 	- Query validators contain business rules — transport correctness only
 	- Cross-module JOIN handlers live here — belongs in App.Queries
@@ -255,6 +274,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Anti-patterns
 - Calling another module's Application method directly — use MediatR dispatch through Interfaces
@@ -270,6 +290,8 @@ __Applied solutions:__
 - Manual handler registration: `services.AddTransient<CreateTaskHandler>()` — use assembly scan
 - Business rule in handler or validator
 - Validator placed outside its feature folder
+- Property or DTO validator placed outside `/Validators`
+- Referencing another module's `{Module}.Application` to instantiate a concrete validator
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj.create]]
@@ -279,6 +301,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Check list
 - [ ] Application.csproj does not reference another module's Domain or Application
@@ -305,6 +328,9 @@ __Applied solutions:__
 - [ ] Returns `0` for missing entity
 - [ ] `/Features/{FeatureName}` folder exists for each command
 - [ ] Validator file named `{FeatureName}.Validator.cs`
+- [ ] `/Validators` folder exists with `{ValueObject}PropertyValidator.cs` for every `Soft{ValueObject}`
+- [ ] `/Validators` folder contains `{Dto}Validator.cs` for every public DTO
+- [ ] Property and DTO validators are stateless and have no infrastructure dependencies
 - [ ] `{Module}ApplicationRegistration.cs` exists
 - [ ] Handlers registered via `AddMediatR` scan
 - [ ] Validators registered via `AddValidatorsFromAssembly` scan
@@ -317,3 +343,4 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]

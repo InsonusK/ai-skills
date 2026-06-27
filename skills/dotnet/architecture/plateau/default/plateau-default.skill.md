@@ -1,9 +1,9 @@
 ---
 name: plateau-default
-description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, command/query integration, repository abstractions, and centralized pipeline/host wiring
+description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, command/query integration, repository abstractions, soft value objects and DTO validators, and centralized pipeline/host wiring
 domain: skill
 type: template
-version: 20260622
+version: 20260627
 tags:
   - skill/template/plateau
 created_by:
@@ -16,6 +16,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|class-validation-behavior]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|class-pipeline-registration]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill.md|solution-pipeline-registration-order]]"
@@ -42,6 +43,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|class-pipeline-registration]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]
 
 # Capabilities
 
@@ -56,6 +58,12 @@ __Applied solutions:__
 - Encapsulates reusable business predicates as stateless, deterministic Domain Rules.
 - Keeps domain entities free of EF attributes and infrastructure concerns via dedicated `IEntityTypeConfiguration<T>` classes.
 - Extracts cross-module Value Objects and Rules into `Shared`.
+
+## Validation
+- Exposes soft, validation-agnostic value objects from `{Module}.Interfaces` so other modules can use them in commands and DTOs without referencing Domain.
+- Keeps strict invariant enforcement in Domain Value Objects that inherit from their soft counterparts.
+- Registers FluentValidation validators for public DTOs and Soft Value Object properties in `{Module}.Application`.
+- Allows other modules to validate values by resolving `IValidator<T>` from DI without direct coupling to the owning module's Application or Domain.
 
 ## Entity identity and lifecycle
 - Classifies every entity by ownership (internal/external) and mutability (immutable/mutable).

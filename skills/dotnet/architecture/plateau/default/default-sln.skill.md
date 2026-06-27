@@ -3,7 +3,7 @@ name: default-sln
 description: Default plateau — full solution architecture composed from all validated v3 architecture solutions
 domain: skill
 type: template
-version: 20260622
+version: 20260627
 tags:
   - skill/template/sln
 created_by:
@@ -11,6 +11,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]"
 ---
 
 # Structure
@@ -37,6 +38,7 @@ created_by:
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]
 
 ## Directory and class skills
 | `Directory\|file`              | template link                                                                                                                                                                                 | Description                                                    |
@@ -47,13 +49,14 @@ __Applied solutions:__
 | /App.Infrastructure            | [[skills/dotnet/architecture/plateau/default/App.Infrastructure/csproj-app-infrastructure.skill\|csproj-App.Infrastructure.skill]]                                  | Persistence — DbContext, repos, outbox, version resolver factory |
 | /App.Infrastructure.Migrations | [[skills/dotnet/architecture/plateau/default/App.Infrastructure.Migrations/csproj-app-infrastructure-migrations.skill\|csproj-App.Infrastructure.Migrations.skill]] | EF Core migrations only                                        |
 | /App.Queries                   | [[skills/dotnet/architecture/plateau/default/App.Queries/csproj-app-queries.skill\|csproj-App.Queries.skill]]                                                       | Cross-module read models and JOIN queries                      |
-| /{Module}.Interfaces           | [[skills/dotnet/architecture/plateau/default/{Module}.Interfaces/csproj-module-interfaces.skill\|csproj-{Module}.Interfaces.skill]]                               | Public contracts — commands, queries, DTOs, events             |
-| /{Module}.Domain               | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/csproj-module-domain.skill\|csproj-{Module}.Domain.skill]]                                           | Business logic — entities, VOs, rules, events                  |
+| /{Module}.Interfaces           | [[skills/dotnet/architecture/plateau/default/{Module}.Interfaces/csproj-module-interfaces.skill\|csproj-{Module}.Interfaces.skill]]                               | Public contracts — commands, queries, DTOs, events, soft VOs   |
+| /{Module}.Domain               | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/csproj-module-domain.skill\|csproj-{Module}.Domain.skill]]                                           | Business logic — entities, VOs (inherit from soft VOs), rules, events |
 | /{Module}.Application          | [[skills/dotnet/architecture/plateau/default/{Module}.Application/csproj-module-application.skill\|csproj-{Module}.Application.skill]]                            | Orchestration — handlers, validators, specs, version resolvers |
 | /{Module}.Api                  | [[skills/dotnet/architecture/plateau/default/{Module}.Api/csproj-module-api.skill\|csproj-{Module}.Api.skill]]                                                    | HTTP endpoints, MediatR dispatch, ETag/If-Match handling       |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]
 
 # Goal
 
