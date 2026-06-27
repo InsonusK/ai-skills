@@ -15,6 +15,7 @@ change_kind: create
 - Properties are primitives or other DTOs — never domain entity types
 - Declared in Interfaces alongside the query that returns it
 - One DTO per distinct response shape — `TaskDto` for full detail, `TaskSummaryDto` for list items
+- Each DTO has a matching `{Dto}Validator` in `{Module}.Application/Validators` from `solution-soft-value-objects-and-dto-validators.skill`
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -69,6 +70,7 @@ MUST:
 - Declared as `record`
 - Properties are primitives or other DTOs
 - Declared in `/{Module}.Interfaces/DTOs`
+- Have a matching `{Dto}Validator` in `{Module}.Application/Validators`
 
 MUST NOT:
 - Expose domain entity types as properties

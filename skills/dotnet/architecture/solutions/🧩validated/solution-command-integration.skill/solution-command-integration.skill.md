@@ -34,6 +34,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
 ---
 
 # Goal
@@ -65,6 +66,7 @@ depends_on:
 - Validator enforces transport correctness only — presence, length, format, range
 - Business invariants belong in domain entities and domain services — never in validators
 - One validator per command — co-located with the handler in the same feature folder
+- Command validators use `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-soft-value-objects-and-dto-validators.skill` instead of duplicating cross-module validation rules
 
 # Requirements
 SOLUTION:
@@ -80,6 +82,8 @@ SOLUTION:
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior.skill]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` pipeline behavior
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs]] - intercepts and validates commands before handlers run
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{ValueObject}PropertyValidator` and `{Dto}Validator` that command validators reuse through `IValidator<T>`
 
 NUGET:
 - `Ardalis.Result` {version} - provides `Result<T>`, `Result.Created`, `Result.NotFound`, `Result.Conflict`, `Result.Error`, `Result.Invalid`
@@ -117,8 +121,10 @@ MUST:
 - One `AbstractValidator<TCommand>` per command — co-located with handler in feature folder
 - Validator file named `{FeatureName}.Validator.cs`, class named `{FeatureName}Validator`
 - Validator extends `AbstractValidator<TCommand>`
-- Validators registered via `AddValidatorsFromAssembly` in module registration
+- Validators registered via `AddValidatorsFromAssembly` in module registration — this also registers property validators and DTO validators from `solution-soft-value-objects-and-dto-validators.skill`
 - No validator for query handlers
+- When a command property is a `Soft{ValueObject}` from another module, inject `IValidator<Soft{ValueObject}>` and use `SetValidator`
+- When a command property is a DTO from another module, inject `IValidator<{Dto}>` and use `SetValidator`
 
 MUST NOT:
 - Handler contain business logic — delegate to domain
@@ -129,6 +135,7 @@ MUST NOT:
 - Validator contain business rules — transport correctness only
 - Validator inject repositories or services — purely declarative
 - Validator be shared across multiple commands
+- Command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
 - Pipeline behaviors registered inside any module's registration method
 
 SHOULD:
@@ -150,6 +157,7 @@ SHOULD:
 - Validator placed outside its feature folder — always co-located with handler
 - Shared validator used for multiple commands: `public class EntityIdValidator : AbstractValidator<IHasId>` — one validator per command
 - Business invariant in validator: `RuleFor(x => x.Status).Must(s => s != TaskStatus.Closed)` — belongs in domain entity
+- Duplicating Soft{ValueObject} validation rules in a command validator instead of using `IValidator<Soft{ValueObject}>`
 
 # Check list
 - [ ] `ICommand` and `ICommand<TResponse>` defined in `Shared/MediatR/ICommand.cs`
@@ -175,6 +183,9 @@ SHOULD:
 - [ ] Validator extends `AbstractValidator<TCommand>`
 - [ ] Validator rules cover transport correctness only — no business rules, no DB access
 - [ ] No validator exists for any query handler
+- [ ] Command validator uses `IValidator<Soft{ValueObject}>` for cross-module Soft VO properties via `SetValidator`
+- [ ] Command validator uses `IValidator<{Dto}>` for cross-module DTO properties via `SetValidator`
+- [ ] Command validator does not duplicate rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator`
 
 # Unittest TestCases
 - [ ] When valid command is handled Then handler returns expected `Result.Created` or `Result.Success`

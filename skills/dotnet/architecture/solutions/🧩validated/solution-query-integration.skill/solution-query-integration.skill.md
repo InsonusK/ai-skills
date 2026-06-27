@@ -42,6 +42,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
 ---
 
 # Goal
@@ -68,6 +69,8 @@ depends_on:
 - All single-module entity loading goes through named specs — no inline LINQ in handlers
 - DTOs are the only data shape that crosses module boundaries for read operations — never domain entities
 - Query handlers may have transport validators — `ValidationBehavior` validates structural correctness before the handler runs
+- DTO validators are owned by `solution-soft-value-objects-and-dto-validators.skill` and live in `{Module}.Application/Validators`
+- Query validators reuse `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-soft-value-objects-and-dto-validators.skill` instead of duplicating cross-module validation rules
 
 # Requirements
 SOLUTION:
@@ -82,6 +85,8 @@ SOLUTION:
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs]] - used by single-module handlers
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior.skill]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides `ValidationBehavior` that activates for any `IRequest<TResponse>` including queries
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{ValueObject}PropertyValidator` and `{Dto}Validator` that query validators reuse through `IValidator<T>`
 
 NUGET:
 - `MediatR` {version} - provides `IRequest<T>`, `IRequestHandler<TRequest, TResponse>`, `ISender`
@@ -96,8 +101,9 @@ PROJECT:
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add query record conventions in `/Queries` and DTO shapes in `/DTOs`
   - [[./Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs]] - create - Query record declaration
   - [[./Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs]] - create - DTO response shape declaration
-- [[./Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add single-module query handler in feature folder
+- [[./Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add single-module query handler and optional transport validator in feature folder
   - [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs]] - create - Single-module query handler implementation
+  - [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs]] - create - Optional transport validator for query input
 - [[./Implementation/App.Queries.csproj.extend.md|App.Queries.csproj]] - extend - Add cross-module query handlers and DI registration
   - [[./Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs]] - create - App.Queries assembly scan registration
   - [[./Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md|CrossModuleQueryHandler.cs]] - create - Cross-module JOIN query handler implementation
@@ -111,6 +117,7 @@ MUST:
 - All queries implement `IQuery<Result<T>>` — not `IRequest<T>` directly
 - Queries declared as `record` in `/{Module}.Interfaces/Queries`
 - DTOs declared as `record` in `/{Module}.Interfaces/DTOs`
+- Every DTO has a matching `{Dto}Validator` in `{Module}.Application/Validators` from `solution-soft-value-objects-and-dto-validators.skill`
 - Single-module handlers in `/{Module}.Application/Queries` — inject `IReadRepository<T>`
 - Single-module handlers load via named specs — no inline LINQ
 - Cross-module handlers in `/App.Queries/Queries/{QueryName}` — inject DbContext directly
@@ -118,6 +125,7 @@ MUST:
 - App.Queries handlers registered via `RegisterAppQueries()` assembly scan in App.Host
 - Query handlers return `Result.NotFound()` when entity is missing
 - `RegisterAppQueries()` called from App.Host — after all module registrations
+- Query transport validators use `SetValidator` with `IValidator<Soft{ValueObject}>` or `IValidator<{Dto}>` for cross-module properties
 
 MUST NOT:
 - Query handler inject `IRepository<T>` — signals write intent, use `IReadRepository<T>`
@@ -126,8 +134,8 @@ MUST NOT:
 - Single-module handler use DbContext directly — use `IReadRepository<T>`
 - Cross-module handler live in `{Module}.Application` — Application has no multi-module DB access
 - DTOs expose domain entity types
-- Query handlers may have transport validators — `ValidationBehavior` validates structural correctness before the handler runs
 - `IQuery` extend `ICommand` — queries must remain distinct from write-side markers
+- Query validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
 - Cross-module handlers do not use `Include()` — all mapping is done in handler via `Select()` or manual projection
 
 SHOULD:
@@ -141,6 +149,7 @@ SHOULD:
 - Inline LINQ in single-module handler — use named spec
 - DTO returning domain entity directly — always project to DTO record
 - Query handler dispatching a command — queries are read-only
+- Duplicating Soft{ValueObject} or DTO validation rules in a query validator instead of using `IValidator<T>`
 
 # Check list
 - [ ] `IQuery<TResponse>` defined in `Shared/MediatR/IQuery.cs`
@@ -159,6 +168,9 @@ SHOULD:
 - [ ] `AppQueriesRegistration` defined in App.Queries
 - [ ] `RegisterAppQueries()` called from App.Host
 - [ ] Query transport validators (when present) check structural correctness only
+- [ ] Query transport validators use `IValidator<Soft{ValueObject}>` for cross-module Soft VO properties via `SetValidator`
+- [ ] Query transport validators use `IValidator<{Dto}>` for cross-module DTO properties via `SetValidator`
+- [ ] Query validator does not duplicate rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator`
 - [ ] Query handlers return `Result.NotFound()` when entity is missing
 - [ ] No `SaveChangesAsync` call in any query handler
 

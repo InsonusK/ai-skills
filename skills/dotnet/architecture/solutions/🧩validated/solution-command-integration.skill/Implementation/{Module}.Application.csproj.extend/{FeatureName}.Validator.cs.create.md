@@ -16,6 +16,7 @@ change_kind: create
 - Transport correctness only: `NotEmpty`, `NotNull`, `MaximumLength`, `GreaterThan`, `InclusiveBetween`, email format, regex format
 - No database access, no repository injection — purely declarative on the command's properties
 - No business logic — existence and state checks belong in handler guard or domain
+- For `Soft{ValueObject}` or DTO properties coming from another module, inject `IValidator<T>` from `solution-soft-value-objects-and-dto-validators.skill` and use `SetValidator`
 
 ## What belongs in a validator vs domain
 
@@ -41,12 +42,13 @@ Validator declares rules for each command property in the constructor:
 ```csharp
 // {Module}.Application/Features/CreateTask/CreateTask.Validator.cs
 using FluentValidation;
+using {OtherModule}.Interfaces.ValueObjects;
 
 namespace {Module}.Application.Features.CreateTask;
 
 public class CreateTaskValidator : AbstractValidator<CreateTaskCommand>
 {
-    public CreateTaskValidator()
+    public CreateTaskValidator(IValidator<SoftEmail> emailValidator)
     {
         RuleFor(x => x.Title)
             .NotEmpty()
@@ -54,6 +56,9 @@ public class CreateTaskValidator : AbstractValidator<CreateTaskCommand>
 
         RuleFor(x => x.AssigneeId)
             .GreaterThan(0);
+
+        RuleFor(x => x.Email)
+            .SetValidator(emailValidator);
     }
 }
 ```
@@ -85,6 +90,7 @@ MUST:
 - Enforce transport correctness only — presence, length, format, numeric range
 - Be named `{FeatureName}Validator`
 - Live in `/{Module}.Application/Features/{FeatureName}/{FeatureName}.Validator.cs`
+- For `Soft{ValueObject}` or DTO properties owned by another module, inject `IValidator<T>` from `solution-soft-value-objects-and-dto-validators.skill` and use `SetValidator`
 
 MUST NOT:
 - Inject repositories, `DbContext`, or any service — purely declarative on command properties

@@ -13,7 +13,7 @@ change_kind: create
 # Core Principles
 - One static extension method per module — `Register{ModuleName}Module`
 - `AddMediatR` scans the Application assembly — all `IRequestHandler` implementations registered automatically
-- `AddValidatorsFromAssembly` scans the Application assembly — all `AbstractValidator<T>` registered automatically
+- `AddValidatorsFromAssembly` scans the Application assembly — all `AbstractValidator<T>` registered automatically, including command validators, `{ValueObject}PropertyValidator` and `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
 - Pipeline behaviors NOT registered here — that is App.Host's responsibility
 
 # Structure
@@ -64,7 +64,7 @@ MUST:
 - Method named `Register{ModuleName}Module`
 - Accept `IServiceCollection` and `IConfiguration`
 - Register handlers via `AddMediatR` assembly scan
-- Register validators via `AddValidatorsFromAssembly`
+- Register validators via `AddValidatorsFromAssembly` — this also registers `{ValueObject}PropertyValidator` and `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
 
 MUST NOT:
 - Register pipeline behaviors — belongs in App.Host
