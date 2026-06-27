@@ -49,6 +49,13 @@ depends_on:
 - Keep raw LINQ out of handlers — query intent is expressed by name, not by inline lambda chains
 - Define three spec shapes: entity filter (`Specification<T>`), DTO projection (`Specification<T, TResult>`), and their correct placement across Application and App.Queries
 
+# Capabilities
+- Decoupling of the Application layer from EF Core/`DbContext`
+- Reusable named specifications for all queries
+- Single generic repository implementation for all entities
+- Clear separation between read and write repository contracts
+- Consistent data access patterns across modules
+
 # Core Principles
 - Application layer never references DbContext — only `IReadRepository<T>` and `IRepository<T>` from Shared
 - `IRepository<T>` stages changes in the EF tracker — it never commits

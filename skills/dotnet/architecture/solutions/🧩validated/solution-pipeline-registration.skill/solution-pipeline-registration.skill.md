@@ -28,6 +28,13 @@ depends_on:
 - Ensure `AddPipeline()` is called from `Program.cs` so the pipeline is wired into the composition root
 - Establish a clear extension point: each behavior solution extends `AddPipeline()` to insert its behavior in the correct order
 
+# Capabilities
+- Centralized registration point for all MediatR pipeline behaviors
+- Single extension method called from the composition root
+- Clear extension point for new cross-cutting behaviors
+- Prevention of scattered behavior registrations
+- Consistent pipeline setup across modules
+
 # Core Principles
 - `PipelineRegistration.cs` is the single source of truth for pipeline behavior order
 - Behaviors registered in execution order — first registered runs first

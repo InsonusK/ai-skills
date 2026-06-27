@@ -59,6 +59,16 @@ RECOMENDATION:
 - Define the system-level architecture for domain events — how events are raised, persisted, and dispatched across the application
 ```
 
+# Capabilities
+```hint
+What are the benefits of using this solution?
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- low boundeed between application modules
+```
+
 # Core Principals
 ```hint
 Core principalse that a solution should follow

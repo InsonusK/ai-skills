@@ -42,6 +42,13 @@ depends_on:
 - Ensure primitive and VO overloads of the same rule share one implementation — no duplication
 - Extract Value Objects and Rules that are reusable across multiple modules into Shared.csproj
 
+# Capabilities
+- Elimination of primitive obsession via semantic domain types
+- Self-validating immutable Value Objects
+- Reusable, deterministic business predicates
+- Prevention of business condition duplication
+- Shared location for cross-module Value Objects and rules
+
 # Core Principals
 - Semantics belong to types, not primitives — if a primitive carries business meaning, it is a VO
 - Value Object is immutable — no property can change after construction

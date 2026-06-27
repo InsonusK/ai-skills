@@ -37,6 +37,13 @@ depends_on:
 - Make `PipelineRegistration.AddPipeline()` the single source of truth for behavior order
 - Ensure invalid input, duplicate external creates, stale concurrency checks, and unit-of-work commit run in the correct sequence
 
+# Capabilities
+- Canonical, documented order for all cross-cutting pipeline behaviors
+- Early rejection of invalid or dangerous commands before expensive checks
+- Correct interaction between validation, idempotency, concurrency, and commit
+- Single source of truth for pipeline ordering
+- Prevention of subtle bugs from behavior misordering
+
 # Core Principles
 - `PipelineRegistration.cs` is the single source of truth for pipeline behavior order
 - Behaviors are registered in execution order — first registered runs first

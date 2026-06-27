@@ -43,6 +43,13 @@ depends_on:
 - Ensure all changes from a command and all its sub-commands are committed atomically in a single `SaveChangesAsync` call
 - Enforce that no handler ever calls `SaveChangesAsync` directly
 
+# Capabilities
+- Atomic commit of all staged changes in a single `SaveChangesAsync`
+- Prevention of premature commits for nested sub-commands
+- No explicit rollback needed thanks to EF implicit transactions
+- Clear separation: handlers stage changes, pipeline commits them
+- Consistent commit behavior across all commands
+
 # Core Principles
 - `IUnitOfWork` lives in Shared — every layer can reference the commit contract without coupling to infrastructure
 - `IUnitOfWork` is the only component that calls `SaveChangesAsync` — handlers, repositories, and domain services never call it

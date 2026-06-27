@@ -64,6 +64,13 @@ adr:
 - The resolver returns the same response type as the command handler so 201 Created and 409 Conflict share the same API contract
 - The API layer maps `ConflictResult<T>` to HTTP 409 with the existing entity result body
 
+# Capabilities
+- Idempotent creation endpoints using a client-generated `Guid`
+- Automatic duplicate detection before the handler runs
+- Symmetric `201`/`409` response contracts
+- Database-level unique index guard against race conditions
+- Clear correlation handle without leaking external identity into domain logic
+
 # Core Principles
 - External system (frontend, partner API) generates the `Guid` — the backend never generates it for external creation flows
 - `Guid` is a correlation handle only — never used in domain logic, never exposed as a foreign key, never used in routing after creation

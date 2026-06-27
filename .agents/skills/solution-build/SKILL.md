@@ -4,11 +4,18 @@ description: Define how create new solution by patterns
 whenToUse: when you write a solution skill
 ---
 
-# How to build a skill
-1. Define type of skill and use template acourding to the type. 
-  - All solution skill templates you can find in [templates](../../../templates/solution-build/solution-{Solution}.skill.template) folder.
+# Workflow
+1. Understand 
+  - goal of solution
+  - capabilities which solution will give to project
+  - how capabilities will be achieved
+  - requirements of solution, does it depends on other solutions or packages
+2. Analyze them and if you have any doubts, ask the user
+3. When all doubts will be closed start [build solution](#how-to-build-a-solution)
+
+# How to build a solution
+2. Use template from [templates](../../../templates/solution-build/solution-{Solution}.skill.template) folder.
   - Tempaletes name has pattern {type}-*.{type}.skill.template.md. Example: class-Class.skill.template.md
-  - If you don't find template for your skill type, Ask user what should you do.
 2. Fill skill template with real content.
 3. Follow authoring rules which are defined in each section of template. 
   - Authoring rules are defined in ```hint``` blocks. 

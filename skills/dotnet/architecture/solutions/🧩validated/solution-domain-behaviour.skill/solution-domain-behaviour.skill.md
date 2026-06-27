@@ -33,6 +33,13 @@ depends_on:
 - Allow bulky or multi-step domain logic to be extracted from entities without scattering property mutation points
 - Keep entity behavior as the single source of truth for invariant enforcement
 
+# Capabilities
+- Enforced invariant validation on every entity state change
+- Single source of truth for entity validity
+- Safe extraction of complex logic into reusable static domain services
+- Prevention of invalid states reaching persistence
+- Consistent `DomainException`-based error model
+
 # Core Principals
 - Entity is the single point of truth for its own state validity
 - Every method or setter that changes state must validate before changing

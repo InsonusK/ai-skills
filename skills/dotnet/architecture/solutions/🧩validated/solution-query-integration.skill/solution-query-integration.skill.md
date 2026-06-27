@@ -51,6 +51,13 @@ depends_on:
 - Define when to use projection spec vs in-handler mapping — projection spec for flat DTOs, in-handler mapping for computed or conditional DTOs
 - Register App.Queries handlers via assembly scan in App.Host
 
+# Capabilities
+- Clear distinction between read and write operations via `IQuery` marker
+- Standardized query/DTO/handler placement
+- Cross-module read support without breaking module boundaries
+- Read-only enforcement via `IReadRepository<T>`
+- Consistent `Result<T>`-based response contract for all read operations
+
 # Core Principles
 - `IQuery<TResponse>` lives in Shared — consistent placement of all MediatR markers
 - Query handlers are strictly read-only — no entity mutation, no `SaveChangesAsync`, no `IRepository<T>`

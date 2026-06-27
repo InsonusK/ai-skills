@@ -34,6 +34,13 @@ depends_on:
 - Ensure all index and constraint names are constants — never magic strings — so they can be referenced in tests and error handling
 - Register all configurations via assembly scan — never manually per entity
 
+# Capabilities
+- Clean separation between domain entities and EF Core mapping concerns
+- Centralized persistence configuration per entity
+- Reusable named constants for tables, indexes, and constraints
+- Automatic discovery of entity configurations via assembly scan
+- Zero EF attributes on domain entities
+
 # Core Principals
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
 - Configuration class owns all persistence concerns — entity owns all domain concerns

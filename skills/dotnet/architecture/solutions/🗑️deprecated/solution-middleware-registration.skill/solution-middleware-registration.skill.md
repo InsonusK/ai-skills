@@ -29,6 +29,13 @@ depends_on:
 - Ensure `UseMiddlewarePipeline()` is called from `Program.cs` in the correct middleware order
 - Establish a clear extension point: each middleware solution extends `UseMiddlewarePipeline()` to insert its middleware
 
+# Capabilities
+- Single centralized extension point for all custom HTTP middleware
+- Guaranteed correct pipeline order by registering middleware in one file
+- Clear extension mechanism for future middleware solutions
+- Prevention of scattered middleware registrations across modules and `Program.cs`
+- Simplified review of HTTP pipeline composition
+
 # Core Principles
 - `MiddlewareRegistration.cs` is the single source of truth for custom HTTP middleware order
 - Middleware registered in execution order

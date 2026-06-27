@@ -50,6 +50,13 @@ depends_on:
 - Define controller naming, folder structure, and `[Route]` conventions
 - Wire the API layer in App.Host — controller discovery, MediatR registration
 
+# Capabilities
+- Thin HTTP adapter layer with no business logic leakage
+- Consistent controller naming and route conventions
+- Standardized `Result<T>` to HTTP status mapping
+- Uniform `ProblemDetails` error responses
+- Clear separation between entity lifecycle controllers and system Minimal APIs
+
 # Core Principles
 - API layer is a thin HTTP adapter — map input to command/query, dispatch via `ISender`, map result to HTTP response
 - Every endpoint dispatches exactly one MediatR command or query — no business logic, no orchestration

@@ -62,6 +62,13 @@ depends_on:
 - Define `ConcurrencyBehavior` in BuildingBlocks as the pipeline behavior that validates all versions before the handler runs
 - Define the full ETag flow: GET encodes version into `ETag` header, PUT/PATCH decodes `If-Match` header, missing or malformed `If-Match` returns 412 before MediatR dispatch
 
+# Capabilities
+- Optimistic concurrency control for all mutable entities
+- Early detection of stale updates before the handler runs
+- ETag-based HTTP precondition handling
+- Database-level last line of defence via `xmin` concurrency token
+- Consistent `409`/`412` response semantics for conflicts
+
 # Core Principles
 - `Version` is a `uint` property mapped to PostgreSQL `xmin` — auto-incremented by the database on every row change, never set by application code
 - `IVersioned`, `IHasVersions`, `IEntityVersionResolverFactory`, and `IEntityVersionResolver` live in Shared — common contracts referenced by Domain, Application, Api, and Infrastructure layers

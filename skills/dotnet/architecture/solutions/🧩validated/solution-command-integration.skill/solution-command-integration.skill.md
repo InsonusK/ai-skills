@@ -45,6 +45,13 @@ depends_on:
 - Define App.Host module wiring — centralized module registrations assembled in the composition root
 - Establish that handlers never contain business logic, never call `SaveChanges`, and never reference `DbContext`
 
+# Capabilities
+- Standardized command/handler/validator structure across all modules
+- Clear separation between transport validation and domain logic
+- Cross-module write operations via MediatR without direct coupling
+- Automatic handler and validator discovery through assembly scanning
+- Consistent `Result<T>`-based response contract for all write operations
+
 # Core Principles
 - Handler orchestrates — it never contains business rules
 - Domain layer decides — handlers load data and delegate all decisions to entities and domain services

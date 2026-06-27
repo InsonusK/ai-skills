@@ -43,6 +43,13 @@ depends_on:
 - Ensure that mutable and/or externally-created entities receive all required infrastructure consistently across every module.
 - Make the classification decision explicit and reviewable for every entity before implementation begins.
 
+# Capabilities
+- Clear decision framework for classifying every domain entity
+- Avoidance of unnecessary concurrency or external-identity infrastructure
+- Consistent mapping to required cross-cutting solutions per entity type
+- Prevention of over-engineering for immutable or internal entities
+- Reviewable architecture decision for each entity
+
 # Core Principles
 
 - Entity type is determined by two independent axes: **ownership** and **mutability**.

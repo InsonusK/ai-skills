@@ -34,6 +34,13 @@ depends_on:
 - Define `ValidationBehavior` in BuildingBlocks as the single pipeline interception point that rejects invalid MediatR requests before the handler runs
 - Establish that validation is a cross-cutting pipeline concern — one generic behavior handles all commands and queries across all modules
 
+# Capabilities
+- Cross-cutting transport validation for all MediatR requests
+- Full error collection before short-circuiting
+- Consistent `Result.Invalid` response without exceptions
+- Zero per-request validation boilerplate
+- Works for both commands and queries
+
 # Core Principles
 - `ValidationBehavior` is generic — one implementation handles all commands and queries across all modules
 - Receives `IEnumerable<IValidator<TRequest>>` via DI — zero, one, or multiple validators supported

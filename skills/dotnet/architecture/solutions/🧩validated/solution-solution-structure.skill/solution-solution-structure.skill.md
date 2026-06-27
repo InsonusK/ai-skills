@@ -46,6 +46,13 @@ depends_on:
 - Define the complete set of allowed and forbidden dependencies between all layers
 - Provide a single reference for file placement decisions across the entire solution
 
+# Capabilities
+- Well-defined module boundaries and layer responsibilities
+- Enforced inward dependency direction
+- Prevention of hidden coupling between modules
+- Clear file and project placement rules
+- Foundation for architecture testing and reviews
+
 # Core Principals
 - A module is a bounded context — it owns everything inside its boundary
 - Modules never depend on each other's implementation — only on Interfaces contracts
