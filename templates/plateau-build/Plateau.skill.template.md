@@ -48,7 +48,9 @@ RECOMENDATION:
 
 # Usecases
 ```hint
-fill important usecases in plateu
+fill usecases for plateau
+- example of interactions
+- example of cron jobs
 ```
 ## {Case name}
 ```hint
