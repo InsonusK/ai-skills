@@ -13,18 +13,20 @@ Describe what problem does we solve in this adr (architecture decision record)
 Decide where and how handle guid resolving behavior
 ```
 
-# Selected variand
+# Selected variant
 ```hint
-Link to selected variant and reason
+Explicitly state which variant was selected and link to it from the Searched variants section.
+The selected variant MUST also appear as one of the searched variants below.
 ```
 ```example
-[[#{Variant name}]] 
+**Selected variant:** [[#{Variant name}]]
 - Don't want to extend pipeline middleware
 ```
 
 # Searched variants
 ```hint
-For each search variant add sub header
+List every considered variant, including the selected one.
+Clearly mark the selected variant (for example by adding "(selected)" to its heading or by repeating the selection link).
 ```
 ## {Variant name}
 ### Description
@@ -54,4 +56,4 @@ RECOMENDATION:
 ```example
 - need addition Middleware registration solution
 - if add another integration protocol, we need add new catch middleware
-``` 
+```
