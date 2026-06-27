@@ -43,6 +43,55 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|class-pipeline-registration]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
+# Capabilities
+
+## Solution structure
+- Defines modules as self-contained bounded contexts with four projects (`Api`, `Application`, `Domain`, `Interfaces`).
+- Enforces inward dependency direction and prevents hidden coupling between modules.
+- Establishes solution-wide layer responsibilities (`Shared`, `BuildingBlocks`, `App.Host`, `App.Infrastructure`, `App.Queries`).
+- Provides clear file and project placement rules across the entire solution.
+
+## Domain modeling
+- Encodes domain semantics into immutable, self-validating Value Objects.
+- Encapsulates reusable business predicates as stateless, deterministic Domain Rules.
+- Keeps domain entities free of EF attributes and infrastructure concerns via dedicated `IEntityTypeConfiguration<T>` classes.
+- Extracts cross-module Value Objects and Rules into `Shared`.
+
+## Entity identity and lifecycle
+- Classifies every entity by ownership (internal/external) and mutability (immutable/mutable).
+- Applies the right infrastructure deterministically based on entity type.
+- Supports externally-created entities with client-generated `Guid` correlation handles and idempotent create flows.
+- Prevents over-engineering by avoiding unnecessary concurrency or external-identity infrastructure.
+
+## Concurrency and consistency
+- Adds optimistic concurrency control with `Version`/`xmin` for all mutable entities.
+- Encodes entity versions into ETags and validates `If-Match` preconditions before handlers run.
+- Returns consistent `409 Conflict`/`412 Precondition Failed` semantics for stale or missing preconditions.
+
+## Commands and queries
+- Standardizes command/handler/validator structure with a fixed load → guard → domain call → stage → return flow.
+- Separates read and write operations via `ICommand<T>` and `IQuery<T>` markers.
+- Enables cross-module writes and reads through MediatR without direct coupling.
+- Supports cross-module JOIN queries in a dedicated `App.Queries` layer.
+
+## Persistence
+- Decouples the Application layer from EF Core via `IRepository<T>` and `IReadRepository<T>` abstractions.
+- Encapsulates query intent into named, reusable specifications.
+- Commits all staged changes atomically through a single Unit of Work after the top-level command.
+- Prevents premature commits for nested sub-commands via a scoped depth tracker.
+
+## Pipeline
+- Centralizes all MediatR pipeline behavior registrations in `App.Host`.
+- Defines canonical execution order: Validation → Guid resolution → Concurrency → Unit of work.
+- Validates transport input before any expensive checks run.
+- Short-circuits duplicate external creates and stale updates before handlers execute.
+
+## API publication
+- Publishes a thin HTTP adapter layer over MediatR with no business logic leakage.
+- Provides consistent controller naming, route conventions, and `Result<T>`-to-HTTP mapping.
+- Returns uniform `ProblemDetails` error responses with explicit `ProducesResponseType` declarations.
+- Separates entity lifecycle controllers from system-level Minimal API endpoints.
+
 # Usecases
 
 ## Update a mutable entity with optimistic concurrency control

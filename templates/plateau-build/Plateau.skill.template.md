@@ -28,6 +28,23 @@ RECOMENDATION:
 ```example
 - Validation entity version on change
 ```
+# Capabilities
+```hint
+What capabilities does this plateau has
+
+MUST:
+- If Capabilities conflicted to each other as user to solve the problem
+- Summaraize all capabilities from all used solutions and logicaly group them
+
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- workflow
+	- All command and queries validate by FluentValidator in `ValidatorBahaviour`
+- validation
+	- all modules valudate dto and soft{ValueObject} from other module using there validator
+```
 
 # Usecases
 ```hint
