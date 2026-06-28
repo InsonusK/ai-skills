@@ -21,7 +21,7 @@ creates:
 extends:
   - App.Host.csproj
 depends_on:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill|solution-solution-structure.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure.skill]]"
 ---
 
 # Goal
@@ -44,7 +44,7 @@ depends_on:
 
 # Requirements
 - `Microsoft.AspNetCore.Http.Abstractions` NuGet package — provides `IApplicationBuilder` and `UseMiddleware<T>()`
-- definition of `module project structure` — [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill|solution-solution-structure.skill]] defines App.Host project and `/DependencyInjection` folder
+- definition of `module project structure` — [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure.skill]] defines App.Host project and `/DependencyInjection` folder
 
 # Template Skill Mutations
 

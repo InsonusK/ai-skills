@@ -3,7 +3,7 @@ name: class-entity-by-guid-spec
 description: Specification for looking up entity by Guid
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Single-condition spec — filters by `Guid` property only
 - Lives in `{Module}.Application/Specifications` — reusable across resolver and any feature that needs Guid lookup
 - Follows naming convention from solution-repository-integration.skill: `{Entity}ByGuidSpec`
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-by-guid-spec
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Application/Specifications/{Entity}ByGuidSpec.cs
 public class {Entity}ByGuidSpec : Specification<{EntityName}>
@@ -60,6 +70,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Inline LINQ in resolver instead of named spec
 
 __Applied solutions:__

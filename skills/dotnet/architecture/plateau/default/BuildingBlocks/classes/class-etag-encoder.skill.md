@@ -3,7 +3,7 @@ name: class-etag-encoder
 description: Encodes/decodes entity versions as base64 JSON ETags
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ETagEncoder.cs.create.md|ETagEncoder.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Static class — no instance, no DI registration needed
 - Encode: `Dictionary<string, Dictionary<int, uint>>` → base64 JSON string
 - Decode: base64 JSON string → `Dictionary<string, Dictionary<int, uint>>?` — null on any error
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ETagEncoder.cs.create.md|ETagEncoder.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-etag-encoder
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // BuildingBlocks/Concurrency/ETagEncoder.cs
 public static class ETagEncoder
@@ -76,6 +86,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ETagEncoder.cs.create.md|ETagEncoder.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `Decode` throws on malformed input — forces callers to catch exceptions
 
 __Applied solutions:__

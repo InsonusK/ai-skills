@@ -3,7 +3,7 @@ name: class-app-queries-registration
 description: App.Queries assembly scan registration
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `AddMediatR` scans the entire App.Queries assembly — discovers all `IRequestHandler` implementations automatically
 - No separate registration step per handler — assembly scan covers them all
 
@@ -34,6 +35,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-app-queries-registration
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Queries/AppQueriesRegistration.cs
 using Microsoft.Extensions.DependencyInjection;

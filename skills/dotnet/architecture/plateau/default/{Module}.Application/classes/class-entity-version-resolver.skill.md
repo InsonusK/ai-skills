@@ -3,7 +3,7 @@ name: class-entity-version-resolver
 description: Per-entity IEntityVersionResolver implementation that reads the current version using the module's specification and read repository
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend/{Entity}VersionResolver.cs.create.md|{Entity}VersionResolver.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Inherits no base class — implements `IEntityVersionResolver` directly
 - Uses `IReadRepository<{Entity}>` from Shared
 - `VersionedEntityName` constant mirrors `{Entity}Config.VersionedEntityName`
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend/{Entity}VersionResolver.cs.create.md|{Entity}VersionResolver.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-version-resolver
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Application/Concurrency/{Entity}VersionResolver.cs
 using Shared.Concurrency;
@@ -90,6 +100,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend/{Entity}VersionResolver.cs.create.md|{Entity}VersionResolver.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Duplicating the `{Entity}ByIdSpec` query inline in the resolver — reuse the spec
 - Hardcoding entity name strings that differ from the config constant
 

@@ -3,7 +3,7 @@ name: class-i-read-repository
 description: Read-only repository contract inheriting Ardalis IReadRepositoryBase<T>
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - All read methods are inherited from `IReadRepositoryBase<T>` — no custom signatures needed
 - The interface exists so that Application layers depend on our contract, not directly on Ardalis
 
@@ -26,6 +27,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-read-repository
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Repositories/IReadRepository.cs
 using Ardalis.Specification;

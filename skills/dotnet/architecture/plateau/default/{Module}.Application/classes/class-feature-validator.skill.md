@@ -3,7 +3,7 @@ name: class-feature-validator
 description: Transport correctness validator
 domain: skill
 type: template
-version: 20260627
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -21,6 +21,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Extends `AbstractValidator<TCommand>`
 - Rules defined in constructor via `RuleFor(...)`
 - Transport correctness only: `NotEmpty`, `NotNull`, `MaximumLength`, `GreaterThan`, `InclusiveBetween`, email format, regex format
@@ -41,6 +42,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-feature-validator
+//Plateau: default
+//Version: 20260628
+```
+
 Validator declares rules for each command property in the constructor:
 
 ```csharp

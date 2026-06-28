@@ -3,7 +3,7 @@ name: class-conflict-result-extensions
 description: Maps ConflictResult<T> to HTTP 409 with existing entity result body
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -21,6 +21,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create.md|ConflictResultExtensions.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Thin adapter — no business logic, no domain rules
 - `ConflictResult<Create{Entity}Result>` is detected by type so the response status is 409
 - Both 201 and 409 return the same response type (`Create{Entity}Result`) — the API contract is symmetric
@@ -39,6 +40,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create.md|ConflictResultExtensions.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-conflict-result-extensions
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Api/Extensions/ConflictResultExtensions.cs
 using Ardalis.Result;
@@ -120,6 +130,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create.md|ConflictResultExtensions.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Mapping `ConflictResult<T>` to ProblemDetails — breaks the idempotent create contract
 - Duplicating this mapping in every external-created controller action
 - `Create{Entity}Result` with fields beyond `Id` for external-created entities — violates "server returns only Id"

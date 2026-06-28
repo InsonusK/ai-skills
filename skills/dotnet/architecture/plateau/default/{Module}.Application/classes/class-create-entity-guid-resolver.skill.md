@@ -3,7 +3,7 @@ name: class-create-entity-guid-resolver
 description: Per-entity IGuidResolver implementation
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -20,6 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Implements `IGuidResolver<Result<Create{Entity}Result>>` from Shared
 - Injects `IReadRepository<T>` from Shared — read-only lookup
 - Uses `{Entity}ByGuidSpec` from Application — no inline LINQ
@@ -39,6 +40,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-create-entity-guid-resolver
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Application/Resolvers/Create{Entity}GuidResolver.cs
 using Ardalis.Result;
@@ -89,6 +99,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Inline LINQ in resolver instead of named spec
 - Returning `Result.Success(...)` instead of `ConflictResult<...>` — would make the API return 200/201 for a duplicate
 - Resolver returning a response type different from the command handler

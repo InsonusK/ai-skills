@@ -3,7 +3,7 @@ name: class-unit-of-work-behavior
 description: Pipeline behavior that commits at depth 1 after handler completes
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -20,6 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Increments `UnitOfWorkContext.Depth` on entry, decrements in `finally` — depth always restored even on exception
 - Calls `SaveChangesAsync` only when `Depth == 1` — the outermost command in the current request
 - Sub-commands reach this behavior with `Depth > 1` — they stage changes but do not commit
@@ -39,6 +40,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-unit-of-work-behavior
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // BuildingBlocks/MediatR/UnitOfWorkBehavior.cs
 using MediatR;
@@ -130,6 +140,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `UnitOfWorkBehavior` without depth counter — sub-commands commit prematurely, breaking atomicity
 - `catch { rollback }` without explicit `BeginTransaction` — false safety, EF Core already provides implicit transactions
 - Catching exceptions to swallow them — breaks error propagation

@@ -33,7 +33,7 @@ change_kind: extend
 ## Directory and class skills
 | Directory \| file | Description | Pattern skill |
 | --- | --- | --- |
-| /Entities | All entity types for this module | [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md\|solution-solution-structure.skill]] |
+| /Entities | All entity types for this module | [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill\|solution-sln-structure]] |
 | /ValueObjects | All Value Object types for this module | [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md\|solution-value-objects-and-rules.skill]] |
 | /Rules | All domain rule static classes for this module | [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md\|solution-value-objects-and-rules.skill]] |
 | /Services | Static domain service extension methods for bulky entity behavior | Domain service pattern (this solution) |

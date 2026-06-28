@@ -3,7 +3,7 @@ name: class-entity-controller
 description: Collection root controller
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md|{Entity}Controller.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `POST /{entity}` → `Create{Entity}Command` → `Result<{Entity}Result>` → 201 Created
 - `GET /{entity}` → `Get{Entities}Query` → `Result<IReadOnlyList<{Entity}SummaryDto>>` → 200 OK
 - No single-entity operations here — those belong in `Single{Entity}Controller`
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md|{Entity}Controller.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-controller
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Api/Controllers/{Entity}/{Entity}Controller.cs
 using Ardalis.Result;
@@ -124,6 +134,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md|{Entity}Controller.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Handling single-entity operations in the collection controller
 - Returning 200 for POST create — use 201 with `CreatedAtAction`
 

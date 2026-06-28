@@ -3,7 +3,7 @@ name: class-rule
 description: Create a domain rule — stateless deterministic predicate implemented as static extension methods
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -20,6 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Static class with static extension methods — never instantiated
 - Returns `bool` — the caller decides whether to throw
 - Stateless, deterministic, and side-effect free
@@ -39,6 +40,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-rule
+//Plateau: default
+//Version: 20260628
+```
+
 ## PrimitiveRule
 PrimitiveRule must be a static class with extension methods on the primitive type:
 

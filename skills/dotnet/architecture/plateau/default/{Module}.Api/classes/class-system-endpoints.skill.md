@@ -3,7 +3,7 @@ name: class-system-endpoints
 description: System, webhook, batch, cross-aggregate endpoints
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md|{System}Endpoints.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Use Minimal API only when the operation does not belong to a single entity lifecycle
 - Still dispatches exactly one MediatR command or query per endpoint — same dispatch rule as controllers
 - Groups organized by system concern — not by entity
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md|{System}Endpoints.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-system-endpoints
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Api/MinimalApi/{System}Endpoints.cs
 using Ardalis.Result;
@@ -91,6 +101,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md|{System}Endpoints.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Using Minimal API for entity CRUD
 - Multiple `sender.Send()` calls in one endpoint without system-level justification
 - Returning custom error shapes instead of `Results.Problem`

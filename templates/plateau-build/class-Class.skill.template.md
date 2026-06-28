@@ -48,12 +48,14 @@ MUST:
 - If Core Principals conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
+- Add Core principle `Apply ONE plateau template per class`
 
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
 ```
 ```example
+- Apply ONE plateau template per class
 - Rules define business predicates
 - Entities define consistency.
 
@@ -86,6 +88,11 @@ Define Implementaion of class. Summarize all "Implementation changes" from all f
 At the end of block writes list to all used templates to build block.
 
 MUST:
+- Write comment at the top of created class with information from applied skill properties
+  - name
+  - plateau
+  - version
+
 - If Implementation changes conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
@@ -95,6 +102,10 @@ RECOMENDATION:
 - Prefer pure copy with out changing
 ```
 ```example
+//Skill: class-i-guid-entity 
+//Plateau: default
+//Version: 20260628
+
 public class SomeEntity: IGuidEntity{
 	public int Id {get; internal set;}
 	public Guid Guid {get; internal set;}
@@ -143,12 +154,14 @@ MUST:
 - If "Anti-patterns" conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
+- Add antipattern `Apply SEVERAL plateau template per class`
 
 RECOMENDATION:
 - Prefer bullet list
 - Prefer pure copy with out changing
 ```
 ```example
+- Apply SEVERAL plateau template per class
 - Domain service takes `IRepository` parameter — application layer loads, domain decides
 - Domain service duplicates invariant already enforced in entity setter or method
 

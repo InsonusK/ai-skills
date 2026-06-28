@@ -3,7 +3,7 @@ name: class-i-versioned
 description: Marker interface for mutable entities that expose a database-generated concurrency version
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create.md|IVersioned.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Single read-only `Version` property
 - Implemented by every mutable entity in module Domain projects
 - Declared in Shared so Domain can implement it without referencing BuildingBlocks or App.Infrastructure
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create.md|IVersioned.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-versioned
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Concurrency/IVersioned.cs
 namespace Shared.Concurrency;
@@ -61,6 +71,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create.md|IVersioned.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Using reflection on `Version` property instead of casting to `IVersioned`
 - Implementing `IVersioned` on DTOs or commands — belongs on domain entities only
 

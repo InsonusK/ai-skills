@@ -3,7 +3,7 @@ name: class-i-entity-version-resolver-factory
 description: Factory contract that maps stable business entity names to IEntityVersionResolver implementations
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IEntityVersionResolverFactory.cs.create.md|IEntityVersionResolverFactory.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Single method: `GetFor(string entityName) -> IEntityVersionResolver?`
 - Returns `null` for unknown entity names — `ConcurrencyBehavior` returns `Result.Error` on null
 - Implementation lives in App.Infrastructure — Shared owns only the interface
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IEntityVersionResolverFactory.cs.create.md|IEntityVersionResolverFactory.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-entity-version-resolver-factory
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Concurrency/IEntityVersionResolverFactory.cs
 namespace Shared.Concurrency;
@@ -60,6 +70,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IEntityVersionResolverFactory.cs.create.md|IEntityVersionResolverFactory.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Factory returns non-nullable `IEntityVersionResolver` — forces callers to suppress warnings or throw for unknown names
 
 __Applied solutions:__

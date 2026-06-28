@@ -3,7 +3,7 @@ name: class-single-entity-property-controller
 description: Addressable property controller
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `POST /{entity}/{id}/{property}` → set the property → `Set{Entity}{Property}Command`
 - `DELETE /{entity}/{id}/{property}` → unset/clear the property → `Unset{Entity}{Property}Command`
 - Used when a property has meaningful set/unset semantics — e.g. `is-complete`, `is-archived`
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-single-entity-property-controller
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Api/Controllers/{Entity}/Single{Entity}{Property}Controller.cs
 using Ardalis.Result;
@@ -116,6 +126,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Using PUT instead of POST/DELETE for boolean property toggles
 - Property name in camelCase in the route — use kebab-case
 

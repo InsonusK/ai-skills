@@ -3,7 +3,7 @@ name: class-i-entity-version-resolver
 description: Reads the current concurrency version for a single versioned entity
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IEntityVersionResolver.cs.create.md|IEntityVersionResolver.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Single method: `GetCurrentVersionForAsync(int id, CancellationToken) -> Task<int>`
 - Returns `0` when the entity does not exist — `ConcurrencyBehavior` returns `Result.NotFound`
 - Implementations live in module Application projects and use the module's repositories/specifications
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IEntityVersionResolver.cs.create.md|IEntityVersionResolver.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-entity-version-resolver
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Concurrency/IEntityVersionResolver.cs
 namespace Shared.Concurrency;
@@ -64,6 +74,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IEntityVersionResolver.cs.create.md|IEntityVersionResolver.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Returning a negative number for missing entities — complicates the contract
 - Implementing the resolver in App.Infrastructure or BuildingBlocks — Application owns per-entity data access
 
