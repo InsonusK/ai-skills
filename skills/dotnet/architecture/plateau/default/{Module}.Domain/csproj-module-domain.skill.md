@@ -4,6 +4,7 @@ description: Own the entities, value objects, rules, and domain events for this 
 domain: skill
 type: template
 version: 20260627
+plateau: default
 tags:
   - skill/template/csproj
 created_by:

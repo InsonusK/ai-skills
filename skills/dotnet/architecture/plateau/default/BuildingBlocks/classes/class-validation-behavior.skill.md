@@ -4,6 +4,7 @@ description: Pipeline behavior that validates any MediatR request
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

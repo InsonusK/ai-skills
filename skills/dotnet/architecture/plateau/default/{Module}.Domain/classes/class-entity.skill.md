@@ -4,6 +4,7 @@ description: Extend entity to use Value Objects for properties with invariants a
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/class
 created_by:

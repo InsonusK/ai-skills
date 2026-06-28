@@ -4,6 +4,7 @@ description: EF Core migrations only — separated from App.Infrastructure to ke
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/csproj
 created_by:

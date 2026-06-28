@@ -4,6 +4,7 @@ description: Register IEntityVersionResolverFactory and module IEntityVersionRes
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/class
 created_by:

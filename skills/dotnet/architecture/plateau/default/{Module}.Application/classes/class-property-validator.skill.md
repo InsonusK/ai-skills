@@ -4,6 +4,7 @@ description: FluentValidation property validator for a Soft{ValueObject} declare
 domain: skill
 type: template
 version: 20260627
+plateau: default
 tags:
   - skill/template/class
 created_by:

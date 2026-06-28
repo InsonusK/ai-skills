@@ -4,6 +4,7 @@ description: Reads the current concurrency version for a single versioned entity
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/class
 created_by:

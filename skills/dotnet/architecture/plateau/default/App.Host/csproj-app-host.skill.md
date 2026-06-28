@@ -4,6 +4,7 @@ description: Be the single composition root — wire all modules, infrastructure
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/csproj
 created_by:

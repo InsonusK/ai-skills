@@ -4,6 +4,7 @@ description: Implement reusable framework-level patterns consumed by App.Host an
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/csproj
 created_by:

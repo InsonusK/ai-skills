@@ -4,6 +4,7 @@ description: FluentValidation validator for a public DTO declared in {Module}.In
 domain: skill
 type: template
 version: 20260627
+plateau: default
 tags:
   - skill/template/class
 created_by:

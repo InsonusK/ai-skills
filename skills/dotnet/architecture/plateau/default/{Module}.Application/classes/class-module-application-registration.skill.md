@@ -4,6 +4,7 @@ description: Register IGuidResolver in module DI
 domain: skill
 type: template
 version: 20260627
+plateau: default
 tags:
   - skill/template/class
 created_by:

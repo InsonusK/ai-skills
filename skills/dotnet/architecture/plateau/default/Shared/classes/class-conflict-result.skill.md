@@ -4,6 +4,7 @@ description: Result carrying the existing entity result for 409 Conflict respons
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:
