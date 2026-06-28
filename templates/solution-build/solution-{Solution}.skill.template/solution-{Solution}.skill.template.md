@@ -73,6 +73,7 @@ RECOMENDATION:
 Core principalse that a solution should follow
 RECOMENDATION:
 - Prefer bullet list
+- Group principals by logical sense
 ```
 ```example
 - Rules define business predicates
