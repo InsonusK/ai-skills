@@ -85,7 +85,7 @@ Determine which implementation skills are required.
 	- [[create new api]]
 3. Change code, use:
     - [[unittest-testplan.skill]]
-    - [[code-coverage.skill]]
+    - [[skills/common-workflow/test/code-coverage.skill]]
 
 ## 6. Produce implementation plan
 Produce step-by-step implementation roadmap before generating code.

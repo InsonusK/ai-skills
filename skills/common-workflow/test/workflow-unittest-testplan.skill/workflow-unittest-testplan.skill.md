@@ -14,7 +14,7 @@ whenToUse: writing unit test
 
 # How to use it
 1. Prepare list of usecases which you need to cover. 
-  1. Follow [code coverage skill](../code-coverage.skill.md)
+  1. Follow [code coverage skill](skills/common-workflow/test/code-coverage.skill.md)
   2. Cover corner cases, edge cases, and happy path.
   3. Cover cases which are easy to be missed by developers. For example, if there is a method which has a parameter with default value, you need to cover the case when the parameter is not passed.
   4. Cover cases which are easy to be wrong. For example, if there is a method which has a parameter with default value, you need to cover the case when the parameter is passed with wrong value.
