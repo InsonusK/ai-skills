@@ -21,8 +21,8 @@ tags:
 None
 
 # How to use it
-1. Prepare list of usecases which you need to cover. Use [[skills/workflow/test/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill|workflow-unittest-testplan.skill]]
-2. Create unit test using [[skills/dotnet/testing/dotnet-unittest/templates/unittest_class.md|unittest_class.md]] template
+1. Prepare list of usecases which you need to cover. Use [[skills/common-workflow/test/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill|workflow-unittest-testplan.skill]]
+2. Create unit test using [[skills/dotnet/testing/dotnet-unittest.skill/templates/unittest_class|unittest_class.md]] template
 
 # Rules
 - Use ITestOutputHelper Output method BuildLoggerFor<Type>() to create logger
