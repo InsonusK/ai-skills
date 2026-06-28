@@ -35,11 +35,11 @@ change_kind: extend
 ```
 
 ## Directory and class skills
-| Directory \| file | Description | Pattern skill |
-| ----------------- | ----------- | ------------- |
-| /ValueObjects | All Value Object types for this module | Value Object pattern (this solution) |
-| /Rules | All domain rule static classes for this module | Domain Rule pattern (this solution) |
-| /Entities | Domain entities that use Value Objects and rules | [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-sln-structure.skill]] |
+| Directory \| file | Description                                      | Pattern skill                                                                                                                                   |                                |
+| ----------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| /ValueObjects     | All Value Object types for this module           | Value Object pattern (this solution)                                                                                                            |                                |
+| /Rules            | All domain rule static classes for this module   | Domain Rule pattern (this solution)                                                                                                             |                                |
+| /Entities         | Domain entities that use Value Objects and rules | [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill.md\|solution-sln-structure.skill]] | solution-sln-structure.skill]] |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
