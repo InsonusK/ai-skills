@@ -19,7 +19,15 @@ tags:
 4. define templates applied to file
 5. get all check list from found plateau, solutions. templates
 6. check all points in check list that they are checked
-7. make comment `BUG: ` with comment what was made wrong with link to file where define correct way
+7. add comment `BUG: description` into the file with bug near the place where bug exist. Comment description must describe what was made wrong with link to file where define correct way
+
+```example
+public class Todo
+{
+    //BUG: Id must have internal setter by [class-entity](skill: class-entity)
+	public int Id {get; set;}
+}
+```
 
 # Rule
 MUST:
