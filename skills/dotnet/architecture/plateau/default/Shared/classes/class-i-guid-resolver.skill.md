@@ -3,7 +3,7 @@ name: class-i-guid-resolver
 description: Per-entity resolver contract
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Generic on `TResponse` — matches the command's response type exactly
 - Returns `TResponse?` — null means Guid not found (first request), non-null means already exists (retry)
 - The returned non-null value must be the same response type the handler would return, but marked as a conflict
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-guid-resolver
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Guid/IGuidResolver.cs
 namespace Shared.Guid;
@@ -65,6 +75,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `IGuidResolver` without generic parameter — would require casting and lose type safety
 - `IGuidResolver` defined in BuildingBlocks — forces module Application to reference BuildingBlocks for a contract
 - Resolver returning a response type different from the command handler

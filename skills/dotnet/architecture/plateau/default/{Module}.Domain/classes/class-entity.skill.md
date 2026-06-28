@@ -3,7 +3,7 @@ name: class-entity
 description: Extend entity to use Value Objects for properties with invariants and domain rules inside behavior methods
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -45,6 +45,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs.extend]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Entity properties that carry business meaning or invariant constraints use Value Objects instead of primitives
 - Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state
 - Equality of value properties on Entities is evaluated by Value Object structural equality
@@ -99,6 +100,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs.extend]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity
+//Plateau: default
+//Version: 20260628
+```
+
 Entity must use Value Object types for properties that have invariant state or business semantics:
 
 ```csharp
@@ -452,6 +462,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs.extend]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `public string Title { get; set; }` — public setter without validation
 - Placing entity in Application or Interfaces project — entities belong in Domain only
 - `Guid` with `public set` — application code must never modify it

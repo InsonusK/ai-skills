@@ -3,7 +3,7 @@ name: class-unit-of-work-context
 description: Scoped nesting depth counter preventing premature sub-command commit
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Plain class — no interfaces, no base classes, no infrastructure dependencies
 - Single mutable integer property — `Depth`
 - Registered as `Scoped` — one instance shared across all nested `_mediator.Send()` calls within the same HTTP request
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-unit-of-work-context
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // BuildingBlocks/MediatR/UnitOfWorkContext.cs
 namespace BuildingBlocks.MediatR;
@@ -61,6 +71,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `UnitOfWorkContext` registered as `Singleton` — depth leaks across HTTP requests
 - `UnitOfWorkContext` registered as `Transient` — nested commands get separate instances, depth never exceeds 1
 - Handler directly references `UnitOfWorkContext` — breaks separation of concerns

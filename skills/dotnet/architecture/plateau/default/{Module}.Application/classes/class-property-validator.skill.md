@@ -3,7 +3,7 @@ name: class-property-validator
 description: FluentValidation property validator for a Soft{ValueObject} declared in {Module}.Interfaces
 domain: skill
 type: template
-version: 20260627
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Extends `AbstractValidator<Soft{ValueObject}>`
 - Stateless and declarative
 - Registered by FluentValidation's assembly scan of `{Module}.Application`
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-property-validator
+//Plateau: default
+//Version: 20260628
+```
+
 Single-property soft value object validator:
 
 ```csharp
@@ -105,6 +115,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Re-implementing validation logic already in the Domain Value Object instead of sharing a predicate
 - Referencing Domain types inside the property validator
 

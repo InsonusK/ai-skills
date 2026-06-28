@@ -3,7 +3,7 @@ name: class-dto
 description: DTO response shape declaration
 domain: skill
 type: template
-version: 20260627
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -21,6 +21,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Declared as `record` — immutable, structural equality
 - Properties are primitives, other DTOs, or `Soft{ValueObject}` types — never domain entity types
 - Declared in Interfaces alongside the query that returns it
@@ -43,6 +44,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-dto
+//Plateau: default
+//Version: 20260628
+```
+
 Full detail DTO:
 
 ```csharp
@@ -100,6 +110,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - DTO containing a domain entity — always project to flat primitives or Soft VOs
 - DTO with mutable properties — use `record` for immutability
 - DTO validator placed in `{Module}.Interfaces` or `{Module}.Domain`

@@ -3,7 +3,7 @@ name: class-concurrency-behavior
 description: Pipeline behavior validating versions before handler runs
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md|ConcurrencyBehavior.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Constrained on `where TRequest : IHasVersions` — only activates for commands that carry versions
 - Gets the correct `IEntityVersionResolver` from `IEntityVersionResolverFactory` per entity name
 - Loads the current version through the resolver — returns `Result.NotFound` if the resolver reports `0`
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md|ConcurrencyBehavior.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-concurrency-behavior
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // BuildingBlocks/MediatR/ConcurrencyBehavior.cs
 using Shared.Concurrency;
@@ -107,6 +117,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md|ConcurrencyBehavior.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Handler catches `DbUpdateConcurrencyException` instead of relying on `ConcurrencyBehavior`
 - Loading entities inside the behavior instead of delegating to `IEntityVersionResolver`
 

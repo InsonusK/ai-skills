@@ -3,7 +3,7 @@ name: class-repository-registration
 description: Add IUnitOfWork and UnitOfWorkContext scoped registrations
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -22,6 +22,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md|RepositoryRegistration.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Open generic registration eliminates per-entity DI configuration
 - `Scoped` lifetime ensures repositories, `IUnitOfWork`, and `UnitOfWorkContext` share the same DbContext instance within a request
 - `Scoped` lifetime ensures repositories share the same DbContext instance within a request
@@ -31,6 +32,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md|RepositoryRegistration.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-repository-registration
+//Plateau: default
+//Version: 20260628
+```
+
 Extend `RepositoryRegistration` from [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration.skill]] with `IUnitOfWork` and `UnitOfWorkContext`:
 
 ```csharp
@@ -105,6 +115,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md|RepositoryRegistration.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `services.AddTransient<IUnitOfWork, UnitOfWork>()` — breaks DbContext scope sharing
 - `services.AddSingleton<UnitOfWorkContext>()` — depth counter leaks across requests
 - `services.AddScoped<IRepository<TodoTask>, Repository<TodoTask>>()` — use open generic instead

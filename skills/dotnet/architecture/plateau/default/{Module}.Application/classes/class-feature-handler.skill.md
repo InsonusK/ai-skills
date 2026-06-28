@@ -3,7 +3,7 @@ name: class-feature-handler
 description: Single-module query handler implementation
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -23,6 +23,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Implements `IRequestHandler<TQuery, Result<T>>`
 - Injects `IReadRepository<T>` from Shared — signals read-only intent at type level
 - Two implementation shapes depending on DTO complexity:
@@ -51,6 +52,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-feature-handler
+//Plateau: default
+//Version: 20260628
+```
+
 Simple — projection via spec (DTO maps directly from entity fields):
 
 ```csharp
@@ -238,6 +248,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `IRepository<T>` injected into query handler — use `IReadRepository<T>`
 - Inline LINQ in handler: `_repository.FirstOrDefaultAsync(x => x.Id == id)` — define `TaskByIdSpec` instead
 - Returning null instead of `Result.NotFound()`

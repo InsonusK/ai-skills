@@ -3,7 +3,7 @@ name: class-module-application-registration
 description: Register IGuidResolver in module DI
 domain: skill
 type: template
-version: 20260627
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -24,6 +24,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md|{Module}ApplicationRegistration.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - One static extension method per module — `Register{ModuleName}Module`
 - `AddMediatR` scans the Application assembly — all `IRequestHandler` implementations registered automatically
 - `AddValidatorsFromAssembly` scans the Application assembly — all `AbstractValidator<T>` registered automatically, including `{ValueObject}PropertyValidator` and `{Dto}Validator`
@@ -43,6 +44,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md|{Module}ApplicationRegistration.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-module-application-registration
+//Plateau: default
+//Version: 20260628
+```
+
 Module registration extended with `IGuidResolver` registrations:
 
 ```csharp
@@ -122,6 +132,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md|{Module}ApplicationRegistration.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `IGuidResolver` registered as open generic — breaks DI resolution per command result type
 - Resolver registered with mismatched `TResponse` — handler and resolver return different types
 

@@ -3,7 +3,7 @@ name: class-i-repository
 description: Read-write repository contract inheriting Ardalis IRepositoryBase<T>
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - All write methods are inherited from `IRepositoryBase<T>` — no custom signatures needed
 - `SaveChangesAsync` is intentionally absent — committing is the responsibility of the Unit of Work
 
@@ -26,6 +27,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-repository
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Repositories/IRepository.cs
 using Ardalis.Specification;

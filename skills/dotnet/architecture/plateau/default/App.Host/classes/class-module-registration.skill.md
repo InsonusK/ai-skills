@@ -3,7 +3,7 @@ name: class-module-registration
 description: Centralized module registration extension
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - One `AddModules` extension per App.Host
 - Each module's `Register{ModuleName}Module(configuration)` is called inside this method
 - New modules are added here — never directly in `Program.cs`
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-module-registration
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Host/DependencyInjection/ModuleRegistration.cs
 using Microsoft.Extensions.Configuration;

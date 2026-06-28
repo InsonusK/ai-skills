@@ -3,7 +3,7 @@ name: class-validation-behavior
 description: Pipeline behavior that validates any MediatR request
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -21,6 +21,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|class-validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Receives `IEnumerable<IValidator<TRequest>>` via DI — zero, one, or multiple validators supported
 - Runs all validators and collects all errors before short-circuiting — full error list, not fail-fast per field
 - Maps FluentValidation `ValidationFailure` to `Ardalis.Result` `ValidationError`
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|class-validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-validation-behavior
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // BuildingBlocks/MediatR/ValidationBehavior.cs
 using Ardalis.Result;

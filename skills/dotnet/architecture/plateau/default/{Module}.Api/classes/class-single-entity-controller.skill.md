@@ -3,7 +3,7 @@ name: class-single-entity-controller
 description: Single entity lifecycle controller
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -24,6 +24,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md|Single{Entity}Controller.cs.extend]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - ETag format: `"<base64>"` — surrounding double quotes are part of the HTTP ETag format
 - `ETagEncoder.Encode` builds the versions dictionary — entity name string must match `EntityVersionResolverFactory` keys exactly
 - If `If-Match` missing or `ETagEncoder.Decode` returns null → return `StatusCode(412)` immediately, before `_sender.Send()`
@@ -44,6 +45,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md|Single{Entity}Controller.cs.extend]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-single-entity-controller
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Api/Controllers/{Entity}/Single{Entity}Controller.cs
 using Ardalis.Result;
@@ -247,6 +257,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md|Single{Entity}Controller.cs.extend]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Returning 200 for update/delete — use 204 NoContent
 - Missing `[ProducesResponseType]` for NotFound
 - ETag encoding only primary entity version — misses secondary entity conflicts when command touches multiple entities

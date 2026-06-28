@@ -3,7 +3,7 @@ name: class-cross-module-query-handler
 description: Cross-module JOIN query handler implementation
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md|CrossModuleQueryHandler.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Implements `IRequestHandler<TQuery, Result<T>>`
 - Injects `AppDbContext` directly — cross-module JOIN cannot be expressed through single-entity `IReadRepository<T>`
 - Always applies `AsNoTracking()` — read-only operation, no tracking overhead
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md|CrossModuleQueryHandler.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-cross-module-query-handler
+//Plateau: default
+//Version: 20260628
+```
+
 Inline LINQ projection without `Include()` — all mapping is explicit in `Select()`:
 
 ```csharp
@@ -131,6 +141,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md|CrossModuleQueryHandler.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Using `IReadRepository<T>` for cross-module JOIN — repository is single-entity, use DbContext
 - Forgetting `AsNoTracking()` — causes unnecessary change tracking overhead
 - Using `Include()` followed by client-side mapping — projection belongs in `Select()`

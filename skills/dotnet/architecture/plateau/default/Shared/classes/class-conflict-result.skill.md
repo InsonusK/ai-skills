@@ -3,7 +3,7 @@ name: class-conflict-result
 description: Result carrying the existing entity result for 409 Conflict responses
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -20,6 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Lives in `Shared` so both `{Module}.Application` resolvers and BuildingBlocks behavior can reference it
 - Inherits from `Ardalis.Result.Result<T>` — fully compatible with existing result-based controllers and mapping
 - `Status` is `ResultStatus.Conflict`
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-conflict-result
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Results/ConflictResult.cs
 using Ardalis.Result;
@@ -72,6 +82,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Returning `Result<T>.Conflict()` and losing the existing entity result
 - Storing the conflict payload in `Errors` or `Location` instead of `Value`
 - Defining `ConflictResult<T>` in BuildingBlocks — forces Shared to reference BuildingBlocks

@@ -3,7 +3,7 @@ name: class-result-extensions
 description: ToProblemDetails helper for Result error mapping
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md|ResultExtensions.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `ProblemDetails` is the only error shape returned from the API
 - Validation errors grouped by identifier into a dictionary
 - Plain error messages returned as an array
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md|ResultExtensions.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-result-extensions
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Api/Extensions/ResultExtensions.cs
 using Ardalis.Result;
@@ -93,6 +103,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md|ResultExtensions.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Inline `ProblemDetails` construction in every controller action instead of using `ResultExtensions`
 - Returning raw strings as error bodies
 

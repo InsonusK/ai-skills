@@ -3,7 +3,7 @@ name: class-entity-summary-spec
 description: Application-layer projection specification mapping entity to DTO
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Inherits `Specification<T, TResult>` — second type parameter is the DTO
 - Uses `Query.Select(...)` to define projection
 - Repository executes projection at the database level
@@ -27,6 +28,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-summary-spec
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Application/Specifications/{Entity}SummarySpec.cs
 using Ardalis.Specification;

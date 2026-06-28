@@ -3,7 +3,7 @@ name: class-repository
 description: Generic EF Core repository inheriting Ardalis RepositoryBase<T>
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend/Repository.cs.create.md|Repository.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `RepositoryBase<T>` internally uses `SpecificationEvaluator` and applies `AsNoTracking` where appropriate
 - Constructor receives `AppDbContext` via DI and forwards it to the Ardalis base
 
@@ -26,6 +27,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend/Repository.cs.create.md|Repository.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-repository
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Infrastructure/Repositories/Repository.cs
 using Ardalis.Specification.EntityFrameworkCore;

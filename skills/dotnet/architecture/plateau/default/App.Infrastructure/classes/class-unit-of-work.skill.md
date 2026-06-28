@@ -3,7 +3,7 @@ name: class-unit-of-work
 description: IUnitOfWork implementation delegating to AppDbContext
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Wraps `AppDbContext` — receives it via constructor injection
 - Single method implementation — no transaction management, no retry logic
 - Registered as `Scoped` — same `DbContext` instance as `Repository<T>`, ensuring all staged changes are committed together
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-unit-of-work
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Infrastructure/UnitOfWork/UnitOfWork.cs
 using Shared.UnitOfWork;
@@ -69,6 +79,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `UnitOfWork` called directly from a handler — bypasses the pipeline and breaks atomicity guarantees
 - `UnitOfWork` containing business logic — should be pure delegation
 

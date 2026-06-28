@@ -3,7 +3,7 @@ name: class-query
 description: Query record declaration
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Declared as `record` — immutable, structural equality
 - Implements `IQuery<Result<T>>` — return type is always `Result<T>` or `Result<IReadOnlyList<T>>`
 - Input properties are primitives — no domain entity references
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-query
+//Plateau: default
+//Version: 20260628
+```
+
 Single entity query:
 
 ```csharp

@@ -3,7 +3,7 @@ name: class-module-to-module-config
 description: Configure foreign key relationships and mappings that cross module boundaries
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -18,6 +18,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Cross-module configuration references entities from multiple modules without redefining their intra-module mapping
 - Cross-module config composes on top of existing Domain configs, never duplicates them
 
@@ -33,6 +34,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-module-to-module-config
+//Plateau: default
+//Version: 20260628
+```
+
 Cross-module foreign key configuration lives in App.Infrastructure:
 
 ```csharp

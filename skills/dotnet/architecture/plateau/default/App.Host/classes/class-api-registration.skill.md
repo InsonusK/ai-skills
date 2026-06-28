@@ -3,7 +3,7 @@ name: class-api-registration
 description: Controller and middleware registration
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -27,6 +27,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md|ApiRegistration.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-api-registration
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Host/DependencyInjection/ApiRegistration.cs
 using Microsoft.AspNetCore.Mvc;
@@ -100,6 +109,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md|ApiRegistration.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Missing `UseExceptionHandler()` before `MapControllers()`
 - Forgetting to map Minimal API endpoint groups
 

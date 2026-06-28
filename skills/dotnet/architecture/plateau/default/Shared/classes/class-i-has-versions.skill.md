@@ -3,7 +3,7 @@ name: class-i-has-versions
 description: Interface for update commands carrying client-supplied version information
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Dictionary structure: entity name string → (entity Id → expected version)
 - Supports multi-entity updates — a single command can carry versions for multiple entities
 - Entity name keys are stable business strings — `"Task"`, `"TimeLog"` — never C# type names
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-has-versions
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Concurrency/IHasVersions.cs
 namespace Shared.Concurrency;
@@ -62,6 +72,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `Versions` as a flat dictionary without entity name grouping — does not support multi-entity updates
 
 __Applied solutions:__

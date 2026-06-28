@@ -3,7 +3,7 @@ name: class-behavior-service
 description: Create static domain service extension methods for bulky or multi-step entity behavior
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -20,6 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Implemented as a `static class` with extension methods on the entity type
 - Stateless and side-effect free aside from invoking entity mutation methods
 - Delegates all validation to existing domain rules from `{Module}.Domain/Rules`
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-behavior-service
+//Plateau: default
+//Version: 20260628
+```
+
 Static service extension must use domain rules and delegate mutation to the entity:
 
 ```csharp
