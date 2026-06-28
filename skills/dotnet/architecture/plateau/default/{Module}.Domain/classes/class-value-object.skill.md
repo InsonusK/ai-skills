@@ -3,7 +3,7 @@ name: class-value-object
 description: Create a Value Object type — immutable self-validating record that encodes domain semantics
 domain: skill
 type: template
-version: 20260627
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -22,6 +22,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md|{ValueObject}.cs.extend]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Declared as `sealed record` — immutable and structurally equal by default
 - Constructor validates all invariants — throws DomainException on violation
 - Has no infrastructure or application dependencies — pure domain concept
@@ -45,6 +46,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md|{ValueObject}.cs.extend]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-value-object
+//Plateau: default
+//Version: 20260628
+```
+
 ## Single-property ValueObject
 Single-property ValueObject must:
 - Be declared as `sealed record`

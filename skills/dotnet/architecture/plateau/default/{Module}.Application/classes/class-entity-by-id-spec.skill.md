@@ -3,7 +3,7 @@ name: class-entity-by-id-spec
 description: Simple single-condition specification to load an entity by Id
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -18,6 +18,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Inherits `Specification<T>` from `Ardalis.Specification`
 - Constructor receives filter parameter and calls `Query.Where(...)`
 - Never touches the database — describes what to fetch
@@ -26,6 +27,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-by-id-spec
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Application/Specifications/{Entity}ByIdSpec.cs
 using Ardalis.Specification;

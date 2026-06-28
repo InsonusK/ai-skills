@@ -3,7 +3,7 @@ name: class-i-query
 description: Read-only operation marker interface
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Interface only — no properties, no methods
 - Extends `IRequest<TResponse>` so MediatR routes it to a handler
 - Does NOT extend `ICommand` — queries are read-only operations and must remain distinct from write-side markers
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-query
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/MediatR/IQuery.cs
 using MediatR;

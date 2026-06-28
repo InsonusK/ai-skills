@@ -3,7 +3,7 @@ name: class-i-command
 description: Write operation marker interfaces
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Interface only — no properties, no methods
 - `ICommand<TResponse>` is the standard form — almost all commands return `Result<T>`
 - Pipeline behaviors in BuildingBlocks use `where TRequest : ICommand` to activate only for write operations
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-command
+//Plateau: default
+//Version: 20260628
+```
+
 Both variants defined in one file:
 
 ```csharp

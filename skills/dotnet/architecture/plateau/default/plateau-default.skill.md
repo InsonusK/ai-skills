@@ -3,7 +3,7 @@ name: plateau-default
 description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, command/query integration, repository abstractions, soft value objects and DTO validators, and centralized pipeline/host wiring
 domain: skill
 type: template
-version: 20260627
+version: 20260628
 tags:
   - skill/template/plateau
 created_by:

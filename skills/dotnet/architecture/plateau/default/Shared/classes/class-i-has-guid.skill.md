@@ -3,7 +3,7 @@ name: class-i-has-guid
 description: Marker interface for commands carrying a client-generated Guid
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Single property: `Guid Guid { get; }`
 - Implemented by create commands for externally-created entity types only
 - Not implemented by update, delete, or internal-create commands
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-has-guid
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/Guid/IHasGuid.cs
 public interface IHasGuid
@@ -57,6 +67,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `IHasGuid` on query objects — has no meaning for reads
 - `IHasGuid` defined in BuildingBlocks — forces module Interfaces to reference BuildingBlocks
 

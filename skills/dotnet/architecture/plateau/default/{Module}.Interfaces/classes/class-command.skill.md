@@ -3,7 +3,7 @@ name: class-command
 description: Create command implements IHasGuid
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -27,6 +27,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `Guid` is the first property — signals to the reader that this is an external-created entity
 - Command carries the client-generated Guid — never a server-generated value
 - Command implements `IHasGuid` from Shared — `{Module}.Interfaces` does not reference BuildingBlocks
@@ -64,6 +65,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-command
+//Plateau: default
+//Version: 20260628
+```
+
 Create command extended with `Guid` and `IHasGuid`:
 
 ```csharp
@@ -160,6 +170,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `Guid` not as first property — signals external-created entity at a glance
 - Resolver response type different from command handler response type — breaks 201/409 symmetry
 - `Versions` hardcoded in command constructor call in handler or service

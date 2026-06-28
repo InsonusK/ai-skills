@@ -3,7 +3,7 @@ name: class-i-unit-of-work
 description: Single-method commit contract accessible by every layer
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Single method only: `SaveChangesAsync(CancellationToken)` — nothing else
 - Implementation in App.Infrastructure — Shared holds only the interface
 - Registered as `Scoped` — shares the same DbContext instance as `Repository<T>` within the request
@@ -35,6 +36,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-unit-of-work
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // Shared/UnitOfWork/IUnitOfWork.cs
 namespace Shared.UnitOfWork;

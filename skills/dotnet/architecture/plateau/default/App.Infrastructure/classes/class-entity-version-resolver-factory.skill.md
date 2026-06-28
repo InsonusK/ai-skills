@@ -3,7 +3,7 @@ name: class-entity-version-resolver-factory
 description: Factory that maps stable business entity names to Application-layer IEntityVersionResolver implementations
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -20,6 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md|EntityVersionResolverFactory.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Read-only map — populated once (static/lazy) from supplied assemblies, no runtime modification
 - Keys are stable business names declared in `{Entity}Config.VersionedEntityName` and repeated on `{Entity}VersionResolver.VersionedEntityName`
 - Domain assemblies are scanned to validate that every resolver references a real versioned entity
@@ -38,6 +39,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md|EntityVersionResolverFactory.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-version-resolver-factory
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Infrastructure/Concurrency/EntityVersionResolverFactory.cs
 using System.Reflection;
@@ -199,6 +209,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md|EntityVersionResolverFactory.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `nameof({EntityName})` or `type.Name` as dictionary key — fragile, breaks on class rename
 - Manually listing every resolver in a hardcoded dictionary — duplicates the entity list and is easy to forget
 - Pulling in all loaded assemblies via `AppDomain.CurrentDomain.GetAssemblies()` — can include unrelated assemblies and dynamic types; explicit assembly list from the composition root is safer

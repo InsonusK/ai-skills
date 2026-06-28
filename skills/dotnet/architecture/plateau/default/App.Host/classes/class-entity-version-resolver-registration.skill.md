@@ -3,7 +3,7 @@ name: class-entity-version-resolver-registration
 description: Register IEntityVersionResolverFactory and module IEntityVersionResolver implementations in App.Host
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -20,6 +20,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md|EntityVersionResolverRegistration.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `IEntityVersionResolverFactory` registered as `Scoped` — it creates `Scoped` resolvers that depend on `IReadRepository<T>`
 - Module assemblies are supplied explicitly from the composition root — App.Host is the only project that references all modules
 - Keep repository registration separate from concurrency resolver registration
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md|EntityVersionResolverRegistration.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-version-resolver-registration
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Host/DependencyInjection/EntityVersionResolverRegistration.cs
 using System.Reflection;
@@ -107,6 +117,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md|EntityVersionResolverRegistration.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - `IEntityVersionResolverFactory` registered as `Singleton` — resolver instances depend on `Scoped` repositories
 - Passing Infrastructure or Api assemblies instead of Application assemblies — would scan unrelated types
 

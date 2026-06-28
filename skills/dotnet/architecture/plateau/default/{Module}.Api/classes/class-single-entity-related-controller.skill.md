@@ -3,7 +3,7 @@ name: class-single-entity-related-controller
 description: Relationship instance controller
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -27,6 +27,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md|Single{Entity}{Related}Controller.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-single-entity-related-controller
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Api/Controllers/{Entity}/{Related}/Single{Entity}{Related}Controller.cs
 using Ardalis.Result;
@@ -107,6 +116,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md|Single{Entity}{Related}Controller.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Using this controller for sub-collection list/add operations
 - Missing route constraints on IDs
 

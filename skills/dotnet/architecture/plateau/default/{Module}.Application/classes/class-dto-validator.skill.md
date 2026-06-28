@@ -3,7 +3,7 @@ name: class-dto-validator
 description: FluentValidation validator for a public DTO declared in {Module}.Interfaces
 domain: skill
 type: template
-version: 20260627
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -19,6 +19,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Extends `AbstractValidator<{Dto}>`
 - Uses `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
 - Stateless and declarative
@@ -36,6 +37,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-dto-validator
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Application/Validators/TaskDtoValidator.cs
 using FluentValidation;
@@ -91,6 +101,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Validating DTOs inside handlers instead of using the published `IValidator<{Dto}>`
 - Duplicating property validation rules already covered by property validators
 

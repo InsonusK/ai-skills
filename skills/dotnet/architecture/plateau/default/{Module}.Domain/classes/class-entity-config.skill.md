@@ -3,7 +3,7 @@ name: class-entity-config
 description: Configure unique index on Guid with named constant
 domain: skill
 type: template
-version: 20260622
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -31,6 +31,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - Index name follows the convention: `UX_{TableName}_Guid`
 - Unique index ensures concurrent requests that both pass the pipeline check are rejected at the DB level
 - Constant name `UX_Guid` used in integration tests to assert the correct constraint name in `PostgresException`
@@ -66,6 +67,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-entity-config
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // {Module}.Domain/Configurations/{EntityName}Config.cs
 public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
@@ -307,6 +317,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Inline string for database index name — hard to reference in tests
 - `Version` mapped to a regular column without `IsConcurrencyToken()` — loses database-level protection
 - Putting `VersionedEntityName` on the entity class — spreads configuration across the domain instead of keeping it in the config

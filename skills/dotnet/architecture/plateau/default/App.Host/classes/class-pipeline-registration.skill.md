@@ -3,7 +3,7 @@ name: class-pipeline-registration
 description: Centralized pipeline behavior registration extension
 domain: skill
 type: template
-version: 20260616
+version: 20260628
 plateau: default
 tags:
   - skill/template/class
@@ -23,6 +23,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill.md|solution-pipeline-registration-order]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs.extend]]
 
 # Core Principals
+- Apply ONE plateau template per class
 - `PipelineRegistration` is a static class with one public extension method
 - `AddPipeline()` returns `IServiceCollection` so it can be chained in `Program.cs`
 - Individual behavior solutions extend this method to insert their behaviors in order
@@ -43,6 +44,15 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill.md|solution-pipeline-registration-order]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs.extend]]
 
 # Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-pipeline-registration
+//Plateau: default
+//Version: 20260628
+```
+
 ```csharp
 // App.Host/DependencyInjection/PipelineRegistration.cs
 using Microsoft.Extensions.DependencyInjection;
@@ -115,6 +125,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill.md|solution-pipeline-registration-order]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs.extend]]
 
 # Anti-patterns
+- Apply SEVERAL plateau template per class
 - Pipeline order scattered across multiple files
 - Registering behaviors in `Program.cs` instead of inside `PipelineRegistration`
 - `UnitOfWorkBehavior` registered before earlier behaviors
