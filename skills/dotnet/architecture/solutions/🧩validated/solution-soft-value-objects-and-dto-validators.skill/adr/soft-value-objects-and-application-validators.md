@@ -16,7 +16,8 @@ Place `Soft{ValueObject}` in `{Module}.Interfaces` and its validator in `{Module
 - `{Module}.Interfaces` remains declarations-only and exposes the `Soft{ValueObject}` shape
 - `{Module}.Application` owns the validator implementation and registers it automatically
 - Other modules use the generic `IValidator<T>` abstraction without referencing `{Module}.Application`
-- `{Module}.Domain.ValueObjects.{ValueObject}` inherits from `Soft{ValueObject}` and remains the only place that enforces invariants
+- `{Module}.Domain.ValueObjects.{ValueObject}` inherits from `Soft{ValueObject}` and enforces invariants by calling Rules
+- Rules are defined in `{Module}.Domain/Rules`, have a primitive overload as the single source of truth, and a `Soft{ValueObject}` overload that delegates to it; Domain ValueObject and Application validators use the same Rule
 
 # Searched variants
 

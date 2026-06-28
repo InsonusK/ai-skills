@@ -14,6 +14,7 @@ change_kind: create
 - Extends `AbstractValidator<Soft{ValueObject}>`
 - Stateless and declarative
 - Registered by FluentValidation's assembly scan of `{Module}.Application`
+- Validates values only by calling Rules
 - No infrastructure or business-rule dependencies
 
 # Naming convention
@@ -26,6 +27,7 @@ change_kind: create
 ```csharp
 // {Module}.Application/Validators/EmailPropertyValidator.cs
 using FluentValidation;
+using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
 
 namespace {Module}.Application.Validators;
@@ -34,9 +36,7 @@ public class EmailPropertyValidator : AbstractValidator<SoftEmail>
 {
     public EmailPropertyValidator()
     {
-        RuleFor(x => x.Value)
-            .NotEmpty()
-            .EmailAddress();
+        RuleFor(x => x).Must(x => x.IsValidEmail());
     }
 }
 ```
@@ -46,6 +46,7 @@ Multi-property example:
 ```csharp
 // {Module}.Application/Validators/MoneyPropertyValidator.cs
 using FluentValidation;
+using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
 
 namespace {Module}.Application.Validators;
@@ -54,8 +55,7 @@ public class MoneyPropertyValidator : AbstractValidator<SoftMoney>
 {
     public MoneyPropertyValidator()
     {
-        RuleFor(x => x.Amount).GreaterThanOrEqualTo(0);
-        RuleFor(x => x.Currency).NotEmpty().Length(3);
+        RuleFor(x => x).Must(x => x.IsValidMoney());
     }
 }
 ```
@@ -77,15 +77,17 @@ MUST:
 - Extend `AbstractValidator<Soft{ValueObject}>`
 - Be named `{ValueObject}PropertyValidator`
 - Live in `/{Module}.Application/Validators`
-- Validate transport/value correctness only
+- Validate transport/value correctness only by calling Rules
 
 MUST NOT:
 - Inject repositories or services
 - Contain business rules
+- Contain inline FluentValidation predicates that duplicate Rule logic
 - Throw exceptions
 
 # Anti-patterns
-- Re-implementing validation logic already in the Domain Value Object instead of sharing a predicate
+- Validating `Soft{ValueObject}` inline instead of calling a Rule
+- Re-implementing validation logic already in the Domain Value Object instead of sharing a Rule
 - Referencing Domain types inside the property validator
 
 # Check list
@@ -98,3 +100,4 @@ MUST NOT:
 - [ ] When a valid `Soft{ValueObject}` is validated Then no errors are returned
 - [ ] When an invalid `Soft{ValueObject}` is validated Then validation errors are returned
 - [ ] When resolved from DI as `IValidator<Soft{ValueObject}>` Then the property validator is returned
+- [ ] When validated Then the property validator calls a Rule

@@ -16,6 +16,7 @@ change_kind: create
 - Returns `bool` — the caller decides whether to throw
 - Stateless, deterministic, and side-effect free
 - Primitive rule is the single source of truth — VO overloads delegate to it, never duplicate
+- Value Object constructors validate values only by calling Rules
 
 # Naming convention
 

@@ -46,7 +46,7 @@ __Applied solutions:__
 
 # Core Principals
 - Apply ONE plateau template per class
-- Entity properties that carry business meaning or invariant constraints use Value Objects instead of primitives
+- Entity properties are Value Object types except `Id`, `Version`, and unconstrained generic parameters; any additional validation rule forces the generic parameter to become a Value Object
 - Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state
 - Equality of value properties on Entities is evaluated by Value Object structural equality
 - Entity defines consistency — it decides when and how to enforce invariants
@@ -57,6 +57,7 @@ __Applied solutions:__
 - Entity has mutable state — unlike Value Objects, state changes over time
 - Entity encapsulates behavior — state changes happen through methods, not direct property assignment from outside
 - Entity enforces invariants — invalid state must never be reachable
+- Unconstrained generic parameters are the only property exception; as soon as a validation rule applies, the property must be a Value Object
 - `Id` is always `internal set` — only persistence layer assigns it, never application code
 - Entity type is selected from the type matrix before implementation begins — not discovered during coding
 - All public setters or method must validate to prevent invalid state
@@ -126,18 +127,12 @@ Entity behavior methods must use domain rules to guard state changes:
 public class Order
 {
     public int Id { get; internal set; }
-    public string Comment { get; internal set; }
+    public CommentText Comment { get; internal set; }
     public uint Version { get; internal set; }
 
     public void UpdateComment(string comment)
     {
-        if (!comment.IsNotEmpty())
-            throw new DomainException("Comment must not be empty.");
-
-        if (!comment.IsMaxLength(500))
-            throw new DomainException("Comment must not exceed 500 characters.");
-
-        Comment = comment;
+        Comment = new CommentText(comment); // ValueObject validates via Rule
     }
 }
 ```
@@ -180,25 +175,8 @@ Entity must be a class with `int Id` as primary identity.
 public class Currency
 {
     public int Id { get; internal set; }
-    private string _code;
-    public string Code {
-	    public get => this._code;
-      public set {
-		    if (value == "")
-		        throw new DomainException("Invalid code");
-		    this._code = value;
-		  }  
-		}
-    
-		public int Amount {get; internal set;}   
-    internal void SetAmount(int amount)
-    {
-        if (amount <= 0)
-            throw new DomainException("Invalid amount");
-
-        this.Amount = amount;
-    }
-
+    public CurrencyCode Code { get; internal set; }
+    public PositiveAmount Amount { get; internal set; }
 }
 ```
 
@@ -268,18 +246,12 @@ Entity behavior methods must validate state through domain rules before mutating
 public class Order
 {
     public int Id { get; internal set; }
-    public string Comment { get; internal set; }
+    public CommentText Comment { get; internal set; }
     public uint Version { get; internal set; }
 
     public void UpdateComment(string comment)
     {
-        if (!comment.IsNotEmpty())
-            throw new DomainException("Comment must not be empty.");
-
-        if (!comment.IsMaxLength(500))
-            throw new DomainException("Comment must not exceed 500 characters.");
-
-        Comment = comment;
+        Comment = new CommentText(comment); // ValueObject validates via Rule
     }
 }
 ```
@@ -311,14 +283,11 @@ Entity may expose guarded internal methods for use by domain service extensions:
 public class Order
 {
     public int Id { get; internal set; }
-    public decimal Total { get; private set; }
+    public Money Total { get; private set; }
 
-    internal void SetTotal(decimal total)
+    internal void SetTotal(Money total)
     {
-        if (!total.IsPositive())
-            throw new DomainException("Total must be positive.");
-
-        Total = total;
+        Total = total; // Money validates itself via Rule
     }
 }
 ```
@@ -422,6 +391,8 @@ __Applied solutions:__
 # Rules
 MUST:
 	- Use Value Object on Entity property when the value has invariant state or carries business semantics
+	- Entity properties other than `Id` and `Version` must be Value Object types, unless they are unconstrained generic parameters
+	- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
 	- Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
 	- Call domain rules inside entity methods before mutating state
 	- Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
@@ -439,6 +410,7 @@ MUST:
 	- Keep the entity as the single gatekeeper for each property mutation
 MUST NOT:
 	- Use primitive type on Entity property when the value carries business meaning or invariant constraints
+	- Expose a primitive Entity property when a Value Object could enforce the same invariants
 	- Reimplement rule logic inline inside entity methods — always delegate to existing rules
 	- Mutate state before validating with rules
 	- Allow invalid state to persist silently
@@ -464,6 +436,7 @@ __Applied solutions:__
 # Anti-patterns
 - Apply SEVERAL plateau template per class
 - `public string Title { get; set; }` — public setter without validation
+- Entity property that is not `Id`, `Version`, or an unconstrained generic is a primitive type
 - Placing entity in Application or Interfaces project — entities belong in Domain only
 - `Guid` with `public set` — application code must never modify it
 - `Version` with `public set` — application code must never modify it
@@ -485,6 +458,8 @@ __Applied solutions:__
 # Check list
 - [ ] Entity type selected from the matrix
 - [ ] `int Id` with `internal set` present
+- [ ] Entity uses Value Object for every property except `Id`, `Version`, and unconstrained generic parameters
+- [ ] Generic properties have no additional validation rules; otherwise they are replaced with Value Objects
 - [ ] All public property setters and methods has validation
 - [ ] Entity placed in /{Module}.Domain/Entities
 - [ ] `Guid Guid { get; internal set; }` present on external-created entity

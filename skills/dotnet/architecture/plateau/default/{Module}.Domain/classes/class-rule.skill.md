@@ -25,6 +25,7 @@ __Applied solutions:__
 - Returns `bool` — the caller decides whether to throw
 - Stateless, deterministic, and side-effect free
 - Primitive rule is the single source of truth — VO overloads delegate to it, never duplicate
+- Value Object constructors validate values only by calling Rules
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs.create]]

@@ -40,6 +40,8 @@ depends_on:
 - Prevent business condition duplication across controllers, validators, services, and entities
 - Separate the predicate (does this satisfy the condition?) from the enforcement (throw if not)
 - Ensure primitive and VO overloads of the same rule share one implementation — no duplication
+- Ensure every Entity property is a Value Object except `Id`, `Version`, and unconstrained generic parameters; any additional validation rule forces the generic parameter to become a Value Object
+- Ensure Value Objects validate values only through Rules — no inline conditions
 - Extract Value Objects and Rules that are reusable across multiple modules into Shared.csproj
 
 # Capabilities
@@ -48,6 +50,7 @@ depends_on:
 - Reusable, deterministic business predicates
 - Prevention of business condition duplication
 - Shared location for cross-module Value Objects and rules
+- Signle point of validation rules
 
 # Core Principals
 - Semantics belong to types, not primitives — if a primitive carries business meaning, it is a VO
@@ -55,6 +58,8 @@ depends_on:
 - Value Object is self-validating — invalid state cannot exist, constructor throws on violation
 - Equality is structural — two instances with same values are equal
 - Value Object has no identity — it is defined entirely by its value
+- Entity properties are Value Object types except `Id`, `Version`, and unconstrained generic parameters; any validation rule beyond the generic contract forces a Value Object
+- Value Object validates values only through Rules — never via inline conditions
 - Prefer Value Object over primitive on Entity properties when the value has invariant state
 - Value Object has no infrastructure or application dependencies — pure domain concept
 - Multi-property VO requires a private parameterless constructor for EF Core materialization
@@ -65,6 +70,7 @@ depends_on:
 - Rules are implemented as static extension methods — never instantiated
 - Primitive rule is the single source of truth — VO overloads delegate to primitive overload
 - Three rule shapes exist: primitive rules, VO-scoped rules, contextual (multi-value) rules
+- Value Object validates values only through Rules; inline validation logic is forbidden
 - Rules define predicates — Entities define consistency — Value Objects define correctness
 - Value Objects and Rules used by two or more modules belong in Shared.csproj, not duplicated in each module
 
@@ -109,6 +115,9 @@ MUST:
 - Named `{Type}Rules` for primitive/VO rules, `{Condition}Rule` for contextual rules
 - Extract reusable VO/rule to Shared.csproj when used by two or more modules
 - Use Value Object on Entity property when the value has invariant state or carries business semantics
+- Entity properties other than `Id` and `Version` must be Value Object types, unless they are unconstrained generic parameters
+- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
+- Value Object validates values only through Rules — inline validation logic is forbidden
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
 - Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
@@ -136,9 +145,13 @@ MUST NOT:
 - Allow invalid state to persist silently
 - Duplicate the same VO/rule logic across multiple module Domain projects
 - Use primitive type on Entity property when the value carries business meaning or invariant constraints
+- Allow inline validation logic inside a Value Object constructor — always delegate to a Rule
+- Expose a primitive Entity property when a Value Object could enforce the same invariants
 
 # Anti-patterns
 - Primitive on Entity instead of Value Object when the value has invariant state — loses invariant enforcement
+- Entity property that is not `Id`, `Version`, or an unconstrained generic is a primitive type
+- Value Object constructor with inline validation instead of calling a Rule
 - VO with public setter — allows post-construction mutation, invalidates immutability guarantee
 - VO that throws on `ToString()` when null internal state — private constructor must not leave fields unset for EF
 - Multi-property VO without private parameterless constructor — EF materialization fails silently
@@ -177,6 +190,9 @@ MUST NOT:
 - [ ] Cross-module VOs live in `/Shared/ValueObjects`
 - [ ] Cross-module rules live in `/Shared/Rules`
 - [ ] No duplicate VO/rule logic exists in multiple modules
+- [ ] Entity uses Value Object for every property except `Id`, `Version`, and unconstrained generic parameters
+- [ ] Generic properties have no additional validation rules; otherwise they are replaced with Value Objects
+- [ ] Value Object validates values only through Rules
 - [ ] Entity uses VO for properties with invariant state
 - [ ] Entity calls rules before mutating state
 - [ ] Entity throws `DomainException` when rule returns false
@@ -191,6 +207,8 @@ MUST NOT:
 - [ ] When two VOs have different values Then they are not equal
 - [ ] When implicit operator used Then value round-trips losslessly (single-property only)
 - [ ] When multi-property VO persisted and loaded Then all properties materialize correctly
+- [ ] When Entity has a property other than Id or Version Then it is a Value Object or an unconstrained generic parameter
+- [ ] When Value Object constructor is called Then it delegates validation to a Rule
 - [ ] When value satisfies rule Then returns true
 - [ ] When value violates rule Then returns false
 - [ ] When boundary value at minimum Then returns expected result

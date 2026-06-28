@@ -12,7 +12,8 @@ change_kind: create
 
 # Core Principles
 - Extends `AbstractValidator<{Dto}>`
-- Uses `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
+- Uses `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
+- DTO properties that carry business meaning are `Soft{ValueObject}` types, not primitives
 - Stateless and declarative
 - Registered by FluentValidation's assembly scan of `{Module}.Application`
 
@@ -33,9 +34,11 @@ namespace {Module}.Application.Validators;
 
 public class TaskDtoValidator : AbstractValidator<TaskDto>
 {
-    public TaskDtoValidator(IValidator<SoftEmail> emailValidator)
+    public TaskDtoValidator(
+        IValidator<SoftTitle> titleValidator,
+        IValidator<SoftEmail> emailValidator)
     {
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Title).SetValidator(titleValidator);
         RuleFor(x => x.SoftEmail).SetValidator(emailValidator);
     }
 }
@@ -66,15 +69,18 @@ MUST:
 - Extend `AbstractValidator<{Dto}>`
 - Be named `{Dto}Validator`
 - Live in `/{Module}.Application/Validators`
-- Use `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
+- Use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 
 MUST NOT:
 - Inject repositories or services
 - Contain business rules
+- Use inline FluentValidation predicates instead of property validators
+- Validate primitive properties directly — every value-concept must be a `Soft{ValueObject}` with its own property validator
 
 # Anti-patterns
 - Validating DTOs inside handlers instead of using the published `IValidator<{Dto}>`
 - Duplicating property validation rules already covered by property validators
+- Using inline FluentValidation predicates instead of property validators
 
 # Check list
 - [ ] Extends `AbstractValidator<{Dto}>`
@@ -86,3 +92,4 @@ MUST NOT:
 - [ ] When a valid DTO is validated Then no errors are returned
 - [ ] When a DTO with an invalid `Soft{ValueObject}` property is validated Then validation errors are returned
 - [ ] When resolved from DI as `IValidator<{Dto}>` Then the DTO validator is returned
+- [ ] When validated Then every value-concept property is validated by its property validator

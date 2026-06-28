@@ -80,6 +80,7 @@ SHOULD:
 	- Name file and class `Soft{ValueObject}`
 MUST NOT:
 	- Throw exceptions for invalid values
+	- Contain validation logic — validation belongs to the Domain Value Object via Rule
 	- Contain business logic
 
 __Applied solutions:__

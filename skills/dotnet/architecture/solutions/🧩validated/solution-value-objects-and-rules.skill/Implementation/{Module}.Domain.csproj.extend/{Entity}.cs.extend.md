@@ -13,7 +13,8 @@ change_kind: extend
 - Keep entity validation logic DRY by delegating to reusable domain rules instead of inline conditions
 
 # Core Principals
-- Entity properties that carry business meaning or invariant constraints use Value Objects instead of primitives
+- Entity properties are Value Object types except `Id`, `Version`, and unconstrained generic parameters
+- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
 - Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state
 - Equality of value properties on Entities is evaluated by Value Object structural equality
 - Entity defines consistency — it decides when and how to enforce invariants
@@ -46,18 +47,12 @@ Entity behavior methods must use domain rules to guard state changes:
 public class Order
 {
     public int Id { get; internal set; }
-    public string Comment { get; internal set; }
+    public CommentText Comment { get; internal set; }
     public uint Version { get; internal set; }
 
     public void UpdateComment(string comment)
     {
-        if (!comment.IsNotEmpty())
-            throw new DomainException("Comment must not be empty.");
-
-        if (!comment.IsMaxLength(500))
-            throw new DomainException("Comment must not exceed 500 characters.");
-
-        Comment = comment;
+        Comment = new CommentText(comment); // ValueObject validates via Rule
     }
 }
 ```
@@ -98,6 +93,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
 MUST:
 - Use Value Object on Entity property when the value has invariant state or carries business semantics
+- Entity properties other than `Id` and `Version` must be Value Object types, unless they are unconstrained generic parameters
+- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
 - Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
@@ -105,6 +102,7 @@ MUST:
 
 MUST NOT:
 - Use primitive type on Entity property when the value carries business meaning or invariant constraints
+- Expose a primitive Entity property when a Value Object could enforce the same invariants
 - Reimplement rule logic inline inside entity methods — always delegate to existing rules
 - Mutate state before validating with rules
 - Allow invalid state to persist silently

@@ -13,6 +13,7 @@ change_kind: extend
 # Core Principles
 - Validators are implementations and belong in `{Module}.Application`
 - Validators must be registered by `AddValidatorsFromAssembly` for the `{Module}.Application` assembly
+- Validators validate values only by calling Rules
 - Other modules consume validators through the generic `IValidator<T>` abstraction
 
 # Structure
@@ -58,6 +59,7 @@ MUST NOT:
 - Put validators in `{Module}.Interfaces`
 - Inject repositories, `DbContext`, or services into property validators
 - Add business rules to validators
+- Add inline FluentValidation predicates that duplicate Rule logic
 
 # Anti-patterns
 - Referencing another module's `{Module}.Application` to instantiate a concrete validator

@@ -12,7 +12,8 @@ change_kind: extend
 
 # Core Principles
 - Domain VO inherits from `Soft{ValueObject}`
-- Constructor validates invariants and throws `DomainException`
+- Constructor validates invariants by calling Rules and throws `DomainException`
+- Rule provides a `Soft{ValueObject}` overload that delegates to the primitive overload
 - Implicit conversion operators remain available for single-property VOs
 
 # Naming convention
@@ -26,6 +27,22 @@ change_kind: extend
 Single-property domain value object:
 
 ```csharp
+// {Module}.Domain/Rules/EmailRules.cs
+using {Module}.Interfaces.ValueObjects;
+
+namespace {Module}.Domain.Rules;
+
+public static class EmailRules
+{
+    // primitive overload — single source of truth
+    public static bool IsValidEmail(this string value)
+        => !string.IsNullOrWhiteSpace(value) && value.Contains('@');
+
+    // SoftValueObject overload — delegates to primitive overload
+    public static bool IsValidEmail(this SoftEmail email)
+        => email.Value.IsValidEmail();
+}
+
 // {Module}.Domain/ValueObjects/Email.cs
 using {Module}.Interfaces.ValueObjects;
 
@@ -35,7 +52,7 @@ public sealed record Email : SoftEmail
 {
     public Email(string value) : base(value)
     {
-        if (string.IsNullOrWhiteSpace(value) || !value.Contains('@'))
+        if (!value.IsValidEmail())
             throw new DomainException("Invalid email");
     }
 
@@ -47,6 +64,25 @@ public sealed record Email : SoftEmail
 Multi-property domain value object:
 
 ```csharp
+// {Module}.Domain/Rules/MoneyRules.cs
+using {Module}.Interfaces.ValueObjects;
+
+namespace {Module}.Domain.Rules;
+
+public static class MoneyRules
+{
+    // primitive overloads — single source of truth
+    public static bool IsNonNegative(this decimal amount)
+        => amount >= 0;
+
+    public static bool IsValidCurrency(this string currency)
+        => !string.IsNullOrEmpty(currency);
+
+    // SoftValueObject overload — delegates to primitive overloads
+    public static bool IsValidMoney(this SoftMoney money)
+        => money.Amount.IsNonNegative() && money.Currency.IsValidCurrency();
+}
+
 // {Module}.Domain/ValueObjects/Money.cs
 using {Module}.Interfaces.ValueObjects;
 
@@ -56,10 +92,8 @@ public sealed record Money : SoftMoney
 {
     public Money(decimal amount, string currency) : base(amount, currency)
     {
-        if (amount < 0)
-            throw new DomainException("Amount cannot be negative");
-        if (string.IsNullOrEmpty(currency))
-            throw new DomainException("Currency required");
+        if (!this.IsValidMoney())
+            throw new DomainException("Invalid money");
     }
 
     private Money() : base(0, string.Empty) { } // EF Core materialization only
@@ -71,7 +105,7 @@ public sealed record Money : SoftMoney
 # Rule changes
 MUST:
 - Inherit from `Soft{ValueObject}`
-- Validate invariants in constructor
+- Validate invariants in constructor by calling Rules
 - Throw `DomainException` on invalid values
 
 SHOULD:
@@ -94,4 +128,5 @@ MUST NOT:
 # Unittest TestCases
 - [ ] When Domain `{ValueObject}` is created with a valid value Then the object is created
 - [ ] When Domain `{ValueObject}` is created with an invalid value Then `DomainException` is thrown
+- [ ] When Domain `{ValueObject}` is created Then it calls a Rule for validation
 - [ ] When two Domain `{ValueObject}` instances have the same value Then they are equal

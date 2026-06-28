@@ -30,9 +30,11 @@ extends:
   - "{Module}.Domain.ValueObjects.{ValueObject}.cs"
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior.skill]]"
 adr:
   - "[[./adr/soft-value-objects-and-application-validators.md|Soft value objects in Interfaces, validators in Application]]"
+  - "[[./adr/use-abstract-validator-for-soft-value-objects.md|Use AbstractValidator for Soft{ValueObject} validators]]"
 ---
 
 # Goal
@@ -54,19 +56,26 @@ adr:
 - Validators are registered by FluentValidation's `AddValidatorsFromAssembly` scan of `{Module}.Application`
 - Other modules consume validators through the generic `IValidator<T>` abstraction, not by concrete type references
 - `{Module}.Domain` references its own `{Module}.Interfaces` only for the `Soft{ValueObject}` base types
+- Rule is the single source of truth; `{ValueObject}PropertyValidator` and `{Dto}Validator` validate only by calling Rules
+- Rule provides a `Soft{ValueObject}` overload that delegates to the primitive overload; Domain Value Object uses the same Rule because it inherits from `Soft{ValueObject}`
 
 # Adr
 - [[./adr/soft-value-objects-and-application-validators.md|Soft value objects in Interfaces, validators in Application]]
   - `Soft{ValueObject}` declarations are placed in `{Module}.Interfaces` so other modules can use them in commands and DTOs
   - Validators are placed in `{Module}.Application` and registered by FluentValidation so other modules consume them through `IValidator<T>`
   - `{Module}.Domain.ValueObjects.{ValueObject}` inherits from `Soft{ValueObject}` and remains the only place that enforces invariants
+- [[./adr/use-abstract-validator-for-soft-value-objects.md|Use AbstractValidator for Soft{ValueObject} validators]]
+  - `{ValueObject}PropertyValidator` must inherit from `AbstractValidator<Soft{ValueObject}>` so it can be registered as `IValidator<Soft{ValueObject}>` and reused by any consumer module
+  - `PropertyValidator<T, TProperty>` is not suitable because it is bound to a specific parent DTO type and cannot be resolved generically by other modules
 
 # Requirements
 SOLUTION:
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Interfaces.csproj.create|{Module}.Interfaces.csproj]] - hosts `Soft{ValueObject}`
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]] - hosts `{ValueObject}PropertyValidator` and `{Dto}Validator`
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create|{Module}.Domain.csproj]] - hosts the strict Domain Value Object that inherits from `Soft{ValueObject}`
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create|{Module}.Domain.csproj]] - hosts the strict Domain Value Object that inherits from `Soft{ValueObject}` and the Rule it calls
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md|{Rule}.cs]] - defines the Rule used by the Domain Value Object, PropertyValidator, and DTO Validator
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior.skill]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - provides the `ValidationBehavior` pipeline that consumes FluentValidation validators
 
@@ -111,17 +120,20 @@ MUST:
 - For every `{ValueObject}` in `/{Module}.Domain/ValueObjects` there is a `Soft{ValueObject}` in `/{Module}.Interfaces/ValueObjects`
 - `/{Module}.Domain/ValueObjects/{ValueObject}.cs` inherits from `{Module}.Interfaces.ValueObjects.Soft{ValueObject}`
 - `Soft{ValueObject}` does not validate values in its constructor or properties
-- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its constructor and throws `DomainException` on invalid values
+- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its constructor by calling Rules and throws `DomainException` on invalid values
 - For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `/{Module}.Application/Validators` extending `AbstractValidator<Soft{ValueObject}>`
 - For every DTO published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators` extending `AbstractValidator<{Dto}>`
 - Validators are registered by FluentValidation's assembly scan of `{Module}.Application`
 - Other modules consume validators through `IValidator<T>` resolved from DI
-- DTO validators use `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
+- DTO value-concept properties are `Soft{ValueObject}` types, not primitives
+- DTO validators use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
+- Property validators and DTO validators validate values only by calling Rules
+- Rule provides a `Soft{ValueObject}` overload in addition to the primitive overload
+- Domain Value Object validates values by calling the same Rule that the PropertyValidator uses
 - Property validators are stateless and have no infrastructure dependencies
 - `{Module}.Domain.csproj` references `{Module}.Interfaces.csproj` for the `Soft{ValueObject}` base types
 
 SHOULD:
-- Reuse the same validation predicate in a static `Soft{ValueObject}.IsValid(...)` method and in `{ValueObject}PropertyValidator` to avoid duplication
 - Keep `Soft{ValueObject}` immutable except for allowing invalid values (use `init` setters or public setters only when necessary)
 - Name property validator `{ValueObject}PropertyValidator`
 - Name DTO validator `{Dto}Validator`
@@ -132,10 +144,13 @@ MUST NOT:
 - Validators inject repositories, `DbContext`, or services
 - Validators contain business rules
 - Other modules reference `{Module}.Domain` or `{Module}.Application` to validate values
+- Property validators or DTO validators contain inline FluentValidation predicates that duplicate Rule logic
 
 # Anti-patterns
 - Domain Value Object not inheriting from `Soft{ValueObject}`
+- Domain Value Object validating values without calling a Rule
 - `Soft{ValueObject}` validating values or throwing exceptions
+- Property validator or DTO validator checking values inline instead of calling a Rule
 - Property validator placed in `{Module}.Interfaces` or `{Module}.Domain`
 - Duplicating validation logic between Domain Value Object and `{ValueObject}PropertyValidator`
 - Consuming module referencing `{Module}.Application` to instantiate a concrete validator
@@ -148,10 +163,15 @@ MUST NOT:
 - [ ] Domain Value Object throws `DomainException` for invalid values
 - [ ] `{ValueObject}PropertyValidator` exists for every `Soft{ValueObject}`
 - [ ] `{Dto}Validator` exists for every public DTO
+- [ ] DTO value-concept properties are `Soft{ValueObject}` types, not primitives
 - [ ] Validators are in `/{Module}.Application/Validators`
 - [ ] Validators are registered by `AddValidatorsFromAssembly` in `{Module}.Application`
 - [ ] `{Module}.Domain.csproj` references `{Module}.Interfaces.csproj`
 - [ ] `{Module}.Application.csproj` references `FluentValidation`
+- [ ] Rule has both primitive and `Soft{ValueObject}` overloads
+- [ ] Domain Value Object validates values by calling the Rule
+- [ ] PropertyValidator validates `Soft{ValueObject}` by calling the Rule
+- [ ] DTO Validator validates values by calling Rules
 - [ ] Other modules resolve validators through `IValidator<T>`
 
 # Unittest TestCases
