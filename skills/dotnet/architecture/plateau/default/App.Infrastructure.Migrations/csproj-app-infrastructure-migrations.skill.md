@@ -15,14 +15,14 @@ created_by:
 - Keep EF Core migrations in a separate project from App.Infrastructure
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
 
 # Core Principals
 - Migrations are the only code that directly references DbContext for schema changes
 - This project is referenced only by App.Host at startup
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
 
 # Structure
 
@@ -37,7 +37,7 @@ __Applied solutions:__
   - App.Infrastructure.Migrations.csproj
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
 
 ## What Does NOT Belong Here
 - Business logic — belongs to Domain
@@ -45,14 +45,14 @@ __Applied solutions:__
 - Query handlers — belong to App.Queries or module Application
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
 
 ## Allowed Dependencies
 - App.Infrastructure
 - {ModuleName}.Domain (all modules)
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
 
 # Rules
 MUST:
@@ -62,11 +62,11 @@ MUST NOT:
 	- Be referenced by any module project
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
 
 # Check list
 - [ ] Only migration classes present
 - [ ] No business logic in any file
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]

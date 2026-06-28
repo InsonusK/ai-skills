@@ -39,7 +39,7 @@ change_kind: extend
 | ----------------- | ----------- | ------------- |
 | /ValueObjects | All Value Object types for this module | Value Object pattern (this solution) |
 | /Rules | All domain rule static classes for this module | Domain Rule pattern (this solution) |
-| /Entities | Domain entities that use Value Objects and rules | [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-solution-structure.skill]] |
+| /Entities | Domain entities that use Value Objects and rules | [[skills/dotnet/architecture/solutions/🧩validated/solution-solution-structure.skill/solution-solution-structure.skill.md|solution-sln-structure.skill]] |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |

@@ -16,7 +16,7 @@ created_by:
 - Keep `Program.cs` stable when new modules are added
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
 # Core Principals
 - One `AddModules` extension per App.Host
@@ -24,7 +24,7 @@ __Applied solutions:__
 - New modules are added here — never directly in `Program.cs`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -32,7 +32,7 @@ __Applied solutions:__
 | Module registration | `ModuleRegistration` | `ModuleRegistration` | `ModuleRegistration.cs` | `ModuleRegistration.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
 # Implementation
 ```csharp
@@ -57,7 +57,7 @@ public static class ModuleRegistration
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
 # Rules
 MUST:
@@ -71,7 +71,7 @@ MUST NOT:
 	- Register infrastructure services — belongs in App.Infrastructure registration
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
 # Unittest TestCases
 - [ ] WHEN component is requested THEN it provide a single extension method where every module is registered
@@ -82,4 +82,4 @@ __Applied solutions:__
 - [ ] WHEN naming 'Module registration' THEN pattern matches convention
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-solution-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
