@@ -4,6 +4,7 @@ description: Pipeline behavior that commits at depth 1 after handler completes
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

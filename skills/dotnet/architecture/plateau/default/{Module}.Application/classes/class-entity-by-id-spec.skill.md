@@ -4,6 +4,7 @@ description: Simple single-condition specification to load an entity by Id
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

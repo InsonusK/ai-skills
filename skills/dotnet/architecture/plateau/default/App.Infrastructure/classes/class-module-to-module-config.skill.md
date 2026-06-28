@@ -4,6 +4,7 @@ description: Configure foreign key relationships and mappings that cross module 
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

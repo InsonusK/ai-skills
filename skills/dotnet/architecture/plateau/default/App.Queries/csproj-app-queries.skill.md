@@ -4,6 +4,7 @@ description: Provide cross-module read model handlers that require JOIN queries 
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/csproj
 created_by:

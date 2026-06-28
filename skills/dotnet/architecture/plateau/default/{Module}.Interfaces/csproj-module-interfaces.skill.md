@@ -4,6 +4,7 @@ description: Provide the single stable public surface through which other module
 domain: skill
 type: template
 version: 20260627
+plateau: default
 tags:
   - skill/template/csproj
 created_by:

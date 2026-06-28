@@ -1,9 +1,10 @@
 ---
-name: default-sln
+name: sln-default
 description: Default plateau — full solution architecture composed from all validated v3 architecture solutions
 domain: skill
 type: template
 version: 20260627
+plateau: default
 tags:
   - skill/template/sln
 created_by:

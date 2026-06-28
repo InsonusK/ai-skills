@@ -4,6 +4,7 @@ description: Create static domain service extension methods for bulky or multi-s
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

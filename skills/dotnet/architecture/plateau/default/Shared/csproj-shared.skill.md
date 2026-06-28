@@ -4,6 +4,7 @@ description: Define common cross-cutting interfaces and primitives that every la
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/csproj
 created_by:

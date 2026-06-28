@@ -4,6 +4,7 @@ description: Factory that maps stable business entity names to Application-layer
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/class
 created_by:

@@ -4,6 +4,7 @@ description: Single-method commit contract accessible by every layer
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

@@ -4,6 +4,7 @@ description: Maps ConflictResult<T> to HTTP 409 with existing entity result body
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

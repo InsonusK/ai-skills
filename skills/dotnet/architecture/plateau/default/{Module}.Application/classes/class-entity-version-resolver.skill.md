@@ -4,6 +4,7 @@ description: Per-entity IEntityVersionResolver implementation that reads the cur
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/class
 created_by:

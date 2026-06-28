@@ -4,6 +4,7 @@ description: Addressable property controller
 domain: skill
 type: template
 version: 20260616
+plateau: default
 tags:
   - skill/template/class
 created_by:

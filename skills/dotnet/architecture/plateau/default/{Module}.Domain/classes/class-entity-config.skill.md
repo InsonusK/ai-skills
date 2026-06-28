@@ -4,6 +4,7 @@ description: Configure unique index on Guid with named constant
 domain: skill
 type: template
 version: 20260622
+plateau: default
 tags:
   - skill/template/class
 created_by:
