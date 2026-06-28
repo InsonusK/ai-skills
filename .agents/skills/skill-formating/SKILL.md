@@ -43,7 +43,6 @@ Use when the skill contains one or more extracted `.mmd` diagram files or other 
 ## Frontmatter fields
 ```yaml
 ---
-uid:          # leave empty until assigned
 status:       # todo | draft | implemented | canceled
 name:         # kebab-case skill name
 description:  # one sentence — what the skill defines

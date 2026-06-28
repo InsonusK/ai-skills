@@ -1,5 +1,4 @@
 ---
-uid: 682498a7-3979-4d70-bbd6-bf70bffe7fe9
 name: create-new-operation
 description: Analis how to 
 domain: skill

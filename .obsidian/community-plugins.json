@@ -1,9 +1,9 @@
 [
-  "note_uid_generator",
   "code-styler",
   "tag-wrangler",
   "obsidian-icon-folder",
   "table-editor-obsidian",
   "mermaid-tools",
-  "mermaid-view"
+  "mermaid-view",
+  "folder-notes"
 ]
