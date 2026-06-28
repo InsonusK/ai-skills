@@ -12,6 +12,8 @@ change_kind: extend
 # Core Principles
 - Domain remains the authority on invariant enforcement
 - Domain depends on its own `{Module}.Interfaces` only for `Soft{ValueObject}` shapes
+- Domain Value Objects validate values by calling Rules
+- Rules provide a `Soft{ValueObject}` overload that delegates to the primitive overload
 - Domain does not consume FluentValidation directly
 
 # Structure
@@ -40,7 +42,7 @@ None.
 MUST:
 - Reference `{Module}.Interfaces`
 - Every `{ValueObject}` in `/ValueObjects` inherit from `Soft{ValueObject}`
-- Domain VO constructor enforces invariants and throws `DomainException` on invalid values
+- Domain VO constructor enforces invariants by calling Rules and throws `DomainException` on invalid values
 
 MUST NOT:
 - Use FluentValidation types directly
@@ -48,6 +50,7 @@ MUST NOT:
 
 # Anti-patterns
 - Domain VO not inheriting from `Soft{ValueObject}`
+- Domain VO validating values without calling a Rule
 - Putting validator code in Domain
 
 # Check list

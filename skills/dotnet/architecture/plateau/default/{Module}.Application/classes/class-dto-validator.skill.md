@@ -21,7 +21,8 @@ __Applied solutions:__
 # Core Principals
 - Apply ONE plateau template per class
 - Extends `AbstractValidator<{Dto}>`
-- Uses `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
+- Uses `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
+- DTO properties that carry business meaning are `Soft{ValueObject}` types, not primitives
 - Stateless and declarative
 - Registered by FluentValidation's assembly scan of `{Module}.Application`
 
@@ -56,9 +57,11 @@ namespace {Module}.Application.Validators;
 
 public class TaskDtoValidator : AbstractValidator<TaskDto>
 {
-    public TaskDtoValidator(IValidator<SoftEmail> emailValidator)
+    public TaskDtoValidator(
+        IValidator<SoftTitle> titleValidator,
+        IValidator<SoftEmail> emailValidator)
     {
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Title).SetValidator(titleValidator);
         RuleFor(x => x.SoftEmail).SetValidator(emailValidator);
     }
 }
@@ -92,10 +95,12 @@ MUST:
 	- Extend `AbstractValidator<{Dto}>`
 	- Be named `{Dto}Validator`
 	- Live in `/{Module}.Application/Validators`
-	- Use `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
+	- Use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 MUST NOT:
 	- Inject repositories or services
 	- Contain business rules
+	- Use inline FluentValidation predicates instead of property validators
+	- Validate primitive properties directly — every value-concept must be a `Soft{ValueObject}` with its own property validator
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
@@ -104,6 +109,7 @@ __Applied solutions:__
 - Apply SEVERAL plateau template per class
 - Validating DTOs inside handlers instead of using the published `IValidator<{Dto}>`
 - Duplicating property validation rules already covered by property validators
+- Using inline FluentValidation predicates instead of property validators
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]
@@ -117,6 +123,7 @@ __Applied solutions:__
 - [ ] When a valid DTO is validated THEN no errors are returned
 - [ ] When a DTO with an invalid Soft{ValueObject} property is validated THEN validation errors are returned
 - [ ] When resolved from DI as IValidator<{Dto}> THEN the DTO validator is returned
+- [ ] WHEN applied THEN every value-concept property is validated by its property validator
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs.create]]

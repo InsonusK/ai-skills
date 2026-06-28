@@ -13,7 +13,7 @@ change_kind: create
 
 # Core Principals
 - Declared as `sealed record` — immutable and structurally equal by default
-- Constructor validates all invariants — throws DomainException on violation
+- Constructor validates all invariants by calling Rules — throws DomainException on violation; inline validation logic is forbidden
 - Has no infrastructure or application dependencies — pure domain concept
 - Single-property VO provides implicit conversion operators for ergonomic usage
 - Multi-property VO requires a private parameterless constructor for EF Core materialization
@@ -31,18 +31,26 @@ change_kind: create
 Single-property ValueObject must:
 - Be declared as `sealed record`
 - Have one public property with `get` only
-- Validate invariants in constructor — throw `DomainException` on violation
+- Validate invariants in constructor by calling Rules — throw `DomainException` on violation
 - Provide implicit operators to and from the underlying primitive
 - Override `ToString()` for logging and UI use
 
 ```csharp
+// {Module}.Domain/Rules/AgeRules.cs
+public static class AgeRules
+{
+    public static bool IsValidAge(this int age)
+        => age.IsInRange(1, 120); // delegates to IntRules
+}
+
+// {Module}.Domain/ValueObjects/Age.cs
 public sealed record Age
 {
     public int Value { get; }
 
     public Age(int value)
     {
-        if (value <= 0 || value > 120)
+        if (!value.IsValidAge())
             throw new DomainException("Invalid Age");
         Value = value;
     }
@@ -57,11 +65,22 @@ public sealed record Age
 Multi-property ValueObject must:
 - Be declared as `sealed record`
 - Have all public properties with `get` only
-- Validate all invariants in constructor — throw `DomainException` on violation
+- Validate all invariants in constructor by calling Rules — throw `DomainException` on violation
 - Include a `private` parameterless constructor for EF Core materialization
 - Override `ToString()` for logging and UI use
 
 ```csharp
+// {Module}.Domain/Rules/MoneyRules.cs
+public static class MoneyRules
+{
+    public static bool IsNonNegative(this decimal amount)
+        => amount >= 0; // delegates to DecimalRules
+
+    public static bool IsValidCurrency(this string currency)
+        => !string.IsNullOrEmpty(currency); // delegates to StringRules
+}
+
+// {Module}.Domain/ValueObjects/Money.cs
 public sealed record Money
 {
     public decimal Amount { get; }
@@ -69,9 +88,9 @@ public sealed record Money
 
     public Money(decimal amount, string currency)
     {
-        if (amount < 0)
+        if (!amount.IsNonNegative())
             throw new DomainException("Amount cannot be negative");
-        if (string.IsNullOrEmpty(currency))
+        if (!currency.IsValidCurrency())
             throw new DomainException("Currency required");
         Amount = amount;
         Currency = currency;
@@ -88,7 +107,7 @@ public sealed record Money
 MUST:
 - Be `sealed record`
 - Be immutable — no public setters
-- Validate all invariants in constructor
+- Validate all invariants in constructor by calling Rules
 - Throw `DomainException` on invariant violation — never return null or bool
 - Have no infrastructure or application dependencies
 - Multi-property VO has `private` parameterless constructor for EF materialization
@@ -97,12 +116,12 @@ MUST:
 SHOULD:
 - Provide implicit conversion operators for single-property VOs
 - Override `ToString()` when used in logs or UI
-- Extract complex invariant logic to domain rule
 
 MUST NOT:
 - Expose public setters
 - Depend on repositories, DbContext, or any service
 - Contain business logic beyond invariant validation — use domain rules for that
+- Contain inline validation logic — always delegate to a Rule
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Encode a domain concept with business meaning and invariant enforcement
