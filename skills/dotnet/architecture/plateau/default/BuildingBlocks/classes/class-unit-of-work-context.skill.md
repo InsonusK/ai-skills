@@ -3,7 +3,7 @@ name: class-unit-of-work-context
 description: Scoped nesting depth counter preventing premature sub-command commit
 domain: skill
 type: template
-version: 20260628
+version: 20260629
 plateau: default
 tags:
   - skill/template/class
@@ -21,7 +21,7 @@ __Applied solutions:__
 # Core Principals
 - Apply ONE plateau template per class
 - Plain class — no interfaces, no base classes, no infrastructure dependencies
-- Single mutable integer property — `Depth`
+- Thread-safe depth counter — `Enter()` and `Leave()` mutate `_depth` via `Interlocked`, `Depth` is read-only
 - Registered as `Scoped` — one instance shared across all nested `_mediator.Send()` calls within the same HTTP request
 - Never used directly in handlers — only `UnitOfWorkBehavior` reads and writes this
 
@@ -52,7 +52,13 @@ namespace BuildingBlocks.MediatR;
 
 public class UnitOfWorkContext
 {
-    public int Depth { get; set; }
+    private int _depth;
+
+    public void Enter() => Interlocked.Increment(ref _depth);
+
+    public void Leave() => Interlocked.Decrement(ref _depth);
+
+    public int Depth => _depth;
 }
 ```
 
@@ -80,7 +86,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
 # Check list
-- [ ] `UnitOfWorkContext` is a plain class with single `Depth` property
+- [ ] `UnitOfWorkContext` is a plain class with `Enter()`, `Leave()`, and read-only `Depth`
 - [ ] Registered as `Scoped`
 - [ ] Never injected into handlers
 
@@ -91,10 +97,10 @@ __Applied solutions:__
 - [ ] WHEN applied THEN Track the nesting depth of active command pipeline invocations within a single request scope
 - [ ] WHEN applied THEN Allow UnitOfWorkBehavior to determine whether it is the outermost command (Depth == 1) and therefore responsible for committing
 - [ ] WHEN applied THEN Plain class — no interfaces, no base classes, no infrastructure dependencies
-- [ ] WHEN applied THEN Single mutable integer property — Depth
+- [ ] WHEN applied THEN Thread-safe depth counter — Enter()/Leave() mutate _depth via Interlocked, Depth is read-only
 - [ ] WHEN applied THEN Registered as Scoped — one instance shared across all nested _mediator.Send() calls within the same HTTP request
 - [ ] WHEN applied THEN Never used directly in handlers — only UnitOfWorkBehavior reads and writes this
-- [ ] WHEN verified THEN UnitOfWorkContext is a plain class with single Depth property
+- [ ] WHEN verified THEN UnitOfWorkContext is a plain class with Enter(), Leave(), and read-only Depth
 - [ ] WHEN verified THEN Registered as Scoped
 - [ ] WHEN verified THEN Never injected into handlers
 - [ ] WHEN naming 'Nesting depth tracker' THEN pattern matches convention

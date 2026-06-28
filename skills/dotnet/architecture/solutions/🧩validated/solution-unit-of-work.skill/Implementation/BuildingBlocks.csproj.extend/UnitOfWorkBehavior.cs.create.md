@@ -12,7 +12,7 @@ change_kind: create
 - Guarantee that if the handler throws, `SaveChangesAsync` is never called — changes are discarded
 
 # Core Principles
-- Increments `UnitOfWorkContext.Depth` on entry, decrements in `finally` — depth always restored even on exception
+- Calls `UnitOfWorkContext.Enter()` on entry and `UnitOfWorkContext.Leave()` in `finally` — depth always restored even on exception
 - Calls `SaveChangesAsync` only when `Depth == 1` — the outermost command in the current request
 - Sub-commands reach this behavior with `Depth > 1` — they stage changes but do not commit
 - **No catch/rollback block** — EF Core uses implicit transactions. When `SaveChangesAsync` is not called (because handler threw), the DbContext is disposed at end of request scope and all pending changes are silently abandoned. No explicit rollback is necessary. If explicit transactions are introduced in the future, a catch/rollback block must be added at that point.
@@ -52,7 +52,7 @@ public class UnitOfWorkBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken ct)
     {
-        _context.Depth++;
+        _context.Enter();
         try
         {
             var response = await next();
@@ -66,7 +66,7 @@ public class UnitOfWorkBehavior<TRequest, TResponse>
         finally
         {
             // always restore depth — even on exception
-            _context.Depth--;
+            _context.Leave();
         }
     }
 }
@@ -76,26 +76,26 @@ public class UnitOfWorkBehavior<TRequest, TResponse>
 ```
 HTTP Request arrives
     ↓
-UnitOfWorkBehavior: Depth++ → Depth = 1   (root command)
+UnitOfWorkBehavior: Enter() → Depth = 1   (root command)
     ↓
 Handler dispatches sub-command via _mediator.Send()
     ↓
-UnitOfWorkBehavior: Depth++ → Depth = 2   (sub-command)
+UnitOfWorkBehavior: Enter() → Depth = 2   (sub-command)
     ↓
 Sub-command handler completes — stages changes
     ↓
 UnitOfWorkBehavior: Depth == 2 → skip SaveChanges
-UnitOfWorkBehavior: Depth-- → Depth = 1   (finally)
+UnitOfWorkBehavior: Leave() → Depth = 1   (finally)
     ↓
 Root handler continues — stages its own changes
     ↓
 UnitOfWorkBehavior: Depth == 1 → call SaveChangesAsync  ← single atomic commit
-UnitOfWorkBehavior: Depth-- → Depth = 0   (finally)
+UnitOfWorkBehavior: Leave() → Depth = 0   (finally)
 
 On handler exception:
     ↓
 UnitOfWorkBehavior: Depth == 1 → SaveChangesAsync NOT called (response = await next() threw)
-UnitOfWorkBehavior: Depth-- → Depth = 0   (finally)
+UnitOfWorkBehavior: Leave() → Depth = 0   (finally)
 DbContext disposed at request scope end → all pending changes abandoned automatically
 ```
 
@@ -105,7 +105,7 @@ MUST:
 - Constrained to `where TRequest : ICommand` — never activates on queries
 - Use `try/finally` to guarantee depth counter is always restored
 - Call `SaveChangesAsync` only when `Depth == 1`
-- Increment depth before `next()` — decrement in `finally`
+- Call `_context.Enter()` before `next()` — call `_context.Leave()` in `finally`
 
 MUST NOT:
 - Call `SaveChangesAsync` when `Depth > 1` — sub-commands must not commit
@@ -121,13 +121,13 @@ MUST NOT:
 - [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
 - [ ] `try/finally` wraps the entire handler invocation
 - [ ] `SaveChangesAsync` called only when `_context.Depth == 1`
-- [ ] Depth incremented before `next()` and decremented in `finally`
+- [ ] `_context.Enter()` called before `next()` and `_context.Leave()` called in `finally`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Automatically commit all staged changes after the top-level command handler completes
 - [ ] WHEN applied THEN Prevent sub-commands from committing prematurely by checking UnitOfWorkContext.Depth
 - [ ] WHEN applied THEN Guarantee that if the handler throws, SaveChangesAsync is never called — changes are discarded
-- [ ] WHEN applied THEN Increments UnitOfWorkContext.Depth on entry, decrements in finally — depth always restored even on exception
+- [ ] WHEN applied THEN Calls UnitOfWorkContext.Enter() on entry and UnitOfWorkContext.Leave() in finally — depth always restored even on exception
 - [ ] WHEN applied THEN Calls SaveChangesAsync only when Depth == 1 — the outermost command in the current request
 - [ ] WHEN applied THEN Sub-commands reach this behavior with Depth > 1 — they stage changes but do not commit
 - [ ] WHEN applied THEN **No catch/rollback block** — EF Core uses implicit transactions. When SaveChangesAsync is not called (because handler threw), the DbContext is disposed at end of request scope and all pending changes are silently abandoned. No explicit rollback is necessary. If explicit transactions are introduced in the future, a catch/rollback block must be added at that point
@@ -136,5 +136,5 @@ MUST NOT:
 - [ ] WHEN verified THEN UnitOfWorkBehavior constrained to where TRequest : ICommand
 - [ ] WHEN verified THEN try/finally wraps the entire handler invocation
 - [ ] WHEN verified THEN SaveChangesAsync called only when _context.Depth == 1
-- [ ] WHEN verified THEN Depth incremented before next() and decremented in finally
+- [ ] WHEN verified THEN _context.Enter() called before next() and _context.Leave() called in finally
 - [ ] WHEN naming 'UoW pipeline behavior' THEN pattern matches convention
