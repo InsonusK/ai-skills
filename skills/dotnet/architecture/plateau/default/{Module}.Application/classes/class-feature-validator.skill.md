@@ -14,7 +14,7 @@ created_by:
 # Goal
 - Validate transport correctness of one command's input before it reaches the handler
 - Express validation rules as a declarative FluentValidation rule set — not imperative checks
-- This is the per-command validator; for `Soft{ValueObject}` property validators and public DTO validators see [[class-property-validator.skill.md|class-PropertyValidator]] and [[class-dto-validator.skill.md|class-DtoValidator]]
+- This is the per-command validator; for `Soft{ValueObject}` property validators and public DTO validators see [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-property-validator.skill|class-PropertyValidator]] and [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-dto-validator.skill|class-DtoValidator]]
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]
