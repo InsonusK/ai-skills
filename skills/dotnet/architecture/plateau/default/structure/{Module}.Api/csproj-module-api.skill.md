@@ -92,14 +92,14 @@ __Applied solutions:__
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
 | /Controllers | HTTP endpoints |  |
-| /Controllers/{Entity}/{Entity}Controller.cs | Collection root — POST create, GET list | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-entity-controller.skill.md|class-EntityController.skill]] |
-| /Controllers/{Entity}/Single{Entity}Controller.cs | Single entity lifecycle — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-single-entity-controller.skill.md|class-SingleEntityController.skill]] |
-| /Controllers/{Entity}/Single{Entity}{Property}Controller.cs | Addressable property — POST set, DELETE unset | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-single-entity-property-controller.skill.md|class-SingleEntityPropertyController.skill]] |
-| /Controllers/{Entity}/{Related}/{Entity}{Related}Controller.cs | Sub-collection — GET list, POST add | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-entity-related-controller.skill.md|class-EntityRelatedController.skill]] |
-| /Controllers/{Entity}/{Related}/Single{Entity}{Related}Controller.cs | Relationship instance — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-single-entity-related-controller.skill.md|class-SingleEntityRelatedController.skill]] |
-| /MinimalApi/{System}Endpoints.cs | System, webhook, batch, cross-aggregate endpoints | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-system-endpoints.skill.md|class-SystemEndpoints.skill]] |
-| /Extensions/ResultExtensions.cs | ToProblemDetails helper for Result error mapping | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-result-extensions.skill.md|class-ResultExtensions.skill]] |
-| /Extensions/ConflictResultExtensions.cs | Maps `ConflictResult<T>` to HTTP 409 with existing entity result body | [[skills/dotnet/architecture/plateau/default/{Module}.Api/classes/class-conflict-result-extensions.skill.md|class-ConflictResultExtensions.skill]] |
+| /Controllers/{Entity}/{Entity}Controller.cs | Collection root — POST create, GET list | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-entity-controller.skill.md|class-EntityController.skill]] |
+| /Controllers/{Entity}/Single{Entity}Controller.cs | Single entity lifecycle — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-single-entity-controller.skill.md|class-SingleEntityController.skill]] |
+| /Controllers/{Entity}/Single{Entity}{Property}Controller.cs | Addressable property — POST set, DELETE unset | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-single-entity-property-controller.skill.md|class-SingleEntityPropertyController.skill]] |
+| /Controllers/{Entity}/{Related}/{Entity}{Related}Controller.cs | Sub-collection — GET list, POST add | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-entity-related-controller.skill.md|class-EntityRelatedController.skill]] |
+| /Controllers/{Entity}/{Related}/Single{Entity}{Related}Controller.cs | Relationship instance — GET, PUT, PATCH, DELETE | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-single-entity-related-controller.skill.md|class-SingleEntityRelatedController.skill]] |
+| /MinimalApi/{System}Endpoints.cs | System, webhook, batch, cross-aggregate endpoints | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-system-endpoints.skill.md|class-SystemEndpoints.skill]] |
+| /Extensions/ResultExtensions.cs | ToProblemDetails helper for Result error mapping | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-result-extensions.skill.md|class-ResultExtensions.skill]] |
+| /Extensions/ConflictResultExtensions.cs | Maps `ConflictResult<T>` to HTTP 409 with existing entity result body | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/classes/class-conflict-result-extensions.skill.md|class-ConflictResultExtensions.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create|{Module}.Api.csproj]]
