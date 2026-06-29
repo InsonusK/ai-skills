@@ -29,6 +29,7 @@ creates:
   - "{Module}.Api.Controllers.Single{Entity}{Related}Controller.cs"
   - "{Module}.Api.MinimalApi.{System}Endpoints.cs"
   - "{Module}.Api.Extensions.ResultExtensions.cs"
+  - "{Module}.Api.{Module}ApiSwaggerRegistration.cs"
   - App.Host.DependencyInjection.ApiRegistration.cs
 extends:
   - "{Module}.Api.csproj"
@@ -56,6 +57,7 @@ depends_on:
 - Standardized `Result<T>` to HTTP status mapping
 - Uniform `ProblemDetails` error responses
 - Clear separation between entity lifecycle controllers and system Minimal APIs
+- Modular Swagger/OpenAPI definitions surfaced per module in Swagger UI
 
 # Core Principles
 - API layer is a thin HTTP adapter — map input to command/query, dispatch via `ISender`, map result to HTTP response
@@ -89,6 +91,23 @@ NUGET:
 - `Microsoft.AspNetCore.Mvc` {version} - provides `ControllerBase`, `[ApiController]`, `[Route]`, `ActionResult`, `ProblemDetails`
 - `MediatR` {version} - provides `ISender` injected into controllers
 - `Ardalis.Result` {version} - provides `Result<T>`, `ResultStatus` mapped to HTTP responses
+
+SWAGGER:
+- Each `{Module}.Api` project declares its own Swagger definition metadata in a public static class named `{Module}ApiSwaggerRegistration`.
+  - `DocumentName` — string constant used as the Swagger document name (e.g., `"tag"`, `"task"`, `"timelog"`).
+  - `Title` — string constant used as `OpenApiInfo.Title`.
+  - `Version` — string constant used as `OpenApiInfo.Version`.
+  - `MatchesRoute(string? relativePath)` — static method that returns `true` when the given API route belongs to this module.
+- `App.Host/Program.cs` imports the `*.Api` namespaces of all modules that publish HTTP APIs.
+- `App.Host/Program.cs` registers one `SwaggerDoc` per module using `{Module}ApiSwaggerRegistration.DocumentName`, `Title`, and `Version`.
+- `App.Host/Program.cs` provides a single `DocInclusionPredicate` that delegates route matching to the corresponding `{Module}ApiSwaggerRegistration.MatchesRoute`.
+- `App.Host/Program.cs` registers one `SwaggerEndpoint` per module in `UseSwaggerUI` so that each module appears as a separate definition in the Swagger UI dropdown.
+- Each Swagger definition contains only the routes that belong to that module; the default single-document `v1` convention is not used.
+- Example reference implementations:
+  - `src/Modules/TagModule/TaskUnderControl.Srv.TagModule.Api/TagModuleApiSwaggerRegistration.cs`
+  - `src/Modules/TaskModule/TaskUnderControl.Srv.TaskModule.Api/TaskModuleApiSwaggerRegistration.cs`
+  - `src/Modules/TimeLogModule/TaskUnderControl.Srv.TimeLogModule.Api/TimeLogModuleApiSwaggerRegistration.cs`
+  - `src/App/App.Host/Program.cs`
 
 # Template Skill Mutations
 
@@ -124,6 +143,11 @@ MUST:
 - `ResultStatus.Conflict` → 409 Conflict with `ProblemDetails`
 - `ResultStatus.Error` → 500 Internal Server Error with `ProblemDetails`
 - Any other `ResultStatus` → throw `InvalidOperationException`
+- Each module that publishes HTTP APIs exposes a public static `{Module}ApiSwaggerRegistration` class in `{Module}.Api`
+- `{Module}ApiSwaggerRegistration` declares `DocumentName`, `Title`, `Version`, and `MatchesRoute(string? relativePath)`
+- `App.Host` registers one `SwaggerDoc` per module using the module's `{Module}ApiSwaggerRegistration` constants
+- `App.Host` provides a single `DocInclusionPredicate` that delegates route matching to `{Module}ApiSwaggerRegistration.MatchesRoute`
+- `App.Host` registers one `SwaggerEndpoint` per module in `UseSwaggerUI`
 
 MUST NOT:
 - Controller action contain business logic, validation, domain rules, or persistence
@@ -131,6 +155,9 @@ MUST NOT:
 - Controller inject `IRepository<T>` or `IUnitOfWork`
 - Minimal API replace entity-lifecycle controllers
 - Undocumented HTTP responses returned — every response shape declared in `ProducesResponseType`
+- Declare Swagger document metadata (document name, title, version, route matching) in `App.Host`
+- Use a single monolithic `v1` Swagger document that contains all module routes
+- Include routes from one module in another module's Swagger definition
 
 SHOULD:
 - `[Route]` use `{entity}` singular noun — not plural
@@ -157,6 +184,14 @@ SHOULD:
 - [ ] 201 Created responses use `CreatedAtAction` pointing to `Single{Entity}Controller.Get`
 - [ ] Minimal API used only for non-entity-lifecycle operations
 - [ ] All module Api assemblies added as application parts in App.Host
+- [ ] Each `{Module}.Api` contains `{Module}ApiSwaggerRegistration.cs`
+- [ ] `{Module}ApiSwaggerRegistration` declares `DocumentName`, `Title`, `Version`, and `MatchesRoute`
+- [ ] `App.Host` imports all `{Module}.Api` namespaces
+- [ ] `App.Host` registers one `SwaggerDoc` per module
+- [ ] `DocInclusionPredicate` delegates route matching to `{Module}ApiSwaggerRegistration.MatchesRoute`
+- [ ] `UseSwaggerUI` registers one `SwaggerEndpoint` per module
+- [ ] Swagger UI dropdown lists every module definition by `Title`
+- [ ] No single `v1` document containing all routes is registered
 - [ ] `UseExceptionHandler()` registered before `MapControllers()`
 - [ ] `AddProblemDetails()` registered in DI
 

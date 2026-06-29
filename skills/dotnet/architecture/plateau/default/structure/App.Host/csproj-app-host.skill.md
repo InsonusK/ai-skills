@@ -114,11 +114,11 @@ __Applied solutions:__
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
 | /DependencyInjection | DI registrations and pipeline setup |  |
-| ModuleRegistration.cs | Centralized module registration extension | [[skills/dotnet/architecture/plateau/default/App.Host/classes/class-module-registration.skill.md|class-ModuleRegistration.skill]] |
-| /DependencyInjection/PipelineRegistration.cs | Centralized pipeline behavior registration | [[skills/dotnet/architecture/plateau/default/App.Host/classes/class-pipeline-registration.skill.md|class-PipelineRegistration.skill]] |
-| /DependencyInjection/PipelineRegistration.cs | Centralized pipeline behavior registration with ordered behaviors | [[skills/dotnet/architecture/plateau/default/App.Host/classes/class-pipeline-registration.skill.md|class-PipelineRegistration.skill]] |
-| /DependencyInjection/ApiRegistration.cs | Controller registration and middleware configuration | [[skills/dotnet/architecture/plateau/default/App.Host/classes/class-api-registration.skill.md|class-ApiRegistration.skill]] |
-| /DependencyInjection/EntityVersionResolverRegistration.cs | Register IEntityVersionResolverFactory and module resolvers as Scoped with Domain and Application assemblies | [[skills/dotnet/architecture/plateau/default/App.Host/classes/class-entity-version-resolver-registration.skill.md|class-EntityVersionResolverRegistration.skill]] |
+| ModuleRegistration.cs | Centralized module registration extension | [[skills/dotnet/architecture/plateau/default/structure/App.Host/classes/class-module-registration.skill.md|class-ModuleRegistration.skill]] |
+| /DependencyInjection/PipelineRegistration.cs | Centralized pipeline behavior registration | [[skills/dotnet/architecture/plateau/default/structure/App.Host/classes/class-pipeline-registration.skill.md|class-PipelineRegistration.skill]] |
+| /DependencyInjection/PipelineRegistration.cs | Centralized pipeline behavior registration with ordered behaviors | [[skills/dotnet/architecture/plateau/default/structure/App.Host/classes/class-pipeline-registration.skill.md|class-PipelineRegistration.skill]] |
+| /DependencyInjection/ApiRegistration.cs | Controller registration and middleware configuration | [[skills/dotnet/architecture/plateau/default/structure/App.Host/classes/class-api-registration.skill.md|class-ApiRegistration.skill]] |
+| /DependencyInjection/EntityVersionResolverRegistration.cs | Register IEntityVersionResolverFactory and module resolvers as Scoped with Domain and Application assemblies | [[skills/dotnet/architecture/plateau/default/structure/App.Host/classes/class-entity-version-resolver-registration.skill.md|class-EntityVersionResolverRegistration.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj.extend]]
