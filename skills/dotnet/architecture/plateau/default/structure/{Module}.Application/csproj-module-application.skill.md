@@ -134,18 +134,18 @@ __Applied solutions:__
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
 | /Handlers | Command and query handlers |  |
-| /Validators | Property validators for Soft VOs and validators for public DTOs | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-property-validator.skill.md|class-PropertyValidator.skill]] [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-dto-validator.skill.md|class-DtoValidator.skill]] |
+| /Validators | Property validators for Soft VOs and validators for public DTOs | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill.md|class-PropertyValidator.skill]] [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill.md|class-DtoValidator.skill]] |
 | /Specifications | Query specifications |  |
 | /Specifications | All module specifications — single-condition, multi-condition, projection, idempotency |  |
 | /Queries/{FeatureName} | One folder per query feature; contains handler and optional transport validator |  |
 | /Specifications | Named reusable specifications for entity loading and projection |  |
-| /Specifications/{Entity}ByGuidSpec.cs | Specification for looking up entity by Guid | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-entity-by-guid-spec.skill.md|class-EntityByGuidSpec.skill]] |
-| /Resolvers/Create{Entity}GuidResolver.cs | Per-entity IGuidResolver implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-create-entity-guid-resolver.skill|class-CreateEntityGuidResolver.skill]] |
+| /Specifications/{Entity}ByGuidSpec.cs | Specification for looking up entity by Guid | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-by-guid-spec.skill.md|class-EntityByGuidSpec.skill]] |
+| /Resolvers/Create{Entity}GuidResolver.cs | Per-entity IGuidResolver implementation | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-create-entity-guid-resolver.skill|class-CreateEntityGuidResolver.skill]] |
 | /Features/{FeatureName} | One subfolder per feature — handler and validator co-located |  |
-| {FeatureName}.Handler.cs | Command handler implementation | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-feature-handler.skill|class-Feature.Handler.skill]] |
-| {FeatureName}.Validator.cs | Transport correctness validator | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-feature-validator.skill.md|class-Feature.Validator.skill]] |
-| /Concurrency/{Entity}VersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-entity-version-resolver.skill.md|class-{Entity}VersionResolver.skill]] |
-| {Module}ApplicationRegistration.cs | Module DI self-registration extension | [[skills/dotnet/architecture/plateau/default/{Module}.Application/classes/class-module-application-registration.skill.md|class-ModuleApplicationRegistration.skill]] |
+| {FeatureName}.Handler.cs | Command handler implementation | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-feature-handler.skill|class-Feature.Handler.skill]] |
+| {FeatureName}.Validator.cs | Transport correctness validator | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-feature-validator.skill.md|class-Feature.Validator.skill]] |
+| /Concurrency/{Entity}VersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-version-resolver.skill.md|class-{Entity}VersionResolver.skill]] |
+| {Module}ApplicationRegistration.cs | Module DI self-registration extension | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-module-application-registration.skill.md|class-ModuleApplicationRegistration.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]]

@@ -149,10 +149,10 @@ __Applied solutions:__
 | /Rules | All domain rule static classes for this module |  |
 | /Entities | Domain entities that use Value Objects and rules |  |
 | /Entities | All entity types for this module |  |
-| /Entities/{EntityName}.cs | External-created entity with Guid property | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/class-entity.skill.md|class-Entity.skill]] |
-| /Configurations/{EntityName}Config.cs | Unique index on Guid configuration | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/class-entity-config.skill.md|class-EntityConfig.skill]] |
-| /Entities/{EntityName}.cs | Mutable entity with uint Version property implementing IVersioned | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/class-entity.skill.md|class-Entity.skill]] |
-| /Configurations/{EntityName}Config.cs | EF configuration mapping Version to xmin and declaring VersionedEntityName | [[skills/dotnet/architecture/plateau/default/{Module}.Domain/classes/class-entity-config.skill.md|class-EntityConfig.skill]] |
+| /Entities/{EntityName}.cs | External-created entity with Guid property | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Domain/classes/class-entity.skill.md|class-Entity.skill]] |
+| /Configurations/{EntityName}Config.cs | Unique index on Guid configuration | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Domain/classes/class-entity-config.skill.md|class-EntityConfig.skill]] |
+| /Entities/{EntityName}.cs | Mutable entity with uint Version property implementing IVersioned | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Domain/classes/class-entity.skill.md|class-Entity.skill]] |
+| /Configurations/{EntityName}Config.cs | EF configuration mapping Version to xmin and declaring VersionedEntityName | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Domain/classes/class-entity-config.skill.md|class-EntityConfig.skill]] |
 | /Configurations | One EF config class per entity |  |
 | /Entities | All entity types for this module |  |
 | /Rules | All domain rule static classes for this module |  |
