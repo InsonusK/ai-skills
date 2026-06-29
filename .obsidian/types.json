@@ -33,6 +33,7 @@
     "BC-ignore-out-edges": "checkbox",
     "extend": "multitext",
     "uses": "multitext",
-    "order": "number"
+    "order": "number",
+    "core principle": "multitext"
   }
 }
