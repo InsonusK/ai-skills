@@ -22,14 +22,17 @@ change_kind: extend
 ```
 /{Module}.Application
   /Validators
-    {ValueObject}PropertyValidator.cs
-    {Dto}Validator.cs
+    /Property
+      {ValueObject}PropertyValidator.cs
+    /Model
+      {Dto}Validator.cs
 ```
 
 ## Directory and class skills
-| Directory \| file | Description |
-| ----------------- | ----------- |
-| /Validators | Property validators for Soft VOs and validators for public DTOs |
+| Directory \| file    | Description                      |
+| -------------------- | -------------------------------- |
+| /Validators/Property | Property validators for Soft VOs |
+| /Validators/Model    | Validators for public DTOs       |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
@@ -51,7 +54,8 @@ change_kind: extend
 
 # Rules
 MUST:
-- Add `/Validators` folder containing `{ValueObject}PropertyValidator.cs` and `{Dto}Validator.cs`
+- Add `/Validators/Property` folder containing `{ValueObject}PropertyValidator.cs`
+- Add `/Validators/Model` folder containing `{Dto}Validator.cs`
 - Reference `FluentValidation` packages
 - Ensure `AddValidatorsFromAssembly(typeof({Module}.Application.AssemblyMarker).Assembly)` is called in `{Module}.Application` registration. If another solution (for example `solution-command-integration.skill`) already registers validators from this assembly, that registration satisfies this requirement.
 
@@ -66,6 +70,6 @@ MUST NOT:
 - Forgetting to register validators from the `{Module}.Application` assembly
 
 # Check list
-- [ ] `/Validators` folder exists
+- [ ] `/Validators/Property` and `/Validators/Model` folder exists
 - [ ] `FluentValidation` packages referenced
 - [ ] Validators are registered by assembly scan

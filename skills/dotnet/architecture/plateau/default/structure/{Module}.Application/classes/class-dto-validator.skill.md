@@ -3,7 +3,7 @@ name: class-dto-validator
 description: FluentValidation validator for a public DTO declared in {Module}.Interfaces
 domain: skill
 type: template
-version: 20260628
+version: 20260629210700
 plateau: default
 tags:
   - skill/template/class
@@ -45,7 +45,7 @@ Write a comment at the top of the created class with the applied skill metadata:
 ```csharp
 //Skill: class-dto-validator
 //Plateau: default
-//Version: 20260628
+//Version: 20260629210700
 ```
 
 ```csharp
@@ -54,7 +54,7 @@ using FluentValidation;
 using {Module}.Interfaces.DTOs;
 using {Module}.Interfaces.ValueObjects;
 
-namespace {Module}.Application.Validators;
+namespace {Module}.Application.Validators.Model;
 
 public class TaskDtoValidator : AbstractValidator<TaskDto>
 {
@@ -95,7 +95,7 @@ __Applied solutions:__
 MUST:
 	- Extend `AbstractValidator<{Dto}>`
 	- Be named `{Dto}Validator`
-	- Live in `/{Module}.Application/Validators`
+	- Live in `/{Module}.Application/Validators/Model`
 	- Use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 MUST NOT:
 	- Inject repositories or services
