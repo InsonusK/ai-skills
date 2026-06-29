@@ -90,16 +90,16 @@ __Applied solutions:__
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
 | /MediatR | MediatR pipeline behaviors |  |
-| ValidationBehavior.cs | Pipeline behavior that validates any `IRequest<TResponse>` | [[skills/dotnet/architecture/plateau/default/BuildingBlocks/classes/class-validation-behavior.skill.md|class-ValidationBehavior.skill]] |
+| ValidationBehavior.cs | Pipeline behavior that validates any `IRequest<TResponse>` | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-validation-behavior.skill.md|class-ValidationBehavior.skill]] |
 | /MediatR | MediatR pipeline behaviors and context |  |
-| UnitOfWorkContext.cs | Scoped depth counter preventing premature sub-command commit | [[skills/dotnet/architecture/plateau/default/BuildingBlocks/classes/class-unit-of-work-context.skill.md|class-UnitOfWorkContext.skill]] |
-| UnitOfWorkBehavior.cs | Pipeline behavior that commits at depth 1 after handler completes | [[skills/dotnet/architecture/plateau/default/BuildingBlocks/classes/class-unit-of-work-behavior.skill.md|class-UnitOfWorkBehavior.skill]] |
+| UnitOfWorkContext.cs | Scoped depth counter preventing premature sub-command commit | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-unit-of-work-context.skill.md|class-UnitOfWorkContext.skill]] |
+| UnitOfWorkBehavior.cs | Pipeline behavior that commits at depth 1 after handler completes | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-unit-of-work-behavior.skill.md|class-UnitOfWorkBehavior.skill]] |
 | /MediatR | Pipeline behavior implementations and context |  |
 | /Outbox | OutboxMessage model and dispatcher |  |
 | /Concurrency | ETag encoder |  |
-| /MediatR/GuidResolvingBehavior.cs | Pipeline behavior that short-circuits on duplicate Guid | [[skills/dotnet/architecture/plateau/default/BuildingBlocks/classes/class-guid-resolving-behavior.skill.md|class-GuidResolvingBehavior.skill]] |
-| /Concurrency/ETagEncoder.cs | Encodes/decodes entity versions as base64 JSON ETag | [[skills/dotnet/architecture/plateau/default/BuildingBlocks/classes/class-etag-encoder.skill.md|class-ETagEncoder.skill]] |
-| /MediatR/ConcurrencyBehavior.cs | Pipeline behavior validating versions before handler runs | [[skills/dotnet/architecture/plateau/default/BuildingBlocks/classes/class-concurrency-behavior.skill.md|class-ConcurrencyBehavior.skill]] |
+| /MediatR/GuidResolvingBehavior.cs | Pipeline behavior that short-circuits on duplicate Guid | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-guid-resolving-behavior.skill.md|class-GuidResolvingBehavior.skill]] |
+| /Concurrency/ETagEncoder.cs | Encodes/decodes entity versions as base64 JSON ETag | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-etag-encoder.skill.md|class-ETagEncoder.skill]] |
+| /MediatR/ConcurrencyBehavior.cs | Pipeline behavior validating versions before handler runs | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-concurrency-behavior.skill.md|class-ConcurrencyBehavior.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|class-validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]
