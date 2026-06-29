@@ -107,6 +107,8 @@ MUST NOT:
 - Mutate state before validating with rules
 - Allow invalid state to persist silently
 
+# Check list
+- [ ] All properties except GUID and Id (primary key and foreing key) which has invariant checks use [{ValueObject}](./{ValueObject}.cs.create.md) which implements invariant checks
 # Unittest TestCases
 - [ ] WHEN applied THEN Encapsulate invariant state on Entity properties into dedicated Value Object types
 - [ ] WHEN applied THEN Keep Entity focused on identity, lifecycle, and aggregate consistency while delegating value-level validation to Value Objects
