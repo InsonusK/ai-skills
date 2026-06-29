@@ -3,7 +3,7 @@ name: class-property-validator
 description: FluentValidation property validator for a Soft{ValueObject} declared in {Module}.Interfaces
 domain: skill
 type: template
-version: 20260628
+version: 20260629210700
 plateau: default
 tags:
   - skill/template/class
@@ -45,7 +45,7 @@ Write a comment at the top of the created class with the applied skill metadata:
 ```csharp
 //Skill: class-property-validator
 //Plateau: default
-//Version: 20260628
+//Version: 20260629210700
 ```
 
 Single-property soft value object validator:
@@ -56,7 +56,7 @@ using FluentValidation;
 using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
 
-namespace {Module}.Application.Validators;
+namespace {Module}.Application.Validators.Property;
 
 public class EmailPropertyValidator : AbstractValidator<SoftEmail>
 {
@@ -75,7 +75,7 @@ using FluentValidation;
 using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
 
-namespace {Module}.Application.Validators;
+namespace {Module}.Application.Validators.Property;
 
 public class MoneyPropertyValidator : AbstractValidator<SoftMoney>
 {
@@ -105,7 +105,7 @@ __Applied solutions:__
 MUST:
 	- Extend `AbstractValidator<Soft{ValueObject}>`
 	- Be named `{ValueObject}PropertyValidator`
-	- Live in `/{Module}.Application/Validators`
+	- Live in `/{Module}.Application/Validators/Property`
 	- Validate transport/value correctness only by calling Rules
 MUST NOT:
 	- Inject repositories or services

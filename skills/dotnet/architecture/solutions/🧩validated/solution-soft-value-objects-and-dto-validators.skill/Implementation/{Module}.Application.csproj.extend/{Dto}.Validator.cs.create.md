@@ -30,7 +30,7 @@ using FluentValidation;
 using {Module}.Interfaces.DTOs;
 using {Module}.Interfaces.ValueObjects;
 
-namespace {Module}.Application.Validators;
+namespace {Module}.Application.Validators.Model;
 
 public class TaskDtoValidator : AbstractValidator<TaskDto>
 {
@@ -85,7 +85,7 @@ MUST NOT:
 # Check list
 - [ ] Extends `AbstractValidator<{Dto}>`
 - [ ] Named `{Dto}Validator`
-- [ ] Located in `/Validators`
+- [ ] Located in `/Validators/Model`
 - [ ] Uses injected property validators for Soft VO properties
 
 # Unittest TestCases

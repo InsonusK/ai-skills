@@ -30,7 +30,7 @@ using FluentValidation;
 using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
 
-namespace {Module}.Application.Validators;
+namespace {Module}.Application.Validators.Property;
 
 public class EmailPropertyValidator : AbstractValidator<SoftEmail>
 {
@@ -49,7 +49,7 @@ using FluentValidation;
 using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
 
-namespace {Module}.Application.Validators;
+namespace {Module}.Application.Validators.Property;
 
 public class MoneyPropertyValidator : AbstractValidator<SoftMoney>
 {
@@ -76,7 +76,7 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 MUST:
 - Extend `AbstractValidator<Soft{ValueObject}>`
 - Be named `{ValueObject}PropertyValidator`
-- Live in `/{Module}.Application/Validators`
+- Live in `/{Module}.Application/Validators/Property`
 - Validate transport/value correctness only by calling Rules
 
 MUST NOT:
@@ -93,7 +93,7 @@ MUST NOT:
 # Check list
 - [ ] Extends `AbstractValidator<Soft{ValueObject}>`
 - [ ] Named `{ValueObject}PropertyValidator`
-- [ ] Located in `/Validators`
+- [ ] Located in `/Validators/Property`
 - [ ] Stateless
 
 # Unittest TestCases

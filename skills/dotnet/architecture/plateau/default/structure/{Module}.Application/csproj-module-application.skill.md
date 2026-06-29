@@ -3,7 +3,7 @@ name: csproj-module-application
 description: Orchestrate use cases by connecting the API contract to the domain model
 domain: skill
 type: template
-version: 20260627
+version: 20260629210700
 plateau: default
 tags:
   - skill/template/csproj
@@ -104,8 +104,10 @@ __Applied solutions:__
     - /GetTasks
       - [GetTasks.Handler.cs](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-feature-handler.skill.md)
   - /Validators
-    - [{ValueObject}PropertyValidator.cs](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill.md)
-    - [{Dto}Validator.cs](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill.md)
+	  - /Property
+		  - [{ValueObject}PropertyValidator.cs](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill.md)
+	  - /Model
+		  - [{Dto}Validator.cs](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill.md)
   - /Specifications
     - [{Entity}ByIdSpec.cs](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-by-id-spec.skill.md)
     - [{Entity}ByGuidSpec.cs](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-by-guid-spec.skill.md)
@@ -131,21 +133,22 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## Directory and class skills
-| `Directory|file` | Description | Pattern skill |
-| ---------------- | ----------- | ------------- |
-| /Handlers | Command and query handlers |  |
-| /Validators | Property validators for Soft VOs and validators for public DTOs | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill.md|class-PropertyValidator.skill]] [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill.md|class-DtoValidator.skill]] |
-| /Specifications | Query specifications |  |
-| /Specifications | All module specifications — single-condition, multi-condition, projection, idempotency |  |
-| /Queries/{FeatureName} | One folder per query feature; contains handler and optional transport validator |  |
-| /Specifications | Named reusable specifications for entity loading and projection |  |
-| /Specifications/{Entity}ByGuidSpec.cs | Specification for looking up entity by Guid | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-by-guid-spec.skill.md|class-EntityByGuidSpec.skill]] |
-| /Resolvers/Create{Entity}GuidResolver.cs | Per-entity IGuidResolver implementation | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-create-entity-guid-resolver.skill|class-CreateEntityGuidResolver.skill]] |
-| /Features/{FeatureName} | One subfolder per feature — handler and validator co-located |  |
-| {FeatureName}.Handler.cs | Command handler implementation | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-feature-handler.skill|class-Feature.Handler.skill]] |
-| {FeatureName}.Validator.cs | Transport correctness validator | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-feature-validator.skill.md|class-Feature.Validator.skill]] |
-| /Concurrency/{Entity}VersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-version-resolver.skill.md|class-{Entity}VersionResolver.skill]] |
-| {Module}ApplicationRegistration.cs | Module DI self-registration extension | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-module-application-registration.skill.md|class-ModuleApplicationRegistration.skill]] |
+| `Directory \| file`                     | Description                                                                            | Pattern skill                                                                                                                                                                  |
+| ---------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| /Handlers                                | Command and query handlers                                                             |                                                                                                                                                                                |
+| /Validators/Property                     | Property validators for Soft VOs                                                       | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill\|class-property-validator.skill]]                           |
+| /Validators/Model                        | Model validators for public DTOs                                                       | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill\|class-dto-validator.skill]]                                     |
+| /Specifications                          | Query specifications                                                                   |                                                                                                                                                                                |
+| /Specifications                          | All module specifications — single-condition, multi-condition, projection, idempotency |                                                                                                                                                                                |
+| /Queries/{FeatureName}                   | One folder per query feature; contains handler and optional transport validator        |                                                                                                                                                                                |
+| /Specifications                          | Named reusable specifications for entity loading and projection                        |                                                                                                                                                                                |
+| /Specifications/{Entity}ByGuidSpec.cs    | Specification for looking up entity by Guid                                            | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-by-guid-spec.skill\|class-entity-by-guid-spec.skill]]                         |
+| /Resolvers/Create{Entity}GuidResolver.cs | Per-entity IGuidResolver implementation                                                | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-create-entity-guid-resolver.skill\|class-create-entity-guid-resolver.skill]]         |
+| /Features/{FeatureName}                  | One subfolder per feature — handler and validator co-located                           |                                                                                                                                                                                |
+| {FeatureName}.Handler.cs                 | Command handler implementation                                                         | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-feature-handler.skill\|class-feature-handler.skill]]                                 |
+| {FeatureName}.Validator.cs               | Transport correctness validator                                                        | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-feature-validator.skill\|class-feature-validator.skill]]                             |
+| /Concurrency/{Entity}VersionResolver.cs  | Reads the current version for one versioned entity                                     | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-entity-version-resolver.skill\|class-entity-version-resolver.skill]]                 |
+| {Module}ApplicationRegistration.cs       | Module DI self-registration extension                                                  | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-module-application-registration.skill\|class-module-application-registration.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]]

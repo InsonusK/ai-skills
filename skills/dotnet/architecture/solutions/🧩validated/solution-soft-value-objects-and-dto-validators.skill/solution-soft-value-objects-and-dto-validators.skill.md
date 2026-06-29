@@ -3,7 +3,7 @@ name: solution-soft-value-objects-and-dto-validators
 description: Defines the Soft Value Object pattern. Each module exposes soft, validation-agnostic value objects from its Interfaces project. Domain Value Objects inherit from the soft type and enforce invariants at construction. Property validators for Soft VOs and validators for public DTOs live in {Module}.Application, are registered by FluentValidation, and are consumed by other modules through IValidator<T>.
 domain: skill
 type: architecture
-version: 20260627
+version: 20260629210700
 tags:
   - skill/architecture/solution
   - dotnet
@@ -121,8 +121,8 @@ MUST:
 - `/{Module}.Domain/ValueObjects/{ValueObject}.cs` inherits from `{Module}.Interfaces.ValueObjects.Soft{ValueObject}`
 - `Soft{ValueObject}` does not validate values in its constructor or properties
 - `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its constructor by calling Rules and throws `DomainException` on invalid values
-- For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `/{Module}.Application/Validators` extending `AbstractValidator<Soft{ValueObject}>`
-- For every DTO published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators` extending `AbstractValidator<{Dto}>`
+- For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `/{Module}.Application/Validators/Property` extending `AbstractValidator<Soft{ValueObject}>`
+- For every DTO published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators/Model` extending `AbstractValidator<{Dto}>`
 - Validators are registered by FluentValidation's assembly scan of `{Module}.Application`
 - Other modules consume validators through `IValidator<T>` resolved from DI
 - DTO value-concept properties are `Soft{ValueObject}` types, not primitives
