@@ -123,6 +123,8 @@ MUST NOT:
 - Contain business logic beyond invariant validation — use domain rules for that
 - Contain inline validation logic — always delegate to a Rule
 
+# Check list
+- [ ] All invariant checks are made by [{Rule}](./{Rule}.cs.create.md)
 # Unittest TestCases
 - [ ] WHEN applied THEN Encode a domain concept with business meaning and invariant enforcement
 - [ ] WHEN applied THEN Eliminate primitive obsession by replacing raw primitives with semantic types

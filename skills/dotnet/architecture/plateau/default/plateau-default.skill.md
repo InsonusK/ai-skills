@@ -6,6 +6,7 @@ type: template
 version: 20260628
 tags:
   - skill/template/plateau
+  - plateau/default
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]"

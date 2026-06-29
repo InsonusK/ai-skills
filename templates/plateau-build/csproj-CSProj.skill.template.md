@@ -12,6 +12,7 @@ created_by:
 # How Apply this template
 - Find in all solutions from created_by files made by Project.template.md
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
+- add to header properties `tags` tag `plateau/{plateau-name}`
 
 # Goal
 ```hint

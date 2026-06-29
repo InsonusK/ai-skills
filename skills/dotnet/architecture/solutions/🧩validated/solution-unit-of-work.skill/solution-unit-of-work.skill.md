@@ -3,7 +3,7 @@ name: solution-unit-of-work
 description: Defines IUnitOfWork, UnitOfWorkContext, and UnitOfWorkBehavior — the pipeline mechanism that commits all staged entity changes atomically after the top-level command handler completes, ensuring sub-commands never commit prematurely
 domain: skill
 type: architecture
-version: 20260611
+version: 20260629
 tags:
   - skill/architecture/solution
   - dotnet
@@ -56,7 +56,7 @@ depends_on:
 - `UnitOfWorkBehavior` and `UnitOfWorkContext` live in BuildingBlocks — they reference `ICommand` and `IUnitOfWork` from Shared
 - `UnitOfWorkBehavior` activates only on `ICommand` — queries never trigger a commit
 - `UnitOfWorkContext` tracks nesting depth — only the outermost command (`Depth == 1`) commits
-- Sub-commands dispatched via `_mediator.Send()` increment depth — they stage changes but defer commit to the root
+- Sub-commands dispatched via `_mediator.Send()` call `_context.Enter()` — they stage changes but defer commit to the root
 - **No explicit rollback needed** — EF Core uses implicit transactions: if `SaveChangesAsync` is never called, the DbContext is disposed at request scope end and all staged changes are silently abandoned. Explicit rollback is only required when using `DbContext.Database.BeginTransactionAsync()`, which this architecture does not use.
 - If the handler throws, `SaveChangesAsync` is never called — all staged changes are discarded with the request scope
 - `UnitOfWorkContext` is registered as `Scoped` — one instance per HTTP request, shared across all nested command dispatches within that request
@@ -88,7 +88,7 @@ PROJECT:
 - [[./Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add IUnitOfWork commit contract without infrastructure coupling
   - [[./Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs]] - create - Single-method commit contract accessible by every layer
 - [[./Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add UnitOfWorkContext and UnitOfWorkBehavior pipeline components
-  - [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs]] - create - Scoped nesting depth counter preventing premature sub-command commit
+  - [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs]] - create - Scoped thread-safe nesting depth counter preventing premature sub-command commit
   - [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs]] - create - Pipeline behavior that commits at depth 1 after handler completes
 - [[./Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - extend - Add UnitOfWork EF Core implementation
   - [[./Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs]] - create - IUnitOfWork implementation delegating to AppDbContext
@@ -102,8 +102,8 @@ MUST:
 - `UnitOfWorkContext` defined in BuildingBlocks — registered as `Scoped`
 - `UnitOfWorkBehavior` defined in BuildingBlocks — constrained to `ICommand` only
 - `UnitOfWork` implementation in App.Infrastructure
-- `UnitOfWorkBehavior` uses `try/finally` — depth always restored on exception
-- `UnitOfWorkBehavior` commits only when `Depth == 1`
+- `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` — depth always restored on exception
+- `UnitOfWorkBehavior` commits only when `_context.Depth == 1`
 - `IUnitOfWork` and `UnitOfWorkContext` registered as `Scoped`
 - Sub-commands safe to dispatch from handlers — depth counter prevents premature commit
 - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
@@ -129,8 +129,8 @@ MUST NOT:
 - [ ] `UnitOfWorkContext` defined in `BuildingBlocks/MediatR/UnitOfWorkContext.cs`
 - [ ] `UnitOfWorkBehavior` defined in `BuildingBlocks/MediatR/UnitOfWorkBehavior.cs`
 - [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
-- [ ] `UnitOfWorkBehavior` uses `try/finally` for depth decrement
-- [ ] `UnitOfWorkBehavior` calls `SaveChangesAsync` only when `Depth == 1`
+- [ ] `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` for depth decrement
+- [ ] `UnitOfWorkBehavior` calls `SaveChangesAsync` only when `_context.Depth == 1`
 - [ ] `UnitOfWork` implemented in `App.Infrastructure/UnitOfWork/UnitOfWork.cs`
 - [ ] `UnitOfWork` registered as `Scoped` in App.Host
 - [ ] `UnitOfWorkContext` registered as `Scoped` in App.Host

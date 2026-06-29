@@ -8,6 +8,8 @@ tags:
   - skill/template/plateau
 created_by:
 ---
+# How Apply this template
+- add to header properties `tags` tag `plateau/{plateau-name}`
 
 # Core Principals
 ```hint
