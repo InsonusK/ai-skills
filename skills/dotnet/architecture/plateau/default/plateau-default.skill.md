@@ -1,9 +1,9 @@
 ---
 name: plateau-default
-description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, command/query integration, repository abstractions, soft value objects and DTO validators, and centralized pipeline/host wiring
+description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, entity edit timestamps, command/query integration, repository abstractions, soft value objects and DTO validators, and centralized pipeline/host wiring
 domain: skill
 type: template
-version: 20260628
+version: 20260629223200
 tags:
   - skill/template/plateau
   - plateau/default
@@ -23,6 +23,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill.md|solution-pipeline-registration-order]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Core Principals
@@ -31,6 +32,7 @@ created_by:
 - Mutable entities use PostgreSQL `xmin` as an optimistic concurrency token. The version is never set by application code; it is transported via ETag/If-Match and checked by a pipeline behavior before the handler runs.
 - Concurrency checks are performed through a factory-resolver chain: `IEntityVersionResolverFactory` resolves the correct `IEntityVersionResolver` for a stable business entity name; per-entity resolvers in module Application projects read the current version using the module's own specifications and repositories.
 - External-created entities carry a client-supplied `Guid` used for idempotency. A dedicated pipeline behavior short-circuits duplicate creates before the handler runs.
+- User-initiated entities record creation and update timestamps: the client supplies `ActionTimeStamp` via `ICommandWithTimestamp`, the handler assigns user timestamps, and `AppDbContext` assigns authoritative server timestamps before saving.
 - Write operations are commands, read operations are queries, and both are routed through MediatR. Pipeline behaviors (validation, concurrency, Guid resolution, unit-of-work) are registered centrally in `App.Host`.
 - Each module owns its Domain, Application, Interfaces, and Api projects. Cross-module read models live in `App.Queries`. Cross-module foreign key configurations live in `App.Infrastructure`.
 
@@ -45,6 +47,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|class-pipeline-registration]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Capabilities
 
@@ -88,6 +91,12 @@ __Applied solutions:__
 - Encapsulates query intent into named, reusable specifications.
 - Commits all staged changes atomically through a single Unit of Work after the top-level command.
 - Prevents premature commits for nested sub-commands via a scoped depth tracker.
+
+## Entity edit timestamps
+- Classifies every user-initiated entity by mutability to decide whether it carries creation-only or creation+update timestamp contracts.
+- Commands carry the client action time through `ICommandWithTimestamp`; validators ensure it is present and not in the future.
+- Handlers assign user timestamps through explicit timestamp interface casts so entity class-level setters can remain `internal`.
+- `AppDbContext.OnBeforeSaving` assigns `ServerCreatedDateTime` and `ServerUpdatedDateTime` using `DateTimeOffset.UtcNow`.
 
 ## Pipeline
 - Centralizes all MediatR pipeline behavior registrations in `App.Host`.
@@ -140,3 +149,5 @@ sequenceDiagram
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
+

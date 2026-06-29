@@ -8,7 +8,7 @@ change_kind: extend
 # Goals
 - Ensure domain entity remains free of EF attributes — all persistence mapping delegated to config class
 
-# Core Principals
+# Core Principles
 - Entity has zero EF attributes — `[Column]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]` are all forbidden
 - Entity does not know about its own table name, column names, or constraint names
 

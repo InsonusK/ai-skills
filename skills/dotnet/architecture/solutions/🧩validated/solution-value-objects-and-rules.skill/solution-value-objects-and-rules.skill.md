@@ -52,7 +52,7 @@ depends_on:
 - Shared location for cross-module Value Objects and rules
 - Signle point of validation rules
 
-# Core Principals
+# Core Principles
 - Semantics belong to types, not primitives — if a primitive carries business meaning, it is a VO
 - Value Object is immutable — no property can change after construction
 - Value Object is self-validating — invalid state cannot exist, constructor throws on violation
@@ -73,6 +73,7 @@ depends_on:
 - Value Object validates values only through Rules; inline validation logic is forbidden
 - Rules define predicates — Entities define consistency — Value Objects define correctness
 - Value Objects and Rules used by two or more modules belong in Shared.csproj, not duplicated in each module
+- Rules are tested comprehensively and completely with all corner cases.
 
 # Requirements
 SOLUTION:
@@ -196,6 +197,7 @@ MUST NOT:
 - [ ] Entity uses VO for properties with invariant state
 - [ ] Entity calls rules before mutating state
 - [ ] Entity throws `DomainException` when rule returns false
+- [ ] Unittest covers all cases in `Rules` included corner cases
 
 # Unittest TestCases
 - [ ] When value is below lower bound Then constructor throws DomainException

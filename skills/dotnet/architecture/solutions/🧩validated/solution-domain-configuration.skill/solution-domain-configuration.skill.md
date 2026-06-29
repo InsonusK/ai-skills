@@ -41,7 +41,7 @@ depends_on:
 - Automatic discovery of entity configurations via assembly scan
 - Zero EF attributes on domain entities
 
-# Core Principals
+# Core Principles
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
 - Configuration class owns all persistence concerns — entity owns all domain concerns
 - `TableName`, index, and constraint names are `public const string` constants on the config class

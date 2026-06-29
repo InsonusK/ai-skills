@@ -3,7 +3,7 @@ name: class-entity-config
 description: Configure unique index on Guid with named constant
 domain: skill
 type: template
-version: 20260628
+version: 20260629223200
 plateau: default
 tags:
   - skill/template/class
@@ -13,6 +13,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
@@ -30,8 +31,9 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Index name follows the convention: `UX_{TableName}_Guid`
 - Unique index ensures concurrent requests that both pass the pipeline check are rejected at the DB level
@@ -53,6 +55,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -66,6 +69,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Implementation
 
@@ -180,6 +184,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Entity Classification
 
@@ -187,9 +192,9 @@ Extend the entity configuration to match the selected classification. Only the m
 
 ## Internal Immutable
 
-No changes beyond the standard Id mapping.
+No changes beyond the standard Id mapping. Do not map timestamp columns.
 
-**Dependencies**: do not implement `solution-entity-concurrency-change.skill` or `solution-external-created-entity.skill`.
+**Dependencies**: do not implement `solution-entity-concurrency-change.skill` or `solution-external-created-entity.skill` or `solution-entity-edit-timestamp.skill`.
 
 ```csharp
 public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
@@ -205,9 +210,9 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 
 ## External Immutable
 
-Add the `Guid` mapping with a unique index. There is no `Version` concurrency token.
+Add the `Guid` mapping with a unique index. There is no `Version` concurrency token. Map creation timestamps only.
 
-**Dependencies**: implement `solution-external-created-entity.skill`; do not implement `solution-entity-concurrency-change.skill`.
+**Dependencies**: implement `solution-external-created-entity.skill` and `solution-entity-edit-timestamp.skill`; do not implement `solution-entity-concurrency-change.skill`.
 
 ```csharp
 public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
@@ -222,6 +227,9 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
         builder.HasIndex(x => x.Guid)
             .HasDatabaseName(UX_Guid)
             .IsUnique();
+
+        builder.Property(x => x.ServerCreatedDateTime).IsRequired();
+        builder.Property(x => x.UserCreatedDateTime).IsRequired();
 
         // other immutable property mappings
     }
@@ -230,9 +238,9 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 
 ## Internal Mutable
 
-Add the `Version` concurrency token mapped to PostgreSQL `xmin`. There is no `Guid`.
+Add the `Version` concurrency token mapped to PostgreSQL `xmin`. There is no `Guid`. Map creation and update timestamps.
 
-**Dependencies**: implement `solution-entity-concurrency-change.skill`; do not implement `solution-external-created-entity.skill`.
+**Dependencies**: implement `solution-entity-concurrency-change.skill` and `solution-entity-edit-timestamp.skill`; do not implement `solution-external-created-entity.skill`.
 
 ```csharp
 public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
@@ -248,6 +256,11 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
 
+        builder.Property(x => x.ServerCreatedDateTime).IsRequired();
+        builder.Property(x => x.UserCreatedDateTime).IsRequired();
+        builder.Property(x => x.ServerUpdatedDateTime).IsRequired();
+        builder.Property(x => x.UserUpdatedDateTime).IsRequired();
+
         // other property mappings
     }
 }
@@ -255,9 +268,9 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 
 ## External Mutable
 
-Add both the unique `Guid` index and the `Version` concurrency token mapped to `xmin`.
+Add both the unique `Guid` index and the `Version` concurrency token mapped to `xmin`. Map creation and update timestamps.
 
-**Dependencies**: implement both `solution-entity-concurrency-change.skill` and `solution-external-created-entity.skill`.
+**Dependencies**: implement `solution-entity-concurrency-change.skill`, `solution-external-created-entity.skill`, and `solution-entity-edit-timestamp.skill`.
 
 ```csharp
 public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
@@ -279,6 +292,11 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
 
+        builder.Property(x => x.ServerCreatedDateTime).IsRequired();
+        builder.Property(x => x.UserCreatedDateTime).IsRequired();
+        builder.Property(x => x.ServerUpdatedDateTime).IsRequired();
+        builder.Property(x => x.UserUpdatedDateTime).IsRequired();
+
         // other property mappings
     }
 }
@@ -286,6 +304,7 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Rules
 MUST:
@@ -294,6 +313,8 @@ MUST:
 	- `IsUnique()` on the `Guid` index
 	- Every mutable entity configuration maps `Version` to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()`
 	- Every mutable entity configuration declares `public const string VersionedEntityName` with the stable business name
+	- Every timestamp property that exists on the entity is mapped with `.IsRequired()`
+	- `DateTimeOffset` used for all timestamp properties
 	- `TableName` is `public const string`
 	- One config class per entity
 	- `TableName` defined as `public const string`
@@ -304,6 +325,12 @@ MUST:
 MUST NOT:
 	- Use inline string for index name
 	- `HasDefaultValue` or `HasComputedColumnSql` used on `Version` — `xmin` is managed entirely by PostgreSQL
+	- Map timestamp columns on `Internal Immutable` entities
+	- Map update timestamps on `External Immutable` entities
+	- Map timestamp columns on `Internal Immutable` entities
+	- Map update timestamps on `External Immutable` entities
+	- Map timestamp columns on `Internal Immutable` entities
+	- Map update timestamps on `External Immutable` entities
 	- `VersionedEntityName` be derived from `TableName` or `nameof({EntityName})` — it is an explicit business contract
 	- Use EF data annotations on the domain entity (`[Column]`, `[Index]`, `[ForeignKey]`, etc.)
 	- Define table names, column names, or constraint names as inline strings
@@ -316,6 +343,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Anti-patterns
 - Apply SEVERAL plateau template per class
@@ -327,12 +355,22 @@ __Applied solutions:__
 - Using `[ConcurrencyCheck]` attribute on entity instead of fluent config
 - Single config class shared across multiple entities — one config per entity, no exceptions
 - Cross-module FK configured in Domain config — belongs in App.Infrastructure
+- Mapping timestamp columns inconsistently across entities
+- Allowing nullable timestamp columns
+- Using `DateTime` column types
+- Mapping timestamp columns inconsistently across entities
+- Allowing nullable timestamp columns
+- Using `DateTime` column types
+- Mapping timestamp columns inconsistently across entities
+- Allowing nullable timestamp columns
+- Using `DateTime` column types
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Check list
 - [ ] `UX_Guid` constant defined on entity configuration class
@@ -350,12 +388,28 @@ __Applied solutions:__
 - [ ] All intra-module relations configured with `HasForeignKey` and `OnDelete`
 - [ ] `OwnsOne` configured for every multi-property VO property
 - [ ] No EF attributes on the domain entity class
+- [ ] `Internal Immutable` config does not map timestamp columns
+- [ ] `External Immutable` config maps creation timestamps only
+- [ ] Mutable entity config maps creation and update timestamps
+- [ ] Mapped timestamp properties are `.IsRequired()`
+- [ ] Timestamp properties use `DateTimeOffset`
+- [ ] `Internal Immutable` config does not map timestamp columns
+- [ ] `External Immutable` config maps creation timestamps only
+- [ ] Mutable entity config maps creation and update timestamps
+- [ ] Mapped timestamp properties are `.IsRequired()`
+- [ ] Timestamp properties use `DateTimeOffset`
+- [ ] `Internal Immutable` config does not map timestamp columns
+- [ ] `External Immutable` config maps creation timestamps only
+- [ ] Mutable entity config maps creation and update timestamps
+- [ ] Mapped timestamp properties are `.IsRequired()`
+- [ ] Timestamp properties use `DateTimeOffset`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Configure a unique database index on Guid as the DB-level idempotency guard
@@ -380,9 +434,23 @@ __Applied solutions:__
 - [ ] When insert entity with duplicate unique-indexed field Then throws DbUpdateException with correct constraint name matching the constant
 - [ ] When insert entity with multi-property VO Then all VO columns are persisted flat on entity table
 - [ ] When entity relation configured Then navigating the relation returns correct related entities
+- [ ] WHEN config inspected for `External Immutable` THEN only creation timestamps are mapped
+- [ ] WHEN config inspected for mutable entity THEN creation and update timestamps are mapped
+- [ ] WHEN migration generated THEN timestamp columns are non-nullable `DateTimeOffset`
+- [ ] WHEN `Internal Immutable` config inspected THEN no timestamp columns are mapped
+- [ ] WHEN config inspected for `External Immutable` THEN only creation timestamps are mapped
+- [ ] WHEN config inspected for mutable entity THEN creation and update timestamps are mapped
+- [ ] WHEN migration generated THEN timestamp columns are non-nullable `DateTimeOffset`
+- [ ] WHEN `Internal Immutable` config inspected THEN no timestamp columns are mapped
+- [ ] WHEN config inspected for `External Immutable` THEN only creation timestamps are mapped
+- [ ] WHEN config inspected for mutable entity THEN creation and update timestamps are mapped
+- [ ] WHEN migration generated THEN timestamp columns are non-nullable `DateTimeOffset`
+- [ ] WHEN `Internal Immutable` config inspected THEN no timestamp columns are mapped
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md|{Entity}Config.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs.extend]]
+

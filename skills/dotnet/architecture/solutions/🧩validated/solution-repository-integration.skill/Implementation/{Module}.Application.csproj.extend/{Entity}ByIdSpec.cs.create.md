@@ -9,7 +9,7 @@ change_kind: create
 # Goals
 - Provide a reusable named query for loading a single entity by its internal Id
 
-# Core Principals
+# Core Principles
 - Inherits `Specification<T>` from `Ardalis.Specification`
 - Constructor receives filter parameter and calls `Query.Where(...)`
 - Never touches the database — describes what to fetch

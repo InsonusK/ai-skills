@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Interface only — no properties, no methods
 - Extends `IRequest<TResponse>` so MediatR routes it to a handler

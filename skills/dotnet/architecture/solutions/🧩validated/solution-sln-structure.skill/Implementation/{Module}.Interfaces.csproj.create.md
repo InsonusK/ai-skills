@@ -8,7 +8,7 @@ change_kind: create
 - Provide the single stable public surface through which other modules interact with this module
 - Declare all write intent contracts (commands), read intent contracts (queries), response shapes (DTOs), and integration event contracts
 
-# Core Principals
+# Core Principles
 - Interfaces is a declarations-only project — no business logic, no implementation
 - Changes to Interfaces are breaking changes and must be versioned
 - Other modules depend on this project only — never on Application or Domain

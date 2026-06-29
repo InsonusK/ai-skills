@@ -23,11 +23,11 @@ RECOMENDATION:
 - Prevent duplicate creation via Guid uniqueness check 
 ```
 
-# Core Principals
+# Core Principles
 ```hint
-Define how solution EXTENDS class core principals
+Define how solution EXTENDS class core principles
 MUST:
-- show all added Core Principals
+- show all added Core Principles
 RECOMENDATION:
 - Prefer bullet list
 ```

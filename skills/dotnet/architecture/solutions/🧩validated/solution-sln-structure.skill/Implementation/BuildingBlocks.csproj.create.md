@@ -9,7 +9,7 @@ change_kind: create
 - Implement application technical patterns used by App.Host and infrastructure across all modules
 - Provide pipeline behaviors, repository implementations, and cross-cutting utilities
 
-# Core Principals
+# Core Principles
 - BuildingBlocks implements reusable technical patterns, not business logic
 - BuildingBlocks depends only on Shared
 - BuildingBlocks does NOT define common interfaces — it consumes interfaces from Shared

@@ -21,7 +21,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create.md|ConflictResultExtensions.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Thin adapter — no business logic, no domain rules
 - `ConflictResult<Create{Entity}Result>` is detected by type so the response status is 409

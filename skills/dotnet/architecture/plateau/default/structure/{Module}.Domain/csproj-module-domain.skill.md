@@ -3,7 +3,7 @@ name: csproj-module-domain
 description: Own the entities, value objects, rules, and domain events for this bounded context
 domain: skill
 type: template
-version: 20260627
+version: 20260629223200
 plateau: default
 tags:
   - skill/template/csproj
@@ -17,6 +17,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
@@ -29,6 +30,7 @@ created_by:
 - Add `Guid` as an immutable property on externally-created entities
 - Add unique database index on `Guid` as the final idempotency guard
 - Add `Version` concurrency token to every mutable entity, implement `IVersioned`, and configure it as the PostgreSQL `xmin` system column; declare `VersionedEntityName` in the config class
+- Add creation and update timestamp properties to user-initiated entities based on classification, using `DateTimeOffset` and explicit interface implementation for mutable setters
 - Store all EF Core entity type configuration classes for this bounded context
 - Own all persistence mapping concerns for this module's entities
 - Own all entity behavior and invariant enforcement for the bounded context
@@ -45,8 +47,9 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - Value Objects define correctness — they encode domain semantics and enforce invariants at construction time
 - Rules define predicates — they encode reusable business conditions without deciding enforcement
 - Entities define consistency — they decide when and how to enforce invariants using VOs and rules
@@ -64,6 +67,24 @@ __Applied solutions:__
 - One config class per entity — lives in /{Module}.Domain/Configurations
 - Config class is the only place that defines column names, index names, and constraints for this entity
 - Domain entities have no EF attributes — all mapping is in the config class
+- Timestamp columns are required because they are always assigned before the row is persisted
+- `Internal Immutable` entities have no timestamp interfaces or columns
+- `External Immutable` entities implement `ICreationInfoModel` and map only creation timestamps
+- `Internal Mutable` and `External Mutable` entities implement `ICreationInfoModel` and `IUpdateInfoModel`, and map both creation and update timestamps
+- Class-level timestamp properties use `internal set`; mutable interface setters are implemented explicitly
+- `DateTimeOffset` maps to PostgreSQL `timestamp with time zone` by default
+- Timestamp columns are required because they are always assigned before the row is persisted
+- `Internal Immutable` entities have no timestamp interfaces or columns
+- `External Immutable` entities implement `ICreationInfoModel` and map only creation timestamps
+- `Internal Mutable` and `External Mutable` entities implement `ICreationInfoModel` and `IUpdateInfoModel`, and map both creation and update timestamps
+- Class-level timestamp properties use `internal set`; mutable interface setters are implemented explicitly
+- `DateTimeOffset` maps to PostgreSQL `timestamp with time zone` by default
+- Timestamp columns are required because they are always assigned before the row is persisted
+- `Internal Immutable` entities have no timestamp interfaces or columns
+- `External Immutable` entities implement `ICreationInfoModel` and map only creation timestamps
+- `Internal Mutable` and `External Mutable` entities implement `ICreationInfoModel` and `IUpdateInfoModel`, and map both creation and update timestamps
+- Class-level timestamp properties use `internal set`; mutable interface setters are implemented explicitly
+- `DateTimeOffset` maps to PostgreSQL `timestamp with time zone` by default
 - Entity methods are the primary gatekeepers of state change
 - Domain rules encode reusable predicates; entities decide when and how to enforce them
 - Static domain service extension methods hold complex or multi-step logic that does not fit naturally inside the entity
@@ -78,6 +99,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Structure
 
@@ -117,6 +139,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## Classification variants
 
@@ -128,19 +151,22 @@ Apply entity classification at the domain layer by choosing the correct entity c
 
 | Classification | `{EntityName}.cs` changes | `{EntityName}Config.cs` changes |
 |---|---|---|
-| **Internal Immutable** | Only `int Id` | Standard Id mapping |
-| **External Immutable** | Add `Guid Guid { get; internal set; }` | Add unique index on `Guid` |
-| **Internal Mutable** | Add `uint Version { get; internal set; }` and `IVersioned` | Map `Version` to `xmin` with `IsConcurrencyToken()` |
-| **External Mutable** | Add both `Guid` and `Version` + `IVersioned` | Add unique index on `Guid` and map `Version` to `xmin` |
+| **Internal Immutable** | Only `int Id` | Standard Id mapping; no timestamps |
+| **External Immutable** | Add `Guid Guid { get; internal set; }`; implement `ICreationInfoModel` | Add unique index on `Guid`; map creation timestamps as required |
+| **Internal Mutable** | Add `uint Version { get; internal set; }` and `IVersioned`; implement `ICreationInfoModel` and `IUpdateInfoModel` | Map `Version` to `xmin` with `IsConcurrencyToken()`; map creation and update timestamps as required |
+| **External Mutable** | Add both `Guid` and `Version` + `IVersioned`; implement `ICreationInfoModel` and `IUpdateInfoModel` | Add unique index on `Guid` and map `Version` to `xmin`; map creation and update timestamps as required |
 
 - Internal Immutable and Internal Mutable entities do not implement `solution-external-created-entity.skill`.
 - External Immutable and External Mutable entities implement `solution-external-created-entity.skill`.
 - Internal Mutable and External Mutable entities implement `solution-entity-concurrency-change.skill`.
-- Internal Immutable entities implement neither dependency solution.
+- Internal Immutable entities implement neither dependency solution nor `solution-entity-edit-timestamp.skill`.
+- External Immutable entities implement `solution-entity-edit-timestamp.skill` with creation timestamps only.
+- Internal Mutable and External Mutable entities implement `solution-entity-edit-timestamp.skill` with creation and update timestamps.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
@@ -169,6 +195,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -185,6 +212,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Infrastructure implementations — belong to App.Infrastructure or BuildingBlocks
@@ -212,6 +240,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 ## Allowed Dependencies
 - Shared
@@ -230,6 +259,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Rules
 MUST:
@@ -246,6 +276,21 @@ MUST:
 	- Every mutable entity implements `IVersioned`
 	- Every mutable entity config class declares `VersionedEntityName`
 	- `Version` configured as `IsConcurrencyToken()` mapping to `xmin` in EF configuration
+	- Timestamp properties are `DateTimeOffset` with `internal set`
+	- Mutable entities implement `ICreationInfoModel` and `IUpdateInfoModel` with explicit interface setters
+	- External Immutable entities implement `ICreationInfoModel` only
+	- Timestamp properties are mapped as required in the entity configuration
+	- Internal Immutable entities have no timestamp interfaces or columns
+	- Timestamp properties are `DateTimeOffset` with `internal set`
+	- Mutable entities implement `ICreationInfoModel` and `IUpdateInfoModel` with explicit interface setters
+	- External Immutable entities implement `ICreationInfoModel` only
+	- Timestamp properties are mapped as required in the entity configuration
+	- Internal Immutable entities have no timestamp interfaces or columns
+	- Timestamp properties are `DateTimeOffset` with `internal set`
+	- Mutable entities implement `ICreationInfoModel` and `IUpdateInfoModel` with explicit interface setters
+	- External Immutable entities implement `ICreationInfoModel` only
+	- Timestamp properties are mapped as required in the entity configuration
+	- Internal Immutable entities have no timestamp interfaces or columns
 	- All EF configuration classes live in /{Module}.Domain/Configurations
 	- One config class per entity — no shared configs
 	- All configurations registered via `ApplyConfigurationsFromAssembly` in DbContext
@@ -269,6 +314,18 @@ MUST NOT:
 	- `Guid` reassigned after entity creation
 	- Internal entity types (no external creation) have `Guid`
 	- Application code set or read `Version` for any purpose other than concurrency checking — it is a database concern
+	- Timestamp interfaces added to `Internal Immutable` entities
+	- Update timestamps added to `External Immutable` entities
+	- Timestamp properties use `public set` or are mutable from outside the domain
+	- `DateTime` used instead of `DateTimeOffset` for timestamps
+	- Timestamp interfaces added to `Internal Immutable` entities
+	- Update timestamps added to `External Immutable` entities
+	- Timestamp properties use `public set` or are mutable from outside the domain
+	- `DateTime` used instead of `DateTimeOffset` for timestamps
+	- Timestamp interfaces added to `Internal Immutable` entities
+	- Update timestamps added to `External Immutable` entities
+	- Timestamp properties use `public set` or are mutable from outside the domain
+	- `DateTime` used instead of `DateTimeOffset` for timestamps
 	- Place EF config classes outside /Configurations folder
 	- Use EF data annotations on domain entity classes
 	- Put mapping logic directly in `DbContext.OnModelCreating`
@@ -287,6 +344,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Anti-patterns
 - Scattering VO or rule classes across arbitrary folders in Domain
@@ -300,6 +358,15 @@ __Applied solutions:__
 - Defining entities in Application or Interfaces — entities belong in Domain only
 - `Guid` with `public set` — application code must never modify it
 - `Guid` used in domain method logic — it is a correlation handle only
+- Inconsistent timestamp mappings across entities
+- Nullable timestamp columns
+- Using `DateTime` instead of `DateTimeOffset`
+- Inconsistent timestamp mappings across entities
+- Nullable timestamp columns
+- Using `DateTime` instead of `DateTimeOffset`
+- Inconsistent timestamp mappings across entities
+- Nullable timestamp columns
+- Using `DateTime` instead of `DateTimeOffset`
 - `HasDefaultValue` or `HasComputedColumnSql` used on `Version` — `xmin` is managed entirely by PostgreSQL
 - Annotating domain entity with `[Column]`, `[Index]`, `[ForeignKey]` — all mapping belongs in config class
 - Registering configs manually one by one in DbContext — use `ApplyConfigurationsFromAssembly`
@@ -319,6 +386,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
 # Check list
 - [ ] /ValueObjects folder exists in {Module}.Domain
@@ -339,6 +407,12 @@ __Applied solutions:__
 - [ ] Every mutable entity implements `IVersioned`
 - [ ] Every mutable entity config class declares `VersionedEntityName`
 - [ ] `Version` mapped to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()` in entity configuration
+- [ ] `Internal Immutable` entities have no timestamp interfaces or columns
+- [ ] `External Immutable` entities implement `ICreationInfoModel` and map creation timestamps only
+- [ ] `Internal Mutable` and `External Mutable` entities implement both timestamp interfaces and map creation and update timestamps
+- [ ] Timestamp properties use `DateTimeOffset` with `internal set`
+- [ ] Mutable interface setters are implemented explicitly
+- [ ] Timestamp columns are mapped as required in entity configuration
 - [ ] /Configurations folder exists in {Module}.Domain
 - [ ] One config class per entity
 - [ ] No EF attributes on any entity class in this module
@@ -359,3 +433,5 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
+

@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IEntityVersionResolver.cs.create.md|IEntityVersionResolver.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Single method: `GetCurrentVersionForAsync(int id, CancellationToken) -> Task<int>`
 - Returns `0` when the entity does not exist — `ConcurrencyBehavior` returns `Result.NotFound`

@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md|IReadRepository.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - All read methods are inherited from `IReadRepositoryBase<T>` — no custom signatures needed
 - The interface exists so that Application layers depend on our contract, not directly on Ardalis

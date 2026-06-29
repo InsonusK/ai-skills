@@ -8,7 +8,7 @@ change_kind: create
 - Be the single composition root — wire all modules, infrastructure, pipeline behaviors, and DI registrations together
 - Be the only project that knows about all other projects simultaneously
 
-# Core Principals
+# Core Principles
 - App.Host is the only composition root — it wires everything together
 - App.Host references BuildingBlocks directly; Shared is consumed transitively through BuildingBlocks
 - App.Host contains no business logic — only wiring

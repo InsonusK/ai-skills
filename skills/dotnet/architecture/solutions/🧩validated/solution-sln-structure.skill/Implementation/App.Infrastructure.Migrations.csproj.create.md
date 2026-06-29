@@ -8,7 +8,7 @@ change_kind: create
 # Goals
 - Keep EF Core migrations in a separate project from App.Infrastructure
 
-# Core Principals
+# Core Principles
 - Migrations are the only code that directly references DbContext for schema changes
 - This project is referenced only by App.Host at startup
 

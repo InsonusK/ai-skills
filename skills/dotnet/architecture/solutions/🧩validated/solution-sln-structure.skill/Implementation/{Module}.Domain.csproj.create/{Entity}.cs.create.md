@@ -12,7 +12,7 @@ change_kind: create
 - Ensure every entity is assigned to exactly one type so the correct set of patterns is applied
 - Prevent invalid state by enforcing that all entity properties are accessible only through controlled access modifiers
 
-# Core Principals
+# Core Principles
 - Entity has stable identity — `int Id` is always the system primary identity
 - Entity has mutable state — unlike Value Objects, state changes over time
 - Entity encapsulates behavior — state changes happen through methods, not direct property assignment from outside

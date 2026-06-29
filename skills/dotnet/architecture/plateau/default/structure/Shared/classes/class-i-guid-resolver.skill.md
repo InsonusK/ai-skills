@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md|IGuidResolver.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Generic on `TResponse` — matches the command's response type exactly
 - Returns `TResponse?` — null means Guid not found (first request), non-null means already exists (retry)

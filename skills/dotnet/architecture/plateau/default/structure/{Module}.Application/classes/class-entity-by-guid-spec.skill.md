@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Single-condition spec — filters by `Guid` property only
 - Lives in `{Module}.Application/Specifications` — reusable across resolver and any feature that needs Guid lookup

@@ -10,7 +10,7 @@ change_kind: create
 - Centralise repository DI registration in one extension method called from the composition root
 - Register open generics for both `IRepository<>` and `IReadRepository<>` pointing to `Repository<>`
 
-# Core Principals
+# Core Principles
 - Open generic registration eliminates per-entity DI configuration
 - `Scoped` lifetime ensures repositories share the same DbContext instance within a request
 

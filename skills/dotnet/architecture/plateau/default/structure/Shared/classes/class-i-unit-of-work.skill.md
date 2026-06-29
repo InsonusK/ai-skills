@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md|IUnitOfWork.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Single method only: `SaveChangesAsync(CancellationToken)` — nothing else
 - Implementation in App.Infrastructure — Shared holds only the interface

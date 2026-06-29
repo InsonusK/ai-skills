@@ -37,14 +37,14 @@ __Applied solutions:__
 - [[Solution link]] - [[Project.template.md link]]
 ```
 
-# Core Principals
+# Core Principles
 ```hint
-Define List of Core Principals that are pursued by the creation of this skill. Summarize all Core Principals from all finded Project.template.md.
+Define List of Core Principles that are pursued by the creation of this skill. Summarize all Core Principles from all finded Project.template.md.
 
 At the end of block writes list to all used templates to build block.
 
 MUST:
-- If Core Principals conflicted to each other as user to solve the problem
+- If Core Principles conflicted to each other as user to solve the problem
 - Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 

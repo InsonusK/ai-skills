@@ -9,7 +9,7 @@ change_kind: create
 - Store all entity types for this bounded context
 - Own the business logic and invariant enforcement for all entities in this module
 
-# Core Principals
+# Core Principles
 - Domain is the innermost layer — pure business logic, no infrastructure dependencies
 - Domain has no knowledge of other modules
 - All entities live in /{Module}.Domain/Entities

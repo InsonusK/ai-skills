@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Dictionary structure: entity name string → (entity Id → expected version)
 - Supports multi-entity updates — a single command can carry versions for multiple entities

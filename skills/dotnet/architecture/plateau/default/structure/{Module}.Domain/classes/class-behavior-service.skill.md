@@ -20,7 +20,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md|{Behavior}Service.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Implemented as a `static class` with extension methods on the entity type
 - Stateless and side-effect free aside from invoking entity mutation methods

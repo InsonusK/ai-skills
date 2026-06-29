@@ -3,7 +3,7 @@ name: csproj-module-application
 description: Orchestrate use cases by connecting the API contract to the domain model
 domain: skill
 type: template
-version: 20260629210700
+version: 20260629223200
 plateau: default
 tags:
   - skill/template/csproj
@@ -17,6 +17,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
@@ -37,6 +38,12 @@ created_by:
 - Self-register all handlers and validators via assembly scan
 - Own all property validators for `Soft{ValueObject}` types in `/Validators`
 - Own all validators for public DTOs declared in `{Module}.Interfaces` in `/Validators`
+- Command handlers for timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` through the mutable timestamp interface
+- Per-command validators for timestamped commands validate `ActionTimeStamp` is present and not in the future
+- Command handlers for timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` through the mutable timestamp interface
+- Per-command validators for timestamped commands validate `ActionTimeStamp` is present and not in the future
+- Command handlers for timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` through the mutable timestamp interface
+- Per-command validators for timestamped commands validate `ActionTimeStamp` is present and not in the future
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]]
@@ -47,8 +54,9 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - Application coordinates — it never contains business logic
 - Application knows its own Domain and its own Interfaces
 - Application may reference other modules' Interfaces for cross-module dispatch
@@ -69,6 +77,8 @@ __Applied solutions:__
 - Each module exposes one `Register{ModuleName}Module()` extension method
 - Pipeline behaviors are NOT registered here — that is App.Host's responsibility
 - Property validators and DTO validators are registered through the existing FluentValidation assembly scan
+- Command handlers assign user timestamps after the domain call and before staging the entity; server timestamps are assigned by `AppDbContext.OnBeforeSaving`
+- Per-command validators reject `default(DateTimeOffset)` and future `ActionTimeStamp` values
 - Each versioned entity has a dedicated `{Entity}VersionResolver` class in `{Module}.Application/Concurrency`
 - Resolvers use the module's `{Entity}ByIdSpec` and `IReadRepository<{Entity}>` from Shared
 - Resolver's `VersionedEntityName` constant matches the Domain config constant exactly
@@ -82,6 +92,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Structure
 
@@ -131,6 +142,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## Directory and class skills
 | `Directory \| file`                     | Description                                                                            | Pattern skill                                                                                                                                                                  |
@@ -159,6 +171,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -181,6 +194,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Business logic — belongs to Domain
@@ -196,6 +210,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 ## Allowed Dependencies
 - {Module}.Interfaces (own module)
@@ -222,6 +237,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Rules
 MUST:
@@ -247,6 +263,8 @@ MUST:
 	- Handler class named `{FeatureName}Handler`
 	- Validator file named `{FeatureName}.Validator.cs`
 	- Validator class named `{FeatureName}Validator`
+	- Create and update handlers for timestamped entities assign user timestamps via `ICreationInfoModel` / `IUpdateInfoModel` cast
+	- Validators for timestamped commands check `ActionTimeStamp` is not empty and not in the future
 	- Module exposes `Register{ModuleName}Module(IServiceCollection, IConfiguration)` extension method
 	- Handlers registered via `AddMediatR` assembly scan
 	- Validators registered via `AddValidatorsFromAssembly`
@@ -270,6 +288,8 @@ MUST NOT:
 	- Handler reference `DbContext` directly — use `IRepository<T>` from Shared
 	- Validator inject repositories or services — purely declarative
 	- Validator contain business rules
+	- Handler assign server timestamps
+	- Handler validate `ActionTimeStamp`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]]
@@ -280,6 +300,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Anti-patterns
 - Calling another module's Application method directly — use MediatR dispatch through Interfaces
@@ -295,6 +316,15 @@ __Applied solutions:__
 - Manual handler registration: `services.AddTransient<CreateTaskHandler>()` — use assembly scan
 - Business rule in handler or validator
 - Validator placed outside its feature folder
+- Assigning user timestamps before the domain call
+- Forgetting the explicit interface cast when setting timestamps
+- Setting `UserCreatedDateTime` on an update or `UserUpdatedDateTime` on an `External Immutable` create
+- Assigning user timestamps before the domain call
+- Forgetting the explicit interface cast when setting timestamps
+- Setting `UserCreatedDateTime` on an update or `UserUpdatedDateTime` on an `External Immutable` create
+- Assigning user timestamps before the domain call
+- Forgetting the explicit interface cast when setting timestamps
+- Setting `UserCreatedDateTime` on an update or `UserUpdatedDateTime` on an `External Immutable` create
 - Property or DTO validator placed outside `/Validators`
 - Referencing another module's `{Module}.Application` to instantiate a concrete validator
 
@@ -307,6 +337,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 
 # Check list
 - [ ] Application.csproj does not reference another module's Domain or Application
@@ -339,6 +370,15 @@ __Applied solutions:__
 - [ ] `{Module}ApplicationRegistration.cs` exists
 - [ ] Handlers registered via `AddMediatR` scan
 - [ ] Validators registered via `AddValidatorsFromAssembly` scan
+- [ ] Create and update handlers for timestamped entities assign user timestamps via explicit interface cast
+- [ ] Validators for timestamped commands reject default and future `ActionTimeStamp`
+- [ ] Server timestamps are not assigned in handlers
+- [ ] Create and update handlers for timestamped entities assign user timestamps via explicit interface cast
+- [ ] Validators for timestamped commands reject default and future `ActionTimeStamp`
+- [ ] Server timestamps are not assigned in handlers
+- [ ] Create and update handlers for timestamped entities assign user timestamps via explicit interface cast
+- [ ] Validators for timestamped commands reject default and future `ActionTimeStamp`
+- [ ] Server timestamps are not assigned in handlers
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]]
@@ -349,3 +389,5 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj.extend]]
+

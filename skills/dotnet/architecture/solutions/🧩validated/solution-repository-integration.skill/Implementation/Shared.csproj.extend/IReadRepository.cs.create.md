@@ -10,7 +10,7 @@ change_kind: create
 - Provide a read-only data access contract for query handlers and idempotency checks
 - Signal read intent at the type level
 
-# Core Principals
+# Core Principles
 - All read methods are inherited from `IReadRepositoryBase<T>` — no custom signatures needed
 - The interface exists so that Application layers depend on our contract, not directly on Ardalis
 

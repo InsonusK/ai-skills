@@ -9,7 +9,7 @@ change_kind: create
 - Provide cross-module read model handlers that require JOIN queries across module boundaries
 - Be the only place where cross-module database joins are intentional and correct
 
-# Core Principals
+# Core Principles
 - App.Queries has direct DbContext access for cross-module JOINs
 - Single-module queries belong in module Application — not here
 - App.Queries implements query handlers declared in module Interfaces

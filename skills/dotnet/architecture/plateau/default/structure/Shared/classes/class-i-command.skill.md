@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Interface only — no properties, no methods
 - `ICommand<TResponse>` is the standard form — almost all commands return `Result<T>`

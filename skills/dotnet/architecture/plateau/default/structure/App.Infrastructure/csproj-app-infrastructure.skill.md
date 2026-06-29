@@ -3,7 +3,7 @@ name: csproj-app-infrastructure
 description: Provide all persistence implementation — DbContext, repository implementations, outbox interceptor, background dispatcher
 domain: skill
 type: template
-version: 20260622
+version: 20260629223200
 plateau: default
 tags:
   - skill/template/csproj
@@ -14,6 +14,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
@@ -26,6 +27,7 @@ created_by:
 - Discover versioned entities from Domain config classes and resolver implementations from Application assemblies
 - Host cross-module foreign key configurations that span multiple bounded contexts
 - Register all module entity configurations via `ApplyConfigurationsFromAssembly` in AppDbContext
+- Ensure `AppDbContext` assigns authoritative server timestamps in `OnBeforeSaving` for both synchronous and asynchronous save paths
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
@@ -33,8 +35,9 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - `UnitOfWork` delegates directly to `AppDbContext.SaveChangesAsync` — no additional logic
 - Registered as `Scoped` — shares the same `DbContext` instance as `Repository<T>`
 - App.Infrastructure is the only project with a concrete DbContext
@@ -51,6 +54,12 @@ __Applied solutions:__
 - App.Infrastructure is the only place where cross-module foreign key relationships are configured
 - DbContext uses `ApplyConfigurationsFromAssembly` to automatically discover all `IEntityTypeConfiguration<T>` implementations from module Domain assemblies
 - App.Infrastructure references all module Domain projects to access entities for cross-module configuration
+- Server timestamps are assigned by `AppDbContext.OnBeforeSaving` using `DateTimeOffset.UtcNow`
+- Only `Added` `ICreationInfoModel` entries receive `ServerCreatedDateTime`; only `Added` or `Modified` `IUpdateInfoModel` entries receive `ServerUpdatedDateTime`
+- Server timestamps are assigned by `AppDbContext.OnBeforeSaving` using `DateTimeOffset.UtcNow`
+- Only `Added` `ICreationInfoModel` entries receive `ServerCreatedDateTime`; only `Added` or `Modified` `IUpdateInfoModel` entries receive `ServerUpdatedDateTime`
+- Server timestamps are assigned by `AppDbContext.OnBeforeSaving` using `DateTimeOffset.UtcNow`
+- Only `Added` `ICreationInfoModel` entries receive `ServerCreatedDateTime`; only `Added` or `Modified` `IUpdateInfoModel` entries receive `ServerUpdatedDateTime`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
@@ -58,6 +67,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 # Structure
 
@@ -91,6 +101,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
@@ -112,6 +123,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -126,6 +138,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Business logic — belongs to Domain
@@ -141,6 +154,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 ## Allowed Dependencies
 - Shared
@@ -159,6 +173,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 # Rules
 MUST:
@@ -180,6 +195,18 @@ MUST:
 - Build the resolver-type map only once (static, lazy, thread-safe)
 	- Register all configurations via `ApplyConfigurationsFromAssembly` scanning all module Domain assemblies in DbContext
 	- Place cross-module foreign key configurations in `/Persistence/Configurations`
+	- Override `SaveChanges()` and `SaveChangesAsync(CancellationToken)` in `AppDbContext` and call `OnBeforeSaving()` before delegating to base
+	- Set `ServerCreatedDateTime` for `Added` entries implementing `ICreationInfoModel`
+	- Set `ServerUpdatedDateTime` for `Added` or `Modified` entries implementing `IUpdateInfoModel`
+	- Use `DateTimeOffset.UtcNow` for server timestamps
+	- Override `SaveChanges()` and `SaveChangesAsync(CancellationToken)` in `AppDbContext` and call `OnBeforeSaving()` before delegating to base
+	- Set `ServerCreatedDateTime` for `Added` entries implementing `ICreationInfoModel`
+	- Set `ServerUpdatedDateTime` for `Added` or `Modified` entries implementing `IUpdateInfoModel`
+	- Use `DateTimeOffset.UtcNow` for server timestamps
+	- Override `SaveChanges()` and `SaveChangesAsync(CancellationToken)` in `AppDbContext` and call `OnBeforeSaving()` before delegating to base
+	- Set `ServerCreatedDateTime` for `Added` entries implementing `ICreationInfoModel`
+	- Set `ServerUpdatedDateTime` for `Added` or `Modified` entries implementing `IUpdateInfoModel`
+	- Use `DateTimeOffset.UtcNow` for server timestamps
 MUST NOT:
 	- `UnitOfWork` expose any method beyond `SaveChangesAsync`
 	- `UnitOfWork` contain transaction management logic — EF manages transactions implicitly
@@ -192,6 +219,15 @@ MUST NOT:
 	- Define intra-module entity configurations here — those belong in `{Module}.Domain/Configurations`
 	- Register configurations manually one by one in `OnModelCreating`
 	- Reference BuildingBlocks directly
+	- Set user timestamps in `AppDbContext`
+	- Assign server timestamps outside `AppDbContext`
+	- Use `DateTime` or `DateTime.Now` for server timestamps
+	- Set user timestamps in `AppDbContext`
+	- Assign server timestamps outside `AppDbContext`
+	- Use `DateTime` or `DateTime.Now` for server timestamps
+	- Set user timestamps in `AppDbContext`
+	- Assign server timestamps outside `AppDbContext`
+	- Use `DateTime` or `DateTime.Now` for server timestamps
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
@@ -199,6 +235,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 # Anti-patterns
 - `UnitOfWork` containing retry logic — belongs in a decorator or policy, not the UoW
@@ -213,6 +250,12 @@ __Applied solutions:__
 - Putting `VersionedEntityName` on the entity class instead of the config — spreads configuration across the domain
 - Putting module-internal entity configuration in App.Infrastructure — violates separation of concerns
 - Manually registering each config class in `OnModelCreating` instead of using assembly scan
+- Overriding only `SaveChangesAsync` and forgetting the synchronous path
+- Assigning server timestamps in handlers or behaviors
+- Overriding only `SaveChangesAsync` and forgetting the synchronous path
+- Assigning server timestamps in handlers or behaviors
+- Overriding only `SaveChangesAsync` and forgetting the synchronous path
+- Assigning server timestamps in handlers or behaviors
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
@@ -220,6 +263,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 
 # Check list
 - [ ] `UnitOfWork` implemented in `App.Infrastructure/UnitOfWork/UnitOfWork.cs`
@@ -245,6 +289,21 @@ __Applied solutions:__
 - [ ] DbContext uses `ApplyConfigurationsFromAssembly` on all module Domain assemblies
 - [ ] Cross-module FK configs live in `/Persistence/Configurations`
 - [ ] No intra-module entity config placed in App.Infrastructure
+- [ ] `AppDbContext` overrides `SaveChanges()` and `SaveChangesAsync()`
+- [ ] Both overrides call `OnBeforeSaving()` before base save
+- [ ] `OnBeforeSaving()` sets `ServerCreatedDateTime` for added `ICreationInfoModel` entries
+- [ ] `OnBeforeSaving()` sets `ServerUpdatedDateTime` for added/modified `IUpdateInfoModel` entries
+- [ ] Server timestamps use `DateTimeOffset.UtcNow`
+- [ ] `AppDbContext` overrides `SaveChanges()` and `SaveChangesAsync()`
+- [ ] Both overrides call `OnBeforeSaving()` before base save
+- [ ] `OnBeforeSaving()` sets `ServerCreatedDateTime` for added `ICreationInfoModel` entries
+- [ ] `OnBeforeSaving()` sets `ServerUpdatedDateTime` for added/modified `IUpdateInfoModel` entries
+- [ ] Server timestamps use `DateTimeOffset.UtcNow`
+- [ ] `AppDbContext` overrides `SaveChanges()` and `SaveChangesAsync()`
+- [ ] Both overrides call `OnBeforeSaving()` before base save
+- [ ] `OnBeforeSaving()` sets `ServerCreatedDateTime` for added `ICreationInfoModel` entries
+- [ ] `OnBeforeSaving()` sets `ServerUpdatedDateTime` for added/modified `IUpdateInfoModel` entries
+- [ ] Server timestamps use `DateTimeOffset.UtcNow`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
@@ -252,3 +311,5 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj.extend]]
+

@@ -48,7 +48,7 @@ adr:
 - Other modules can validate DTOs by resolving `IValidator<{Dto}>` from DI
 - Domain Value Object remains the authoritative, self-enforcing invariant holder
 
-# Core Principals
+# Core Principles
 - Each `{Module}.Domain.ValueObjects.{ValueObject}` inherits from `{Module}.Interfaces.ValueObjects.Soft{ValueObject}`
 - Each public DTO in `{Module}.Interfaces` has a matching FluentValidation validator in `{Module}.Application.Validators`
 - Each `Soft{ValueObject}` has a matching `{ValueObject}PropertyValidator` in `{Module}.Application.Validators`

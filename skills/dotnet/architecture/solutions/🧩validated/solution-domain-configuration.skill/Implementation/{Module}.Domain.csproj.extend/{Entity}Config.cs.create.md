@@ -12,7 +12,7 @@ change_kind: create
 - Ensure index and constraint names are constants so they can be referenced in tests and error handling
 - Define one EF Core configuration class per entity that owns all persistence concerns
 
-# Core Principals
+# Core Principles
 - One `IEntityTypeConfiguration<T>` per entity — no exceptions
 - Configuration class owns all persistence concerns — entity owns all domain concerns
 - `TableName`, index, and constraint names are `public const string` constants on the config class

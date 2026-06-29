@@ -3,7 +3,7 @@ name: sln-default
 description: Default plateau — full solution architecture composed from all validated v3 architecture solutions
 domain: skill
 type: template
-version: 20260627
+version: 20260629223200
 plateau: default
 tags:
   - skill/template/sln
@@ -14,6 +14,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Structure
@@ -41,6 +42,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 ## Directory and class skills
 | `Directory\|file`              | template link                                                                                                                                                                                 | Description                                                    |
@@ -59,6 +61,7 @@ __Applied solutions:__
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Goal
 
@@ -66,10 +69,12 @@ __Applied solutions:__
 - Map each entity type to the exact subset of `solution-entity-concurrency-change.skill` and `solution-external-created-entity.skill` that must be implemented.
 - Prevent over-engineering by forbidding concurrency control on immutable entities and forbidding external-created infrastructure on internal entities.
 - Ensure that mutable and/or externally-created entities receive all required infrastructure consistently across every module.
+- Ensure timestamped entities receive the correct creation and/or update timestamp contracts based on classification.
 - Make the classification decision explicit and reviewable for every entity before implementation begins.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Core Principles
 
@@ -86,22 +91,26 @@ __Applied solutions:__
 - Internal identity (`int Id`) is always the primary domain identity, regardless of whether an external `Guid` is also present.
 - Concurrency control (`Version`, `IVersioned`, `ConcurrencyBehavior`) is only meaningful for entities that can change state.
 - External-created infrastructure (`Guid`, `IHasGuid`, `GuidResolvingBehavior`) is only meaningful for entities whose creation is initiated outside the system.
+- Timestamp infrastructure (`ICreationInfoModel`, `IUpdateInfoModel`, `ICommandWithTimestamp`) is applied to user-initiated entities based on mutability: creation-only for immutable entities, creation and update for mutable entities.
+- Internal Immutable entities have no timestamp interfaces because they are not user-initiated creation points in this architecture.
 - The classification decision must be documented and treated as an architecture decision for every entity.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Entity Type Matrix
 
-| Type | Ownership | Mutability | `entity-concurrency-change` | `external-created-entity` |
-|---|---|---|---|---|
-| **Internal Immutable** | Internal | Immutable | DO NOT implement | DO NOT implement |
-| **External Immutable** | External | Immutable | DO NOT implement | Implement |
-| **Internal Mutable** | Internal | Mutable | Implement | DO NOT implement |
-| **External Mutable** | External | Mutable | Implement | Implement |
+| Type | Ownership | Mutability | `entity-concurrency-change` | `external-created-entity` | `entity-edit-timestamp` |
+|---|---|---|---|---|---|
+| **Internal Immutable** | Internal | Immutable | DO NOT implement | DO NOT implement | DO NOT implement |
+| **External Immutable** | External | Immutable | DO NOT implement | Implement | Implement creation only |
+| **Internal Mutable** | Internal | Mutable | Implement | DO NOT implement | Implement creation + update |
+| **External Mutable** | External | Mutable | Implement | Implement | Implement creation + update |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Requirements
 
@@ -121,11 +130,19 @@ SOLUTION:
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - provides `Guid` property and unique index configuration.
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - provides `{Entity}ByGuidSpec` and `Create{Entity}GuidResolver`.
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - provides `IHasGuid` for create commands of external entities.
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp.skill]]
+  - Applied to **External Immutable**, **Internal Mutable**, and **External Mutable** entities.
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `ICreationInfoModel`, `IUpdateInfoModel`, and `ICommandWithTimestamp` contracts.
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - adds timestamp properties and explicit interface implementation.
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - adds `ICommandWithTimestamp` to create/update commands.
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - validates `ActionTimeStamp` and assigns user timestamps in handlers.
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md|App.Infrastructure.csproj]] - assigns server timestamps in `AppDbContext.OnBeforeSaving`.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Rules
 
@@ -135,30 +152,38 @@ MUST:
   - Have only the internal `int Id` identity.
   - Do not have a `Version` property or implement `IVersioned`.
   - Do not have a `Guid` property or implement `IHasGuid`.
-  - Do not apply `solution-entity-concurrency-change.skill` or `solution-external-created-entity.skill`.
+  - Do not implement timestamp interfaces and do not map timestamp columns.
+  - Do not apply `solution-entity-concurrency-change.skill`, `solution-external-created-entity.skill`, or `solution-entity-edit-timestamp.skill`.
 - **External Immutable** entities:
   - Have `public Guid Guid { get; internal set; }` set once in the factory method.
   - Have a unique database index on `Guid`.
   - Implement `solution-external-created-entity.skill` fully.
+  - Implement `ICreationInfoModel`; map `ServerCreatedDateTime` and `UserCreatedDateTime` as required columns.
   - Do not have a `Version` property or implement `IVersioned`.
   - Do not apply `solution-entity-concurrency-change.skill`.
+  - Do not map update timestamps.
 - **Internal Mutable** entities:
   - Have `public uint Version { get; internal set; }` mapped to PostgreSQL `xmin`.
   - Implement `IVersioned`.
   - Update and patch commands implement `IHasVersions`.
   - Implement `solution-entity-concurrency-change.skill` fully.
+  - Implement `ICreationInfoModel` and `IUpdateInfoModel`; map all four timestamp columns as required.
+  - Create and update commands implement `ICommandWithTimestamp`.
   - Do not have a `Guid` property or implement `IHasGuid`.
   - Do not apply `solution-external-created-entity.skill`.
 - **External Mutable** entities:
   - Have both `public Guid Guid { get; internal set; }` and `public uint Version { get; internal set; }`.
   - Implement both `IVersioned` and `IHasGuid` where applicable.
   - Apply both `solution-entity-concurrency-change.skill` and `solution-external-created-entity.skill` fully.
+  - Implement `ICreationInfoModel` and `IUpdateInfoModel`; map all four timestamp columns as required.
+  - Create and update commands implement `ICommandWithTimestamp`.
 - Document the classification decision for every entity in a discoverable location (e.g., entity config XML comment, module ADR, or team wiki).
 - Re-evaluate classification when the entity's ownership or mutability requirements change.
 
 MUST NOT:
 - Apply `solution-entity-concurrency-change.skill` to immutable entities.
 - Apply `solution-external-created-entity.skill` to internal entities.
+- Apply `solution-entity-edit-timestamp.skill` to `Internal Immutable` entities or omit update timestamps from mutable entities.
 - Apply a dependency solution partially or omit required parts for a classified type.
 - Use `Guid` as the primary domain identity or foreign key for internal entities.
 - Use `Version` / `IVersioned` for entities that never change after creation.
@@ -172,6 +197,7 @@ SHOULD:
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Anti-patterns
 
@@ -179,12 +205,15 @@ __Applied solutions:__
 - Adding `Guid` and unique-index infrastructure to an entity whose creation is fully backend-driven — leaks external identity concepts into internal flows.
 - Applying `GuidResolvingBehavior` without `IHasGuid` on commands, or vice versa.
 - Applying `ConcurrencyBehavior` to create/delete commands or to commands that target immutable entities.
+- Mapping timestamp columns on `Internal Immutable` entities.
+- Mapping update timestamps on `External Immutable` entities.
 - Classifying an aggregate root as mutable while its child entities are immutable, then applying mutable-entity infrastructure to the children.
 - Using the external `Guid` in routing, relationships, or domain logic after creation.
 - Documenting classification only in transient places (chat, PR comments) instead of alongside the entity definition.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Check list
 
@@ -193,6 +222,9 @@ __Applied solutions:__
 - [ ] External Immutable entities have `Guid` and unique index, and implement `solution-external-created-entity.skill` only.
 - [ ] Internal Mutable entities have `Version`, `IVersioned`, and implement `solution-entity-concurrency-change.skill` only.
 - [ ] External Mutable entities have both `Version` and `Guid`, and implement both dependency solutions.
+- [ ] External Immutable entities implement `ICreationInfoModel` and map creation timestamps only.
+- [ ] Internal Mutable and External Mutable entities implement `ICreationInfoModel` and `IUpdateInfoModel`, map all four timestamps, and commands implement `ICommandWithTimestamp`.
+- [ ] Internal Immutable entities have no timestamp interfaces or columns.
 - [ ] Create commands for external entities implement `IHasGuid`.
 - [ ] Update/patch commands for mutable entities implement `IHasVersions`.
 - [ ] Classification is stored in a discoverable location for each entity.
@@ -200,6 +232,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
 
 # Unittest TestCases
 
@@ -207,8 +240,13 @@ __Applied solutions:__
 - [ ] When entity is classified as External Immutable Then it has `Guid` property, unique index, and `IHasGuid` on create command, but no `Version` property.
 - [ ] When entity is classified as Internal Mutable Then it has `Version` property, implements `IVersioned`, and update command implements `IHasVersions`, but no `Guid` property.
 - [ ] When entity is classified as External Mutable Then it has both `Version` and `Guid` properties, and both create and update commands carry the required markers.
+- [ ] When entity is classified as Internal Immutable Then it has no timestamp interfaces or columns.
+- [ ] When entity is classified as External Immutable Then it implements `ICreationInfoModel` and maps creation timestamps only.
+- [ ] When entity is classified as Internal Mutable or External Mutable Then it implements both timestamp interfaces and commands carry `ICommandWithTimestamp`.
 - [ ] When an immutable entity is inspected Then `ConcurrencyBehavior` is not registered for its create command.
 - [ ] When an internal entity create command is inspected Then `GuidResolvingBehavior` does not constrain it.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]
+

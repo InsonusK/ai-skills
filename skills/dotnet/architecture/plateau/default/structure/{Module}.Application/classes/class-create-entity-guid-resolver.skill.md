@@ -20,7 +20,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Implements `IGuidResolver<Result<Create{Entity}Result>>` from Shared
 - Injects `IReadRepository<T>` from Shared — read-only lookup

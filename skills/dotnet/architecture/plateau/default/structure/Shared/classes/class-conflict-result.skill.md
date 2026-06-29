@@ -20,7 +20,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/ConflictResult.cs.create.md|ConflictResult.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Lives in `Shared` so both `{Module}.Application` resolvers and BuildingBlocks behavior can reference it
 - Inherits from `Ardalis.Result.Result<T>` — fully compatible with existing result-based controllers and mapping

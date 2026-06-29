@@ -23,7 +23,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Queries.csproj.create|App.Queries.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend.md|App.Queries.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - App.Queries has direct DbContext access for cross-module JOINs
 - Single-module queries belong in module Application — not here
 - App.Queries implements query handlers declared in module Interfaces

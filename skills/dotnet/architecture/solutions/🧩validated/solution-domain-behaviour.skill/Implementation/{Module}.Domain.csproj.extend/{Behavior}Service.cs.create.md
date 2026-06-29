@@ -11,7 +11,7 @@ change_kind: create
 - Keep entity classes small and readable without losing invariant enforcement
 - Provide a stateless, side-effect free place for complex calculations that still mutate entity state only through guarded entity methods or setters
 
-# Core Principals
+# Core Principles
 - Implemented as a `static class` with extension methods on the entity type
 - Stateless and side-effect free aside from invoking entity mutation methods
 - Delegates all validation to existing domain rules from `{Module}.Domain/Rules`

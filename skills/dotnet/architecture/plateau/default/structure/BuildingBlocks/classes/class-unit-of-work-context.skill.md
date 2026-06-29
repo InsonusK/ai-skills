@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md|UnitOfWorkContext.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Plain class — no interfaces, no base classes, no infrastructure dependencies
 - Thread-safe depth counter — `Enter()` and `Leave()` mutate `_depth` via `Interlocked`, `Depth` is read-only

@@ -11,7 +11,7 @@ change_kind: extend
 - Keep Application layer decoupled from DbContext and Infrastructure
 - Store all specifications for this module in Application — simple, multi-condition, projection, and idempotency
 
-# Core Principals
+# Core Principles
 - Command handlers inject `IRepository<T>` — they may read and stage changes
 - Query handlers inject `IReadRepository<T>` — they only read, signaling intent
 - No handler references `AppDbContext` or `App.Infrastructure` directly

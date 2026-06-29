@@ -9,7 +9,7 @@ change_kind: create
 - Provide all persistence implementation — DbContext, repository implementations, outbox interceptor, background dispatcher
 - Be the only layer that knows EF Core implementation details
 
-# Core Principals
+# Core Principles
 - App.Infrastructure is the only project with a concrete DbContext
 - App.Infrastructure implements interfaces defined in Shared
 - No module Application or Domain layer references App.Infrastructure

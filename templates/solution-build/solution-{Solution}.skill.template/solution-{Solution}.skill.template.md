@@ -68,12 +68,12 @@ RECOMENDATION:
 - low boundeed between application modules
 ```
 
-# Core Principals
+# Core Principles
 ```hint
-Core principalse that a solution should follow
+Core principlese that a solution should follow
 RECOMENDATION:
 - Prefer bullet list
-- Group principals by logical sense
+- Group principles by logical sense
 ```
 ```example
 - Rules define business predicates

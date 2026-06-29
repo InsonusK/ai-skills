@@ -18,7 +18,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Infrastructure.Migrations.csproj.create|App.Infrastructure.Migrations.csproj]]
 
-# Core Principals
+# Core Principles
 - Migrations are the only code that directly references DbContext for schema changes
 - This project is referenced only by App.Host at startup
 

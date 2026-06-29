@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create/ModuleRegistration.cs.create|ModuleRegistration.cs]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - One `AddModules` extension per App.Host
 - Each module's `Register{ModuleName}Module(configuration)` is called inside this method

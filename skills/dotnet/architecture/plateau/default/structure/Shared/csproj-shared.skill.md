@@ -3,7 +3,7 @@ name: csproj-shared
 description: Define common cross-cutting interfaces and primitives that every layer can safely depend on without creating coupling
 domain: skill
 type: template
-version: 20260622
+version: 20260629223200
 plateau: default
 tags:
   - skill/template/csproj
@@ -17,6 +17,7 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
@@ -38,6 +39,8 @@ created_by:
 - Provide `IEntityVersionResolverFactory` and `IEntityVersionResolver` so the pipeline behavior can check versions without knowing entity types
 - Make the `ICommand` marker available to every layer without coupling to BuildingBlocks
 - Enable MediatR routing and pipeline behavior constraints for write operations
+- Own `ICreationInfoModelReadOnly`, `ICreationInfoModel`, `IUpdateInfoModelReadOnly`, and `IUpdateInfoModel` — timestamp contracts used by entities, handlers, and `AppDbContext`
+- Own `ICommandWithTimestamp` — the marker carried by create/update commands for timestamped entities
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
@@ -48,8 +51,9 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - Shared contains only cross-cutting primitives — no business logic specific to a single module
 - Any project at any layer may depend on Shared
 - A VO or rule moves to Shared only when at least two modules need it
@@ -73,6 +77,8 @@ __Applied solutions:__
 - `IVersioned` is implemented by mutable entities in module Domain projects
 - `IEntityVersionResolver` is implemented by module Application projects
 - `ICommand<TResponse>` extends MediatR `IRequest<TResponse>` so MediatR can route commands automatically
+- Timestamp contracts live in `Shared.Timestamps`
+- `ICommandWithTimestamp` is independent of MediatR and EF Core
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
@@ -83,6 +89,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Structure
 
@@ -90,7 +97,6 @@ __Applied solutions:__
 ```
 /src/Shared
 ```
-
 
 ## Project Structure
 - /Shared
@@ -124,6 +130,12 @@ __Applied solutions:__
     - [IEntityVersionResolverFactory.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-entity-version-resolver-factory.skill.md)
     - [IEntityVersionResolver.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-entity-version-resolver.skill.md)
     - [IVersioned.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-versioned.skill.md)
+  - /Timestamps
+    - [ICreationInfoModelReadOnly.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-creation-info-model-read-only.skill.md)
+    - [ICreationInfoModel.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-creation-info-model.skill.md)
+    - [IUpdateInfoModelReadOnly.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-update-info-model-read-only.skill.md)
+    - [IUpdateInfoModel.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-update-info-model.skill.md)
+    - [ICommandWithTimestamp.cs](skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-command-with-timestamp.skill.md)
   - Shared.csproj
 
 __Applied solutions:__
@@ -135,6 +147,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
@@ -160,6 +173,12 @@ __Applied solutions:__
 | /Concurrency/IEntityVersionResolverFactory.cs | Factory that resolves an entity name to an `IEntityVersionResolver` | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-entity-version-resolver-factory.skill.md|class-IEntityVersionResolverFactory.skill]] |
 | /Concurrency/IEntityVersionResolver.cs | Reads the current version for one versioned entity | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-entity-version-resolver.skill.md|class-IEntityVersionResolver.skill]] |
 | /Concurrency/IVersioned.cs | Marker interface for versioned domain entities | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-versioned.skill.md|class-IVersioned.skill]] |
+| /Timestamps | Creation/update timestamp contracts and command marker |  |
+| /Timestamps/ICreationInfoModelReadOnly.cs | Read-only creation timestamp contract | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-creation-info-model-read-only.skill.md|class-ICreationInfoModelReadOnly.skill]] |
+| /Timestamps/ICreationInfoModel.cs | Mutable creation timestamp contract implemented by entities | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-creation-info-model.skill.md|class-ICreationInfoModel.skill]] |
+| /Timestamps/IUpdateInfoModelReadOnly.cs | Read-only update timestamp contract | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-update-info-model-read-only.skill.md|class-IUpdateInfoModelReadOnly.skill]] |
+| /Timestamps/IUpdateInfoModel.cs | Mutable update timestamp contract implemented by entities | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-update-info-model.skill.md|class-IUpdateInfoModel.skill]] |
+| /Timestamps/ICommandWithTimestamp.cs | Command marker carrying `ActionTimeStamp` | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-command-with-timestamp.skill.md|class-ICommandWithTimestamp.skill]] |
 | ICommand.cs | Write operation marker interfaces | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-command.skill.md|class-ICommand.skill]] |
 
 __Applied solutions:__
@@ -171,6 +190,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -190,6 +210,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## What Does NOT Belong Here
 - Module-specific Value Objects — belong in respective `{Module}.Domain/ValueObjects`
@@ -209,6 +230,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 ## Allowed Dependencies
 - None — Shared has no project dependencies
@@ -225,6 +247,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Rules
 MUST:
@@ -251,6 +274,9 @@ MUST:
 	- All three types are interfaces or markers only — no implementation code
 	- `ICommand` and `ICommand<TResponse>` placed in `/Shared/MediatR`
 	- Both interfaces extend MediatR `IRequest` / `IRequest<TResponse>`
+	- `ICreationInfoModelReadOnly`, `ICreationInfoModel`, `IUpdateInfoModelReadOnly`, `IUpdateInfoModel`, and `ICommandWithTimestamp` are placed in `/Shared/Timestamps`
+	- Mutable timestamp interfaces re-declare properties with `get; set;` so entities can keep class-level setters `internal`
+	- `ICommandWithTimestamp` declares only `DateTimeOffset ActionTimeStamp { get; }`
 MUST NOT:
 	- Place module-specific VO or rule in Shared
 	- Add project references to Shared.csproj
@@ -268,6 +294,8 @@ MUST NOT:
 	- Shared reference any other project
 	- Add MediatR, EF Core, or JSON serialization dependencies to Shared for these contracts
 	- Place implementations in Shared
+	- Define timestamp contracts outside `Shared.Timestamps`
+	- Add behavior logic to timestamp marker interfaces
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
@@ -278,6 +306,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Anti-patterns
 - Putting every VO/rule in Shared "just in case" — Shared should stay minimal
@@ -308,6 +337,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
 # Check list
 - [ ] /ValueObjects folder exists in Shared
@@ -340,6 +370,12 @@ __Applied solutions:__
 - [ ] `/Shared/MediatR/ICommand.cs` exists
 - [ ] `ICommand` extends `IRequest`
 - [ ] `ICommand<TResponse>` extends `IRequest<TResponse>`
+- [ ] `/Shared/Timestamps` folder exists
+- [ ] `ICreationInfoModelReadOnly` defined in `Shared/Timestamps/ICreationInfoModelReadOnly.cs`
+- [ ] `ICreationInfoModel` defined in `Shared/Timestamps/ICreationInfoModel.cs`
+- [ ] `IUpdateInfoModelReadOnly` defined in `Shared/Timestamps/IUpdateInfoModelReadOnly.cs`
+- [ ] `IUpdateInfoModel` defined in `Shared/Timestamps/IUpdateInfoModel.cs`
+- [ ] `ICommandWithTimestamp` defined in `Shared/Timestamps/ICommandWithTimestamp.cs`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill.md|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
@@ -350,3 +386,5 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
+

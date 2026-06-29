@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ETagEncoder.cs.create.md|ETagEncoder.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Static class — no instance, no DI registration needed
 - Encode: `Dictionary<string, Dictionary<int, uint>>` → base64 JSON string

@@ -11,12 +11,12 @@ created_by:
 # How Apply this template
 - add to header properties `tags` tag `plateau/{plateau-name}`
 
-# Core Principals
+# Core Principles
 ```hint
 Summarise core principles from applied solutions.
 
 MUST:
-- If Core Principals conflicted to each other as user to solve the problem
+- If Core Principles conflicted to each other as user to solve the problem
 - Don't just copy principles, make brief summary
 
 RECOMENDATION:

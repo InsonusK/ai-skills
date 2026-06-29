@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md|ConcurrencyBehavior.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Constrained on `where TRequest : IHasVersions` — only activates for commands that carry versions
 - Gets the correct `IEntityVersionResolver` from `IEntityVersionResolverFactory` per entity name

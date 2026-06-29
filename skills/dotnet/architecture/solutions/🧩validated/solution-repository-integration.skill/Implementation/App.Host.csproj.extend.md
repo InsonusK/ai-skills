@@ -8,7 +8,7 @@ change_kind: extend
 # Goals
 - Wire repository registrations into the application composition root
 
-# Core Principals
+# Core Principles
 - App.Host is the single composition root — all DI registration happens here or via extension methods called from here
 
 # Structure
