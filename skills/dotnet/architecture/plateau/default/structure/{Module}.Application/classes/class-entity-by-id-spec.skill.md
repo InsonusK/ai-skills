@@ -18,7 +18,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md|{Entity}ByIdSpec.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Inherits `Specification<T>` from `Ardalis.Specification`
 - Constructor receives filter parameter and calls `Query.Where(...)`

@@ -11,7 +11,7 @@ change_kind: extend
 - Keep entity validation logic DRY by delegating to reusable domain rules
 - Extract bulky logic to `{Module}.Domain/Services` while keeping the entity as the gatekeeper of state
 
-# Core Principals
+# Core Principles
 - Entity defines consistency — it decides when and how to enforce invariants
 - Entity methods call domain rules to validate state transitions before applying changes
 - Rule returns `bool` — entity decides whether to throw `DomainException`

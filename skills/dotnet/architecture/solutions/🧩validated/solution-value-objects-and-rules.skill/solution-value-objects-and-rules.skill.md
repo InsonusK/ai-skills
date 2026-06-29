@@ -52,7 +52,7 @@ depends_on:
 - Shared location for cross-module Value Objects and rules
 - Signle point of validation rules
 
-# Core Principals
+# Core Principles
 - Semantics belong to types, not primitives — if a primitive carries business meaning, it is a VO
 - Value Object is immutable — no property can change after construction
 - Value Object is self-validating — invalid state cannot exist, constructor throws on violation

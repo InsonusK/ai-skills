@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend/Repository.cs.create.md|Repository.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - `RepositoryBase<T>` internally uses `SpecificationEvaluator` and applies `AsNoTracking` where appropriate
 - Constructor receives `AppDbContext` via DI and forwards it to the Ardalis base

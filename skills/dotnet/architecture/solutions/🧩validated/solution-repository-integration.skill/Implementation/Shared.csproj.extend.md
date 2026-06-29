@@ -9,7 +9,7 @@ create: Shared.csproj
 - Make `Ardalis.Specification` interfaces available to every layer without coupling to EF Core
 - Define `IReadRepository<T>` and `IRepository<T>` as thin wrappers around Ardalis base interfaces
 
-# Core Principals
+# Core Principles
 - Shared has no EF Core dependencies — only the lightweight `Ardalis.Specification` package
 - Interfaces are thin — they inherit all Ardalis methods, adding no new signatures unless required
 - Any layer may depend on Shared safely

@@ -49,7 +49,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - `IUnitOfWork` and `UnitOfWorkContext` share `Scoped` lifetime with `DbContext` and `Repository<T>`
 - App.Host is the only composition root — it wires everything together
 - App.Host references BuildingBlocks directly; Shared is consumed transitively through BuildingBlocks

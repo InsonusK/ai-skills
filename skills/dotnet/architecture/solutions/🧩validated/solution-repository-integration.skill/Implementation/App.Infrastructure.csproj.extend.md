@@ -9,7 +9,7 @@ change_kind: extend
 - Provide the single generic `Repository<T>` EF Core implementation
 - Leverage `RepositoryBase<T>` from Ardalis to eliminate boilerplate spec evaluation code
 
-# Core Principals
+# Core Principles
 - `RepositoryBase<T>` from Ardalis handles all `SpecificationEvaluator` logic internally
 - App.Infrastructure remains the only layer that knows about EF Core implementation details
 - One generic `Repository<T>` class covers all entity types

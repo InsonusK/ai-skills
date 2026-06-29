@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md|CrossModuleQueryHandler.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Implements `IRequestHandler<TQuery, Result<T>>`
 - Injects `AppDbContext` directly — cross-module JOIN cannot be expressed through single-entity `IReadRepository<T>`

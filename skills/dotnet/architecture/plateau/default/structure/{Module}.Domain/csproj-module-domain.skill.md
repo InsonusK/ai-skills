@@ -46,7 +46,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill.md|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - Value Objects define correctness — they encode domain semantics and enforce invariants at construction time
 - Rules define predicates — they encode reusable business conditions without deciding enforcement
 - Entities define consistency — they decide when and how to enforce invariants using VOs and rules

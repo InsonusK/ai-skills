@@ -10,7 +10,7 @@ change_kind: create
 - Provide a write-staging contract for command handlers
 - Extend `IReadRepository<T>` so command handlers have both read and write access through one injection
 
-# Core Principals
+# Core Principles
 - All write methods are inherited from `IRepositoryBase<T>` — no custom signatures needed
 - `SaveChangesAsync` is intentionally absent — committing is the responsibility of the Unit of Work
 

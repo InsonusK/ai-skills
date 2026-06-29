@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md|AppQueriesRegistration.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - `AddMediatR` scans the entire App.Queries assembly — discovers all `IRequestHandler` implementations automatically
 - No separate registration step per handler — assembly scan covers them all

@@ -24,7 +24,7 @@ tags:
 		- `tag: skill/template/csproj` - define how write csproj
 		- `tag: skill/template/class` - define how write classes
 	- `type: architecture` - define architecture pattern
-		- `tag: skill/architecture/core` - core architecture principals
+		- `tag: skill/architecture/core` - core architecture principles
 		- `tag: skill/architecture/solution` - architecture solution how organize workflow
 
 

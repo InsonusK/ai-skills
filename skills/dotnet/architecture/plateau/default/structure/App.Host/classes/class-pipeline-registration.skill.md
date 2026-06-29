@@ -23,7 +23,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|class-pipeline-registration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md|PipelineRegistration.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill.md|solution-pipeline-registration-order]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md|PipelineRegistration.cs.extend]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - `PipelineRegistration` is a static class with one public extension method
 - `AddPipeline()` returns `IServiceCollection` so it can be chained in `Program.cs`

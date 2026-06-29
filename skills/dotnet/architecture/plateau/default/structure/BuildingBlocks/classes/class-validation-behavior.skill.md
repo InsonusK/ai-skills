@@ -21,7 +21,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md|class-validation-behavior]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Receives `IEnumerable<IValidator<TRequest>>` via DI — zero, one, or multiple validators supported
 - Runs all validators and collects all errors before short-circuiting — full error list, not fail-fast per field

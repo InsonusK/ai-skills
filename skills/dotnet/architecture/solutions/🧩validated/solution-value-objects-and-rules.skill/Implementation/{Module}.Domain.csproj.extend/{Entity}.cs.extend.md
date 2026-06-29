@@ -12,7 +12,7 @@ change_kind: extend
 - Enforce entity invariants and prevent invalid state by using domain rules inside entity behavior methods
 - Keep entity validation logic DRY by delegating to reusable domain rules instead of inline conditions
 
-# Core Principals
+# Core Principles
 - Entity properties are Value Object types except `Id`, `Version`, and unconstrained generic parameters
 - If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
 - Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state

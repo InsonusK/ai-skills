@@ -18,7 +18,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md|{Module1}To{Module2}Config.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Cross-module configuration references entities from multiple modules without redefining their intra-module mapping
 - Cross-module config composes on top of existing Domain configs, never duplicates them

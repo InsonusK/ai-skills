@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Wraps `AppDbContext` — receives it via constructor injection
 - Single method implementation — no transaction management, no retry logic

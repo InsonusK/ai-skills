@@ -32,7 +32,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
 
-# Core Principals
+# Core Principles
 - Api is a thin adapter — no business logic, no domain rules
 - Api references only its own Interfaces project for contracts
 - References only `{Module}.Interfaces` — command records, query records, and DTOs live there

@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md|{System}Endpoints.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Use Minimal API only when the operation does not belong to a single entity lifecycle
 - Still dispatches exactly one MediatR command or query per endpoint — same dispatch rule as controllers

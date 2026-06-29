@@ -49,7 +49,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj.extend]]
 
-# Core Principals
+# Core Principles
 - Shared contains only cross-cutting primitives — no business logic specific to a single module
 - Any project at any layer may depend on Shared
 - A VO or rule moves to Shared only when at least two modules need it

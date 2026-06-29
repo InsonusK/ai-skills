@@ -20,7 +20,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend/GuidResolvingBehavior.cs.create.md|GuidResolvingBehavior.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Constrained on `where TRequest : IHasGuid` — only activates for commands carrying a Guid; `IHasGuid` is defined in Shared
 - Resolves `IGuidResolver<TResponse>` from DI — the resolver is specific to the command's result type; `IGuidResolver<TResponse>` is defined in Shared

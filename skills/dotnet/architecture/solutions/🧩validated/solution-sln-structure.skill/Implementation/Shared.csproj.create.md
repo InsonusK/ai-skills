@@ -9,7 +9,7 @@ change_kind: create
 - Define common cross-cutting interfaces that every layer can safely depend on without creating coupling
 - Provide base types and contracts used across module and infrastructure boundaries
 
-# Core Principals
+# Core Principles
 - Shared defines common interfaces and primitives — it has no implementations beyond lightweight result/contract helpers
 - Shared has no business logic — only framework-level contracts and primitives
 - Shared has no dependencies on any other project in this solution

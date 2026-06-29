@@ -10,7 +10,7 @@ change_kind: create
 - Implement `IRepository<T>` by leveraging Ardalis `RepositoryBase<T>`
 - Eliminate manual spec evaluation and `AsNoTracking` boilerplate
 
-# Core Principals
+# Core Principles
 - `RepositoryBase<T>` internally uses `SpecificationEvaluator` and applies `AsNoTracking` where appropriate
 - Constructor receives `AppDbContext` via DI and forwards it to the Ardalis base
 

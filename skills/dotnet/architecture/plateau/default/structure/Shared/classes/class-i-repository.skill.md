@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md|IRepository.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - All write methods are inherited from `IRepositoryBase<T>` — no custom signatures needed
 - `SaveChangesAsync` is intentionally absent — committing is the responsibility of the Unit of Work

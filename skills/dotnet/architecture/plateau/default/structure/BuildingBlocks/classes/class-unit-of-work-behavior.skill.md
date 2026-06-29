@@ -20,7 +20,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md|UnitOfWorkBehavior.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Increments `UnitOfWorkContext.Depth` on entry, decrements in `finally` — depth always restored even on exception
 - Calls `SaveChangesAsync` only when `Depth == 1` — the outermost command in the current request

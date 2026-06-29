@@ -8,7 +8,7 @@ change_kind: create
 # Goals
 - Orchestrate use cases by connecting the API contract to the domain model
 
-# Core Principals
+# Core Principles
 - Application coordinates — it never contains business logic
 - Application knows its own Domain and its own Interfaces
 - Application may reference other modules' Interfaces for cross-module dispatch

@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create.md|IHasGuid.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Single property: `Guid Guid { get; }`
 - Implemented by create commands for externally-created entity types only

@@ -10,7 +10,7 @@ change_kind: extend
 - Store all domain rule types for this bounded context
 - Keep domain logic organized and discoverable
 
-# Core Principals
+# Core Principles
 - Value Objects define correctness — they encode domain semantics and enforce invariants at construction time
 - Rules define predicates — they encode reusable business conditions without deciding enforcement
 - Entities define consistency — they decide when and how to enforce invariants using VOs and rules

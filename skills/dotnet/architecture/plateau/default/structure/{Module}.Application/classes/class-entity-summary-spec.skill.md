@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md|{Entity}SummarySpec.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Inherits `Specification<T, TResult>` — second type parameter is the DTO
 - Uses `Query.Select(...)` to define projection

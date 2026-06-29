@@ -40,7 +40,7 @@ depends_on:
 - Prevention of invalid states reaching persistence
 - Consistent `DomainException`-based error model
 
-# Core Principals
+# Core Principles
 - Entity is the single point of truth for its own state validity
 - Every method or setter that changes state must validate before changing
 - Invalid state must never be reachable — throw `DomainException` if attempted

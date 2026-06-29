@@ -22,11 +22,11 @@ RECOMENDATION:
 - encapsulate domain logic
 ```
 
-# Core Principals
+# Core Principles
 ```hint
-Define how solution EXTENDS project core principals
+Define how solution EXTENDS project core principles
 MUST:
-- show all added Core Principals
+- show all added Core Principles
 RECOMENDATION:
 - Prefer bullet list
 ```

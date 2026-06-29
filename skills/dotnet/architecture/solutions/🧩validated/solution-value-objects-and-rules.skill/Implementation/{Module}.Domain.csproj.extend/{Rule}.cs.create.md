@@ -11,7 +11,7 @@ change_kind: create
 - Prevent duplication of business conditions across controllers, validators, services, and entities
 - Separate the predicate from the enforcement mechanism
 
-# Core Principals
+# Core Principles
 - Static class with static extension methods — never instantiated
 - Returns `bool` — the caller decides whether to throw
 - Stateless, deterministic, and side-effect free

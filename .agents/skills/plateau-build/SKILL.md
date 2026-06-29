@@ -13,13 +13,14 @@ whenToUse: when you write skills for building plateau
 1. Define does {output} folder contain folder with name {plateau-name}
   - If folder exist ask user: Does he want to replace exist plateau. 
 2. Create in {output} folder new folder with name {plateau-name}
-3. Using all {solutions} create in created folder
+3. Create subfolder `{output}/structure` 
+4. Using all {solutions} create in created `{output}/structure`  folder
   - [Repository skill file](../../../templates/plateau-build/Repository.sln.skill.template.md) — must contain **only** repository-level content from `Repository.template.md` files
   - /{CSProject name}
     - [CSProject skill file](../../../templates/plateau-build/csproj-CSProj.skill.template.md) — must contain project-level content from `Project.template.md` files
     - /{folder by csproject structure}
       - [class skill file](../../../templates/plateau-build/class-Class.skill.template.md) — must contain class-level content from `Class.template.md` files
-4. Fill skill template with real content.
+5. Fill skill template with real content.
   - Repository skill: keep Goals, Core Principles, Rules, Anti-patterns, and Check list that apply to the **whole solution only**.
   - Project/Class skills: keep content that applies to the **specific project or class**.
   - Do not copy project-level or class-level details into the repository skill.
@@ -27,8 +28,8 @@ whenToUse: when you write skills for building plateau
     - `plateau` by name {plateau-name}
     - `version` by current timestamp with format YYYYMMDDHHMMSS
     - `created_by` add links to all solution which made effect on template
-3. Add `plateau.skill.md` using temolate [Plateau.skill.template.md](../../../templates/plateau-build/Plateau.skill.template.md)
-4. Follow "# How Apply this template" which are defined in each section of template. 
+6. Add `plateau.skill.md` using temolate [Plateau.skill.template.md](../../../templates/plateau-build/Plateau.skill.template.md)
+7. Follow "# How Apply this template" which are defined in each section of template. 
   - Authoring rules are defined in ```hint``` blocks. 
   - Authoring examples are provided in ```example``` blocks.
   - After filling template with real content remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file.

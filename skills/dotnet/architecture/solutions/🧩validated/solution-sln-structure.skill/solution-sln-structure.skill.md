@@ -53,7 +53,7 @@ depends_on:
 - Clear file and project placement rules
 - Foundation for architecture testing and reviews
 
-# Core Principals
+# Core Principles
 - A module is a bounded context — it owns everything inside its boundary
 - Modules never depend on each other's implementation — only on Interfaces contracts
 - Each module has exactly four projects: Api, Application, Domain, Interfaces

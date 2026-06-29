@@ -125,7 +125,7 @@ MUST NOT:
 - Use bare URLs or plain text for cross-references
 - Embed large sequences (more than 3 flows) inline — extract to `.mmd`
 - Use `whenToUse` as a frontmatter field — use `triggers`
-- Use `Principals` — correct spelling is `Principles`
+- Use `Principles` — correct spelling is `Principles`
 - Leave incomplete sentences in MUST/SHOULD/MUST NOT lists
 
 # Anti-patterns
@@ -146,4 +146,4 @@ MUST NOT:
 - [ ] Sequences with more than 3 flows extracted to `.mmd` and linked
 - [ ] Skill is flat file if no `.mmd` files exist, directory if `.mmd` files are present
 - [ ] No incomplete sentences in Rules section
-- [ ] Spelling: `Principles` not `Principals`
+- [ ] Spelling: `Principles` not `Principles`

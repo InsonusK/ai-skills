@@ -8,7 +8,7 @@ change_kind: create
 # Goals
 - Expose HTTP endpoints as thin MediatR adapters for this module
 
-# Core Principals
+# Core Principles
 - Api is a thin adapter — no business logic, no domain rules
 - Api references only its own Interfaces project for contracts
 

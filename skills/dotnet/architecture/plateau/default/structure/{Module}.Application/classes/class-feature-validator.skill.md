@@ -21,7 +21,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Extends `AbstractValidator<TCommand>`
 - Rules defined in constructor via `RuleFor(...)`

@@ -9,7 +9,7 @@ change_kind: extend
 - Host cross-module foreign key configurations that span multiple bounded contexts
 - Register all module entity configurations via `ApplyConfigurationsFromAssembly` in AppDbContext
 
-# Core Principals
+# Core Principles
 - App.Infrastructure is the only place where cross-module foreign key relationships are configured
 - DbContext uses `ApplyConfigurationsFromAssembly` to automatically discover all `IEntityTypeConfiguration<T>` implementations from module Domain assemblies
 - App.Infrastructure references all module Domain projects to access entities for cross-module configuration

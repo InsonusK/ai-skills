@@ -11,7 +11,7 @@ change_kind: create
 - Eliminate primitive obsession by replacing raw primitives with semantic types
 - Guarantee that invalid domain state cannot exist
 
-# Core Principals
+# Core Principles
 - Declared as `sealed record` — immutable and structurally equal by default
 - Constructor validates all invariants by calling Rules — throws DomainException on violation; inline validation logic is forbidden
 - Has no infrastructure or application dependencies — pure domain concept

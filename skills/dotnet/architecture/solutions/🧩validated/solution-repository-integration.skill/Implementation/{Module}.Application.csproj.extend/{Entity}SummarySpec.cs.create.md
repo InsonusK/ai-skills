@@ -10,7 +10,7 @@ change_kind: create
 - Project entity data directly to a DTO inside the query
 - Avoid loading full entity when only read data is needed
 
-# Core Principals
+# Core Principles
 - Inherits `Specification<T, TResult>` — second type parameter is the DTO
 - Uses `Query.Select(...)` to define projection
 - Repository executes projection at the database level

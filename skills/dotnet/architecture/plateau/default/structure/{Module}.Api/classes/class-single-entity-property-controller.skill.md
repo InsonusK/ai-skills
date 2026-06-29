@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md|solution-http-api-publication]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - `POST /{entity}/{id}/{property}` → set the property → `Set{Entity}{Property}Command`
 - `DELETE /{entity}/{id}/{property}` → unset/clear the property → `Unset{Entity}{Property}Command`

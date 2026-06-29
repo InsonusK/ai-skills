@@ -9,7 +9,7 @@ change_kind: extend
 - Store all EF Core entity type configuration classes for this bounded context
 - Own all persistence mapping concerns for this module's entities
 
-# Core Principals
+# Core Principles
 - One config class per entity — lives in /{Module}.Domain/Configurations
 - Config class is the only place that defines column names, index names, and constraints for this entity
 - Domain entities have no EF attributes — all mapping is in the config class

@@ -10,7 +10,7 @@ change_kind: extend
 - Prevent duplication of identical domain logic across module boundaries
 - Provide a single source of truth for cross-cutting domain primitives
 
-# Core Principals
+# Core Principles
 - Shared contains only cross-cutting primitives — no business logic specific to a single module
 - Any project at any layer may depend on Shared
 - A VO or rule moves to Shared only when at least two modules need it

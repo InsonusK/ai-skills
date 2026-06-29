@@ -9,7 +9,7 @@ change_kind: create
 # Goals
 - Configure foreign key relationships and mappings that cross module boundaries
 
-# Core Principals
+# Core Principles
 - Cross-module configuration references entities from multiple modules without redefining their intra-module mapping
 - Cross-module config composes on top of existing Domain configs, never duplicates them
 

@@ -19,7 +19,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs.create]]
 
-# Core Principals
+# Core Principles
 - Apply ONE plateau template per class
 - Declared as `record` — immutable, structural equality
 - Implements `IQuery<Result<T>>` — return type is always `Result<T>` or `Result<IReadOnlyList<T>>`
