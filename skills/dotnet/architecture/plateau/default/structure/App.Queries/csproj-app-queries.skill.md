@@ -74,7 +74,7 @@ __Applied solutions:__
 | /Queries/{ModuleName} | Cross-module query handlers grouped by primary module |  |
 | /Queries/{QueryName} | Cross-module query handler and optional validator |  |
 | /Specifications | Cross-module projection specs |  |
-| AppQueriesRegistration.cs | DI registration for App.Queries assembly | [[skills/dotnet/architecture/plateau/default/App.Queries/classes/class-app-queries-registration.skill.md|class-AppQueriesRegistration.skill]] |
+| AppQueriesRegistration.cs | DI registration for App.Queries assembly | [[skills/dotnet/architecture/plateau/default/structure/App.Queries/classes/class-app-queries-registration.skill.md|class-AppQueriesRegistration.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Queries.csproj.create|App.Queries.csproj]]
