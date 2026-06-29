@@ -3,7 +3,7 @@ name: class-feature-handler
 description: Single-module query handler implementation
 domain: skill
 type: template
-version: 20260628
+version: 20260629223200
 plateau: default
 tags:
   - skill/template/class
@@ -11,6 +11,7 @@ tags:
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration.skill]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration.skill]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
@@ -22,6 +23,7 @@ created_by:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md|{FeatureName}.Handler.cs.extend]]
 
 # Core Principles
 - Apply ONE plateau template per class
@@ -37,10 +39,14 @@ __Applied solutions:__
 - Follows fixed structure: load → guard → domain call → stage → return result
 - Returns `Ardalis.Result<T>` for all outcomes — no exceptions for flow control
 - Cross-module writes dispatched via `_mediator.Send(new OtherModuleCommand(...))` — never direct calls
+- Command handlers that create or update timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` via explicit interface cast after the domain call
+- Command handlers that create or update timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` via explicit interface cast after the domain call
+- Command handlers that create or update timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` via explicit interface cast after the domain call
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md|{FeatureName}.Handler.cs.extend]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -51,6 +57,7 @@ __Applied solutions:__
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md|{FeatureName}.Handler.cs.extend]]
 
 # Implementation
 
@@ -207,6 +214,180 @@ public class CreateOrderHandler
 }
 ```
 
+## User timestamp assignment
+
+Commands that implement `ICommandWithTimestamp` carry the client action time. The handler assigns it to the entity through the mutable timestamp interface so class-level setters can remain `internal`. Server timestamps are assigned later by `AppDbContext.OnBeforeSaving`.
+
+Create handler for a mutable entity:
+
+```csharp
+public async Task<Result<CreateTaskResult>> Handle(
+    CreateTaskCommand command, CancellationToken ct)
+{
+    var task = TodoTask.Create(command.Title, command.AssigneeId);
+
+    var timestamped = (ICreationInfoModel)task;
+    timestamped.UserCreatedDateTime = command.ActionTimeStamp;
+    timestamped.UserUpdatedDateTime = command.ActionTimeStamp;
+
+    await _repository.AddAsync(task, ct);
+
+    return Result.Created(new CreateTaskResult(task.Id));
+}
+```
+
+Create handler for an `External Immutable` entity:
+
+```csharp
+public async Task<Result<CreateExternalTaskResult>> Handle(
+    CreateExternalTaskCommand command, CancellationToken ct)
+{
+    var task = ExternalTask.Create(command.Guid, command.Title);
+
+    ((ICreationInfoModel)task).UserCreatedDateTime = command.ActionTimeStamp;
+
+    await _repository.AddAsync(task, ct);
+
+    return Result.Created(new CreateExternalTaskResult(task.Id));
+}
+```
+
+Update handler for a mutable entity:
+
+```csharp
+public async Task<Result> Handle(
+    UpdateTaskCommand command, CancellationToken ct)
+{
+    var task = await _repository.FirstOrDefaultAsync(
+        new TaskByIdSpec(command.TaskId), ct);
+
+    if (task is null)
+        return Result.NotFound();
+
+    task.Update(command.Title);
+
+    ((IUpdateInfoModel)task).UserUpdatedDateTime = command.ActionTimeStamp;
+
+    return Result.Success();
+}
+```
+
+## User timestamp assignment
+
+Commands that implement `ICommandWithTimestamp` carry the client action time. The handler assigns it to the entity through the mutable timestamp interface so class-level setters can remain `internal`. Server timestamps are assigned later by `AppDbContext.OnBeforeSaving`.
+
+Create handler for a mutable entity:
+
+```csharp
+public async Task<Result<CreateTaskResult>> Handle(
+    CreateTaskCommand command, CancellationToken ct)
+{
+    var task = TodoTask.Create(command.Title, command.AssigneeId);
+
+    var timestamped = (ICreationInfoModel)task;
+    timestamped.UserCreatedDateTime = command.ActionTimeStamp;
+    timestamped.UserUpdatedDateTime = command.ActionTimeStamp;
+
+    await _repository.AddAsync(task, ct);
+
+    return Result.Created(new CreateTaskResult(task.Id));
+}
+```
+
+Create handler for an `External Immutable` entity:
+
+```csharp
+public async Task<Result<CreateExternalTaskResult>> Handle(
+    CreateExternalTaskCommand command, CancellationToken ct)
+{
+    var task = ExternalTask.Create(command.Guid, command.Title);
+
+    ((ICreationInfoModel)task).UserCreatedDateTime = command.ActionTimeStamp;
+
+    await _repository.AddAsync(task, ct);
+
+    return Result.Created(new CreateExternalTaskResult(task.Id));
+}
+```
+
+Update handler for a mutable entity:
+
+```csharp
+public async Task<Result> Handle(
+    UpdateTaskCommand command, CancellationToken ct)
+{
+    var task = await _repository.FirstOrDefaultAsync(
+        new TaskByIdSpec(command.TaskId), ct);
+
+    if (task is null)
+        return Result.NotFound();
+
+    task.Update(command.Title);
+
+    ((IUpdateInfoModel)task).UserUpdatedDateTime = command.ActionTimeStamp;
+
+    return Result.Success();
+}
+```
+
+## User timestamp assignment
+
+Commands that implement `ICommandWithTimestamp` carry the client action time. The handler assigns it to the entity through the mutable timestamp interface so class-level setters can remain `internal`. Server timestamps are assigned later by `AppDbContext.OnBeforeSaving`.
+
+Create handler for a mutable entity:
+
+```csharp
+public async Task<Result<CreateTaskResult>> Handle(
+    CreateTaskCommand command, CancellationToken ct)
+{
+    var task = TodoTask.Create(command.Title, command.AssigneeId);
+
+    var timestamped = (ICreationInfoModel)task;
+    timestamped.UserCreatedDateTime = command.ActionTimeStamp;
+    timestamped.UserUpdatedDateTime = command.ActionTimeStamp;
+
+    await _repository.AddAsync(task, ct);
+
+    return Result.Created(new CreateTaskResult(task.Id));
+}
+```
+
+Create handler for an `External Immutable` entity:
+
+```csharp
+public async Task<Result<CreateExternalTaskResult>> Handle(
+    CreateExternalTaskCommand command, CancellationToken ct)
+{
+    var task = ExternalTask.Create(command.Guid, command.Title);
+
+    ((ICreationInfoModel)task).UserCreatedDateTime = command.ActionTimeStamp;
+
+    await _repository.AddAsync(task, ct);
+
+    return Result.Created(new CreateExternalTaskResult(task.Id));
+}
+```
+
+Update handler for a mutable entity:
+
+```csharp
+public async Task<Result> Handle(
+    UpdateTaskCommand command, CancellationToken ct)
+{
+    var task = await _repository.FirstOrDefaultAsync(
+        new TaskByIdSpec(command.TaskId), ct);
+
+    if (task is null)
+        return Result.NotFound();
+
+    task.Update(command.Title);
+
+    ((IUpdateInfoModel)task).UserUpdatedDateTime = command.ActionTimeStamp;
+
+    return Result.Success();
+}
+```
+
 ## Result status conventions
 
 | Result | Meaning | Typical use |
@@ -221,6 +402,7 @@ public class CreateOrderHandler
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md|{FeatureName}.Handler.cs.extend]]
 
 # Rules
 MUST:
@@ -234,6 +416,8 @@ MUST:
 	- Follow load → guard → domain call → stage → return structure
 	- Return `Result<T>` for all outcomes — never throw for flow control
 	- Dispatch cross-module writes via `_mediator.Send()` — never direct method calls
+	- Assign user timestamps after the domain call and before staging the entity
+	- Use `ICreationInfoModel` / `IUpdateInfoModel` cast to set user timestamps when the entity class setter is `internal`
 MUST NOT:
 	- Modify any entity state
 	- Call `SaveChangesAsync` or inject `IUnitOfWork`
@@ -243,20 +427,40 @@ MUST NOT:
 	- Call `SaveChangesAsync`
 	- Reference another module's Domain or Application projects directly
 	- Use inline LINQ — all queries go through named specs
+	- Assign server timestamps in the handler
+	- Set user timestamps directly on the entity class when the setter is `internal`
+	- Validate `ActionTimeStamp` in the handler
+	- Assign server timestamps in the handler
+	- Set user timestamps directly on the entity class when the setter is `internal`
+	- Validate `ActionTimeStamp` in the handler
+	- Assign server timestamps in the handler
+	- Set user timestamps directly on the entity class when the setter is `internal`
+	- Validate `ActionTimeStamp` in the handler
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md|{FeatureName}.Handler.cs.extend]]
 
 # Anti-patterns
 - Apply SEVERAL plateau template per class
 - `IRepository<T>` injected into query handler — use `IReadRepository<T>`
 - Inline LINQ in handler: `_repository.FirstOrDefaultAsync(x => x.Id == id)` — define `TaskByIdSpec` instead
 - Returning null instead of `Result.NotFound()`
+- Assigning user timestamps before the domain call
+- Forgetting the interface cast and failing to compile because the setter is `internal`
+- Setting `UserCreatedDateTime` on an update or `UserUpdatedDateTime` on an `External Immutable` create
+- Assigning user timestamps before the domain call
+- Forgetting the interface cast and failing to compile because the setter is `internal`
+- Setting `UserCreatedDateTime` on an update or `UserUpdatedDateTime` on an `External Immutable` create
+- Assigning user timestamps before the domain call
+- Forgetting the interface cast and failing to compile because the setter is `internal`
+- Setting `UserCreatedDateTime` on an update or `UserUpdatedDateTime` on an `External Immutable` create
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md|{FeatureName}.Handler.cs.extend]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Fetch and project data for a single module's read operation
@@ -277,7 +481,21 @@ __Applied solutions:__
 - [ ] WHEN applied THEN Returns Ardalis.Result<T> for all outcomes — no exceptions for flow control
 - [ ] WHEN applied THEN Cross-module writes dispatched via _mediator.Send(new OtherModuleCommand(...)) — never direct calls
 - [ ] WHEN naming 'Command handler' THEN pattern matches convention
+- [ ] WHEN create mutable entity THEN `UserCreatedDateTime` and `UserUpdatedDateTime` equal `ActionTimeStamp`
+- [ ] WHEN update mutable entity THEN only `UserUpdatedDateTime` changes
+- [ ] WHEN create External Immutable entity THEN only `UserCreatedDateTime` is set
+- [ ] WHEN handler runs THEN no server timestamps are assigned
+- [ ] WHEN create mutable entity THEN `UserCreatedDateTime` and `UserUpdatedDateTime` equal `ActionTimeStamp`
+- [ ] WHEN update mutable entity THEN only `UserUpdatedDateTime` changes
+- [ ] WHEN create External Immutable entity THEN only `UserCreatedDateTime` is set
+- [ ] WHEN handler runs THEN no server timestamps are assigned
+- [ ] WHEN create mutable entity THEN `UserCreatedDateTime` and `UserUpdatedDateTime` equal `ActionTimeStamp`
+- [ ] WHEN update mutable entity THEN only `UserUpdatedDateTime` changes
+- [ ] WHEN create External Immutable entity THEN only `UserCreatedDateTime` is set
+- [ ] WHEN handler runs THEN no server timestamps are assigned
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md|{FeatureName}.Handler.cs.extend]]
+
