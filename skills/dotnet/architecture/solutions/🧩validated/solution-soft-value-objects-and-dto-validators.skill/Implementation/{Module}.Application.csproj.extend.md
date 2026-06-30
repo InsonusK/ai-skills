@@ -7,7 +7,8 @@ change_kind: extend
 
 # Goals
 - Own all property validators for `Soft{ValueObject}` types
-- Own all validators for public DTOs declared in `{Module}.Interfaces`
+- Own all validators for public RequestDto declared in `{Module}.Interfaces`
+- ResponseDto validators are created only when explicitly required
 - Register validators through the existing FluentValidation assembly scan
 
 # Core Principles
@@ -32,7 +33,8 @@ change_kind: extend
 | Directory \| file    | Description                      |
 | -------------------- | -------------------------------- |
 | /Validators/Property | Property validators for Soft VOs |
-| /Validators/Model    | Validators for public DTOs       |
+| /Validators/Model    | Validators for public RequestDto |
+| /Validators/Model    | ResponseDto validators (only when explicitly required) |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |

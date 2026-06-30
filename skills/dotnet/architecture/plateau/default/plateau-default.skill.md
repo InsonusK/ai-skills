@@ -3,7 +3,7 @@ name: plateau-default
 description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, entity edit timestamps, command/query integration, repository abstractions, soft value objects and DTO validators, and centralized pipeline/host wiring
 domain: skill
 type: template
-version: 20260629223200
+version: 20260701011400
 tags:
   - skill/template/plateau
   - plateau/default
@@ -66,7 +66,8 @@ __Applied solutions:__
 ## Validation
 - Exposes soft, validation-agnostic value objects from `{Module}.Interfaces` so other modules can use them in commands and DTOs without referencing Domain.
 - Keeps strict invariant enforcement in Domain Value Objects that inherit from their soft counterparts.
-- Registers FluentValidation validators for public DTOs and Soft Value Object properties in `{Module}.Application`.
+- Registers FluentValidation validators for public RequestDto and Soft Value Object properties in `{Module}.Application`.
+- Does not register validators for ResponseDto unless a concrete requirement explicitly demands it.
 - Allows other modules to validate values by resolving `IValidator<T>` from DI without direct coupling to the owning module's Application or Domain.
 
 ## Entity identity and lifecycle

@@ -3,7 +3,7 @@ name: class-dto
 description: DTO response shape declaration
 domain: skill
 type: template
-version: 20260628
+version: 20260701011400
 plateau: default
 tags:
   - skill/template/class
@@ -26,7 +26,8 @@ __Applied solutions:__
 - Declared as `record` — immutable, structural equality
 - Properties are primitives, other DTOs, or `Soft{ValueObject}` types — never domain entity types
 - Declared in Interfaces alongside the query that returns it
-- Has a matching `{Dto}Validator` in `{Module}.Application/Validators` when consumed by other modules
+- Does NOT have a matching `{Dto}Validator` by default because it is produced by trusted application logic
+- Has a matching `{Dto}Validator` in `{Module}.Application/Validators` only when explicitly required, for example external contract validation, untrusted response sources, or mandated integration boundaries
 - One DTO per distinct response shape — `TaskDto` for full detail, `TaskSummaryDto` for list items
 
 __Applied solutions:__
@@ -101,7 +102,7 @@ MUST:
 	- Declared as `record`
 	- Properties are primitives, other DTOs, or `Soft{ValueObject}` types
 	- Declared in `/{Module}.Interfaces/DTOs`
-	- Have a matching `{Dto}Validator` in `{Module}.Application/Validators` when the DTO is public and consumed by other modules
+	- Not have a matching `{Dto}Validator` by default; create one only when explicitly required
 MUST NOT:
 	- Expose domain entity types as properties
 	- Have public setters — `record` provides immutability

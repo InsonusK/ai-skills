@@ -17,8 +17,8 @@ Keep the plateau root skill (`plateau-{plateau-name}.skill.md`) and all of its s
 MUST:
 - When a solution is added to a plateau, update **both** the plateau root skill and every structural skill that the solution affects.
 - When a solution used by a plateau is updated, find every plateau root skill and structural skill that references it and update them.
-- Update the `version` timestamp (`YYYYMMDDHHMMSS`) of the plateau root skill whenever it or any of its structural skills change.
-- Update the `version` timestamp of any structural skill that is changed.
+- Update the `version` UTC timestamp (`YYYYMMDDHHMMSS`) of the plateau root skill whenever it or any of its structural skills change. 
+- Update the `version` UTC timestamp of any structural skill that is changed.
 - Add or update `created_by` and `__Applied solutions__` links in the plateau root skill and in affected structural skills.
 - Write every `__Applied solutions:__` bullet with **two wikilinks separated by ` - `**: the parent solution skill file and the specific implementation/template file inside that solution.
 - Remove all `hint` and `example` blocks from any skill file that is being created or rewritten.
@@ -31,6 +31,7 @@ MUST NOT:
 - Update only the plateau root skill while leaving structural skills stale.
 - Change unrelated plateau structural skills without a clear reason.
 - Skip updating `version` after any change.
+- Use not UTC timestamp
 
 # Workflow
 

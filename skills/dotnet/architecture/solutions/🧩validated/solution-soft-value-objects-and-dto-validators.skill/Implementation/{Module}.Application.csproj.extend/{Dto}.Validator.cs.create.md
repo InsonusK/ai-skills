@@ -7,8 +7,9 @@ change_kind: create
 ---
 
 # Goals
-- Provide a reusable validator for every public DTO declared in `{Module}.Interfaces`
-- Allow other modules to validate DTO values they receive through `IValidator<{Dto}>`
+- Provide a reusable validator for every public RequestDto declared in `{Module}.Interfaces`
+- Allow other modules to validate RequestDto values they receive through `IValidator<{Dto}>`
+- ResponseDto validators are created only when explicitly required
 
 # Core Principles
 - Extends `AbstractValidator<{Dto}>`
@@ -20,7 +21,7 @@ change_kind: create
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
-| DTO validator | `{Dto}Validator` | `TaskDtoValidator` | `{Dto}.Validator.cs` | `TaskDto.Validator.cs` |
+| RequestDto validator | `{Dto}Validator` | `TaskDtoValidator` | `{Dto}.Validator.cs` | `TaskDto.Validator.cs` |
 
 # Implementation changes
 
@@ -89,7 +90,7 @@ MUST NOT:
 - [ ] Uses injected property validators for Soft VO properties
 
 # Unittest TestCases
-- [ ] When a valid DTO is validated Then no errors are returned
-- [ ] When a DTO with an invalid `Soft{ValueObject}` property is validated Then validation errors are returned
+- [ ] When a valid RequestDto is validated Then no errors are returned
+- [ ] When a RequestDto with an invalid `Soft{ValueObject}` property is validated Then validation errors are returned
 - [ ] When resolved from DI as `IValidator<{Dto}>` Then the DTO validator is returned
 - [ ] When validated Then every value-concept property is validated by its property validator
