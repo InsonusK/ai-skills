@@ -17,7 +17,7 @@ created_by:
 # Goal
 - Validate transport correctness of one command's input before it reaches the handler
 - Express validation rules as a declarative FluentValidation rule set — not imperative checks
-- This is the per-command validator; for `Soft{ValueObject}` property validators and public DTO validators see [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill|class-PropertyValidator]] and [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill|class-DtoValidator]]
+- This is the per-command validator; for `Soft{ValueObject}` property validators and public RequestDto validators see [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill|class-PropertyValidator]] and [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill|class-DtoValidator]]
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]
@@ -32,7 +32,7 @@ __Applied solutions:__
 - Uses `SetValidator(IValidator<Soft{ValueObject}>)` for Soft VO properties
 - No database access, no repository injection — purely declarative on the command's properties
 - No business logic — existence and state checks belong in handler guard or domain
-- Distinct from `{ValueObject}PropertyValidator` (validates a `Soft{ValueObject}`) and `{Dto}Validator` (validates a public DTO)
+- Distinct from `{ValueObject}PropertyValidator` (validates a `Soft{ValueObject}`) and `{Dto}Validator` (validates a public RequestDto, or a ResponseDto only when explicitly required)
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs.create]]

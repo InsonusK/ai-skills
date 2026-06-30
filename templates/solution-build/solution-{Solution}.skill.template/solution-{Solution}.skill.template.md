@@ -3,7 +3,7 @@ name: skill-name
 description: Short description of skill goal
 domain: skill
 type: architecture
-version: 20260612
+version: 
 tags:
   - skill/architecture/solution
   # any other tags

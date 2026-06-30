@@ -1,9 +1,9 @@
 ---
 name: solution-soft-value-objects-and-dto-validators
-description: Defines the Soft Value Object pattern. Each module exposes soft, validation-agnostic value objects from its Interfaces project. Domain Value Objects inherit from the soft type and enforce invariants at construction. Property validators for Soft VOs and validators for public DTOs live in {Module}.Application, are registered by FluentValidation, and are consumed by other modules through IValidator<T>.
+description: Defines the Soft Value Object pattern. Each module exposes soft, validation-agnostic value objects from its Interfaces project. Domain Value Objects inherit from the soft type and enforce invariants at construction. Property validators for Soft VOs and validators for public RequestDto live in {Module}.Application, are registered by FluentValidation, and are consumed by other modules through IValidator<T>. ResponseDto validators are created only when explicitly required.
 domain: skill
 type: architecture
-version: 20260629210700
+version: 20260701011400
 tags:
   - skill/architecture/solution
   - dotnet
@@ -35,10 +35,12 @@ depends_on:
 adr:
   - "[[./adr/soft-value-objects-and-application-validators.md|Soft value objects in Interfaces, validators in Application]]"
   - "[[./adr/use-abstract-validator-for-soft-value-objects.md|Use AbstractValidator for Soft{ValueObject} validators]]"
+  - "[[./adr/dto-validators-only-for-request-dtos.md|DTO validators only for RequestDto by default]]"
 ---
 
 # Goal
-- Let each module define validators for every public DTO and value-object property it owns
+- Let each module define validators for every public RequestDto and value-object property it owns
+- Do not require validators for ResponseDto unless a concrete requirement explicitly demands it
 - Allow other modules to validate values that originate from this module without referencing its Domain or Application projects directly
 - Keep strict invariant enforcement in the Domain layer while sharing the value shape from Interfaces
 - Standardise the Soft{ValueObject} / PropertyValidator / DTOValidator triplet across modules
@@ -50,7 +52,8 @@ adr:
 
 # Core Principles
 - Each `{Module}.Domain.ValueObjects.{ValueObject}` inherits from `{Module}.Interfaces.ValueObjects.Soft{ValueObject}`
-- Each public DTO in `{Module}.Interfaces` has a matching FluentValidation validator in `{Module}.Application.Validators`
+- Each public RequestDto in `{Module}.Interfaces` has a matching FluentValidation validator in `{Module}.Application.Validators`
+- ResponseDto does not have a validator by default; create one only when explicitly required
 - Each `Soft{ValueObject}` has a matching `{ValueObject}PropertyValidator` in `{Module}.Application.Validators`
 - `Soft{ValueObject}` allows invalid values; Domain Value Object does not
 - Validators are registered by FluentValidation's `AddValidatorsFromAssembly` scan of `{Module}.Application`
@@ -67,6 +70,9 @@ adr:
 - [[./adr/use-abstract-validator-for-soft-value-objects.md|Use AbstractValidator for Soft{ValueObject} validators]]
   - `{ValueObject}PropertyValidator` must inherit from `AbstractValidator<Soft{ValueObject}>` so it can be registered as `IValidator<Soft{ValueObject}>` and reused by any consumer module
   - `PropertyValidator<T, TProperty>` is not suitable because it is bound to a specific parent DTO type and cannot be resolved generically by other modules
+- [[./adr/dto-validators-only-for-request-dtos.md|DTO validators only for RequestDto by default]]
+  - DTO validators are created by default only for RequestDto; ResponseDto validators are created only when explicitly required
+  - The validation pipeline targets incoming requests, while outgoing responses are produced by trusted application logic
 
 # Requirements
 SOLUTION:
@@ -122,7 +128,8 @@ MUST:
 - `Soft{ValueObject}` does not validate values in its constructor or properties
 - `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its constructor by calling Rules and throws `DomainException` on invalid values
 - For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `/{Module}.Application/Validators/Property` extending `AbstractValidator<Soft{ValueObject}>`
-- For every DTO published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators/Model` extending `AbstractValidator<{Dto}>`
+- For every RequestDto published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators/Model` extending `AbstractValidator<{Dto}>`
+- ResponseDto validators are created only when explicitly required, for example external contract validation, untrusted response sources, or mandated integration boundaries
 - Validators are registered by FluentValidation's assembly scan of `{Module}.Application`
 - Other modules consume validators through `IValidator<T>` resolved from DI
 - DTO value-concept properties are `Soft{ValueObject}` types, not primitives
@@ -162,7 +169,8 @@ MUST NOT:
 - [ ] `Soft{ValueObject}` allows invalid values
 - [ ] Domain Value Object throws `DomainException` for invalid values
 - [ ] `{ValueObject}PropertyValidator` exists for every `Soft{ValueObject}`
-- [ ] `{Dto}Validator` exists for every public DTO
+- [ ] `{Dto}Validator` exists for every public RequestDto
+- [ ] ResponseDto has a validator only when an explicit requirement exists
 - [ ] DTO value-concept properties are `Soft{ValueObject}` types, not primitives
 - [ ] Validators are in `/{Module}.Application/Validators`
 - [ ] Validators are registered by `AddValidatorsFromAssembly` in `{Module}.Application`
@@ -180,7 +188,7 @@ MUST NOT:
 - [ ] When Domain `{ValueObject}` is created with an invalid value Then `DomainException` is thrown
 - [ ] When `{ValueObject}PropertyValidator` validates a valid `Soft{ValueObject}` Then no errors are returned
 - [ ] When `{ValueObject}PropertyValidator` validates an invalid `Soft{ValueObject}` Then validation errors are returned
-- [ ] When `{Dto}Validator` validates a valid DTO Then no errors are returned
-- [ ] When `{Dto}Validator` validates a DTO with an invalid `Soft{ValueObject}` property Then validation errors are returned
+- [ ] When `{Dto}Validator` validates a valid RequestDto Then no errors are returned
+- [ ] When `{Dto}Validator` validates a RequestDto with an invalid `Soft{ValueObject}` property Then validation errors are returned
 - [ ] When another module resolves `IValidator<Soft{ValueObject}>` Then it receives the registered property validator without referencing `{Module}.Application`
 - [ ] When Domain `{ValueObject}` is constructed Then it accepts the same valid values as `{ValueObject}PropertyValidator`
