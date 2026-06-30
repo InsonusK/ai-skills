@@ -3,7 +3,7 @@ name: csproj-module-application
 description: Orchestrate use cases by connecting the API contract to the domain model
 domain: skill
 type: template
-version: 20260629223200
+version: 20260701011400
 plateau: default
 tags:
   - skill/template/csproj
@@ -37,7 +37,8 @@ created_by:
 - Structure each feature as a vertical slice — handler and validator co-located in one folder
 - Self-register all handlers and validators via assembly scan
 - Own all property validators for `Soft{ValueObject}` types in `/Validators`
-- Own all validators for public DTOs declared in `{Module}.Interfaces` in `/Validators`
+- Own all validators for public RequestDto declared in `{Module}.Interfaces` in `/Validators`
+- ResponseDto validators live in `/Validators` only when explicitly required
 - Command handlers for timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` through the mutable timestamp interface
 - Per-command validators for timestamped commands validate `ActionTimeStamp` is present and not in the future
 - Command handlers for timestamped entities assign user timestamps from `ICommandWithTimestamp.ActionTimeStamp` through the mutable timestamp interface
@@ -149,7 +150,8 @@ __Applied solutions:__
 | ---------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | /Handlers                                | Command and query handlers                                                             |                                                                                                                                                                                |
 | /Validators/Property                     | Property validators for Soft VOs                                                       | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-property-validator.skill\|class-property-validator.skill]]                           |
-| /Validators/Model                        | Model validators for public DTOs                                                       | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill\|class-dto-validator.skill]]                                     |
+| /Validators/Model                        | Model validators for public RequestDto                                                 |
+| /Validators/Model                        | ResponseDto validators (only when explicitly required)                                 | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/classes/class-dto-validator.skill\|class-dto-validator.skill]]                                     |
 | /Specifications                          | Query specifications                                                                   |                                                                                                                                                                                |
 | /Specifications                          | All module specifications — single-condition, multi-condition, projection, idempotency |                                                                                                                                                                                |
 | /Queries/{FeatureName}                   | One folder per query feature; contains handler and optional transport validator        |                                                                                                                                                                                |
@@ -243,7 +245,8 @@ __Applied solutions:__
 MUST:
 	- Application references only own Interfaces, own Domain
 	- All property validators for `Soft{ValueObject}` types live in `/{Module}.Application/Validators`
-	- All DTO validators live in `/{Module}.Application/Validators`
+	- All RequestDto validators live in `/{Module}.Application/Validators`
+	- ResponseDto validators live in `/{Module}.Application/Validators` only when explicitly required
 	- Every `Soft{ValueObject}` has a matching `{ValueObject}PropertyValidator`
 	- Command handlers inject `IRepository<T>` from Shared
 	- Query handlers inject `IReadRepository<T>` from Shared
@@ -365,7 +368,8 @@ __Applied solutions:__
 - [ ] `/Features/{FeatureName}` folder exists for each command
 - [ ] Validator file named `{FeatureName}.Validator.cs`
 - [ ] `/Validators` folder exists with `{ValueObject}PropertyValidator.cs` for every `Soft{ValueObject}`
-- [ ] `/Validators` folder contains `{Dto}Validator.cs` for every public DTO
+- [ ] `/Validators` folder contains `{Dto}Validator.cs` for every public RequestDto
+- [ ] `/Validators` folder contains `{Dto}Validator.cs` for a ResponseDto only when explicitly required
 - [ ] Property and DTO validators are stateless and have no infrastructure dependencies
 - [ ] `{Module}ApplicationRegistration.cs` exists
 - [ ] Handlers registered via `AddMediatR` scan

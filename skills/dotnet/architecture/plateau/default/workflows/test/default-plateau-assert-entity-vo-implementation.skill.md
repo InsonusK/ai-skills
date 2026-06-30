@@ -34,8 +34,9 @@ COULD:
 
 ## `{Validator}`
 MUST:
-- Implements `{DtoValidator}` and `{SoftValueObjectValidator}`
-- Validate `{DTO}` or `{SoftValueObject}` by `{Rule}`
+- Implements `{DtoValidator}` for `{RequestDto}` and `{SoftValueObjectValidator}` for `{SoftValueObject}`
+- ResponseDto validators are created only when explicitly required
+- Validate `{RequestDto}`, `{ResponseDto}` (when required), or `{SoftValueObject}` by `{Rule}`
 - Complex check implements by `{Rules}`
 MUST NOT:
 - Implement custom validation logic
