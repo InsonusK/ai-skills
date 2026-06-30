@@ -26,7 +26,7 @@ whenToUse: when you write skills for building plateau
   - Do not copy project-level or class-level details into the repository skill.
   - Fill header property 
     - `plateau` by name {plateau-name}
-    - `version` by current timestamp with format YYYYMMDDHHMMSS
+    - `version` by current UTC timestamp with format `YYYYMMDDHHMMSS`
     - `created_by` add links to all solution which made effect on template
 6. Add `plateau.skill.md` using temolate [Plateau.skill.template.md](../../../templates/plateau-build/Plateau.skill.template.md)
 7. Follow "# How Apply this template" which are defined in each section of template. 
@@ -35,7 +35,7 @@ whenToUse: when you write skills for building plateau
   - After filling template with real content remove all ```hint``` and ```example``` blocks from final skill file. Do not keep them in the final skill file.
   - Fill header property 
     - `created_by` by list of solutions which implements in this plateau
-    - `version` by current timestamp with format YYYYMMDDHHMMSS
+    - `version` by current UTC timestamp with format `YYYYMMDDHHMMSS`
     
 # Applied solutions list format
 Every content section that summarizes one or more source solutions must end with an `__Applied solutions:__` list.
