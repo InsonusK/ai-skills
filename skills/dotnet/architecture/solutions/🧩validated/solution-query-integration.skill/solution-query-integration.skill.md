@@ -60,10 +60,10 @@ depends_on:
 - Consistent `Result<T>`-based response contract for all read operations
 
 # Core Principles
-- `IQuery<TResponse>` lives in Shared — consistent placement of all MediatR markers
+- `IQuery<TResponse>` lives in Shared — consistent placement of all `MediatR` markers
 - Query handlers are strictly read-only — no entity mutation, no `SaveChangesAsync`, no `IRepository<T>`
 - `ValidationBehavior` activates for queries — transport correctness is validated before the handler runs because queries implement `IRequest<TResponse>`
-- Single-module handlers use `IReadRepository<T>` from Shared — never DbContext, never `IRepository<T>`
+- Single-module handlers use `IReadRepository<T>` from Shared — never `DbContext`, never `IRepository<T>`
 - Cross-module handlers live in `App.Queries` — the only layer with access to all module entity types simultaneously
 - Cross-module handlers use DbContext directly with `AsNoTracking()` — no repository abstraction needed here
 - All single-module entity loading goes through named specs — no inline LINQ in handlers
