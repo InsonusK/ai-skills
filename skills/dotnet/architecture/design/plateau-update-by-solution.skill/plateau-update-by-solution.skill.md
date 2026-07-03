@@ -13,7 +13,7 @@ Keep the plateau root skill (`plateau-{plateau-name}.skill.md`) and all of its s
 
 # Prerequisites
 
-Read [[skills/dotnet/architecture/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions.skill]] first. The same mapping and normalization rules apply during an update:
+Read [[skills/dotnet/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] first. The same mapping and normalization rules apply during an update:
 
 - `Implementation/` file patterns (`Repository.create.md`, `{Project}.csproj.create.md`, `{Project}.csproj.extend.md`, class files)
 - project and class name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`)
@@ -117,8 +117,8 @@ If a solution is removed from the plateau:
 
 # Examples
 
-- [[./examples/example-add-solution.md|Adding a new solution to a plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
-- [[./examples/example-update-solution.md|Updating an existing solution in a plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
+- [[skills/dotnet/architecture/design/plateau-update-by-solution.skill/examples/example-add-solution|Adding a new solution to a plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
+- [[skills/dotnet/architecture/design/plateau-update-by-solution.skill/examples/example-update-solution|Updating an existing solution in a plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
 
 # Check list
 

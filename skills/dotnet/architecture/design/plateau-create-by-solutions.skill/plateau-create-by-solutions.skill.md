@@ -10,7 +10,7 @@ whenToUse: when you write skills for building plateau
 - {output} - folder where you should put created plateau skills. Default `skills/dotnet/architecture/plateau`
 
 # Prerequisites
-Read [[skills/dotnet/architecture/solution-create.skill/solution-create.skill.md|solution-create.skill]] first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
+Read [[skills/dotnet/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 
 # Solution-skill structure
 Every solution-skill has an `Implementation/` folder with concrete mutations. Recognize these file patterns:
@@ -36,16 +36,16 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Re
    - Collect all `{Project}.csproj.create.md` and `{Project}.csproj.extend.md`
    - Collect all class files nested under those project files
    - Normalize `{Module}` projects to generic module templates (see [Project name normalization](#project-name-normalization))
-5. Create `sln-{plateau-name}.skill.md` using [sln-{name}.skill.template.md](./templates/sln-{name}.skill.template.md)
+5. Create `sln-{plateau-name}.skill.md` using [sln-{name}.skill.template.md](skills/dotnet/architecture/design/plateau-create-by-solutions.skill/templates/sln-{name}.skill.template.md)
    - Aggregate all `Repository.create.md` files from {solutions}
    - Keep repository-level content only
-6. For each discovered project create `csproj-{normalized-name}.skill.md` using [csproj-{name}.skill.template.md](./templates/csproj-{name}.skill.template.md)
+6. For each discovered project create `csproj-{normalized-name}.skill.md` using [csproj-{name}.skill.template.md](skills/dotnet/architecture/design/plateau-create-by-solutions.skill/templates/csproj-{name}.skill.template.md)
    - Merge `.create.md` and all `.extend.md` files for the same project
    - Keep project-level content only
-7. For each discovered class create `class-{normalized-name}.skill.md` using [class-{name}.skill.template.md](./templates/class-{name}.skill.template.md)
+7. For each discovered class create `class-{normalized-name}.skill.md` using [class-{name}.skill.template.md](skills/dotnet/architecture/design/plateau-create-by-solutions.skill/templates/class-{name}.skill.template.md)
    - Merge `.cs.create.md` and `.cs.extend.md` files for the same class
    - Keep class-level content only
-8. Create `plateau-{plateau-name}.skill.md` using [plateau-{name}.skill.template.md](./templates/plateau-{name}.skill.template.md)
+8. Create `plateau-{plateau-name}.skill.md` using [plateau-{name}.skill.template.md](skills/dotnet/architecture/design/plateau-create-by-solutions.skill/templates/plateau-{name}.skill.template.md)
    - This is the plateau summary: goals, core principles, capabilities, use-cases
    - It is not a code-generation template; it explains what the plateau as a whole provides
 9. Fill every skill template with real content
