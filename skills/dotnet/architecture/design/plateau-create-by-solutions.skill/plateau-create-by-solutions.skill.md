@@ -217,14 +217,14 @@ Each bullet must contain **exactly two wikilinks separated by ` - `**:
 1. The parent solution skill file (`solution-*.skill.md`).
 2. The specific implementation/template file inside that solution that contributed the content.
 
-```markdown
+```example
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj extend]]
 ```
 
 When the content comes directly from the solution skill file and there is no separate implementation/template file, list the solution skill file once.
 
-```markdown
+```example
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]
 ```
@@ -240,7 +240,7 @@ The repository skill describes the whole solution. Its sections must stay at the
 - Show **only project directories**, the matching project template skill file, and a short description.
 - Do not list individual class skill files in this table.
 
-```markdown
+```example
 | `Directory\|file` | template link | Description |
 | ---------------- | ------------- | ----------- |
 | /Shared | [[csproj-Shared.skill.md\|csproj-Shared.skill]] | Cross-cutting primitives |
