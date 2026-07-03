@@ -82,7 +82,7 @@ entityBuilder.OwnsOne(e => e.Cash, money =>
 
 # Rule changes
 
-MUST:
+## MUST
 - One config class per entity
 - `TableName` defined as `public const string`
 - All index and constraint names defined as `public const string` constants on the config class
@@ -90,7 +90,7 @@ MUST:
 - All relations configured with `HasMany`/`HasOne`, `HasForeignKey`, and `OnDelete`
 - Registered via `ApplyConfigurationsFromAssembly` — never manually
 
-MUST NOT:
+## MUST NOT
 - Use EF data annotations on the domain entity (`[Column]`, `[Index]`, `[ForeignKey]`, etc.)
 - Define table names, column names, or constraint names as inline strings
 - Use `static` instead of `const` for `TableName`, index, or constraint names

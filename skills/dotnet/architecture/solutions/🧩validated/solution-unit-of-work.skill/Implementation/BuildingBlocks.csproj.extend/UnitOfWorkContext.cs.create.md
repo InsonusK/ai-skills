@@ -39,13 +39,13 @@ public class UnitOfWorkContext
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Registered as `Scoped` — never `Singleton` or `Transient`
 - Never injected into handlers — only `UnitOfWorkBehavior` uses it
 
-MUST NOT:
+## MUST NOT
 - Contain any business logic
 - Be used to share state between handlers beyond depth tracking
 

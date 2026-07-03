@@ -49,15 +49,15 @@ public static class PipelineRegistration
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - `PipelineRegistration` defined as a static class in `App.Host/DependencyInjection/PipelineRegistration.cs`
 - `AddPipeline()` is an extension method on `IServiceCollection`
 - `AddPipeline()` returns `IServiceCollection`
+- `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineRegistration.cs`
 
-MUST NOT:
+## MUST NOT
 - Register behaviors inside module registration methods
 - Define pipeline order in multiple files
 

@@ -43,7 +43,8 @@ public class GetTasksValidator : AbstractValidator<GetTasksQuery>
 ```
 
 # Rule changes
-MUST:
+
+## MUST
 - Extend `AbstractValidator<TQuery>`
 - Define all rules in the constructor
 - Enforce transport correctness only
@@ -51,7 +52,7 @@ MUST:
 - Live in `/{Module}.Application/Queries/{FeatureName}/{FeatureName}.Validator.cs`
 - Use `SetValidator` with injected `IValidator<T>` for `Soft{ValueObject}` and DTO properties from other modules
 
-MUST NOT:
+## MUST NOT
 - Inject repositories, `DbContext`, or services
 - Contain business rules
 - Duplicate rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator`

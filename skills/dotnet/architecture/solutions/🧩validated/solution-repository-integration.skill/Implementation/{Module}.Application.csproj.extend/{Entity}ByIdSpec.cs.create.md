@@ -40,14 +40,14 @@ public class {Entity}ByIdSpec : Specification<{Entity}>
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Inherit `Specification<T>`
 - Live in `/{Module}.Application/Specifications`
 - Be named `{Entity}ByIdSpec`
 
-MUST NOT:
+## MUST NOT
 - Call the database or reference DbContext
 - Contain business logic — filtering only
 

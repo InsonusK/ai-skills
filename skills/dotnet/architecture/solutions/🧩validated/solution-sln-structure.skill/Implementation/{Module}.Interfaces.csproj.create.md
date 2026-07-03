@@ -47,13 +47,13 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Interfaces contains only declarations — records, interfaces, DTOs
 - All commands declared here
 - All queries declared here
 - All integration events declared here
 
-MUST NOT:
+## MUST NOT
 - Interfaces reference Domain, Application, or any infrastructure project
 - Interfaces contain any implementation code
 

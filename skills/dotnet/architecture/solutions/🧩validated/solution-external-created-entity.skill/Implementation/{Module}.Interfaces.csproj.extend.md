@@ -27,12 +27,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `Guid` is the first property on the command record
 - Command implements both `ICommand<Result<T>>` and `IHasGuid`
 - `Guid` typed as `System.Guid` — never `string` or `int`
 
-MUST NOT:
+## MUST NOT
 - Reference BuildingBlocks — commands implement interfaces from Shared only
 - Update, delete, or internal-create commands implement `IHasGuid`
 

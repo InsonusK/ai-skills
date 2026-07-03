@@ -46,14 +46,18 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Only cross-module JOIN queries live here
 - Query handlers here implement contracts declared in module Interfaces
+- All cross-module reads go through MediatR query dispatch or App.Queries
+- App.Queries is the only place for cross-module JOIN queries
 
-MUST NOT:
+## MUST NOT
 - App.Queries contain write operations
 - App.Queries contain business logic
 - Single-module queries be placed here
+- Any module Application reference App.Queries
+- App.Queries be referenced by module Application or Domain
 
 # Anti-patterns
 - Putting single-module queries in App.Queries — belongs in module Application

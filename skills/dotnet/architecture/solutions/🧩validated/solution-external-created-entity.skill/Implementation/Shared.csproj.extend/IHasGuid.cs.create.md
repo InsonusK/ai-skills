@@ -30,14 +30,15 @@ public interface IHasGuid
     Guid Guid { get; }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Only create commands for externally-created entities implement `IHasGuid`
+- Create commands for external-created entities implement both `ICommand<Result<Create{Entity}Result>>` and `IHasGuid`
 
-MUST NOT:
+## MUST NOT
 - Update, delete, or internally-created entity commands implement `IHasGuid`
+- Update, delete, or internal-create commands implement `IHasGuid`
 
 # Anti-patterns
 - `IHasGuid` on query objects — has no meaning for reads

@@ -27,24 +27,32 @@ change_kind: extend
 | --- | --- | --- |
 | /DependencyInjection/ApiRegistration.cs | Controller registration and middleware configuration | |
 
-## NuGet Packages
+#
+
+# NuGet Packages
 | Package | Purpose |
 | --- | --- |
 | `Microsoft.AspNetCore` | `AddControllers`, `MapControllers`, `AddProblemDetails` |
 
-## Allowed Dependencies
+#
+
+# Allowed Dependencies
 - All `{Module}.Api` projects — added as application parts
 
 # Rules
 
-MUST:
+## MUST
 - `UseExceptionHandler()` registered before `MapControllers()` — unhandled exceptions produce `ProblemDetails`
 - All module Api assemblies added as application parts
 - All Minimal API endpoint groups mapped explicitly
 - `AddProblemDetails()` registered in DI
+- `App.Host` registers one `SwaggerDoc` per module using the module's `{Module}ApiSwaggerRegistration` constants
+- `App.Host` provides a single `DocInclusionPredicate` that delegates route matching to `{Module}ApiSwaggerRegistration.MatchesRoute`
+- `App.Host` registers one `SwaggerEndpoint` per module in `UseSwaggerUI`
 
-MUST NOT:
+## MUST NOT
 - Register controllers manually one by one — use `AddApplicationPart` with assembly references
+- Declare Swagger document metadata (document name, title, version, route matching) in `App.Host`
 
 # Anti-patterns
 - Missing `UseExceptionHandler()` before `MapControllers()`

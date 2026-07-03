@@ -56,7 +56,7 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Command handlers inject `IRepository<T>` from Shared
 - Query handlers inject `IReadRepository<T>` from Shared
 - All entity loading uses named specs — no inline `Where(...)` LINQ
@@ -64,7 +64,7 @@ MUST:
 - Every entity loadable by `Id` has a `{Entity}ByIdSpec`
 - Idempotency specs for event handlers live in `/Specifications` — not inside `/Features`
 
-MUST NOT:
+## MUST NOT
 - Any Application class reference `AppDbContext`
 - Query handlers inject `IRepository<T>`
 - Specs placed in `{Module}.Domain` — Application is the single spec location

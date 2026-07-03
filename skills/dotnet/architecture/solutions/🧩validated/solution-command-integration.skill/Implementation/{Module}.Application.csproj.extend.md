@@ -53,7 +53,7 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Each feature in its own subfolder under `/Features`
 - Handler file named `{FeatureName}.Handler.cs`
 - Handler class named `{FeatureName}Handler`
@@ -63,7 +63,7 @@ MUST:
 - Handlers registered via `AddMediatR` assembly scan
 - Validators registered via `AddValidatorsFromAssembly`
 
-MUST NOT:
+## MUST NOT
 - Pipeline behaviors registered inside module registration
 - Handler contain business logic — delegate to domain entities and services
 - Handler call `SaveChangesAsync`

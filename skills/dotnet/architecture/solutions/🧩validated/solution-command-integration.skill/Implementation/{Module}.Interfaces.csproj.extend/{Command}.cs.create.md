@@ -66,18 +66,29 @@ public record AssignTaskCommand(
     int AssigneeId
 ) : ICommand<Result>;
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Declared as `record`
 - Implement `ICommand<Result<T>>` or `ICommand<Result>` — never `IRequest<T>` directly
 - Result type declared in the same file as the command
 - Properties are primitives or simple types — no domain entity references
+- Commands declared as `record` in `/{Module}.Interfaces/Commands`
+- Result records declared in the same file as their command
+- One handler per command — `IRequestHandler<TCommand, Result<T>>`
+- One `AbstractValidator<TCommand>` per command — co-located with handler in feature folder
+- Validator extends `AbstractValidator<TCommand>`
+- When a command property is a `Soft{ValueObject}` from another module, inject `IValidator<Soft{ValueObject}>` and use `SetValidator`
+- When a command property is a DTO from another module, inject `IValidator<{Dto}>` and use `SetValidator`
 
-MUST NOT:
+## SHOULD
+- Validator rules cover all command properties that carry input constraints
+
+## MUST NOT
 - Command contain methods or logic
 - Command reference domain entity types as properties
+- Command properties reference domain entity types
+- Command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Express a named write intent as an immutable record that carries all input needed for the operation

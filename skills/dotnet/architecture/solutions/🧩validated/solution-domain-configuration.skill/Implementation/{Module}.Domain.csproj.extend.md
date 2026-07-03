@@ -45,12 +45,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - All EF configuration classes live in /{Module}.Domain/Configurations
 - One config class per entity — no shared configs
 - All configurations registered via `ApplyConfigurationsFromAssembly` in DbContext
 
-MUST NOT:
+## MUST NOT
 - Place EF config classes outside /Configurations folder
 - Use EF data annotations on domain entity classes
 - Put mapping logic directly in `DbContext.OnModelCreating`

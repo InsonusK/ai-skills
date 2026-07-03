@@ -73,12 +73,13 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Shared has zero project references
 - All types in Shared are purely cross-cutting primitives
 - `Shared.csproj` references `Ardalis.Result` when `ConflictResult<T>` is used
+- Shared has no project dependencies
 
-MUST NOT:
+## MUST NOT
 - Shared reference any module, BuildingBlocks, or infrastructure project
 - Shared contain business logic or domain rules
 - Shared contain implementations — only interfaces and primitives

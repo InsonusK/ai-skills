@@ -108,16 +108,26 @@ public sealed class Single{Entity}Controller : ControllerBase
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Named `Single{Entity}Controller`
 - Route attribute `[Route("{entity}/{id:int}")]`
 - Handle GET single, PUT, PATCH, DELETE, and domain action verbs on `/{entity}/{id}`
+- Every controller action dispatches exactly one `ISender.Send()` call
+- Entity lifecycle operations use Controllers — system/webhook/batch use Minimal API
+- Controllers inject `ISender` — never `IMediator`
+- Controller naming follows the five-type model: `{Entity}`, `Single{Entity}`, `Single{Entity}{Property}`, `{Entity}{Related}`, `Single{Entity}{Related}`
 
-MUST NOT:
+## SHOULD
+- `CreatedAtAction` reference the `Single{Entity}Controller.Get` method for 201 responses
+
+## MUST NOT
 - Handle collection-level operations — those belong in `{Entity}Controller`
+- Controller action contain business logic, validation, domain rules, or persistence
+- Controller reference Application, Domain, Infrastructure, or DbContext
+- Controller inject `IRepository<T>` or `IUnitOfWork`
+- Minimal API replace entity-lifecycle controllers
 
 # Anti-patterns
 - Returning 200 for update/delete — use 204 NoContent

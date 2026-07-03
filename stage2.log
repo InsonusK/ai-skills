@@ -1,0 +1,261 @@
+Processing skills\dotnet\architecture\solutions\🗑️deprecated\solution-middleware-registration.skill\solution-middleware-registration.skill.md
+  moved [MUST] to MiddlewareRegistration.cs.create.md: - `MiddlewareRegistration.cs` defined in `App.Host/DependencyInjection/Middlewar
+  moved [MUST] to MiddlewareRegistration.cs.create.md: - `UseMiddlewarePipeline()` called once from `Program.cs`
+  moved [MUST] to MiddlewareRegistration.cs.create.md: - All custom middleware registered inside `UseMiddlewarePipeline()` using `app.U
+  moved [MUST] to MiddlewareRegistration.cs.create.md: - Middleware registered in intended execution order
+  moved [MUST] to MiddlewareRegistration.cs.create.md: - `UseMiddlewarePipeline()` called after routing and before `MapControllers()` /
+  moved [SHOULD] to MiddlewareRegistration.cs.create.md: - Keep `UseMiddlewarePipeline()` the only method that adds custom HTTP middlewar
+  moved [MUST NOT] to MiddlewareRegistration.cs.create.md: - Register custom middleware inside module registration methods
+  moved [MUST NOT] to MiddlewareRegistration.cs.create.md: - Register custom middleware directly in `Program.cs`
+  moved [MUST NOT] to MiddlewareRegistration.cs.create.md: - Change middleware order in multiple files
+  moved [MUST NOT] to MiddlewareRegistration.cs.create.md: - Create multiple middleware registration extension methods
+  moved 10 bullets from solution-middleware-registration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-command-integration.skill\solution-command-integration.skill.md
+  moved [MUST] to ICommand.cs.create.md: - `ICommand` and `ICommand<TResponse>` defined in Shared — not BuildingBlocks, n
+  moved [MUST] to ICommand.cs.create.md: - All commands implement `ICommand<Result<T>>` — not `IRequest<T>` directly
+  moved [MUST] to {Command}.cs.create.md: - Commands declared as `record` in `/{Module}.Interfaces/Commands`
+  moved [MUST] to {Command}.cs.create.md: - Result records declared in the same file as their command
+  moved [MUST] to {Command}.cs.create.md: - One handler per command — `IRequestHandler<TCommand, Result<T>>`
+  moved [MUST] to Shared.csproj.extend.md: - Handlers inject `IRepository<T>` from Shared — never `DbContext`
+  moved [MUST] to {Command}.cs.create.md: - One `AbstractValidator<TCommand>` per command — co-located with handler in fea
+  moved [MUST] to {Command}.cs.create.md: - Validator extends `AbstractValidator<TCommand>`
+  moved [MUST] to {Command}.cs.create.md: - When a command property is a `Soft{ValueObject}` from another module, inject `
+  moved [MUST] to {Command}.cs.create.md: - When a command property is a DTO from another module, inject `IValidator<{Dto}
+  moved [SHOULD] to {Command}.cs.create.md: - Validator rules cover all command properties that carry input constraints
+  moved [MUST NOT] to {Command}.cs.create.md: - Command properties reference domain entity types
+  moved [MUST NOT] to ICommand.cs.create.md: - `ICommand` defined in BuildingBlocks — belongs in Shared
+  moved [MUST NOT] to Shared.csproj.extend.md: - Validator be shared across multiple commands
+  moved [MUST NOT] to {Command}.cs.create.md: - Command validator duplicates rules already defined in `{ValueObject}PropertyVa
+  moved 15 bullets from solution-command-integration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-domain-behaviour.skill\solution-domain-behaviour.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-domain-configuration.skill\solution-domain-configuration.skill.md
+  moved [MUST] to {Entity}.cs.extend.md: - One `IEntityTypeConfiguration<T>` per entity
+  moved 1 bullets from solution-domain-configuration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-entity-classification.skill\solution-entity-classification.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-entity-concurrency-change.skill\solution-entity-concurrency-change.skill.md
+  moved [MUST] to IVersioned.cs.create.md: - Every mutable entity implements `IVersioned`
+  moved [MUST] to {EntityName}.cs.extend.md: - Every mutable entity config class declares a public `const string VersionedEnt
+  moved [MUST] to IHasVersions.cs.create.md: - All update and patch commands implement `IHasVersions`
+  moved [MUST] to EntityVersionResolverFactory.cs.create.md: - `IVersioned`, `IHasVersions`, `IEntityVersionResolverFactory`, and `IEntityVer
+  moved [MUST] to ConcurrencyBehavior.cs.create.md: - `ETagEncoder` and `ConcurrencyBehavior` live in BuildingBlocks
+  moved [MUST] to EntityVersionResolverFactory.cs.create.md: - `EntityVersionResolverFactory` lives in App.Infrastructure and maps entity nam
+  moved [MUST] to IEntityVersionResolver.cs.create.md: - `{Module}.Application` provides one `{Entity}VersionResolver` implementation o
+  moved [MUST] to {EntityName}.cs.extend.md: - Each `{Entity}VersionResolver` declares `public const string VersionedEntityNa
+  moved [MUST] to EntityVersionResolverRegistration.cs.create.md: - `EntityVersionResolverFactory` registered as `Scoped` in App.Host via `EntityV
+  moved [MUST] to App.Host.csproj.extend.md: - Module `IEntityVersionResolver` implementations registered as `Scoped` in App.
+  moved [MUST] to App.Host.csproj.extend.md: - `EntityVersionResolverFactory` receives module Domain assemblies and module Ap
+  moved [MUST] to EntityVersionResolverFactory.cs.create.md: - Entity name keys in `IHasVersions` and `EntityVersionResolverFactory` are stab
+  moved [MUST] to App.Host.csproj.extend.md: - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Ho
+  moved [MUST] to ConcurrencyBehavior.cs.create.md: - `ConcurrencyBehavior` returns `Result.Conflict` on version mismatch — never th
+  moved [MUST] to ConcurrencyBehavior.cs.create.md: - `ConcurrencyBehavior` returns `Result.NotFound` if resolver reports `0`
+  moved [MUST] to ConcurrencyBehavior.cs.create.md: - `ConcurrencyBehavior` returns `Result.Error` for unknown entity name
+  moved [MUST NOT] to IVersioned.cs.create.md: - Immutable entities have `Version` property or implement `IVersioned`
+  moved [MUST NOT] to IHasVersions.cs.create.md: - Create or delete commands implement `IHasVersions`
+  moved [MUST NOT] to ConcurrencyBehavior.cs.create.md: - Handler check versions manually — `ConcurrencyBehavior` owns this
+  moved [MUST NOT] to Single{Entity}Controller.cs.extend.md: - Controller return 400 for missing `If-Match` — 412 Precondition Failed is corr
+  moved [MUST NOT] to ConcurrencyBehavior.cs.create.md: - `ConcurrencyBehavior` call `SaveChangesAsync`
+  moved [MUST NOT] to ConcurrencyBehavior.cs.create.md: - `ConcurrencyBehavior` load entities directly — it delegates to `IEntityVersion
+  moved [MUST NOT] to BuildingBlocks.csproj.extend.md: - Generic `ByIdSpec` live in BuildingBlocks — per-entity specs belong in `{Modul
+  moved [MUST NOT] to App.Infrastructure.csproj.extend.md: - `IEntityVersionResolver` implementations live in App.Infrastructure or Buildin
+  moved 24 bullets from solution-entity-concurrency-change.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-entity-edit-timestamp.skill\solution-entity-edit-timestamp.skill.md
+  moved [MUST] to ICommandWithTimestamp.cs.create.md: - `ICreationInfoModelReadOnly`, `ICreationInfoModel`, `IUpdateInfoModelReadOnly`
+  moved [MUST] to ICreationInfoModel.cs.create.md: - `Internal Mutable` and `External Mutable` entities implement both `ICreationIn
+  moved [MUST] to ICreationInfoModel.cs.create.md: - `External Immutable` entities implement `ICreationInfoModel` only.
+  moved [MUST] to AppDbContext.cs.extend.md: - `Internal Immutable` entities implement none of the timestamp interfaces.
+  moved [MUST] to AppDbContext.cs.extend.md: - Timestamp properties on entities are `DateTimeOffset` with `internal set`.
+  moved [MUST] to ICommandWithTimestamp.cs.create.md: - Commands that create or update a timestamped entity implement `ICommandWithTim
+  moved [MUST] to ICommandWithTimestamp.cs.create.md: - `ActionTimeStamp` is the first property on commands that implement `ICommandWi
+  moved [MUST] to {Command}.cs.extend.md: - Command validators check that `ActionTimeStamp` is not `default(DateTimeOffset
+  moved [MUST] to AppDbContext.cs.extend.md: - Create handlers for mutable entities set both `UserCreatedDateTime` and `UserU
+  moved [MUST] to AppDbContext.cs.extend.md: - Update handlers set only `UserUpdatedDateTime` to `ActionTimeStamp`.
+  moved [MUST] to AppDbContext.cs.extend.md: - Create handlers for `External Immutable` entities set only `UserCreatedDateTim
+  moved [MUST] to AppDbContext.cs.extend.md: - `AppDbContext` overrides both `SaveChanges()` and `SaveChangesAsync(Cancellati
+  moved [MUST] to ICreationInfoModel.cs.create.md: - `OnBeforeSaving()` sets `ServerCreatedDateTime` for `Added` entries that imple
+  moved [MUST] to IUpdateInfoModel.cs.create.md: - `OnBeforeSaving()` sets `ServerUpdatedDateTime` for `Added` or `Modified` entr
+  moved [MUST] to AppDbContext.cs.extend.md: - EF configuration maps timestamp properties as required `DateTimeOffset` column
+  moved [MUST] to AppDbContext.cs.extend.md: - Handlers never assign server timestamps.
+  moved [MUST] to AppDbContext.cs.extend.md: - `AppDbContext` never assigns user timestamps.
+  moved [SHOULD] to {Command}.cs.extend.md: - Keep timestamp interfaces and the command marker free of behavior logic.
+  moved [SHOULD] to {Command}.cs.extend.md: - Name the command timestamp property `ActionTimeStamp` consistently.
+  moved [SHOULD] to Shared.csproj.extend.md: - Place the timestamp command marker in `Shared.Timestamps` to keep it independe
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Add timestamp fields to `Internal Immutable` entities.
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Add update timestamp fields to `External Immutable` entities.
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Validate `ActionTimeStamp` inside handlers.
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Set user timestamps in `AppDbContext`.
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Set server timestamps in handlers.
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Use `DateTime` instead of `DateTimeOffset` for timestamp fields.
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Allow `ActionTimeStamp` to be in the future.
+  moved [MUST NOT] to AppDbContext.cs.extend.md: - Use EF attributes on entities for timestamp mapping.
+  moved 28 bullets from solution-entity-edit-timestamp.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-external-created-entity.skill\solution-external-created-entity.skill.md
+  moved [MUST] to IGuidResolver.cs.create.md: - `IHasGuid`, `IGuidResolver<TResponse>` defined in Shared
+  moved [MUST] to ConflictResult.cs.create.md: - `ConflictResult<T>` defined in `Shared/Results/ConflictResult.cs`
+  moved [MUST] to GuidResolvingBehavior.cs.create.md: - `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavi
+  moved [MUST] to GuidResolvingBehavior.cs.create.md: - `GuidResolvingBehavior` constrained to `where TRequest : IHasGuid`
+  moved [MUST] to IHasGuid.cs.create.md: - Create commands for external-created entities implement both `ICommand<Result<
+  moved [MUST] to {Command}.cs.extend.md: - `Guid` is first property in create command record
+  moved [MUST] to IGuidResolver.cs.create.md: - Each `IGuidResolver<TResponse>` registered as `Scoped` in module DI registrati
+  moved [MUST] to IGuidResolver.cs.create.md: - `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, 
+  moved [MUST] to IGuidResolver.cs.create.md: - `IGuidResolver<TResponse>` `TResponse` matches the command handler response ty
+  moved [MUST] to ConflictResult.cs.create.md: - Resolver returns `ConflictResult<Create{Entity}Result>` when entity exists — s
+  moved [MUST] to GuidResolvingBehavior.cs.create.md: - `GuidResolvingBehavior` returns the resolver's result when it returns non-null
+  moved [MUST] to ConflictResult.cs.create.md: - API layer maps `ConflictResult<Create{Entity}Result>` to HTTP 409 with the res
+  moved [SHOULD] to {Command}.cs.extend.md: - `Guid` be the first property in the command record — signals external-created 
+  moved [MUST NOT] to IHasGuid.cs.create.md: - Update, delete, or internal-create commands implement `IHasGuid`
+  moved [MUST NOT] to IGuidResolver.cs.create.md: - `IGuidResolver` registered as open generic — each entity type registers its ow
+  moved [MUST NOT] to {Command}.cs.extend.md: - Resolver return a different response type than the command handler
+  moved [MUST NOT] to GuidResolvingBehavior.cs.create.md: - `GuidResolvingBehavior` throw exceptions for duplicate Guid detection
+  moved [MUST NOT] to GuidResolvingBehavior.cs.create.md: - `GuidResolvingBehavior` construct response DTOs
+  moved 18 bullets from solution-external-created-entity.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-http-api-publication.skill\solution-http-api-publication.skill.md
+  moved [MUST] to Single{Entity}Controller.cs.create.md: - Every controller action dispatches exactly one `ISender.Send()` call
+  moved [MUST] to Single{Entity}Controller.cs.create.md: - Entity lifecycle operations use Controllers — system/webhook/batch use Minimal
+  moved [MUST] to Single{Entity}Controller.cs.create.md: - Controllers inject `ISender` — never `IMediator`
+  moved [MUST] to Single{Entity}Controller.cs.create.md: - Controller naming follows the five-type model: `{Entity}`, `Single{Entity}`, `
+  moved [MUST] to App.Host.csproj.extend.md: - `App.Host` registers one `SwaggerDoc` per module using the module's `{Module}A
+  moved [MUST] to App.Host.csproj.extend.md: - `App.Host` provides a single `DocInclusionPredicate` that delegates route matc
+  moved [MUST] to App.Host.csproj.extend.md: - `App.Host` registers one `SwaggerEndpoint` per module in `UseSwaggerUI`
+  moved [SHOULD] to Single{Entity}Controller.cs.create.md: - `CreatedAtAction` reference the `Single{Entity}Controller.Get` method for 201 
+  moved [MUST NOT] to Single{Entity}Controller.cs.create.md: - Controller action contain business logic, validation, domain rules, or persist
+  moved [MUST NOT] to Single{Entity}Controller.cs.create.md: - Controller reference Application, Domain, Infrastructure, or DbContext
+  moved [MUST NOT] to Single{Entity}Controller.cs.create.md: - Controller inject `IRepository<T>` or `IUnitOfWork`
+  moved [MUST NOT] to Single{Entity}Controller.cs.create.md: - Minimal API replace entity-lifecycle controllers
+  moved [MUST NOT] to App.Host.csproj.extend.md: - Declare Swagger document metadata (document name, title, version, route matchi
+  moved 13 bullets from solution-http-api-publication.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-pipeline-registration-order.skill\solution-pipeline-registration-order.skill.md
+  moved [MUST] to PipelineRegistration.cs.extend.md: - `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineReg
+  moved [MUST] to App.Host.csproj.extend.md: - Pipeline behaviors registered in App.Host — never inside a module's registrati
+  moved 2 bullets from solution-pipeline-registration-order.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-pipeline-registration.skill\solution-pipeline-registration.skill.md
+  moved [MUST] to PipelineRegistration.cs.create.md: - `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineReg
+  moved [MUST] to App.Host.csproj.extend.md: - Pipeline behaviors registered in App.Host — never inside a module's registrati
+  moved 2 bullets from solution-pipeline-registration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-query-integration.skill\solution-query-integration.skill.md
+  moved [MUST] to IQuery.cs.create.md: - `IQuery<TResponse>` defined in Shared — not BuildingBlocks, not any module
+  moved [MUST] to IQuery.cs.create.md: - `IQuery` does not extend `ICommand` — queries are read-only operations and mus
+  moved [MUST] to IQuery.cs.create.md: - All queries implement `IQuery<Result<T>>` — not `IRequest<T>` directly
+  moved [MUST] to {Dto}.cs.create.md: - DTOs declared as `record` in `/{Module}.Interfaces/DTOs`
+  moved [MUST] to {Dto}.cs.create.md: - Every DTO has a matching `{Dto}Validator` in `{Module}.Application/Validators`
+  moved [MUST] to App.Queries.csproj.extend.md: - Cross-module handlers in `/App.Queries/Queries/{QueryName}` — inject DbContext
+  moved [MUST] to CrossModuleQueryHandler.cs.create.md: - Cross-module handlers apply `AsNoTracking()` on all queries
+  moved [MUST] to App.Host.csproj.extend.md: - App.Queries handlers registered via `RegisterAppQueries()` assembly scan in Ap
+  moved [MUST] to {Query}.cs.create.md: - Query handlers return `Result.NotFound()` when entity is missing
+  moved [MUST] to App.Host.csproj.extend.md: - `RegisterAppQueries()` called from App.Host — after all module registrations
+  moved [MUST] to {Dto}.cs.create.md: - Query transport validators use `SetValidator` with `IValidator<Soft{ValueObjec
+  moved [SHOULD] to {Dto}.cs.create.md: - Use projection spec when DTO maps directly from entity fields — avoids loading
+  moved [SHOULD] to {Dto}.cs.create.md: - Use in-handler mapping when DTO requires computed fields, conditional logic, o
+  moved [MUST NOT] to {Query}.cs.create.md: - Query handler inject `IRepository<T>` — signals write intent, use `IReadReposi
+  moved [MUST NOT] to {Query}.cs.create.md: - Query handler inject `IUnitOfWork` or call `SaveChangesAsync`
+  moved [MUST NOT] to {Query}.cs.create.md: - Query handler modify entity state or dispatch commands
+  moved [MUST NOT] to CrossModuleQueryHandler.cs.create.md: - Cross-module handler live in `{Module}.Application` — Application has no multi
+  moved [MUST NOT] to {Dto}.cs.create.md: - DTOs expose domain entity types
+  moved [MUST NOT] to IQuery.cs.create.md: - `IQuery` extend `ICommand` — queries must remain distinct from write-side mark
+  moved [MUST NOT] to {Dto}.cs.create.md: - Query validator duplicates rules already defined in `{ValueObject}PropertyVali
+  moved [MUST NOT] to CrossModuleQueryHandler.cs.create.md: - Cross-module handlers do not use `Include()` — all mapping is done in handler 
+  moved 21 bullets from solution-query-integration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-repository-integration.skill\solution-repository-integration.skill.md
+  moved [MUST] to Repository.cs.create.md: - `IReadRepository<T>` and `IRepository<T>` defined in Shared, inheriting Ardali
+  moved [MUST] to Repository.cs.create.md: - `IRepository<T>` extends `IReadRepository<T>` and `IRepositoryBase<T>`
+  moved [MUST] to Repository.cs.create.md: - `IRepository<T>` has no `SaveChangesAsync` — committing belongs to Unit of Wor
+  moved [MUST] to Repository.cs.create.md: - Single generic `Repository<T>` in App.Infrastructure, inheriting `RepositoryBa
+  moved [MUST] to Repository.cs.create.md: - `Repository<T>` implements `IRepository<T>`
+  moved [MUST] to Repository.cs.create.md: - `Repository<T>` constructor receives `AppDbContext` and passes it to the Ardal
+  moved [MUST] to App.Host.csproj.extend.md: - Open generic DI registration in App.Host for both `IRepository<>` and `IReadRe
+  moved [MUST] to Repository.cs.create.md: - All repository read methods accept `ISpecification<T>` — no raw lambda or LINQ
+  moved [MUST] to Repository.cs.create.md: - Command handlers inject `IRepository<T>`
+  moved [MUST] to Repository.cs.create.md: - Query handlers inject `IReadRepository<T>`
+  moved [MUST NOT] to Repository.cs.create.md: - Per-entity repository subclass be created
+  moved [MUST NOT] to Repository.cs.create.md: - `Repository<T>` call `SaveChangesAsync`
+  moved [MUST NOT] to Repository.cs.create.md: - Raw LINQ predicates appear in repository method signatures
+  moved 13 bullets from solution-repository-integration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-sln-structure.skill\solution-sln-structure.skill.md
+  moved [MUST] to App.Queries.csproj.create.md: - All cross-module reads go through MediatR query dispatch or App.Queries
+  moved [MUST] to App.Host.csproj.create.md: - App.Host is the only composition root
+  moved [MUST] to App.Infrastructure.csproj.create.md: - App.Infrastructure is the only project with DbContext
+  moved [MUST] to App.Queries.csproj.create.md: - App.Queries is the only place for cross-module JOIN queries
+  moved [MUST] to Shared.csproj.create.md: - Shared has no project dependencies
+  moved [MUST] to BuildingBlocks.csproj.create.md: - BuildingBlocks depends only on Shared
+  moved [MUST] to BuildingBlocks.csproj.create.md: - BuildingBlocks does not define common interfaces — only implements patterns us
+  moved [MUST] to App.Host.csproj.create.md: - App.Host references BuildingBlocks; modules and other layers reference Shared 
+  moved [MUST] to App.Host.csproj.create.md: - Pipeline behaviors registered once in App.Host
+  moved [MUST NOT] to App.Infrastructure.csproj.create.md: - Any module Application reference App.Infrastructure
+  moved [MUST NOT] to App.Queries.csproj.create.md: - Any module Application reference App.Queries
+  moved [MUST NOT] to App.Queries.csproj.create.md: - App.Queries be referenced by module Application or Domain
+  moved 12 bullets from solution-sln-structure.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-soft-value-objects-and-dto-validators.skill\solution-soft-value-objects-and-dto-validators.skill.md
+  moved [MUST] to {ValueObject}.cs.extend.md: - For every `{ValueObject}` in `/{Module}.Domain/ValueObjects` there is a `Soft{
+  moved [MUST] to {ValueObject}.cs.extend.md: - `/{Module}.Domain/ValueObjects/{ValueObject}.cs` inherits from `{Module}.Inter
+  moved [MUST] to {ValueObject}.cs.extend.md: - `Soft{ValueObject}` does not validate values in its constructor or properties
+  moved [MUST] to {ValueObject}.cs.extend.md: - `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its c
+  moved [MUST] to {ValueObject}.cs.extend.md: - For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `
+  moved [MUST] to {ValueObject}.cs.extend.md: - DTO value-concept properties are `Soft{ValueObject}` types, not primitives
+  moved [MUST] to {ValueObject}.cs.extend.md: - DTO validators use `SetValidator(IValidator<Soft{ValueObject}>)` for every val
+  moved [MUST] to {ValueObject}.cs.extend.md: - Rule provides a `Soft{ValueObject}` overload in addition to the primitive over
+  moved [MUST] to {ValueObject}PropertyValidator.cs.create.md: - Domain Value Object validates values by calling the same Rule that the Propert
+  moved [MUST] to {ValueObject}.cs.extend.md: - `{Module}.Domain.csproj` references `{Module}.Interfaces.csproj` for the `Soft
+  moved [SHOULD] to {ValueObject}.cs.extend.md: - Keep `Soft{ValueObject}` immutable except for allowing invalid values (use `in
+  moved [SHOULD] to {ValueObject}.cs.extend.md: - Name property validator `{ValueObject}PropertyValidator`
+  moved [MUST NOT] to {ValueObject}.cs.extend.md: - `Soft{ValueObject}` throw exceptions for invalid values
+  moved [MUST NOT] to {ValueObject}PropertyValidator.cs.create.md: - Domain Value Object skip validation
+  moved 14 bullets from solution-soft-value-objects-and-dto-validators.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-unit-of-work.skill\solution-unit-of-work.skill.md
+  moved [MUST] to UnitOfWork.cs.create.md: - `IUnitOfWork` defined in Shared — single `SaveChangesAsync` method only
+  moved [MUST] to UnitOfWork.cs.create.md: - `UnitOfWorkContext` defined in BuildingBlocks — registered as `Scoped`
+  moved [MUST] to UnitOfWork.cs.create.md: - `UnitOfWorkBehavior` defined in BuildingBlocks — constrained to `ICommand` onl
+  moved [MUST] to UnitOfWork.cs.create.md: - `UnitOfWork` implementation in App.Infrastructure
+  moved [MUST] to UnitOfWork.cs.create.md: - `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` — depth always
+  moved [MUST] to UnitOfWork.cs.create.md: - `UnitOfWorkBehavior` commits only when `_context.Depth == 1`
+  moved [MUST] to UnitOfWork.cs.create.md: - `IUnitOfWork` and `UnitOfWorkContext` registered as `Scoped`
+  moved [MUST] to App.Host.csproj.extend.md: - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Ho
+  moved [MUST NOT] to UnitOfWork.cs.create.md: - Any handler call `SaveChangesAsync` or inject `IUnitOfWork`
+  moved [MUST NOT] to UnitOfWork.cs.create.md: - `UnitOfWorkBehavior` activate on queries — constrained to `ICommand`
+  moved [MUST NOT] to UnitOfWork.cs.create.md: - `UnitOfWorkContext` registered as `Singleton` or `Transient`
+  moved [MUST NOT] to UnitOfWork.cs.create.md: - `UnitOfWork` contain logic beyond `DbContext.SaveChangesAsync` delegation
+  moved [MUST NOT] to UnitOfWork.cs.create.md: - `UnitOfWorkBehavior` contain a catch/rollback block — EF implicit transactions
+  moved [MUST NOT] to UnitOfWork.cs.create.md: - `IUnitOfWork` defined in BuildingBlocks — belongs in Shared
+  moved 14 bullets from solution-unit-of-work.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-validation-behavior.skill\solution-validation-behavior.skill.md
+  moved [MUST] to ValidationBehavior.cs.create.md: - `ValidationBehavior` defined in `BuildingBlocks/MediatR/ValidationBehavior.cs`
+  moved [MUST] to ValidationBehavior.cs.create.md: - `ValidationBehavior` constrained to `where TRequest : IRequest<TResponse>` and
+  moved [MUST NOT] to ValidationBehavior.cs.create.md: - Contain any command-specific conditions in `ValidationBehavior`
+  moved 3 bullets from solution-validation-behavior.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-value-objects-and-rules.skill\solution-value-objects-and-rules.skill.md
+  moved [MUST] to {ValueObject}.cs.create.md: - All Value Objects declared as `sealed record`
+  moved [MUST] to {ValueObject}.cs.create.md: - All Value Objects immutable — no public setters
+  moved [MUST] to {ValueObject}.cs.create.md: - All Value Objects self-validating — throw `DomainException` on invalid constru
+  moved [MUST] to Shared.csproj.extend.md: - Value Objects live in `/{Module}.Domain/ValueObjects` or `/Shared/ValueObjects
+  moved [MUST] to {Entity}.cs.extend.md: - Multi-property VO has `OwnsOne` EF configuration on owning entity
+  moved [MUST] to {Rule}.cs.create.md: - All rules implemented as static extension methods
+  moved [MUST] to {Rule}.cs.create.md: - Rules return `bool` — caller decides whether to throw
+  moved [MUST] to {Rule}.cs.create.md: - Rules are stateless and deterministic
+  moved [MUST] to {Rule}.cs.create.md: - Primitive rule is single source of truth — VO rules delegate to it
+  moved [MUST] to Shared.csproj.extend.md: - All rules live in `/{Module}.Domain/Rules` or `/Shared/Rules` when cross-modul
+  moved [MUST] to {Rule}.cs.create.md: - Named `{Type}Rules` for primitive/VO rules, `{Condition}Rule` for contextual r
+  moved [MUST] to Shared.csproj.extend.md: - Extract reusable VO/rule to Shared.csproj when used by two or more modules
+  moved [MUST] to {Entity}.cs.extend.md: - Use Value Object on Entity property when the value has invariant state or carr
+  moved [MUST] to {Entity}.cs.extend.md: - Entity properties other than `Id` and `Version` must be Value Object types, un
+  moved [MUST] to {Rule}.cs.create.md: - If a property has any validation rule beyond the generic type's contract, the 
+  moved [MUST] to {Rule}.cs.create.md: - Value Object validates values only through Rules — inline validation logic is 
+  moved [MUST] to {Entity}.cs.extend.md: - Call domain rules inside entity methods before mutating state
+  moved [MUST] to {Entity}.cs.extend.md: - Throw `DomainException` when a rule returns `false` — the entity enforces, the
+  moved [MUST] to {Entity}.cs.extend.md: - Configure multi-property Value Objects with `OwnsOne` in the entity's EF confi
+  moved [SHOULD] to {Rule}.cs.create.md: - Complex invariant logic extracted to domain rule
+  moved [SHOULD] to {Rule}.cs.create.md: - Rules be synchronous
+  moved [SHOULD] to {Rule}.cs.create.md: - Rules avoid allocations
+  moved [SHOULD] to {Rule}.cs.create.md: - Use the most specific rule available (primitive, VO, or contextual) for the co
+  moved [MUST NOT] to {ValueObject}.cs.create.md: - Value Object depend on infrastructure, repositories, or application services
+  moved [MUST NOT] to {ValueObject}.cs.create.md: - Value Object expose public setters
+  moved [MUST NOT] to {Entity}.cs.extend.md: - Value Object be used to carry identity — use entity Id for that
+  moved [MUST NOT] to {Rule}.cs.create.md: - Rule throw exceptions internally
+  moved [MUST NOT] to {Rule}.cs.create.md: - Rule depend on EF Core, FluentValidation, ASP.NET, HttpContext, or any infrast
+  moved [MUST NOT] to {Rule}.cs.create.md: - Rule mutate any object
+  moved [MUST NOT] to {Rule}.cs.create.md: - Rule duplicate logic that already exists in another rule
+  moved [MUST NOT] to {Rule}.cs.create.md: - Rule be instantiated with `new` — always static
+  moved [MUST NOT] to {Entity}.cs.extend.md: - Reimplement rule logic inline inside entity methods — always delegate to exist
+  moved [MUST NOT] to {Rule}.cs.create.md: - Mutate state before validating with rules
+  moved [MUST NOT] to {Rule}.cs.create.md: - Duplicate the same VO/rule logic across multiple module Domain projects
+  moved [MUST NOT] to {Entity}.cs.extend.md: - Use primitive type on Entity property when the value carries business meaning 
+  moved [MUST NOT] to {Rule}.cs.create.md: - Allow inline validation logic inside a Value Object constructor — always deleg
+  moved [MUST NOT] to {Entity}.cs.extend.md: - Expose a primitive Entity property when a Value Object could enforce the same 
+  moved 37 bullets from solution-value-objects-and-rules.skill.md

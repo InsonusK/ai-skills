@@ -113,14 +113,14 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Map every timestamp property that exists on the entity as `.IsRequired()`.
 - Use `DateTimeOffset` properties on the entity.
 - Keep timestamp mapping in the configuration class.
 
-MUST NOT:
+## MUST NOT
 - Map timestamp columns on `Internal Immutable` entities.
 - Map `ServerUpdatedDateTime` or `UserUpdatedDateTime` on `External Immutable` entities.
 - Use EF attributes on the entity.

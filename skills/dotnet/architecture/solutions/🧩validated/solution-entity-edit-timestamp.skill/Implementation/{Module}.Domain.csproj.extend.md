@@ -42,7 +42,7 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `External Immutable` entities implement `ICreationInfoModel` only.
 - `Internal Mutable` and `External Mutable` entities implement both `ICreationInfoModel` and `IUpdateInfoModel`.
 - `Internal Immutable` entities implement none of the timestamp interfaces.
@@ -50,7 +50,7 @@ MUST:
 - Mutable timestamp interface setters are implemented explicitly so the class-level setter remains `internal`.
 - EF configuration maps timestamp properties as required `DateTimeOffset` columns.
 
-MUST NOT:
+## MUST NOT
 - Add timestamp fields to `Internal Immutable` entities.
 - Add update timestamp fields to `External Immutable` entities.
 - Use EF attributes on the entity class or properties.

@@ -65,11 +65,13 @@ builder.Services
 
 # Rules
 
-MUST:
+## MUST
 - `RegisterAppQueries()` called from App.Host
 - Called after all module registrations — App.Queries depends on module entity types
+- App.Queries handlers registered via `RegisterAppQueries()` assembly scan in App.Host
+- `RegisterAppQueries()` called from App.Host — after all module registrations
 
-MUST NOT:
+## MUST NOT
 - Call `RegisterAppQueries()` from inside any module registration method
 
 # Anti-patterns

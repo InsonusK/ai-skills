@@ -48,11 +48,11 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Domain depends only on Shared and EF Core (for IEntityTypeConfiguration only)
 - All entities live in /{Module}.Domain/Entities
 
-MUST NOT:
+## MUST NOT
 - Domain reference any other module's project
 - Domain use EF Core beyond IEntityTypeConfiguration
 

@@ -33,13 +33,16 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `IEntityVersionResolverFactory` registered as `Scoped`
 - `EntityVersionResolverFactory` receives all module Domain assemblies that contain versioned entities
 - `EntityVersionResolverFactory` receives all module Application assemblies that contain `IEntityVersionResolver` implementations
 - Register every module `IEntityVersionResolver` implementation as `Scoped`
+- Module `IEntityVersionResolver` implementations registered as `Scoped` in App.Host
+- `EntityVersionResolverFactory` receives module Domain assemblies and module Application assemblies from App.Host
+- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
 
-MUST NOT:
+## MUST NOT
 - `IEntityVersionResolverFactory` registered as `Singleton`
 - Change the signature of `RepositoryRegistration.AddRepositories`
 

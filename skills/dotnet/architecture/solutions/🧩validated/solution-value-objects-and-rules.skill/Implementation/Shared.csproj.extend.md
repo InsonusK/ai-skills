@@ -53,12 +53,15 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - A VO or rule lives in Shared only when used by two or more modules
 - Shared VOs follow the same `sealed record`, immutable, self-validating rules as module VOs
 - Shared rules follow the same static extension method, bool-return, stateless rules as module rules
+- Value Objects live in `/{Module}.Domain/ValueObjects` or `/Shared/ValueObjects` when cross-module
+- All rules live in `/{Module}.Domain/Rules` or `/Shared/Rules` when cross-module
+- Extract reusable VO/rule to Shared.csproj when used by two or more modules
 
-MUST NOT:
+## MUST NOT
 - Place module-specific VO or rule in Shared
 - Add project references to Shared.csproj
 - Put business logic in Shared VOs or rules

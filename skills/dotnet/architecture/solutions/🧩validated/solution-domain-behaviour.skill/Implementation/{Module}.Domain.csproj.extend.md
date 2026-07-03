@@ -57,18 +57,18 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Every property mutation validates state through domain rules before assigning
 - Entity methods throw `DomainException` when a rule returns `false`
 - Static service extension methods live in `{Module}.Domain/Services`
 - Static service extension methods use existing domain rules from `{Module}.Domain/Rules`
 - A single entity property must not have multiple uncoordinated public mutation points
 
-SHOULD:
+## SHOULD
 - Prefer thin entity methods that delegate rule checks and then call a single setter
 - Name service files after the behavior they encapsulate, e.g. `OrderPricingService.cs`
 
-MUST NOT:
+## MUST NOT
 - Duplicate invariant logic across setters, entity methods, or service extensions
 - Mutate entity state in a service extension without going through the entity's own guarded method or setter
 - Allow public setters that bypass rule validation

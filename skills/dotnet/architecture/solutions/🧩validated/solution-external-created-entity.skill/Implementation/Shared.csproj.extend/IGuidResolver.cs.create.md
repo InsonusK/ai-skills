@@ -34,18 +34,22 @@ public interface IGuidResolver<TResponse>
     Task<TResponse?> ResolveAsync(Guid guid, CancellationToken ct);
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - `TResponse` matches the command's return type exactly — same type as the command's `ICommand<TResponse>`
 - Return null when Guid not found — never throws
 - Return the existing command response when Guid found — same type as handler success response
+- `IHasGuid`, `IGuidResolver<TResponse>` defined in Shared
+- Each `IGuidResolver<TResponse>` registered as `Scoped` in module DI registration
+- `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, non-null means conflict
+- `IGuidResolver<TResponse>` `TResponse` matches the command handler response type exactly
 
-MUST NOT:
+## MUST NOT
 - Throw exceptions — null is the only "not found" signal
 - Return a different response type than the command handler — breaks API contract symmetry
 - Be defined in BuildingBlocks — it is a contract consumed by multiple layers
+- `IGuidResolver` registered as open generic — each entity type registers its own concrete resolver
 
 # Anti-patterns
 - `IGuidResolver` without generic parameter — would require casting and lose type safety

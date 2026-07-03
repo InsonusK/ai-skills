@@ -47,14 +47,14 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - `UX_Guid` defined as `public static string` on the config class
 - `HasDatabaseName(UX_Guid)` used — never inline string
 - `IsUnique()` on the `Guid` index
 
-MUST NOT:
+## MUST NOT
 - Use inline string for index name
 
 # Anti-patterns

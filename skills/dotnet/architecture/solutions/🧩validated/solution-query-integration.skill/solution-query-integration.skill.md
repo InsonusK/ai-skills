@@ -111,36 +111,37 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `IQuery<TResponse>` defined in Shared — not BuildingBlocks, not any module
-- `IQuery` does not extend `ICommand` — queries are read-only operations and must remain distinct from write-side markers
-- All queries implement `IQuery<Result<T>>` — not `IRequest<T>` directly
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+- [[./Implementation/App.Queries.csproj.extend.md#MUST|App.Queries.csproj.extend]]
+	- [[./Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md#MUST|AppQueriesRegistration.cs.create]]
+	- [[./Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md#MUST|CrossModuleQueryHandler.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md#MUST|{FeatureName}.Handler.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md#MUST|{FeatureName}.Validator.cs.create]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md#MUST|{Query}.cs.create]]
 - Queries declared as `record` in `/{Module}.Interfaces/Queries`
-- DTOs declared as `record` in `/{Module}.Interfaces/DTOs`
-- Every DTO has a matching `{Dto}Validator` in `{Module}.Application/Validators` from `solution-soft-value-objects-and-dto-validators.skill`
 - Single-module handlers in `/{Module}.Application/Queries` — inject `IReadRepository<T>`
 - Single-module handlers load via named specs — no inline LINQ
-- Cross-module handlers in `/App.Queries/Queries/{QueryName}` — inject DbContext directly
-- Cross-module handlers apply `AsNoTracking()` on all queries
-- App.Queries handlers registered via `RegisterAppQueries()` assembly scan in App.Host
-- Query handlers return `Result.NotFound()` when entity is missing
-- `RegisterAppQueries()` called from App.Host — after all module registrations
-- Query transport validators use `SetValidator` with `IValidator<Soft{ValueObject}>` or `IValidator<{Dto}>` for cross-module properties
 
-MUST NOT:
-- Query handler inject `IRepository<T>` — signals write intent, use `IReadRepository<T>`
-- Query handler inject `IUnitOfWork` or call `SaveChangesAsync`
-- Query handler modify entity state or dispatch commands
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+- [[./Implementation/App.Queries.csproj.extend.md#MUST NOT|App.Queries.csproj.extend]]
+	- [[./Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md#MUST NOT|AppQueriesRegistration.cs.create]]
+	- [[./Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md#MUST NOT|CrossModuleQueryHandler.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST NOT|IQuery.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md#MUST NOT|{FeatureName}.Handler.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md#MUST NOT|{FeatureName}.Validator.cs.create]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md#MUST NOT|{Dto}.cs.create]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md#MUST NOT|{Query}.cs.create]]
 - Single-module handler use DbContext directly — use `IReadRepository<T>`
-- Cross-module handler live in `{Module}.Application` — Application has no multi-module DB access
-- DTOs expose domain entity types
-- `IQuery` extend `ICommand` — queries must remain distinct from write-side markers
-- Query validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
-- Cross-module handlers do not use `Include()` — all mapping is done in handler via `Select()` or manual projection
-
-SHOULD:
-- Use projection spec when DTO maps directly from entity fields — avoids loading full entity
-- Use in-handler mapping when DTO requires computed fields, conditional logic, or nested structure
 
 # Anti-patterns
 - `IRepository<T>` injected into query handler — use `IReadRepository<T>`
@@ -173,15 +174,3 @@ SHOULD:
 - [ ] Query validator does not duplicate rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator`
 - [ ] Query handlers return `Result.NotFound()` when entity is missing
 - [ ] No `SaveChangesAsync` call in any query handler
-
-# Unittest TestCases
-- [ ] When entity exists Then single-module handler returns `Result.Success` with correct DTO fields
-- [ ] When entity not found Then single-module handler returns `Result.NotFound`
-- [ ] When collection query runs Then all matching entities returned as DTOs
-- [ ] When projection spec used Then DTO fields correctly mapped without loading full entity
-- [ ] When in-handler mapping used Then computed fields correctly populated in DTO
-- [ ] When cross-module query runs Then data from both modules correctly joined in single DTO
-- [ ] When cross-module entity not found Then handler returns `Result.NotFound`
-- [ ] When query with invalid transport data is sent Then `ValidationBehavior` returns `Result.Invalid` before handler runs
-- [ ] When query with all valid fields is sent Then handler executes normally
-- [ ] When App.Queries assembly scanned Then all cross-module handlers discovered by MediatR

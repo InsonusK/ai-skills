@@ -40,12 +40,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - One `GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
 - Each resolver registered in module DI registration
 - All specs live in `/{Module}.Application/Specifications`
 
-MUST NOT:
+## MUST NOT
 - Resolver implemented in Domain — resolver uses `IReadRepository<T>`, which belongs in Application
 - Specs placed in Domain
 

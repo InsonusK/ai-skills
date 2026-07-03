@@ -52,14 +52,14 @@ Called from the composition root:
 builder.Services.AddRepositories();
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Register `IRepository<>` as open generic pointing to `Repository<>`
 - Register `IReadRepository<>` as open generic pointing to `Repository<>`
 - Use `Scoped` lifetime
 
-MUST NOT:
+## MUST NOT
 - Register per-entity closed generics
 - Register as `Singleton`
 

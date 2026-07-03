@@ -105,7 +105,7 @@ Apply mutations from dependency solutions for the selected classification:
 
 # Rules
 
-MUST:
+## MUST:
 - Classify every domain entity into exactly one of the four types before writing its code, configuration, or API contract.
 - **Internal Immutable** entities:
   - Have only the internal `int Id` identity.
@@ -132,7 +132,12 @@ MUST:
 - Document the classification decision for every entity in a discoverable location (e.g., entity config XML comment, module ADR, or team wiki).
 - Re-evaluate classification when the entity's ownership or mutability requirements change.
 
-MUST NOT:
+## SHOULD:
+- Name the classification in entity configuration comments or a dedicated `ENTITY_CLASSIFICATION.md` per module.
+- Review classifications during domain model refactoring or story planning.
+- Treat external `Guid` as a correlation handle and internal `Id` as the domain identity, even when both are present.
+
+## MUST NOT:
 - Apply `solution-entity-concurrency-change.skill` to immutable entities.
 - Apply `solution-external-created-entity.skill` to internal entities.
 - Apply a dependency solution partially or omit required parts for a classified type.
@@ -140,11 +145,6 @@ MUST NOT:
 - Use `Version` / `IVersioned` for entities that never change after creation.
 - Leave an entity unclassified or classify it at aggregate/module level instead of entity level.
 - Change classification without updating the implemented infrastructure accordingly.
-
-SHOULD:
-- Name the classification in entity configuration comments or a dedicated `ENTITY_CLASSIFICATION.md` per module.
-- Review classifications during domain model refactoring or story planning.
-- Treat external `Guid` as a correlation handle and internal `Id` as the domain identity, even when both are present.
 
 # Anti-patterns
 - Adding `Version` to an entity that is never updated — adds complexity and false concurrency semantics.
@@ -165,11 +165,3 @@ SHOULD:
 - [ ] Update/patch commands for mutable entities implement `IHasVersions`.
 - [ ] Classification is stored in a discoverable location for each entity.
 - [ ] Classification was reviewed when entity ownership or mutability changed.
-
-# Unittest TestCases
-- [ ] When entity is classified as Internal Immutable Then it has no `Version` property and no `Guid` property.
-- [ ] When entity is classified as External Immutable Then it has `Guid` property, unique index, and `IHasGuid` on create command, but no `Version` property.
-- [ ] When entity is classified as Internal Mutable Then it has `Version` property, implements `IVersioned`, and update command implements `IHasVersions`, but no `Guid` property.
-- [ ] When entity is classified as External Mutable Then it has both `Version` and `Guid` properties, and both create and update commands carry the required markers.
-- [ ] When an immutable entity is inspected Then `ConcurrencyBehavior` is not registered for its create command.
-- [ ] When an internal entity create command is inspected Then `GuidResolvingBehavior` does not constrain it.

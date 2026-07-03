@@ -99,15 +99,15 @@ UnitOfWorkBehavior: Leave() → Depth = 0   (finally)
 DbContext disposed at request scope end → all pending changes abandoned automatically
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Constrained to `where TRequest : ICommand` — never activates on queries
 - Use `try/finally` to guarantee depth counter is always restored
 - Call `SaveChangesAsync` only when `Depth == 1`
 - Call `_context.Enter()` before `next()` — call `_context.Leave()` in `finally`
 
-MUST NOT:
+## MUST NOT
 - Call `SaveChangesAsync` when `Depth > 1` — sub-commands must not commit
 - Add a catch/rollback block — EF implicit transactions do not require it; adding one without explicit transaction management would be incorrect
 - Catch exceptions to swallow them — let them propagate, `SaveChangesAsync` is skipped naturally

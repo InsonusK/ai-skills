@@ -72,21 +72,27 @@ public class ConcurrencyBehavior<TRequest, TResponse>
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Constrained to `where TRequest : IHasVersions` and `where TResponse : IResult`
 - Uses `IEntityVersionResolverFactory` from Shared
 - Returns `Result.Conflict` on version mismatch — handler never runs
 - Returns `Result.NotFound` if resolver reports `0`
 - Returns `Result.Error` for unknown entity name
 - Never calls `SaveChangesAsync`
+- `ETagEncoder` and `ConcurrencyBehavior` live in BuildingBlocks
+- `ConcurrencyBehavior` returns `Result.Conflict` on version mismatch — never throws
+- `ConcurrencyBehavior` returns `Result.NotFound` if resolver reports `0`
+- `ConcurrencyBehavior` returns `Result.Error` for unknown entity name
 
-MUST NOT:
+## MUST NOT
 - Activate on commands without `IHasVersions`
 - Reference EF Core, repositories, or specifications directly
 - Modify any entity state during version check
+- Handler check versions manually — `ConcurrencyBehavior` owns this
+- `ConcurrencyBehavior` call `SaveChangesAsync`
+- `ConcurrencyBehavior` load entities directly — it delegates to `IEntityVersionResolver`
 
 # Anti-patterns
 - Handler catches `DbUpdateConcurrencyException` instead of relying on `ConcurrencyBehavior`

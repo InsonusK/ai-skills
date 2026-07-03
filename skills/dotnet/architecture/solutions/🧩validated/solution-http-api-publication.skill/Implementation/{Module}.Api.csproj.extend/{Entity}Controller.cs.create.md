@@ -104,16 +104,16 @@ public sealed class {Entity}Controller : ControllerBase
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Named `{Entity}Controller`
 - Route attribute `[Route("{entity}")]` — kebab-case, singular noun
 - Handle only collection-level operations: POST create, GET list
 - `[HttpPost]` maps to `Create{Entity}Command`
 - `[HttpGet]` maps to `Get{Entities}Query`
 
-MUST NOT:
+## MUST NOT
 - Handle `/{entity}/{id}` routes — those belong in `Single{Entity}Controller`
 
 # Anti-patterns

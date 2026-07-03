@@ -55,13 +55,13 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Single-module query handlers live in `/{Module}.Application/Queries/{FeatureName}`
 - Handler file named `{FeatureName}.Handler.cs`, class named `{FeatureName}Handler`
 - Query handlers registered via `AddMediatR` assembly scan in module registration — same scan as command handlers
 - Query handlers inject `IReadRepository<T>` — never `IRepository<T>` or DbContext
 
-MUST NOT:
+## MUST NOT
 - Query validators contain business rules — transport correctness only
 - Cross-module JOIN handlers live here — belongs in App.Queries
 - Reference `DbContext` directly

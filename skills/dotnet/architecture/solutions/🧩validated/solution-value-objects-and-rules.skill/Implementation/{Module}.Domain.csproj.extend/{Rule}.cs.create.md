@@ -94,7 +94,7 @@ public static class CanDriveCarRule
 
 # Rule changes
 
-MUST:
+## MUST
 - Be a `static class`
 - Methods are `static` extension methods
 - Return `bool` — never throw
@@ -102,13 +102,34 @@ MUST:
 - Named correctly: `{Type}Rules` for primitive/VO rules, `{Condition}Rule` for contextual rules
 - Primitive tuple overload holds the logic — single source of truth
 - VO tuple overload delegates to primitive overload
+- All rules implemented as static extension methods
+- Rules return `bool` — caller decides whether to throw
+- Rules are stateless and deterministic
+- Primitive rule is single source of truth — VO rules delegate to it
+- Named `{Type}Rules` for primitive/VO rules, `{Condition}Rule` for contextual rules
+- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
+- Value Object validates values only through Rules — inline validation logic is forbidden
 
-MUST NOT:
+## MUST NOT
 - Depend on EF Core, FluentValidation, ASP.NET, or HttpContext
 - Mutate any object
 - Duplicate logic that already exists in another primitive rule
 - Throw exceptions internally
 - Reimplement logic that already exists in a primitive rule
+- Rule throw exceptions internally
+- Rule depend on EF Core, FluentValidation, ASP.NET, HttpContext, or any infrastructure
+- Rule mutate any object
+- Rule duplicate logic that already exists in another rule
+- Rule be instantiated with `new` — always static
+- Mutate state before validating with rules
+- Duplicate the same VO/rule logic across multiple module Domain projects
+- Allow inline validation logic inside a Value Object constructor — always delegate to a Rule
+
+## SHOULD
+- Complex invariant logic extracted to domain rule
+- Rules be synchronous
+- Rules avoid allocations
+- Use the most specific rule available (primitive, VO, or contextual) for the condition being checked
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Encode a reusable business predicate as a single source of truth

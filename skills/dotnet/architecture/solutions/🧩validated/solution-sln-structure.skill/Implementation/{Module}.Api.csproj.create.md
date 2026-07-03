@@ -41,11 +41,11 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Every endpoint dispatches exactly one MediatR command or query
 - Api references only own Interfaces and BuildingBlocks
 
-MUST NOT:
+## MUST NOT
 - Api reference Domain directly
 - Api reference Application directly
 - Api contain business logic, validation logic, or domain rules

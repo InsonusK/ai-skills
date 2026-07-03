@@ -43,8 +43,11 @@ public class TodoTask
 
 # Rule changes
 
-MUST NOT:
+## MUST NOT
 - Entity have any EF attributes (`[Table]`, `[Column]`, `[Key]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]`)
+
+## MUST
+- One `IEntityTypeConfiguration<T>` per entity
 
 # Anti-patterns
 - `[Column("task_title")]` on entity property — column mapping belongs in config class

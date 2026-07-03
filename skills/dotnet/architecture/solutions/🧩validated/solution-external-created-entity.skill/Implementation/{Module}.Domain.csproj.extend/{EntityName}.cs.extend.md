@@ -42,14 +42,14 @@ public class {EntityName}
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - `Guid` declared as `public Guid Guid { get; internal set; }`
 - Set exactly once in the entity factory method — never reassigned
 - Present on External Immutable and External Mutable entity types only
 
-MUST NOT:
+## MUST NOT
 - `Guid` used in domain logic, domain events, or as a foreign key in relationships
 - `Guid` reassigned after entity creation
 - Internal entity types (no external creation) have `Guid`

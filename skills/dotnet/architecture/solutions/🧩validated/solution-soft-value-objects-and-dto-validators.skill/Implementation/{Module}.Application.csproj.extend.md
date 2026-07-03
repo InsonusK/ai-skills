@@ -55,13 +55,14 @@ change_kind: extend
 - `FluentValidation`
 
 # Rules
-MUST:
+
+## MUST
 - Add `/Validators/Property` folder containing `{ValueObject}PropertyValidator.cs`
 - Add `/Validators/Model` folder containing `{Dto}Validator.cs`
 - Reference `FluentValidation` packages
 - Ensure `AddValidatorsFromAssembly(typeof({Module}.Application.AssemblyMarker).Assembly)` is called in `{Module}.Application` registration. If another solution (for example `solution-command-integration.skill`) already registers validators from this assembly, that registration satisfies this requirement.
 
-MUST NOT:
+## MUST NOT
 - Put validators in `{Module}.Interfaces`
 - Inject repositories, `DbContext`, or services into property validators
 - Add business rules to validators

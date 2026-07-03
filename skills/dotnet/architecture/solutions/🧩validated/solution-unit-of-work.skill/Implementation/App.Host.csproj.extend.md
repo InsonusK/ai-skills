@@ -27,11 +27,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `IUnitOfWork` registered as `Scoped`
 - `UnitOfWorkContext` registered as `Scoped`
+- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
 
-MUST NOT:
+## MUST NOT
 - Register `IUnitOfWork` or `UnitOfWorkContext` inside module registration methods
 
 # Anti-patterns

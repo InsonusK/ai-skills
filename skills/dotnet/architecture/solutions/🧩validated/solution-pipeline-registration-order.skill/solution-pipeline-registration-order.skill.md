@@ -75,8 +75,9 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineRegistration.cs`
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md#MUST|PipelineRegistration.cs.extend]]
 - `AddPipeline()` called once from `Program.cs`
 - All behaviors registered inside `AddPipeline()` using `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
 - Behaviors registered in this exact execution order:
@@ -84,17 +85,18 @@ MUST:
   2. `GuidResolvingBehavior`
   3. `ConcurrencyBehavior`
   4. `UnitOfWorkBehavior`
-- Pipeline behaviors registered in App.Host — never inside a module's registration method
 
-MUST NOT:
+## SHOULD:
+- Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registrations
+- Document the ordering with inline comments in `AddPipeline()`
+
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md#MUST NOT|PipelineRegistration.cs.extend]]
 - Register behaviors inside module registration methods
 - Change pipeline order in multiple files
 - Create multiple pipeline registration extension methods
 - Register behaviors directly in `Program.cs`
-
-SHOULD:
-- Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registrations
-- Document the ordering with inline comments in `AddPipeline()`
 
 # Anti-patterns
 - Pipeline order scattered across multiple files
@@ -113,11 +115,3 @@ SHOULD:
 - [ ] `UnitOfWorkBehavior` registered last
 - [ ] No behavior registrations outside `PipelineRegistration.cs`
 - [ ] Inline comments document the execution order
-
-# Unittest TestCases
-- [ ] When `AddPipeline()` is called THEN all four behaviors are registered as `IPipelineBehavior<,>`
-- [ ] When invalid command is sent THEN `ValidationBehavior` rejects before any other behavior runs
-- [ ] When duplicate external-created Guid is sent THEN `GuidResolvingBehavior` rejects before `ConcurrencyBehavior` runs
-- [ ] When stale version is sent THEN `ConcurrencyBehavior` rejects before `UnitOfWorkBehavior` runs
-- [ ] When valid command is sent THEN `UnitOfWorkBehavior` commits after handler completes
-- [ ] When nested sub-command is dispatched THEN `UnitOfWorkBehavior` commits only once at the outermost level

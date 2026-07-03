@@ -66,9 +66,9 @@ public class {Entity}VersionResolver : IEntityVersionResolver
 
 > **Note:** `{EntityName}` is the same stable business string declared in `{Entity}Config.VersionedEntityName`. It is used by `EntityVersionResolverFactory` in App.Infrastructure to route requests to this resolver.
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Implement `IEntityVersionResolver` from Shared
 - Declare `public const string VersionedEntityName` matching `{Entity}Config.VersionedEntityName`
 - Use `IReadRepository<{Entity}>`
@@ -76,7 +76,7 @@ MUST:
 - Return `0` when entity is not found
 - Return current `Version` cast to `int` when found
 
-MUST NOT:
+## MUST NOT
 - Reference EF Core or DbContext directly
 - Throw when entity is missing
 

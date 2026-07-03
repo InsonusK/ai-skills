@@ -72,23 +72,23 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `ValidationBehavior` defined in `BuildingBlocks/MediatR/ValidationBehavior.cs`
-- `ValidationBehavior` constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+## MUST:
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md#MUST|ValidationBehavior.cs.create]]
 - Collect all errors from all validators before returning — full error set, not first-error-only
 - Return `Result.Invalid(errors)` on failure — not throw an exception
 - Pass through when no validators registered — missing validator is not a fault
 
-MUST:
 - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
 
-MUST NOT:
-- Contain any command-specific conditions in `ValidationBehavior`
+## SHOULD:
+- `Transient` lifetime — new behavior instance per pipeline invocation
+
+## MUST NOT:
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST NOT|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md#MUST NOT|ValidationBehavior.cs.create]]
 - Throw `ValidationException` — always return typed `Result.Invalid`
 - Register behaviors inside module registration methods
-
-SHOULD:
-- `Transient` lifetime — new behavior instance per pipeline invocation
 
 # Anti-patterns
 - Implementing per-request validation logic inside `ValidationBehavior`
@@ -102,12 +102,3 @@ SHOULD:
 - [ ] `ValidationBehavior` collects all errors — not fail-fast on first error
 - [ ] `ValidationBehavior` returns `Result.Invalid(errors)` — not exception
 - [ ] `ValidationBehavior` passes through when no validators registered
-
-# Unittest TestCases
-- [ ] When request with empty required field is sent Then `ValidationBehavior` returns `Result.Invalid` before handler runs
-- [ ] When request with field exceeding max length is sent Then `Result.Invalid` returned with correct property name
-- [ ] When request with multiple invalid fields is sent Then all field errors returned in single `Result.Invalid` — not just first
-- [ ] When request with all valid fields is sent Then handler executes normally
-- [ ] When request has no registered validator Then pipeline proceeds to handler without error
-- [ ] When query is dispatched Then `ValidationBehavior` activates and validates query input
-- [ ] When two validators registered for same request Then both validators run and errors are merged

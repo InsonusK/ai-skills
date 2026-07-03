@@ -39,17 +39,29 @@ public class UnitOfWork : IUnitOfWork
         => await _dbContext.SaveChangesAsync(ct);
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Implement `IUnitOfWork` from Shared
 - Delegate to `AppDbContext.SaveChangesAsync` — no additional logic
 - Registered as `Scoped`
+- `IUnitOfWork` defined in Shared — single `SaveChangesAsync` method only
+- `UnitOfWorkContext` defined in BuildingBlocks — registered as `Scoped`
+- `UnitOfWorkBehavior` defined in BuildingBlocks — constrained to `ICommand` only
+- `UnitOfWork` implementation in App.Infrastructure
+- `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` — depth always restored on exception
+- `UnitOfWorkBehavior` commits only when `_context.Depth == 1`
+- `IUnitOfWork` and `UnitOfWorkContext` registered as `Scoped`
 
-MUST NOT:
+## MUST NOT
 - Contain transaction management logic — EF Core manages transactions implicitly via `SaveChangesAsync`
 - Be called from anywhere except `UnitOfWorkBehavior`
+- Any handler call `SaveChangesAsync` or inject `IUnitOfWork`
+- `UnitOfWorkBehavior` activate on queries — constrained to `ICommand`
+- `UnitOfWorkContext` registered as `Singleton` or `Transient`
+- `UnitOfWork` contain logic beyond `DbContext.SaveChangesAsync` delegation
+- `UnitOfWorkBehavior` contain a catch/rollback block — EF implicit transactions do not require it
+- `IUnitOfWork` defined in BuildingBlocks — belongs in Shared
 
 # Anti-patterns
 - `UnitOfWork` called directly from a handler — bypasses the pipeline and breaks atomicity guarantees

@@ -51,12 +51,15 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Pipeline behaviors registered once here in correct order
 - Each module registration method called here
 - App.Host is the only project referencing all modules simultaneously
+- App.Host is the only composition root
+- App.Host references BuildingBlocks; modules and other layers reference Shared directly to implement or consume interfaces
+- Pipeline behaviors registered once in App.Host
 
-MUST NOT:
+## MUST NOT
 - App.Host contain business logic
 - App.Host contain handler implementations
 

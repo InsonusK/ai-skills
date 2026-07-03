@@ -39,10 +39,10 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Contain only EF Core migrations
 
-MUST NOT:
+## MUST NOT
 - Contain business logic
 - Be referenced by any module project
 

@@ -49,15 +49,18 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - All timestamp interfaces and the command marker are placed in `/Shared/Timestamps`.
 - Mutable interfaces declare getters and setters.
 - Read-only interfaces declare only getters.
 - `ICommandWithTimestamp` declares a single `DateTimeOffset ActionTimeStamp { get; }` member.
 
-MUST NOT:
+## MUST NOT
 - Add behavior logic or dependencies to Shared timestamp contracts.
 - Define timestamp markers in BuildingBlocks or module projects.
+
+## SHOULD
+- Place the timestamp command marker in `Shared.Timestamps` to keep it independent of MediatR internals.
 
 # Anti-patterns
 - Putting timestamp contracts in `{Module}.Interfaces` — would force cross-module consumers to reference a specific module.

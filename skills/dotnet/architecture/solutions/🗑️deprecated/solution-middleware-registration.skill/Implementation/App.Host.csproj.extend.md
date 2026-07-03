@@ -52,12 +52,12 @@ app.Run();
 
 # Rules
 
-MUST:
+## MUST
 - `UseMiddlewarePipeline()` called in `Program.cs`
 - `UseMiddlewarePipeline()` called exactly once
 - `UseMiddlewarePipeline()` called after `UseRouting()` and before `MapControllers()` / `MapEndpoints()`
 
-MUST NOT:
+## MUST NOT
 - Register custom middleware directly in `Program.cs`
 - Call `UseMiddlewarePipeline()` more than once
 - Call `UseMiddlewarePipeline()` after `MapControllers()` / `MapEndpoints()`

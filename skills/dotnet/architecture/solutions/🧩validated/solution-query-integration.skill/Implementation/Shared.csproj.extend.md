@@ -42,13 +42,13 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `MediatR` package referenced in `Shared.csproj`
 - `IQuery<TResponse>` placed in `/Shared/MediatR`
 - `IQuery<TResponse>` extends MediatR `IRequest<TResponse>`
 - `IQuery<TResponse>` does NOT extend `ICommand` or `ICommand<TResponse>`
 
-MUST NOT:
+## MUST NOT
 - Add FluentValidation, Ardalis.Result, or EF Core packages to Shared
 - Add implementation code to Shared
 - `IQuery` extend `ICommand` — queries must remain distinct from write-side markers

@@ -29,10 +29,10 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `IUnitOfWork` defined in Shared — not BuildingBlocks, not App.Infrastructure
 
-MUST NOT:
+## MUST NOT
 - Shared reference EF Core
 
 # Anti-patterns

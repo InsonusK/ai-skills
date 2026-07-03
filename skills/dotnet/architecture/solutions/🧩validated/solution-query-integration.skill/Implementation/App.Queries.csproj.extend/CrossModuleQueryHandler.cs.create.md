@@ -97,21 +97,23 @@ public class GetTaskWithUserDetailsHandler
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Implement `IRequestHandler<TQuery, Result<T>>`
 - Inject `AppDbContext` directly
 - Apply `AsNoTracking()` on all queries
 - Perform all mapping in handler — no `Include()` calls
 - Return `Result.NotFound()` when entity is missing
 - Live in `/App.Queries/Queries/{QueryName}/`
+- Cross-module handlers apply `AsNoTracking()` on all queries
 
-MUST NOT:
+## MUST NOT
 - Modify entity state
 - Call `SaveChangesAsync`
 - Dispatch commands
+- Cross-module handler live in `{Module}.Application` — Application has no multi-module DB access
+- Cross-module handlers do not use `Include()` — all mapping is done in handler via `Select()` or manual projection
 
 # Anti-patterns
 - Using `IReadRepository<T>` for cross-module JOIN — repository is single-entity, use DbContext

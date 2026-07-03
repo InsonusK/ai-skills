@@ -75,14 +75,14 @@ public class Update{Entity}Validator : AbstractValidator<Update{Entity}Command>
 
 > **Note:** `NotEmpty()` on `DateTimeOffset` rejects `default(DateTimeOffset)` because it is considered empty.
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Extend `AbstractValidator<TCommand>` where `TCommand` implements `ICommandWithTimestamp`.
 - Reject `default(DateTimeOffset)`.
 - Reject timestamps greater than `DateTimeOffset.UtcNow`.
 
-MUST NOT:
+## MUST NOT
 - Access repositories or services.
 - Contain business rules.
 

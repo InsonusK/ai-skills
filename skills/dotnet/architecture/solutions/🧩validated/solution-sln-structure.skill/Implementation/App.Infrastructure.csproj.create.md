@@ -61,14 +61,16 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - App.Infrastructure is the only project with DbContext
 - `Repository<T>` generic implementation registered here
 - DomainEventInterceptor registered on DbContext here
+- App.Infrastructure is the only project with DbContext
 
-MUST NOT:
+## MUST NOT
 - App.Infrastructure be referenced by any module Application, Domain, or Api
 - App.Infrastructure be referenced by App.Queries directly for DbContext
+- Any module Application reference App.Infrastructure
 
 # Anti-patterns
 - Module Application referencing App.Infrastructure — use repository abstractions from Shared

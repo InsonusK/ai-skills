@@ -40,13 +40,13 @@ public interface ICreationInfoModelReadOnly
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Declare only getters.
 - Use `DateTimeOffset` for both properties.
 
-MUST NOT:
+## MUST NOT
 - Add setters or methods.
 
 # Anti-patterns

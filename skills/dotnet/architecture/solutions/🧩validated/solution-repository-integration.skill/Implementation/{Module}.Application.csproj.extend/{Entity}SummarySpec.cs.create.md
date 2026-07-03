@@ -43,14 +43,14 @@ public class {Entity}SummarySpec : Specification<{Entity}, {Entity}SummaryDto>
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Inherit `Specification<T, TResult>`
 - Define projection via `Query.Select(...)`
 - Live in `/{Module}.Application/Specifications`
 
-MUST NOT:
+## MUST NOT
 - Load full entity when only DTO fields needed
 - Define DTO inline in the spec — DTO belongs in Interfaces
 

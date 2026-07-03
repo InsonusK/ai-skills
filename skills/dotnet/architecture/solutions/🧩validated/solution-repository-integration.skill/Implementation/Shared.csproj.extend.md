@@ -39,13 +39,13 @@ create: Shared.csproj
 
 # Rules
 
-MUST:
+## MUST
 - `Ardalis.Specification` package referenced in `Shared.csproj`
 - `IReadRepository<T>` inherit `IReadRepositoryBase<T>`
 - `IRepository<T>` inherit `IRepositoryBase<T>` and `IReadRepository<T>`
 - Both interfaces placed in `/Shared/Repositories`
 
-MUST NOT:
+## MUST NOT
 - Reference `Ardalis.Specification.EntityFrameworkCore` in Shared
 - Add custom method signatures to the interfaces unless they are cross-cutting concerns
 

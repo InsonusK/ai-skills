@@ -83,13 +83,13 @@ public sealed class Single{Entity}{Related}Controller : ControllerBase
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Named `Single{Entity}{Related}Controller`
 - Route: `[Route("{entity}/{entityId:int}/{related}/{relatedId:int}")]`
 
-MUST NOT:
+## MUST NOT
 - Handle collection-level operations — those belong in `{Entity}{Related}Controller`
 
 # Anti-patterns

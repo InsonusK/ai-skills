@@ -54,21 +54,13 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `MiddlewareRegistration.cs` defined in `App.Host/DependencyInjection/MiddlewareRegistration.cs`
-- `UseMiddlewarePipeline()` called once from `Program.cs`
-- All custom middleware registered inside `UseMiddlewarePipeline()` using `app.UseMiddleware<TMiddleware>()`
-- Middleware registered in intended execution order
-- `UseMiddlewarePipeline()` called after routing and before `MapControllers()` / `MapEndpoints()`
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create.md#MUST|MiddlewareRegistration.cs.create]]
 
-MUST NOT:
-- Register custom middleware inside module registration methods
-- Register custom middleware directly in `Program.cs`
-- Change middleware order in multiple files
-- Create multiple middleware registration extension methods
-
-SHOULD:
-- Keep `UseMiddlewarePipeline()` the only method that adds custom HTTP middleware registrations
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/MiddlewareRegistration.cs.create.md#MUST NOT|MiddlewareRegistration.cs.create]]
 
 # Anti-patterns
 - Middleware order scattered across multiple files
@@ -81,9 +73,3 @@ SHOULD:
 - [ ] `UseMiddlewarePipeline()` called from `Program.cs`
 - [ ] `UseMiddlewarePipeline()` called after routing and before `MapControllers()` / `MapEndpoints()`
 - [ ] No custom middleware registrations outside `MiddlewareRegistration.cs`
-
-# Unittest TestCases
-- [ ] WHEN applied THEN `MiddlewareRegistration.cs` exists under `App.Host/DependencyInjection`
-- [ ] WHEN applied THEN `UseMiddlewarePipeline()` is called from `Program.cs`
-- [ ] WHEN applied THEN `UseMiddlewarePipeline()` returns `IApplicationBuilder`
-- [ ] WHEN extended THEN middleware can be added inside `UseMiddlewarePipeline()` in execution order

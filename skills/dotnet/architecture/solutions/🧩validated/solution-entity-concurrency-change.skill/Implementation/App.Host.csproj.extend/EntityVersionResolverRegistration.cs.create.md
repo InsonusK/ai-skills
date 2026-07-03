@@ -75,16 +75,16 @@ public static class EntityVersionResolverRegistration
 >             typeof(Users.Application.Concurrency.UserVersionResolver).Assembly,
 >         });
 > ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - `IEntityVersionResolverFactory` registered as `Scoped`
 - `EntityVersionResolverFactory` receives Domain assemblies and Application assemblies
 - Register every concrete `IEntityVersionResolver` implementation from Application assemblies as `Scoped`
 - Live under `/App.Host/DependencyInjection`
+- `EntityVersionResolverFactory` registered as `Scoped` in App.Host via `EntityVersionResolverRegistration`
 
-MUST NOT:
+## MUST NOT
 - `IEntityVersionResolverFactory` registered as `Singleton` — would create captive dependencies on `Scoped` repositories
 - Modify the signature of `RepositoryRegistration.AddRepositories`
 

@@ -104,7 +104,7 @@ public sealed record Money
 
 # Rule changes
 
-MUST:
+## MUST
 - Be `sealed record`
 - Be immutable — no public setters
 - Validate all invariants in constructor by calling Rules
@@ -112,16 +112,21 @@ MUST:
 - Have no infrastructure or application dependencies
 - Multi-property VO has `private` parameterless constructor for EF materialization
 - Multi-property VO has `OwnsOne` EF configuration on owning entity (see [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration.skill]])
+- All Value Objects declared as `sealed record`
+- All Value Objects immutable — no public setters
+- All Value Objects self-validating — throw `DomainException` on invalid construction
 
-SHOULD:
+## SHOULD
 - Provide implicit conversion operators for single-property VOs
 - Override `ToString()` when used in logs or UI
 
-MUST NOT:
+## MUST NOT
 - Expose public setters
 - Depend on repositories, DbContext, or any service
 - Contain business logic beyond invariant validation — use domain rules for that
 - Contain inline validation logic — always delegate to a Rule
+- Value Object depend on infrastructure, repositories, or application services
+- Value Object expose public setters
 
 # Check list
 - [ ] All invariant checks are made by [{Rule}](./{Rule}.cs.create.md)

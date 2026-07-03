@@ -41,18 +41,29 @@ public class Repository<T> : RepositoryBase<T>, IRepository<T>
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Inherit `RepositoryBase<T>` from `Ardalis.Specification.EntityFrameworkCore`
 - Implement `IRepository<T>` from Shared
 - Constructor accept `AppDbContext` and pass to base
+- `IReadRepository<T>` and `IRepository<T>` defined in Shared, inheriting Ardalis base interfaces
+- `IRepository<T>` extends `IReadRepository<T>` and `IRepositoryBase<T>`
+- `IRepository<T>` has no `SaveChangesAsync` — committing belongs to Unit of Work
+- Single generic `Repository<T>` in App.Infrastructure, inheriting `RepositoryBase<T>` from Ardalis
+- `Repository<T>` implements `IRepository<T>`
+- `Repository<T>` constructor receives `AppDbContext` and passes it to the Ardalis base
+- All repository read methods accept `ISpecification<T>` — no raw lambda or LINQ parameters
+- Command handlers inject `IRepository<T>`
+- Query handlers inject `IReadRepository<T>`
 
-MUST NOT:
+## MUST NOT
 - Call `SaveChangesAsync`
 - Contain inline LINQ predicates
 - Create per-entity subclasses
+- Per-entity repository subclass be created
+- `Repository<T>` call `SaveChangesAsync`
+- Raw LINQ predicates appear in repository method signatures
 
 # Check list
 - [ ] Inherits `RepositoryBase<T>`

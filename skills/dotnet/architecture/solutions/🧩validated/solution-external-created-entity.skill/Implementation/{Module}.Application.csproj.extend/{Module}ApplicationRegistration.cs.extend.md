@@ -37,14 +37,14 @@ public static class {Module}ApplicationRegistration
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Each `IGuidResolver<TResponse>` registered explicitly as `Scoped` — not auto-scanned
 - One registration per external-created entity type
 - `TResponse` matches the command handler response type exactly
 
-MUST NOT:
+## MUST NOT
 - `IGuidResolver` registrations omitted — `GuidResolvingBehavior` will throw at runtime if resolver not found
 - `IGuidResolver` registered as open generic — breaks DI resolution per command result type
 

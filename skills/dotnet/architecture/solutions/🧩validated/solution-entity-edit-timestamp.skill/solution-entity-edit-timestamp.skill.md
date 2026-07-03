@@ -175,40 +175,42 @@ sequenceDiagram
 
 # Rules
 
-MUST:
-- `ICreationInfoModelReadOnly`, `ICreationInfoModel`, `IUpdateInfoModelReadOnly`, `IUpdateInfoModel`, and `ICommandWithTimestamp` are defined in `Shared/Timestamps`.
-- `Internal Mutable` and `External Mutable` entities implement both `ICreationInfoModel` and `IUpdateInfoModel`.
-- `External Immutable` entities implement `ICreationInfoModel` only.
-- `Internal Immutable` entities implement none of the timestamp interfaces.
-- Timestamp properties on entities are `DateTimeOffset` with `internal set`.
-- Commands that create or update a timestamped entity implement `ICommandWithTimestamp` alongside `ICommand<Result<T>>`.
-- `ActionTimeStamp` is the first property on commands that implement `ICommandWithTimestamp`.
-- Command validators check that `ActionTimeStamp` is not `default(DateTimeOffset)` and is not greater than `DateTimeOffset.UtcNow`.
-- Create handlers for mutable entities set both `UserCreatedDateTime` and `UserUpdatedDateTime` to `ActionTimeStamp`.
-- Update handlers set only `UserUpdatedDateTime` to `ActionTimeStamp`.
-- Create handlers for `External Immutable` entities set only `UserCreatedDateTime` to `ActionTimeStamp`.
-- `AppDbContext` overrides both `SaveChanges()` and `SaveChangesAsync(CancellationToken)` and calls `OnBeforeSaving()` before delegating to the base method.
-- `OnBeforeSaving()` sets `ServerCreatedDateTime` for `Added` entries that implement `ICreationInfoModel`.
-- `OnBeforeSaving()` sets `ServerUpdatedDateTime` for `Added` or `Modified` entries that implement `IUpdateInfoModel`.
+## MUST:
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/AppDbContext.cs.extend.md#MUST|AppDbContext.cs.extend]]
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/ICommandWithTimestamp.cs.create.md#MUST|ICommandWithTimestamp.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/ICreationInfoModel.cs.create.md#MUST|ICreationInfoModel.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/ICreationInfoModelReadOnly.cs.create.md#MUST|ICreationInfoModelReadOnly.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IUpdateInfoModel.cs.create.md#MUST|IUpdateInfoModel.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IUpdateInfoModelReadOnly.cs.create.md#MUST|IUpdateInfoModelReadOnly.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md#MUST|{FeatureName}.Handler.cs.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.extend.md#MUST|{FeatureName}.Validator.cs.extend]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs.extend]]
 - `OnBeforeSaving()` uses `DateTimeOffset.UtcNow` as the server time source.
-- EF configuration maps timestamp properties as required `DateTimeOffset` columns.
-- Handlers never assign server timestamps.
-- `AppDbContext` never assigns user timestamps.
 
-MUST NOT:
-- Add timestamp fields to `Internal Immutable` entities.
-- Add update timestamp fields to `External Immutable` entities.
-- Validate `ActionTimeStamp` inside handlers.
-- Set user timestamps in `AppDbContext`.
-- Set server timestamps in handlers.
-- Use `DateTime` instead of `DateTimeOffset` for timestamp fields.
-- Allow `ActionTimeStamp` to be in the future.
-- Use EF attributes on entities for timestamp mapping.
-
-SHOULD:
-- Keep timestamp interfaces and the command marker free of behavior logic.
-- Name the command timestamp property `ActionTimeStamp` consistently.
-- Place the timestamp command marker in `Shared.Timestamps` to keep it independent of MediatR internals.
+## MUST NOT:
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST NOT|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/AppDbContext.cs.extend.md#MUST NOT|AppDbContext.cs.extend]]
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/ICommandWithTimestamp.cs.create.md#MUST NOT|ICommandWithTimestamp.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/ICreationInfoModel.cs.create.md#MUST NOT|ICreationInfoModel.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/ICreationInfoModelReadOnly.cs.create.md#MUST NOT|ICreationInfoModelReadOnly.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IUpdateInfoModel.cs.create.md#MUST NOT|IUpdateInfoModel.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IUpdateInfoModelReadOnly.cs.create.md#MUST NOT|IUpdateInfoModelReadOnly.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md#MUST NOT|{FeatureName}.Handler.cs.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.extend.md#MUST NOT|{FeatureName}.Validator.cs.extend]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST NOT|{EntityName}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST NOT|{EntityName}Config.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST NOT|{Command}.cs.extend]]
 
 # Anti-patterns
 - Assigning both user and server timestamps in the same layer.
@@ -237,15 +239,3 @@ SHOULD:
 - [ ] `OnBeforeSaving` sets `ServerCreatedDateTime` for `Added` `ICreationInfoModel` entries.
 - [ ] `OnBeforeSaving` sets `ServerUpdatedDateTime` for `Added`/`Modified` `IUpdateInfoModel` entries.
 - [ ] EF configuration marks timestamp columns as required `DateTimeOffset`.
-
-# Unittest TestCases
-- [ ] When command `ActionTimeStamp` is in the future Then validator returns validation error and handler does not run.
-- [ ] When command `ActionTimeStamp` is `default(DateTimeOffset)` Then validator returns validation error.
-- [ ] When create handler runs for mutable entity Then `UserCreatedDateTime` and `UserUpdatedDateTime` equal command `ActionTimeStamp`.
-- [ ] When update handler runs for mutable entity Then only `UserUpdatedDateTime` changes and equals command `ActionTimeStamp`.
-- [ ] When create handler runs for `External Immutable` entity Then only `UserCreatedDateTime` is set.
-- [ ] When `SaveChangesAsync` is called on a new mutable entity Then `ServerCreatedDateTime` and `ServerUpdatedDateTime` are set.
-- [ ] When `SaveChangesAsync` is called on a modified mutable entity Then `ServerUpdatedDateTime` changes and `ServerCreatedDateTime` does not.
-- [ ] When `SaveChanges` (sync) is called Then `OnBeforeSaving` runs and server timestamps are set.
-- [ ] When `Internal Immutable` entity is saved Then no timestamp fields are populated.
-- [ ] When `External Immutable` entity is saved Then only creation timestamps are populated.

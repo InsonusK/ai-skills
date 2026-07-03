@@ -112,16 +112,16 @@ public class GetTaskHandler
 | `Result.Success(value)` | Data returned successfully | All query outcomes with data |
 | `Result.NotFound()` | Entity does not exist | When load returns null |
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Implement `IRequestHandler<TQuery, Result<T>>`
 - Inject `IReadRepository<T>` — never `IRepository<T>` or DbContext
 - Load entities via named specs — never inline LINQ
 - Return `Result.NotFound()` when entity is missing
 - Return `Result<T>` for all outcomes — no exceptions for flow control
 
-MUST NOT:
+## MUST NOT
 - Modify any entity state
 - Call `SaveChangesAsync` or inject `IUnitOfWork`
 - Dispatch commands

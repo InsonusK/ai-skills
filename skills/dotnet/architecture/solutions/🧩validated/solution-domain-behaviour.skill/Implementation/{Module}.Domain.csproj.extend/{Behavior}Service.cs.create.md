@@ -67,13 +67,13 @@ public class Order
 
 # Rule changes
 
-MUST:
+## MUST
 - Be a `static class`
 - Live in `{Module}.Domain/Services`
 - Use domain rules from `{Module}.Domain/Rules` for every validation
 - Mutate entity state only through entity methods or guarded setters
 
-MUST NOT:
+## MUST NOT
 - Reimplement rule logic inline
 - Introduce a new uncoordinated public mutation point for an entity property
 - Depend on EF Core, FluentValidation, ASP.NET, HttpContext, or any infrastructure

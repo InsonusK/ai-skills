@@ -113,7 +113,7 @@ public class CreateOrderHandler
 
 # Rule changes
 
-MUST:
+## MUST
 - Implement `IRequestHandler<TCommand, Result<T>>`
 - Inject `IRepository<T>` — never `DbContext`
 - Load entities via named specs — never inline LINQ
@@ -121,7 +121,7 @@ MUST:
 - Return `Result<T>` for all outcomes — never throw for flow control
 - Dispatch cross-module writes via `_mediator.Send()` — never direct method calls
 
-MUST NOT:
+## MUST NOT
 - Contain business logic or domain rules — delegate to entity or domain service
 - Call `SaveChangesAsync`
 - Reference another module's Domain or Application projects directly

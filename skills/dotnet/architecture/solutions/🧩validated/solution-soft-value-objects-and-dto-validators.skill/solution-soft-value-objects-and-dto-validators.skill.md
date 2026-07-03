@@ -121,33 +121,37 @@ sequenceDiagram
 
 # Rules
 
-MUST:
+## MUST:
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md#MUST|{Dto}.Validator.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md#MUST|{ValueObject}PropertyValidator.cs.create]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#MUST|{ValueObject}.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create.md#MUST|Soft{ValueObject}.cs.create]]
 - `{Module}.Application` must call `AddValidatorsFromAssembly` for its own assembly so that property and DTO validators are registered in DI
-- For every `{ValueObject}` in `/{Module}.Domain/ValueObjects` there is a `Soft{ValueObject}` in `/{Module}.Interfaces/ValueObjects`
-- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` inherits from `{Module}.Interfaces.ValueObjects.Soft{ValueObject}`
-- `Soft{ValueObject}` does not validate values in its constructor or properties
-- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its constructor by calling Rules and throws `DomainException` on invalid values
-- For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `/{Module}.Application/Validators/Property` extending `AbstractValidator<Soft{ValueObject}>`
 - For every RequestDto published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators/Model` extending `AbstractValidator<{Dto}>`
 - ResponseDto validators are created only when explicitly required, for example external contract validation, untrusted response sources, or mandated integration boundaries
 - Validators are registered by FluentValidation's assembly scan of `{Module}.Application`
 - Other modules consume validators through `IValidator<T>` resolved from DI
-- DTO value-concept properties are `Soft{ValueObject}` types, not primitives
-- DTO validators use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 - Property validators and DTO validators validate values only by calling Rules
-- Rule provides a `Soft{ValueObject}` overload in addition to the primitive overload
-- Domain Value Object validates values by calling the same Rule that the PropertyValidator uses
 - Property validators are stateless and have no infrastructure dependencies
-- `{Module}.Domain.csproj` references `{Module}.Interfaces.csproj` for the `Soft{ValueObject}` base types
 
-SHOULD:
-- Keep `Soft{ValueObject}` immutable except for allowing invalid values (use `init` setters or public setters only when necessary)
-- Name property validator `{ValueObject}PropertyValidator`
+## SHOULD:
+- [[./Implementation/{Module}.Domain.csproj.extend.md#SHOULD|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#SHOULD|{ValueObject}.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#SHOULD|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create.md#SHOULD|Soft{ValueObject}.cs.create]]
 - Name DTO validator `{Dto}Validator`
 
-MUST NOT:
-- `Soft{ValueObject}` throw exceptions for invalid values
-- Domain Value Object skip validation
+## MUST NOT:
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md#MUST NOT|{Dto}.Validator.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md#MUST NOT|{ValueObject}PropertyValidator.cs.create]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#MUST NOT|{ValueObject}.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create.md#MUST NOT|Soft{ValueObject}.cs.create]]
 - Validators inject repositories, `DbContext`, or services
 - Validators contain business rules
 - Other modules reference `{Module}.Domain` or `{Module}.Application` to validate values
@@ -181,14 +185,3 @@ MUST NOT:
 - [ ] PropertyValidator validates `Soft{ValueObject}` by calling the Rule
 - [ ] DTO Validator validates values by calling Rules
 - [ ] Other modules resolve validators through `IValidator<T>`
-
-# Unittest TestCases
-- [ ] When `Soft{ValueObject}` is created with an invalid value Then no exception is thrown
-- [ ] When `Soft{ValueObject}` is created with a valid value Then properties are set correctly
-- [ ] When Domain `{ValueObject}` is created with an invalid value Then `DomainException` is thrown
-- [ ] When `{ValueObject}PropertyValidator` validates a valid `Soft{ValueObject}` Then no errors are returned
-- [ ] When `{ValueObject}PropertyValidator` validates an invalid `Soft{ValueObject}` Then validation errors are returned
-- [ ] When `{Dto}Validator` validates a valid RequestDto Then no errors are returned
-- [ ] When `{Dto}Validator` validates a RequestDto with an invalid `Soft{ValueObject}` property Then validation errors are returned
-- [ ] When another module resolves `IValidator<Soft{ValueObject}>` Then it receives the registered property validator without referencing `{Module}.Application`
-- [ ] When Domain `{ValueObject}` is constructed Then it accepts the same valid values as `{ValueObject}PropertyValidator`

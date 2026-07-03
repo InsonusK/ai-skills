@@ -1,0 +1,224 @@
+{
+  "main": {
+    "id": "9ff60f8e786853a3",
+    "type": "split",
+    "children": [
+      {
+        "id": "103454523ec7324a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "78f5436b48a32288",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "solution-query-integration.skill"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "fb6e5c5114ac549a",
+    "type": "split",
+    "children": [
+      {
+        "id": "624b15f29917ba28",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "84c6f33639d4d739",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "4945f9600988fa61",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "840a8ce9a84ec86c",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 436.5
+  },
+  "right": {
+    "id": "c4ee7691f199ac42",
+    "type": "split",
+    "children": [
+      {
+        "id": "13ccabfb9c49a7d4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "58fc8cd780f7cbe0",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "adcbeae2fef72be9",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "257587af02571e12",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "4ee96a15df240949",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "52a29602f2fea62e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "mermaid-tools:Open Mermaid Toolbar": false
+    }
+  },
+  "active": "78f5436b48a32288",
+  "lastOpenFiles": [
+    "root_check.log",
+    "stage4_dedup.py",
+    "duplicate_check.log",
+    "stage3b.log",
+    "stage3b_merge_rules.py",
+    "both_sections.log",
+    "stage5.log",
+    "stage5_formatting.py",
+    "stage4.log",
+    "stage4_fix_unittest.py",
+    "stage3.log",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/{Module}.Application.csproj.extend.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md",
+    "templates/solution-build/solution-{Solution}.skill.template/Implementation Templates/Repository.template.md",
+    "templates/solution-build/solution-{Solution}.skill.template/Implementation Templates/Project.template.md",
+    "templates/solution-build/solution-{Solution}.skill.template/Implementation Templates/Class.template.md",
+    "templates/solution-build/solution-{Solution}.skill.template/solution-{Solution}.skill.template.md",
+    "templates/solution-build/solution-{Solution}.skill.template/adr/adr.template.md",
+    "templates/skill.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md",
+    "skills/dotnet/architecture/solutions/🧩validated/🧩validated.md",
+    "README.md",
+    "skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/adr/dto-validators-only-for-request-dtos.md",
+    "templates/plateau-build/class-Class.skill.template.md",
+    "how to use/Skill type map.md",
+    "docs/init/loading_gh_issues.md"
+  ]
+}

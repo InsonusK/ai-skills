@@ -45,14 +45,14 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Every mutable entity configuration maps `Version` to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()`
 - Every mutable entity configuration declares `public const string VersionedEntityName` with the stable business name
 - `TableName` is `public const string`
 
-MUST NOT:
+## MUST NOT
 - `HasDefaultValue` or `HasComputedColumnSql` used on `Version` — `xmin` is managed entirely by PostgreSQL
 - `VersionedEntityName` be derived from `TableName` or `nameof({EntityName})` — it is an explicit business contract
 

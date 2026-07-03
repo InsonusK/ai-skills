@@ -41,12 +41,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `FluentValidation`, `MediatR`, and `Ardalis.Result` packages referenced in `BuildingBlocks.csproj`
 - `ValidationBehavior` placed in `/BuildingBlocks/MediatR`
 - `ValidationBehavior` constrained to `IRequest<TResponse>` from MediatR
 
-MUST NOT:
+## MUST NOT
 - Add business logic or request-specific conditions to `ValidationBehavior`
 - Throw exceptions for validation failures — always return `Result.Invalid`
 

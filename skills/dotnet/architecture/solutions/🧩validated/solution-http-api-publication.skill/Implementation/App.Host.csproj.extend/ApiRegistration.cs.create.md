@@ -46,7 +46,9 @@ public static class ApiRegistration
 ##### Goal
 - Wire API registration and map controllers and Minimal API endpoint groups in the request pipeline
 
-##### Implementation changes
+####
+
+# Implementation changes
 
 ```csharp
 // App.Host/Program.cs
@@ -74,15 +76,15 @@ app.MapWebhookEndpoints();
 app.Run();
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - `UseExceptionHandler()` registered before `MapControllers()`
 - All module Api assemblies added as application parts
 - All Minimal API endpoint groups mapped explicitly
 - `AddProblemDetails()` registered in DI
 
-MUST NOT:
+## MUST NOT
 - Register controllers manually one by one
 
 # Anti-patterns

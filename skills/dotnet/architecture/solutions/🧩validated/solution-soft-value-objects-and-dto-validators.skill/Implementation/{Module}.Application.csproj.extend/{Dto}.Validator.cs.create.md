@@ -66,13 +66,14 @@ public class SomeHandler
 ```
 
 # Rule changes
-MUST:
+
+## MUST
 - Extend `AbstractValidator<{Dto}>`
 - Be named `{Dto}Validator`
 - Live in `/{Module}.Application/Validators`
 - Use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 
-MUST NOT:
+## MUST NOT
 - Inject repositories or services
 - Contain business rules
 - Use inline FluentValidation predicates instead of property validators

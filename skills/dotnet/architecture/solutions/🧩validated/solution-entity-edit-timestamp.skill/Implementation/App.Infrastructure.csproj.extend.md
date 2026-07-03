@@ -39,14 +39,14 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Override `SaveChanges()` and `SaveChangesAsync(CancellationToken)`.
 - Call `OnBeforeSaving()` before delegating to the base method.
 - Set `ServerCreatedDateTime` for `Added` entries implementing `ICreationInfoModel`.
 - Set `ServerUpdatedDateTime` for `Added` or `Modified` entries implementing `IUpdateInfoModel`.
 - Use `DateTimeOffset.UtcNow`.
 
-MUST NOT:
+## MUST NOT
 - Set user timestamps.
 - Assign server timestamps anywhere outside `AppDbContext`.
 

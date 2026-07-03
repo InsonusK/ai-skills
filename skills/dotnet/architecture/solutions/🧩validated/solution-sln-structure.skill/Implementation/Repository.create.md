@@ -47,11 +47,11 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Every module lives under `/src/Modules/{ModuleName}`
 - Every module has exactly four projects: Api, Application, Domain, Interfaces
 - Tests live alongside module projects — not in a global `/tests` folder
 
-MUST NOT:
+## MUST NOT
 - Module projects exist outside `/src/Modules`
 - Module have fewer or more than four projects without explicit architectural justification

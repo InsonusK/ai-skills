@@ -31,8 +31,9 @@ builder.Services.AddRepositories();
 
 # Rules
 
-MUST:
+## MUST
 - `AddRepositories()` called in `Program.cs`
+- Open generic DI registration in App.Host for both `IRepository<>` and `IReadRepository<>` pointing to `Repository<>`
 
 # Check list
 - [ ] `builder.Services.AddRepositories()` present in `Program.cs`

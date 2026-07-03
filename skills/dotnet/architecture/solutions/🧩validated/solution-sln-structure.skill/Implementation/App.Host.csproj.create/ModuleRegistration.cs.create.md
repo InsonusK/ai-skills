@@ -52,16 +52,16 @@ public static class ModuleRegistration
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Class named `ModuleRegistration`
 - Method named `AddModules`
 - Accept `IServiceCollection` and `IConfiguration`
 - Live under `/App.Host/DependencyInjection`
 - Call every registered module's registration extension
 
-MUST NOT:
+## MUST NOT
 - Register pipeline behaviors — belongs in App.Host pipeline registration
 - Register infrastructure services — belongs in App.Infrastructure registration
 

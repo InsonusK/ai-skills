@@ -88,13 +88,13 @@ public class Order
 
 # Rule changes
 
-MUST:
+## MUST
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false`
 - Use the most specific rule available (primitive, VO, or contextual)
 - Keep the entity as the single gatekeeper for each property mutation
 
-MUST NOT:
+## MUST NOT
 - Reimplement rule logic inline inside entity methods
 - Mutate state before validating with rules
 - Allow invalid state to persist silently

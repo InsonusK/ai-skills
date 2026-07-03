@@ -41,13 +41,13 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `ConflictResult<T>`, `IHasGuid`, `IGuidResolver<TResponse>` defined in Shared
 - `ConflictResult<T>` inherits from `Ardalis.Result.Result<T>` and sets `Status` to `ResultStatus.Conflict`
 - `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, non-null means conflict
 - `TResponse` of `IGuidResolver` matches the command handler response type exactly
 
-MUST NOT:
+## MUST NOT
 - `ConflictResult<T>`, `IHasGuid`, or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are consumed by multiple layers
 - Shared reference any other project
 

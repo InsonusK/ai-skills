@@ -88,14 +88,14 @@ public sealed class Single{Entity}{Property}Controller : ControllerBase
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Named `Single{Entity}{Property}Controller`
 - Route: `[Route("{entity}/{id:int}/{property-name}")]` — property name in kebab-case
 - `[HttpPost]` sets the property, `[HttpDelete]` unsets it
 
-MUST NOT:
+## MUST NOT
 - Handle properties without set/unset semantics
 
 # Anti-patterns

@@ -28,11 +28,11 @@ builder.Services
 
 # Rules
 
-MUST:
+## MUST
 - `AddModules()` called in `Program.cs`
 - All module `Register{ModuleName}Module()` calls made inside `ModuleRegistration.AddModules`
 
-MUST NOT:
+## MUST NOT
 - Call individual `Register{ModuleName}Module()` methods directly from `Program.cs`
 - Module registration methods called from within another module
 - Add module registration calls outside `ModuleRegistration.AddModules`

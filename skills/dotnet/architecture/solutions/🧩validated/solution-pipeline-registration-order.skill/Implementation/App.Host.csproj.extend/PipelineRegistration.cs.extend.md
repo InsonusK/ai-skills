@@ -62,10 +62,9 @@ public static class PipelineRegistration
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Behaviors registered in this exact order:
   1. `ValidationBehavior`
   2. `GuidResolvingBehavior`
@@ -73,8 +72,9 @@ MUST:
   4. `UnitOfWorkBehavior`
 - All behavior registrations use `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
 - `AddPipeline()` returns `IServiceCollection`
+- `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineRegistration.cs`
 
-MUST NOT:
+## MUST NOT
 - Register behaviors inside module registration methods
 - Define pipeline order in multiple files
 - Change the order of the four behaviors

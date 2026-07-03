@@ -139,10 +139,9 @@ public async Task<IActionResult> Update(
 > ```csharp
 > public record {Entity}Dto(int Id, string Title, string Status, int AssigneeId, uint Version);
 > ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - GET for mutable entity sets `Response.Headers.ETag` with encoded versions
 - PUT/PATCH checks `If-Match` presence — returns 412 immediately if missing
 - PUT/PATCH calls `ETagEncoder.Decode` — returns 412 if result is null
@@ -150,9 +149,10 @@ MUST:
 - 412 added to `[ProducesResponseType]` on all PUT/PATCH endpoints for mutable entities
 - DTO returned by GET for mutable entity includes `Version` field
 
-MUST NOT:
+## MUST NOT
 - GET for immutable entity set ETag header — immutable entities have no version
 - `Versions` hardcoded or constructed in controller — always from decoded `If-Match`
+- Controller return 400 for missing `If-Match` — 412 Precondition Failed is correct
 
 # Anti-patterns
 - ETag encoding only primary entity version — misses secondary entity conflicts when command touches multiple entities

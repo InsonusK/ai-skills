@@ -74,18 +74,20 @@ public class ValidationBehavior<TRequest, TResponse>
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
 - Collect all errors from all validators before returning — full error set, not first-error-only
 - Return `Result.Invalid(errors)` on failure — not throw an exception
 - Pass through when no validators registered — missing validator is not a fault
+- `ValidationBehavior` defined in `BuildingBlocks/MediatR/ValidationBehavior.cs`
+- `ValidationBehavior` constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
 
-MUST NOT:
+## MUST NOT
 - Contain any request-specific conditions
 - Throw `ValidationException` — always return typed `Result.Invalid`
+- Contain any command-specific conditions in `ValidationBehavior`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Intercept every IRequest<TResponse> before the handler runs
