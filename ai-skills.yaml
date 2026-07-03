@@ -3,7 +3,7 @@ sources:
     type: github
     tree: master
     subpath:
-      - skills\common-workflow\work-in-git-tree.md
+      - skills/common-workflow/work-in-git-tree.md
 
 settings:
   target: .agents/skills
