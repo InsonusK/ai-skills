@@ -71,6 +71,22 @@ MUST:
 - ...
 ```
 
+# Anti-patterns
+```hint
+Describe concrete wrong ways to apply the solution at repository level and their consequences.
+Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
+
+Format:
+- **{What NOT to do}**
+  - Consequence: {negative consequence}
+  - Instead: {correct alternative}
+```
+```example
+- **Place business logic in repository-level scripts**
+  - Consequence: repositories start enforcing business rules instead of just orchestrating persistence
+  - Instead: keep business invariants in the domain layer
+```
+
 # Unittest TestCases
 ```hint
 Define how solution EXTENDS repository integration unit tests.

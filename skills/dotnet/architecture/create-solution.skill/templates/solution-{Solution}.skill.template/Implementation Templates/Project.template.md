@@ -135,10 +135,18 @@ MUST:
 
 # Anti-patterns
 ```hint
-What means that solution applied wrong.
+Describe concrete wrong ways to apply the solution to this project and their consequences.
+Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
+
+Format:
+- **{What NOT to do}**
+  - Consequence: {negative consequence}
+  - Instead: {correct alternative}
 ```
 ```example
-- Domain service duplicates invariant already enforced in entity setter or method
+- **Reference DbContext directly from Application**
+  - Consequence: couples orchestration to persistence and breaks testability
+  - Instead: use `IRepository<T>` from Shared
 ```
 
 # Check list

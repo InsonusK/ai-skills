@@ -102,10 +102,18 @@ MUST:
 
 # Anti-patterns
 ```hint
-What means that solution applied wrong.
+Describe concrete wrong ways to implement this class and their consequences.
+Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
+
+Format:
+- **{What NOT to do}**
+  - Consequence: {negative consequence}
+  - Instead: {correct alternative}
 ```
 ```example
-- Duplicating this mapping in every external-created controller action
+- **Use public setters for every property**
+  - Consequence: invariants can be violated by any caller
+  - Instead: expose domain methods that enforce rules and use `internal set` or private setters
 ```
 
 # Check list

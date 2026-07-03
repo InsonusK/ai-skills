@@ -236,12 +236,26 @@ SHOULD:
 
 # Anti-patterns
 ```hint
-What means that solution applied wrong.
+Describe concrete wrong ways to apply the solution and their consequences.
+Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
+
+Format:
+- **{What NOT to do}**
+  - Consequence: {negative consequence}
+  - Instead: {correct alternative}
+
 RECOMMENDATION:
 - Prefer bullet list
+- Be specific to the solution context
 ```
 ```example
-- Domain service duplicates invariant already enforced in entity setter or method
+- **Skip validation**
+  - Consequence: service may fail during request execution or save invalid data
+  - Instead: validate input at the transport boundary before the handler runs
+
+- **Business rule in handler**
+  - Consequence: logic leaks out of the domain, making the system hard to test and evolve
+  - Instead: delegate all business decisions to entities and domain services
 ```
 
 # Check list
