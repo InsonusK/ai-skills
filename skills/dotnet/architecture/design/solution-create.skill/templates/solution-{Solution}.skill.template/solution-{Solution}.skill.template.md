@@ -108,9 +108,9 @@ RECOMMENDATION:
 
 TEMPLATE:
 SOLUTION:
-- [[solution-DependencySolution.skill.md|{name}]]
-  - [[LinkToProject.csproj.{change_kind}.md|{name}]]
-    - [[ProjectClass.class.{change_kind}.md|{name}]] - description how does it used in solution
+- {link to requirements solution}
+  - {link to requirements csproj in solution}
+    - {link to requirements class in solution} - description how does it used in solution
 NUGET:
 - {Nuget package name} {version}
   - {Class} - description how does it used in solution
@@ -145,10 +145,10 @@ NUGET:
 
 Add links to created files as shown below:
 REPOSITORY:
-- [[./Implementation/Repository.{change_kind}.md|Repository]] - {change_kind} - {description}
+- {link to repository template} - {change_kind} - {description}
 PROJECT:
-- [[./Implementation/{ProjectName}.csproj.{change_kind}.md|{ProjectName}.csproj]] - {change_kind} - {description}
-  - [[./Implementation/{ProjectName}.csproj.{change_kind}/{ClassName}.cs.{change_kind}.md|{ClassName}.cs]] - {change_kind} - {description}
+- {link to csproj template} - {change_kind} - {description}
+  - {link to class template} - {change_kind} - {description}
 ```
 ```example
 REPOSITORY:
@@ -171,7 +171,7 @@ For each workflow:
 
 When a workflow is best explained visually, use a Mermaid diagram.
 Apply the [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]] skill:
-- If a sequence diagram has more than 3 lifelines, or any other diagram has more than 5 elements, place it in a separate `*.mmd` file inside a `diagrams/` subfolder next to this skill file and reference it with `![diagram-name](./diagrams/diagram-name.mmd)`.
+- If a sequence diagram has more than 3 lifelines, or any other diagram has more than 5 elements, place it in a separate `*.mmd` file inside a `diagrams/` subfolder next to this skill file and reference it with markdown link.
 - For sequence diagrams, use step numeration and show activation/deactivation of lifelines.
 - Keep diagrams focused: one diagram per workflow or per scenario.
 
@@ -179,7 +179,7 @@ RECOMMENDATION:
 - Prefer a bullet list of workflows, each optionally followed by its diagram.
 - Cover at least: success path, main failure path, and any cross-cutting path (cross-module, async, retry, etc.).
 ```
-````example
+```example
 ## Create entity (happy path)
 
 1. Client sends a POST request to the API.
@@ -188,7 +188,8 @@ RECOMMENDATION:
 4. Handler loads the aggregate, invokes domain logic, and stages changes.
 5. Unit of Work commits the transaction.
 6. API returns `201 Created`.
-
+```
+````example
 ```mermaid
 sequenceDiagram
     autonumber
@@ -209,6 +210,10 @@ sequenceDiagram
     deactivate Behavior
     API-->>Client: 201 Created
     deactivate API
+```
+```example
+## Update entity
+![update-entity](./diagrams/update-entity.mmd)
 ```
 
 ## Validation failure
