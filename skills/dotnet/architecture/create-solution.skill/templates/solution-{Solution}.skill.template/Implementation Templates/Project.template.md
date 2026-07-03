@@ -1,33 +1,34 @@
 ---
 description: Short description what must be made while creation or change in project
-name: #Project name
-element_kind: #repository | project | class
-change_kind: #create | extend
-#- create if solution create new template of project. Name of project must be added into creates property in the header of solution
-#- extend if solution extend existent template of project. Link to project must be added into extends property in the header of solution
+name: # Project name
+element_kind: # repository | project | class
+change_kind: # create | extend
+# - create if solution creates a new project template. Name of the project must be added into the `creates` property in the header of the solution.
+# - extend if solution extends an existing project template. Link to the project must be added into the `extends` property in the header of the solution.
 ---
+
 # How Apply this template
-- Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
-- header property `depends_on` couldn't have links to solution with order is greater or equal order in this solution. If it happend ask user to solve this problem.
+- Replace all `hint`, `example` and `code example` blocks with real content. Do not keep them in the final skill file.
+- If a section does not introduce any changes for this project, remove the section or add a note that no changes are introduced.
 
 # Goals
 ```hint
 Define how solution EXTENDS project goal.
 MUST:
 - show all added goals
-RECOMENDATION:
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
-- encapsulate domain logic
+- Encapsulate domain logic
 ```
 
 # Core Principles
 ```hint
-Define how solution EXTENDS project core principles
+Define how solution EXTENDS project core principles.
 MUST:
 - show all added Core Principles
-RECOMENDATION:
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
@@ -35,38 +36,39 @@ RECOMENDATION:
 ```
 
 # Structure
+
 ## Project Structure
 ```hint
-Define how solution EXTENDS project structure
+Define how solution EXTENDS project structure.
 ```
 ```example
 /ProjectName
-	/DirectoryName
-		ClassesInDirectory.cs
+  /DirectoryName
+    ClassesInDirectory.cs
 ```
 
 ## Directory and class skills
 ```hint
-Define how solution EXTENDS project directory and files
+Define how solution EXTENDS project directory and files.
 ```
 ```example
-| Directory \| file   | Description           |
+| Directory | file   | Description           |
 | ------------------- | --------------------- |
 | /DirectoryName      | Directory description |
 | ClassInDirectory.cs | Class description     |
 ```
 
-| Directory \| file | Description |
+| Directory | file | Description |
 | ----------------- | ----------- |
 |                   |             |
 
-# NuGet Packages 
+# NuGet Packages
 ```hint
-Define how solution EXTENDS project nuget dependencies
+Define how solution EXTENDS project NuGet dependencies.
 ```
 ```example
-| Package   | Version constraint | Purpose                |   
-| --------- | ------------------ | ---------------------- | 
+| Package   | Version constraint | Purpose                |
+| --------- | ------------------ | ---------------------- |
 | Ardalis   | >= 8.0             | SpecificationEvaluator |
 ```
 
@@ -76,8 +78,8 @@ Define how solution EXTENDS project nuget dependencies
 
 # What Does NOT Belong Here
 ```hint
-Define how solution EXTENDS project components which doesnot belong to it
-RECOMENDATION:
+Define how solution EXTENDS project components which do not belong to it.
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
@@ -86,11 +88,11 @@ RECOMENDATION:
 
 # Allowed Dependencies
 ```hint
-Define how solution EXTENDS allowed dependencies that project may have
-RECOMENDATION:
+Define how solution EXTENDS allowed dependencies that project may have.
+RECOMMENDATION:
 - Prefer bullet list
 ATTENTION:
-- Solution should not change allowed dependencies. Confirm extension from user before add.
+- Solution should not change allowed dependencies. Confirm extension from user before adding.
 ```
 ```example
 - [[Shared]]
@@ -105,18 +107,22 @@ If a category has no new rules, skip it — do not write an empty subblock.
 MUST:
 - show all added Rules
 ```
+
 ## MUST
 ```example
 - ...
 ```
+
 ## SHOULD
 ```example
 - ...
 ```
+
 ## MAY
 ```example
 - ...
 ```
+
 ## SHOULD NOT
 ```example
 - ...
@@ -129,7 +135,7 @@ MUST:
 
 # Anti-patterns
 ```hint
-What mean that solution applyed wrong.
+What means that solution applied wrong.
 ```
 ```example
 - Domain service duplicates invariant already enforced in entity setter or method
@@ -137,8 +143,8 @@ What mean that solution applyed wrong.
 
 # Check list
 ```hint
-Define how solution EXTENDS project check list
-RECOMENDATION:
+Define how solution EXTENDS project check list.
+RECOMMENDATION:
 - Prefer checkbox list
 ```
 ```example

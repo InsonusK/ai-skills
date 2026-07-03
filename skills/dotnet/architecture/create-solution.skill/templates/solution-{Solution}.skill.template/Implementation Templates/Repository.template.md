@@ -1,35 +1,38 @@
 ---
-description: Short description waht must be made while creation or change in repository
-element_kind: #repository | project | class
-change_kind: #create | extend
+description: Short description what must be made while creation or change in repository
+element_kind: # repository | project | class
+change_kind: # create | extend
+# - create if solution creates a new repository-level template.
+# - extend if solution extends an existing repository-level template.
 ---
+
 # How Apply this template
-- Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
-- header property `depends_on` couldn't have links to solution with order is greater or equal order in this solution. If it happend ask user to solve this problem.
+- Replace all `hint`, `example` and `code example` blocks with real content. Do not keep them in the final skill file.
+- If a section does not introduce any changes for the repository, remove the section or add a note that no changes are introduced.
 
 # Structure
 
 ## Project Structure
 ```hint
-Define how solution EXTENDS repository structure
+Define how solution EXTENDS repository structure.
 ```
 ```example
 /src
-	/App
-		/App.Host 
+  /App
+    /App.Host
 ```
 
 ## Directory and class skills
 ```hint
-Define how solution EXTENDS repository directory and files
+Define how solution EXTENDS repository directory and files.
 ```
 ```example
-| Directory \| file | Description        |
+| Directory | file | Description        |
 | ----------------- | ------------------ |
-| /src/App          | project desciption |
+| /src/App          | project description |
 ```
 
-| Directory \| file | Description |
+| Directory | file | Description |
 | ----------------- | ----------- |
 |                   |             |
 
@@ -42,18 +45,22 @@ If a category has no new rules, skip it — do not write an empty subblock.
 MUST:
 - show all added Rules
 ```
+
 ## MUST
 ```example
 - Command must realize ICommand<Result<DTO>>
 ```
+
 ## SHOULD
 ```example
 - ...
 ```
+
 ## MAY
 ```example
 - ...
 ```
+
 ## SHOULD NOT
 ```example
 - ...
@@ -64,21 +71,20 @@ MUST:
 - ...
 ```
 
-
 # Unittest TestCases
 ```hint
-Define how solution EXTENDS repository integrational unittests
+Define how solution EXTENDS repository integration unit tests.
 
-RECOMENDATION:
+RECOMMENDATION:
 - Prefer checkbox list
 ```
 ```example
 - [ ] WHEN call Post /record THEN
-	- [ ] return expected result
-	- [ ] new record exist in Database
+  - [ ] return expected result
+  - [ ] new record exist in Database
 - [ ] WHEN call Get /record/{id} and record exist THEN
-    - [ ] Return expected result
+  - [ ] Return expected result
 - [ ] WHEN call Get /record/{id} and record NOT exist THEN
-    - [ ] Return 404 error 
-	- [ ] Respones has expected body
+  - [ ] Return 404 error
+  - [ ] Response has expected body
 ```

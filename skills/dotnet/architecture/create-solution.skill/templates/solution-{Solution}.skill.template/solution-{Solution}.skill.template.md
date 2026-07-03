@@ -8,50 +8,51 @@ tags:
   - skill/architecture/solution
   # any other tags
 triggers:
-  #What kind of task should agent do to use this solution  
-  #- when skill should called
+  # What kind of task should agent do to use this solution
+  # - when skill should called
 creates:
-  #List of classes or project which created by this solution
-  #Project fill {ProjectName}.csproj
-  #Classes fill {Namespace}.{ClassName}.cs
-  #Example:
-  #- "App.Host.cspoj"
-  #- "App.Host.Program.cs"
-  #- "{Module}.Domain.cspoj"
-  #- "{Module}.Domain.Entities.Entity.cs"
+  # List of classes or project which created by this solution
+  # Project fill {ProjectName}.csproj
+  # Classes fill {Namespace}.{ClassName}.cs
+  # Example:
+  # - "App.Host.csproj"
+  # - "App.Host.Program.cs"
+  # - "{Module}.Domain.csproj"
+  # - "{Module}.Domain.Entities.Entity.cs"
 extends:
-  #List of classes or project which extended or effected by this solution
-  #Project fill {ProjectName}.csproj
-  #Classes fill {Namespace}.{ClassName}.cs
-  #Example:
-  #- "App.Host.cspoj"
-  #- "App.Host.Program.cs"
-  #- "{Module}.Domain.cspoj"
-  #- "{Module}.Domain.Entities.{EntityName}.cs"
+  # List of classes or project which extended or affected by this solution
+  # Project fill {ProjectName}.csproj
+  # Classes fill {Namespace}.{ClassName}.cs
+  # Example:
+  # - "App.Host.csproj"
+  # - "App.Host.Program.cs"
+  # - "{Module}.Domain.csproj"
+  # - "{Module}.Domain.Entities.{EntityName}.cs"
 depends_on:
-  #List of other architecture solutions which is used by this solution and must be implemented before this solution
-  #Example:
-  #- "[[Link]]"
+  # List of other architecture solutions which is used by this solution and must be implemented before this solution
+  # Example:
+  # - "[[Link]]"
 adr:
-  #List of architecture decision records which was made due to this solution
-  #Example:
-  #- "[[Link]]"
+  # List of architecture decision records which was made due to this solution
+  # Example:
+  # - "[[Link]]"
 ---
+
 # How Apply this template
-- Writing solution create folder with name solution-{SolutionName}.skill and add this template into this folder with name solution-{SolutionName}.skill.md
-- Fill template using 
-	- ```hint``` - how template should be filled
-	- ```example``` - example of template filling
-	- ```code example``` - example how do you need code examples
-- Clearing template hints:
-	- Remove block "# Template rules"
-	- remove all ```hint```, ```example```, ```code example```
-- Header property `depends_on` couldn't have links to solution with order is greater or equal order in this solution. If it happend ask user to solve this problem.
+- Create a folder named `solution-{SolutionName}.skill` and put this template into it as `solution-{SolutionName}.skill.md`.
+- Fill the template using:
+  - `hint` blocks — instructions on how the section should be filled;
+  - `example` blocks — examples of filled sections;
+  - `code example` blocks — code examples.
+- When the section does not apply to the solution, remove the whole section or add a note that no changes are introduced.
+- Clearing template hints before finalizing the skill:
+  - Remove all `hint`, `example` and `code example` blocks.
+  - Remove this `# How Apply this template` block.
 
 # Goal
 ```hint
 List of goals that are pursued by the creation of this solution.
-RECOMENDATION:
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
@@ -61,17 +62,17 @@ RECOMENDATION:
 # Capabilities
 ```hint
 What are the benefits of using this solution?
-RECOMENDATION:
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
-- low boundeed between application modules
+- Low coupling between application modules
 ```
 
 # Core Principles
 ```hint
-Core principlese that a solution should follow
-RECOMENDATION:
+Core principles that a solution should follow.
+RECOMMENDATION:
 - Prefer bullet list
 - Group principles by logical sense
 ```
@@ -81,23 +82,27 @@ RECOMENDATION:
 ```
 
 # Adr
-```hint 
-If there were architecrute decision record while build solution or edit solution.
-1. Add folder ADR in solution solder
-2. Add ADR record using [[./adr/adr.template.md]]
-3. Add created adr into list of architecrute decision record andvariant which was choosen.
-RECOMENDATION:
+```hint
+Use this section only if an architecture decision was made while building or editing the solution.
+1. Create an `adr/` folder inside the solution skill folder.
+2. Add an ADR record using [[./adr/adr.template.md|adr.template.md]].
+3. List created ADRs in the `adr:` property of the YAML header.
+4. In the skill body, briefly summarize the decision and link to the ADR.
+5. The ADR itself must contain `# Selected variant` and `# Searched variants` sections. The selected variant must be clearly marked and linked from `# Searched variants`.
+
+See also a complete example: [[./adr/example.adr.md|example.adr.md]].
+RECOMMENDATION:
 - Prefer bullet list
 ```
-```examle
-- [[Adr link|Adr property name]] 
-  - bulets from [[Adr link#Selected variant]]
+```example
+- [[adr/dto-validators-only-for-request-dtos.md|DTO validators only for RequestDto]]
+  - Selected variant: Create validators only for RequestDto by default
 ```
 
 # Requirements
 ```hint
-List of requirements for solution appling and Nuget packages. Define what solution uses from dependensies
-RECOMENDATION:
+List of requirements for solution applying and NuGet packages. Define what solution uses from dependencies.
+RECOMMENDATION:
 - Prefer bullet list
 - Use [[Link|Property Name]] format in link
 
@@ -106,62 +111,59 @@ SOLUTION:
 - [[solution-DependencySolution.skill.md|{name}]]
   - [[LinkToProject.csproj.{change_kind}.md|{name}]]
     - [[ProjectClass.class.{change_kind}.md|{name}]] - description how does it used in solution
-NUGET
+NUGET:
 - {Nuget package name} {version}
-  - {Classs} - description how does it used in solution
+  - {Class} - description how does it used in solution
 ```
 ```example
 SOLUTION:
 - [[solution-repository-structure.skill.md|Repository structure solution]]
   - [[app-host.csproj.extended.md|App.Host]]
-    - [[command.class.created.md|Command]] - add extension `IRequest` to `Command` classs
-NUGET
-- IMediatR
+    - [[command.class.created.md|Command]] - add extension `IRequest` to `Command` class
+NUGET:
+- MediatR
   - IRequest - added to `Command` class
 ```
 
 # Template Skill Mutations
 ```hint
-1. Create folder "Implementation" into skill folder
-2. All changes which must be made to implements this solution must be writen into folder "Implemetation" using [template from Implemetaion Template](./Implementation Templates/)
-3. Implementation file naming rule
-	1. For Repository.template - Repository.{File property change_kind}.md
-	2. For Project.template - {ProjectName}.csproj.{File property change_kind}.md
-	3. For Class.template - {ClassName}.cs.{File property change_kind}.md
-4. Implementation file must be put into folder "Implemetation" following this structure
-- Implementation
--- Repository.{File property change_kind}.md
--- {ProjectName}.csproj.{File property change_kind}.md
--- /{ProjectName}.csproj.{File property change_kind}
---- {ClassName}.cs.{File property change_kind}.md
-ATTENSION for dynamic names like Module name or Entity name. Prefer using {Module} or {Entity} notation. It shows that Module or Entity is not constant name.
+1. Create an `Implementation/` folder inside the skill folder.
+2. All changes which must be made to implement this solution must be written into the `Implementation/` folder using templates from [[./Implementation Templates/|Implementation Templates]].
+3. Implementation file naming rules:
+   1. For Repository.template — `Repository.{change_kind}.md`
+   2. For Project.template — `{ProjectName}.csproj.{change_kind}.md`
+   3. For Class.template — `{ClassName}.cs.{change_kind}.md`
+4. Implementation files must be placed into the `Implementation/` folder following this structure:
+   - Implementation/
+     - Repository.{change_kind}.md
+     - {ProjectName}.csproj.{change_kind}.md
+     - {ProjectName}.csproj.{change_kind}/
+       - {ClassName}.cs.{change_kind}.md
+   ATTENTION: for dynamic names like Module name or Entity name prefer using `{Module}` or `{Entity}` notation. It shows that the name is not constant.
 5. Every solution skill must provide concrete implementation files, including classification, decision, policy, or taxonomy skills. If the skill selects between variants, provide an implementation file for each variant that shows the resulting code or configuration.
 6. When this skill depends on other solutions, each implementation variant or section must explicitly state which dependency solution(s) are applied and which are intentionally not applied.
 
-Add links to created files as shown bellow:
+Add links to created files as shown below:
 REPOSITORY:
-- [[./Implementation Templates/Repository.{File property change_kind}.md|Repository]] - {File property change_kind} - {File property description}
+- [[./Implementation/Repository.{change_kind}.md|Repository]] - {change_kind} - {description}
 PROJECT:
-- [[./Implementation Templates/{File property name}.{File property change_kind}.md|{File property name}]] - {File property change_kind} - {File property description}
-	- [[./Implementation Templates/{File property name}.{File property change_kind}.md|{File property name}]] - {File property change_kind} - {File property description}
-- [[./Implementation Templates/{File property name}.{File property change_kind}.md|{File property name}]] - {File property change_kind} - {File property description}
-	- [[./Implementation Templates/{File property name}.{File property change_kind}.md|{File property name}]] - {File property change_kind} - {File property description}
-	- [[./Implementation Templates/{File property name}.{File property change_kind}.md|{File property name}]] - {File property change_kind} - {File property description}
+- [[./Implementation/{ProjectName}.csproj.{change_kind}.md|{ProjectName}.csproj]] - {change_kind} - {description}
+  - [[./Implementation/{ProjectName}.csproj.{change_kind}/{ClassName}.cs.{change_kind}.md|{ClassName}.cs]] - {change_kind} - {description}
 ```
-```Example
+```example
 REPOSITORY:
-- [[./Implementation Templates/Repository.extend.md|Repository]] - extend - add app host
+- [[./Implementation/Repository.extend.md|Repository]] - extend - add app host
 PROJECT:
-- [[./Implementation Templates/App.Host.csproj.create.md|App.Host.csproj]] - create - be root of app composition
-	- [[./Implementation Templates/DIConfiguration.cs.create.md|DIConfiguration.cs]] - create - Be single point of registration into Service collection
-- [[./Implementation Templates/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - create - core project of domain logic
-	- [[./Implementation Templates/{Entity}.cs.extend.md|{Entity}.cs]] - extend - add invariant validation by rules
-	- [[./Implementation Templates/Rule.cs.create.md|Rule.cs]] - create - add invariant rules
+- [[./Implementation/App.Host.csproj.create.md|App.Host.csproj]] - create - be root of app composition
+  - [[./Implementation/App.Host.csproj.create/DIConfiguration.cs.create.md|DIConfiguration.cs]] - create - be single point of registration into Service collection
+- [[./Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - core project of domain logic
+  - [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]] - extend - add invariant validation by rules
+  - [[./Implementation/{Module}.Domain.csproj.extend/Rule.cs.create.md|Rule.cs]] - create - add invariant rules
 ```
 
 # Workflow
 ```hint
-add mermaid diagram which show workflow of solution
+Add a Mermaid diagram which shows workflow of the solution.
 ```
 ````example
 ```mermaid
@@ -174,65 +176,68 @@ sequenceDiagram
 
 # Rules
 ```hint
-define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
+Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
 Show links to same subblock in implementation files.
 Only add a subblock for categories that contain at least one implementation-file link or rule.
 If a category has no links and no rules, skip it — do not write an empty subblock.
 
 MUST:
-- Contain link to same subblock in implemetation template
+- Contain link to same subblock in implementation template
 - Rules that describe a specific implementation file (class, project, repository) should be written in that implementation file.
 
 SHOULD:
 - Keep rules in implementation file. You can keep rules here only when moving them to an implementation file would reduce clarity or cause irrational duplication (e.g., cross-cutting concerns that span multiple files).
 ```
+
 ## MUST
 ```example
 - [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
-	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs.create]]
+  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs.create]]
 - Interfaces.csproj.extend
-	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
+  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
 ```
+
 ## SHOULD
 ```example
 - [[./Implementation/Shared.csproj.extend.md#SHOULD|Shared.csproj.extend]]
-	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
+  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
 - Interfaces.csproj.extend
-	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
+  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#SHOULD|App.Host.csproj.extend]]
 ```
 
 ## MAY
 ```example
-- [[./Implementation/Shared.csproj.extend.md#SHOULD|Shared.csproj.extend]]
-	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MAY|Shared.csproj.extend]]
+  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MAY|IQuery.cs.create]]
 - Interfaces.csproj.extend
-	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
-- [[./Implementation/App.Host.csproj.extend.md#SHOULD|App.Host.csproj.extend]]
+  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MAY|{Dto}.cs.create]]
+- [[./Implementation/App.Host.csproj.extend.md#MAY|App.Host.csproj.extend]]
 ```
 
 ## SHOULD NOT
 ```example
 - [[./Implementation/Shared.csproj.extend.md#SHOULD NOT|Shared.csproj.extend]]
-	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOUD NOT|IQuery.cs.create]]
+  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD NOT|IQuery.cs.create]]
 - Interfaces.csproj.extend
-	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD NOT|{Dto}.cs.create]]
+  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD NOT|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#SHOULD NOT|App.Host.csproj.extend]]
 ```
+
 ## MUST NOT
 ```example
 - [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
-	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST NOT|IQuery.cs.create]]
+  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST NOT|IQuery.cs.create]]
 - Interfaces.csproj.extend
-	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST NOT|{Dto}.cs.create]]
+  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST NOT|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
 ```
 
 # Anti-patterns
 ```hint
-What mean that soltion applyed wrong. 
-RECOMENDATION:
+What means that solution applied wrong.
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
@@ -241,8 +246,8 @@ RECOMENDATION:
 
 # Check list
 ```hint
-what must be true before this solution is considered correctly applied?
-RECOMENDATION:
+What must be true before this solution is considered correctly applied?
+RECOMMENDATION:
 - Prefer checkbox list
 ```
 ```example

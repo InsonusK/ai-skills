@@ -1,34 +1,35 @@
 ---
 description: Short description what must be made while creation or change in class
-project_name: #The project in which the class is located
-name: #Class name
-element_kind: #repository | project | class
-change_kind: #create | extend
-#- create if solution create new template of project. Name of project must be added into creates property in the header of solution
-#- extend if solution extend existent template of project. Link to project must be added into extends property in the header of solution
+project_name: # The project in which the class is located
+name: # Class name
+element_kind: # repository | project | class
+change_kind: # create | extend
+# - create if solution creates a new class template. Name of the class must be added into the `creates` property in the header of the solution.
+# - extend if solution extends an existing class template. Link to the class must be added into the `extends` property in the header of the solution.
 ---
-# How Apply this template 
-- Replace all ```hint```, ```example``` and ```code example``` blocks with real content. Do not keep them in the final skill file.
-- header property `depends_on` couldn't have links to solution with order is greater or equal order in this solution. If it happend ask user to solve this problem.
+
+# How Apply this template
+- Replace all `hint`, `example` and `code example` blocks with real content. Do not keep them in the final skill file.
+- If a section does not introduce any changes for this class, remove the section or add a note that no changes are introduced.
 
 # Goals
 ```hint
-Define how solution EXTENDS class goal
+Define how solution EXTENDS class goal.
 MUST:
 - show all added Goals
-RECOMENDATION:
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
-- Prevent duplicate creation via Guid uniqueness check 
+- Prevent duplicate creation via Guid uniqueness check
 ```
 
 # Core Principles
 ```hint
-Define how solution EXTENDS class core principles
+Define how solution EXTENDS class core principles.
 MUST:
 - show all added Core Principles
-RECOMENDATION:
+RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
@@ -37,10 +38,10 @@ RECOMENDATION:
 
 # Naming convention
 ```hint
-class naming convension. Fill table
-- use case - when apply naming convesion
-- class name oattern - mask of class name. Example: Is{Rule}
-- class name - example of class name. Example: IsEvent
+Class naming convention. Fill table:
+- use case - when apply naming convention
+- class name pattern - mask of class name. Example: Is{Rule}
+- class name - example of class name. Example: IsEven
 - file name pattern - file name pattern. Example: Is{Rule}.cs
 - file name - example of file name. Example: IsEven.cs
 ```
@@ -51,15 +52,16 @@ class naming convension. Fill table
 
 # Implementation changes
 ```hint
-Define how solution EXTENDS class implementation
+Define how solution EXTENDS class implementation.
 ```
 ```example
 [[Class skill]] must ...
 ```
 ```code example
-public class SomeEntity: IGuidEntity{
-	public int Id {get; internal set;}
-	public Guid Guid {get; internal set;}
+public class SomeEntity : IGuidEntity
+{
+    public int Id { get; internal set; }
+    public Guid Guid { get; internal set; }
 }
 ```
 
@@ -72,18 +74,22 @@ If a category has no new rules, skip it — do not write an empty subblock.
 MUST:
 - show all added Rules
 ```
+
 ## MUST
 ```example
 - Command must realize ICommand<Result<DTO>>
 ```
+
 ## SHOULD
 ```example
 - ...
 ```
+
 ## MAY
 ```example
 - ...
 ```
+
 ## SHOULD NOT
 ```example
 - ...
@@ -96,7 +102,7 @@ MUST:
 
 # Anti-patterns
 ```hint
-Define how solution EXTENDS class anti-patterns
+What means that solution applied wrong.
 ```
 ```example
 - Duplicating this mapping in every external-created controller action
@@ -104,8 +110,8 @@ Define how solution EXTENDS class anti-patterns
 
 # Check list
 ```hint
-Define how solution EXTENDS class check list
-RECOMENDATION:
+Define how solution EXTENDS class check list.
+RECOMMENDATION:
 - Prefer checkbox list
 ```
 ```example
@@ -114,13 +120,13 @@ RECOMENDATION:
 
 # Unittest TestCases
 ```hint
-Define how solution EXTENDS class unittests
-RECOMENDATION:
+Define how solution EXTENDS class unit tests.
+RECOMMENDATION:
 - Prefer checkbox list
 ```
 ```example
 - [ ] WHEN call command with event THEN
-	- [ ] event fill domain event in entity
-	- [ ] `DomainEventInterceptor` catch `SaveChanges` and add event to `outbox`
-	- [ ] `OutboxDispatcher` read `outbox` and send `Notification`
+  - [ ] event fill domain event in entity
+  - [ ] `DomainEventInterceptor` catch `SaveChanges` and add event to `outbox`
+  - [ ] `OutboxDispatcher` read `outbox` and send `Notification`
 ```
