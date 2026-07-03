@@ -1,8 +1,0 @@
-Changed 7 files
-skills\dotnet\architecture\solutions\🧩validated\solution-domain-behaviour.skill\Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
-skills\dotnet\architecture\solutions\🧩validated\solution-domain-configuration.skill\Implementation\{Module}.Domain.csproj.extend\{Entity}Config.cs.create.md
-skills\dotnet\architecture\solutions\🧩validated\solution-entity-concurrency-change.skill\Implementation\{Module}.Domain.csproj.extend\{EntityName}Config.cs.extend.md
-skills\dotnet\architecture\solutions\🧩validated\solution-pipeline-registration-order.skill\Implementation\App.Host.csproj.extend\PipelineRegistration.cs.extend.md
-skills\dotnet\architecture\solutions\🧩validated\solution-pipeline-registration.skill\Implementation\App.Host.csproj.extend\PipelineRegistration.cs.create.md
-skills\dotnet\architecture\solutions\🧩validated\solution-validation-behavior.skill\Implementation\BuildingBlocks.csproj.extend\ValidationBehavior.cs.create.md
-skills\dotnet\architecture\solutions\🧩validated\solution-value-objects-and-rules.skill\Implementation\{Module}.Domain.csproj.extend\{Entity}.cs.extend.md

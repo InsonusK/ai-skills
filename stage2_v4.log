@@ -1,7 +1,0 @@
-  moved [SHOULD] to {FeatureName}.Handler.cs.create.md: - Guard checks return early before domain call — fail fast pattern
-  moved [MUST NOT] to App.Infrastructure.csproj.extend.md: - Put mapping logic in `DbContext.OnModelCreating` directly
-  moved [MUST] to {Entity}VersionResolver.cs.create.md: - Each `{Entity}VersionResolver` uses `IReadRepository<{Entity}>` and the module
-  moved [MUST] to {EntityName}.cs.extend.md: - `Guid` set exactly once in the entity factory method — never reassigned
-  moved [MUST] to {Command}.cs.extend.md: - `Create{Entity}Result` contains only the entity Id
-  moved [SHOULD] to {Module}.Application.csproj.extend.md: - Return `Result<Create{Entity}Result>.Created(new Create{Entity}Result(id))` fr
-  moved [SHOULD] to {ValueObject}.cs.create.md: - All VOs override `ToString()` when used in logs or UI

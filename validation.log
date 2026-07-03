@@ -1,5 +1,0 @@
-Found 4 issues:
-🧩validated\solution-entity-classification.skill\solution-entity-classification.skill.md: duplicate bullet in # Rules/MUST: - Do not have a `Version` property or implement `IVersioned`.
-🧩validated\solution-entity-classification.skill\solution-entity-classification.skill.md: duplicate bullet in # Rules/MUST: - Do not have a `Guid` property or implement `IHasGuid`.
-🧩validated\solution-sln-structure.skill\Implementation\App.Infrastructure.csproj.create.md: duplicate bullet in # Rules/MUST: - App.Infrastructure is the only project with DbContext
-🧩validated\solution-sln-structure.skill\Implementation\BuildingBlocks.csproj.create.md: duplicate bullet in # Rules/MUST: - BuildingBlocks depends only on Shared
