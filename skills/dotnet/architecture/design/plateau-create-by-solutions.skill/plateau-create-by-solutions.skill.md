@@ -251,7 +251,7 @@ The repository skill describes the whole solution. Its sections must stay at the
 MUST:
 - Remove all `hint` and `example` blocks from final skill file. Do not keep them in the final skill file.
 - Follow "# How Apply this template" rules defined in template.
-- Write every `__Applied solutions:__` bullet as `[[solution skill link]] - [[implementation/template link]]` when an implementation/template file exists.
+- Write every `__Applied solutions:__` bullet as `<solution skill link> - <implementation/template link>` when an implementation/template file exists.
 - Keep repository skill `## Project Structure` limited to project folders only.
 - Keep repository skill `## Directory and class skills` limited to project directories and project template links.
 - Normalize `{Module}` projects to generic module templates, not concrete module names.

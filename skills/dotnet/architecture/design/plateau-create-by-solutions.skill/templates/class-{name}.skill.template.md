@@ -22,7 +22,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -36,7 +36,7 @@ After summarized list add Applied solutions list with links to all solutions whi
 - Prevent duplicate creation via Guid uniqueness check 
 
 __Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
+- <Solution link> - <Class.template.md link>
 ```
 
 # Core Principles
@@ -47,7 +47,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principles conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 - Add Core principle `Apply ONE plateau template per class`
 
@@ -61,7 +61,7 @@ RECOMENDATION:
 - Entities define consistency.
 
 __Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
+- <Solution link> - <Class.template.md link>
 ```
 
 # Naming convention
@@ -95,7 +95,7 @@ MUST:
   - version
 
 - If Implementation changes conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -113,7 +113,7 @@ public class SomeEntity: IGuidEntity{
 }
 
 __Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
+- <Solution link> - <Class.template.md link>
 ```
 
 # Rules
@@ -124,7 +124,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -142,7 +142,7 @@ MUST NOT:
 	- ...
 	  
 __Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
+- <Solution link> - <Class.template.md link>
 ```
 
 # Anti-patterns
@@ -153,7 +153,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Anti-patterns" conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 - Add antipattern `Apply SEVERAL plateau template per class`
 
@@ -167,7 +167,7 @@ RECOMENDATION:
 - Domain service duplicates invariant already enforced in entity setter or method
 
 __Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
+- <Solution link> - <Class.template.md link>
 ```
 
 # Check list
@@ -178,7 +178,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Check list" conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -190,7 +190,7 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
+- <Solution link> - <Class.template.md link>
 ```
 
 # Unittest TestCases
@@ -201,7 +201,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Check list conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Class.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -213,5 +213,5 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
+- <Solution link> - <Class.template.md link>
 ```

@@ -31,11 +31,11 @@ extends:
 depends_on:
   # List of other architecture solutions which is used by this solution and must be implemented before this solution
   # Example:
-  # - "[[Link]]"
+  # - "<Link>"
 adr:
   # List of architecture decision records which was made due to this solution
   # Example:
-  # - "[[Link]]"
+  # - "<Link>"
 ---
 
 # How Apply this template
@@ -104,7 +104,7 @@ RECOMMENDATION:
 List of requirements for solution applying and NuGet packages. Define what solution uses from dependencies.
 RECOMMENDATION:
 - Prefer bullet list
-- Use [[Link|Property Name]] format in link
+- Use <Link|Property Name> format in link
 
 TEMPLATE:
 SOLUTION:

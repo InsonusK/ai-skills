@@ -22,7 +22,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -34,7 +34,7 @@ RECOMENDATION:
 - encapsulate domain logic
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 # Core Principles
@@ -45,7 +45,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principles conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -57,7 +57,7 @@ RECOMENDATION:
 - Entities define consistency.
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 # Structure
@@ -80,7 +80,7 @@ MUST:
 - For project structure block:
   - use link to files which define class
 - For Applied solutions block:
-	- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+	- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 ```
 ```example
 - /ProjectName
@@ -90,7 +90,7 @@ MUST:
 ```
 ```example
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 ## Directory and class skills
@@ -101,7 +101,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Directory and class skills conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -111,11 +111,11 @@ RECOMENDATION:
 ```example
 | `Directory|file`  | Description                                    | Pattern skill          |
 | ------------------- | ---------------------------------------------- | ---------------------- |
-| /DirectoryName      | Directory description                          | [[link to folder pattern]] |
-| ClassInDirectory.cs | Description of class inside of directory above | [[link to file patter]]    |
+| /DirectoryName      | Directory description                          | <link to folder pattern> |
+| ClassInDirectory.cs | Description of class inside of directory above | <link to file patter>    |
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 | `Directory|file` | Description | Pattern skill |
@@ -130,7 +130,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Directory and class skills conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -142,7 +142,7 @@ RECOMENDATION:
 | Ardalis   | >= 8.0             | SpecificationEvaluator |
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 | Package                                   | Version constraint | Purpose                               |
@@ -157,7 +157,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "What Does NOT Belong Here" conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -165,11 +165,11 @@ RECOMENDATION:
 - Prefer pure copy with out changing
 ```
 ```example
-- Command Handler - belong to [[Other csproj skill]]
-- Commands - belong to [[Other csproj skill]]
+- Command Handler - belong to <Other csproj skill>
+- Commands - belong to <Other csproj skill>
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 ## Allowed Dependencies
@@ -180,7 +180,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Allowed dependencies" conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -188,11 +188,11 @@ RECOMENDATION:
 - Prefer pure copy with out changing
 ```
 ```example
-- [[Shared]]
-- [[BuildingBlocks]]
+- <Shared>
+- <BuildingBlocks>
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 # Rules
@@ -203,7 +203,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -221,7 +221,7 @@ MUST NOT:
 	- ...
 	  
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 MUST NOT:
 - extended_by solution modify Allowed Dependencies without explicit user confirmation
@@ -234,7 +234,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Anti-patterns" conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -246,7 +246,7 @@ RECOMENDATION:
 - Domain service duplicates invariant already enforced in entity setter or method
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
 
 # Check list
@@ -257,7 +257,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Check list" conflicted to each other as user to solve the problem
-- Each bullet must be `[[solution skill link]] - [[Project.template.md link]]` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Project.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class-level details.
 
 RECOMENDATION:
@@ -269,5 +269,5 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- [[Solution link]] - [[Project.template.md link]]
+- <Solution link> - <Project.template.md link>
 ```
