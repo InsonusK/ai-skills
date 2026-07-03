@@ -13,7 +13,7 @@ Keep the plateau root skill (`plateau-{plateau-name}.skill.md`) and all of its s
 
 # Prerequisites
 
-Read [[skills/dotnet/architecture/create-plateau.skill/create-plateau.skill.md|create-plateau.skill]] first. The same mapping and normalization rules apply during an update:
+Read [[skills/dotnet/architecture/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions.skill]] first. The same mapping and normalization rules apply during an update:
 
 - `Implementation/` file patterns (`Repository.create.md`, `{Project}.csproj.create.md`, `{Project}.csproj.extend.md`, class files)
 - project and class name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`)
@@ -34,7 +34,7 @@ Read [[skills/dotnet/architecture/create-plateau.skill/create-plateau.skill.md|c
    - `Repository.create.md`
    - `{Project}.csproj.create.md` and `{Project}.csproj.extend.md`
    - nested `{Class}.cs.create.md` and `{Class}.cs.extend.md`
-4. Map each discovered implementation file to a structural skill using the normalization rules from create-plateau.skill:
+4. Map each discovered implementation file to a structural skill using the normalization rules from plateau-create-by-solutions.skill:
    - `Repository.create.md` → `sln-{plateau-name}.skill.md`
    - `{Project}.csproj.create/.extend.md` → `csproj-{normalized}.skill.md`
    - `{Class}.cs.create/.extend.md` → `class-{normalized}.skill.md`
@@ -122,7 +122,7 @@ If a solution is removed from the plateau:
 
 # Check list
 
-- [ ] `create-plateau.skill` mapping rules were applied
+- [ ] `plateau-create-by-solutions.skill` mapping rules were applied
 - [ ] Plateau root skill references the new/updated solution in `created_by`
 - [ ] Plateau root skill describes the solution in `Core Principles` or `Capabilities`
 - [ ] Plateau root skill includes the solution in the correct `__Applied solutions__` list

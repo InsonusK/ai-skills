@@ -1,5 +1,5 @@
 ---
-name: solution-build
+name: solution-create
 description: Define how create new solution by patterns
 whenToUse: when you write a solution skill
 ---

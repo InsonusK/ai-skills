@@ -1,5 +1,5 @@
 ---
-name: plateau-build
+name: plateau-create-by-solutions
 description: Define how build plateau skills by patterns
 whenToUse: when you write skills for building plateau
 ---
@@ -10,7 +10,7 @@ whenToUse: when you write skills for building plateau
 - {output} - folder where you should put created plateau skills. Default `skills/dotnet/architecture/plateau`
 
 # Prerequisites
-Read [[skills/dotnet/architecture/create-solution.skill/create-solution.skill.md|create-solution.skill]] first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
+Read [[skills/dotnet/architecture/solution-create.skill/solution-create.skill.md|solution-create.skill]] first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 
 # Solution-skill structure
 Every solution-skill has an `Implementation/` folder with concrete mutations. Recognize these file patterns:
