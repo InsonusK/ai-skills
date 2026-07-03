@@ -163,14 +163,74 @@ PROJECT:
 
 # Workflow
 ```hint
-Add a Mermaid diagram which shows workflow of the solution.
+Describe all major workflows that the solution covers. Do not limit the description to a single happy-path scenario.
+For each workflow:
+- Name the scenario (e.g., happy path, validation failure, cross-module call, retry).
+- List the participants and the sequence of steps.
+- Mention the outcome and any side effects.
+
+When a workflow is best explained visually, use a Mermaid diagram.
+Apply the [[.agents/skills/mermaid-diagram/SKILL.md|mermaid-diagram]] skill:
+- If a sequence diagram has more than 3 lifelines, or any other diagram has more than 5 elements, place it in a separate `*.mmd` file inside a `diagrams/` subfolder next to this skill file and reference it with `![diagram-name](./diagrams/diagram-name.mmd)`.
+- For sequence diagrams, use step numeration and show activation/deactivation of lifelines.
+- Keep diagrams focused: one diagram per workflow or per scenario.
+
+RECOMMENDATION:
+- Prefer a bullet list of workflows, each optionally followed by its diagram.
+- Cover at least: success path, main failure path, and any cross-cutting path (cross-module, async, retry, etc.).
 ```
 ````example
+## Create entity (happy path)
+
+1. Client sends a POST request to the API.
+2. API maps the request to a command and sends it through MediatR.
+3. Validation behavior validates the command.
+4. Handler loads the aggregate, invokes domain logic, and stages changes.
+5. Unit of Work commits the transaction.
+6. API returns `201 Created`.
+
 ```mermaid
 sequenceDiagram
-  Client->>API: POST /entities
-  API->>Handler: Send(command)
-  Handler-->>API: Result.Created
+    autonumber
+    actor Client
+    participant API
+    participant Behavior as ValidationBehavior
+    participant Handler
+    participant UoW as UnitOfWork
+    Client->>API: POST /entities
+    activate API
+    API->>Behavior: Send(CreateEntityCommand)
+    activate Behavior
+    Behavior->>Handler: next()
+    activate Handler
+    Handler-->>Behavior: Result.Created
+    deactivate Handler
+    Behavior-->>API: Result.Created
+    deactivate Behavior
+    API-->>Client: 201 Created
+    deactivate API
+```
+
+## Validation failure
+
+1. Client sends an invalid request.
+2. Validation behavior catches the failure before the handler runs.
+3. API returns `400 Bad Request` with validation details.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client
+    participant API
+    participant Behavior as ValidationBehavior
+    Client->>API: POST /entities (invalid)
+    activate API
+    API->>Behavior: Send(CreateEntityCommand)
+    activate Behavior
+    Behavior-->>API: Result.Invalid
+    deactivate Behavior
+    API-->>Client: 400 Bad Request
+    deactivate API
 ```
 ````
 
