@@ -4,6 +4,7 @@ sources:
     tree: master
     subpath:
       - skills/common-workflow/work-in-git-tree.skill.md
+      - skills/common-workflow/mermaid-diagram.skill.md
 
 settings:
   target: .agents/skills
