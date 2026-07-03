@@ -7,10 +7,10 @@ whenToUse: when you write skills for building plateau
 # Input parameters
 - {plateau-name} - name of created plateau
 - {solutions} - list of solutions which must be implemented in created plateau
-- {output} - folder where you should put created plateau skills. Default `skills\dotnet\architecture\plateau`
+- {output} - folder where you should put created plateau skills. Default `skills/dotnet/architecture/plateau`
 
 # Prerequisites
-Read [create-solution.skill](../create-solution.skill/create-solution.skill.md) first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
+Read [[skills/dotnet/architecture/create-solution.skill/create-solution.skill.md|create-solution.skill]] first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 
 # Solution-skill structure
 Every solution-skill has an `Implementation/` folder with concrete mutations. Recognize these file patterns:
@@ -98,6 +98,118 @@ Both file types contribute to the same target skill:
 - Classification, taxonomy, or policy solutions may affect only the repository skill and the plateau root skill (for example, by defining an entity type matrix). Include them in `created_by` and `__Applied solutions:__` even if they have no direct code files
 - If a solution from {solutions} has no `Implementation/` content and does not affect plateau structure, document the decision to exclude it in the plateau root skill or ask the user for clarification
 
+# Example: building a plateau from three solutions
+
+## Input
+- plateau-name: `default`
+- solutions:
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]
+
+## Source files discovered in Implementation/
+
+`solution-sln-structure`:
+- `Repository.create.md`
+- `Shared.csproj.create.md`
+- `BuildingBlocks.csproj.create.md`
+- `App.Host.csproj.create.md`
+- `App.Infrastructure.csproj.create.md`
+- `{Module}.Api.csproj.create.md`
+- `{Module}.Application.csproj.create.md`
+- `{Module}.Domain.csproj.create.md`
+- `{Module}.Domain.csproj.create/{Entity}.cs.create.md`
+- `{Module}.Interfaces.csproj.create.md`
+
+`solution-command-integration`:
+- `Shared.csproj.extend.md`
+- `Shared.csproj.extend/ICommand.cs.create.md`
+- `{Module}.Interfaces.csproj.extend.md`
+- `{Module}.Interfaces.csproj.extend/{Command}.cs.create.md`
+- `{Module}.Application.csproj.extend.md`
+- `{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md`
+- `{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md`
+- `{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md`
+- `App.Host.csproj.extend.md`
+
+`solution-entity-concurrency-change`:
+- `Shared.csproj.extend.md`
+- `Shared.csproj.extend/IVersioned.cs.create.md`
+- `Shared.csproj.extend/IHasVersions.cs.create.md`
+- `BuildingBlocks.csproj.extend.md`
+- `BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md`
+- `BuildingBlocks.csproj.extend/ETagEncoder.cs.create.md`
+- `{Module}.Domain.csproj.extend.md`
+- `{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md`
+- `{Module}.Application.csproj.extend.md`
+- `{Module}.Application.csproj.extend/{Entity}VersionResolver.cs.create.md`
+- `{Module}.Interfaces.csproj.extend.md`
+- `{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md`
+- `{Module}.Api.csproj.extend.md`
+- `{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md`
+- `App.Host.csproj.extend.md`
+- `App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md`
+- `App.Infrastructure.csproj.extend.md`
+- `App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md`
+
+## Resulting plateau structure
+
+```
+plateau/default/
+├── plateau-default.skill.md
+└── structure/
+    ├── sln-default.skill.md
+    ├── Shared/
+    │   ├── csproj-shared.skill.md
+    │   └── classes/
+    │       ├── class-i-command.skill.md
+    │       ├── class-i-has-versions.skill.md
+    │       ├── class-i-entity-version-resolver.skill.md
+    │       └── class-i-versioned.skill.md
+    ├── BuildingBlocks/
+    │   ├── csproj-building-blocks.skill.md
+    │   └── classes/
+    │       ├── class-concurrency-behavior.skill.md
+    │       └── class-etag-encoder.skill.md
+    ├── App.Host/
+    │   ├── csproj-app-host.skill.md
+    │   └── classes/
+    │       ├── class-entity-version-resolver-registration.skill.md
+    │       └── class-module-registration.skill.md
+    ├── App.Infrastructure/
+    │   ├── csproj-app-infrastructure.skill.md
+    │   └── classes/
+    │       └── class-entity-version-resolver-factory.skill.md
+    ├── {Module}.Api/
+    │   ├── csproj-module-api.skill.md
+    │   └── classes/
+    │       └── class-single-entity-controller.skill.md
+    ├── {Module}.Application/
+    │   ├── csproj-module-application.skill.md
+    │   └── classes/
+    │       ├── class-entity-version-resolver.skill.md
+    │       ├── class-feature-handler.skill.md
+    │       ├── class-feature-validator.skill.md
+    │       └── class-module-application-registration.skill.md
+    ├── {Module}.Domain/
+    │   ├── csproj-module-domain.skill.md
+    │   └── classes/
+    │       ├── class-entity.skill.md
+    │       └── class-entity-config.skill.md
+    └── {Module}.Interfaces/
+        ├── csproj-module-interfaces.skill.md
+        └── classes/
+            ├── class-command.skill.md
+            └── class-query.skill.md
+```
+
+## Key observations
+- `Shared.csproj.create.md` + `Shared.csproj.extend.md` (from two solutions) → one `csproj-shared.skill.md`.
+- `ICommand.cs.create.md` → `class-i-command.skill.md`; `IVersioned.cs.create.md` → `class-i-versioned.skill.md`.
+- `{Module}.Api.csproj.create.md` + `{Module}.Api.csproj.extend.md` → one `csproj-module-api.skill.md`.
+- `{Entity}.cs.create.md` + `{EntityName}.cs.extend.md` → one `class-entity.skill.md`.
+- `Repository.create.md` from `solution-sln-structure` becomes the foundation of `sln-default.skill.md`.
+
 # Applied solutions list format
 Every content section that summarizes one or more source solutions must end with an `__Applied solutions:__` list.
 
@@ -145,6 +257,7 @@ MUST:
 - Normalize `{Module}` projects to generic module templates, not concrete module names.
 - Merge `.create.md` and `.extend.md` files for the same project/class into a single skill file.
 - Include every solution that contributes project, class, or repository-level content in `created_by`.
+- If two solutions define conflicting rules for the same project/class, resolve the conflict or ask the user before merging.
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Omit the parent solution skill link from `__Applied solutions:__` bullets.
