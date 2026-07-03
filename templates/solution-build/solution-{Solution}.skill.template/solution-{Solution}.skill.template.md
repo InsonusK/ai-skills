@@ -174,7 +174,7 @@ sequenceDiagram
 
 # Rules
 ```hint
-define MUST, SHOULD, SHOULD NOT, MUST NOT rules.
+define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
 Show links to same subblock in implementation files.
 Only add a subblock for categories that contain at least one implementation-file link or rule.
 If a category has no links and no rules, skip it — do not write an empty subblock.
@@ -186,7 +186,7 @@ MUST:
 SHOULD:
 - Keep rules in implementation file. You can keep rules here only when moving them to an implementation file would reduce clarity or cause irrational duplication (e.g., cross-cutting concerns that span multiple files).
 ```
-## MUST:
+## MUST
 ```example
 - [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
 	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs.create]]
@@ -194,7 +194,7 @@ SHOULD:
 	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
 ```
-## SHOULD:
+## SHOULD
 ```example
 - [[./Implementation/Shared.csproj.extend.md#SHOULD|Shared.csproj.extend]]
 	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
@@ -202,6 +202,16 @@ SHOULD:
 	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#SHOULD|App.Host.csproj.extend]]
 ```
+
+## MAY
+```example
+- [[./Implementation/Shared.csproj.extend.md#SHOULD|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
+- Interfaces.csproj.extend
+	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
+- [[./Implementation/App.Host.csproj.extend.md#SHOULD|App.Host.csproj.extend]]
+```
+
 ## SHOULD NOT
 ```example
 - [[./Implementation/Shared.csproj.extend.md#SHOULD NOT|Shared.csproj.extend]]
@@ -210,7 +220,7 @@ SHOULD:
 	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD NOT|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#SHOULD NOT|App.Host.csproj.extend]]
 ```
-## MUST NOT:
+## MUST NOT
 ```example
 - [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
 	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST NOT|IQuery.cs.create]]

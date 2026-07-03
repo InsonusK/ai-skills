@@ -35,7 +35,7 @@ Define how solution EXTENDS repository directory and files
 
 # Rules
 ```hint
-Define how solution EXTENDS repository MUST, SHOULD, SHOULD NOT, MUST NOT rules.
+Define how solution EXTENDS repository MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
 Only add a subblock for categories where this solution introduces new rules.
 If a category has no new rules, skip it — do not write an empty subblock.
 
@@ -50,7 +50,10 @@ MUST:
 ```example
 - ...
 ```
-
+## MAY
+```example
+- ...
+```
 ## SHOULD NOT
 ```example
 - ...
