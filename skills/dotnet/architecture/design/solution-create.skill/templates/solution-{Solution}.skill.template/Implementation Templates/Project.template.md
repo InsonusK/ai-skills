@@ -83,7 +83,7 @@ RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
-- Commands - belong to <Other csproj skill>
+- Commands - belong to [[Other csproj skill]]
 ```
 
 # Allowed Dependencies
@@ -95,7 +95,7 @@ ATTENTION:
 - Solution should not change allowed dependencies. Confirm extension from user before adding.
 ```
 ```example
-- <Shared>
+- [[Shared]]
 ```
 
 # Rules

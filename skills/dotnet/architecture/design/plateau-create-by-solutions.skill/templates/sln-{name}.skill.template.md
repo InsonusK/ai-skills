@@ -36,7 +36,7 @@ MUST:
 		- /[App.Host](./App.Host/csproj-app-host.skill.md)
 
 __Applied solutions:__
-- <Solution link> - <Repository.template.md link>
+- [[Solution link]] - [[Repository.template.md link]]
 ```
 
 ## Directory and class skills
@@ -53,7 +53,7 @@ MUST:
 ```example
 | Directory \| file | template link     | Description        |
 | ----------------- | ----------------- | ------------------ |
-| /src/App          | <template link> | project desciption |
+| /src/App          | [[template link]] | project desciption |
 ```
 
 | Directory \| file | template link | Description |
@@ -85,6 +85,6 @@ MUST NOT:
 	- ...
 
 __Applied solutions:__
-- <Solution link> - <Repository.template.md link>
+- [[Solution link]] - [[Repository.template.md link]]
 ```
 

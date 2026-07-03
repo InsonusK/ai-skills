@@ -55,7 +55,7 @@ Class naming convention. Fill table:
 Define how solution EXTENDS class implementation.
 ```
 ```example
-<Class skill> must ...
+[[Class skill]] must ...
 ```
 ```code example
 public class SomeEntity : IGuidEntity
