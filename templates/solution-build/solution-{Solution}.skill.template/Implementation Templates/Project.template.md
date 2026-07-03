@@ -98,19 +98,30 @@ ATTENTION:
 
 # Rules
 ```hint
-Define how solution EXTENDS project MUST, SHOULD, SHOULD NOT, MUST NOT rules
+Define how solution EXTENDS project MUST, SHOULD, SHOULD NOT, MUST NOT rules.
+Only add a subblock for categories where this solution introduces new rules.
+If a category has no new rules, skip it — do not write an empty subblock.
+
 MUST:
 - show all added Rules
 ```
+## MUST
 ```example
-MUST:
-	- ...
-SHOULD:
-	- ...
-SHOULD NOT:
-	- ...
-MUST NOT:
-	- ...
+- ...
+```
+## SHOULD
+```example
+- ...
+```
+
+## SHOULD NOT
+```example
+- ...
+```
+
+## MUST NOT
+```example
+- ...
 ```
 
 # Anti-patterns
@@ -130,4 +141,3 @@ RECOMENDATION:
 ```example
 - [ ] `int Id` with `internal set` present
 ```
-

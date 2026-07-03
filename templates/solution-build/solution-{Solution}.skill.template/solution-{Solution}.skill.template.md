@@ -174,17 +174,49 @@ sequenceDiagram
 
 # Rules
 ```hint
-define MUST, SHOULD, SHOULD NOT, MUST NOT rules
-```
-```example
+define MUST, SHOULD, SHOULD NOT, MUST NOT rules.
+Show links to same subblock in implementation files.
+Only add a subblock for categories that contain at least one implementation-file link or rule.
+If a category has no links and no rules, skip it — do not write an empty subblock.
+
 MUST:
-	- ...
+- Contain link to same subblock in implemetation template
+- Rules that describe a specific implementation file (class, project, repository) should be written in that implementation file.
+
 SHOULD:
-	- ...
-SHOULD NOT:
-	- ...
-MUST NOT:
-	- ...
+- Keep rules in implementation file. You can keep rules here only when moving them to an implementation file would reduce clarity or cause irrational duplication (e.g., cross-cutting concerns that span multiple files).
+```
+## MUST:
+```example
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs.create]]
+- Interfaces.csproj.extend
+	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+```
+## SHOULD:
+```example
+- [[./Implementation/Shared.csproj.extend.md#SHOULD|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
+- Interfaces.csproj.extend
+	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
+- [[./Implementation/App.Host.csproj.extend.md#SHOULD|App.Host.csproj.extend]]
+```
+## SHOULD NOT
+```example
+- [[./Implementation/Shared.csproj.extend.md#SHOULD NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOUD NOT|IQuery.cs.create]]
+- Interfaces.csproj.extend
+	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD NOT|{Dto}.cs.create]]
+- [[./Implementation/App.Host.csproj.extend.md#SHOULD NOT|App.Host.csproj.extend]]
+```
+## MUST NOT:
+```example
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST NOT|IQuery.cs.create]]
+- Interfaces.csproj.extend
+	- [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST NOT|{Dto}.cs.create]]
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
 ```
 
 # Anti-patterns
@@ -205,18 +237,4 @@ RECOMENDATION:
 ```
 ```example
 - [ ] `int Id` with `internal set` present in Entity
-```
-
-# Unittest TestCases
-```hint
-list of unittests which must be created to test solution. 
-RECOMENDATION:
-- Prefer checkbox list
-- Prefer integration tests
-```
-```example
-- [ ] WHEN call command with event THEN
-	- [ ] event fill domain event in entity
-	- [ ] `DomainEventInterceptor` catch `SaveChanges` and add event to `outbox`
-	- [ ] `OutboxDispatcher` read `outbox` and send `Notification`
 ```

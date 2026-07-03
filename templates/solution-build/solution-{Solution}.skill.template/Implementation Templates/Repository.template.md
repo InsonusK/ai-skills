@@ -35,16 +35,47 @@ Define how solution EXTENDS repository directory and files
 
 # Rules
 ```hint
-Define how solution EXTENDS repository MUST, SHOULD, SHOULD NOT, MUST NOT rules
-```
-```example
+Define how solution EXTENDS repository MUST, SHOULD, SHOULD NOT, MUST NOT rules.
+Only add a subblock for categories where this solution introduces new rules.
+If a category has no new rules, skip it — do not write an empty subblock.
+
 MUST:
-	- ...
-SHOULD:
-	- ...
-SHOULD NOT:
-	- ...
-MUST NOT:
-	- ...
+- show all added Rules
+```
+## MUST
+```example
+- Command must realize ICommand<Result<DTO>>
+```
+## SHOULD
+```example
+- ...
 ```
 
+## SHOULD NOT
+```example
+- ...
+```
+
+## MUST NOT
+```example
+- ...
+```
+
+
+# Unittest TestCases
+```hint
+Define how solution EXTENDS repository integrational unittests
+
+RECOMENDATION:
+- Prefer checkbox list
+```
+```example
+- [ ] WHEN call Post /record THEN
+	- [ ] return expected result
+	- [ ] new record exist in Database
+- [ ] WHEN call Get /record/{id} and record exist THEN
+    - [ ] Return expected result
+- [ ] WHEN call Get /record/{id} and record NOT exist THEN
+    - [ ] Return 404 error 
+	- [ ] Respones has expected body
+```
