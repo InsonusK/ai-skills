@@ -1,5 +1,5 @@
 ---
-name: plateau-proj-name
+name: csproj-name
 description: Describe which plateau csproj does skill describe
 domain: skill
 type: template

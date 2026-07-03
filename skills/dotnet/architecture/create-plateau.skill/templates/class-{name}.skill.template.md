@@ -1,5 +1,5 @@
 ---
-name: skill-name
+name: class-name
 description: Describe what skill define
 domain: skill
 type: template

@@ -1,5 +1,5 @@
 ---
-name: plateau-sln-name
+name: sln-name
 description: Describe which plateau repository does skill describe
 domain: skill
 type: template
