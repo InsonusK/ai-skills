@@ -58,6 +58,7 @@ builder.Services.AddRepositories();
 - Register `IRepository<>` as open generic pointing to `Repository<>`
 - Register `IReadRepository<>` as open generic pointing to `Repository<>`
 - Use `Scoped` lifetime
+- Registered with `Scoped` lifetime
 
 ## MUST NOT
 - Register per-entity closed generics

@@ -120,12 +120,23 @@ public class CreateOrderHandler
 - Follow load → guard → domain call → stage → return structure
 - Return `Result<T>` for all outcomes — never throw for flow control
 - Dispatch cross-module writes via `_mediator.Send()` — never direct method calls
+- Handler structure: load → guard → domain call → stage → return result
+- All entity loading in handlers uses named specs from [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration.skill]]
+- Cross-module writes dispatched via `_mediator.Send()` — never direct calls
+- Handlers and validators registered via assembly scan — never manually
+- No validator for query handlers
 
 ## MUST NOT
 - Contain business logic or domain rules — delegate to entity or domain service
-- Call `SaveChangesAsync`
 - Reference another module's Domain or Application projects directly
 - Use inline LINQ — all queries go through named specs
+- Handler contain business logic — delegate to domain
+- Handler call `SaveChangesAsync` — Unit of Work owns commit
+- Handler reference another module's Domain or Application directly
+## SHOULD
+- Handler follow the exact load → guard → domain call → stage → return sequence
+- Use the transport validation boundary table to decide what belongs in validator vs handler vs domain
+- Guard checks return early before domain call — fail fast pattern
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Orchestrate one write operation: load required data via specs, guard against business failures, delegate to domain, stage changes, return a typed result

@@ -124,9 +124,6 @@ PROJECT:
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md#MUST|{Query}.cs.create]]
-- Queries declared as `record` in `/{Module}.Interfaces/Queries`
-- Single-module handlers in `/{Module}.Application/Queries` — inject `IReadRepository<T>`
-- Single-module handlers load via named specs — no inline LINQ
 
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
@@ -141,7 +138,6 @@ PROJECT:
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md#MUST NOT|{Dto}.cs.create]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md#MUST NOT|{Query}.cs.create]]
-- Single-module handler use DbContext directly — use `IReadRepository<T>`
 
 # Anti-patterns
 - `IRepository<T>` injected into query handler — use `IReadRepository<T>`

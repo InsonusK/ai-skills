@@ -74,27 +74,14 @@ PROJECT:
 - [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md#MUST|{Behavior}Service.cs.create]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs.extend]]
-- Every entity property mutation validates state through domain rules before assigning
-- Every entity method that changes state validates through domain rules before mutating
-- `DomainException` thrown when a rule returns `false`
-- Bulky logic extracted to static extension methods in `{Module}.Domain/Services`
-- Service extensions delegate all validation to domain rules
-- A single entity property must not have multiple uncoordinated public mutation points
 
 ## SHOULD:
 - [[./Implementation/{Module}.Domain.csproj.extend.md#SHOULD|{Module}.Domain.csproj.extend]]
-- Keep entity methods small and delegate complex calculations to service extensions
-- Name service files after the behavior they encapsulate
 
 ## MUST NOT:
 - [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Behavior}Service.cs.create.md#MUST NOT|{Behavior}Service.cs.create]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST NOT|{EntityName}.cs.extend]]
-- Reimplement rule logic inline inside entity methods or service extensions
-- Mutate state before validating with rules
-- Allow invalid state to persist silently
-- Let a service extension bypass entity methods and write directly to properties
-- Duplicate invariant logic across setters, methods, or service extensions
 
 # Anti-patterns
 - Entity has several points changing the same property with separate validation

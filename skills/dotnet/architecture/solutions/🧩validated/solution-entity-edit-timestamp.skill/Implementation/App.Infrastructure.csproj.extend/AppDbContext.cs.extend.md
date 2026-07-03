@@ -107,6 +107,7 @@ public class AppDbContext : DbContext
 - EF configuration maps timestamp properties as required `DateTimeOffset` columns.
 - Handlers never assign server timestamps.
 - `AppDbContext` never assigns user timestamps.
+- `OnBeforeSaving()` uses `DateTimeOffset.UtcNow` as the server time source.
 
 ## MUST NOT
 - Set user timestamps in `OnBeforeSaving()`.

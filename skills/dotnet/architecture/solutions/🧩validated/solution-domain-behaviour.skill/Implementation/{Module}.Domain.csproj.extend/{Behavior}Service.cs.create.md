@@ -72,12 +72,18 @@ public class Order
 - Live in `{Module}.Domain/Services`
 - Use domain rules from `{Module}.Domain/Rules` for every validation
 - Mutate entity state only through entity methods or guarded setters
+- Bulky logic extracted to static extension methods in `{Module}.Domain/Services`
+- Service extensions delegate all validation to domain rules
 
 ## MUST NOT
 - Reimplement rule logic inline
 - Introduce a new uncoordinated public mutation point for an entity property
 - Depend on EF Core, FluentValidation, ASP.NET, HttpContext, or any infrastructure
 - Hold instance state
+- Duplicate invariant logic across setters, methods, or service extensions
+
+## SHOULD
+- Name service files after the behavior they encapsulate
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Encapsulate bulky or multi-step domain logic that does not fit naturally inside an entity method

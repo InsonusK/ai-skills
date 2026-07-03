@@ -61,18 +61,11 @@ PROJECT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
 	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md#MUST|PipelineRegistration.cs.create]]
 - `AddPipeline()` called once from `Program.cs`
-- All behaviors registered inside `AddPipeline()` using `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
-- Behaviors registered in intended execution order
-
-## SHOULD:
-- Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registrations
 
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
 	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md#MUST NOT|PipelineRegistration.cs.create]]
-- Register behaviors inside module registration methods
 - Change pipeline order in multiple files
-- Create multiple pipeline registration extension methods
 
 # Anti-patterns
 - Pipeline order scattered across multiple files

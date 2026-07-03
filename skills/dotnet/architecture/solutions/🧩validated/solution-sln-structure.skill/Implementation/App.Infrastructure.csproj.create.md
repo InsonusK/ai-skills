@@ -65,7 +65,6 @@ change_kind: create
 - App.Infrastructure is the only project with DbContext
 - `Repository<T>` generic implementation registered here
 - DomainEventInterceptor registered on DbContext here
-- App.Infrastructure is the only project with DbContext
 
 ## MUST NOT
 - App.Infrastructure be referenced by any module Application, Domain, or Api

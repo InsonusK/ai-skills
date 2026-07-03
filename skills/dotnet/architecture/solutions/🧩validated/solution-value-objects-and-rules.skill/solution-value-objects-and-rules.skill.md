@@ -107,22 +107,16 @@ PROJECT:
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST|{Entity}.cs.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md#MUST|{Rule}.cs.create]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md#MUST|{ValueObject}.cs.create]]
-- Multi-property VO has private parameterless constructor
 
-## SHOULD:
+## SHOULD
 - [[./Implementation/{Module}.Domain.csproj.extend.md#SHOULD|{Module}.Domain.csproj.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md#SHOULD|{ValueObject}.cs.create]]
-- Single-property VO has implicit conversion operators
-- All VOs override `ToString()` when used in logs or UI
-
 ## MUST NOT:
 - [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
 - [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST NOT|{Entity}.cs.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md#MUST NOT|{Rule}.cs.create]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md#MUST NOT|{ValueObject}.cs.create]]
-- Primitive used in place of VO when the primitive carries business meaning
-- Allow invalid state to persist silently
 
 # Anti-patterns
 - Primitive on Entity instead of Value Object when the value has invariant state — loses invariant enforcement

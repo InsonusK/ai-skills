@@ -112,13 +112,6 @@ PROJECT:
 - [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
 	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md#MUST|{Entity}ByIdSpec.cs.create]]
 	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md#MUST|{Entity}SummarySpec.cs.create]]
-- Registered with `Scoped` lifetime
-- All entity loading in handlers uses a named spec — no inline `Where(...)` LINQ
-- All specifications for a module live in `/{Module}.Application/Specifications`
-- Cross-module JOIN specs live in `/App.Queries/Specifications`
-- Every entity loaded by Id has a `{Entity}ByIdSpec` in Application
-- Projection specs use `Specification<T, TResult>` — entity filter specs use `Specification<T>`
-- Spec name reflects query intent — not field names or implementation detail
 
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
@@ -132,12 +125,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md#MUST NOT|{Entity}ByIdSpec.cs.create]]
 	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md#MUST NOT|{Entity}SummarySpec.cs.create]]
 - Application layer reference DbContext directly
-- Spec call the database or reference DbContext
-- Spec contain business logic — filtering, ordering, and projection only
-- Handler contain inline `Where(...)` LINQ — always delegate to a named spec
-- Specs placed in `{Module}.Domain` — all specs belong in Application
-- Generic spec names used across multiple entities (`GetByIdSpec`) — name per entity
-- Single-module specs live in App.Queries — they belong in the module's Application
 
 # Anti-patterns
 - `TaskRepository : Repository<TodoTask>` — unnecessary subclass, open generic covers all types

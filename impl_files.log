@@ -1,0 +1,184 @@
+
+🗑️deprecated\solution-middleware-registration.skill:
+  Implementation\App.Host.csproj.extend\MiddlewareRegistration.cs.create.md
+  Implementation\App.Host.csproj.extend.md
+
+🧩validated\solution-command-integration.skill:
+  Implementation\App.Host.csproj.extend.md
+  Implementation\Shared.csproj.extend\ICommand.cs.create.md
+  Implementation\Shared.csproj.extend.md
+  Implementation\{Module}.Application.csproj.extend\{FeatureName}.Handler.cs.create.md
+  Implementation\{Module}.Application.csproj.extend\{FeatureName}.Validator.cs.create.md
+  Implementation\{Module}.Application.csproj.extend\{Module}ApplicationRegistration.cs.create.md
+  Implementation\{Module}.Application.csproj.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend\{Command}.cs.create.md
+  Implementation\{Module}.Interfaces.csproj.extend.md
+
+🧩validated\solution-domain-behaviour.skill:
+  Implementation\{Module}.Domain.csproj.extend\{Behavior}Service.cs.create.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend.md
+
+🧩validated\solution-domain-configuration.skill:
+  Implementation\App.Infrastructure.csproj.extend\{Module1}To{Module2}Config.cs.create.md
+  Implementation\App.Infrastructure.csproj.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{Entity}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{Entity}Config.cs.create.md
+  Implementation\{Module}.Domain.csproj.extend.md
+
+🧩validated\solution-entity-classification.skill:
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}Config.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend.md
+
+🧩validated\solution-entity-concurrency-change.skill:
+  Implementation\App.Host.csproj.extend\EntityVersionResolverRegistration.cs.create.md
+  Implementation\App.Host.csproj.extend.md
+  Implementation\App.Infrastructure.csproj.extend\EntityVersionResolverFactory.cs.create.md
+  Implementation\App.Infrastructure.csproj.extend.md
+  Implementation\BuildingBlocks.csproj.extend\ConcurrencyBehavior.cs.create.md
+  Implementation\BuildingBlocks.csproj.extend\ETagEncoder.cs.create.md
+  Implementation\BuildingBlocks.csproj.extend.md
+  Implementation\Shared.csproj.extend\IEntityVersionResolver.cs.create.md
+  Implementation\Shared.csproj.extend\IEntityVersionResolverFactory.cs.create.md
+  Implementation\Shared.csproj.extend\IHasVersions.cs.create.md
+  Implementation\Shared.csproj.extend\IVersioned.cs.create.md
+  Implementation\Shared.csproj.extend.md
+  Implementation\{Module}.Api.csproj.extend\Single{Entity}Controller.cs.extend.md
+  Implementation\{Module}.Api.csproj.extend.md
+  Implementation\{Module}.Application.csproj.extend\{Entity}VersionResolver.cs.create.md
+  Implementation\{Module}.Application.csproj.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}Config.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend\{Command}.cs.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend.md
+
+🧩validated\solution-entity-edit-timestamp.skill:
+  Implementation\App.Infrastructure.csproj.extend\AppDbContext.cs.extend.md
+  Implementation\App.Infrastructure.csproj.extend.md
+  Implementation\Shared.csproj.extend\ICommandWithTimestamp.cs.create.md
+  Implementation\Shared.csproj.extend\ICreationInfoModel.cs.create.md
+  Implementation\Shared.csproj.extend\ICreationInfoModelReadOnly.cs.create.md
+  Implementation\Shared.csproj.extend\IUpdateInfoModel.cs.create.md
+  Implementation\Shared.csproj.extend\IUpdateInfoModelReadOnly.cs.create.md
+  Implementation\Shared.csproj.extend.md
+  Implementation\{Module}.Application.csproj.extend\{FeatureName}.Handler.cs.extend.md
+  Implementation\{Module}.Application.csproj.extend\{FeatureName}.Validator.cs.extend.md
+  Implementation\{Module}.Application.csproj.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}Config.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend\{Command}.cs.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend.md
+
+🧩validated\solution-external-created-entity.skill:
+  Implementation\BuildingBlocks.csproj.extend\GuidResolvingBehavior.cs.create.md
+  Implementation\BuildingBlocks.csproj.extend.md
+  Implementation\Shared.csproj.extend\ConflictResult.cs.create.md
+  Implementation\Shared.csproj.extend\IGuidResolver.cs.create.md
+  Implementation\Shared.csproj.extend\IHasGuid.cs.create.md
+  Implementation\Shared.csproj.extend.md
+  Implementation\{Module}.Api.csproj.extend\ConflictResultExtensions.cs.create.md
+  Implementation\{Module}.Api.csproj.extend.md
+  Implementation\{Module}.Application.csproj.extend\Create{Entity}GuidResolver.cs.create.md
+  Implementation\{Module}.Application.csproj.extend\{Entity}ByGuidSpec.cs.create.md
+  Implementation\{Module}.Application.csproj.extend\{Module}ApplicationRegistration.cs.extend.md
+  Implementation\{Module}.Application.csproj.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{EntityName}Config.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend\{Command}.cs.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend.md
+
+🧩validated\solution-http-api-publication.skill:
+  Implementation\App.Host.csproj.extend\ApiRegistration.cs.create.md
+  Implementation\App.Host.csproj.extend.md
+  Implementation\{Module}.Api.csproj.extend\ResultExtensions.cs.create.md
+  Implementation\{Module}.Api.csproj.extend\Single{Entity}Controller.cs.create.md
+  Implementation\{Module}.Api.csproj.extend\Single{Entity}{Property}Controller.cs.create.md
+  Implementation\{Module}.Api.csproj.extend\Single{Entity}{Related}Controller.cs.create.md
+  Implementation\{Module}.Api.csproj.extend\{Entity}Controller.cs.create.md
+  Implementation\{Module}.Api.csproj.extend\{Entity}{Related}Controller.cs.create.md
+  Implementation\{Module}.Api.csproj.extend\{System}Endpoints.cs.create.md
+  Implementation\{Module}.Api.csproj.extend.md
+
+🧩validated\solution-pipeline-registration-order.skill:
+  Implementation\App.Host.csproj.extend\PipelineRegistration.cs.extend.md
+  Implementation\App.Host.csproj.extend.md
+
+🧩validated\solution-pipeline-registration.skill:
+  Implementation\App.Host.csproj.extend\PipelineRegistration.cs.create.md
+  Implementation\App.Host.csproj.extend.md
+
+🧩validated\solution-query-integration.skill:
+  Implementation\App.Host.csproj.extend.md
+  Implementation\App.Queries.csproj.extend\AppQueriesRegistration.cs.create.md
+  Implementation\App.Queries.csproj.extend\CrossModuleQueryHandler.cs.create.md
+  Implementation\App.Queries.csproj.extend.md
+  Implementation\Shared.csproj.extend\IQuery.cs.create.md
+  Implementation\Shared.csproj.extend.md
+  Implementation\{Module}.Application.csproj.extend\{FeatureName}.Handler.cs.create.md
+  Implementation\{Module}.Application.csproj.extend\{FeatureName}.Validator.cs.create.md
+  Implementation\{Module}.Application.csproj.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend\{Dto}.cs.create.md
+  Implementation\{Module}.Interfaces.csproj.extend\{Query}.cs.create.md
+  Implementation\{Module}.Interfaces.csproj.extend.md
+
+🧩validated\solution-repository-integration.skill:
+  Implementation\App.Host.csproj.extend\RepositoryRegistration.cs.create.md
+  Implementation\App.Host.csproj.extend.md
+  Implementation\App.Infrastructure.csproj.extend\Repository.cs.create.md
+  Implementation\App.Infrastructure.csproj.extend.md
+  Implementation\Shared.csproj.extend\IReadRepository.cs.create.md
+  Implementation\Shared.csproj.extend\IRepository.cs.create.md
+  Implementation\Shared.csproj.extend.md
+  Implementation\{Module}.Application.csproj.extend\{Entity}ByIdSpec.cs.create.md
+  Implementation\{Module}.Application.csproj.extend\{Entity}SummarySpec.cs.create.md
+  Implementation\{Module}.Application.csproj.extend.md
+
+🧩validated\solution-sln-structure.skill:
+  Implementation\App.Host.csproj.create\ModuleRegistration.cs.create.md
+  Implementation\App.Host.csproj.create.md
+  Implementation\App.Infrastructure.csproj.create.md
+  Implementation\App.Infrastructure.Migrations.csproj.create.md
+  Implementation\App.Queries.csproj.create.md
+  Implementation\BuildingBlocks.csproj.create.md
+  Implementation\Repository.create.md
+  Implementation\Shared.csproj.create.md
+  Implementation\{Module}.Api.csproj.create.md
+  Implementation\{Module}.Application.csproj.create.md
+  Implementation\{Module}.Domain.csproj.create\{Entity}.cs.create.md
+  Implementation\{Module}.Domain.csproj.create.md
+  Implementation\{Module}.Interfaces.csproj.create.md
+
+🧩validated\solution-soft-value-objects-and-dto-validators.skill:
+  Implementation\{Module}.Application.csproj.extend\{Dto}.Validator.cs.create.md
+  Implementation\{Module}.Application.csproj.extend\{ValueObject}PropertyValidator.cs.create.md
+  Implementation\{Module}.Application.csproj.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{ValueObject}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend.md
+  Implementation\{Module}.Interfaces.csproj.extend\Soft{ValueObject}.cs.create.md
+  Implementation\{Module}.Interfaces.csproj.extend.md
+
+🧩validated\solution-unit-of-work.skill:
+  Implementation\App.Host.csproj.extend\RepositoryRegistration.cs.extend.md
+  Implementation\App.Host.csproj.extend.md
+  Implementation\App.Infrastructure.csproj.extend\UnitOfWork.cs.create.md
+  Implementation\App.Infrastructure.csproj.extend.md
+  Implementation\BuildingBlocks.csproj.extend\UnitOfWorkBehavior.cs.create.md
+  Implementation\BuildingBlocks.csproj.extend\UnitOfWorkContext.cs.create.md
+  Implementation\BuildingBlocks.csproj.extend.md
+  Implementation\Shared.csproj.extend\IUnitOfWork.cs.create.md
+  Implementation\Shared.csproj.extend.md
+
+🧩validated\solution-validation-behavior.skill:
+  Implementation\BuildingBlocks.csproj.extend\ValidationBehavior.cs.create.md
+  Implementation\BuildingBlocks.csproj.extend.md
+
+🧩validated\solution-value-objects-and-rules.skill:
+  Implementation\Shared.csproj.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{Entity}.cs.extend.md
+  Implementation\{Module}.Domain.csproj.extend\{Rule}.cs.create.md
+  Implementation\{Module}.Domain.csproj.extend\{ValueObject}.cs.create.md
+  Implementation\{Module}.Domain.csproj.extend.md

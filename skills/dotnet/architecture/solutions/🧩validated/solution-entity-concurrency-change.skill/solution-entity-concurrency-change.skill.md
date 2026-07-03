@@ -176,7 +176,7 @@ PROJECT:
 
 # Rules
 
-## MUST:
+## MUST
 - [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
 	- [[./Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md#MUST|EntityVersionResolverRegistration.cs.create]]
 - [[./Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj.extend]]
@@ -198,13 +198,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs.extend]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs.extend]]
-- Every mutable entity has `public uint Version { get; internal set; }`
-- Every mutable entity configuration maps `Version` to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()`
-- Each `{Entity}VersionResolver` uses `IReadRepository<{Entity}>` and the module's `{Entity}ByIdSpec`
-- GET responses for mutable entities include `ETag` header with encoded versions
-- PUT/PATCH endpoints check `If-Match` presence — return 412 if missing or malformed
-- DTOs returned by GET for mutable entities include `Version` field
-
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
 	- [[./Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md#MUST NOT|EntityVersionResolverRegistration.cs.create]]
@@ -226,7 +219,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST NOT|{EntityName}Config.cs.extend]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST NOT|{Command}.cs.extend]]
-- Entity name keys use C# type names — breaks on entity rename
 
 # Anti-patterns
 - `Version` as plain `uint` on command property instead of `IHasVersions` — does not scale to multi-entity updates

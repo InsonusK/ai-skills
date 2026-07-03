@@ -53,6 +53,7 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 - `UX_Guid` defined as `public static string` on the config class
 - `HasDatabaseName(UX_Guid)` used — never inline string
 - `IsUnique()` on the `Guid` index
+- Unique index on `Guid` configured with named constant `UX_Guid` in entity configuration
 
 ## MUST NOT
 - Use inline string for index name

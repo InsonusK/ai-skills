@@ -129,20 +129,12 @@ sequenceDiagram
 	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#MUST|{ValueObject}.cs.extend]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create.md#MUST|Soft{ValueObject}.cs.create]]
-- `{Module}.Application` must call `AddValidatorsFromAssembly` for its own assembly so that property and DTO validators are registered in DI
-- For every RequestDto published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators/Model` extending `AbstractValidator<{Dto}>`
-- ResponseDto validators are created only when explicitly required, for example external contract validation, untrusted response sources, or mandated integration boundaries
-- Validators are registered by FluentValidation's assembly scan of `{Module}.Application`
-- Other modules consume validators through `IValidator<T>` resolved from DI
-- Property validators and DTO validators validate values only by calling Rules
-- Property validators are stateless and have no infrastructure dependencies
 
 ## SHOULD:
 - [[./Implementation/{Module}.Domain.csproj.extend.md#SHOULD|{Module}.Domain.csproj.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#SHOULD|{ValueObject}.cs.extend]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#SHOULD|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create.md#SHOULD|Soft{ValueObject}.cs.create]]
-- Name DTO validator `{Dto}Validator`
 
 ## MUST NOT:
 - [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
@@ -152,10 +144,7 @@ sequenceDiagram
 	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#MUST NOT|{ValueObject}.cs.extend]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create.md#MUST NOT|Soft{ValueObject}.cs.create]]
-- Validators inject repositories, `DbContext`, or services
-- Validators contain business rules
 - Other modules reference `{Module}.Domain` or `{Module}.Application` to validate values
-- Property validators or DTO validators contain inline FluentValidation predicates that duplicate Rule logic
 
 # Anti-patterns
 - Domain Value Object not inheriting from `Soft{ValueObject}`

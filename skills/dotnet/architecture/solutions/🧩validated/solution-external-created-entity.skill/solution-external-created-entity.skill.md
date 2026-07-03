@@ -143,7 +143,7 @@ PROJECT:
 
 # Rules
 
-## MUST:
+## MUST
 - [[./Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj.extend]]
 	- [[./Implementation/BuildingBlocks.csproj.extend/GuidResolvingBehavior.cs.create.md#MUST|GuidResolvingBehavior.cs.create]]
 - [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
@@ -161,17 +161,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs.extend]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs.extend]]
-- External-created entities have `public Guid Guid { get; internal set; }`
-- `Guid` set exactly once in the entity factory method — never reassigned
-- Unique index on `Guid` configured with named constant `UX_Guid` in entity configuration
-- `{Entity}ByGuidSpec` defined in `/{Module}.Application/Specifications`
-- One `Create{Entity}GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
-- `Create{Entity}Result` contains only the entity Id
-- 409 response body contains the existing entity result — which is `{ id: ... }` because the result contains only Id
-- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
-
-## SHOULD:
-- Return `Result<Create{Entity}Result>.Created(new Create{Entity}Result(id))` from the handler on successful creation
 
 ## MUST NOT:
 - [[./Implementation/BuildingBlocks.csproj.extend.md#MUST NOT|BuildingBlocks.csproj.extend]]
@@ -191,11 +180,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST NOT|{EntityName}Config.cs.extend]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST NOT|{Command}.cs.extend]]
-- Guid used in domain logic, domain events, relationships, or routes after creation
-- Guid regenerated or changed after entity creation
-- Resolver throw exceptions — null means not found, non-null means exists
-- `Create{Entity}Result` carry fields beyond the entity Id for external-created entities
-- Per-controller handling for Guid conflicts — conflict is expressed as `Result<T>` and mapped by the API layer
 - Define a dedicated HTTP middleware for conflict handling
 
 # Anti-patterns

@@ -56,10 +56,16 @@ public static class PipelineRegistration
 - `AddPipeline()` is an extension method on `IServiceCollection`
 - `AddPipeline()` returns `IServiceCollection`
 - `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineRegistration.cs`
+- All behaviors registered inside `AddPipeline()` using `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
+- Behaviors registered in intended execution order
 
 ## MUST NOT
 - Register behaviors inside module registration methods
 - Define pipeline order in multiple files
+- Create multiple pipeline registration extension methods
+
+## SHOULD
+- Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registrations
 
 # Anti-patterns
 - Pipeline order scattered across multiple files

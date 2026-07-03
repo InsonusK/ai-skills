@@ -114,7 +114,6 @@ public static class CanDriveCarRule
 - Depend on EF Core, FluentValidation, ASP.NET, or HttpContext
 - Mutate any object
 - Duplicate logic that already exists in another primitive rule
-- Throw exceptions internally
 - Reimplement logic that already exists in a primitive rule
 - Rule throw exceptions internally
 - Rule depend on EF Core, FluentValidation, ASP.NET, HttpContext, or any infrastructure
@@ -124,7 +123,6 @@ public static class CanDriveCarRule
 - Mutate state before validating with rules
 - Duplicate the same VO/rule logic across multiple module Domain projects
 - Allow inline validation logic inside a Value Object constructor — always delegate to a Rule
-
 ## SHOULD
 - Complex invariant logic extracted to domain rule
 - Rules be synchronous

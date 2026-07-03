@@ -1,0 +1,159 @@
+Processing skills\dotnet\architecture\solutions\🗑️deprecated\solution-middleware-registration.skill\solution-middleware-registration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-command-integration.skill\solution-command-integration.skill.md
+  moved [MUST] to {FeatureName}.Handler.cs.create.md: - Handler structure: load → guard → domain call → stage → return result
+  moved [MUST] to {FeatureName}.Handler.cs.create.md: - All entity loading in handlers uses named specs from [[skills/dotnet/architect
+  moved [MUST] to {FeatureName}.Handler.cs.create.md: - Cross-module writes dispatched via `_mediator.Send()` — never direct calls
+  moved [MUST] to {Module}ApplicationRegistration.cs.create.md: - Each module has `Register{ModuleName}Module()` extension method
+  moved [MUST] to {FeatureName}.Handler.cs.create.md: - Handlers and validators registered via assembly scan — never manually
+  moved [MUST] to {FeatureName}.Validator.cs.create.md: - Validator file named `{FeatureName}.Validator.cs`, class named `{FeatureName}V
+  moved [MUST] to {FeatureName}.Validator.cs.create.md: - Validators registered via `AddValidatorsFromAssembly` in module registration —
+  moved [MUST] to {FeatureName}.Handler.cs.create.md: - No validator for query handlers
+  moved [SHOULD] to {FeatureName}.Handler.cs.create.md: - Handler follow the exact load → guard → domain call → stage → return sequence
+  moved [SHOULD] to {FeatureName}.Handler.cs.create.md: - Use the transport validation boundary table to decide what belongs in validato
+  moved [MUST NOT] to {FeatureName}.Handler.cs.create.md: - Handler contain business logic — delegate to domain
+  moved [MUST NOT] to {FeatureName}.Handler.cs.create.md: - Handler call `SaveChangesAsync` — Unit of Work owns commit
+  moved [MUST NOT] to {FeatureName}.Handler.cs.create.md: - Handler reference another module's Domain or Application directly
+  moved [MUST NOT] to {FeatureName}.Validator.cs.create.md: - Validator contain business rules — transport correctness only
+  moved [MUST NOT] to {FeatureName}.Validator.cs.create.md: - Validator inject repositories or services — purely declarative
+  moved [MUST NOT] to {Module}ApplicationRegistration.cs.create.md: - Pipeline behaviors registered inside any module's registration method
+  moved 16 bullets from solution-command-integration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-domain-behaviour.skill\solution-domain-behaviour.skill.md
+  moved [MUST] to {EntityName}.cs.extend.md: - Every entity property mutation validates state through domain rules before ass
+  moved [MUST] to {EntityName}.cs.extend.md: - Every entity method that changes state validates through domain rules before m
+  moved [MUST] to {EntityName}.cs.extend.md: - `DomainException` thrown when a rule returns `false`
+  moved [MUST] to {Behavior}Service.cs.create.md: - Bulky logic extracted to static extension methods in `{Module}.Domain/Services
+  moved [MUST] to {Behavior}Service.cs.create.md: - Service extensions delegate all validation to domain rules
+  moved [MUST] to {EntityName}.cs.extend.md: - A single entity property must not have multiple uncoordinated public mutation 
+  moved [SHOULD] to {EntityName}.cs.extend.md: - Keep entity methods small and delegate complex calculations to service extensi
+  moved [SHOULD] to {Behavior}Service.cs.create.md: - Name service files after the behavior they encapsulate
+  moved [MUST NOT] to {EntityName}.cs.extend.md: - Reimplement rule logic inline inside entity methods or service extensions
+  moved [MUST NOT] to {EntityName}.cs.extend.md: - Mutate state before validating with rules
+  moved [MUST NOT] to {EntityName}.cs.extend.md: - Allow invalid state to persist silently
+  moved [MUST NOT] to {EntityName}.cs.extend.md: - Let a service extension bypass entity methods and write directly to properties
+  moved [MUST NOT] to {Behavior}Service.cs.create.md: - Duplicate invariant logic across setters, methods, or service extensions
+  moved 13 bullets from solution-domain-behaviour.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-domain-configuration.skill\solution-domain-configuration.skill.md
+  moved [MUST] to {Entity}Config.cs.create.md: - `TableName` defined as `public const string`
+  moved [MUST] to {Entity}Config.cs.create.md: - All index and constraint names defined as `public const string` constants
+  moved [MUST] to {Module1}To{Module2}Config.cs.create.md: - `OwnsOne` configured for every multi-property VO property
+  moved [MUST] to {Module1}To{Module2}Config.cs.create.md: - All configurations registered via `ApplyConfigurationsFromAssembly`
+  moved [MUST] to {Entity}.cs.extend.md: - Domain entities have zero EF attributes
+  moved [MUST NOT] to {Entity}.cs.extend.md: - Use EF data annotations on domain entities
+  moved [MUST NOT] to {Entity}Config.cs.create.md: - Define table, index, or constraint names as inline strings
+  moved [MUST NOT] to {Entity}Config.cs.create.md: - Use `static` instead of `const` for `TableName`, index, or constraint names
+  moved [MUST NOT] to {Module1}To{Module2}Config.cs.create.md: - Configure cross-module foreign keys in Domain config
+  moved 9 bullets from solution-domain-configuration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-entity-classification.skill\solution-entity-classification.skill.md
+  moved [MUST] to {EntityName}Config.cs.extend.md: - Classify every domain entity into exactly one of the four types before writing
+  moved [MUST] to {EntityName}Config.cs.extend.md: - Document the classification decision for every entity in a discoverable locati
+  moved [SHOULD] to {EntityName}Config.cs.extend.md: - Name the classification in entity configuration comments or a dedicated `ENTIT
+  moved 3 bullets from solution-entity-classification.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-entity-concurrency-change.skill\solution-entity-concurrency-change.skill.md
+  moved [MUST] to {EntityName}.cs.extend.md: - Every mutable entity has `public uint Version { get; internal set; }`
+  moved [MUST] to {EntityName}Config.cs.extend.md: - Every mutable entity configuration maps `Version` to `xmin` with `IsConcurrenc
+  moved [MUST] to Single{Entity}Controller.cs.extend.md: - GET responses for mutable entities include `ETag` header with encoded versions
+  moved [MUST] to Single{Entity}Controller.cs.extend.md: - PUT/PATCH endpoints check `If-Match` presence — return 412 if missing or malfo
+  moved [MUST] to Single{Entity}Controller.cs.extend.md: - DTOs returned by GET for mutable entities include `Version` field
+  moved [MUST NOT] to ConcurrencyBehavior.cs.create.md: - Entity name keys use C# type names — breaks on entity rename
+  moved 6 bullets from solution-entity-concurrency-change.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-entity-edit-timestamp.skill\solution-entity-edit-timestamp.skill.md
+  moved [MUST] to AppDbContext.cs.extend.md: - `OnBeforeSaving()` uses `DateTimeOffset.UtcNow` as the server time source.
+  moved 1 bullets from solution-entity-edit-timestamp.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-external-created-entity.skill\solution-external-created-entity.skill.md
+  moved [MUST] to {EntityName}.cs.extend.md: - External-created entities have `public Guid Guid { get; internal set; }`
+  moved [MUST] to {EntityName}Config.cs.extend.md: - Unique index on `Guid` configured with named constant `UX_Guid` in entity conf
+  moved [MUST] to {Entity}ByGuidSpec.cs.create.md: - `{Entity}ByGuidSpec` defined in `/{Module}.Application/Specifications`
+  moved [MUST] to Create{Entity}GuidResolver.cs.create.md: - One `Create{Entity}GuidResolver` per external-created entity type in `/{Module
+  moved [MUST] to {Command}.cs.extend.md: - 409 response body contains the existing entity result — which is `{ id: ... }`
+  moved [MUST] to GuidResolvingBehavior.cs.create.md: - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Ho
+  moved [MUST NOT] to {EntityName}.cs.extend.md: - Guid used in domain logic, domain events, relationships, or routes after creat
+  moved [MUST NOT] to {EntityName}.cs.extend.md: - Guid regenerated or changed after entity creation
+  moved [MUST NOT] to Create{Entity}GuidResolver.cs.create.md: - Resolver throw exceptions — null means not found, non-null means exists
+  moved [MUST NOT] to {Command}.cs.extend.md: - `Create{Entity}Result` carry fields beyond the entity Id for external-created 
+  moved [MUST NOT] to ConflictResultExtensions.cs.create.md: - Per-controller handling for Guid conflicts — conflict is expressed as `Result<
+  moved 11 bullets from solution-external-created-entity.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-http-api-publication.skill\solution-http-api-publication.skill.md
+  moved [MUST] to ApiRegistration.cs.create.md: - Every `ResultStatus` handler can return has an explicit `[ProducesResponseType
+  moved [MUST] to ApiRegistration.cs.create.md: - Unexpected `ResultStatus` throws `InvalidOperationException` in `switch` defau
+  moved [MUST] to Single{Entity}Controller.cs.create.md: - Routes use kebab-case, singular nouns, `int` route constraints for IDs
+  moved [MUST] to ApiRegistration.cs.create.md: - `ResultStatus.Ok` → 200 OK
+  moved [MUST] to ApiRegistration.cs.create.md: - `ResultStatus.Created` → 201 Created with `CreatedAtAction`
+  moved [MUST] to ApiRegistration.cs.create.md: - `ResultStatus.NoContent` → 204 No Content
+  moved [MUST] to ApiRegistration.cs.create.md: - `ResultStatus.Invalid` → 400 Bad Request with `ProblemDetails`
+  moved [MUST] to ApiRegistration.cs.create.md: - `ResultStatus.NotFound` → 404 Not Found with `ProblemDetails`
+  moved [MUST] to ApiRegistration.cs.create.md: - `ResultStatus.Conflict` → 409 Conflict with `ProblemDetails`
+  moved [MUST] to ApiRegistration.cs.create.md: - `ResultStatus.Error` → 500 Internal Server Error with `ProblemDetails`
+  moved [MUST] to ApiRegistration.cs.create.md: - Any other `ResultStatus` → throw `InvalidOperationException`
+  moved [MUST] to ApiRegistration.cs.create.md: - Each module that publishes HTTP APIs exposes a public static `{Module}ApiSwagg
+  moved [MUST] to ApiRegistration.cs.create.md: - `{Module}ApiSwaggerRegistration` declares `DocumentName`, `Title`, `Version`, 
+  moved [SHOULD] to Single{Entity}Controller.cs.create.md: - `[Route]` use `{entity}` singular noun — not plural
+  moved [MUST NOT] to ApiRegistration.cs.create.md: - Use a single monolithic `v1` Swagger document that contains all module routes
+  moved 15 bullets from solution-http-api-publication.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-pipeline-registration-order.skill\solution-pipeline-registration-order.skill.md
+  moved [MUST] to PipelineRegistration.cs.extend.md: - All behaviors registered inside `AddPipeline()` using `services.AddTransient(t
+  moved [MUST] to PipelineRegistration.cs.extend.md: - Behaviors registered in this exact execution order:
+  moved [SHOULD] to PipelineRegistration.cs.extend.md: - Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registra
+  moved [MUST NOT] to PipelineRegistration.cs.extend.md: - Register behaviors inside module registration methods
+  moved [MUST NOT] to PipelineRegistration.cs.extend.md: - Create multiple pipeline registration extension methods
+  moved [MUST NOT] to PipelineRegistration.cs.extend.md: - Register behaviors directly in `Program.cs`
+  moved 6 bullets from solution-pipeline-registration-order.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-pipeline-registration.skill\solution-pipeline-registration.skill.md
+  moved [MUST] to PipelineRegistration.cs.create.md: - All behaviors registered inside `AddPipeline()` using `services.AddTransient(t
+  moved [MUST] to PipelineRegistration.cs.create.md: - Behaviors registered in intended execution order
+  moved [SHOULD] to PipelineRegistration.cs.create.md: - Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registra
+  moved [MUST NOT] to PipelineRegistration.cs.create.md: - Register behaviors inside module registration methods
+  moved [MUST NOT] to PipelineRegistration.cs.create.md: - Create multiple pipeline registration extension methods
+  moved 5 bullets from solution-pipeline-registration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-query-integration.skill\solution-query-integration.skill.md
+  moved [MUST] to CrossModuleQueryHandler.cs.create.md: - Queries declared as `record` in `/{Module}.Interfaces/Queries`
+  moved [MUST] to CrossModuleQueryHandler.cs.create.md: - Single-module handlers in `/{Module}.Application/Queries` — inject `IReadRepos
+  moved [MUST] to CrossModuleQueryHandler.cs.create.md: - Single-module handlers load via named specs — no inline LINQ
+  moved [MUST NOT] to CrossModuleQueryHandler.cs.create.md: - Single-module handler use DbContext directly — use `IReadRepository<T>`
+  moved 4 bullets from solution-query-integration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-repository-integration.skill\solution-repository-integration.skill.md
+  moved [MUST] to RepositoryRegistration.cs.create.md: - Registered with `Scoped` lifetime
+  moved [MUST] to {Entity}ByIdSpec.cs.create.md: - All entity loading in handlers uses a named spec — no inline `Where(...)` LINQ
+  moved [MUST] to {Entity}ByIdSpec.cs.create.md: - All specifications for a module live in `/{Module}.Application/Specifications`
+  moved [MUST] to {Entity}ByIdSpec.cs.create.md: - Cross-module JOIN specs live in `/App.Queries/Specifications`
+  moved [MUST] to {Entity}ByIdSpec.cs.create.md: - Every entity loaded by Id has a `{Entity}ByIdSpec` in Application
+  moved [MUST] to {Entity}ByIdSpec.cs.create.md: - Projection specs use `Specification<T, TResult>` — entity filter specs use `Sp
+  moved [MUST] to {Entity}ByIdSpec.cs.create.md: - Spec name reflects query intent — not field names or implementation detail
+  moved [MUST NOT] to {Entity}ByIdSpec.cs.create.md: - Spec call the database or reference DbContext
+  moved [MUST NOT] to {Entity}ByIdSpec.cs.create.md: - Spec contain business logic — filtering, ordering, and projection only
+  moved [MUST NOT] to {Entity}ByIdSpec.cs.create.md: - Handler contain inline `Where(...)` LINQ — always delegate to a named spec
+  moved [MUST NOT] to {Entity}ByIdSpec.cs.create.md: - Specs placed in `{Module}.Domain` — all specs belong in Application
+  moved [MUST NOT] to {Entity}ByIdSpec.cs.create.md: - Generic spec names used across multiple entities (`GetByIdSpec`) — name per en
+  moved [MUST NOT] to {Entity}ByIdSpec.cs.create.md: - Single-module specs live in App.Queries — they belong in the module's Applicat
+  moved 13 bullets from solution-repository-integration.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-sln-structure.skill\solution-sln-structure.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-soft-value-objects-and-dto-validators.skill\solution-soft-value-objects-and-dto-validators.skill.md
+  moved [MUST] to {Dto}.Validator.cs.create.md: - `{Module}.Application` must call `AddValidatorsFromAssembly` for its own assem
+  moved [MUST] to {Dto}.Validator.cs.create.md: - For every RequestDto published in `/{Module}.Interfaces` there is a `{Dto}Vali
+  moved [MUST] to {Dto}.Validator.cs.create.md: - ResponseDto validators are created only when explicitly required, for example 
+  moved [MUST] to {Dto}.Validator.cs.create.md: - Validators are registered by FluentValidation's assembly scan of `{Module}.App
+  moved [MUST] to {Dto}.Validator.cs.create.md: - Other modules consume validators through `IValidator<T>` resolved from DI
+  moved [MUST] to {Dto}.Validator.cs.create.md: - Property validators and DTO validators validate values only by calling Rules
+  moved [MUST] to {Dto}.Validator.cs.create.md: - Property validators are stateless and have no infrastructure dependencies
+  moved [SHOULD] to {Dto}.Validator.cs.create.md: - Name DTO validator `{Dto}Validator`
+  moved [MUST NOT] to {Dto}.Validator.cs.create.md: - Validators inject repositories, `DbContext`, or services
+  moved [MUST NOT] to {Dto}.Validator.cs.create.md: - Validators contain business rules
+  moved [MUST NOT] to {Dto}.Validator.cs.create.md: - Property validators or DTO validators contain inline FluentValidation predicat
+  moved 11 bullets from solution-soft-value-objects-and-dto-validators.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-unit-of-work.skill\solution-unit-of-work.skill.md
+  moved [MUST] to UnitOfWorkBehavior.cs.create.md: - Sub-commands safe to dispatch from handlers — depth counter prevents premature
+  moved 1 bullets from solution-unit-of-work.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-validation-behavior.skill\solution-validation-behavior.skill.md
+  moved [MUST] to ValidationBehavior.cs.create.md: - Collect all errors from all validators before returning — full error set, not 
+  moved [MUST] to ValidationBehavior.cs.create.md: - Return `Result.Invalid(errors)` on failure — not throw an exception
+  moved [MUST] to ValidationBehavior.cs.create.md: - Pass through when no validators registered — missing validator is not a fault
+  moved [MUST] to ValidationBehavior.cs.create.md: - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Ho
+  moved [SHOULD] to ValidationBehavior.cs.create.md: - `Transient` lifetime — new behavior instance per pipeline invocation
+  moved [MUST NOT] to ValidationBehavior.cs.create.md: - Throw `ValidationException` — always return typed `Result.Invalid`
+  moved [MUST NOT] to ValidationBehavior.cs.create.md: - Register behaviors inside module registration methods
+  moved 7 bullets from solution-validation-behavior.skill.md
+Processing skills\dotnet\architecture\solutions\🧩validated\solution-value-objects-and-rules.skill\solution-value-objects-and-rules.skill.md
+  moved [MUST] to {ValueObject}.cs.create.md: - Multi-property VO has private parameterless constructor
+  moved [SHOULD] to {ValueObject}.cs.create.md: - Single-property VO has implicit conversion operators
+  moved [MUST NOT] to {ValueObject}.cs.create.md: - Primitive used in place of VO when the primitive carries business meaning
+  moved [MUST NOT] to {Entity}.cs.extend.md: - Allow invalid state to persist silently
+  moved 4 bullets from solution-value-objects-and-rules.skill.md

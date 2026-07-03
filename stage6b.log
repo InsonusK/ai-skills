@@ -1,0 +1,17 @@
+Cleaned 16 files
+skills\dotnet\architecture\solutions\🧩validated\solution-command-integration.skill\Implementation\{Module}.Application.csproj.extend\{FeatureName}.Handler.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-domain-behaviour.skill\Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
+skills\dotnet\architecture\solutions\🧩validated\solution-domain-configuration.skill\Implementation\{Module}.Domain.csproj.extend\{Entity}Config.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-entity-classification.skill\solution-entity-classification.skill.md
+skills\dotnet\architecture\solutions\🧩validated\solution-entity-concurrency-change.skill\Implementation\BuildingBlocks.csproj.extend\ConcurrencyBehavior.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-external-created-entity.skill\Implementation\BuildingBlocks.csproj.extend\GuidResolvingBehavior.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-external-created-entity.skill\Implementation\{Module}.Domain.csproj.extend\{EntityName}.cs.extend.md
+skills\dotnet\architecture\solutions\🧩validated\solution-query-integration.skill\Implementation\App.Host.csproj.extend.md
+skills\dotnet\architecture\solutions\🧩validated\solution-query-integration.skill\Implementation\App.Queries.csproj.extend\CrossModuleQueryHandler.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-repository-integration.skill\Implementation\App.Infrastructure.csproj.extend\Repository.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-repository-integration.skill\Implementation\{Module}.Application.csproj.extend\{Entity}ByIdSpec.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-sln-structure.skill\solution-sln-structure.skill.md
+skills\dotnet\architecture\solutions\🧩validated\solution-soft-value-objects-and-dto-validators.skill\Implementation\{Module}.Application.csproj.extend\{Dto}.Validator.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-validation-behavior.skill\Implementation\BuildingBlocks.csproj.extend\ValidationBehavior.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-value-objects-and-rules.skill\Implementation\{Module}.Domain.csproj.extend\{Rule}.cs.create.md
+skills\dotnet\architecture\solutions\🧩validated\solution-value-objects-and-rules.skill\Implementation\{Module}.Domain.csproj.extend\{ValueObject}.cs.create.md

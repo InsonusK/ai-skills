@@ -65,11 +65,13 @@ public static class {Module}ApplicationRegistration
 - Accept `IServiceCollection` and `IConfiguration`
 - Register handlers via `AddMediatR` assembly scan
 - Register validators via `AddValidatorsFromAssembly` — this also registers `{ValueObject}PropertyValidator` and `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
+- Each module has `Register{ModuleName}Module()` extension method
 
 ## MUST NOT
 - Register pipeline behaviors — belongs in App.Host
 - Register `DbContext` or infrastructure services — belongs in App.Infrastructure registration
 - Reference another module's Application assembly
+- Pipeline behaviors registered inside any module's registration method
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Self-register all handlers and validators in this module's assembly via scan

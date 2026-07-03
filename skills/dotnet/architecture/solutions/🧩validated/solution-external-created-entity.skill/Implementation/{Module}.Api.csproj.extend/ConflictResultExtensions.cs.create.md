@@ -101,6 +101,7 @@ public async Task<ActionResult<Create{Entity}Result>> Create(
 - Return ProblemDetails for `ConflictResult<Create{Entity}Result>`
 - Contain business logic or domain rules
 - Allow `Create{Entity}Result` to carry fields beyond the entity Id for external-created entities
+- Per-controller handling for Guid conflicts — conflict is expressed as `Result<T>` and mapped by the API layer
 
 # Anti-patterns
 - Mapping `ConflictResult<T>` to ProblemDetails — breaks the idempotent create contract

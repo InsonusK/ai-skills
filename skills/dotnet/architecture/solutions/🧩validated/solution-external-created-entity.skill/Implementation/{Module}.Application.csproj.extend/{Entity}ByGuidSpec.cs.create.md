@@ -38,6 +38,7 @@ public class {Entity}ByGuidSpec : Specification<{EntityName}>
 ## MUST
 - Every external-created entity type has a `{Entity}ByGuidSpec` in `/{Module}.Application/Specifications`
 - Used only by `GuidResolver` and any feature that explicitly needs Guid-based lookup
+- `{Entity}ByGuidSpec` defined in `/{Module}.Application/Specifications`
 
 ## MUST NOT
 - Placed in Domain — all specs belong in Application per solution-repository-integration.skill

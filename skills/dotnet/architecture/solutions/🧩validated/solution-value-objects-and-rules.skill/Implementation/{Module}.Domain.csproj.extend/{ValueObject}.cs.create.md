@@ -115,19 +115,17 @@ public sealed record Money
 - All Value Objects declared as `sealed record`
 - All Value Objects immutable — no public setters
 - All Value Objects self-validating — throw `DomainException` on invalid construction
-
 ## SHOULD
 - Provide implicit conversion operators for single-property VOs
-- Override `ToString()` when used in logs or UI
-
+- Single-property VO has implicit conversion operators
+- All VOs override `ToString()` when used in logs or UI
 ## MUST NOT
-- Expose public setters
 - Depend on repositories, DbContext, or any service
 - Contain business logic beyond invariant validation — use domain rules for that
 - Contain inline validation logic — always delegate to a Rule
 - Value Object depend on infrastructure, repositories, or application services
 - Value Object expose public setters
-
+- Primitive used in place of VO when the primitive carries business meaning
 # Check list
 - [ ] All invariant checks are made by [{Rule}](./{Rule}.cs.create.md)
 # Unittest TestCases

@@ -106,6 +106,7 @@ DbContext disposed at request scope end → all pending changes abandoned automa
 - Use `try/finally` to guarantee depth counter is always restored
 - Call `SaveChangesAsync` only when `Depth == 1`
 - Call `_context.Enter()` before `next()` — call `_context.Leave()` in `finally`
+- Sub-commands safe to dispatch from handlers — depth counter prevents premature commit
 
 ## MUST NOT
 - Call `SaveChangesAsync` when `Depth > 1` — sub-commands must not commit

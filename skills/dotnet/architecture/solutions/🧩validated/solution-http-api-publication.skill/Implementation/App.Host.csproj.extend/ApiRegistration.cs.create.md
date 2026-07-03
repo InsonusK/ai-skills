@@ -83,9 +83,22 @@ app.Run();
 - All module Api assemblies added as application parts
 - All Minimal API endpoint groups mapped explicitly
 - `AddProblemDetails()` registered in DI
+- Every `ResultStatus` handler can return has an explicit `[ProducesResponseType]`
+- Unexpected `ResultStatus` throws `InvalidOperationException` in `switch` default arm
+- `ResultStatus.Ok` → 200 OK
+- `ResultStatus.Created` → 201 Created with `CreatedAtAction`
+- `ResultStatus.NoContent` → 204 No Content
+- `ResultStatus.Invalid` → 400 Bad Request with `ProblemDetails`
+- `ResultStatus.NotFound` → 404 Not Found with `ProblemDetails`
+- `ResultStatus.Conflict` → 409 Conflict with `ProblemDetails`
+- `ResultStatus.Error` → 500 Internal Server Error with `ProblemDetails`
+- Any other `ResultStatus` → throw `InvalidOperationException`
+- Each module that publishes HTTP APIs exposes a public static `{Module}ApiSwaggerRegistration` class in `{Module}.Api`
+- `{Module}ApiSwaggerRegistration` declares `DocumentName`, `Title`, `Version`, and `MatchesRoute(string? relativePath)`
 
 ## MUST NOT
 - Register controllers manually one by one
+- Use a single monolithic `v1` Swagger document that contains all module routes
 
 # Anti-patterns
 - Missing `UseExceptionHandler()` before `MapControllers()`

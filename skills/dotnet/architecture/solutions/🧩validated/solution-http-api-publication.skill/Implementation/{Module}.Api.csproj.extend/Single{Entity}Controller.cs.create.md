@@ -118,9 +118,11 @@ public sealed class Single{Entity}Controller : ControllerBase
 - Entity lifecycle operations use Controllers — system/webhook/batch use Minimal API
 - Controllers inject `ISender` — never `IMediator`
 - Controller naming follows the five-type model: `{Entity}`, `Single{Entity}`, `Single{Entity}{Property}`, `{Entity}{Related}`, `Single{Entity}{Related}`
+- Routes use kebab-case, singular nouns, `int` route constraints for IDs
 
 ## SHOULD
 - `CreatedAtAction` reference the `Single{Entity}Controller.Get` method for 201 responses
+- `[Route]` use `{entity}` singular noun — not plural
 
 ## MUST NOT
 - Handle collection-level operations — those belong in `{Entity}Controller`

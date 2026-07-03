@@ -79,24 +79,18 @@ PROJECT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
 	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md#MUST|PipelineRegistration.cs.extend]]
 - `AddPipeline()` called once from `Program.cs`
-- All behaviors registered inside `AddPipeline()` using `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
-- Behaviors registered in this exact execution order:
   1. `ValidationBehavior`
   2. `GuidResolvingBehavior`
   3. `ConcurrencyBehavior`
   4. `UnitOfWorkBehavior`
 
 ## SHOULD:
-- Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registrations
 - Document the ordering with inline comments in `AddPipeline()`
 
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
 	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md#MUST NOT|PipelineRegistration.cs.extend]]
-- Register behaviors inside module registration methods
 - Change pipeline order in multiple files
-- Create multiple pipeline registration extension methods
-- Register behaviors directly in `Program.cs`
 
 # Anti-patterns
 - Pipeline order scattered across multiple files

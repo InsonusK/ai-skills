@@ -116,19 +116,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md#MUST|{Module}ApplicationRegistration.cs.create]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md#MUST|{Command}.cs.create]]
-- Handler structure: load → guard → domain call → stage → return result
-- All entity loading in handlers uses named specs from [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration.skill]]
-- Cross-module writes dispatched via `_mediator.Send()` — never direct calls
-- Each module has `Register{ModuleName}Module()` extension method
-- Handlers and validators registered via assembly scan — never manually
-- Validator file named `{FeatureName}.Validator.cs`, class named `{FeatureName}Validator`
-- Validators registered via `AddValidatorsFromAssembly` in module registration — this also registers property validators and DTO validators from `solution-soft-value-objects-and-dto-validators.skill`
-- No validator for query handlers
-
-## SHOULD:
-- Guard checks return early before domain call — fail fast pattern
-- Handler follow the exact load → guard → domain call → stage → return sequence
-- Use the transport validation boundary table to decide what belongs in validator vs handler vs domain
 
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
@@ -140,12 +127,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md#MUST NOT|{Module}ApplicationRegistration.cs.create]]
 - [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
 	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md#MUST NOT|{Command}.cs.create]]
-- Handler contain business logic — delegate to domain
-- Handler call `SaveChangesAsync` — Unit of Work owns commit
-- Handler reference another module's Domain or Application directly
-- Validator contain business rules — transport correctness only
-- Validator inject repositories or services — purely declarative
-- Pipeline behaviors registered inside any module's registration method
 
 # Anti-patterns
 - Business rule in handler: `if (task.Status == TaskStatus.Closed) return Result.Conflict(...)` — belongs in entity

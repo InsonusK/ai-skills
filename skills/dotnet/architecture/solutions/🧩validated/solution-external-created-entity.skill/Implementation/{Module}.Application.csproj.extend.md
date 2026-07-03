@@ -49,6 +49,9 @@ change_kind: extend
 - Resolver implemented in Domain — resolver uses `IReadRepository<T>`, which belongs in Application
 - Specs placed in Domain
 
+## SHOULD
+- Return `Result<Create{Entity}Result>.Created(new Create{Entity}Result(id))` from the handler on successful creation
+
 # Anti-patterns
 - `IGuidResolver` implemented in Domain — resolver uses `IReadRepository<T>`, belongs in Application
 

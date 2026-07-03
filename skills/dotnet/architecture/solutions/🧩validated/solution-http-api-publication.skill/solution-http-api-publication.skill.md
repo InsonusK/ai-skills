@@ -138,22 +138,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md#MUST|{System}Endpoints.cs.create]]
 - API layer is a thin HTTP adapter — map input, dispatch once, map output
 - All error responses use `ProblemDetails`
-- Every `ResultStatus` handler can return has an explicit `[ProducesResponseType]`
-- Unexpected `ResultStatus` throws `InvalidOperationException` in `switch` default arm
-- Routes use kebab-case, singular nouns, `int` route constraints for IDs
-- `ResultStatus.Ok` → 200 OK
-- `ResultStatus.Created` → 201 Created with `CreatedAtAction`
-- `ResultStatus.NoContent` → 204 No Content
-- `ResultStatus.Invalid` → 400 Bad Request with `ProblemDetails`
-- `ResultStatus.NotFound` → 404 Not Found with `ProblemDetails`
-- `ResultStatus.Conflict` → 409 Conflict with `ProblemDetails`
-- `ResultStatus.Error` → 500 Internal Server Error with `ProblemDetails`
-- Any other `ResultStatus` → throw `InvalidOperationException`
-- Each module that publishes HTTP APIs exposes a public static `{Module}ApiSwaggerRegistration` class in `{Module}.Api`
-- `{Module}ApiSwaggerRegistration` declares `DocumentName`, `Title`, `Version`, and `MatchesRoute(string? relativePath)`
-
-## SHOULD:
-- `[Route]` use `{entity}` singular noun — not plural
 
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
@@ -167,7 +151,6 @@ PROJECT:
 	- [[./Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md#MUST NOT|{Entity}{Related}Controller.cs.create]]
 	- [[./Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md#MUST NOT|{System}Endpoints.cs.create]]
 - Undocumented HTTP responses returned — every response shape declared in `ProducesResponseType`
-- Use a single monolithic `v1` Swagger document that contains all module routes
 - Include routes from one module in another module's Swagger definition
 
 # Anti-patterns

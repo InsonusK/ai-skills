@@ -75,20 +75,10 @@ PROJECT:
 ## MUST:
 - [[./Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj.extend]]
 	- [[./Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md#MUST|ValidationBehavior.cs.create]]
-- Collect all errors from all validators before returning — full error set, not first-error-only
-- Return `Result.Invalid(errors)` on failure — not throw an exception
-- Pass through when no validators registered — missing validator is not a fault
-
-- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
-
-## SHOULD:
-- `Transient` lifetime — new behavior instance per pipeline invocation
 
 ## MUST NOT:
 - [[./Implementation/BuildingBlocks.csproj.extend.md#MUST NOT|BuildingBlocks.csproj.extend]]
 	- [[./Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md#MUST NOT|ValidationBehavior.cs.create]]
-- Throw `ValidationException` — always return typed `Result.Invalid`
-- Register behaviors inside module registration methods
 
 # Anti-patterns
 - Implementing per-request validation logic inside `ValidationBehavior`

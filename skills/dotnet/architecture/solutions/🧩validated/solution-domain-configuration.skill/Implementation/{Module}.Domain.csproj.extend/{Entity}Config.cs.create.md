@@ -89,13 +89,13 @@ entityBuilder.OwnsOne(e => e.Cash, money =>
 - `OwnsOne` configured for every multi-property Value Object property on this entity
 - All relations configured with `HasMany`/`HasOne`, `HasForeignKey`, and `OnDelete`
 - Registered via `ApplyConfigurationsFromAssembly` — never manually
-
 ## MUST NOT
 - Use EF data annotations on the domain entity (`[Column]`, `[Index]`, `[ForeignKey]`, etc.)
 - Define table names, column names, or constraint names as inline strings
 - Use `static` instead of `const` for `TableName`, index, or constraint names
 - Put mapping logic in `DbContext.OnModelCreating` directly
 - Configure cross-module foreign keys here — those belong in App.Infrastructure
+- Define table, index, or constraint names as inline strings
 
 # Anti-patterns
 - Mapping multi-property VO properties individually without `OwnsOne` — EF will fail to map or create a shadow table

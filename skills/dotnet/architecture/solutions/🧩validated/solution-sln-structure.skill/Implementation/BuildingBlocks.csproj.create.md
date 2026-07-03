@@ -57,7 +57,6 @@ change_kind: create
 ## MUST
 - All pipeline behavior implementations defined here
 - BuildingBlocks depends only on Shared
-- BuildingBlocks depends only on Shared
 - BuildingBlocks does not define common interfaces — only implements patterns using interfaces from Shared
 
 ## MUST NOT

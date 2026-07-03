@@ -111,7 +111,7 @@ PROJECT
 - Tests colocated with module
 - Every project belongs to exactly one layer
 
-## MUST NOT:
+## MUST NOT
 - [[./Implementation/App.Host.csproj.create.md#MUST NOT|App.Host.csproj.create]]
 	- [[./Implementation/App.Host.csproj.create/ModuleRegistration.cs.create.md#MUST NOT|ModuleRegistration.cs.create]]
 - [[./Implementation/App.Infrastructure.csproj.create.md#MUST NOT|App.Infrastructure.csproj.create]]
@@ -128,10 +128,8 @@ PROJECT
 - Module reference another module's Domain
 - Module reference another module's Application
 - Domain reference any other module's project
-- Api reference Domain or Application directly
 - Any module Domain reference another module's project
 - Any module Api reference Domain or Application directly
-
 # Anti-patterns
 - Shared domain model across modules — each module owns its own entities
 - Direct method call into another module's Application — use MediatR

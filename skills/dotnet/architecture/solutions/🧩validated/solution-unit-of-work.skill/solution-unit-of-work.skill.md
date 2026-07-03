@@ -106,7 +106,6 @@ PROJECT:
 	- [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md#MUST|UnitOfWorkContext.cs.create]]
 - [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
 	- [[./Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md#MUST|IUnitOfWork.cs.create]]
-- Sub-commands safe to dispatch from handlers — depth counter prevents premature commit
 
 ## MUST NOT:
 - [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]

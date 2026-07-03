@@ -76,24 +76,13 @@ PROJECT:
 	- [[./Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md#MUST|{Module1}To{Module2}Config.cs.create]]
 - [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md#MUST|{Entity}Config.cs.create]]
-- `TableName` defined as `public const string`
-- All index and constraint names defined as `public const string` constants
-- `OwnsOne` configured for every multi-property VO property
-- All configurations registered via `ApplyConfigurationsFromAssembly`
-- Domain entities have zero EF attributes
 
-## MUST NOT:
+## MUST NOT
 - [[./Implementation/App.Infrastructure.csproj.extend.md#MUST NOT|App.Infrastructure.csproj.extend]]
 	- [[./Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md#MUST NOT|{Module1}To{Module2}Config.cs.create]]
 - [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST NOT|{Entity}.cs.extend]]
 	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md#MUST NOT|{Entity}Config.cs.create]]
-- Use EF data annotations on domain entities
-- Define table, index, or constraint names as inline strings
-- Use `static` instead of `const` for `TableName`, index, or constraint names
-- Put mapping logic in `DbContext.OnModelCreating` directly
-- Configure cross-module foreign keys in Domain config
-
 # Anti-patterns
 - Mapping multi-property VO without `OwnsOne` — EF will fail to map or create a shadow table
 - Hardcoded index name strings — breaks error handling that matches constraint names
