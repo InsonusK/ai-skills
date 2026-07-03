@@ -15,7 +15,10 @@ CONDITION
 
 MUST:
 - Diagramm must me written in sepparate `*.mmd` file and store in sub folder `diagrams` near the file
-- File must has link in format `![diagram-name](./diagrams/diagram-name.mmd)`
+- File must has link in markdown format 
+```example
+![diagram-name](./diagrams/diagram-name.mmd)
+```
 
 ## For Sequence diagram
 MUST:
