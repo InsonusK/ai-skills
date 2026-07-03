@@ -117,8 +117,8 @@ If a solution is removed from the plateau:
 
 # Examples
 
-- [[examples/example-add-solution.md|Adding a new solution to a plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
-- [[examples/example-update-solution.md|Updating an existing solution in a plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
+- [[./examples/example-add-solution.md|Adding a new solution to a plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
+- [[./examples/example-update-solution.md|Updating an existing solution in a plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
 
 # Check list
 
