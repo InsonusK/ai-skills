@@ -210,9 +210,6 @@ sequenceDiagram
     deactivate Behavior
     API-->>Client: 201 Created
     deactivate API
-
-## Update entity
-![update-entity](./diagrams/update-entity.mmd)
 ```
 ```example
 ## Update entity
