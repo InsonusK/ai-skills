@@ -34,7 +34,7 @@ RECOMENDATION:
 - encapsulate domain logic
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Core Principles
@@ -57,7 +57,7 @@ RECOMENDATION:
 - Entities define consistency.
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Structure
@@ -90,7 +90,7 @@ MUST:
 ```
 ```example
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 ## Directory and class skills
@@ -111,11 +111,11 @@ RECOMENDATION:
 ```example
 | `Directory|file`  | Description                                    | Pattern skill          |
 | ------------------- | ---------------------------------------------- | ---------------------- |
-| /DirectoryName      | Directory description                          | <link to folder pattern> |
-| ClassInDirectory.cs | Description of class inside of directory above | <link to file patter>    |
+| /DirectoryName      | Directory description                          | [[link to folder pattern]] |
+| ClassInDirectory.cs | Description of class inside of directory above | [[link to file patter]]    |
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 | `Directory|file` | Description | Pattern skill |
@@ -142,7 +142,7 @@ RECOMENDATION:
 | Ardalis   | >= 8.0             | SpecificationEvaluator |
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 | Package                                   | Version constraint | Purpose                               |
@@ -165,11 +165,11 @@ RECOMENDATION:
 - Prefer pure copy with out changing
 ```
 ```example
-- Command Handler - belong to <Other csproj skill>
-- Commands - belong to <Other csproj skill>
+- Command Handler - belong to [[Other csproj skill]]
+- Commands - belong to [[Other csproj skill]]
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 ## Allowed Dependencies
@@ -188,11 +188,11 @@ RECOMENDATION:
 - Prefer pure copy with out changing
 ```
 ```example
-- <Shared>
-- <BuildingBlocks>
+- [[Shared]]
+- [[BuildingBlocks]]
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Rules
@@ -221,7 +221,7 @@ MUST NOT:
 	- ...
 	  
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 MUST NOT:
 - extended_by solution modify Allowed Dependencies without explicit user confirmation
@@ -246,7 +246,7 @@ RECOMENDATION:
 - Domain service duplicates invariant already enforced in entity setter or method
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
 
 # Check list
@@ -269,5 +269,5 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- <Solution link> - <Project.template.md link>
+- [[Solution link]] - [[Project.template.md link]]
 ```
