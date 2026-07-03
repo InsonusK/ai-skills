@@ -5,3 +5,4 @@ __pycache__
 # Ignore AI agent worktrees to avoid committing temporary workspace directories.
 /ai-worktree
 /.ai-skill-manager
+.obsidian/workspace.json
