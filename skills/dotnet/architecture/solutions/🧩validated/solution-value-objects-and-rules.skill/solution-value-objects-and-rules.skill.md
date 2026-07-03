@@ -101,53 +101,22 @@ PROJECT:
 
 # Rules
 
-MUST:
-- All Value Objects declared as `sealed record`
-- All Value Objects immutable — no public setters
-- All Value Objects self-validating — throw `DomainException` on invalid construction
-- Value Objects live in `/{Module}.Domain/ValueObjects` or `/Shared/ValueObjects` when cross-module
-- Multi-property VO has private parameterless constructor
-- Multi-property VO has `OwnsOne` EF configuration on owning entity
-- All rules implemented as static extension methods
-- Rules return `bool` — caller decides whether to throw
-- Rules are stateless and deterministic
-- Primitive rule is single source of truth — VO rules delegate to it
-- All rules live in `/{Module}.Domain/Rules` or `/Shared/Rules` when cross-module
-- Named `{Type}Rules` for primitive/VO rules, `{Condition}Rule` for contextual rules
-- Extract reusable VO/rule to Shared.csproj when used by two or more modules
-- Use Value Object on Entity property when the value has invariant state or carries business semantics
-- Entity properties other than `Id` and `Version` must be Value Object types, unless they are unconstrained generic parameters
-- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
-- Value Object validates values only through Rules — inline validation logic is forbidden
-- Call domain rules inside entity methods before mutating state
-- Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
-- Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
+## MUST:
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST|{Entity}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md#MUST|{Rule}.cs.create]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md#MUST|{ValueObject}.cs.create]]
 
-SHOULD:
-- Single-property VO has implicit conversion operators
-- All VOs override `ToString()` when used in logs or UI
-- Complex invariant logic extracted to domain rule
-- Rules be synchronous
-- Rules avoid allocations
-- Use the most specific rule available (primitive, VO, or contextual) for the condition being checked
-
-MUST NOT:
-- Value Object depend on infrastructure, repositories, or application services
-- Value Object expose public setters
-- Value Object be used to carry identity — use entity Id for that
-- Primitive used in place of VO when the primitive carries business meaning
-- Rule throw exceptions internally
-- Rule depend on EF Core, FluentValidation, ASP.NET, HttpContext, or any infrastructure
-- Rule mutate any object
-- Rule duplicate logic that already exists in another rule
-- Rule be instantiated with `new` — always static
-- Reimplement rule logic inline inside entity methods — always delegate to existing rules
-- Mutate state before validating with rules
-- Allow invalid state to persist silently
-- Duplicate the same VO/rule logic across multiple module Domain projects
-- Use primitive type on Entity property when the value carries business meaning or invariant constraints
-- Allow inline validation logic inside a Value Object constructor — always delegate to a Rule
-- Expose a primitive Entity property when a Value Object could enforce the same invariants
+## SHOULD
+- [[./Implementation/{Module}.Domain.csproj.extend.md#SHOULD|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md#SHOULD|{ValueObject}.cs.create]]
+## MUST NOT:
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST NOT|{Entity}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create.md#MUST NOT|{Rule}.cs.create]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md#MUST NOT|{ValueObject}.cs.create]]
 
 # Anti-patterns
 - Primitive on Entity instead of Value Object when the value has invariant state — loses invariant enforcement
@@ -198,24 +167,3 @@ MUST NOT:
 - [ ] Entity calls rules before mutating state
 - [ ] Entity throws `DomainException` when rule returns false
 - [ ] Unittest covers all cases in `Rules` included corner cases
-
-# Unittest TestCases
-- [ ] When value is below lower bound Then constructor throws DomainException
-- [ ] When value is above upper bound Then constructor throws DomainException
-- [ ] When value is at lower boundary (min valid) Then object created successfully
-- [ ] When value is at upper boundary (max valid) Then object created successfully
-- [ ] When valid value provided Then object created with correct property value
-- [ ] When two VOs have same value Then they are equal
-- [ ] When two VOs have different values Then they are not equal
-- [ ] When implicit operator used Then value round-trips losslessly (single-property only)
-- [ ] When multi-property VO persisted and loaded Then all properties materialize correctly
-- [ ] When Entity has a property other than Id or Version Then it is a Value Object or an unconstrained generic parameter
-- [ ] When Value Object constructor is called Then it delegates validation to a Rule
-- [ ] When value satisfies rule Then returns true
-- [ ] When value violates rule Then returns false
-- [ ] When boundary value at minimum Then returns expected result
-- [ ] When boundary value at maximum Then returns expected result
-- [ ] When VO overload called Then delegates to primitive overload — same result
-- [ ] When contextual VO overload called Then same result as primitive tuple overload
-- [ ] Rule is pure — same input always produces same output
-- [ ] Rule has no side effects — calling it twice produces no observable difference

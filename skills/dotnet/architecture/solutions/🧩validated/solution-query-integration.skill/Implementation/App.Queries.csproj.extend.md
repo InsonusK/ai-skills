@@ -59,13 +59,14 @@ Each query lives in its own folder under `/Queries`. A folder may contain:
 
 # Rules
 
-MUST:
+## MUST
 - All cross-module JOIN handlers live in `/App.Queries/Queries/{QueryName}/`
 - Handlers use DbContext directly with `AsNoTracking()`
 - Handlers registered via assembly scan in App.Host
 - Query contract declared in owning module's Interfaces — App.Queries only implements
+- Cross-module handlers in `/App.Queries/Queries/{QueryName}` — inject DbContext directly
 
-MUST NOT:
+## MUST NOT
 - Single-module queries live here — belongs in `{Module}.Application`
 - App.Queries handlers modify entity state
 - App.Queries handlers call `SaveChangesAsync`

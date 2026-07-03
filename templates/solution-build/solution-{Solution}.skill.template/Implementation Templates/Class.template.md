@@ -65,19 +65,33 @@ public class SomeEntity: IGuidEntity{
 
 # Rule changes
 ```hint
-Define how solution EXTENDS class rules
+Define how solution EXTENDS class MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
+Only add a subblock for categories where this solution introduces new rules.
+If a category has no new rules, skip it — do not write an empty subblock.
+
 MUST:
 - show all added Rules
 ```
+## MUST
 ```example
-MUST:
-	- ...
-SHOULD:
-	- ...
-SHOULD NOT:
-	- ...
-MUST NOT:
-	- ...
+- Command must realize ICommand<Result<DTO>>
+```
+## SHOULD
+```example
+- ...
+```
+## MAY
+```example
+- ...
+```
+## SHOULD NOT
+```example
+- ...
+```
+
+## MUST NOT
+```example
+- ...
 ```
 
 # Anti-patterns

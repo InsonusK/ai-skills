@@ -54,19 +54,22 @@ public class GuidResolvingBehavior<TRequest, TResponse>
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
-- Constrained to `where TRequest : IHasGuid`
+## MUST
 - Consume `IHasGuid` and `IGuidResolver<TResponse>` from Shared — BuildingBlocks does not define these contracts
 - Return the resolver's result when it returns non-null — never throw
 - Pass through (`return await next()`) when resolver returns null
-
-MUST NOT:
+- `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
+- `GuidResolvingBehavior` constrained to `where TRequest : IHasGuid`
+- `GuidResolvingBehavior` returns the resolver's result when it returns non-null — never throws
+- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
+## MUST NOT
 - Be registered as open generic — DI resolves per concrete `TRequest`/`TResponse` pair
 - Call `SaveChangesAsync`
 - Construct response DTOs or shape the API response
+- `GuidResolvingBehavior` throw exceptions for duplicate Guid detection
+- `GuidResolvingBehavior` construct response DTOs
 
 # Anti-patterns
 - `GuidResolvingBehavior` constrained on `IRequest<T>` instead of `IHasGuid` — would check all commands including queries

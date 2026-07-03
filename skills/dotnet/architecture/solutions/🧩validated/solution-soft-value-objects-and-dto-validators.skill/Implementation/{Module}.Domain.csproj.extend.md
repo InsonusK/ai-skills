@@ -39,12 +39,13 @@ None.
 - `Microsoft.EntityFrameworkCore` (for `IEntityTypeConfiguration` only)
 
 # Rules
-MUST:
+
+## MUST
 - Reference `{Module}.Interfaces`
 - Every `{ValueObject}` in `/ValueObjects` inherit from `Soft{ValueObject}`
 - Domain VO constructor enforces invariants by calling Rules and throws `DomainException` on invalid values
 
-MUST NOT:
+## MUST NOT
 - Use FluentValidation types directly
 - Reference other modules' Interfaces or Domains
 

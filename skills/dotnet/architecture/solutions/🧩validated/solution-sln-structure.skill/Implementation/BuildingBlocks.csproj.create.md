@@ -54,11 +54,12 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - All pipeline behavior implementations defined here
 - BuildingBlocks depends only on Shared
+- BuildingBlocks does not define common interfaces — only implements patterns using interfaces from Shared
 
-MUST NOT:
+## MUST NOT
 - BuildingBlocks reference any module project
 - BuildingBlocks reference App.Infrastructure or App.Queries
 - BuildingBlocks contain business logic

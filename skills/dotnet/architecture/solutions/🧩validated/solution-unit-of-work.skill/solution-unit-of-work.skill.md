@@ -77,7 +77,6 @@ SOLUTION:
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration.skill]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration` where `UnitOfWorkBehavior` is registered
 
-
 NUGET:
 - `MediatR` {version} - provides `IPipelineBehavior<TRequest, TResponse>`
 - `Microsoft.EntityFrameworkCore` {version} - provides `DbContext.SaveChangesAsync` called by `UnitOfWork`
@@ -97,24 +96,27 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `IUnitOfWork` defined in Shared — single `SaveChangesAsync` method only
-- `UnitOfWorkContext` defined in BuildingBlocks — registered as `Scoped`
-- `UnitOfWorkBehavior` defined in BuildingBlocks — constrained to `ICommand` only
-- `UnitOfWork` implementation in App.Infrastructure
-- `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` — depth always restored on exception
-- `UnitOfWorkBehavior` commits only when `_context.Depth == 1`
-- `IUnitOfWork` and `UnitOfWorkContext` registered as `Scoped`
-- Sub-commands safe to dispatch from handlers — depth counter prevents premature commit
-- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend.md#MUST|RepositoryRegistration.cs.extend]]
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md#MUST|UnitOfWork.cs.create]]
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md#MUST|UnitOfWorkBehavior.cs.create]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md#MUST|UnitOfWorkContext.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md#MUST|IUnitOfWork.cs.create]]
 
-MUST NOT:
-- Any handler call `SaveChangesAsync` or inject `IUnitOfWork`
-- `UnitOfWorkBehavior` activate on queries — constrained to `ICommand`
-- `UnitOfWorkContext` registered as `Singleton` or `Transient`
-- `UnitOfWork` contain logic beyond `DbContext.SaveChangesAsync` delegation
-- `UnitOfWorkBehavior` contain a catch/rollback block — EF implicit transactions do not require it
-- `IUnitOfWork` defined in BuildingBlocks — belongs in Shared
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend.md#MUST NOT|RepositoryRegistration.cs.extend]]
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST NOT|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md#MUST NOT|UnitOfWork.cs.create]]
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST NOT|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md#MUST NOT|UnitOfWorkBehavior.cs.create]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md#MUST NOT|UnitOfWorkContext.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md#MUST NOT|IUnitOfWork.cs.create]]
 
 # Anti-patterns
 - `await _unitOfWork.SaveChangesAsync(ct)` in a handler — `UnitOfWorkBehavior` owns the commit
@@ -136,12 +138,3 @@ MUST NOT:
 - [ ] `UnitOfWorkContext` registered as `Scoped` in App.Host
 - [ ] No `SaveChangesAsync` call in any handler
 - [ ] No `IUnitOfWork` injection in any handler
-
-# Unittest TestCases
-- [ ] When top-level command completes successfully Then `SaveChangesAsync` called exactly once
-- [ ] When command dispatches sub-command Then `SaveChangesAsync` called once after root completes — not at sub-command level
-- [ ] When sub-command completes Then `UnitOfWorkContext.Depth` returns to 1 — root still owns commit
-- [ ] When handler throws Then `SaveChangesAsync` never called — staged changes discarded
-- [ ] When query handler runs Then `UnitOfWorkBehavior` does not activate — no `SaveChangesAsync`
-- [ ] When multiple repositories used in one handler Then all changes committed in single `SaveChangesAsync`
-- [ ] When `UnitOfWorkContext` registered as Scoped Then nested dispatch shares same depth counter

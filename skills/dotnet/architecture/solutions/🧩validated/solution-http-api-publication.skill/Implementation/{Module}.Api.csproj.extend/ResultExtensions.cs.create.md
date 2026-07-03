@@ -64,14 +64,14 @@ public static class ResultExtensions
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - `ToProblemDetails(IEnumerable<ValidationError>)` returns 400 `ProblemDetails` with grouped errors
 - `ToProblemDetails(IEnumerable<string>)` returns `ProblemDetails` with error array
 - Both methods set the `errors` extension key
 
-MUST NOT:
+## MUST NOT
 - Return custom error shapes — only `ProblemDetails`
 - Use `ValidationFailure` directly — map from `ValidationError`
 

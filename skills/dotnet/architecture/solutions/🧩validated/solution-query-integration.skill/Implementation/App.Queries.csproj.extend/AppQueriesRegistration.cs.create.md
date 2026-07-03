@@ -41,14 +41,14 @@ public static class AppQueriesRegistration
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Register handlers via `AddMediatR` assembly scan
 - Called from App.Host — not from any module registration
 - Extension method named `RegisterAppQueries`
 
-MUST NOT:
+## MUST NOT
 - Register individual handlers manually
 - Register pipeline behaviors — behaviors are registered in App.Host
 

@@ -65,15 +65,17 @@ public class {EntityName} : ICreationInfoModel
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Inherit `ICreationInfoModelReadOnly`.
 - Re-declare both properties with `get; set;`.
 - Be implemented by `External Immutable`, `Internal Mutable`, and `External Mutable` entities.
+- `Internal Mutable` and `External Mutable` entities implement both `ICreationInfoModel` and `IUpdateInfoModel`.
+- `External Immutable` entities implement `ICreationInfoModel` only.
+- `OnBeforeSaving()` sets `ServerCreatedDateTime` for `Added` entries that implement `ICreationInfoModel`.
 
-MUST NOT:
+## MUST NOT
 - Be implemented by `Internal Immutable` entities.
 - Add behavior methods.
 

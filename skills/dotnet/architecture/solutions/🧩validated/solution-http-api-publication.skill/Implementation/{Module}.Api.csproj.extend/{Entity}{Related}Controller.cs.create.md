@@ -96,14 +96,14 @@ public sealed class {Entity}{Related}Controller : ControllerBase
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Named `{Entity}{Related}Controller`
 - Route: `[Route("{entity}/{parentId:int}/{related}")]`
 - `[HttpGet]` lists the sub-collection, `[HttpPost]` adds to it
 
-MUST NOT:
+## MUST NOT
 - Handle relationship instance operations — those belong in `Single{Entity}{Related}Controller`
 
 # Anti-patterns

@@ -73,17 +73,20 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 ```
 
 # Rule changes
-MUST:
+
+## MUST
 - Extend `AbstractValidator<Soft{ValueObject}>`
 - Be named `{ValueObject}PropertyValidator`
 - Live in `/{Module}.Application/Validators/Property`
 - Validate transport/value correctness only by calling Rules
+- Domain Value Object validates values by calling the same Rule that the PropertyValidator uses
 
-MUST NOT:
+## MUST NOT
 - Inject repositories or services
 - Contain business rules
 - Contain inline FluentValidation predicates that duplicate Rule logic
 - Throw exceptions
+- Domain Value Object skip validation
 
 # Anti-patterns
 - Validating `Soft{ValueObject}` inline instead of calling a Rule

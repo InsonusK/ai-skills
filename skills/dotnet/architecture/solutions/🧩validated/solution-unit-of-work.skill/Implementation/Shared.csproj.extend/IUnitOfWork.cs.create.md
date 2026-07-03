@@ -32,13 +32,13 @@ public interface IUnitOfWork
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Single method only — `SaveChangesAsync(CancellationToken ct = default)`
 - No additional methods — not `BeginTransaction`, not `Rollback`, not `Commit`
 
-MUST NOT:
+## MUST NOT
 - Contain any implementation — interface only
 
 # Unittest TestCases

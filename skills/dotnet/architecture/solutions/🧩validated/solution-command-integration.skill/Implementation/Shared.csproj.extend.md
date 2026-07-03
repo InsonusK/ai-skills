@@ -39,14 +39,16 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `MediatR` package referenced in `Shared.csproj`
 - `ICommand` and `ICommand<TResponse>` placed in `/Shared/MediatR`
 - Both interfaces extend MediatR `IRequest` / `IRequest<TResponse>`
+- Handlers inject `IRepository<T>` from Shared — never `DbContext`
 
-MUST NOT:
+## MUST NOT
 - Add FluentValidation, Ardalis.Result, or EF Core packages to Shared
 - Add implementation code to Shared
+- Validator be shared across multiple commands
 
 # Anti-patterns
 - Defining `ICommand` in BuildingBlocks — forces modules to reference BuildingBlocks for contracts

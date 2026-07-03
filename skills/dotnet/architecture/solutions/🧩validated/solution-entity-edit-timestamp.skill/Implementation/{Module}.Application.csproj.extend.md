@@ -46,14 +46,14 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Commands implementing `ICommandWithTimestamp` have a validator that checks `ActionTimeStamp` is not default and not in the future.
 - Create handlers for mutable entities set both `UserCreatedDateTime` and `UserUpdatedDateTime`.
 - Update handlers set only `UserUpdatedDateTime`.
 - Create handlers for `External Immutable` entities set only `UserCreatedDateTime`.
 - Handlers assign timestamps through the mutable interface (`ICreationInfoModel` / `IUpdateInfoModel`).
 
-MUST NOT:
+## MUST NOT
 - Validate `ActionTimeStamp` in the handler.
 - Set server timestamps in the handler.
 - Set user timestamps in `AppDbContext`.

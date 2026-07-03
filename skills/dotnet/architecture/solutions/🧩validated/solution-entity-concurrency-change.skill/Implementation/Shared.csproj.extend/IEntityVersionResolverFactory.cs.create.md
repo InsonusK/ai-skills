@@ -32,13 +32,13 @@ public interface IEntityVersionResolverFactory
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Return `null` for unknown entity names
 - Shared owns only the interface
 
-MUST NOT:
+## MUST NOT
 - Contain implementation or DI-registered services
 
 # Anti-patterns

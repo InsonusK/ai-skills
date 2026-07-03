@@ -27,10 +27,10 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - All update and patch commands implement `IHasVersions`
 
-MUST NOT:
+## MUST NOT
 - Create commands implement `IHasVersions` — new entities have no version
 - Delete commands implement `IHasVersions` — deletion does not require version check in this architecture
 

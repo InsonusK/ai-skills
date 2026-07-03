@@ -41,13 +41,13 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Reference `Ardalis.Specification.EntityFrameworkCore`
 - Single generic `Repository<T>` inheriting `RepositoryBase<T>`
 - Constructor accept `AppDbContext` and pass it to base
 - Implement `IRepository<T>` from Shared
 
-MUST NOT:
+## MUST NOT
 - Call `SaveChangesAsync` inside `Repository<T>`
 - Create per-entity repository subclasses
 

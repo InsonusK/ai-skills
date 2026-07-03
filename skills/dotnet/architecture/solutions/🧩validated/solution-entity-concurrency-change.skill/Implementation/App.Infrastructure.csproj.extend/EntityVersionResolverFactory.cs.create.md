@@ -163,10 +163,9 @@ public class EntityVersionResolverFactory : IEntityVersionResolverFactory
 > `EntityVersionResolverFactory` finds every resolver class, checks that its `VersionedEntityName` matches a versioned entity discovered from Domain configs, and wires the name to the resolver type. Missing the constant or an unknown name causes startup failure.
 >
 > **Note on lifetime:** The resolver-type map is stored in a static dictionary and initialized only once (thread-safe double-check locking). The factory itself remains `Scoped` so it resolves `IEntityVersionResolver` instances from the request's service provider.
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Accept `IServiceProvider`, `IEnumerable<Assembly> domainAssemblies`, and `IEnumerable<Assembly> applicationAssemblies`
 - Scan Domain assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
 - Scan Application assemblies for concrete `IEntityVersionResolver` implementations
@@ -174,8 +173,11 @@ MUST:
 - Return `null` for unknown entity names
 - Build the resolver-type map only once (static, lazy, thread-safe)
 - Be registered as `Scoped` in DI because it resolves `Scoped` resolvers from the request service provider
+- `IVersioned`, `IHasVersions`, `IEntityVersionResolverFactory`, and `IEntityVersionResolver` live in Shared
+- `EntityVersionResolverFactory` lives in App.Infrastructure and maps entity names to resolver types by scanning module Domain config classes and module Application resolver classes
+- Entity name keys in `IHasVersions` and `EntityVersionResolverFactory` are stable business strings — never C# type names
 
-MUST NOT:
+## MUST NOT
 - Use a hardcoded dictionary of resolver types
 - Read the entity name from the entity class or C# type name
 - Create resolvers without using the DI container

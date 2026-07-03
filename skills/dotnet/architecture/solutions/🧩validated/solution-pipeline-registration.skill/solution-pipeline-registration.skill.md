@@ -57,20 +57,15 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineRegistration.cs`
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md#MUST|PipelineRegistration.cs.create]]
 - `AddPipeline()` called once from `Program.cs`
-- All behaviors registered inside `AddPipeline()` using `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
-- Behaviors registered in intended execution order
-- Pipeline behaviors registered in App.Host — never inside a module's registration method
 
-MUST NOT:
-- Register behaviors inside module registration methods
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md#MUST NOT|PipelineRegistration.cs.create]]
 - Change pipeline order in multiple files
-- Create multiple pipeline registration extension methods
-
-SHOULD:
-- Keep `AddPipeline()` the only method that adds `IPipelineBehavior<,>` registrations
 
 # Anti-patterns
 - Pipeline order scattered across multiple files
@@ -82,9 +77,3 @@ SHOULD:
 - [ ] `AddPipeline()` extension method defined in `PipelineRegistration.cs`
 - [ ] `AddPipeline()` called from `Program.cs`
 - [ ] No behavior registrations outside `PipelineRegistration.cs`
-
-# Unittest TestCases
-- [ ] WHEN applied THEN `PipelineRegistration.cs` exists under `App.Host/DependencyInjection`
-- [ ] WHEN applied THEN `AddPipeline()` is called from `Program.cs`
-- [ ] WHEN applied THEN `AddPipeline()` returns `IServiceCollection`
-- [ ] WHEN extended THEN behaviors can be added inside `AddPipeline()` in execution order

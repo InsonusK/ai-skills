@@ -43,8 +43,13 @@ public class TodoTask
 
 # Rule changes
 
-MUST NOT:
+## MUST NOT
 - Entity have any EF attributes (`[Table]`, `[Column]`, `[Key]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]`)
+- Use EF data annotations on domain entities
+
+## MUST
+- One `IEntityTypeConfiguration<T>` per entity
+- Domain entities have zero EF attributes
 
 # Anti-patterns
 - `[Column("task_title")]` on entity property — column mapping belongs in config class

@@ -88,17 +88,24 @@ public class Order
 
 # Rule changes
 
-MUST:
+## MUST
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false`
 - Use the most specific rule available (primitive, VO, or contextual)
 - Keep the entity as the single gatekeeper for each property mutation
+- Every entity property mutation validates state through domain rules before assigning
+- Every entity method that changes state validates through domain rules before mutating
+- `DomainException` thrown when a rule returns `false`
+- A single entity property must not have multiple uncoordinated public mutation points
 
-MUST NOT:
-- Reimplement rule logic inline inside entity methods
+## MUST NOT
 - Mutate state before validating with rules
 - Allow invalid state to persist silently
 - Let a service extension expose a second public way to change a property that is already changed by an entity method
+- Reimplement rule logic inline inside entity methods or service extensions
+- Let a service extension bypass entity methods and write directly to properties
+## SHOULD
+- Keep entity methods small and delegate complex calculations to service extensions
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Enforce entity invariants and prevent invalid state by using domain rules inside entity behavior methods

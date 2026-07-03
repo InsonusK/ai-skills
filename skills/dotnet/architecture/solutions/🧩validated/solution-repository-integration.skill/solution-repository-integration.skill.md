@@ -101,36 +101,30 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `IReadRepository<T>` and `IRepository<T>` defined in Shared, inheriting Ardalis base interfaces
-- `IRepository<T>` extends `IReadRepository<T>` and `IRepositoryBase<T>`
-- `IRepository<T>` has no `SaveChangesAsync` — committing belongs to Unit of Work
-- Single generic `Repository<T>` in App.Infrastructure, inheriting `RepositoryBase<T>` from Ardalis
-- `Repository<T>` implements `IRepository<T>`
-- `Repository<T>` constructor receives `AppDbContext` and passes it to the Ardalis base
-- Open generic DI registration in App.Host for both `IRepository<>` and `IReadRepository<>` pointing to `Repository<>`
-- Registered with `Scoped` lifetime
-- All repository read methods accept `ISpecification<T>` — no raw lambda or LINQ parameters
-- Command handlers inject `IRepository<T>`
-- Query handlers inject `IReadRepository<T>`
-- All entity loading in handlers uses a named spec — no inline `Where(...)` LINQ
-- All specifications for a module live in `/{Module}.Application/Specifications`
-- Cross-module JOIN specs live in `/App.Queries/Specifications`
-- Every entity loaded by Id has a `{Entity}ByIdSpec` in Application
-- Projection specs use `Specification<T, TResult>` — entity filter specs use `Specification<T>`
-- Spec name reflects query intent — not field names or implementation detail
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md#MUST|RepositoryRegistration.cs.create]]
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/Repository.cs.create.md#MUST|Repository.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IReadRepository.cs.create.md#MUST|IReadRepository.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IRepository.cs.create.md#MUST|IRepository.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md#MUST|{Entity}ByIdSpec.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md#MUST|{Entity}SummarySpec.cs.create]]
 
-MUST NOT:
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md#MUST NOT|RepositoryRegistration.cs.create]]
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST NOT|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/Repository.cs.create.md#MUST NOT|Repository.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IReadRepository.cs.create.md#MUST NOT|IReadRepository.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IRepository.cs.create.md#MUST NOT|IRepository.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md#MUST NOT|{Entity}ByIdSpec.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md#MUST NOT|{Entity}SummarySpec.cs.create]]
 - Application layer reference DbContext directly
-- Per-entity repository subclass be created
-- `Repository<T>` call `SaveChangesAsync`
-- Raw LINQ predicates appear in repository method signatures
-- Spec call the database or reference DbContext
-- Spec contain business logic — filtering, ordering, and projection only
-- Handler contain inline `Where(...)` LINQ — always delegate to a named spec
-- Specs placed in `{Module}.Domain` — all specs belong in Application
-- Generic spec names used across multiple entities (`GetByIdSpec`) — name per entity
-- Single-module specs live in App.Queries — they belong in the module's Application
 
 # Anti-patterns
 - `TaskRepository : Repository<TodoTask>` — unnecessary subclass, open generic covers all types
@@ -164,20 +158,3 @@ MUST NOT:
 - [ ] All entity filter specs use `Specification<T>`
 - [ ] No inline LINQ in any handler
 - [ ] Spec names reflect intent — not field names or implementation detail
-
-# Unittest TestCases
-Specs and repository are tested via integration tests against a real database.
-- [ ] When `FirstOrDefaultAsync` called with matching spec Then correct entity returned
-- [ ] When `FirstOrDefaultAsync` called with non-matching spec Then null returned
-- [ ] When `ListAsync` called Then all matching entities returned
-- [ ] When `AnyAsync` called with matching spec Then returns true
-- [ ] When `AnyAsync` called with non-matching spec Then returns false
-- [ ] When `AddAsync` called Then entity tracked by EF — not yet in database
-- [ ] When `Remove` called Then entity marked for deletion — not yet removed from database
-- [ ] When read query runs Then EF change tracker does not track returned entities (AsNoTracking)
-- [ ] When entity matches spec criteria Then it is returned in results
-- [ ] When entity does not match spec criteria Then it is not returned
-- [ ] When spec has ordering Then results are in the correct order
-- [ ] When projection spec is used Then DTO fields are correctly mapped from entity columns
-- [ ] When idempotency spec is used with a known EventId Then duplicate is detected correctly
-- [ ] When cross-module projection spec is used Then data from both modules is correctly joined

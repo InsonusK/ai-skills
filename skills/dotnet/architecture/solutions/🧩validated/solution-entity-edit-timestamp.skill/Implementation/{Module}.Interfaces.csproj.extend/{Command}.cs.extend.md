@@ -66,15 +66,19 @@ public record Update{Entity}Command(
     // ... other properties
 ) : ICommand<Result>, ICommandWithTimestamp;
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - `ActionTimeStamp` is the first property.
 - Command implements both `ICommand<Result<T>>` and `ICommandWithTimestamp`.
 - `ActionTimeStamp` is typed as `DateTimeOffset`.
+- Command validators check that `ActionTimeStamp` is not `default(DateTimeOffset)` and is not greater than `DateTimeOffset.UtcNow`.
 
-MUST NOT:
+## SHOULD
+- Keep timestamp interfaces and the command marker free of behavior logic.
+- Name the command timestamp property `ActionTimeStamp` consistently.
+
+## MUST NOT
 - Delete commands implement `ICommandWithTimestamp`.
 - Commands targeting `Internal Immutable` entities implement `ICommandWithTimestamp`.
 

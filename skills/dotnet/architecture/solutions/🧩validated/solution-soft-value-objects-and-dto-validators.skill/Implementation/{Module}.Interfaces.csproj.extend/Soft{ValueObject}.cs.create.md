@@ -45,16 +45,17 @@ public record SoftMoney(decimal Amount, string Currency)
 ```
 
 # Rule changes
-MUST:
+
+## MUST
 - Be declared as `record`
 - Not validate values in constructor or properties
 - Allow invalid values
 - Provide a `protected` parameterless constructor for multi-property VOs when EF Core materialization is needed
 
-SHOULD:
+## SHOULD
 - Name file and class `Soft{ValueObject}`
 
-MUST NOT:
+## MUST NOT
 - Throw exceptions for invalid values
 - Contain business logic
 

@@ -176,40 +176,49 @@ PROJECT:
 
 # Rules
 
-MUST:
-- Every mutable entity has `public uint Version { get; internal set; }`
-- Every mutable entity implements `IVersioned`
-- Every mutable entity config class declares a public `const string VersionedEntityName` with the stable business name
-- Every mutable entity configuration maps `Version` to `xmin` with `IsConcurrencyToken()` and `ValueGeneratedOnAddOrUpdate()`
-- All update and patch commands implement `IHasVersions`
-- `IVersioned`, `IHasVersions`, `IEntityVersionResolverFactory`, and `IEntityVersionResolver` live in Shared
-- `ETagEncoder` and `ConcurrencyBehavior` live in BuildingBlocks
-- `EntityVersionResolverFactory` lives in App.Infrastructure and maps entity names to resolver types by scanning module Domain config classes and module Application resolver classes
-- `{Module}.Application` provides one `{Entity}VersionResolver` implementation of `IEntityVersionResolver` per versioned entity
-- Each `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching `{Entity}Config.VersionedEntityName`
-- Each `{Entity}VersionResolver` uses `IReadRepository<{Entity}>` and the module's `{Entity}ByIdSpec`
-- `EntityVersionResolverFactory` registered as `Scoped` in App.Host via `EntityVersionResolverRegistration`
-- Module `IEntityVersionResolver` implementations registered as `Scoped` in App.Host
-- `EntityVersionResolverFactory` receives module Domain assemblies and module Application assemblies from App.Host
-- Entity name keys in `IHasVersions` and `EntityVersionResolverFactory` are stable business strings — never C# type names
-- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
-- GET responses for mutable entities include `ETag` header with encoded versions
-- PUT/PATCH endpoints check `If-Match` presence — return 412 if missing or malformed
-- DTOs returned by GET for mutable entities include `Version` field
-- `ConcurrencyBehavior` returns `Result.Conflict` on version mismatch — never throws
-- `ConcurrencyBehavior` returns `Result.NotFound` if resolver reports `0`
-- `ConcurrencyBehavior` returns `Result.Error` for unknown entity name
-
-MUST NOT:
-- Immutable entities have `Version` property or implement `IVersioned`
-- Create or delete commands implement `IHasVersions`
-- Handler check versions manually — `ConcurrencyBehavior` owns this
-- Controller return 400 for missing `If-Match` — 412 Precondition Failed is correct
-- Entity name keys use C# type names — breaks on entity rename
-- `ConcurrencyBehavior` call `SaveChangesAsync`
-- `ConcurrencyBehavior` load entities directly — it delegates to `IEntityVersionResolver`
-- Generic `ByIdSpec` live in BuildingBlocks — per-entity specs belong in `{Module}.Application`
-- `IEntityVersionResolver` implementations live in App.Infrastructure or BuildingBlocks
+## MUST
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md#MUST|EntityVersionResolverRegistration.cs.create]]
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md#MUST|EntityVersionResolverFactory.cs.create]]
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md#MUST|ConcurrencyBehavior.cs.create]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/ETagEncoder.cs.create.md#MUST|ETagEncoder.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IEntityVersionResolver.cs.create.md#MUST|IEntityVersionResolver.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IEntityVersionResolverFactory.cs.create.md#MUST|IEntityVersionResolverFactory.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IHasVersions.cs.create.md#MUST|IHasVersions.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IVersioned.cs.create.md#MUST|IVersioned.cs.create]]
+- [[./Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj.extend]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md#MUST|Single{Entity}Controller.cs.extend]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}VersionResolver.cs.create.md#MUST|{Entity}VersionResolver.cs.create]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs.extend]]
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create.md#MUST NOT|EntityVersionResolverRegistration.cs.create]]
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST NOT|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create.md#MUST NOT|EntityVersionResolverFactory.cs.create]]
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST NOT|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/ConcurrencyBehavior.cs.create.md#MUST NOT|ConcurrencyBehavior.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/IEntityVersionResolver.cs.create.md#MUST NOT|IEntityVersionResolver.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IEntityVersionResolverFactory.cs.create.md#MUST NOT|IEntityVersionResolverFactory.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IHasVersions.cs.create.md#MUST NOT|IHasVersions.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IVersioned.cs.create.md#MUST NOT|IVersioned.cs.create]]
+- [[./Implementation/{Module}.Api.csproj.extend.md#MUST NOT|{Module}.Api.csproj.extend]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend.md#MUST NOT|Single{Entity}Controller.cs.extend]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}VersionResolver.cs.create.md#MUST NOT|{Entity}VersionResolver.cs.create]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST NOT|{EntityName}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST NOT|{EntityName}Config.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST NOT|{Command}.cs.extend]]
 
 # Anti-patterns
 - `Version` as plain `uint` on command property instead of `IHasVersions` — does not scale to multi-entity updates
@@ -245,19 +254,3 @@ MUST NOT:
 - [ ] PUT/PATCH checks `If-Match` — returns 412 if missing or malformed
 - [ ] 412 added to `[ProducesResponseType]` on all PUT/PATCH actions
 - [ ] `switch` default arm throws `InvalidOperationException` in PUT/PATCH actions
-
-# Unittest TestCases
-- [ ] When entity saved Then `Version` (xmin) is non-zero
-- [ ] When entity updated Then `Version` changes
-- [ ] When mutable entity config inspected Then it declares a public `const string VersionedEntityName`
-- [ ] When two DbContexts load same entity, first saves, second saves Then `DbUpdateConcurrencyException` thrown
-- [ ] When `ETagEncoder.Encode` called Then produces valid base64 string
-- [ ] When `ETagEncoder.Decode` called with valid ETag Then returns correct versions dictionary
-- [ ] When `ETagEncoder.Decode` called with malformed string Then returns null
-- [ ] When `If-Match` header missing Then controller returns 412 before MediatR dispatch
-- [ ] When `If-Match` header malformed Then controller returns 412 before MediatR dispatch
-- [ ] When version matches Then `ConcurrencyBehavior` calls next — handler runs
-- [ ] When version mismatches Then `ConcurrencyBehavior` returns `Result.Conflict` — handler does not run
-- [ ] When entity not found during version check Then `ConcurrencyBehavior` returns `Result.NotFound`
-- [ ] When command has multiple entities and one mismatches Then `Result.Conflict` without updating any
-- [ ] When unknown entity name in `IHasVersions` Then `ConcurrencyBehavior` returns `Result.Error`

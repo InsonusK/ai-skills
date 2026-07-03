@@ -143,44 +143,44 @@ PROJECT:
 
 # Rules
 
-MUST:
-- External-created entities have `public Guid Guid { get; internal set; }`
-- `Guid` set exactly once in the entity factory method — never reassigned
-- Unique index on `Guid` configured with named constant `UX_Guid` in entity configuration
-- `{Entity}ByGuidSpec` defined in `/{Module}.Application/Specifications`
-- `IHasGuid`, `IGuidResolver<TResponse>` defined in Shared
-- `ConflictResult<T>` defined in `Shared/Results/ConflictResult.cs`
-- `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
-- `GuidResolvingBehavior` constrained to `where TRequest : IHasGuid`
-- Create commands for external-created entities implement both `ICommand<Result<Create{Entity}Result>>` and `IHasGuid`
-- `Guid` is first property in create command record
-- One `Create{Entity}GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
-- Each `IGuidResolver<TResponse>` registered as `Scoped` in module DI registration
-- `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, non-null means conflict
-- `IGuidResolver<TResponse>` `TResponse` matches the command handler response type exactly
-- Resolver returns `ConflictResult<Create{Entity}Result>` when entity exists — same type as handler success response
-- `GuidResolvingBehavior` returns the resolver's result when it returns non-null — never throws
-- `Create{Entity}Result` contains only the entity Id
-- 409 response body contains the existing entity result — which is `{ id: ... }` because the result contains only Id
-- Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
-- API layer maps `ConflictResult<Create{Entity}Result>` to HTTP 409 with the result body
+## MUST
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/GuidResolvingBehavior.cs.create.md#MUST|GuidResolvingBehavior.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/ConflictResult.cs.create.md#MUST|ConflictResult.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md#MUST|IGuidResolver.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IHasGuid.cs.create.md#MUST|IHasGuid.cs.create]]
+- [[./Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj.extend]]
+	- [[./Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create.md#MUST|ConflictResultExtensions.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md#MUST|Create{Entity}GuidResolver.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md#MUST|{Entity}ByGuidSpec.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.extend.md#MUST|{Module}ApplicationRegistration.cs.extend]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs.extend]]
 
-MUST NOT:
-- Guid used in domain logic, domain events, relationships, or routes after creation
-- Guid regenerated or changed after entity creation
-- Update, delete, or internal-create commands implement `IHasGuid`
-- `IGuidResolver` registered as open generic — each entity type registers its own concrete resolver
-- Resolver throw exceptions — null means not found, non-null means exists
-- Resolver return a different response type than the command handler
-- `GuidResolvingBehavior` throw exceptions for duplicate Guid detection
-- `GuidResolvingBehavior` construct response DTOs
-- `Create{Entity}Result` carry fields beyond the entity Id for external-created entities
-- Per-controller handling for Guid conflicts — conflict is expressed as `Result<T>` and mapped by the API layer
+## MUST NOT:
+- [[./Implementation/BuildingBlocks.csproj.extend.md#MUST NOT|BuildingBlocks.csproj.extend]]
+	- [[./Implementation/BuildingBlocks.csproj.extend/GuidResolvingBehavior.cs.create.md#MUST NOT|GuidResolvingBehavior.cs.create]]
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/ConflictResult.cs.create.md#MUST NOT|ConflictResult.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IGuidResolver.cs.create.md#MUST NOT|IGuidResolver.cs.create]]
+	- [[./Implementation/Shared.csproj.extend/IHasGuid.cs.create.md#MUST NOT|IHasGuid.cs.create]]
+- [[./Implementation/{Module}.Api.csproj.extend.md#MUST NOT|{Module}.Api.csproj.extend]]
+	- [[./Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create.md#MUST NOT|ConflictResultExtensions.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md#MUST NOT|Create{Entity}GuidResolver.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md#MUST NOT|{Entity}ByGuidSpec.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.extend.md#MUST NOT|{Module}ApplicationRegistration.cs.extend]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST NOT|{EntityName}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST NOT|{EntityName}Config.cs.extend]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST NOT|{Command}.cs.extend]]
 - Define a dedicated HTTP middleware for conflict handling
-
-SHOULD:
-- `Guid` be the first property in the command record — signals external-created entity at a glance
-- Return `Result<Create{Entity}Result>.Created(new Create{Entity}Result(id))` from the handler on successful creation
 
 # Anti-patterns
 - Handler checks for duplicate Guid manually — duplicates pipeline logic, not reusable
@@ -213,12 +213,3 @@ SHOULD:
 - [ ] `Create{Entity}Result` contains only the entity Id
 - [ ] Handler returns `Result<Create{Entity}Result>.Created(...)` on success
 - [ ] API layer maps `ConflictResult<Create{Entity}Result>` to 409 with the result body
-
-# Unittest TestCases
-- [ ] When create command with new Guid Then resolver returns null — handler runs — 201 Created returned with CreateEntityResult
-- [ ] When create command with duplicate Guid Then resolver returns ConflictResult<CreateEntityResult> — 409 Conflict returned with existing CreateEntityResult
-- [ ] When 409 returned Then response body contains only existing entity Id
-- [ ] When two concurrent requests with same Guid both pass pipeline Then unique index raises `DbUpdateException` with `PostgresException` where `SqlState == "23505"` and `ConstraintName == {EntityName}Config.UX_Guid`
-- [ ] When entity created Then `Guid` is immutable — update attempt has no effect on Guid property
-- [ ] When `GuidResolvingBehavior` detects duplicate Then handler does not run
-- [ ] When API layer maps ConflictResult<CreateEntityResult> Then response status is 409 and body contains existing Id

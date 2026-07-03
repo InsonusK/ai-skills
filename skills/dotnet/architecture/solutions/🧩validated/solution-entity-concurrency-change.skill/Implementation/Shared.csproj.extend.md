@@ -46,11 +46,11 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `IHasVersions`, `IEntityVersionResolverFactory`, `IEntityVersionResolver`, and `IVersioned` defined in Shared
 - All four types are interfaces or markers only — no implementation code
 
-MUST NOT:
+## MUST NOT
 - Add MediatR, EF Core, or JSON serialization dependencies to Shared for these contracts
 - Place implementations in Shared
 

@@ -34,15 +34,16 @@ public interface IHasVersions
     IReadOnlyDictionary<string, IReadOnlyDictionary<int, uint>> Versions { get; }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Keys are stable business string names — never C# type names or namespace-qualified names
 - Used only on update and patch commands — never on create or delete commands
+- All update and patch commands implement `IHasVersions`
 
-MUST NOT:
+## MUST NOT
 - Use C# `Type` as the dictionary key — breaks when entities are renamed
+- Create or delete commands implement `IHasVersions`
 
 # Anti-patterns
 - `Versions` as a flat dictionary without entity name grouping — does not support multi-entity updates

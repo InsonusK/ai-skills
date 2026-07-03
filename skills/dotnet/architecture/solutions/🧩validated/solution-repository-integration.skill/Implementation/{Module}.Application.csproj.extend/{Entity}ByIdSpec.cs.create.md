@@ -40,17 +40,25 @@ public class {Entity}ByIdSpec : Specification<{Entity}>
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Inherit `Specification<T>`
-- Live in `/{Module}.Application/Specifications`
 - Be named `{Entity}ByIdSpec`
-
-MUST NOT:
-- Call the database or reference DbContext
+- All entity loading in handlers uses a named spec — no inline `Where(...)` LINQ
+- All specifications for a module live in `/{Module}.Application/Specifications`
+- Cross-module JOIN specs live in `/App.Queries/Specifications`
+- Every entity loaded by Id has a `{Entity}ByIdSpec` in Application
+- Projection specs use `Specification<T, TResult>` — entity filter specs use `Specification<T>`
+- Spec name reflects query intent — not field names or implementation detail
+## MUST NOT
 - Contain business logic — filtering only
-
+- Spec call the database or reference DbContext
+- Spec contain business logic — filtering, ordering, and projection only
+- Handler contain inline `Where(...)` LINQ — always delegate to a named spec
+- Specs placed in `{Module}.Domain` — all specs belong in Application
+- Generic spec names used across multiple entities (`GetByIdSpec`) — name per entity
+- Single-module specs live in App.Queries — they belong in the module's Application
 # Check list
 - [ ] Inherits `Specification<{Entity}>`
 - [ ] Constructor applies `Query.Where(e => e.Id == id)`

@@ -40,14 +40,16 @@ public class {EntityName} : IVersioned
 ```
 
 > **Note:** The stable business name used by `EntityVersionResolverFactory`, `IHasVersions`, and `ETagEncoder` lives in `{EntityName}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - All mutable entities have `public uint Version { get; internal set; }`
 - All mutable entities implement `IVersioned`
+- Every mutable entity config class declares a public `const string VersionedEntityName` with the stable business name
+- Each `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching `{Entity}Config.VersionedEntityName`
+- Every mutable entity has `public uint Version { get; internal set; }`
 
-MUST NOT:
+## MUST NOT
 - Immutable entities have `Version` — they are never updated
 - Application code assign `Version` — it is controlled exclusively by the database
 

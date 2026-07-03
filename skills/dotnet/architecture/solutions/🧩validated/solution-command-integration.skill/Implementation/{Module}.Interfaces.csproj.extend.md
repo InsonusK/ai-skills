@@ -40,12 +40,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - All commands for this module declared in `/{Module}.Interfaces/Commands`
 - Each command file contains the command record and its result record
 - Commands implement `ICommand<Result<T>>` from Shared
 
-MUST NOT:
+## MUST NOT
 - Commands contain any logic or methods
 - Commands reference Domain entity types — input properties are primitives or shared value types only
 - Interfaces project reference Domain, Application, or infrastructure projects

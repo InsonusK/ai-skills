@@ -37,14 +37,14 @@ public interface IReadRepository<T> : IReadRepositoryBase<T>
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Inherit `IReadRepositoryBase<T>` from `Ardalis.Specification`
 - Generic constraint `where T : class`
 - Live in `/Shared/Repositories`
 
-MUST NOT:
+## MUST NOT
 - Add write or commit methods
 
 # Check list

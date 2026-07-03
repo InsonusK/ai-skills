@@ -57,12 +57,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - All Value Objects live in `/{Module}.Domain/ValueObjects`
 - All domain rules live in `/{Module}.Domain/Rules`
 - Only module-specific VOs and rules live here — cross-cutting ones belong in Shared
 
-MUST NOT:
+## MUST NOT
 - Place Value Object definitions outside /ValueObjects folder
 - Place rule definitions outside /Rules folder
 - Put module-specific VO or rule in Shared

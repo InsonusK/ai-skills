@@ -43,11 +43,12 @@ builder.Services
 
 # Rules
 
-MUST:
+## MUST
 - `AddPipeline()` called in `Program.cs`
 - `AddPipeline()` called exactly once
+- Pipeline behaviors registered in App.Host — never inside a module's registration method
 
-MUST NOT:
+## MUST NOT
 - Register `IPipelineBehavior<,>` directly in `Program.cs`
 - Call `AddPipeline()` more than once
 

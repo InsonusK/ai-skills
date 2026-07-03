@@ -33,12 +33,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `GuidResolvingBehavior` defined in `BuildingBlocks/MediatR/GuidResolvingBehavior.cs`
 - `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
 - `GuidResolvingBehavior` returns the resolver's conflict result — never throws an exception
 
-MUST NOT:
+## MUST NOT
 - `IHasGuid` or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are contracts that belong in Shared
 - `GuidResolvingBehavior` registered as open generic — DI resolves `IGuidResolver<TResponse>` per concrete command result type
 - Define HTTP middleware for conflict handling — conflicts are expressed as `Result<T>` and mapped by the API layer

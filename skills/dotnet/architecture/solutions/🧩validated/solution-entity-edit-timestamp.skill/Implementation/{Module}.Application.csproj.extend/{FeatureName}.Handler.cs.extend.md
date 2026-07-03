@@ -144,16 +144,16 @@ public class Update{Entity}Handler
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Assign user timestamps after the domain call and before staging the entity.
 - Use the mutable interface cast to assign values.
 - Set both `UserCreatedDateTime` and `UserUpdatedDateTime` for mutable entities on creation.
 - Set only `UserUpdatedDateTime` for updates.
 - Set only `UserCreatedDateTime` for `External Immutable` entity creation.
 
-MUST NOT:
+## MUST NOT
 - Validate `ActionTimeStamp` in the handler.
 - Assign server timestamps.
 - Set user timestamps directly on the entity class if the setter is `internal`.

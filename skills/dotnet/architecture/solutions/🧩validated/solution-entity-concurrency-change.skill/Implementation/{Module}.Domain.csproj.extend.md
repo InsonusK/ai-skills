@@ -40,13 +40,13 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Every mutable entity has a `Version` property
 - Every mutable entity implements `IVersioned`
 - Every mutable entity config class declares `VersionedEntityName`
 - `Version` configured as `IsConcurrencyToken()` mapping to `xmin` in EF configuration
 
-MUST NOT:
+## MUST NOT
 - Application code set or read `Version` for any purpose other than concurrency checking — it is a database concern
 
 # Anti-patterns

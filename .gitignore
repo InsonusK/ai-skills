@@ -1,3 +1,8 @@
 # Ignore the Obsidian workspace file, which contains user-specific settings and should not be shared across different environments.
 .obsidian/workspace.json
 __pycache__
+
+# Ignore AI agent worktrees to avoid committing temporary workspace directories.
+/ai-worktree
+/.ai-skill-manager
+.obsidian/workspace.json

@@ -77,15 +77,15 @@ public static class {System}Endpoints
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Use only for non-entity-lifecycle operations — system, webhook, batch, cross-aggregate
 - Each Minimal API endpoint still dispatches exactly one MediatR command or query
 - All error responses use `Results.Problem` or `Results.BadRequest` with `ProblemDetails`
 - Unexpected `ResultStatus` throws `InvalidOperationException`
 
-MUST NOT:
+## MUST NOT
 - Replace entity-lifecycle Controllers with Minimal API — controllers are mandatory for entity operations
 
 # Anti-patterns

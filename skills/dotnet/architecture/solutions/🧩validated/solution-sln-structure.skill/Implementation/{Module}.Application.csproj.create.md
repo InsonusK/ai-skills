@@ -48,10 +48,10 @@ change_kind: create
 
 # Rules
 
-MUST:
+## MUST
 - Application references only own Interfaces, own Domain
 
-MUST NOT:
+## MUST NOT
 - Application reference another module's Domain
 - Application reference another module's Application
 - Application contain business logic — delegate to Domain

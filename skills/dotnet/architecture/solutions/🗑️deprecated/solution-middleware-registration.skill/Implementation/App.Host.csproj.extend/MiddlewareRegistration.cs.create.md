@@ -49,17 +49,27 @@ public static class MiddlewareRegistration
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - `MiddlewareRegistration` defined as a static class in `App.Host/DependencyInjection/MiddlewareRegistration.cs`
 - `UseMiddlewarePipeline()` is an extension method on `IApplicationBuilder`
 - `UseMiddlewarePipeline()` returns `IApplicationBuilder`
+- `MiddlewareRegistration.cs` defined in `App.Host/DependencyInjection/MiddlewareRegistration.cs`
+- `UseMiddlewarePipeline()` called once from `Program.cs`
+- All custom middleware registered inside `UseMiddlewarePipeline()` using `app.UseMiddleware<TMiddleware>()`
+- Middleware registered in intended execution order
+- `UseMiddlewarePipeline()` called after routing and before `MapControllers()` / `MapEndpoints()`
 
-MUST NOT:
+## SHOULD
+- Keep `UseMiddlewarePipeline()` the only method that adds custom HTTP middleware registrations
+
+## MUST NOT
 - Register middleware inside module registration methods
 - Change middleware order in multiple files
+- Register custom middleware inside module registration methods
+- Register custom middleware directly in `Program.cs`
+- Create multiple middleware registration extension methods
 
 # Anti-patterns
 - Middleware order scattered across multiple files

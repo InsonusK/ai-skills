@@ -51,9 +51,9 @@ public static class ETagEncoder
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - `Decode` returns null on any exception — never throws
 - `Encode` produces a string usable directly as an `ETag` header value (without surrounding quotes — controller adds quotes)
 

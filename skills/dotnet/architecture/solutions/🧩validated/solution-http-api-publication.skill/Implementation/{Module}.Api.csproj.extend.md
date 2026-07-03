@@ -45,20 +45,24 @@ change_kind: extend
 | /MinimalApi/{System}Endpoints.cs                                     | System, webhook, batch, cross-aggregate endpoints |
 | /Extensions/ResultExtensions.cs                                      | ToProblemDetails helper for Result error mapping  |
 
-## NuGet Packages
+#
+
+# NuGet Packages
 | Package | Purpose |
 | --- | --- |
 | `Microsoft.AspNetCore.Mvc` | `ControllerBase`, `[ApiController]`, `ActionResult`, `ProblemDetails` |
 | `MediatR` | `ISender` injected into controllers |
 | `Ardalis.Result` | `Result<T>`, `ResultStatus` mapped to HTTP responses |
 
-## Allowed Dependencies
+#
+
+# Allowed Dependencies
 - `{Module}.Interfaces` — command records, query records, DTOs
 - `Shared` — if needed for shared markers (indirectly via Interfaces)
 
 # Rules
 
-MUST:
+## MUST
 - Every controller action dispatches exactly one `ISender.Send()` call
 - Controllers inject `ISender` — never `IMediator`
 - Controllers reference only `{Module}.Interfaces` types
@@ -66,7 +70,7 @@ MUST:
 - Every `ResultStatus` the handler can return has an explicit `ProducesResponseType`
 - Unexpected `ResultStatus` throws `InvalidOperationException`
 
-MUST NOT:
+## MUST NOT
 - Controller action contain business logic, validation, domain rules, or persistence
 - Controller reference Application, Domain, Infrastructure, or DbContext
 - Controller inject `IRepository<T>` or `IUnitOfWork`

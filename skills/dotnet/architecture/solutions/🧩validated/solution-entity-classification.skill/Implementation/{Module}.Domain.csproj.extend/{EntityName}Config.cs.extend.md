@@ -104,3 +104,12 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
     }
 }
 ```
+
+# Rule changes
+
+## MUST
+- Classify every domain entity into exactly one of the four types before writing its code, configuration, or API contract.
+- Document the classification decision for every entity in a discoverable location (e.g., entity config XML comment, module ADR, or team wiki).
+
+## SHOULD
+- Name the classification in entity configuration comments or a dedicated `ENTITY_CLASSIFICATION.md` per module.

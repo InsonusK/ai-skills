@@ -106,43 +106,27 @@ PROJECT:
 
 # Rules
 
-MUST:
-- `ICommand` and `ICommand<TResponse>` defined in Shared — not BuildingBlocks, not any module
-- All commands implement `ICommand<Result<T>>` — not `IRequest<T>` directly
-- Commands declared as `record` in `/{Module}.Interfaces/Commands`
-- Result records declared in the same file as their command
-- One handler per command — `IRequestHandler<TCommand, Result<T>>`
-- Handler structure: load → guard → domain call → stage → return result
-- All entity loading in handlers uses named specs from [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration.skill]]
-- Handlers inject `IRepository<T>` from Shared — never `DbContext`
-- Cross-module writes dispatched via `_mediator.Send()` — never direct calls
-- Each module has `Register{ModuleName}Module()` extension method
-- Handlers and validators registered via assembly scan — never manually
-- One `AbstractValidator<TCommand>` per command — co-located with handler in feature folder
-- Validator file named `{FeatureName}.Validator.cs`, class named `{FeatureName}Validator`
-- Validator extends `AbstractValidator<TCommand>`
-- Validators registered via `AddValidatorsFromAssembly` in module registration — this also registers property validators and DTO validators from `solution-soft-value-objects-and-dto-validators.skill`
-- No validator for query handlers
-- When a command property is a `Soft{ValueObject}` from another module, inject `IValidator<Soft{ValueObject}>` and use `SetValidator`
-- When a command property is a DTO from another module, inject `IValidator<{Dto}>` and use `SetValidator`
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+- [[./Implementation/Shared.csproj.extend.md#MUST|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/ICommand.cs.create.md#MUST|ICommand.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md#MUST|{FeatureName}.Handler.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md#MUST|{FeatureName}.Validator.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md#MUST|{Module}ApplicationRegistration.cs.create]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md#MUST|{Command}.cs.create]]
 
-MUST NOT:
-- Handler contain business logic — delegate to domain
-- Handler call `SaveChangesAsync` — Unit of Work owns commit
-- Handler reference another module's Domain or Application directly
-- Command properties reference domain entity types
-- `ICommand` defined in BuildingBlocks — belongs in Shared
-- Validator contain business rules — transport correctness only
-- Validator inject repositories or services — purely declarative
-- Validator be shared across multiple commands
-- Command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
-- Pipeline behaviors registered inside any module's registration method
-
-SHOULD:
-- Guard checks return early before domain call — fail fast pattern
-- Handler follow the exact load → guard → domain call → stage → return sequence
-- Validator rules cover all command properties that carry input constraints
-- Use the transport validation boundary table to decide what belongs in validator vs handler vs domain
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
+	- [[./Implementation/Shared.csproj.extend/ICommand.cs.create.md#MUST NOT|ICommand.cs.create]]
+- [[./Implementation/{Module}.Application.csproj.extend.md#MUST NOT|{Module}.Application.csproj.extend]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md#MUST NOT|{FeatureName}.Handler.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md#MUST NOT|{FeatureName}.Validator.cs.create]]
+	- [[./Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md#MUST NOT|{Module}ApplicationRegistration.cs.create]]
+- [[./Implementation/{Module}.Interfaces.csproj.extend.md#MUST NOT|{Module}.Interfaces.csproj.extend]]
+	- [[./Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md#MUST NOT|{Command}.cs.create]]
 
 # Anti-patterns
 - Business rule in handler: `if (task.Status == TaskStatus.Closed) return Result.Conflict(...)` — belongs in entity
@@ -186,13 +170,3 @@ SHOULD:
 - [ ] Command validator uses `IValidator<Soft{ValueObject}>` for cross-module Soft VO properties via `SetValidator`
 - [ ] Command validator uses `IValidator<{Dto}>` for cross-module DTO properties via `SetValidator`
 - [ ] Command validator does not duplicate rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator`
-
-# Unittest TestCases
-- [ ] When valid command is handled Then handler returns expected `Result.Created` or `Result.Success`
-- [ ] When required entity not found during load Then handler returns `Result.NotFound`
-- [ ] When business guard condition is met Then handler returns `Result.Conflict` before domain call
-- [ ] When domain call completes Then entity is staged in repository — not yet persisted
-- [ ] When sub-command fails Then root handler returns `Result.Error` without staging own entity
-- [ ] When two handlers in same module Then both are discovered by assembly scan
-- [ ] When command is dispatched from API Then correct handler is invoked by MediatR
-

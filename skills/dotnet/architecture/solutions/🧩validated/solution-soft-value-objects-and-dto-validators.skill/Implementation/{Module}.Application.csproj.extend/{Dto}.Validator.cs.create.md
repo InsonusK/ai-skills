@@ -66,17 +66,29 @@ public class SomeHandler
 ```
 
 # Rule changes
-MUST:
+
+## MUST
 - Extend `AbstractValidator<{Dto}>`
 - Be named `{Dto}Validator`
 - Live in `/{Module}.Application/Validators`
 - Use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
+- `{Module}.Application` must call `AddValidatorsFromAssembly` for its own assembly so that property and DTO validators are registered in DI
+- For every RequestDto published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators/Model` extending `AbstractValidator<{Dto}>`
+- ResponseDto validators are created only when explicitly required, for example external contract validation, untrusted response sources, or mandated integration boundaries
+- Validators are registered by FluentValidation's assembly scan of `{Module}.Application`
+- Other modules consume validators through `IValidator<T>` resolved from DI
+- Property validators and DTO validators validate values only by calling Rules
+- Property validators are stateless and have no infrastructure dependencies
 
-MUST NOT:
+## MUST NOT
 - Inject repositories or services
-- Contain business rules
 - Use inline FluentValidation predicates instead of property validators
 - Validate primitive properties directly — every value-concept must be a `Soft{ValueObject}` with its own property validator
+- Validators inject repositories, `DbContext`, or services
+- Validators contain business rules
+- Property validators or DTO validators contain inline FluentValidation predicates that duplicate Rule logic
+## SHOULD
+- Name DTO validator `{Dto}Validator`
 
 # Anti-patterns
 - Validating DTOs inside handlers instead of using the published `IValidator<{Dto}>`

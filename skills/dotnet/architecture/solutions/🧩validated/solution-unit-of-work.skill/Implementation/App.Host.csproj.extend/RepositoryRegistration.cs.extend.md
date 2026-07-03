@@ -51,12 +51,12 @@ public static class RepositoryRegistration
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - `IUnitOfWork` and `UnitOfWorkContext` registered as `Scoped` — same lifetime as DbContext and Repository
 
-MUST NOT:
+## MUST NOT
 - Register as `Singleton` or `Transient`
 
 # Anti-patterns

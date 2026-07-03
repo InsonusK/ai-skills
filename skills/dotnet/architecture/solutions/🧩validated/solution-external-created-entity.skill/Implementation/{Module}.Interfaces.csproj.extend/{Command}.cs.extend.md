@@ -34,19 +34,25 @@ public record Create{Entity}Command(
 
 public record Create{Entity}Result(int Id);
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - `Guid` is the first property on the command record
 - Command implements both `ICommand<Result<T>>` and `IHasGuid`
 - `Guid` typed as `System.Guid` — never `string` or `int`
 - Result record co-located with the command
 - Resolver response type matches `Result<Create{Entity}Result>` exactly
+- `Guid` is first property in create command record
+- 409 response body contains the existing entity result — which is `{ id: ... }` because the result contains only Id
+- `Create{Entity}Result` contains only the entity Id
 
-MUST NOT:
+## SHOULD
+- `Guid` be the first property in the command record — signals external-created entity at a glance
+
+## MUST NOT
 - Update, delete, or internal-create commands implement `IHasGuid`
 - Resolver return a different response type than the command handler
+- `Create{Entity}Result` carry fields beyond the entity Id for external-created entities
 
 # Anti-patterns
 - `Guid` not as first property — signals external-created entity at a glance

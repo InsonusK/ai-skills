@@ -58,18 +58,20 @@ public class Create{Entity}GuidResolver
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Return null when entity not found — never throw
 - Return `ConflictResult<Create{Entity}Result>` when entity found — same type as handler response
 - Inject `IReadRepository<T>` — never `IRepository<T>` or DbContext
 - Use `{Entity}ByGuidSpec` — never inline LINQ
+- One `Create{Entity}GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
 
-MUST NOT:
+## MUST NOT
 - Throw exceptions — null signals not found, non-null signals exists
 - Return a different response type than the command handler
 - Return `Result.NotFound()` — null is the "not found" signal in this contract
+- Resolver throw exceptions — null means not found, non-null means exists
 
 # Anti-patterns
 - Inline LINQ in resolver instead of named spec

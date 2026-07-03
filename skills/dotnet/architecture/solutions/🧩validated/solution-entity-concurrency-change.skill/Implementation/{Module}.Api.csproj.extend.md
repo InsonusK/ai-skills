@@ -31,14 +31,14 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - GET for mutable entity sets `Response.Headers.ETag` with encoded versions
 - PUT/PATCH checks `If-Match` presence — returns 412 if missing or malformed
 - `Versions` passed to command from decoded `If-Match` — never constructed in controller
 - 412 added to `[ProducesResponseType]` on all PUT/PATCH endpoints for mutable entities
 - DTO returned by GET for mutable entity includes `Version` field
 
-MUST NOT:
+## MUST NOT
 - GET for immutable entity set ETag header — immutable entities have no version
 - `Versions` hardcoded or constructed in controller — always from decoded `If-Match`
 

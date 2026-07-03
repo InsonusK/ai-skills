@@ -33,15 +33,15 @@ public interface IEntityVersionResolver
 ```
 
 > **Note:** `0` is reserved as a not-found sentinel because PostgreSQL `xmin` is never `0` for a persisted row.
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Return the current `Version` cast to `int`
 - Return `0` when the entity is not found
 - Be implemented in module Application projects
+- `{Module}.Application` provides one `{Entity}VersionResolver` implementation of `IEntityVersionResolver` per versioned entity
 
-MUST NOT:
+## MUST NOT
 - Throw when the entity is missing — return `0` so `ConcurrencyBehavior` can produce `Result.NotFound`
 - Reference EF Core or DbContext directly
 

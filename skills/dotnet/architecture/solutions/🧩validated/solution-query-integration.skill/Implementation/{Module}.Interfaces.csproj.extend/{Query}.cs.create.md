@@ -61,18 +61,21 @@ namespace {Module}.Interfaces.Queries;
 public record GetTaskWithUserDetailsQuery(int TaskId)
     : IQuery<Result<TaskWithUserDetailsDto>>;
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Declared as `record`
 - Implement `IQuery<Result<T>>` — never `IRequest<T>` directly
 - Properties are primitives or simple types — no domain entity references
+- Query handlers return `Result.NotFound()` when entity is missing
 
-MUST NOT:
+## MUST NOT
 - Contain methods or logic
 - Reference domain entity types as properties
 - Extend `ICommand` or `ICommand<TResponse>` — queries must remain distinct from write-side markers
+- Query handler inject `IRepository<T>` — signals write intent, use `IReadRepository<T>`
+- Query handler inject `IUnitOfWork` or call `SaveChangesAsync`
+- Query handler modify entity state or dispatch commands
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Express a named read intent as an immutable record that carries all filter/selection input needed for the operation

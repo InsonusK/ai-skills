@@ -39,13 +39,16 @@ public class OrderToPaymentConfig : IEntityTypeConfiguration<Order>
 
 # Rule changes
 
-MUST:
+## MUST
 - Configure only cross-module foreign keys and relationships
 - Reference existing entity configs from Domain, not redefine intra-module mapping
+- `OwnsOne` configured for every multi-property VO property
+- All configurations registered via `ApplyConfigurationsFromAssembly`
 
-MUST NOT:
+## MUST NOT
 - Redefine table names, column names, or indexes already owned by Domain config
 - Configure intra-module relationships here
+- Configure cross-module foreign keys in Domain config
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Configure foreign key relationships and mappings that cross module boundaries

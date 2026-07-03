@@ -91,7 +91,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
 # Rule changes
 
-MUST:
+## MUST
 - Use Value Object on Entity property when the value has invariant state or carries business semantics
 - Entity properties other than `Id` and `Version` must be Value Object types, unless they are unconstrained generic parameters
 - If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
@@ -99,13 +99,15 @@ MUST:
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
 - Use the most specific rule available (primitive, VO, or contextual) for the condition being checked
+- Multi-property VO has `OwnsOne` EF configuration on owning entity
 
-MUST NOT:
+## MUST NOT
 - Use primitive type on Entity property when the value carries business meaning or invariant constraints
 - Expose a primitive Entity property when a Value Object could enforce the same invariants
 - Reimplement rule logic inline inside entity methods — always delegate to existing rules
 - Mutate state before validating with rules
 - Allow invalid state to persist silently
+- Value Object be used to carry identity — use entity Id for that
 
 # Check list
 - [ ] All properties except GUID and Id (primary key and foreing key) which has invariant checks use [{ValueObject}](./{ValueObject}.cs.create.md) which implements invariant checks

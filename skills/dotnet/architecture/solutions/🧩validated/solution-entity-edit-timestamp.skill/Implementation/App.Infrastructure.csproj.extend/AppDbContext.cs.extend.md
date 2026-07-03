@@ -90,19 +90,36 @@ public class AppDbContext : DbContext
     }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Override `SaveChanges()` and `SaveChangesAsync(CancellationToken)`.
 - Call `OnBeforeSaving()` before the base save call.
 - Use `DateTimeOffset.UtcNow`.
 - Set `ServerCreatedDateTime` only for `Added` `ICreationInfoModel` entries.
 - Set `ServerUpdatedDateTime` for `Added` and `Modified` `IUpdateInfoModel` entries.
+- `Internal Immutable` entities implement none of the timestamp interfaces.
+- Timestamp properties on entities are `DateTimeOffset` with `internal set`.
+- Create handlers for mutable entities set both `UserCreatedDateTime` and `UserUpdatedDateTime` to `ActionTimeStamp`.
+- Update handlers set only `UserUpdatedDateTime` to `ActionTimeStamp`.
+- Create handlers for `External Immutable` entities set only `UserCreatedDateTime` to `ActionTimeStamp`.
+- `AppDbContext` overrides both `SaveChanges()` and `SaveChangesAsync(CancellationToken)` and calls `OnBeforeSaving()` before delegating to the base method.
+- EF configuration maps timestamp properties as required `DateTimeOffset` columns.
+- Handlers never assign server timestamps.
+- `AppDbContext` never assigns user timestamps.
+- `OnBeforeSaving()` uses `DateTimeOffset.UtcNow` as the server time source.
 
-MUST NOT:
+## MUST NOT
 - Set user timestamps in `OnBeforeSaving()`.
 - Use `DateTime` or `DateTime.Now`.
+- Add timestamp fields to `Internal Immutable` entities.
+- Add update timestamp fields to `External Immutable` entities.
+- Validate `ActionTimeStamp` inside handlers.
+- Set user timestamps in `AppDbContext`.
+- Set server timestamps in handlers.
+- Use `DateTime` instead of `DateTimeOffset` for timestamp fields.
+- Allow `ActionTimeStamp` to be in the future.
+- Use EF attributes on entities for timestamp mapping.
 
 # Anti-patterns
 - Overriding only `SaveChangesAsync`.

@@ -47,14 +47,14 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - All queries for this module declared in `/{Module}.Interfaces/Queries`
 - All DTOs for this module declared in `/{Module}.Interfaces/DTOs`
 - Cross-module query contracts declared in the owning module's Interfaces — implemented in App.Queries
 - Queries implement `IQuery<Result<T>>`
 - DTOs declared as `record`
 
-MUST NOT:
+## MUST NOT
 - Queries contain any logic or methods
 - DTOs expose domain entity types — projection shapes only
 - DTOs have public setters — declared as `record` for immutability

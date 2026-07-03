@@ -59,12 +59,12 @@ public class Currency
 
 # Rule changes
 
-MUST:
+## MUST
 - Entity has `int Id` with `internal set`
 - All public property setters or methods must validation state
 - `Id` used in all domain logic, persistence, relationships, and internal APIs
 
-MUST NOT:
+## MUST NOT
 - Use `public` setters on any entity property
 
 # Anti-patterns

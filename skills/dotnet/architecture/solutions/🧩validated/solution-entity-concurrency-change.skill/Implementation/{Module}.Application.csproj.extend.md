@@ -47,7 +47,7 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Declare one `{Entity}VersionResolver` per versioned entity
 - Resolver class implements `IEntityVersionResolver` from Shared
 - Resolver declares `public const string VersionedEntityName` matching `{Entity}Config.VersionedEntityName`
@@ -55,7 +55,7 @@ MUST:
 - Return `0` when entity is not found
 - Return current `Version` cast to `int` when found
 
-MUST NOT:
+## MUST NOT
 - Reference EF Core or DbContext directly
 - Throw when entity is missing — return `0`
 

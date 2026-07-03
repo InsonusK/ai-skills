@@ -37,13 +37,13 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `ConflictResultExtensions` defined in `{Module}.Api/Extensions/ConflictResultExtensions.cs`
 - Map `ConflictResult<Create{Entity}Result>` to HTTP 409 with the result body
 - Return 201 Created with entity result and `Location` header on successful creation
 - `Create{Entity}Result` contains only the entity Id
 
-MUST NOT:
+## MUST NOT
 - Put business logic or domain rules in the extension method
 - Return ProblemDetails for `ConflictResult<Create{Entity}Result>` — the idempotent create contract returns the existing result
 

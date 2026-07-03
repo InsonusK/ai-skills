@@ -179,15 +179,15 @@ public class {EntityName} : ICreationInfoModel, IUpdateInfoModel
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Apply timestamp interfaces based on classification.
 - Use `DateTimeOffset` for all timestamp properties.
 - Keep class-level timestamp setters `internal`.
 - Implement mutable interface setters explicitly.
 
-MUST NOT:
+## MUST NOT
 - Add timestamp fields to `Internal Immutable` entities.
 - Add update timestamp fields to `External Immutable` entities.
 - Expose public setters on class-level timestamp properties.

@@ -38,10 +38,10 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `UnitOfWork` registered as `Scoped` — must share the same `DbContext` instance as `Repository<T>`
 
-MUST NOT:
+## MUST NOT
 - `UnitOfWork` expose any method beyond `SaveChangesAsync`
 - `UnitOfWork` contain transaction management logic — EF manages transactions implicitly
 

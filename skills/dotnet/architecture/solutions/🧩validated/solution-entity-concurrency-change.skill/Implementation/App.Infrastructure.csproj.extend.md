@@ -41,7 +41,7 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `EntityVersionResolverFactory` scans Domain assemblies for `IEntityTypeConfiguration<T>` configs where `T` implements `IVersioned`
 - `EntityVersionResolverFactory` scans Application assemblies for concrete `IEntityVersionResolver` implementations
 - Every mutable entity implements `IVersioned`
@@ -51,9 +51,10 @@ MUST:
 - Constructor accepts `IServiceProvider`, Domain assemblies, and Application assemblies
 - Build the resolver-type map only once (static, lazy, thread-safe)
 
-MUST NOT:
+## MUST NOT
 - Keys be C# type names, namespaces, or assembly-qualified names as the public contract — breaks when entities are renamed
 - Rely on a hardcoded dictionary of resolver types
+- `IEntityVersionResolver` implementations live in App.Infrastructure or BuildingBlocks
 
 # Anti-patterns
 - `EntityVersionResolverFactory` key using `nameof(TodoTask)` — fragile, breaks on class rename

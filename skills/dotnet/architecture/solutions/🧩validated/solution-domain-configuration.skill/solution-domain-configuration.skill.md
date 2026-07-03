@@ -71,21 +71,18 @@ PROJECT:
 
 # Rules
 
-MUST:
-- One `IEntityTypeConfiguration<T>` per entity
-- `TableName` defined as `public const string`
-- All index and constraint names defined as `public const string` constants
-- `OwnsOne` configured for every multi-property VO property
-- All configurations registered via `ApplyConfigurationsFromAssembly`
-- Domain entities have zero EF attributes
+## MUST:
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md#MUST|{Module1}To{Module2}Config.cs.create]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md#MUST|{Entity}Config.cs.create]]
 
-MUST NOT:
-- Use EF data annotations on domain entities
-- Define table, index, or constraint names as inline strings
-- Use `static` instead of `const` for `TableName`, index, or constraint names
-- Put mapping logic in `DbContext.OnModelCreating` directly
-- Configure cross-module foreign keys in Domain config
-
+## MUST NOT
+- [[./Implementation/App.Infrastructure.csproj.extend.md#MUST NOT|App.Infrastructure.csproj.extend]]
+	- [[./Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md#MUST NOT|{Module1}To{Module2}Config.cs.create]]
+- [[./Implementation/{Module}.Domain.csproj.extend.md#MUST NOT|{Module}.Domain.csproj.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST NOT|{Entity}.cs.extend]]
+	- [[./Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md#MUST NOT|{Entity}Config.cs.create]]
 # Anti-patterns
 - Mapping multi-property VO without `OwnsOne` — EF will fail to map or create a shadow table
 - Hardcoded index name strings — breaks error handling that matches constraint names
@@ -106,11 +103,3 @@ MUST NOT:
 - [ ] Configurations registered via `ApplyConfigurationsFromAssembly`
 - [ ] Cross-module FK configs live in App.Infrastructure/Persistence/Configurations
 - [ ] DbContext uses `ApplyConfigurationsFromAssembly` on all module Domain assemblies
-
-# Unittest TestCases
-- [ ] When insert entity with duplicate unique-indexed field Then DbUpdateException thrown with constraint name matching constant
-- [ ] When insert entity with multi-property VO Then VO columns persisted flat on entity table
-- [ ] When entity with relation loaded Then navigation property returns correct related entities
-- [ ] When insert entity with duplicate unique-indexed field Then throws DbUpdateException with correct constraint name matching the constant
-- [ ] When insert entity with multi-property VO Then all VO columns are persisted flat on entity table
-- [ ] When entity relation configured Then navigating the relation returns correct related entities

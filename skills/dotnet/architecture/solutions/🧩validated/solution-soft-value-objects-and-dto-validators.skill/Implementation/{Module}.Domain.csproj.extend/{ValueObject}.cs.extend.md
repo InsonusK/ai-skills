@@ -103,18 +103,31 @@ public sealed record Money : SoftMoney
 ```
 
 # Rule changes
-MUST:
+
+## MUST
 - Inherit from `Soft{ValueObject}`
 - Validate invariants in constructor by calling Rules
 - Throw `DomainException` on invalid values
+- For every `{ValueObject}` in `/{Module}.Domain/ValueObjects` there is a `Soft{ValueObject}` in `/{Module}.Interfaces/ValueObjects`
+- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` inherits from `{Module}.Interfaces.ValueObjects.Soft{ValueObject}`
+- `Soft{ValueObject}` does not validate values in its constructor or properties
+- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its constructor by calling Rules and throws `DomainException` on invalid values
+- For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `/{Module}.Application/Validators/Property` extending `AbstractValidator<Soft{ValueObject}>`
+- DTO value-concept properties are `Soft{ValueObject}` types, not primitives
+- DTO validators use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
+- Rule provides a `Soft{ValueObject}` overload in addition to the primitive overload
+- `{Module}.Domain.csproj` references `{Module}.Interfaces.csproj` for the `Soft{ValueObject}` base types
 
-SHOULD:
+## SHOULD
 - Provide implicit conversion operators for single-property VOs
 - Override `ToString()` when used in logs or UI
+- Keep `Soft{ValueObject}` immutable except for allowing invalid values (use `init` setters or public setters only when necessary)
+- Name property validator `{ValueObject}PropertyValidator`
 
-MUST NOT:
+## MUST NOT
 - Allow invalid values to persist
 - Reference FluentValidation
+- `Soft{ValueObject}` throw exceptions for invalid values
 
 # Anti-patterns
 - Domain VO duplicating `Soft{ValueObject}` shape instead of inheriting

@@ -91,33 +91,45 @@ PROJECT
 
 # Rules
 
-MUST:
+## MUST:
+- [[./Implementation/App.Host.csproj.create.md#MUST|App.Host.csproj.create]]
+	- [[./Implementation/App.Host.csproj.create/ModuleRegistration.cs.create.md#MUST|ModuleRegistration.cs.create]]
+- [[./Implementation/App.Infrastructure.csproj.create.md#MUST|App.Infrastructure.csproj.create]]
+- [[./Implementation/App.Infrastructure.Migrations.csproj.create.md#MUST|App.Infrastructure.Migrations.csproj.create]]
+- [[./Implementation/App.Queries.csproj.create.md#MUST|App.Queries.csproj.create]]
+- [[./Implementation/BuildingBlocks.csproj.create.md#MUST|BuildingBlocks.csproj.create]]
+- [[./Implementation/Repository.create.md#MUST|Repository.create]]
+- [[./Implementation/Shared.csproj.create.md#MUST|Shared.csproj.create]]
+- [[./Implementation/{Module}.Api.csproj.create.md#MUST|{Module}.Api.csproj.create]]
+- [[./Implementation/{Module}.Application.csproj.create.md#MUST|{Module}.Application.csproj.create]]
+- [[./Implementation/{Module}.Domain.csproj.create.md#MUST|{Module}.Domain.csproj.create]]
+	- [[./Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md#MUST|{Entity}.cs.create]]
+- [[./Implementation/{Module}.Interfaces.csproj.create.md#MUST|{Module}.Interfaces.csproj.create]]
 - Each module has exactly Api, Application, Domain, Interfaces projects
 - Other modules reference only {ModuleName}.Interfaces
 - All cross-module writes go through MediatR command dispatch
-- All cross-module reads go through MediatR query dispatch or App.Queries
 - Tests colocated with module
 - Every project belongs to exactly one layer
-- App.Host is the only composition root
-- App.Infrastructure is the only project with DbContext
-- App.Queries is the only place for cross-module JOIN queries
-- Shared has no project dependencies
-- BuildingBlocks depends only on Shared
-- BuildingBlocks does not define common interfaces — only implements patterns using interfaces from Shared
-- App.Host references BuildingBlocks; modules and other layers reference Shared directly to implement or consume interfaces
-- Pipeline behaviors registered once in App.Host
 
-MUST NOT:
+## MUST NOT
+- [[./Implementation/App.Host.csproj.create.md#MUST NOT|App.Host.csproj.create]]
+	- [[./Implementation/App.Host.csproj.create/ModuleRegistration.cs.create.md#MUST NOT|ModuleRegistration.cs.create]]
+- [[./Implementation/App.Infrastructure.csproj.create.md#MUST NOT|App.Infrastructure.csproj.create]]
+- [[./Implementation/App.Infrastructure.Migrations.csproj.create.md#MUST NOT|App.Infrastructure.Migrations.csproj.create]]
+- [[./Implementation/App.Queries.csproj.create.md#MUST NOT|App.Queries.csproj.create]]
+- [[./Implementation/BuildingBlocks.csproj.create.md#MUST NOT|BuildingBlocks.csproj.create]]
+- [[./Implementation/Repository.create.md#MUST NOT|Repository.create]]
+- [[./Implementation/Shared.csproj.create.md#MUST NOT|Shared.csproj.create]]
+- [[./Implementation/{Module}.Api.csproj.create.md#MUST NOT|{Module}.Api.csproj.create]]
+- [[./Implementation/{Module}.Application.csproj.create.md#MUST NOT|{Module}.Application.csproj.create]]
+- [[./Implementation/{Module}.Domain.csproj.create.md#MUST NOT|{Module}.Domain.csproj.create]]
+	- [[./Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md#MUST NOT|{Entity}.cs.create]]
+- [[./Implementation/{Module}.Interfaces.csproj.create.md#MUST NOT|{Module}.Interfaces.csproj.create]]
 - Module reference another module's Domain
 - Module reference another module's Application
 - Domain reference any other module's project
-- Api reference Domain or Application directly
-- Any module Application reference App.Infrastructure
-- Any module Application reference App.Queries
 - Any module Domain reference another module's project
 - Any module Api reference Domain or Application directly
-- App.Queries be referenced by module Application or Domain
-
 # Anti-patterns
 - Shared domain model across modules — each module owns its own entities
 - Direct method call into another module's Application — use MediatR
@@ -150,18 +162,3 @@ MUST NOT:
 - [ ] Pipeline behaviors registered in App.Host only
 - [ ] EF entity configurations live in module Domain/Configurations
 - [ ] Cross-module FK configurations live in App.Infrastructure only
-
-# Unittest TestCases
-Not applicable — architecture is validated via architecture tests, not runtime unit tests.
-
-- [ ] When any project references another module's Domain Then architecture test fails
-- [ ] When any project references another module's Application Then architecture test fails
-- [ ] When Interfaces project has a project reference Then architecture test fails
-- [ ] When Api references Domain directly Then architecture test fails
-- [ ] When module Application references App.Infrastructure Then architecture test fails
-- [ ] When module Application references App.Queries Then architecture test fails
-- [ ] When module Domain references another module Then architecture test fails
-- [ ] When module Api references Domain directly Then architecture test fails
-- [ ] When Shared has any project reference Then architecture test fails
-- [ ] When BuildingBlocks references anything other than Shared Then architecture test fails
-- [ ] When App.Host directly references Shared Then architecture test fails

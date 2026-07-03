@@ -39,12 +39,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Create and update commands for timestamped entities implement `ICommandWithTimestamp`.
 - `ActionTimeStamp` is the first property on the command record.
 - Commands remain records with no methods.
 
-MUST NOT:
+## MUST NOT
 - Delete commands or commands targeting `Internal Immutable` entities implement `ICommandWithTimestamp`.
 - Add timestamp logic to command records.
 

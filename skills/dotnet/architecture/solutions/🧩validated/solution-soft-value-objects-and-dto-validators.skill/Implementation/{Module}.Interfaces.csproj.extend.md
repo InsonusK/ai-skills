@@ -41,11 +41,12 @@ None.
 - Shared
 
 # Rules
-MUST:
+
+## MUST
 - Add `/ValueObjects` folder containing `Soft{ValueObject}.cs`
 - Keep `{Module}.Interfaces` declarations-only
 
-MUST NOT:
+## MUST NOT
 - Reference FluentValidation
 - Reference `{Module}.Domain`, `{Module}.Application`, or any infrastructure project
 

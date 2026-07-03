@@ -45,14 +45,15 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - Register all configurations via `ApplyConfigurationsFromAssembly` scanning all module Domain assemblies in DbContext
 - Place cross-module foreign key configurations in `/Persistence/Configurations`
 
-MUST NOT:
+## MUST NOT
 - Define intra-module entity configurations here — those belong in `{Module}.Domain/Configurations`
 - Register configurations manually one by one in `OnModelCreating`
 - Reference BuildingBlocks directly
+- Put mapping logic in `DbContext.OnModelCreating` directly
 
 # Anti-patterns
 - Putting module-internal entity configuration in App.Infrastructure — violates separation of concerns

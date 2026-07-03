@@ -41,15 +41,17 @@ public interface ICommandWithTimestamp
     DateTimeOffset ActionTimeStamp { get; }
 }
 ```
+# Rule changes
 
-# Rules
-
-MUST:
+## MUST
 - Only commands that create or update a timestamped entity implement this interface.
 - `ActionTimeStamp` is typed as `DateTimeOffset`.
 - Defined in `Shared/Timestamps/ICommandWithTimestamp.cs`.
+- `ICreationInfoModelReadOnly`, `ICreationInfoModel`, `IUpdateInfoModelReadOnly`, `IUpdateInfoModel`, and `ICommandWithTimestamp` are defined in `Shared/Timestamps`.
+- Commands that create or update a timestamped entity implement `ICommandWithTimestamp` alongside `ICommand<Result<T>>`.
+- `ActionTimeStamp` is the first property on commands that implement `ICommandWithTimestamp`.
 
-MUST NOT:
+## MUST NOT
 - Add methods or other properties.
 - Be implemented by delete commands or query objects.
 

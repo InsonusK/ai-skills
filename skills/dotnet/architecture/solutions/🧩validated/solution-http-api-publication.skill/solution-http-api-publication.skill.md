@@ -125,43 +125,33 @@ PROJECT:
 
 # Rules
 
-MUST:
+## MUST:
+- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md#MUST|ApiRegistration.cs.create]]
+- [[./Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj.extend]]
+	- [[./Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md#MUST|ResultExtensions.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md#MUST|Single{Entity}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md#MUST|Single{Entity}{Property}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md#MUST|Single{Entity}{Related}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md#MUST|{Entity}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md#MUST|{Entity}{Related}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md#MUST|{System}Endpoints.cs.create]]
 - API layer is a thin HTTP adapter — map input, dispatch once, map output
-- Every controller action dispatches exactly one `ISender.Send()` call
-- Entity lifecycle operations use Controllers — system/webhook/batch use Minimal API
-- Controllers inject `ISender` — never `IMediator`
 - All error responses use `ProblemDetails`
-- Every `ResultStatus` handler can return has an explicit `[ProducesResponseType]`
-- Unexpected `ResultStatus` throws `InvalidOperationException` in `switch` default arm
-- Controller naming follows the five-type model: `{Entity}`, `Single{Entity}`, `Single{Entity}{Property}`, `{Entity}{Related}`, `Single{Entity}{Related}`
-- Routes use kebab-case, singular nouns, `int` route constraints for IDs
-- `ResultStatus.Ok` → 200 OK
-- `ResultStatus.Created` → 201 Created with `CreatedAtAction`
-- `ResultStatus.NoContent` → 204 No Content
-- `ResultStatus.Invalid` → 400 Bad Request with `ProblemDetails`
-- `ResultStatus.NotFound` → 404 Not Found with `ProblemDetails`
-- `ResultStatus.Conflict` → 409 Conflict with `ProblemDetails`
-- `ResultStatus.Error` → 500 Internal Server Error with `ProblemDetails`
-- Any other `ResultStatus` → throw `InvalidOperationException`
-- Each module that publishes HTTP APIs exposes a public static `{Module}ApiSwaggerRegistration` class in `{Module}.Api`
-- `{Module}ApiSwaggerRegistration` declares `DocumentName`, `Title`, `Version`, and `MatchesRoute(string? relativePath)`
-- `App.Host` registers one `SwaggerDoc` per module using the module's `{Module}ApiSwaggerRegistration` constants
-- `App.Host` provides a single `DocInclusionPredicate` that delegates route matching to `{Module}ApiSwaggerRegistration.MatchesRoute`
-- `App.Host` registers one `SwaggerEndpoint` per module in `UseSwaggerUI`
 
-MUST NOT:
-- Controller action contain business logic, validation, domain rules, or persistence
-- Controller reference Application, Domain, Infrastructure, or DbContext
-- Controller inject `IRepository<T>` or `IUnitOfWork`
-- Minimal API replace entity-lifecycle controllers
+## MUST NOT:
+- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
+	- [[./Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md#MUST NOT|ApiRegistration.cs.create]]
+- [[./Implementation/{Module}.Api.csproj.extend.md#MUST NOT|{Module}.Api.csproj.extend]]
+	- [[./Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md#MUST NOT|ResultExtensions.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md#MUST NOT|Single{Entity}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md#MUST NOT|Single{Entity}{Property}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md#MUST NOT|Single{Entity}{Related}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md#MUST NOT|{Entity}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md#MUST NOT|{Entity}{Related}Controller.cs.create]]
+	- [[./Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md#MUST NOT|{System}Endpoints.cs.create]]
 - Undocumented HTTP responses returned — every response shape declared in `ProducesResponseType`
-- Declare Swagger document metadata (document name, title, version, route matching) in `App.Host`
-- Use a single monolithic `v1` Swagger document that contains all module routes
 - Include routes from one module in another module's Swagger definition
-
-SHOULD:
-- `[Route]` use `{entity}` singular noun — not plural
-- `CreatedAtAction` reference the `Single{Entity}Controller.Get` method for 201 responses
 
 # Anti-patterns
 - Business logic in controller action: `if (task.IsComplete) return Conflict(...)` — belongs in domain
@@ -194,14 +184,3 @@ SHOULD:
 - [ ] No single `v1` document containing all routes is registered
 - [ ] `UseExceptionHandler()` registered before `MapControllers()`
 - [ ] `AddProblemDetails()` registered in DI
-
-# Unittest TestCases
-- [ ] When handler returns `Result.Created` Then controller returns 201 with `Location` header
-- [ ] When handler returns `Result.NotFound` Then controller returns 404 with `ProblemDetails` body
-- [ ] When handler returns `Result.Invalid` Then controller returns 400 with field-level error details
-- [ ] When handler returns `Result.Conflict` Then controller returns 409 with `ProblemDetails` body
-- [ ] When handler returns `Result.NoContent` Then controller returns 204 with empty body
-- [ ] When handler returns unexpected `ResultStatus` Then controller throws `InvalidOperationException`
-- [ ] When `POST /{entity}` called Then `Create{Entity}Command` dispatched via `ISender`
-- [ ] When `GET /{entity}/{id}` called Then `Get{Entity}Query` dispatched via `ISender`
-- [ ] When `DELETE /{entity}/{id}` called Then `Delete{Entity}Command` dispatched via `ISender`

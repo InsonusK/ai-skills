@@ -88,19 +88,20 @@ public async Task<ActionResult<Create{Entity}Result>> Create(
 }
 ```
 
-# Rules
+# Rule changes
 
-MUST:
+## MUST
 - Detect `ConflictResult<Create{Entity}Result>` by type and return 409 with the result body
 - Return 201 Created with entity result and `Location` header on `ResultStatus.Created`
 - Return 400/500 ProblemDetails for `Invalid` and `Error` statuses
 - Throw `InvalidOperationException` for unexpected `ResultStatus` values
 - `Create{Entity}Result` contains only the entity Id
 
-MUST NOT:
+## MUST NOT
 - Return ProblemDetails for `ConflictResult<Create{Entity}Result>`
 - Contain business logic or domain rules
 - Allow `Create{Entity}Result` to carry fields beyond the entity Id for external-created entities
+- Per-controller handling for Guid conflicts — conflict is expressed as `Result<T>` and mapped by the API layer
 
 # Anti-patterns
 - Mapping `ConflictResult<T>` to ProblemDetails — breaks the idempotent create contract

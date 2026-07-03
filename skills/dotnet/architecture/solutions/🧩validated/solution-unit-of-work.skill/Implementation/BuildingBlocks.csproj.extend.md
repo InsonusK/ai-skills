@@ -40,12 +40,12 @@ change_kind: extend
 
 # Rules
 
-MUST:
+## MUST
 - `UnitOfWorkContext` and `UnitOfWorkBehavior` defined in BuildingBlocks
 - Both reference `ICommand` and `IUnitOfWork` from Shared
 - `UnitOfWorkBehavior` constrained on `where TRequest : ICommand`
 
-MUST NOT:
+## MUST NOT
 - Add EF Core dependency to BuildingBlocks
 
 # Anti-patterns
