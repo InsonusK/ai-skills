@@ -19,7 +19,7 @@ Explicitly state which variant was selected and link to it from the Searched var
 The selected variant MUST also appear as one of the searched variants below.
 ```
 ```example
-**Selected variant:** <#{Variant name}>
+**Selected variant:** [[#{Variant name}]]
 - Don't want to extend pipeline middleware
 ```
 

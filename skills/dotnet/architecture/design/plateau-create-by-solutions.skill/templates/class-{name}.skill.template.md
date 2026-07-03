@@ -36,7 +36,7 @@ After summarized list add Applied solutions list with links to all solutions whi
 - Prevent duplicate creation via Guid uniqueness check 
 
 __Applied solutions:__
-- <Solution link> - <Class.template.md link>
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Core Principles
@@ -61,7 +61,7 @@ RECOMENDATION:
 - Entities define consistency.
 
 __Applied solutions:__
-- <Solution link> - <Class.template.md link>
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Naming convention
@@ -113,7 +113,7 @@ public class SomeEntity: IGuidEntity{
 }
 
 __Applied solutions:__
-- <Solution link> - <Class.template.md link>
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Rules
@@ -142,7 +142,7 @@ MUST NOT:
 	- ...
 	  
 __Applied solutions:__
-- <Solution link> - <Class.template.md link>
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Anti-patterns
@@ -167,7 +167,7 @@ RECOMENDATION:
 - Domain service duplicates invariant already enforced in entity setter or method
 
 __Applied solutions:__
-- <Solution link> - <Class.template.md link>
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Check list
@@ -190,7 +190,7 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- <Solution link> - <Class.template.md link>
+- [[Solution link]] - [[Class.template.md link]]
 ```
 
 # Unittest TestCases
@@ -213,5 +213,5 @@ RECOMENDATION:
 - [ ] `int Id` with `internal set` present
 
 __Applied solutions:__
-- <Solution link> - <Class.template.md link>
+- [[Solution link]] - [[Class.template.md link]]
 ```
