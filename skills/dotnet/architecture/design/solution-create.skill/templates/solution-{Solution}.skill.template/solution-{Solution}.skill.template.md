@@ -179,7 +179,7 @@ RECOMMENDATION:
 - Prefer a bullet list of workflows, each optionally followed by its diagram.
 - Cover at least: success path, main failure path, and any cross-cutting path (cross-module, async, retry, etc.).
 ```
-````example
+```example
 ## Create entity (happy path)
 
 1. Client sends a POST request to the API.
@@ -188,7 +188,8 @@ RECOMMENDATION:
 4. Handler loads the aggregate, invokes domain logic, and stages changes.
 5. Unit of Work commits the transaction.
 6. API returns `201 Created`.
-
+```
+````example
 ```mermaid
 sequenceDiagram
     autonumber
@@ -210,6 +211,10 @@ sequenceDiagram
     API-->>Client: 201 Created
     deactivate API
 
+## Update entity
+![update-entity](./diagrams/update-entity.mmd)
+```
+```example
 ## Update entity
 ![update-entity](./diagrams/update-entity.mmd)
 ```
