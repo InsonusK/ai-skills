@@ -15,7 +15,12 @@ tags:
 - The user continues working in the main repository without the risk of conflicts caused by the agent's unfinished changes
 
 # How to work
-1. Before starting, create a new git worktree and a task branch
+1. Before creating the worktree, push the base branch to the remote server to synchronize the current repository with the server
+   ```bash
+   git push origin {base-branch}
+   ```
+
+2. Create a new git worktree and a task branch
    - Branch from `develop` unless the user specifies a different base branch
    - The worktree and branch name should reflect the task
    
@@ -28,24 +33,24 @@ tags:
    git worktree add ./ai-worktree/add-auth-service -b add-auth-service develop
    ```
 
-2. Switch to the worktree and work only inside it
+3. Switch to the worktree and work only inside it
    ```bash
    cd ./ai-worktree/{task-name}
    ```
 
-3. Commit your changes to the worktree branch as you progress
+4. Commit your changes to the worktree branch as you progress
    ```bash
    git add .
    git commit -m "feat: ..."
    ```
 
-4. When the work is done, create a pull request from the worktree branch into the base branch (the one the task branch was created from)
+5. When the work is done, create a pull request from the worktree branch into the base branch (the one the task branch was created from)
    ```bash
    # Example using GitHub CLI
    gh pr create --base develop --head {task-name} --title "..." --body "..."
    ```
 
-5. After the PR is merged, the worktree can be removed
+6. After the PR is merged, the worktree can be removed
    ```bash
    cd /path/to/main/repo
    git worktree remove ./ai-worktree/{task-name}
