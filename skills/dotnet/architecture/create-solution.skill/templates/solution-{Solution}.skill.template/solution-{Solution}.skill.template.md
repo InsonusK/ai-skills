@@ -170,7 +170,7 @@ For each workflow:
 - Mention the outcome and any side effects.
 
 When a workflow is best explained visually, use a Mermaid diagram.
-Apply the [[.agents/skills/mermaid-diagram/SKILL.md|mermaid-diagram]] skill:
+Apply the [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]] skill:
 - If a sequence diagram has more than 3 lifelines, or any other diagram has more than 5 elements, place it in a separate `*.mmd` file inside a `diagrams/` subfolder next to this skill file and reference it with `![diagram-name](./diagrams/diagram-name.mmd)`.
 - For sequence diagrams, use step numeration and show activation/deactivation of lifelines.
 - Keep diagrams focused: one diagram per workflow or per scenario.
