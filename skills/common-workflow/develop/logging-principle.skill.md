@@ -1,7 +1,7 @@
 ---
 name: logging-principle
-description: Описывает правила логирования в разработках
-whenToUse: при разработке кода, когда необходимо добавить логирование или определить уровень логирования
+description: Describes logging rules for development
+whenToUse: when writing code that requires logging or choosing a log level
 tags:
   - logging
   - development
@@ -9,39 +9,39 @@ tags:
 ---
 
 # Goal
-- Стандартизировать правила логирования при разработке кода.
+- Standardize logging rules during development.
 
 # Core Principle
-- Мы классифицируем ошибки и логи.
-- В логах пишем информацию, которая даёт понимание, что именно произошло.
+- We classify errors and logs.
+- Log messages must provide enough information to understand exactly what happened.
 
 # Rule
 ## MUST
-- Всегда логировать код.
-- Всегда добавлять параметр, который включает отображение логов уровня `debug`. По умолчанию параметр выключен.
-- Классифицировать логи по уровням:
-  - **Info**: логирование о прохождении ключевых этапов работы (например, «сканирование проведено, найдены следующие результаты») или важных интеграционных событий (например, «получено сообщение», «создана запись в БД», «отправлен ответ»).
-  - **Warning**: ошибки, которые не приводят к остановке работы, но на них стоит обратить внимание.
-  - **Error**: бизнес-ошибки, предполагающие прерывание работы программы (например, «не удалось найти файлы в переданной директории», «система Х не ответила на запрос», «система Х отвергла наш запрос», «система Х ответила статус-кодом != 2xx»).
-  - **Critical**: исключения (exceptions), которые были получены.
+- Always add logging to code.
+- Always provide a parameter that enables `debug` level logs. It MUST be disabled by default.
+- Classify logs by level:
+  - **Info**: logging key workflow milestones (e.g., "scan completed, found the following results") or important integration events (e.g., "message received", "database record created", "response sent").
+  - **Warning**: errors that do not stop execution but deserve attention.
+  - **Error**: business errors that are expected to interrupt program execution (e.g., "could not find files in the provided directory", "system X did not respond to the request", "system X rejected our request", "system X responded with a status code != 2xx").
+  - **Critical**: exceptions that were caught.
 
 ## SHOULD NOT
-- Использовать `print`, `write` и аналогичные механизмы вывода вместо полноценного логирования.
+- Use `print`, `write`, or similar plain output mechanisms instead of a proper logging framework.
 
 # Anti-patterns
-- **Использовать `print`, `write` и т.п.**
+- **Using `print`, `write`, etc.**
   - Example: `print("scan completed")` | `Console.WriteLine("record created")`
-  - Consequence: ограниченный функционал логирования; если будет добавлена система агрегации логов, придётся переписывать логирование.
-  - Instead: предпочитать использовать механизмы логирования, которые есть в языке (например, `logging`, `loguru`, `NLog`, `Serilog` и т.д.).
+  - Consequence: limited logging capabilities, and if a log aggregation system is added later, all logging code will have to be rewritten.
+  - Instead: prefer the logging mechanisms provided by the language or framework (e.g., `logging`, `loguru`, `NLog`, `Serilog`, etc.).
 
-- **Использовать абстрактный текст в логе**
-  - Example: `задача выполнена` | `запись создана`
-  - Consequence: лог не даёт понимания, о чём именно идёт речь.
-  - Instead: в логах давать информацию, которая позволит понять, о чём именно идёт речь (например, `задача 'очистка БД' выполнена` | `запись 1234 создана`).
+- **Using abstract text in log messages**
+  - Example: `task completed` | `record created`
+  - Consequence: the log message does not clarify what actually happened.
+  - Instead: include information that makes the context clear (e.g., `task 'clear db' completed` | `record 1234 created`).
 
 # Check list
-- [ ] Для всех значимых операций добавлены логи.
-- [ ] Есть параметр включения/выключения `debug`-логов (по умолчанию выключен).
-- [ ] Логи классифицированы по уровням Info / Warning / Error / Critical.
-- [ ] В сообщениях логов содержится конкретная информация о событии.
-- [ ] В коде не используются `print`, `write` и аналогичные конструкции для логирования.
+- [ ] Logging is added for all meaningful operations.
+- [ ] There is a parameter to enable/disable `debug` logs and it is disabled by default.
+- [ ] Logs are classified into Info / Warning / Error / Critical.
+- [ ] Log messages contain specific information about the event.
+- [ ] `print`, `write`, and similar constructs are not used for logging.
