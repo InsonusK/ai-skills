@@ -3,7 +3,7 @@ name: csproj-app-host
 description: Be the single composition root — wire all modules, infrastructure, pipeline behaviors, and DI registrations together
 domain: skill
 type: template
-version: 20260622
+version: 20260704153836
 plateau: default
 tags:
   - skill/template/csproj
@@ -18,6 +18,7 @@ created_by:
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]]"
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]"
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]]"
+  - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 ---
 
 # Goal
@@ -31,6 +32,7 @@ created_by:
 - Ensure `Program.cs` calls `AddPipeline()` exactly once
 - Extend the centralized `AddPipeline()` extension so it registers all pipeline behaviors in the canonical execution order
 - Ensure `Program.cs` continues to call `AddPipeline()` exactly once
+- Register `ExceptionHandlingBehavior` first in `AddPipeline()` so it wraps all other behaviors and the handler
 - Register controllers from all module Api assemblies
 - Register Minimal API endpoint groups
 - Configure ASP.NET Core JSON and ProblemDetails middleware
@@ -48,6 +50,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 # Core Principles
 - `IUnitOfWork` and `UnitOfWorkContext` share `Scoped` lifetime with `DbContext` and `Repository<T>`
@@ -63,6 +66,7 @@ __Applied solutions:__
 - Pipeline behavior order is enforced inside `PipelineRegistration.AddPipeline()` — not in `Program.cs`
 - `PipelineRegistration.AddPipeline()` is the single source of truth for behavior order
 - Behaviors are registered in execution order — first registered runs first
+- `ExceptionHandlingBehavior` registered first so it wraps all subsequent behaviors and the handler
 - `EntityVersionResolverFactory` registered as `Scoped` — it creates `Scoped` resolvers that depend on `IReadRepository<T>`
 - `EntityVersionResolverFactory` receives module Domain assemblies (validation) and module Application assemblies (resolver discovery) from App.Host — the only project that references all modules
 - `Program.cs` calls `AddModules()` — the centralized registration point created by solution-structure
@@ -78,6 +82,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 # Structure
 
@@ -109,6 +114,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
@@ -130,6 +136,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 ## What Does NOT Belong Here
 - Business logic — belongs to Domain
@@ -146,6 +153,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 ## Allowed Dependencies
 - Shared
@@ -170,12 +178,14 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 # Rules
 MUST:
 	- `IUnitOfWork` registered as `Scoped`
 	- `UnitOfWorkContext` registered as `Scoped`
 	- Pipeline behaviors registered once here in correct order
+	- `ExceptionHandlingBehavior` registered before all other pipeline behaviors
 	- Each module registration method called here
 	- App.Host is the only project referencing all modules simultaneously
 	- `AddRepositories()` called in `Program.cs`
@@ -200,6 +210,7 @@ MUST NOT:
 	- Call `RegisterAppQueries()` from inside any module registration method
 	- Register `IPipelineBehavior<,>` directly in `Program.cs`
 	- Call `AddPipeline()` more than once
+	- Register `ExceptionHandlingBehavior` after other pipeline behaviors
 	- Register controllers manually one by one — use `AddApplicationPart` with assembly references
 	- Change the signature of `RepositoryRegistration.AddRepositories`
 	- Call individual `Register{ModuleName}Module()` methods directly from `Program.cs`
@@ -216,6 +227,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 # Anti-patterns
 - Registering `IUnitOfWork` or `UnitOfWorkContext` in module registration — these are global services, belong in App.Host
@@ -226,6 +238,7 @@ __Applied solutions:__
 - Scattering App.Queries registration across multiple extension methods
 - Registering behaviors directly in `Program.cs`
 - Calling `AddPipeline()` multiple times
+- Registering `ExceptionHandlingBehavior` last in the pipeline — exceptions from outer behaviors (for example, `UnitOfWorkBehavior` commit failures) will not be caught
 - Missing `UseExceptionHandler()` before `MapControllers()`
 - Forgetting to map Minimal API endpoint groups
 - Passing non-Domain or non-Application assemblies to `EntityVersionResolverFactory` — scans unrelated types
@@ -243,12 +256,14 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 
 # Check list
 - [ ] `IUnitOfWork` registered as `Scoped`
 - [ ] `UnitOfWorkContext` registered as `Scoped`
 - [ ] All module registration methods called
 - [ ] Pipeline behaviors registered in correct order
+- [ ] `ExceptionHandlingBehavior` is the first behavior registered in `AddPipeline()`
 - [ ] No business logic in App.Host
 - [ ] `builder.Services.AddRepositories()` present in `Program.cs`
 - [ ] `RegisterAppQueries()` called from App.Host
@@ -277,3 +292,4 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-command-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]]
