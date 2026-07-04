@@ -1,9 +1,9 @@
 ---
 name: plateau-default
-description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, entity edit timestamps, command/query integration, repository abstractions, soft value objects and DTO validators, and centralized pipeline/host wiring
+description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, entity edit timestamps, command/query integration, repository abstractions, soft value objects and DTO validators, global exception handling, and centralized pipeline/host wiring
 domain: skill
 type: template
-version: 20260701011400
+version: 20260704153836
 tags:
   - skill/template/plateau
   - plateau/default
@@ -24,6 +24,7 @@ created_by:
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]]"
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]]"
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]]"
+  - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 ---
 
 # Core Principals
@@ -33,8 +34,9 @@ created_by:
 - Concurrency checks are performed through a factory-resolver chain: `IEntityVersionResolverFactory` resolves the correct `IEntityVersionResolver` for a stable business entity name; per-entity resolvers in module Application projects read the current version using the module's own specifications and repositories.
 - External-created entities carry a client-supplied `Guid` used for idempotency. A dedicated pipeline behavior short-circuits duplicate creates before the handler runs.
 - User-initiated entities record creation and update timestamps: the client supplies `ActionTimeStamp` via `ICommandWithTimestamp`, the handler assigns user timestamps, and `AppDbContext` assigns authoritative server timestamps before saving.
-- Write operations are commands, read operations are queries, and both are routed through MediatR. Pipeline behaviors (validation, concurrency, Guid resolution, unit-of-work) are registered centrally in `App.Host`.
+- Write operations are commands, read operations are queries, and both are routed through MediatR. Pipeline behaviors (exception handling, validation, concurrency, Guid resolution, unit-of-work) are registered centrally in `App.Host`.
 - Each module owns its Domain, Application, Interfaces, and Api projects. Cross-module read models live in `App.Queries`. Cross-module foreign key configurations live in `App.Infrastructure`.
+- A global `ExceptionHandlingBehavior` is registered first in the MediatR pipeline. It catches all unhandled exceptions, logs them as critical, and returns a generic `Result.Error` so the API never sees raw exceptions.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]]
@@ -48,6 +50,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]
 
 # Capabilities
 
@@ -101,9 +104,16 @@ __Applied solutions:__
 
 ## Pipeline
 - Centralizes all MediatR pipeline behavior registrations in `App.Host`.
-- Defines canonical execution order: Validation → Guid resolution → Concurrency → Unit of work.
+- Defines canonical execution order: Exception handling → Validation → Guid resolution → Concurrency → Unit of work.
+- Wraps the entire pipeline with `ExceptionHandlingBehavior` first so no unhandled exception reaches the API.
 - Validates transport input before any expensive checks run.
 - Short-circuits duplicate external creates and stale updates before handlers execute.
+- Logs every unhandled exception as critical and returns a safe generic `Result.Error` to API consumers.
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill|class-pipeline-registration]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill|solution-pipeline-registration-order]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]
 
 ## API publication
 - Publishes a thin HTTP adapter layer over MediatR with no business logic leakage.
