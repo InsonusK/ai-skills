@@ -1,5 +1,5 @@
 ---
-description: Register ExceptionHandlingBehavior last in the MediatR pipeline chain
+description: Register ExceptionHandlingBehavior first in the MediatR pipeline chain
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
@@ -7,12 +7,12 @@ change_kind: extend
 
 # Goals
 - Wire `ExceptionHandlingBehavior` into the centralized `PipelineRegistration.AddPipeline()` extension
-- Ensure the behavior is registered after all other pipeline behaviors
+- Ensure the behavior is registered before all other pipeline behaviors
 
 # Core Principles
 - Pipeline behavior registration is centralized in App.Host
 - `AddPipeline()` is the single place where cross-cutting behaviors are ordered
-- `ExceptionHandlingBehavior` is registered last so it wraps the handler and any behaviors registered before it
+- `ExceptionHandlingBehavior` is registered first so it wraps all subsequent behaviors and the handler
 
 # Structure
 
@@ -40,11 +40,11 @@ change_kind: extend
 
 ## MUST
 - `ExceptionHandlingBehavior` registered in `PipelineRegistration.AddPipeline()`
-- `ExceptionHandlingBehavior` registered after all other pipeline behaviors
+- `ExceptionHandlingBehavior` registered before all other pipeline behaviors
 
 ## MUST NOT
 - Register `ExceptionHandlingBehavior` inside a module-specific registration method
-- Register `ExceptionHandlingBehavior` before other pipeline behaviors
+- Register `ExceptionHandlingBehavior` after other pipeline behaviors
 
 # Anti-patterns
 - Registering the exception handler in a module instead of App.Host
@@ -53,4 +53,4 @@ change_kind: extend
 # Check list
 - [ ] `PipelineRegistration.cs` exists under `App.Host/DependencyInjection`
 - [ ] `ExceptionHandlingBehavior` added to `AddPipeline()`
-- [ ] `ExceptionHandlingBehavior` is the last behavior registered
+- [ ] `ExceptionHandlingBehavior` is the first behavior registered

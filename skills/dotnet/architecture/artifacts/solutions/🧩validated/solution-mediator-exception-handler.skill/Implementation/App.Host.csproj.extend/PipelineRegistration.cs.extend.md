@@ -1,5 +1,5 @@
 ---
-description: Append ExceptionHandlingBehavior as the last registered MediatR pipeline behavior
+description: Prepend ExceptionHandlingBehavior as the first registered MediatR pipeline behavior
 project_name: App.Host
 name: PipelineRegistration.cs
 element_kind: class
@@ -8,12 +8,12 @@ change_kind: extend
 
 # Goals
 - Extend the centralized `PipelineRegistration.AddPipeline()` method to register `ExceptionHandlingBehavior`
-- Ensure `ExceptionHandlingBehavior` is the last behavior in the registration order
+- Ensure `ExceptionHandlingBehavior` is the first behavior in the registration order
 
 # Core Principles
 - `PipelineRegistration.cs` is the single source of truth for pipeline behavior order
 - Behaviors are registered in execution order — first registered runs first
-- `ExceptionHandlingBehavior` registered last wraps the handler and any behaviors registered before it
+- `ExceptionHandlingBehavior` registered first wraps all subsequent behaviors and the handler
 
 # Structure
 
@@ -31,7 +31,7 @@ change_kind: extend
 
 # Implementation changes
 
-Assume `PipelineRegistration.AddPipeline()` already registers the behaviors required by other solution skills. Append `ExceptionHandlingBehavior` at the end of the method:
+Assume `PipelineRegistration.AddPipeline()` already registers the behaviors required by other solution skills. Prepend `ExceptionHandlingBehavior` at the beginning of the method:
 
 ```csharp
 // App.Host/DependencyInjection/PipelineRegistration.cs
@@ -44,52 +44,52 @@ public static class PipelineRegistration
 {
     public static IServiceCollection AddPipeline(this IServiceCollection services)
     {
-        // Behaviors registered by other solution skills:
-        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(GuidResolvingBehavior<,>));
-        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
-        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
-
-        // Global exception handler must be registered last.
+        // Global exception handler must be registered first so it wraps all other behaviors.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
+
+        // Behaviors registered by other solution skills:
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(GuidResolvingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         return services;
     }
 }
 ```
 
-If the project also uses `solution-pipeline-registration-order.skill`, update that skill's ordering so `ExceptionHandlingBehavior` follows `UnitOfWorkBehavior`:
+If the project also uses `solution-pipeline-registration-order.skill`, update that skill's ordering so `ExceptionHandlingBehavior` precedes `ValidationBehavior`:
 
 ```csharp
+services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(GuidResolvingBehavior<,>));
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
-services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
 ```
 
 # Rule changes
 
 ## MUST
-- Append `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));` at the end of `AddPipeline()`
+- Prepend `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));` at the beginning of `AddPipeline()`
 - Keep all behavior registrations inside `PipelineRegistration.cs`
 
 ## MUST NOT
-- Register `ExceptionHandlingBehavior` before other behaviors
+- Register `ExceptionHandlingBehavior` after other behaviors
 - Register `ExceptionHandlingBehavior` directly in `Program.cs`
 - Register `ExceptionHandlingBehavior` inside a module registration method
 
 # Anti-patterns
-- **Registering the exception handler first**
+- **Registering the exception handler last in the pipeline**
   - Consequence: exceptions thrown by outer behaviors (for example, during `UnitOfWorkBehavior` commit) are not caught
-  - Instead: register `ExceptionHandlingBehavior` last in `AddPipeline()`
+  - Instead: register `ExceptionHandlingBehavior` first in `AddPipeline()`
 
 # Check list
 - [ ] `AddPipeline()` exists in `App.Host/DependencyInjection/PipelineRegistration.cs`
 - [ ] `ExceptionHandlingBehavior` registered via `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));`
-- [ ] `ExceptionHandlingBehavior` is the last behavior registered in `AddPipeline()`
+- [ ] `ExceptionHandlingBehavior` is the first behavior registered in `AddPipeline()`
 - [ ] `AddPipeline()` is called from `Program.cs`
 
 # Unittest TestCases
 - [ ] WHEN AddPipeline is called THEN ExceptionHandlingBehavior is registered as transient
-- [ ] WHEN AddPipeline is called THEN ExceptionHandlingBehavior is registered after all other pipeline behaviors
+- [ ] WHEN AddPipeline is called THEN ExceptionHandlingBehavior is registered before all other pipeline behaviors

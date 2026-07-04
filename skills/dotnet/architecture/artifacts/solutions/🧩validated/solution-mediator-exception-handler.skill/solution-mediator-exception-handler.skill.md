@@ -50,7 +50,7 @@ depends_on:
 - Logs the full exception at `LogLevel.Critical` before producing the API response
 - Returns `Result.Error` with a fixed, user-friendly message — never the original exception message or stack trace
 - Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
-- Registered as the last pipeline behavior so it wraps the handler and all other behaviors closest to the execution point
+- Registered as the first pipeline behavior so it wraps all subsequent behaviors and the handler
 - API layer never sees raw exceptions — only `Result` objects
 
 # Requirements
@@ -61,7 +61,7 @@ SOLUTION:
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]
   - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - provides centralized `PipelineRegistration.AddPipeline()` extension point
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill|solution-pipeline-registration-order]] (when applied)
-  - This skill supersedes the "last behavior" rule of `solution-pipeline-registration-order` by appending `ExceptionHandlingBehavior` after `UnitOfWorkBehavior`
+  - This skill supersedes the ordering of `solution-pipeline-registration-order` by prepending `ExceptionHandlingBehavior` before `ValidationBehavior`
 
 NUGET:
 - `MediatR` {version} - provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>`
@@ -73,8 +73,8 @@ NUGET:
 PROJECT:
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - extend - Add `ExceptionHandlingBehavior` pipeline behavior
   - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create|ExceptionHandlingBehavior.cs]] - create - Pipeline behavior that catches unhandled exceptions and returns a generic `Result.Error`
-- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register `ExceptionHandlingBehavior` last in the pipeline chain
-  - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend|PipelineRegistration.cs]] - extend - Append `ExceptionHandlingBehavior` registration after all other behaviors
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register `ExceptionHandlingBehavior` first in the pipeline chain
+  - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend|PipelineRegistration.cs]] - extend - Prepend `ExceptionHandlingBehavior` registration before all other behaviors
 
 # Workflow
 
@@ -101,19 +101,19 @@ sequenceDiagram
     autonumber
     actor Client
     participant API
-    participant Behavior as ExceptionHandlingBehavior
-    participant Handler
+    participant Exception as ExceptionHandlingBehavior
+    participant Others as Other Behaviors + Handler
     Client->>API: POST /resource
     activate API
-    API->>Behavior: Send(Command)
-    activate Behavior
-    Behavior->>Handler: next()
-    activate Handler
-    Handler--xBehavior: throws Exception
-    deactivate Handler
-    Behavior->>Behavior: LogCritical(exception)
-    Behavior-->>API: Result.Error(generic message)
-    deactivate Behavior
+    API->>Exception: Send(Command)
+    activate Exception
+    Exception->>Others: next()
+    activate Others
+    Others--xException: throws Exception
+    deactivate Others
+    Exception->>Exception: LogCritical(exception)
+    Exception-->>API: Result.Error(generic message)
+    deactivate Exception
     API-->>Client: 500 Internal Server Error
     deactivate API
 ```
@@ -128,7 +128,7 @@ sequenceDiagram
 - Catch `Exception` — do not catch only specific exception types
 - Log the caught exception at `LogLevel.Critical`
 - Return a generic `Result.Error` message without exception details
-- Register `ExceptionHandlingBehavior` after all other pipeline behaviors in `PipelineRegistration.AddPipeline()`
+- Register `ExceptionHandlingBehavior` before all other pipeline behaviors in `PipelineRegistration.AddPipeline()`
 
 ## SHOULD
 - Include the request type name in the log scope or message for easier correlation
@@ -136,7 +136,7 @@ sequenceDiagram
 
 ## MUST NOT
 - Return the original exception message or stack trace to the API consumer
-- Register `ExceptionHandlingBehavior` before validation, concurrency, or unit-of-work behaviors
+- Register `ExceptionHandlingBehavior` after validation, concurrency, or unit-of-work behaviors
 - Throw a new exception from inside `ExceptionHandlingBehavior`
 - Use `ExceptionHandlingBehavior` for expected business failures — those must return specific `Result` statuses from handlers
 
@@ -149,9 +149,9 @@ sequenceDiagram
   - Consequence: leaks sensitive implementation details and aids attackers
   - Instead: log full details internally and return a fixed generic message
 
-- **Registering the exception handler first in the pipeline**
-  - Consequence: outer behaviors that throw during their pre-handler phase are not caught
-  - Instead: register `ExceptionHandlingBehavior` last so it wraps the handler and inner behaviors
+- **Registering the exception handler last in the pipeline**
+  - Consequence: exceptions thrown by outer behaviors (for example, during `UnitOfWorkBehavior` commit) are not caught
+  - Instead: register `ExceptionHandlingBehavior` first so it wraps all other behaviors and the handler
 
 - **Using `Result.CriticalError` for every unhandled exception without project convention**
   - Consequence: `CriticalError` may map to a different HTTP status or have special handling in the project
@@ -163,5 +163,5 @@ sequenceDiagram
 - [ ] `ExceptionHandlingBehavior` catches `Exception` in a `try/catch` around `await next()`
 - [ ] Caught exceptions are logged at `LogLevel.Critical`
 - [ ] API response returns `Result.Error` with a generic message
-- [ ] `ExceptionHandlingBehavior` registered in `PipelineRegistration.AddPipeline()` after all other behaviors
+- [ ] `ExceptionHandlingBehavior` registered in `PipelineRegistration.AddPipeline()` before all other behaviors
 - [ ] No exception details are exposed to API consumers
