@@ -3,7 +3,7 @@ name: csproj-building-blocks
 description: Implement reusable framework-level patterns consumed by App.Host and infrastructure across all modules
 domain: skill
 type: template
-version: 20260622
+version: 20260704153836
 plateau: default
 tags:
   - skill/template/csproj
@@ -14,6 +14,7 @@ created_by:
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]]"
   - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]"
+  - "[[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 ---
 
 # Goal
@@ -26,6 +27,7 @@ created_by:
 - Own `GuidResolvingBehavior` — the MediatR pipeline behavior that consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
 - Own `ETagEncoder` and `ConcurrencyBehavior` — the concrete client-facing concurrency helpers and pipeline enforcement
 - Reference `IHasVersions` and `IEntityVersionResolverFactory` from Shared for version checking in `ConcurrencyBehavior`
+- Own `ExceptionHandlingBehavior` — the global MediatR pipeline behavior that catches unhandled exceptions, logs them as critical, and returns a generic `Result.Error`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|class-validation-behavior]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
@@ -33,6 +35,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 # Core Principles
 - BuildingBlocks implements technical patterns using interfaces defined in Shared or provided by MediatR
@@ -48,6 +51,9 @@ __Applied solutions:__
 - `ConcurrencyBehavior` lives in BuildingBlocks — consumes `IEntityVersionResolverFactory` from Shared
 - `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions` — only update commands are checked
 - No per-entity loading logic in BuildingBlocks — version loading is delegated to `IEntityVersionResolver` implementations in module Application projects
+- `ExceptionHandlingBehavior` is generic — one implementation handles all commands and queries across all modules
+- `ExceptionHandlingBehavior` catches the broad `Exception` base type and logs at `LogLevel.Critical`
+- `ExceptionHandlingBehavior` returns a fixed generic `Result.Error` message without leaking exception details
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|class-validation-behavior]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
@@ -55,6 +61,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 # Structure
 
@@ -67,6 +74,7 @@ __Applied solutions:__
 ## Project Structure
 - /BuildingBlocks
   - /MediatR
+    - [ExceptionHandlingBehavior.cs](skills/dotnet/architecture/artifacts/plateau/default/structure/BuildingBlocks/classes/class-exception-handling-behavior.skill.md)
     - [ValidationBehavior.cs](skills/dotnet/architecture/artifacts/plateau/default/structure/BuildingBlocks/classes/class-validation-behavior.skill.md)
     - [GuidResolvingBehavior.cs](skills/dotnet/architecture/artifacts/plateau/default/structure/BuildingBlocks/classes/class-guid-resolving-behavior.skill.md)
     - [ConcurrencyBehavior.cs](skills/dotnet/architecture/artifacts/plateau/default/structure/BuildingBlocks/classes/class-concurrency-behavior.skill.md)
@@ -85,11 +93,13 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 ## Directory and class skills
 | `Directory|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
 | /MediatR | MediatR pipeline behaviors |  |
+| ExceptionHandlingBehavior.cs | Pipeline behavior that catches unhandled exceptions and returns a generic `Result.Error` | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-exception-handling-behavior.skill.md|class-ExceptionHandlingBehavior.skill]] |
 | ValidationBehavior.cs | Pipeline behavior that validates any `IRequest<TResponse>` | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-validation-behavior.skill.md|class-ValidationBehavior.skill]] |
 | /MediatR | MediatR pipeline behaviors and context |  |
 | UnitOfWorkContext.cs | Scoped depth counter preventing premature sub-command commit | [[skills/dotnet/architecture/plateau/default/structure/BuildingBlocks/classes/class-unit-of-work-context.skill.md|class-UnitOfWorkContext.skill]] |
@@ -107,6 +117,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -115,6 +126,7 @@ __Applied solutions:__
 | `MediatR` | latest stable | Provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>` |
 | `Ardalis.Result` | latest stable | Provides `Result.Invalid`, `ValidationError`, and `IResult` |
 | `MediatR` | latest stable | Provides `IPipelineBehavior<TRequest, TResponse>` implemented by `UnitOfWorkBehavior` |
+| `Microsoft.Extensions.Logging.Abstractions` | latest stable | Provides `ILogger<T>` injected into `ExceptionHandlingBehavior` |
 | `System.Text.Json` | latest stable | `JsonSerializer` used in `ETagEncoder` |
 | `MediatR` | latest stable | `IPipelineBehavior<TRequest, TResponse>` |
 
@@ -124,6 +136,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 ## What Does NOT Belong Here
 - Business logic — belongs to Domain
@@ -136,6 +149,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 ## Allowed Dependencies
 - Shared
@@ -148,6 +162,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 # Rules
 MUST:
@@ -166,6 +181,11 @@ MUST:
 		- `ConcurrencyBehavior` uses `IEntityVersionResolverFactory` from Shared
 	- `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions`
 	- `ETagEncoder` available to Api layers via BuildingBlocks reference
+	- `ExceptionHandlingBehavior` defined in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
+	- `ExceptionHandlingBehavior` constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+	- `ExceptionHandlingBehavior` catches `Exception` in a `try/catch` around `await next()`
+	- `ExceptionHandlingBehavior` logs caught exceptions at `LogLevel.Critical`
+	- `ExceptionHandlingBehavior` returns `Result.Error` with a generic message
 MUST NOT:
 	- Add business logic or request-specific conditions to `ValidationBehavior`
 	- Throw exceptions for validation failures — always return `Result.Invalid`
@@ -179,6 +199,8 @@ MUST NOT:
 	- Define HTTP middleware for conflict handling — conflicts are expressed as `Result<T>` and mapped by the API layer
 	- Define `IHasVersions`, `IEntityVersionResolver`, `IEntityVersionResolverFactory`, or `IVersioned` in BuildingBlocks — they belong in Shared
 		- Add a generic `EntityByIdSpec<T>` to BuildingBlocks — per-entity specs belong in module Application projects
+	- Expose original exception messages or stack traces in the returned `Result`
+	- Throw a new exception from inside `ExceptionHandlingBehavior`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|class-validation-behavior]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
@@ -186,6 +208,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 # Anti-patterns
 - Implementing per-request validation logic inside `ValidationBehavior`
@@ -200,6 +223,8 @@ __Applied solutions:__
 - `ConcurrencyBehavior` constrained on `IRequest<T>` instead of `IHasVersions` — would check all commands including queries
 - Defining common concurrency contracts in BuildingBlocks — forces modules to reference BuildingBlocks for contracts
 - Duplicating `ByIdSpec` logic in BuildingBlocks instead of reusing module Application specs
+- Logging unhandled exceptions at Warning or Error instead of Critical
+- Returning exception details instead of a generic `Result.Error` from `ExceptionHandlingBehavior`
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|class-validation-behavior]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
@@ -207,6 +232,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 
 # Check list
 - [ ] `FluentValidation` referenced in `BuildingBlocks.csproj`
@@ -227,6 +253,11 @@ __Applied solutions:__
 - [ ] `ETagEncoder` defined in `BuildingBlocks/Concurrency/ETagEncoder.cs`
 - [ ] `ConcurrencyBehavior` defined in `BuildingBlocks/MediatR/ConcurrencyBehavior.cs`
 - [ ] No EF Core reference in BuildingBlocks
+- [ ] `ExceptionHandlingBehavior` defined in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
+- [ ] `ExceptionHandlingBehavior` constrained to `IRequest<TResponse>` and `IResult`
+- [ ] `ExceptionHandlingBehavior` logs caught exceptions at `LogLevel.Critical`
+- [ ] `ExceptionHandlingBehavior` returns `Result.Error` with a generic message
+- [ ] No exception details exposed by `ExceptionHandlingBehavior`
 - [ ] `IHasVersions`, `IEntityVersionResolver`, `IEntityVersionResolverFactory`, and `IVersioned` imported from Shared, not defined in BuildingBlocks
 
 __Applied solutions:__
@@ -235,3 +266,4 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
+- [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]]
