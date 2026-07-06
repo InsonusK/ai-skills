@@ -13,7 +13,7 @@ tags:
 - Standardize skill structure, naming, and cross-references across the repository.
 
 # Scope
-This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow (for example, [solution-create.skill](/skills/dotnet/architecture/design/solution-create.skill/solution-create.skill.md)), use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
+This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow (for example, [solution-create.skill](/skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md)), use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
 
 # Core Principle
 - Write every skill as instructions you would need to execute the task yourself.

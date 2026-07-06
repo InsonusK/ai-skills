@@ -10,7 +10,7 @@ whenToUse: when you write skills for building plateau
 - {output} - folder where you should put created plateau skills. Default `skills/dotnet/architecture/plateau`
 
 # Prerequisites
-Read [[skills/dotnet/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
+Read [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first. It defines how a solution-skill is structured and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 
 # Solution-skill structure
 Every solution-skill has an `Implementation/` folder with concrete mutations. Recognize these file patterns:
