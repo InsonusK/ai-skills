@@ -12,14 +12,20 @@ tags:
 - Define how to describe skills so that an AI agent can decide when to use them and how to follow them.
 - Standardize skill structure, naming, and cross-references across the repository.
 
+# Scope
+This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow (for example, [solution-create.skill](/skills/dotnet/architecture/design/solution-create.skill/solution-create.skill.md)), use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
+
 # Core Principle
 - Write every skill as instructions you would need to execute the task yourself.
 - If you cannot tell when the skill applies by reading `whenToUse`, the skill is not clear enough.
+- **Agent clarity and convenience are the key success factors.** Every rule, example, and checklist must make the skill easier for an AI agent to understand and apply. If a skill is confusing, hard to follow, or forces the agent to guess, rewrite or split it.
 
 # Rule
 
 ## MUST
-- Use [skill.template.md](./templates/skill.template.md) as the starting point for every skill.
+- Treat this skill as the baseline for every skill-writing task, even when a domain-specific skill provides its own template or workflow.
+- Use [skill.template.md](./templates/skill.template.md) as the starting point only when no domain-specific template or skill exists for the skill you are writing.
+- When you follow a domain-specific skill, still satisfy the baseline requirements of this skill: clear `whenToUse`, actionable rules, valid links, correct format, and filled `# Anti-patterns` and `# Check list` sections.
 - Choose the correct skill format:
   - **Human Flat**: a single file named `{skill-name}.skill.md`. Use for self-contained skills that do not need additional files.
   - **Human Dir**: a folder named `{skill-name}.skill/` containing a file named `{skill-name}.skill.md`. Use when the skill references its own supporting files (templates, examples, diagrams, ADRs, etc.).
@@ -75,7 +81,14 @@ tags:
   - Consequence: The final skill is noisy and harder to follow.
   - Instead: Remove all `hint`, `example`, and `code example` blocks, and the `# How Apply this template` section before committing.
 
+- **Ignoring this skill because a domain-specific skill-writing skill exists**
+  - Example: "I am following `solution-create.skill`, so I do not need to check `skill-design`."
+  - Consequence: The resulting skill may have vague `whenToUse`, broken links, a missing checklist, an inconsistent format, or instructions that are hard for an agent to apply.
+  - Instead: Use the domain-specific skill for specialized guidance, but verify that the baseline requirements from this skill are still met.
+
 # Check list
+- [ ] The skill is written with the agent's understanding and convenience as the primary measure of quality.
+- [ ] If a domain-specific skill/template is used, the baseline requirements of this skill are still satisfied.
 - [ ] The skill uses the correct format (Human Flat or Human Dir).
 - [ ] The skill file name and folder name match the `name` in the front matter.
 - [ ] `whenToUse` clearly states when the skill should be applied.
