@@ -33,6 +33,7 @@ def register(subparsers: argparse._SubParsersAction) -> None:
     parser = subparsers.add_parser("backup", help="Create a backup.")
     parser.add_argument("--source", required=True, help="Path to back up.")
     parser.add_argument("--destination", required=True, help="Backup destination.")
+    # Store this module's `run` in the parsed args so cli.py can dispatch to it.
     parser.set_defaults(run=run)
 
 

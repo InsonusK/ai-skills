@@ -28,6 +28,8 @@ change_kind: create
 4. Configure the root logger level to `DEBUG` if `--debug` is set, otherwise `INFO`.
 5. Create subparsers for each command.
 6. Delegate argument parsing to the matching `cli/{command}.py`.
+   - Each `cli/{command}.py` registers its own `run` function via `parser.set_defaults(run=run)`.
+   - `args.run(args)` dispatches to that function without `cli.py` knowing command names.
 7. Exit with the return code provided by the command.
 
 ```python
@@ -57,6 +59,8 @@ def main(argv: list[str] | None = None) -> int:
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
+    # `args.run` was set by the active subcommand (`parser.set_defaults(run=run)`).
+    # This keeps cli.py free of per-command `if` branches.
     return args.run(args)
 
 
