@@ -19,7 +19,7 @@ whenToUse: when you write a solution skill
 2. Use the template folder that matches the target language:
    - .NET: [templates/dotnet/solution-{Solution}.skill.template](./templates/dotnet/solution-{Solution}.skill.template/)
    - Python: [templates/python/solution-{Solution}.skill.template](./templates/python/solution-{Solution}.skill.template/)
-   - Angular: [templates/angular/solution-{Solution}.skill.template](./templates/angular/solution-{Solution}.skill.template/)
+   - Other languages can be added as separate subfolders under `templates/` when needed.
 3. Fill the template with real content.
 4. Follow authoring rules which are defined in each section of the template.
    - Authoring rules are defined in `hint` blocks.

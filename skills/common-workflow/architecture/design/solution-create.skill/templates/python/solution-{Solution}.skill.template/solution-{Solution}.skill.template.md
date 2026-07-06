@@ -127,33 +127,29 @@ PYPI:
 1. Create an `Implementation/` folder inside the skill folder.
 2. All changes which must be made to implement this solution must be written into the `Implementation/` folder using templates from [[./Implementation Templates/|Implementation Templates]].
 3. Implementation file naming rules:
-   1. For Repository.template — `Repository.{change_kind}.md`
-   2. For Project.template — `{ProjectName}.create.md` or `{ProjectName}.extend.md`
-   3. For Class.template — `{ModuleName}.py.{change_kind}.md` or `{ClassName}.py.{change_kind}.md`
+   1. For class.template — `{ClassName}.py.{change_kind}.md`
+   2. For functions.template — `{ModuleName}.py.{change_kind}.md`
+   3. For init.template — `{PackagePath}/__init__.py.{change_kind}.md`
 4. Implementation files must be placed into the `Implementation/` folder following this structure:
    - Implementation/
-     - Repository.{change_kind}.md
-     - {ProjectName}.create.md
-     - {ProjectName}.create/
-       - {ModuleName}.py.{change_kind}.md
-   ATTENTION: for dynamic names like package name or module name prefer using `{Package}` or `{Module}` notation. It shows that the name is not constant.
+     - {ClassName}.py.{change_kind}.md
+     - {ModuleName}.py.{change_kind}.md
+     - {PackagePath}/__init__.py.{change_kind}.md
+   ATTENTION: for dynamic names like package path, module name or class name prefer using `{Package}`, `{Module}` or `{Class}` notation. It shows that the name is not constant.
 5. Every solution skill must provide concrete implementation files, including classification, decision, policy, or taxonomy skills. If the skill selects between variants, provide an implementation file for each variant that shows the resulting code or configuration.
 6. When this skill depends on other solutions, each implementation variant or section must explicitly state which dependency solution(s) are applied and which are intentionally not applied.
 
 Add links to created files as shown below:
-REPOSITORY:
-- {link to repository template} - {change_kind} - {description}
-PROJECT:
-- {link to project/package template} - {change_kind} - {description}
-  - {link to module template} - {change_kind} - {description}
+FILES:
+- {link to class template} - {change_kind} - {description}
+- {link to functions template} - {change_kind} - {description}
+- {link to init template} - {change_kind} - {description}
 ```
 ```example
-REPOSITORY:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - add app host
-PROJECT:
-- [[./Implementation/{App}.create.md|{App}]] - create - be root of the CLI application
-  - [[./Implementation/{App}.create/cli.py.create.md|cli.py]] - create - entry point
-  - [[./Implementation/{App}.create/command.backup.py.create.md|command/backup.py]] - create - backup operation
+FILES:
+- [[./Implementation/backup_service.py.create.md|backup_service.py]] - create - encapsulates backup behavior
+- [[./Implementation/helpers.py.create.md|helpers.py]] - create - reusable helper functions
+- [[./Implementation/cli/__init__.py.create.md|cli/__init__.py]] - create - make cli a package
 ```
 
 # Workflow
@@ -225,7 +221,7 @@ If a category has no links and no rules, skip it — do not write an empty subbl
 
 MUST:
 - Contain link to same subblock in implementation template
-- Rules that describe a specific implementation file (module, project, repository) should be written in that implementation file.
+- Rules that describe a specific implementation file (class, functions module, package init) should be written in that implementation file.
 
 SHOULD:
 - Keep rules in implementation file. You can keep rules here only when moving them to an implementation file would reduce clarity or cause irrational duplication (e.g., cross-cutting concerns that span multiple files).
@@ -233,28 +229,28 @@ SHOULD:
 
 ## MUST
 ```example
-- [[./Implementation/{App}.create.md#MUST|{App}.create]]
-  - [[./Implementation/{App}.create/cli.py.create.md#MUST|cli.py]]
+- [[./Implementation/backup_service.py.create.md#MUST|backup_service.py]]
+  - [[./Implementation/helpers.py.create.md#MUST|helpers.py]]
 ```
 
 ## SHOULD
 ```example
-- [[./Implementation/{App}.create.md#SHOULD|{App}.create]]
+- [[./Implementation/backup_service.py.create.md#SHOULD|backup_service.py]]
 ```
 
 ## MAY
 ```example
-- [[./Implementation/{App}.create.md#MAY|{App}.create]]
+- [[./Implementation/backup_service.py.create.md#MAY|backup_service.py]]
 ```
 
 ## SHOULD NOT
 ```example
-- [[./Implementation/{App}.create.md#SHOULD NOT|{App}.create]]
+- [[./Implementation/backup_service.py.create.md#SHOULD NOT|backup_service.py]]
 ```
 
 ## MUST NOT
 ```example
-- [[./Implementation/{App}.create.md#MUST NOT|{App}.create]]
+- [[./Implementation/backup_service.py.create.md#MUST NOT|backup_service.py]]
 ```
 
 # Anti-patterns

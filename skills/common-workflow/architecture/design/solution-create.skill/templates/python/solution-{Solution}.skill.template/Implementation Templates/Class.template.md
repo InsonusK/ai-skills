@@ -1,20 +1,20 @@
 ---
-description: Short description what must be made while creation or change in module/class
-project_name: # The project/package in which the module/class is located
-name: # Module or class name
-element_kind: # repository | project | class
+description: Short description what must be made while creation or change in a file that contains a class
+project_name: # The package/project in which the file is located
+name: # Class name
+element_kind: class
 change_kind: # create | extend
-# - create if solution creates a new module/class template. Name of the module/class must be added into the `creates` property in the header of the solution.
-# - extend if solution extends an existing module/class template. Link to the module/class must be added into the `extends` property in the header of the solution.
+# - create if solution creates a new class template. Name of the class/file must be added into the `creates` property in the header of the solution.
+# - extend if solution extends an existing class template. Link to the class/file must be added into the `extends` property in the header of the solution.
 ---
 
 # How Apply this template
 - Replace all `hint`, `example` and `code example` blocks with real content. Do not keep them in the final skill file.
-- If a section does not introduce any changes for this module/class, remove the section or add a note that no changes are introduced.
+- If a section does not introduce any changes for this class/file, remove the section or add a note that no changes are introduced.
 
 # Goals
 ```hint
-Define how solution EXTENDS module/class goal.
+Define how solution EXTENDS class goal.
 MUST:
 - show all added Goals
 RECOMMENDATION:
@@ -26,23 +26,23 @@ RECOMMENDATION:
 
 # Core Principles
 ```hint
-Define how solution EXTENDS module/class core principles.
+Define how solution EXTENDS class core principles.
 MUST:
 - show all added Core Principles
 RECOMMENDATION:
 - Prefer bullet list
 ```
 ```example
-- Functions are stateless and reusable
+- Classes encapsulate behavior and state
 ```
 
 # Naming convention
 ```hint
-Module/class naming convention. Fill table:
+Class and file naming convention. Fill table:
 - use case - when apply naming convention
 - class name pattern - mask of class name. Example: Is{Rule}
 - class name - example of class name. Example: IsEven
-- file name pattern - file name pattern. Example: {module}.py
+- file name pattern - file name pattern. Example: {module_underscore}.py
 - file name - example of file name. Example: is_even.py
 ```
 
@@ -52,21 +52,20 @@ Module/class naming convention. Fill table:
 
 # Implementation changes
 ```hint
-Define how solution EXTENDS module/class implementation.
+Define how solution EXTENDS class implementation.
 ```
 ```example
-[[Module skill]] must ...
+[[Class skill]] must ...
 ```
 ```code example
 class SomeEntity:
-    def __init__(self, id: int, guid: UUID) -> None:
-        self._id = id
-        self._guid = guid
+    def __init__(self, entity_id: int) -> None:
+        self._id = entity_id
 ```
 
 # Rule changes
 ```hint
-Define how solution EXTENDS module/class MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
+Define how solution EXTENDS class/file MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
 Only add a subblock for categories where this solution introduces new rules.
 If a category has no new rules, skip it — do not write an empty subblock.
 
@@ -76,7 +75,7 @@ MUST:
 
 ## MUST
 ```example
-- Command must be a typed function or class
+- Class must expose a typed public interface
 ```
 
 ## SHOULD
@@ -101,7 +100,7 @@ MUST:
 
 # Anti-patterns
 ```hint
-Describe concrete wrong ways to implement this module/class and their consequences.
+Describe concrete wrong ways to implement this class/file and their consequences.
 Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
 
 Format:
@@ -110,29 +109,27 @@ Format:
   - Instead: {correct alternative}
 ```
 ```example
-- **Use mutable default arguments**
-  - Consequence: shared state between calls causes subtle bugs
-  - Instead: use `None` as default and initialize mutable values inside the function
+- **Use mutable default arguments in constructors**
+  - Consequence: shared state between instances causes subtle bugs
+  - Instead: use `None` as default and initialize mutable values inside `__init__`
 ```
 
 # Check list
 ```hint
-Define how solution EXTENDS module/class check list.
+Define how solution EXTENDS class/file check list.
 RECOMMENDATION:
 - Prefer checkbox list
 ```
 ```example
-- [ ] Module has a typed public API
+- [ ] Class has a typed public API
 ```
 
 # Unittest TestCases
 ```hint
-Define how solution EXTENDS module/class unit tests.
+Define how solution EXTENDS class unit tests.
 RECOMMENDATION:
 - Prefer checkbox list
 ```
 ```example
-- [ ] WHEN call command with event THEN
-  - [ ] event fills domain event in entity
-  - [ ] handler catches event and processes it
+- [ ] WHEN create entity with valid data THEN entity is initialized
 ```
