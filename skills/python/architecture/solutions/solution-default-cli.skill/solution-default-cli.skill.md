@@ -21,7 +21,7 @@ creates:
   - "{App}/service/{Service}.py"
 extends:
 depends_on:
-  - "[[../../../../common-workflow/develop/logging-principle.skill.md|logging-principle]]"
+  - "[[skills/common-workflow/develop/logging-principle.skill.md|logging-principle]]"
 adr:
 ---
 
@@ -40,11 +40,11 @@ adr:
 - **CLI layer is thin**: it declares command names and arguments, converts `argparse`/`sys.argv` into typed Python values, configures logging, invokes the matching Command, and prints the result.
 - **Commands are capabilities**: each Command represents one thing the application can do. It receives typed parameters, validates them, orchestrates Functions/Services, and returns a result.
 - **Functions and Services are reusable**: pure helper functions live in `functions/`, stateful or dependency-heavy objects live in `service/`.
-- **Logging is mandatory**: every CLI application must set up logging and support a `--debug` flag disabled by default, following [[../../../../common-workflow/develop/logging-principle.skill.md|logging-principle]].
+- **Logging is mandatory**: every CLI application must set up logging and support a `--debug` flag disabled by default, following [[skills/common-workflow/develop/logging-principle.skill.md|logging-principle]].
 
 # Requirements
 SOLUTION:
-- [[../../../../common-workflow/develop/logging-principle.skill.md|logging-principle]]
+- [[skills/common-workflow/develop/logging-principle.skill.md|logging-principle]]
   - All CLI entry points must configure logging and expose `--debug`.
   - Logs must use specific messages and correct levels.
 
@@ -118,7 +118,7 @@ See [run-cli-command](./diagrams/run-cli-command.mmd)
   - Instead: keep CLI modules dedicated to argument parsing and output formatting; delegate work to Commands.
 - **Use `print` instead of logging**
   - Consequence: logs cannot be aggregated, levels cannot be controlled, and `--debug` becomes impossible to implement consistently.
-  - Instead: use the `logging` module and follow [[../../../../common-workflow/develop/logging-principle.skill.md|logging-principle]].
+  - Instead: use the `logging` module and follow [[skills/common-workflow/develop/logging-principle.skill.md|logging-principle]].
 - **Pass raw `argparse.Namespace` into Commands**
   - Consequence: Commands become coupled to CLI wiring and cannot be reused or unit-tested.
   - Instead: convert `Namespace` attributes into typed variables or dataclasses before calling the Command.
