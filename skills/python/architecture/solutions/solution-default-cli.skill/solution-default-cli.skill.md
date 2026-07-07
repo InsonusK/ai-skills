@@ -109,7 +109,7 @@ See [run-cli-command](./diagrams/run-cli-command.mmd)
 - Put business logic directly in the CLI layer.
 
 ## MUST NOT
-- Use `print` for logging or operational messages (see [[../../../../common-workflow/develop/logging-principle.skill.md|logging-principle]]).
+- Use `print` for logging or operational messages (see [[skills/common-workflow/develop/logging-principle.skill.md|logging-principle]]).
 - Mix argument parsing and business logic in the same function or module.
 
 # Anti-patterns
