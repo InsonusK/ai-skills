@@ -19,6 +19,7 @@ This skill applies to every skill-writing task in the repository. It defines the
 - Write every skill as instructions you would need to execute the task yourself.
 - If you cannot tell when the skill applies by reading `whenToUse`, the skill is not clear enough.
 - **Agent clarity and convenience are the key success factors.** Every rule, example, and checklist must make the skill easier for an AI agent to understand and apply. If a skill is confusing, hard to follow, or forces the agent to guess, rewrite or split it.
+- Write skill in English
 
 # Rule
 
