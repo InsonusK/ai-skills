@@ -6,3 +6,5 @@ __pycache__
 /.ai-worktree
 /.ai-skill-manager
 .obsidian/workspace.json
+/.agents/skills
+/.claude/skills

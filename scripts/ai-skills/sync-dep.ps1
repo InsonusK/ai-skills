@@ -12,7 +12,7 @@ if ($help) {
 }
 
 # Активируем виртуальное окружение Python
-.venv/Scripts/Activate.ps1
+& ".ai-skill-manager/.venv/Scripts/Activate.ps1"
 
 # Формируем аргументы для aism sync
 $arguments = @('sync')
@@ -21,4 +21,4 @@ if ($v) {
 }
 
 # Запускаем синхронизацию
-aism @arguments
+& aism @arguments
