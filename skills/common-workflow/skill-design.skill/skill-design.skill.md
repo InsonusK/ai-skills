@@ -13,7 +13,7 @@ tags:
 - Standardize skill structure, naming, and cross-references across the repository.
 
 # Scope
-This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow (for example, [solution-create.skill](/skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md)), use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
+This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow (for example, [solution-create.skill](skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md)), use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
 
 # Core Principle
 - Write every skill as instructions you would need to execute the task yourself.
@@ -33,7 +33,7 @@ This skill applies to every skill-writing task in the repository. It defines the
 - Keep the skill actionable: rules, workflows, checklists, and anti-patterns must tell the agent exactly what to do.
 - Use links that are resolvable from the skill file:
   - Relative to the skill file: `[label](./path/to/file.md)` or `[[./path/to/file.md|label]]`.
-  - Relative to the repository root: `[label](/skills/.../file.md)` or `[[/skills/.../file.md|label]]`.
+  - Relative to the repository root: `[label](skills/.../file.md)` or `[[skills/.../file.md|label]]`.
 - Use wikilinks or standard markdown links consistently within one skill.
 - For Human Dir skills, keep all referenced supporting files inside the skill folder.
 - Match the folder name and the main skill file name exactly: `{skill-name}.skill/{skill-name}.skill.md`.
