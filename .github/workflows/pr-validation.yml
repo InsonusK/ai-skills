@@ -1,0 +1,113 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      src: ${{ steps.filter.outputs.src }}
+      tests: ${{ steps.filter.outputs.tests }}
+      workflow: ${{ steps.filter.outputs.workflow }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'skills/**'
+              - 'scripts/**'
+              - 'requirements.txt'
+            tests:
+              - 'test/**'
+            workflow:
+              - '.github/workflows/pr-validation.yml'
+
+  version-check:
+    needs: changes
+    if: github.base_ref == 'master' && (needs.changes.outputs.src == 'true' || needs.changes.outputs.workflow == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check project version bump
+        run: |
+          python << 'PY'
+          import os
+          import sys
+
+          version_files = ["pyproject.toml", "package.json", "version.json"]
+          existing = [f for f in version_files if os.path.exists(f)]
+
+          if not existing:
+              print("No project version file found; skipping semantic version check.")
+              sys.exit(0)
+
+          print(f"Found version file(s): {existing}")
+          print("ERROR: version bump check is not configured for this repository's version file format.")
+          sys.exit(1)
+          PY
+
+  aism-sync:
+    needs: changes
+    if: needs.changes.outputs.src == 'true' || needs.changes.outputs.tests == 'true' || needs.changes.outputs.workflow == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11']
+
+    steps:
+      - name: Enable Git long paths on Windows
+        if: runner.os == 'Windows'
+        run: git config --global core.longpaths true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install ai-skill-manager
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Use PR branch in test tree
+        shell: python
+        run: |
+          import re
+          import sys
+
+          config_path = "test/ai-skills.yaml"
+          try:
+              with open(config_path, "r", encoding="utf-8") as f:
+                  content = f.read()
+          except FileNotFoundError:
+              print(f"ERROR: {config_path} not found")
+              sys.exit(1)
+
+          pr_branch = "${{ github.head_ref }}"
+          content = re.sub(r"^(\s*tree:\s*).*$", rf"\1{pr_branch}", content, flags=re.MULTILINE)
+
+          with open(config_path, "w", encoding="utf-8") as f:
+              f.write(content)
+
+          print(f"Updated {config_path} to use tree: {pr_branch}")
+
+      - name: Run aism sync
+        run: aism sync -c test/ai-skills.yaml -v
