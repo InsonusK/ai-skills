@@ -45,6 +45,12 @@ tags:
 - Pin action versions to tags or SHAs; avoid unpinned `latest` references.
 - Give jobs and steps clear, descriptive names.
 - Use `fail-fast: false` in the matrix so every OS/version combination runs to completion.
+- Enable Git long paths on Windows runners when the workflow clones repositories or installs packages from Git URLs:
+  ```yaml
+  - name: Enable Git long paths
+    run: git config --global core.longpaths true
+  ```
+  This prevents checkout failures for paths longer than 260 characters or paths containing special characters such as curly braces.
 
 ## MAY
 - Add extra jobs such as linting, type checking, or formatting checks.
@@ -76,6 +82,10 @@ tags:
   - Consequence: OS-specific bugs are only discovered by end users.
   - Instead: use an OS matrix for console applications.
 
+- **Failing to enable long paths on Windows when cloning Git dependencies**
+  - Consequence: `git clone` or `pip install` from a Git URL fails with errors like `cannot create directory ... Filename too long`, especially for paths containing curly braces or other special characters.
+  - Instead: add `git config --global core.longpaths true` before the clone or install step on Windows runners.
+
 - **Comparing versions as strings**
   - Consequence: `"10.0.0"` is considered less than `"2.0.0"` with string comparison, leading to false positives or missed errors.
   - Instead: use semantic version comparison (`packaging.Version` in Python, `System.Version` in .NET, `semver` in Node.js, etc.).
@@ -96,3 +106,4 @@ See [Python PR workflow example](./templates/python-pr.example.md) for a Python 
 - [ ] The AI agent created a separate branch and PR; no direct push to `develop`/`master`.
 - [ ] The workflow contains no secrets, tokens, or deployment steps.
 - [ ] For non-Python stacks, the version file and reading method are adapted accordingly.
+- [ ] Windows jobs that clone Git repositories or install packages from Git URLs enable `core.longpaths`.
