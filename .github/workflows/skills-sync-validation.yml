@@ -48,5 +48,8 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Enable Git long paths
+        run: git config --global core.longpaths true
+
       - name: Run sync validation
         run: .\test.ps1
