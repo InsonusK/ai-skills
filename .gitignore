@@ -8,3 +8,4 @@ __pycache__
 .obsidian/workspace.json
 /.agents/skills
 /.claude/skills
+/test/tmp
