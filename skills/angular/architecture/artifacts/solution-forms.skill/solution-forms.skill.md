@@ -1,5 +1,5 @@
 ---
-name: forms
+name: solution-forms
 description: Signal Forms as the default approach for building forms, consistent with the application's Signal-based state management
 domain: skill
 type: architecture
@@ -21,7 +21,7 @@ depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[adr/forms-approach.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-forms.skill/adr/forms-approach|Forms Approach ADR]]"
 ---
 
 # Goal
@@ -46,7 +46,7 @@ adr:
 
 # Adr
 
-- [[adr/forms-approach.md|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]
+- [[skills/angular/architecture/artifacts/solution-forms.skill/adr/forms-approach|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]
   - Selected variant: Signal Forms as the default — chosen because it is now stable (Angular 22), matches the Signal-based reactivity already adopted for state management, and Angular 22 resolves the main historical blocker (ControlValueAccessor compatibility) for control-heavy forms
 
 # Requirements

@@ -1,5 +1,5 @@
 ---
-name: logging-base
+name: solution-logging-base
 description: Console logging via a custom LoggerService with structured entries and a pluggable sink extension point, laying the foundation for the future backend-logging extension
 domain: skill
 type: architecture
@@ -18,7 +18,7 @@ extends:
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
-  - "[[adr/logging-architecture.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-logging-base.skill/adr/logging-architecture|Logging Architecture ADR]]"
 ---
 
 # Goal
@@ -42,7 +42,7 @@ adr:
 
 # Adr
 
-- [[adr/logging-architecture.md|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
+- [[skills/angular/architecture/artifacts/solution-logging-base.skill/adr/logging-architecture|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
   - Selected variant: `LoggerService` + `LOG_SINKS` + structured entries — chosen so the future backend-logging extension adds a sink without touching any existing call site, and so logs are filterable/queryable from the start
 
 # Requirements

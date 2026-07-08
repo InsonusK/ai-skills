@@ -6,6 +6,7 @@ sources:
       - skills/dotnet
       - skills/devops
       - skills/common-workflow
+      - skills/angular
 
 settings:
   target: 

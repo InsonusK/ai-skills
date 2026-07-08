@@ -1,5 +1,5 @@
 ---
-name: api-http-layer
+name: solution-api-http-layer
 description: Facade/Client layering inside each feature's data-access lib, a shared base HTTP service, typed domain errors, and hand-written DTO mapping — collapses the classical NgRx Action/Reducer/Effect chain for feature-level operations in favor of Signal Store calling the Facade directly
 domain: skill
 type: architecture
@@ -21,9 +21,9 @@ depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[adr/facade-client-layering.md]]"
-  - "[[adr/error-handling-strategy.md]]"
-  - "[[adr/dto-mapping-strategy.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/facade-client-layering|Facade Client Layering ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/error-handling-strategy|Error Handling Strategy ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/dto-mapping-strategy|Dto Mapping Strategy ADR]]"
 ---
 
 # Goal
@@ -48,11 +48,11 @@ adr:
 
 # Adr
 
-- [[adr/facade-client-layering.md|Signal Store calls Facade directly; Client is an internal transport detail — Action/Reducer/Effect collapsed for feature-level operations]]
+- [[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/facade-client-layering|Signal Store calls Facade directly; Client is an internal transport detail — Action/Reducer/Effect collapsed for feature-level operations]]
   - Selected variant: this layering — chosen because it removes duplicated orchestration once Signal Store already owns feature-level state, while preserving the global-state NgRx chain unchanged
-- [[adr/error-handling-strategy.md|Client throws typed domain errors; Facade preserves the throw/reject channel]]
+- [[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/error-handling-strategy|Client throws typed domain errors; Facade preserves the throw/reject channel]]
   - Selected variant: typed domain errors via throw/reject — chosen for compatibility with both existing call-site styles (`try/catch` in Signal Store, `catchError` in NgRx effects) without requiring a `Result<T,E>` rewrite
-- [[adr/dto-mapping-strategy.md|Manual mapper functions instead of an automatic mapping library]]
+- [[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/dto-mapping-strategy|Manual mapper functions instead of an automatic mapping library]]
   - Selected variant: manual mappers — chosen because some fields require enrichment from external context that an automatic mapper would not handle cleanly anyway
 
 # Requirements
