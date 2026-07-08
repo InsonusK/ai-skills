@@ -1,0 +1,36 @@
+---
+description: Extend the base workspace with conventions for auth guards, the token-attaching interceptor, and permission-checking directives
+element_kind: repository
+change_kind: extend
+---
+
+# Structure
+
+No new top-level directories. This extension adds artifact-placement conventions on top of [[../../solution-repository-structure.skill/Implementation/Repository.create.md]] and extends the `auth` slice already created by the "State management" solution's [[../../solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create.md|auth.store.ts]].
+
+## Directory and project skills
+
+| Directory | Description |
+| ---------- | ----------- |
+| /libs/shared/state/src/lib/auth | Extended (not recreated) with: in-memory access token field, permission list field, silent-refresh trigger. See [[./GlobalStore/auth.store.ts.extend.md]]. |
+| /libs/shared/auth-ui | New lib, tagged `type:util`, `scope:shared`: hosts the permission-checking structural directive and any shared "not authorized" presentational pieces. |
+| /libs/{feature}/feature/src/lib/**/*.guard.ts | Route guards live inside the feature they protect, following the functional guard pattern in [[./Routing/permission.guard.ts.create.md]]. |
+
+# Rules
+
+## MUST
+- Any code that checks "is the user allowed to do X" MUST express the check in terms of a permission string (see [[../adr/authorization-model.md]]), never a role name.
+- The access token MUST only ever be held in the `shared-state` auth slice's in-memory field — it MUST NOT be written to `localStorage`, `sessionStorage`, or any other persistent client storage (see [[../adr/token-storage-strategy.md]]).
+
+# Anti-patterns
+
+- **A feature checking `currentUser.role === 'admin'` instead of a permission**
+  - Consequence: couples feature code to the platform's specific role taxonomy, breaking the decoupling this solution's authorization-model ADR exists to provide, and makes the check impossible to reuse from an embeddable app that doesn't know the platform's role names
+  - Instead: check a permission string (e.g. `'orders.delete'`) delivered by the backend as part of the session
+
+# Unittest TestCases
+
+- [ ] WHEN the codebase is searched for `localStorage`/`sessionStorage` writes of a token value THEN
+  - [ ] none are found
+- [ ] WHEN any guard/directive is inspected THEN
+  - [ ] its authorization check references a permission string, not a role name

@@ -1,0 +1,2 @@
+test/test.sh text eol=lf
+test/test.ps1 text eol=crlf
