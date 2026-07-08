@@ -21,7 +21,7 @@ tags:
 
 ## MUST
 - Write the documentation as a skill following [skill-design.skill](./skill-design.skill/skill-design.skill.md).
-- Save the skill in the `skills/` directory under the correct domain (for example, `skills/python/`, `skills/dotnet/`, `skills/devops/`, or `skills/common-workflow/` if it is cross-domain).
+- Save the skill in the `docs/skills/` directory under the correct domain (for example, `docs/skills/python/`, `docs/skills/dotnet/`, `docs/skills/devops/`, or `docs/skills/common-workflow/` if it is cross-domain).
 - Write `whenToUse` as concrete trigger conditions, not as a generic description.
 - Provide actionable rules that an agent can execute directly.
 - Cover all information another agent needs to call the library, CLI, or API:
@@ -39,7 +39,7 @@ tags:
 - Link to official human-readable documentation only as supplementary context; do not rely on it as the primary instruction source.
 
 ## SHOULD NOT
-- Place AI-agent documentation only in `doc/`, `docs/`, `README.md`, or wiki pages.
+- Place AI-agent documentation only in `.agents/skills/`, `.claude/skills/`, `README.md`, or wiki pages.
 - Write long prose that explains concepts without giving the agent concrete commands or code.
 
 ## MUST NOT
@@ -53,10 +53,10 @@ tags:
   - Consequence: the agent does not know how to import the library or which function to call.
   - Instead: write "To process data, import `process_data` from `mylib.core` and call it with `process_data(source: str, limit: int = 100)`.
 
-- **Saving documentation outside the `skills/` directory**
+- **Saving documentation outside the `docs/skills/` directory**
   - Example: creating `doc/api-usage.md`.
   - Consequence: consumers do not know the document is meant for an agent and may not include it in the agent context.
-  - Instead: create `skills/<domain>/<tool>.skill.md`.
+  - Instead: create `docs/skills/<domain>/<tool>.skill.md`.
 
 - **Vague `whenToUse`**
   - Example: "Use this for API documentation."
@@ -74,7 +74,7 @@ tags:
   - Instead: copy the minimal essential facts into the skill and link to the official docs only for deeper reference.
 
 # Check list
-- [ ] The documentation is saved as a skill in the `skills/` directory.
+- [ ] The documentation is saved as a skill in the `docs/skills/` directory.
 - [ ] `whenToUse` clearly states when another agent should apply the skill.
 - [ ] The skill covers installation/import, entry points, parameters, return/output, errors, and examples.
 - [ ] All rules are actionable for an AI agent.
