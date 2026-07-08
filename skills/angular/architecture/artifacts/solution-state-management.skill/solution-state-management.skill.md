@@ -1,5 +1,5 @@
 ---
-name: state-management
+name: solution-state-management
 description: Three-tier state management policy — Angular Signals for component-local state, NgRx Signal Store for feature-level state, classical NgRx Store for global/cross-cutting state
 domain: skill
 type: architecture
@@ -21,7 +21,7 @@ extends:
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
-  - "[[adr/state-management-tiering.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-state-management.skill/adr/state-management-tiering|State Management Tiering ADR]]"
 ---
 
 # Goal
@@ -47,7 +47,7 @@ adr:
 
 # Adr
 
-- [[adr/state-management-tiering.md|Three-tier state management: Signals / NgRx Signal Store / classical NgRx Store]]
+- [[skills/angular/architecture/artifacts/solution-state-management.skill/adr/state-management-tiering|Three-tier state management: Signals / NgRx Signal Store / classical NgRx Store]]
   - Selected variant: three-tier — chosen to match each tier's tooling cost to its actual state complexity, and to preserve NgRx's auditability and effect-based retry/conflict handling specifically for auth and offline-sync
 
 # Requirements

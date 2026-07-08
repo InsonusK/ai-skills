@@ -1,5 +1,5 @@
 ---
-name: repository-structure
+name: solution-repository-structure
 description: Base Nx workspace layout for the Angular application — apps/libs split, tag taxonomy and enforced module boundaries
 domain: skill
 type: architecture
@@ -22,7 +22,7 @@ extends:
 depends_on:
   # None — this is the base solution for the whole architecture graph
 adr:
-  - "[[adr/nx-vs-angular-cli-workspace.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace|Nx Vs Angular Cli Workspace ADR]]"
 ---
 
 # Goal
@@ -50,7 +50,7 @@ adr:
 
 # Adr
 
-- [[adr/nx-vs-angular-cli-workspace.md|Nx monorepo instead of plain Angular CLI workspace]]
+- [[skills/angular/architecture/artifacts/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace|Nx monorepo instead of plain Angular CLI workspace]]
   - Selected variant: Nx monorepo — chosen for affected-based builds, enforced module boundaries, and readiness for the planned embeddability (Module Federation) and offline-first extensions
 
 # Requirements

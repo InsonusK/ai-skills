@@ -1,5 +1,5 @@
 ---
-name: platform-embeddability
+name: solution-platform-embeddability
 description: Turns the base workspace's platform-shell into a Native Federation dynamic host, and defines the baseline structure any independently deployed embeddable app must follow to be loaded into it
 domain: skill
 type: architecture
@@ -23,7 +23,7 @@ extends:
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
-  - "[[adr/embedding-mechanism.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-platform-embeddability.skill/adr/embedding-mechanism|Embedding Mechanism ADR]]"
 ---
 
 # Goal
@@ -49,7 +49,7 @@ adr:
 
 # Adr
 
-- [[adr/embedding-mechanism.md|Native Federation + Dynamic Federation instead of Webpack Module Federation, Web Components, or iframe]]
+- [[skills/angular/architecture/artifacts/solution-platform-embeddability.skill/adr/embedding-mechanism|Native Federation + Dynamic Federation instead of Webpack Module Federation, Web Components, or iframe]]
   - Selected variant: Native Federation + Dynamic Federation — chosen because it matches Angular's current esbuild-based build system, shares one Angular runtime between host and remotes for real singleton state sharing, and lets embeddable apps be discovered and loaded at runtime without a platform rebuild
 
 # Requirements

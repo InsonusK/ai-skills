@@ -1,5 +1,5 @@
 ---
-name: app-routing
+name: solution-app-routing
 description: Hierarchical route ownership — shell, embeddable modules, and features each define routes only relative to their own root segment
 domain: skill
 type: architecture
@@ -20,7 +20,7 @@ depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
   - "[[../solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
-  - "[[adr/route-ownership-location.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-app-routing.skill/adr/route-ownership-location|Route Ownership Location ADR]]"
 ---
 
 # Goal
@@ -44,7 +44,7 @@ adr:
 
 # Adr
 
-- [[adr/route-ownership-location.md|Hierarchical route ownership instead of a single centralized routes file in the shell]]
+- [[skills/angular/architecture/artifacts/solution-app-routing.skill/adr/route-ownership-location|Hierarchical route ownership instead of a single centralized routes file in the shell]]
   - Selected variant: hierarchical ownership — chosen to mirror the module-boundary principle from solution #1, preserve affected-based CI, and compose cleanly with the federation-based embeddability from solution #2
 
 # Requirements

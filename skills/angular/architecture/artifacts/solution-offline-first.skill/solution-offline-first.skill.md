@@ -1,5 +1,5 @@
 ---
-name: offline-first
+name: solution-offline-first
 description: Workbox-based service worker with five content-type-specific caching strategies, an accurate connectivity signal (navigator.onLine + health-check), and an offline-error distinction in the Client layer — scoped to read resilience only (Сценарий A); write queueing is deferred to the future "Синхронизация offline-данных" solution
 domain: skill
 type: architecture
@@ -26,9 +26,9 @@ depends_on:
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
   - "[[../solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
-  - "[[adr/service-worker-mechanism.md]]"
-  - "[[adr/caching-strategy-per-content-type.md]]"
-  - "[[adr/connectivity-detection.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/service-worker-mechanism|Service Worker Mechanism ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/caching-strategy-per-content-type|Caching Strategy Per Content Type ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/connectivity-detection|Connectivity Detection ADR]]"
 ---
 
 # Goal
@@ -54,11 +54,11 @@ adr:
 
 # Adr
 
-- [[adr/service-worker-mechanism.md|Workbox instead of Angular's built-in (and now feature-frozen) Service Worker]]
+- [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/service-worker-mechanism|Workbox instead of Angular's built-in (and now feature-frozen) Service Worker]]
   - Selected variant: Workbox — chosen because ngsw is explicitly feature-frozen by Angular's own team, and Workbox supports the per-content-type strategies and runtime caching of dynamically-resolved federation chunks this solution needs
-- [[adr/caching-strategy-per-content-type.md|Five strategies by content type instead of one uniform strategy]]
+- [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/caching-strategy-per-content-type|Five strategies by content type instead of one uniform strategy]]
   - Selected variant: five strategies — chosen because auth/mutations, the app shell, static assets, API reads, and federated remote chunks each have genuinely different freshness/availability requirements
-- [[adr/connectivity-detection.md|navigator.onLine events + periodic health-check instead of navigator.onLine alone]]
+- [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/connectivity-detection|navigator.onLine events + periodic health-check instead of navigator.onLine alone]]
   - Selected variant: combined signal — chosen because `navigator.onLine` alone materially misrepresents real backend reachability in common failure modes (captive portals, backend outages)
 
 # Requirements
@@ -73,7 +73,7 @@ SOLUTION:
 
 NPM:
 - workbox-build, workbox-routing, workbox-strategies, workbox-precaching, workbox-expiration
-  - Service worker generation and routing strategies, per [[adr/service-worker-mechanism.md]]
+  - Service worker generation and routing strategies, per [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/service-worker-mechanism|Service Worker Mechanism ADR]]
 
 # Template Skill Mutations
 

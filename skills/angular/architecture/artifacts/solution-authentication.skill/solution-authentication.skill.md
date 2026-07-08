@@ -1,5 +1,5 @@
 ---
-name: authentication
+name: solution-authentication
 description: Token storage strategy, silent refresh, granular permission-based authorization, route guards, and session sharing with embeddable apps
 domain: skill
 type: architecture
@@ -24,8 +24,8 @@ depends_on:
   - "[[../solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]"
   - "[[../solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
-  - "[[adr/token-storage-strategy.md]]"
-  - "[[adr/authorization-model.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-authentication.skill/adr/token-storage-strategy|Token Storage Strategy ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-authentication.skill/adr/authorization-model|Authorization Model ADR]]"
 ---
 
 # Goal
@@ -52,9 +52,9 @@ adr:
 
 # Adr
 
-- [[adr/token-storage-strategy.md|In-memory access token + HttpOnly refresh cookie instead of localStorage or fully cookie-based auth]]
+- [[skills/angular/architecture/artifacts/solution-authentication.skill/adr/token-storage-strategy|In-memory access token + HttpOnly refresh cookie instead of localStorage or fully cookie-based auth]]
   - Selected variant: in-memory access + HttpOnly refresh cookie — chosen to minimize what an XSS payload (including from a misbehaving federated remote) can steal
-- [[adr/authorization-model.md|Granular permissions instead of coarse roles]]
+- [[skills/angular/architecture/artifacts/solution-authentication.skill/adr/authorization-model|Granular permissions instead of coarse roles]]
   - Selected variant: granular permissions — chosen for scalability and to decouple embeddable apps from the platform's internal role taxonomy
 
 # Requirements

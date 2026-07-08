@@ -1,5 +1,5 @@
 ---
-name: testing
+name: solution-testing
 description: Vitest as the unit/component test runner, Playwright for e2e, TestBed for non-DOM units vs Testing Library for components, and a strict layer-by-layer HTTP mocking rule (HttpTestingController only at the Client, MSW only for genuine cross-layer integration tests)
 domain: skill
 type: architecture
@@ -24,9 +24,9 @@ depends_on:
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[adr/test-runner-choice.md]]"
-  - "[[adr/e2e-framework-choice.md]]"
-  - "[[adr/testing-layers-and-mocking.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-testing.skill/adr/test-runner-choice|Test runner choice ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-testing.skill/adr/e2e-framework-choice|E2E framework choice ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-testing.skill/adr/testing-layers-and-mocking|Testing layers and mocking ADR]]"
 ---
 
 # Goal
@@ -53,11 +53,11 @@ adr:
 
 # Adr
 
-- [[adr/test-runner-choice.md|Vitest instead of Jest or Karma/Jasmine]]
+- [[skills/angular/architecture/artifacts/solution-testing.skill/adr/test-runner-choice|Vitest instead of Jest or Karma/Jasmine]]
   - Selected variant: Vitest — Angular's own current default, matching the esbuild-based build pipeline already in use
-- [[adr/e2e-framework-choice.md|Playwright instead of Cypress]]
+- [[skills/angular/architecture/artifacts/solution-testing.skill/adr/e2e-framework-choice|Playwright instead of Cypress]]
   - Selected variant: Playwright — true multi-browser coverage (including WebKit) and better fit for scenarios involving federated embeddable modules
-- [[adr/testing-layers-and-mocking.md|TestBed for non-DOM units, Testing Library for components; HttpTestingController only at the Client, MSW only for cross-layer integration tests]]
+- [[skills/angular/architecture/artifacts/solution-testing.skill/adr/testing-layers-and-mocking|TestBed for non-DOM units, Testing Library for components; HttpTestingController only at the Client, MSW only for cross-layer integration tests]]
   - Selected variant: this layered strategy — chosen to give each HTTP mock exactly one source of truth and to keep component tests decoupled from implementation details
 
 # Requirements
@@ -74,7 +74,7 @@ NPM:
 - @playwright/test
   - End-to-end testing framework
 - msw
-  - Network-level mocking for genuine cross-layer integration tests only, per [[adr/testing-layers-and-mocking.md]]
+  - Network-level mocking for genuine cross-layer integration tests only, per [[skills/angular/architecture/artifacts/solution-testing.skill/adr/testing-layers-and-mocking|Testing Layers And Mocking ADR]]
 
 # Template Skill Mutations
 

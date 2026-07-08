@@ -1,5 +1,5 @@
 ---
-name: logging-global
+name: solution-logging-global
 description: BackendLogSink extending the base logging solution — sends warn/error/report entries to the backend, batched with a beacon-based unload flush, backed by a bounded IndexedDB retry queue, plus a global ErrorHandler capturing uncaught exceptions
 domain: skill
 type: architecture
@@ -22,7 +22,7 @@ depends_on:
   - "[[../solution-logging-base.skill/solution-logging-base.skill.md|Логирование (база)]]"
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
 adr:
-  - "[[adr/backend-log-sink-strategy.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-logging-global.skill/adr/backend-log-sink-strategy|Backend Log Sink Strategy ADR]]"
 ---
 
 # Goal
@@ -47,7 +47,7 @@ adr:
 
 # Adr
 
-- [[adr/backend-log-sink-strategy.md|Selective levels, batched sending, bounded IndexedDB-persisted retry queue, global ErrorHandler]]
+- [[skills/angular/architecture/artifacts/solution-logging-global.skill/adr/backend-log-sink-strategy|Selective levels, batched sending, bounded IndexedDB-persisted retry queue, global ErrorHandler]]
   - Selected variant: this combination — chosen to balance backend visibility against network/storage cost, and to guarantee uncaught exceptions are captured without relying on explicit instrumentation everywhere
 
 # Requirements
