@@ -22,3 +22,6 @@ if ($v) {
 
 # Запускаем синхронизацию
 & aism @arguments
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}

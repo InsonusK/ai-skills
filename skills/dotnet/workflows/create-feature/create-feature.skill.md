@@ -80,16 +80,16 @@ Output:
 ## 5. Select downstream skills
 Determine which implementation skills are required.
 1. New application operation created, use:
-	- [[create-new-operation]]
+	- [[skills/dotnet/workflows/create-new-operation|create-new-operation]]
 2. New API must be created, use:
-	- [[create new api]]
+	- `[[create new api]]`
 3. Change code, use:
-    - [[unittest-testplan.skill]]
+    - [[skills/common-workflow/test/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill|workflow-unittest-testplan.skill]]
     - [[skills/common-workflow/test/code-coverage.skill]]
 
 ## 6. Produce implementation plan
 Produce step-by-step implementation roadmap before generating code.
-Implementation plan must follow [[Impementation plan.md]]
+Implementation plan must follow [[skills/dotnet/workflows/create-feature/templates/Impementation plan.md|Impementation plan.md]]
 
 # Check list
 - [ ] Feature input parameters is defined
