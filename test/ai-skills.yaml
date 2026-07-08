@@ -1,0 +1,23 @@
+sources:
+  - path: ./..
+    type: local
+    subpath:
+      - skills/python
+      - skills/dotnet
+      - skills/devops
+      - skills/common-workflow
+
+settings:
+  target: 
+    for_each:
+      adapters:
+        - link-adapter
+    default:
+      path: tmp/.agents/skills
+    claude:
+      path: tmp/.claude/skills
+      adapters:
+        - claude-property-adapter
+  remove_orphans: true
+  on_conflict: error
+  dry_run: false

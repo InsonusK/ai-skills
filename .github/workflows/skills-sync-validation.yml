@@ -1,0 +1,55 @@
+name: Skills sync validation
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - 'skills/**'
+      - 'test/**'
+      - 'requirements.txt'
+      - '.github/workflows/skills-sync-validation.yml'
+
+jobs:
+  sync-ubuntu:
+    name: Validate sync on Ubuntu
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run sync validation
+        run: |
+          chmod +x test.sh
+          ./test.sh
+
+  sync-windows:
+    name: Validate sync on Windows
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: test
+        shell: pwsh
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Enable Git long paths
+        run: git config --global core.longpaths true
+
+      - name: Run sync validation
+        run: .\test.ps1

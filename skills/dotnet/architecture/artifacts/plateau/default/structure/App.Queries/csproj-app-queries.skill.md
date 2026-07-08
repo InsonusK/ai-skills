@@ -69,12 +69,12 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-query-integration.skill/Implementation/App.Queries.csproj.extend|App.Queries.csproj]]
 
 ## Directory and class skills
-| `Directory|file` | Description | Pattern skill |
-| ---------------- | ----------- | ------------- |
-| /Queries/{ModuleName} | Cross-module query handlers grouped by primary module |  |
-| /Queries/{QueryName} | Cross-module query handler and optional validator |  |
-| /Specifications | Cross-module projection specs |  |
-| AppQueriesRegistration.cs | DI registration for App.Queries assembly | [[skills/dotnet/architecture/plateau/default/structure/App.Queries/classes/class-app-queries-registration.skill.md|class-AppQueriesRegistration.skill]] |
+| `Directory or file`       | Description                                           | Pattern skill                                                                                                                                                   |
+| ------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /Queries/{ModuleName}     | Cross-module query handlers grouped by primary module |                                                                                                                                                                 |
+| /Queries/{QueryName}      | Cross-module query handler and optional validator     |                                                                                                                                                                 |
+| /Specifications           | Cross-module projection specs                         |                                                                                                                                                                 |
+| AppQueriesRegistration.cs | DI registration for App.Queries assembly              | [[skills/dotnet/architecture/artifacts/plateau/default/structure/App.Queries/classes/class-app-queries-registration.skill\|class-AppQueriesRegistration.skill]] |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/artifacts/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Queries.csproj.create|App.Queries.csproj]]
