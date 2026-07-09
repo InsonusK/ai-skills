@@ -32,19 +32,5 @@ These requirements apply to every function, command, endpoint, or class method t
 - Skip parameter types or default values.
 - Skip error handling.
 
-## Example format
-
-```python
-process_data(source: str, limit: int = 100) -> list[dict]
-```
-
-| Parameter | Type     | Required | Default | Description                          |
-| --------- | -------- | -------- | ------- | ------------------------------------ |
-| `source`  | `str`    | yes      | —       | Path or URL of the input data.       |
-| `limit`   | `int`    | no       | `100`   | Maximum number of records to return. |
-
-**Returns:** `list[dict]` — list of processed records.
-
-**Errors:**
-- `FileNotFoundError` — `source` does not exist.
-- `ValueError` — `limit` is negative.
+## Worked examples
+See [method-a.md](./method-a.md) (`process_data` — required parameter, list return) and [method-b.md](./method-b.md) (`fetch_records` — optional/nullable parameters, dict return with pagination) for two fully worked examples of these rules applied. Do not re-derive a separate example here; extend those two files or add a new one in the same format instead.
