@@ -6,7 +6,6 @@ sources:
       - skills/common-workflow/work-in-git-tree.skill.md
       - skills/common-workflow/mermaid-diagram.skill.md
       - skills/common-workflow/architecture/design
-      - skills/dotnet/architecture/design
       - skills/common-workflow/skill-design.skill
 
 settings:
