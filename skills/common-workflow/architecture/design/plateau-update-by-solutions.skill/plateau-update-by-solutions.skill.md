@@ -1,5 +1,5 @@
 ---
-name: plateau-update-by-solution
+name: plateau-update-by-solutions
 description: When a solution is added to a plateau or a solution used by a plateau is updated, propagate changes to the plateau root skill and to every skill inside the plateau's structure folder.
 whenToUse:
   - adding a new solution to a plateau
@@ -9,35 +9,38 @@ whenToUse:
 
 # Goal
 
-Keep the plateau root skill (`plateau-{plateau-name}.skill.md`) and all of its structural template skills (`{plateau-name}/structure/**`) consistent with every solution that the plateau applies.
+Keep the plateau root skill (`plateau-{plateau-name}.skill.md`) and all of its structural template skills (`{plateau-name}/structure/**`) consistent with every solution that the plateau applies, regardless of the plateau's target language/stack.
 
 # Prerequisites
 
-Read [[skills/dotnet/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] first. The same mapping and normalization rules apply during an update:
+Read [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] first. The same mapping and normalization rules apply during an update:
 
-- `Implementation/` file patterns (`Repository.create.md`, `{Project}.csproj.create.md`, `{Project}.csproj.extend.md`, class files)
-- project and class name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`)
+- `Implementation/` file patterns per stack:
+  - .NET: `Repository.create.md`, `{Project}.csproj.create.md`, `{Project}.csproj.extend.md`, class files
+  - Python: `Repository.create.md`, `{App}.create.md`, `{App}.extend.md`, class/functions/init files
+- project/package and class/module name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`; `{App}` → `package-app`, `{App}.cli.py` → `module-cli`)
 - `.create.md` vs `.extend.md` semantics
-- `{Module}` projects become generic module templates
+- `{Module}`/`{App}` placeholders become generic templates
 
 # Input parameters
 
 - {plateau-name} - name of the plateau to update
 - {solution} - solution skill that is being added, updated, or removed
-- {output} - folder containing the plateau. Default `skills/dotnet/architecture/plateau/{plateau-name}`
+- {stack} - target language/stack of the plateau (`dotnet`, `python`, ...). Detect it from {solution} or from the existing plateau if it already exists
+- {output} - folder containing the plateau. Default `skills/{stack}/architecture/plateau/{plateau-name}`
 
 # How to identify affected structural skills
 
 1. Open the plateau root skill: `{output}/plateau-{plateau-name}.skill.md`
 2. Scan `{output}/structure/` for existing skills that already reference {solution} in `created_by` or `__Applied solutions__`
 3. Scan `Implementation/` folder inside {solution} to discover all files:
-   - `Repository.create.md`
-   - `{Project}.csproj.create.md` and `{Project}.csproj.extend.md`
-   - nested `{Class}.cs.create.md` and `{Class}.cs.extend.md`
+   - `Repository.create.md` / `Repository.extend.md`
+   - .NET: `{Project}.csproj.create.md` / `.extend.md` and nested `{Class}.cs.create.md` / `.extend.md`
+   - Python: `{App}.create.md` / `.extend.md` (`element_kind: project`) and nested class/functions/init files
 4. Map each discovered implementation file to a structural skill using the normalization rules from plateau-create-by-solutions.skill:
-   - `Repository.create.md` → `sln-{plateau-name}.skill.md`
-   - `{Project}.csproj.create/.extend.md` → `csproj-{normalized}.skill.md`
-   - `{Class}.cs.create/.extend.md` → `class-{normalized}.skill.md`
+   - `Repository.create.md`/`.extend.md` → `sln-{plateau-name}.skill.md` (.NET) or `repo-{plateau-name}.skill.md` (Python)
+   - `{Project}.csproj.create/.extend.md` → `csproj-{normalized}.skill.md`; `{App}.create/.extend.md` → `package-{normalized}.skill.md`
+   - `{Class}.cs.create/.extend.md` → `class-{normalized}.skill.md`; python class/functions/init files → `module-{normalized}.skill.md`
 5. The union of (2) and (4) is the set of skills that must be created or updated
 
 # Rules
@@ -97,7 +100,7 @@ If a solution is removed from the plateau:
 # Workflow
 
 1. Identify the plateau root skill: `{output}/plateau-{plateau-name}.skill.md`
-2. Identify the solution being added, updated, or removed
+2. Identify the solution being added, updated, or removed, and its {stack}
 3. Discover affected structural skills (see [How to identify affected structural skills](#how-to-identify-affected-structural-skills))
 4. For each affected structural skill:
    - Apply the correct `.create` / `.extend` action
@@ -117,12 +120,14 @@ If a solution is removed from the plateau:
 
 # Examples
 
-- [[skills/dotnet/architecture/design/plateau-update-by-solution.skill/examples/example-add-solution|Adding a new solution to a plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
-- [[skills/dotnet/architecture/design/plateau-update-by-solution.skill/examples/example-update-solution|Updating an existing solution in a plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
+- [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/examples/example-add-solution|Adding a new solution to a .NET plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
+- [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/examples/example-update-solution|Updating an existing solution in a .NET plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
+
+> Both examples below use the .NET file patterns and skill names (`sln-*`, `csproj-*`, `class-*`). For a Python plateau, apply the exact same workflow and rules, substituting the Python file patterns and skill names from [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] (`repo-*`, `package-*`, `module-*`).
 
 # Check list
 
-- [ ] `plateau-create-by-solutions.skill` mapping rules were applied
+- [ ] `plateau-create-by-solutions.skill` mapping rules were applied for the plateau's {stack}
 - [ ] Plateau root skill references the new/updated solution in `created_by`
 - [ ] Plateau root skill describes the solution in `Core Principles` or `Capabilities`
 - [ ] Plateau root skill includes the solution in the correct `__Applied solutions__` list
