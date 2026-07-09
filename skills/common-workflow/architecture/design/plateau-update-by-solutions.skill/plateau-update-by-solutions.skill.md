@@ -134,87 +134,8 @@ If multiple solutions changed at once or the plateau is out of sync:
 
 # Examples
 
-## Example 1: adding a new solution to a plateau
-
-### Input
-
-- plateau-name: `default`
-- target-stack: `dotnet`
-- change-type: `add`
-- solution: `solution-entity-edit-timestamp`
-- output: `skills/dotnet/architecture/plateau/default`
-
-### Source files discovered in Implementation/
-
-`solution-entity-edit-timestamp`:
-- `Shared.csproj.extend.md`
-- `Shared.csproj.extend/ICommandWithTimestamp.cs.create.md`
-- `{Module}.Domain.csproj.extend.md`
-- `{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md`
-- `App.Infrastructure.csproj.extend.md`
-- `App.Infrastructure.csproj.extend/AppDbContext.cs.extend.md`
-
-### Affected skills and actions
-
-| Implementation file | Structural skill | Action |
-| ------------------- | ---------------- | ------ |
-| `Shared.csproj.extend.md` | `structure/Shared/artifact-shared.skill.md` | Update |
-| `Shared.csproj.extend/ICommandWithTimestamp.cs.create.md` | `structure/Shared/files/file-i-command-with-timestamp.skill.md` | Create |
-| `{Module}.Domain.csproj.extend.md` | `structure/{Module}.Domain/artifact-module-domain.skill.md` | Update |
-| `{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md` | `structure/{Module}.Domain/files/file-entity.skill.md` | Update |
-| `App.Infrastructure.csproj.extend.md` | `structure/App.Infrastructure/artifact-app-infrastructure.skill.md` | Update |
-| `App.Infrastructure.csproj.extend/AppDbContext.cs.extend.md` | `structure/App.Infrastructure/files/file-appdbcontext.skill.md` | Update |
-
-### Updates to plateau root skill
-
-- Add `solution-entity-edit-timestamp` to `created_by`.
-- Update `description` to mention the new capability.
-- Add a new `Core Principles` bullet if the solution introduces a new principle.
-- Add a new `Capabilities` section if needed.
-- Add `solution-entity-edit-timestamp` to every relevant `__Applied solutions__` list.
-- Bump `version`.
-
-## Example 2: updating an existing solution in a plateau
-
-### Input
-
-- plateau-name: `default`
-- target-stack: `dotnet`
-- change-type: `update`
-- solution: `solution-command-integration`
-- change: handler rules moved from the root solution skill into class-specific implementation files
-
-### Changed source files in Implementation/
-
-`solution-command-integration`:
-- `{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md` — rules added/updated
-- `{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md` — rules added/updated
-- `solution-command-integration.skill.md` — duplicate rules removed from root skill
-
-### Affected skills and actions
-
-| Changed implementation file | Structural skill | Action |
-| --------------------------- | ---------------- | ------ |
-| `{FeatureName}.Handler.cs.create.md` | `structure/{Module}.Application/files/file-feature-handler.skill.md` | Update Rules |
-| `{FeatureName}.Validator.cs.create.md` | `structure/{Module}.Application/files/file-feature-validator.skill.md` | Update Rules |
-
-### What the agent must do
-
-1. Re-read the changed implementation files in `solution-command-integration/Implementation/`.
-2. Open the affected file skills.
-3. In each file skill:
-   - Add new rules that appeared in the implementation file.
-   - Remove rules that were deleted from the implementation file (if they are not duplicated elsewhere).
-   - Update `__Applied solutions__` bullets if file names changed.
-   - Bump `version`.
-4. Check the plateau root skill and repository skill:
-   - If the root solution skill no longer contains content that belongs to the plateau root, remove it.
-   - If new repository-level content appeared, add it.
-5. Bump `version` of the plateau root skill and any changed structural skills.
-
-### Key observation
-
-Updating an existing solution is not just appending new bullets. The agent must **diff** the old and new implementation state and mirror those changes in the plateau skills, including removing content that no longer exists in the source solution.
+- [[./examples/example-add-solution|Example: adding a new solution to a plateau]]
+- [[./examples/example-update-solution|Example: updating an existing solution in a plateau]]
 
 # Check list
 
