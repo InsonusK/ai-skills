@@ -17,23 +17,33 @@ tags:
 - Documentation for AI agents must be executable instructions, not explanatory text for humans.
 - The agent should read the skill and immediately know what actions to take, what parameters to pass, and what output to expect.
 
+# Structure
+This skill is split into focused sections. Read them in order when writing a new skill, or jump to the relevant section when updating an existing one.
+
+- [installation.md](./installation.md) — How to document installation, import, environment setup, and access for the library, CLI, or API.
+- [method-calls.md](./method-calls.md) — General requirements that apply to every documented method, command, or endpoint.
+- [method-a.md](./method-a.md) — Example documentation for a primary method (`process_data`). Shows exact signature, parameters, return value, errors, and a runnable example.
+- [method-b.md](./method-b.md) — Example documentation for a secondary method (`fetch_records`). Shows exact signature, parameters, return value, errors, and a runnable example.
+
+Use [method-a.md](./method-a.md) and [method-b.md](./method-b.md) as templates when you document real methods of the target library, CLI, or API.
+
 # Rule
 
 ## MUST
-- Write the documentation as a skill following [skill-design.skill](./skill-design.skill/skill-design.skill.md).
+- Write the documentation as a skill following [skill-design.skill](../skill-design.skill/skill-design.skill.md).
 - Save the skill in the `docs/skills/` directory under the correct domain (for example, `docs/skills/python/`, `docs/skills/dotnet/`, `docs/skills/devops/`, or `docs/skills/common-workflow/` if it is cross-domain).
 - Write `whenToUse` as concrete trigger conditions, not as a generic description.
 - Provide actionable rules that an agent can execute directly.
 - Cover all information another agent needs to call the library, CLI, or API:
-  - How to install, import, or access it.
-  - Entry points: functions, commands, endpoints, or classes.
+  - How to install, import, or access it ([installation.md](./installation.md)).
+  - Entry points: functions, commands, endpoints, or classes ([method-calls.md](./method-calls.md)).
   - Required and optional parameters with their types and default values.
   - Return values, response format, or output shape.
   - Error handling and common failure modes.
-  - At least one minimal working example.
+  - At least one minimal working example for every entry point.
 
 ## SHOULD
-- Use the [skill.template.md](./skill-design.skill/templates/skill.template.md) when no domain-specific template exists.
+- Use the [skill.template.md](../skill-design.skill/templates/skill.template.md) when no domain-specific template exists.
 - Keep one skill focused on one library, tool, or API.
 - Add tags that help other agents discover the skill.
 - Link to official human-readable documentation only as supplementary context; do not rely on it as the primary instruction source.
@@ -76,8 +86,8 @@ tags:
 # Check list
 - [ ] The documentation is saved as a skill in the `docs/skills/` directory.
 - [ ] `whenToUse` clearly states when another agent should apply the skill.
-- [ ] The skill covers installation/import, entry points, parameters, return/output, errors, and examples.
-- [ ] All rules are actionable for an AI agent.
+- [ ] The skill covers installation/import ([installation.md](./installation.md)), entry points, parameters, return/output, errors, and examples.
+- [ ] Every method follows the general requirements in [method-calls.md](./method-calls.md).
 - [ ] Examples show exact code, commands, or requests, not only descriptions.
 - [ ] No human-oriented marketing or conceptual-only text remains.
-- [ ] The skill follows [skill-design.skill](./skill-design.skill/skill-design.skill.md).
+- [ ] The skill follows [skill-design.skill](../skill-design.skill/skill-design.skill.md).
