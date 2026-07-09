@@ -10,7 +10,7 @@ tags:
 # How Apply this template
 1. Use this template once per functional domain (a group of related methods, commands, or endpoints), never once per individual method — see the "separate skill per individual method" anti-pattern in [documentation-for-ai-agents.skill.md](../documentation-for-ai-agents.skill.md).
 2. Link back to {library-name}'s root/overview skill for installation and access instead of repeating it.
-3. Document every method in this domain following [method-calls.md](../method-calls.md), at the level of detail shown in the worked examples at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/).
+3. Document every method in this domain following [method-calls.template.md](./method-calls.template.md), at the level of detail shown in the worked examples at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/).
 4. Remove all `hint` and `example` blocks, and this `# How Apply this template` section, before finalizing the skill.
 
 # Goal

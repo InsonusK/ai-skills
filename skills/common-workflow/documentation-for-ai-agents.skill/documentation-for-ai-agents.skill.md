@@ -43,7 +43,7 @@ docs/skills/<domain>/<library>.skill/
 **Templates to use**
 
 - Root skill: [templates/library.skill.template.md](./templates/library.skill.template.md)
-- Method fragment format: follow [method-calls.md](./method-calls.md) and copy the level of detail from [examples/simple_skill/mylib.skill/method-process_data.md](./examples/simple_skill/mylib.skill/method-process_data.md) and [examples/simple_skill/mylib.skill/method-fetch_records.md](./examples/simple_skill/mylib.skill/method-fetch_records.md).
+- Method fragment format: follow [templates/method-calls.template.md](./templates/method-calls.template.md) and copy the level of detail from [examples/simple_skill/mylib.skill/method-process_data.md](./examples/simple_skill/mylib.skill/method-process_data.md) and [examples/simple_skill/mylib.skill/method-fetch_records.md](./examples/simple_skill/mylib.skill/method-fetch_records.md).
 
 **Worked example**
 
@@ -72,7 +72,7 @@ docs/skills/<domain>/<library>-<domain>.skill.md    # one child skill per domain
 
 - Root skill: [templates/library.skill.template.md](./templates/library.skill.template.md)
 - Domain child skill: [templates/method-group.skill.template.md](./templates/method-group.skill.template.md)
-- Method fragment format inside each child skill: follow [method-calls.md](./method-calls.md).
+- Method fragment format inside each child skill: follow [templates/method-calls.template.md](./templates/method-calls.template.md).
 
 **Worked example**
 
@@ -82,7 +82,7 @@ See [examples/complex_skill/](./examples/complex_skill/) for a complete skill gr
 
 This skill is split into focused sections. Read them in order when writing a new skill, or jump to the relevant section when updating an existing one.
 
-- [method-calls.md](./method-calls.md) — General requirements that apply to every documented method, command, or endpoint.
+- [templates/method-calls.template.md](./templates/method-calls.template.md) — General requirements that apply to every documented method, command, or endpoint.
 - [templates/installation.md](./templates/installation.md) — Rules and example format for the attached `installation.md` file of a library or API skill.
 - [templates/library.skill.template.md](./templates/library.skill.template.md) — Fill-in-the-blank template for the root/overview skill (single-skill shape, or the root of a skill group).
 - [templates/method-group.skill.template.md](./templates/method-group.skill.template.md) — Fill-in-the-blank template for a child skill covering one functional domain (skill-group shape only).
@@ -99,7 +99,7 @@ This skill is split into focused sections. Read them in order when writing a new
 - Provide actionable rules that an agent can execute directly.
 - Cover all information another agent needs to call the library, CLI, or API:
   - How to install, import, or access it ([templates/installation.md](./templates/installation.md)).
-  - Entry points: functions, commands, endpoints, or classes ([method-calls.md](./method-calls.md)).
+  - Entry points: functions, commands, endpoints, or classes ([templates/method-calls.template.md](./templates/method-calls.template.md)).
   - Required and optional parameters with their types and default values.
   - Return values, response format, or output shape.
   - Error handling and common failure modes.
@@ -167,7 +167,7 @@ This skill is split into focused sections. Read them in order when writing a new
 - [ ] The skill covers installation/import ([templates/installation.md](./templates/installation.md)), entry points, parameters, return/output, errors, and examples.
 - [ ] Installation/access lives only in `installation.md`, attached to the root/library skill — it is never its own skill file.
 - [ ] In a skill group, installation/access is documented once in the root skill and linked from every child skill.
-- [ ] Every method follows the general requirements in [method-calls.md](./method-calls.md).
+- [ ] Every method follows the general requirements in [templates/method-calls.template.md](./templates/method-calls.template.md).
 - [ ] Examples show exact code, commands, or requests, not only descriptions.
 - [ ] No human-oriented marketing or conceptual-only text remains.
 - [ ] The skill follows [skill-design.skill](../skill-design.skill/skill-design.skill.md).

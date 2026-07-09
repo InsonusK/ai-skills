@@ -44,7 +44,7 @@ docs/
 **Templates to use**
 
 - `README.md`: [templates/readme.template.md](./templates/readme.template.md)
-- Method format: follow [method-calls.md](./method-calls.md) and copy the level of detail from [examples/simple_skill/docs/api/reference.md](./examples/simple_skill/docs/api/reference.md).
+- Method format: follow [templates/method-calls.template.md](./templates/method-calls.template.md) and copy the level of detail from [examples/simple_skill/docs/api/reference.md](./examples/simple_skill/docs/api/reference.md).
 
 **Worked example**
 
@@ -75,7 +75,7 @@ docs/
 
 - `README.md`: [templates/readme.template.md](./templates/readme.template.md)
 - Domain reference page: [templates/api-reference-group.template.md](./templates/api-reference-group.template.md)
-- Method format inside each page: follow [method-calls.md](./method-calls.md).
+- Method format inside each page: follow [templates/method-calls.template.md](./templates/method-calls.template.md).
 
 **Worked example**
 
@@ -85,7 +85,7 @@ See [examples/complex_skill/](./examples/complex_skill/) for a complete page-gro
 
 This skill is split into focused sections. Read them in order when writing documentation for a new project, or jump to the relevant section when updating existing docs.
 
-- [method-calls.md](./method-calls.md) — General requirements for documenting methods, commands, or endpoints for human readers.
+- [templates/method-calls.template.md](./templates/method-calls.template.md) — General requirements for documenting methods, commands, or endpoints for human readers.
 - [templates/installation.md](./templates/installation.md) — Rules and example format for `README.md`/`docs/installation.md`.
 - [templates/readme.template.md](./templates/readme.template.md) — Fill-in-the-blank template for `README.md` (single reference page shape, or the index of a page group).
 - [templates/api-reference-group.template.md](./templates/api-reference-group.template.md) — Fill-in-the-blank template for a `docs/api/<domain>.md` page (page-group shape only).
@@ -174,7 +174,7 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 - [ ] `README.md` links to the `docs/` directory.
 - [ ] The single-page-vs-page-group decision was made deliberately using [# One page or a page group?](#one-page-or-a-page-group), not defaulted without thought.
 - [ ] The `README.md` was built from [templates/readme.template.md](./templates/readme.template.md); any domain reference page was built from [templates/api-reference-group.template.md](./templates/api-reference-group.template.md).
-- [ ] Detailed method documentation follows the rules in [method-calls.md](./method-calls.md).
+- [ ] Detailed method documentation follows the rules in [templates/method-calls.template.md](./templates/method-calls.template.md).
 - [ ] Every public method, command, or endpoint has human-readable documentation.
 - [ ] In a page group, installation/setup is documented once and linked from every domain page.
 - [ ] Links between `README.md` and `docs/` files are valid.
