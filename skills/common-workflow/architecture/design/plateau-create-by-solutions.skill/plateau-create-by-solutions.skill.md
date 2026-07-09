@@ -170,9 +170,10 @@ The repository skill describes the whole solution. Its sections must stay at the
 - List file skill files in the repository skill `## Directory and artifact skills` table.
 - Create separate skill files for `.create.md` and `.extend.md` of the same artifact/file.
 
-# Example
+# Examples
 
-See [[./examples/example-dotnet-default-plateau|Example: building a .NET plateau from three solutions]].
+- [[./examples/example-dotnet-default-plateau|Example: creating the .NET `default` plateau]] — full mapping from solution skills to the real `skills/dotnet/architecture/artifacts/plateau/default` structure.
+- [[./examples/example-python-default-cli-plateau|Example: creating the Python `default-cli` plateau]] — mapping from `solution-default-cli` to a Python CLI plateau structure.
 
 # Check list
 

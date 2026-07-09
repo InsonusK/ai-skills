@@ -134,6 +134,15 @@ If multiple solutions changed at once or the plateau is out of sync:
 
 # Examples
 
+## Plateau structure examples
+
+Before updating a plateau, understand how the plateau is built from solution skills:
+
+- [[../../plateau-create-by-solutions.skill/examples/example-dotnet-default-plateau|Example: creating the .NET `default` plateau]]
+- [[../../plateau-create-by-solutions.skill/examples/example-python-default-cli-plateau|Example: creating the Python `default-cli` plateau]]
+
+## Update workflow examples
+
 - [[./examples/example-add-solution|Example: adding a new solution to a plateau]]
 - [[./examples/example-update-solution|Example: updating an existing solution in a plateau]]
 
