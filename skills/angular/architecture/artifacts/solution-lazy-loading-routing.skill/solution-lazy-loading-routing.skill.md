@@ -1,5 +1,5 @@
 ---
-name: lazy-loading-routing
+name: solution-lazy-loading-routing
 description: Selective preloading strategy, loadComponent sub-splitting rules, and enforced bundle budgets on top of the base lazy routing already established by loadChildren
 domain: skill
 type: architecture
@@ -22,7 +22,7 @@ extends:
 depends_on:
   - "[[../solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]"
 adr:
-  - "[[adr/preloading-strategy.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-lazy-loading-routing.skill/adr/preloading-strategy|Preloading Strategy ADR]]"
 ---
 
 # Goal
@@ -46,7 +46,7 @@ adr:
 
 # Adr
 
-- [[adr/preloading-strategy.md|Custom selective preloading instead of PreloadAllModules or NoPreloading]]
+- [[skills/angular/architecture/artifacts/solution-lazy-loading-routing.skill/adr/preloading-strategy|Custom selective preloading instead of PreloadAllModules or NoPreloading]]
   - Selected variant: custom selective preloading via a `data.preload` route flag — chosen to avoid unconditionally prefetching federated embeddable-module chunks while still warming up genuinely high-traffic sections
 
 # Requirements

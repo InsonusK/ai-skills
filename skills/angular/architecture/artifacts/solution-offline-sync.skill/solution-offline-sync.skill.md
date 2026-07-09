@@ -1,5 +1,5 @@
 ---
-name: offline-sync
+name: solution-offline-sync
 description: Dexie-backed, per-feature-partitioned mutation queue with idempotent replay, built on top of Offline-first's OfflineTransportError hook and connectivity signal — server-wins conflict resolution with field-scoped diffing, and a designed extension seam for future per-operation conflict logic
 domain: skill
 type: architecture
@@ -23,9 +23,9 @@ depends_on:
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[adr/queue-storage-mechanism.md]]"
-  - "[[adr/queue-partitioning-and-ordering.md]]"
-  - "[[adr/conflict-resolution-strategy.md]]"
+  - "[[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-storage-mechanism|Queue Storage Mechanism ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-partitioning-and-ordering|Queue Partitioning And Ordering ADR]]"
+  - "[[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/conflict-resolution-strategy|Conflict Resolution Strategy ADR]]"
 ---
 
 # Goal
@@ -54,11 +54,11 @@ adr:
 
 # Adr
 
-- [[adr/queue-storage-mechanism.md|Dexie.js + custom orchestration instead of RxDB's document-replication engine or raw IndexedDB]]
+- [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-storage-mechanism|Dexie.js + custom orchestration instead of RxDB's document-replication engine or raw IndexedDB]]
   - Selected variant: Dexie.js — chosen because this application's backend exposes command-style operations, not a document store RxDB's replication protocol assumes, and Dexie's `liveQuery()` gives reactive UI without RxDB's unused replication weight
-- [[adr/queue-partitioning-and-ordering.md|Partition by feature instead of global FIFO or per-entity partitioning]]
+- [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-partitioning-and-ordering|Partition by feature instead of global FIFO or per-entity partitioning]]
   - Selected variant: per-feature partitioning — chosen to directly prevent one struggling feature from blocking others, while staying meaningfully simpler than per-entity dependency tracking
-- [[adr/conflict-resolution-strategy.md|Server wins with field-scoped diff, extension point deferred, instead of full-snapshot diffing, client-wins, or mandatory manual resolution]]
+- [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/conflict-resolution-strategy|Server wins with field-scoped diff, extension point deferred, instead of full-snapshot diffing, client-wins, or mandatory manual resolution]]
   - Selected variant: server-wins + field-scoped diff — chosen to give the user real information about what conflicted without requiring client-side entity snapshots, and to keep this solution's scope bounded while explicitly preparing a seam for smarter future resolution logic
 
 # Requirements
@@ -73,7 +73,7 @@ SOLUTION:
 
 NPM:
 - dexie
-  - Typed, reactive IndexedDB storage for the mutation queue, per [[adr/queue-storage-mechanism.md]]
+  - Typed, reactive IndexedDB storage for the mutation queue, per [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-storage-mechanism|Queue Storage Mechanism ADR]]
 
 BACKEND CONTRACT:
 - Every mutation endpoint MUST support idempotency keys (rejecting or deduplicating a retried request with the same key) and MUST return, on a 409-style conflict, the current values of only the fields the original request attempted to change — this is a required cross-team contract, not solely a frontend concern

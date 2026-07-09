@@ -85,9 +85,10 @@ jobs:
           print("Version was increased")
           PY
 
-  test:
+  test-matrix:
     needs: changes
     if: needs.changes.outputs.src == 'true' || needs.changes.outputs.tests == 'true'
+    name: test (${{ matrix.os }}, ${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -119,4 +120,18 @@ jobs:
 
       - name: Run tests
         run: pytest -v
+
+  test:
+    name: test
+    needs: [changes, test-matrix]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check test results
+        run: |
+          if [ "${{ needs.test-matrix.result }}" = "failure" ]; then
+            echo "Tests failed"
+            exit 1
+          fi
+          echo "Tests passed or skipped"
 ```
