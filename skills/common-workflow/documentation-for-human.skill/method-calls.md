@@ -28,4 +28,4 @@ These requirements apply to every function, command, endpoint, or class method d
 - Skip error handling or edge cases that humans are likely to hit.
 
 ## Worked examples
-See [method-a.md](./method-a.md) (`process_data` — required parameter, list return) and [method-b.md](./method-b.md) (`fetch_records` — optional/nullable parameters, dict return with pagination) for two fully worked examples of these rules applied. Do not re-derive a separate example here; extend those two files or add a new one in the same format instead.
+See the single-reference-page example at [examples/simple_skill/docs/api/reference.md](./examples/simple_skill/docs/api/reference.md) and the page-group examples at [examples/complex_skill/docs/api/](./examples/complex_skill/docs/api/) for fully worked applications of these rules. Do not re-derive a separate example here; extend those examples or add a new method section in the same format instead.

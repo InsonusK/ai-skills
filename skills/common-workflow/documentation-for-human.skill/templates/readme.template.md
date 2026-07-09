@@ -27,7 +27,7 @@ Requires Python 3.10+.
 pip install mylib==1.2.3
 ```
 
-See [docs/installation.md](docs/installation.md) for platform-specific notes.
+See `docs/installation.md` for platform-specific notes.
 ```
 
 ## Quick start
@@ -37,12 +37,12 @@ One complete, runnable usage example a reader can copy and paste to see the proj
 
 ## Documentation
 ```hint
-For the single reference page shape: link directly to docs/api/reference.md.
-For the page group shape: one row per functional domain, each linking to its docs/api/<domain>.md page, with a short description precise enough that a reader can pick the right page without opening it.
+For the single reference page shape: link directly to docs/api/reference.md. Use the worked example at [examples/simple_skill/docs/api/reference.md](../examples/simple_skill/docs/api/reference.md) as a model.
+For the page group shape: one row per functional domain, each linking to its docs/api/<domain>.md page, with a short description precise enough that a reader can pick the right page without opening it. Use the worked example at [examples/complex_skill/docs/api/](../examples/complex_skill/docs/api/) as a model.
 ```
 ```example
-| Topic   | Docs                                | Covers                        |
-| ------- | ------------------------------------ | ------------------------------ |
-| Auth    | [docs/api/auth.md](docs/api/auth.md) | Login, token refresh, logout   |
-| Billing | [docs/api/billing.md](docs/api/billing.md) | Charges, refunds, invoices |
+| Topic   | Docs                      | Covers                        |
+| ------- | ------------------------- | ------------------------------ |
+| Auth    | `docs/api/auth.md`        | Login, token refresh, logout   |
+| Billing | `docs/api/billing.md`     | Charges, refunds, invoices |
 ```

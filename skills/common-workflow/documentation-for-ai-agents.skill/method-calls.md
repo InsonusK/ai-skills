@@ -33,4 +33,4 @@ These requirements apply to every function, command, endpoint, or class method t
 - Skip error handling.
 
 ## Worked examples
-See [method-a.md](./method-a.md) (`process_data` — required parameter, list return) and [method-b.md](./method-b.md) (`fetch_records` — optional/nullable parameters, dict return with pagination) for two fully worked examples of these rules applied. Do not re-derive a separate example here; extend those two files or add a new one in the same format instead.
+See the single-skill example at [examples/simple_skill/mylib.skill/](./examples/simple_skill/mylib.skill/) (`process_data` — required parameter, list return; `fetch_records` — optional/nullable parameters, dict return with pagination) and the skill-group examples at [examples/complex_skill/](./examples/complex_skill/) for fully worked applications of these rules. Do not re-derive a separate example here; extend those examples or add a new method fragment in the same format instead.

@@ -9,9 +9,9 @@ tags:
 
 # How Apply this template
 1. Decide the skill shape first:
-   - **Single skill** — {library-name} has one coherent domain and roughly ten or fewer entry points. Document every method as a fragment file inside this same skill folder (see [method-a.md](../method-a.md) and [method-b.md](../method-b.md) for the fragment format) and skip `# Method-group skills` below.
-   - **Skill group** — {library-name} has several independent functional domains, or more entry points than fit one index. Use this template only for the root/overview skill. Create one child skill per domain from [method-group.skill.template.md](./method-group.skill.template.md), and fill `# Method-group skills` with links to them.
-2. Keep installation/access instructions attached to this skill as `installation.md` in the same folder (see [installation.md](../installation.md) for the format). Installation is never its own skill — every child skill links back here for it instead of repeating it.
+   - **Single skill** — {library-name} has one coherent domain and roughly ten or fewer entry points. Document every method as a fragment file inside this same skill folder. Follow the format in [method-calls.md](../method-calls.md) and the worked single-skill example at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/) and skip `# Method-group skills` below.
+   - **Skill group** — {library-name} has several independent functional domains, or more entry points than fit one index. Use this template only for the root/overview skill. Create one child skill per domain from [method-group.skill.template.md](./method-group.skill.template.md), and fill `# Method-group skills` with links to them. See the worked skill-group example at [examples/complex_skill/](../examples/complex_skill/).
+2. Keep installation/access instructions attached to this skill as `installation.md` in the same folder (see [templates/installation.md](../templates/installation.md) for the format). Installation is never its own skill — every child skill links back here for it instead of repeating it.
 3. Fill every section below with real content about {library-name}.
 4. Remove all `hint` and `example` blocks, and this `# How Apply this template` section, before finalizing the skill.
 
@@ -51,8 +51,8 @@ MUST:
 ```example
 | Domain    | Skill                                              | Covers                                |
 | --------- | --------------------------------------------------- | -------------------------------------- |
-| Auth      | [mylib-auth.skill.md](../mylib-auth.skill.md)       | Login, token refresh, logout           |
-| Billing   | [mylib-billing.skill.md](../mylib-billing.skill.md) | Charges, refunds, invoices             |
+| Auth      | `{library}-auth.skill.md`     | Login, token refresh, logout           |
+| Billing   | `{library}-billing.skill.md`  | Charges, refunds, invoices             |
 ```
 
 # Rule

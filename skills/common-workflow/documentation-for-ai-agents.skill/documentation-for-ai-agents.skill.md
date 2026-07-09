@@ -16,42 +16,78 @@ tags:
 # Core Principle
 - Documentation for AI agents must be executable instructions, not explanatory text for humans.
 - The agent should read the skill and immediately know what actions to take, what parameters to pass, and what output to expect.
-- Skill discovery has a cost: every skill's `name`/`description`/`whenToUse` is loaded up front so an agent can decide what to use, but only the triggered skill's body (and the files it links to) is read in full. Choose the one-skill-vs-skill-group shape below so that cost stays low and `whenToUse` stays precise.
+- Skill discovery has a cost: every skill's `name`/`description`/`whenToUse` is loaded up front so an agent can decide what to use, but only the triggered skill's body (and the files it links to) is read in full. Choose the single-skill or skill-group shape below so that cost stays low and `whenToUse` stays precise.
 
 # One skill or a skill group?
-A library, CLI, or API is not always documented as a single skill. Decide the shape before writing:
 
-- **Single skill (Human Dir, one `whenToUse`)** — use when the target has one coherent domain and a small-to-medium surface (rule of thumb: it fits under one trigger condition and roughly ten or fewer entry points). Keep installation and every method/endpoint as supporting files inside one skill folder, as shown in [# Structure](#structure) below. The agent reads the root skill, then jumps only to the fragment it needs. Build it from [templates/library.skill.template.md](./templates/library.skill.template.md), following its `# How Apply this template` instructions for the single-skill case.
-- **Skill group (one root/overview skill + several child skills)** — use when any of these is true:
-  - The API has multiple functional domains an agent would use independently (for example, an SDK with `auth`, `billing`, and `webhooks` that are never all needed at once).
-  - The surface is large enough that a single index would be hard to navigate (rule of thumb: more than ~10–15 entry points, or several unrelated domains).
-  - Domains have different prerequisites (different credentials, different install extras, different environments).
+Decide the shape before writing any content.
 
-  Structure it as:
-  - `{library}.skill/{library}.skill.md` — root/overview skill built from [templates/library.skill.template.md](./templates/library.skill.template.md). Contains the Goal, Core Principle, a link to the attached `installation.md` (never a separate skill — see [# Rule](#rule)), and a table of links to every child skill. Its `whenToUse` covers "the agent needs to find out how to use `{library}` at all" or general/cross-cutting calls.
-  - `{library}-{domain}.skill.md` per functional domain (for example, `mylib-auth.skill.md`, `mylib-billing.skill.md`), built from [templates/method-group.skill.template.md](./templates/method-group.skill.template.md). Each has its own precise `whenToUse` (for example, "when authenticating a user against `mylib`'s auth endpoints"), documents only the methods in that domain following [method-calls.md](./method-calls.md), and links back to the root skill's `installation.md` instead of repeating install/access instructions.
-  - Group entry points by domain, not by individual method — do not create one skill per method; that fragments discovery without adding trigger precision (see [# Anti-patterns](#anti-patterns)).
+## Single skill
 
-  Example layout for a library with distinct `auth` and `billing` domains:
-  ```
-  docs/skills/python/mylib.skill/
-  ├── mylib.skill.md              # root, from templates/library.skill.template.md
-  └── installation.md             # attached file — never its own skill
-  docs/skills/python/mylib-auth.skill.md       # from templates/method-group.skill.template.md
-  docs/skills/python/mylib-billing.skill.md    # from templates/method-group.skill.template.md
-  ```
+**When to apply**
+
+Use when the target has one coherent domain and a small-to-medium surface:
+- roughly ten or fewer entry points;
+- one trigger condition covers every capability an agent would need;
+- all methods share the same installation, authentication, and conventions.
+
+**Skill structure**
+
+```
+docs/skills/<domain>/<library>.skill/
+├── <library>.skill.md              # root skill
+├── installation.md                 # attached file, never its own skill
+└── method-<name>.md                # one fragment per method/endpoint
+```
+
+**Templates to use**
+
+- Root skill: [templates/library.skill.template.md](./templates/library.skill.template.md)
+- Method fragment format: follow [method-calls.md](./method-calls.md) and copy the level of detail from [examples/simple_skill/mylib.skill/method-process_data.md](./examples/simple_skill/mylib.skill/method-process_data.md) and [examples/simple_skill/mylib.skill/method-fetch_records.md](./examples/simple_skill/mylib.skill/method-fetch_records.md).
+
+**Worked example**
+
+See [examples/simple_skill/mylib.skill/](./examples/simple_skill/mylib.skill/) for a complete single-skill documentation of a fictional small library.
+
+## Skill group
+
+**When to apply**
+
+Use when any of these is true:
+- The API has multiple functional domains an agent would use independently (for example, `auth`, `billing`, `webhooks`).
+- The surface is large enough that a single index would be hard to navigate (rule of thumb: more than ~10–15 entry points, or several unrelated domains).
+- Domains have different prerequisites (different credentials, different install extras, different environments).
+
+**Skill structure**
+
+```
+docs/skills/<domain>/<library>.skill/
+├── <library>.skill.md              # root/overview skill
+└── installation.md                 # attached file, never its own skill
+
+docs/skills/<domain>/<library>-<domain>.skill.md    # one child skill per domain
+```
+
+**Templates to use**
+
+- Root skill: [templates/library.skill.template.md](./templates/library.skill.template.md)
+- Domain child skill: [templates/method-group.skill.template.md](./templates/method-group.skill.template.md)
+- Method fragment format inside each child skill: follow [method-calls.md](./method-calls.md).
+
+**Worked example**
+
+See [examples/complex_skill/](./examples/complex_skill/) for a complete skill group documenting a fictional API with `auth` and `billing` domains.
 
 # Structure
-This skill is split into focused sections. Read them in order when writing a new skill, or jump to the relevant section when updating an existing one. It illustrates the **single-skill** shape; for the **skill-group** shape, apply the same content per domain skill as described in [# One skill or a skill group?](#one-skill-or-a-skill-group).
 
-- [installation.md](./installation.md) — How to document installation, import, environment setup, and access for the library, CLI, or API. Always an attached file next to the root/library skill, never a skill of its own.
+This skill is split into focused sections. Read them in order when writing a new skill, or jump to the relevant section when updating an existing one.
+
 - [method-calls.md](./method-calls.md) — General requirements that apply to every documented method, command, or endpoint.
-- [method-a.md](./method-a.md) — Example documentation for a primary method (`process_data`). Shows exact signature, parameters, return value, errors, and a runnable example.
-- [method-b.md](./method-b.md) — Example documentation for a secondary method (`fetch_records`). Shows exact signature, parameters, return value, errors, and a runnable example.
-- [templates/library.skill.template.md](./templates/library.skill.template.md) — Fill-in-the-blank template for the root/overview skill of a library, CLI, or API (single-skill shape, or the root of a skill group).
-- [templates/method-group.skill.template.md](./templates/method-group.skill.template.md) — Fill-in-the-blank template for a child skill covering one method or one group of related methods (skill-group shape only).
-
-Use [method-a.md](./method-a.md) and [method-b.md](./method-b.md) as worked examples of the level of detail the two templates expect for each method, whether the method ends up as a fragment inside one skill or inside a domain child skill.
+- [templates/installation.md](./templates/installation.md) — Rules and example format for the attached `installation.md` file of a library or API skill.
+- [templates/library.skill.template.md](./templates/library.skill.template.md) — Fill-in-the-blank template for the root/overview skill (single-skill shape, or the root of a skill group).
+- [templates/method-group.skill.template.md](./templates/method-group.skill.template.md) — Fill-in-the-blank template for a child skill covering one functional domain (skill-group shape only).
+- [examples/simple_skill/mylib.skill/](./examples/simple_skill/mylib.skill/) — Worked example of the single-skill shape.
+- [examples/complex_skill/](./examples/complex_skill/) — Worked example of the skill-group shape.
 
 # Rule
 
@@ -62,7 +98,7 @@ Use [method-a.md](./method-a.md) and [method-b.md](./method-b.md) as worked exam
 - Write `whenToUse` as concrete trigger conditions, not as a generic description. In a skill group, make each child skill's `whenToUse` specific to its own domain so it does not overlap with sibling skills.
 - Provide actionable rules that an agent can execute directly.
 - Cover all information another agent needs to call the library, CLI, or API:
-  - How to install, import, or access it ([installation.md](./installation.md)).
+  - How to install, import, or access it ([templates/installation.md](./templates/installation.md)).
   - Entry points: functions, commands, endpoints, or classes ([method-calls.md](./method-calls.md)).
   - Required and optional parameters with their types and default values.
   - Return values, response format, or output shape.
@@ -121,14 +157,14 @@ Use [method-a.md](./method-a.md) and [method-b.md](./method-b.md) as worked exam
 - **A separate skill per individual method**
   - Example: `mylib-process-data.skill.md`, `mylib-fetch-records.skill.md`, one file per function of the same cohesive module.
   - Consequence: skill discovery gets noisy with many near-duplicate `whenToUse` entries, and the agent loses the shared context (installation, error conventions) that ties the methods together.
-  - Instead: group related methods into one domain skill with one method fragment per entry point, as shown in [method-a.md](./method-a.md) and [method-b.md](./method-b.md).
+  - Instead: group related methods into one domain skill with one method fragment per entry point, as shown in [examples/complex_skill/](./examples/complex_skill/).
 
 # Check list
 - [ ] The documentation is saved as a skill in the `docs/skills/` directory.
 - [ ] The single-skill-vs-skill-group decision was made deliberately using [# One skill or a skill group?](#one-skill-or-a-skill-group), not defaulted without thought.
 - [ ] The root/library skill was built from [templates/library.skill.template.md](./templates/library.skill.template.md); any domain child skill was built from [templates/method-group.skill.template.md](./templates/method-group.skill.template.md).
 - [ ] `whenToUse` clearly states when another agent should apply the skill, and in a skill group, each child's `whenToUse` is specific to its own domain.
-- [ ] The skill covers installation/import ([installation.md](./installation.md)), entry points, parameters, return/output, errors, and examples.
+- [ ] The skill covers installation/import ([templates/installation.md](./templates/installation.md)), entry points, parameters, return/output, errors, and examples.
 - [ ] Installation/access lives only in `installation.md`, attached to the root/library skill — it is never its own skill file.
 - [ ] In a skill group, installation/access is documented once in the root skill and linked from every child skill.
 - [ ] Every method follows the general requirements in [method-calls.md](./method-calls.md).

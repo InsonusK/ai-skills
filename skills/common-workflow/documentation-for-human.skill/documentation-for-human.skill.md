@@ -16,51 +16,93 @@ tags:
 # Core Principle
 - Human documentation explains concepts, provides context, and guides the reader through examples.
 - It should answer: what is this, why would I use it, how do I install it, and how do I use it.
-- Navigation has a cost: a reader scans `README.md` first and only opens a `docs/` page when they need it. Choose the one-page-vs-page-group shape below so `README.md` stays scannable and each reference page stays focused on one topic.
+- Navigation has a cost: a reader scans `README.md` first and only opens a `docs/` page when they need it. Choose the single-page or page-group shape below so `README.md` stays scannable and each reference page stays focused on one topic.
 
 # One page or a page group?
-A project's reference documentation does not always fit in one `docs/api/reference.md`. Decide the shape before writing:
 
-- **Single reference page** — use when the project has one coherent domain and a small-to-medium surface (rule of thumb: roughly ten or fewer methods, commands, or endpoints). Keep `README.md` for quick-start and put every method in one `docs/api/reference.md`, as shown in [# Structure](#structure) below. Build it from [templates/readme.template.md](./templates/readme.template.md).
-- **Page group (one README/index + one reference page per domain)** — use when any of these is true:
-  - The project has multiple functional areas a reader would use independently (for example, `auth`, `billing`, `webhooks`).
-  - The method/endpoint list is long enough that one page becomes hard to scan or search (rule of thumb: more than ~10–15 entries, or several unrelated domains).
-  - Domains have different setup, configuration, or credential requirements.
+Decide the shape before writing any content.
 
-  Structure it as:
-  - `README.md` — quick start plus a link table to every domain reference page, built from [templates/readme.template.md](./templates/readme.template.md). Keep installation/setup here or in `docs/installation.md`; never duplicate it inside a domain page.
-  - `docs/api/<domain>.md` per functional domain (for example, `docs/api/auth.md`, `docs/api/billing.md`), built from [templates/api-reference-group.template.md](./templates/api-reference-group.template.md). Each links back to `README.md`/`docs/installation.md` for setup instead of repeating it.
-  - Group methods by domain, not by individual method — do not create a separate page per method; that fragments navigation without helping the reader (see [# Anti-patterns](#anti-patterns)).
+## Single reference page
 
-  Example layout for a project with distinct `auth` and `billing` domains:
-  ```
-  README.md                # quick start + links to docs/api/*.md
-  docs/installation.md     # shared, detailed setup
-  docs/api/auth.md         # from templates/api-reference-group.template.md
-  docs/api/billing.md      # from templates/api-reference-group.template.md
-  ```
+**When to apply**
+
+Use when the project has one coherent domain and a small-to-medium surface:
+- roughly ten or fewer methods, commands, or endpoints;
+- one `README.md` plus one `docs/api/reference.md` covers everything a reader needs;
+- all methods share the same installation and conventions.
+
+**Documentation structure**
+
+```
+README.md                # quick start + link to docs/api/reference.md
+docs/
+├── installation.md      # detailed setup (optional, can stay in README.md)
+└── api/
+    └── reference.md     # every public method on one page
+```
+
+**Templates to use**
+
+- `README.md`: [templates/readme.template.md](./templates/readme.template.md)
+- Method format: follow [method-calls.md](./method-calls.md) and copy the level of detail from [examples/simple_skill/docs/api/reference.md](./examples/simple_skill/docs/api/reference.md).
+
+**Worked example**
+
+See [examples/simple_skill/](./examples/simple_skill/) for a complete single-reference-page documentation of a fictional small library.
+
+## Page group
+
+**When to apply**
+
+Use when any of these is true:
+- The project has multiple functional areas a reader would use independently (for example, `auth`, `billing`, `webhooks`).
+- The method/endpoint list is long enough that one page becomes hard to scan or search (rule of thumb: more than ~10–15 entries, or several unrelated domains).
+- Domains have different setup, configuration, or credential requirements.
+
+**Documentation structure**
+
+```
+README.md                   # quick start + link table to docs/api/*.md
+docs/
+├── installation.md         # shared, detailed setup
+└── api/
+    ├── auth.md             # one domain page
+    ├── billing.md          # one domain page
+    └── ...
+```
+
+**Templates to use**
+
+- `README.md`: [templates/readme.template.md](./templates/readme.template.md)
+- Domain reference page: [templates/api-reference-group.template.md](./templates/api-reference-group.template.md)
+- Method format inside each page: follow [method-calls.md](./method-calls.md).
+
+**Worked example**
+
+See [examples/complex_skill/](./examples/complex_skill/) for a complete page-group documentation of a fictional API with `auth` and `billing` domains.
 
 # Structure
-This skill is split into focused sections. Read them in order when writing documentation for a new project, or jump to the relevant section when updating existing docs. It illustrates the **single reference page** shape; for the **page group** shape, apply the same content per domain page as described in [# One page or a page group?](#one-page-or-a-page-group).
 
-- [installation.md](./installation.md) — How to write installation and setup instructions in `README.md`. Always lives in `README.md`/`docs/installation.md`, never as its own domain page.
+This skill is split into focused sections. Read them in order when writing documentation for a new project, or jump to the relevant section when updating existing docs.
+
 - [method-calls.md](./method-calls.md) — General requirements for documenting methods, commands, or endpoints for human readers.
-- [method-a.md](./method-a.md) — Example documentation for a primary method (`process_data`) in `docs/`.
-- [method-b.md](./method-b.md) — Example documentation for a secondary method (`fetch_records`) in `docs/`.
+- [templates/installation.md](./templates/installation.md) — Rules and example format for `README.md`/`docs/installation.md`.
 - [templates/readme.template.md](./templates/readme.template.md) — Fill-in-the-blank template for `README.md` (single reference page shape, or the index of a page group).
-- [templates/api-reference-group.template.md](./templates/api-reference-group.template.md) — Fill-in-the-blank template for a `docs/api/<domain>.md` page covering one group of related methods (page-group shape only).
-
-Use [method-a.md](./method-a.md) and [method-b.md](./method-b.md) as worked examples of the level of detail the two templates expect for each method, whether it ends up inside one `docs/api/reference.md` or inside a domain page.
+- [templates/api-reference-group.template.md](./templates/api-reference-group.template.md) — Fill-in-the-blank template for a `docs/api/<domain>.md` page (page-group shape only).
+- [examples/simple_skill/](./examples/simple_skill/) — Worked example of the single reference page shape.
+- [examples/complex_skill/](./examples/complex_skill/) — Worked example of the page group shape.
 
 # README.md structure
+
 At minimum, `README.md` MUST contain:
 - Project title and one-sentence description.
 - What problem the project solves and why it exists.
-- Installation instructions (can link to [installation.md](./installation.md) if detailed).
+- Installation instructions (can link to [templates/installation.md](./templates/installation.md) if detailed).
 - A quick-start usage example.
 - Pointers to the `docs/` directory for detailed documentation (a single reference page, or a link table to domain pages — see [# One page or a page group?](#one-page-or-a-page-group)).
 
 # docs/ directory structure
+
 Keep human-oriented detailed documentation in the `docs/` directory. Organize it so a reader can navigate by topic:
 - `docs/installation.md` or keep installation in `README.md`.
 - `docs/usage.md` or per-feature guides.
@@ -124,7 +166,7 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 - **A separate page per individual method**
   - Example: `docs/api/process-data.md`, `docs/api/fetch-records.md`, one file per function of the same cohesive module.
   - Consequence: the reader loses the shared context (setup, common errors) that ties the methods together, and the docs directory becomes hard to browse.
-  - Instead: group related methods into one domain page, as shown in [method-a.md](./method-a.md) and [method-b.md](./method-b.md).
+  - Instead: group related methods into one domain page, as shown in [examples/complex_skill/](./examples/complex_skill/).
 
 # Check list
 - [ ] `README.md` explains what the project does and how to install it.

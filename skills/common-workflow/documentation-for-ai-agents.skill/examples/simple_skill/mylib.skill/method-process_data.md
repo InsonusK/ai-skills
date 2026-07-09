@@ -1,4 +1,4 @@
-# Method A: `process_data`
+# `process_data`
 
 Primary method that processes an input source and returns a list of records.
 

@@ -10,7 +10,7 @@ tags:
 # How Apply this template
 1. Use this template once per functional domain (a group of related methods, commands, or endpoints), never once per individual method — see the "separate skill per individual method" anti-pattern in [documentation-for-ai-agents.skill.md](../documentation-for-ai-agents.skill.md).
 2. Link back to {library-name}'s root/overview skill for installation and access instead of repeating it.
-3. Document every method in this domain following [method-calls.md](../method-calls.md), at the level of detail shown in [method-a.md](../method-a.md) and [method-b.md](../method-b.md).
+3. Document every method in this domain following [method-calls.md](../method-calls.md), at the level of detail shown in the worked examples at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/).
 4. Remove all `hint` and `example` blocks, and this `# How Apply this template` section, before finalizing the skill.
 
 # Goal
@@ -26,7 +26,7 @@ What this domain of {library-name} lets an agent accomplish.
 Link back to the root skill for installation/access. Do not duplicate install instructions here — this skill assumes the library is already installed and imported.
 ```
 ```example
-Install and import {library-name} first — see [library-name.skill.md](../library-name.skill.md) and its attached `installation.md`.
+Install and import {library-name} first — see `{library-name}.skill.md` and its attached `installation.md`.
 ```
 
 # Methods
@@ -36,7 +36,7 @@ One subsection per method/command/endpoint in this domain, in the format below. 
 
 ## `{method_name}`
 ```hint
-Repeat this subsection for every method in the domain. Follow the exact structure and level of detail shown in [method-a.md](../method-a.md) and [method-b.md](../method-b.md) (signature, parameter table, return value, errors, runnable example with expected output) — do not invent a different format here.
+Repeat this subsection for every method in the domain. Follow the exact structure and level of detail shown in the worked examples at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/) (signature, parameter table, return value, errors, runnable example with expected output) — do not invent a different format here.
 ```
 
 # Rule

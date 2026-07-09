@@ -1,4 +1,4 @@
-# Method B: `fetch_records`
+# `fetch_records`
 
 Secondary method that retrieves stored records by filter criteria.
 
@@ -10,11 +10,11 @@ fetch_records(status: str | None = None, offset: int = 0, page_size: int = 50) -
 
 ## Parameters
 
-| Parameter   | Type        | Required | Default | Description                                |
-| ----------- | ----------- | -------- | ------- | ------------------------------------------ |
-| `status`    | `str\|None` | no       | `None`  | Filter by record status (`active`, `archived`). |
-| `offset`    | `int`       | no       | `0`     | Number of records to skip.                 |
-| `page_size` | `int`       | no       | `50`    | Maximum number of records per page (1–100). |
+| Parameter   | Type          | Required | Default | Description                                |
+| ----------- | ------------- | -------- | ------- | ------------------------------------------ |
+| `status`    | `str \| None` | no       | `None`  | Filter by record status (`active`, `archived`). |
+| `offset`    | `int`         | no       | `0`     | Number of records to skip.                 |
+| `page_size` | `int`         | no       | `50`    | Maximum number of records per page (1–100). |
 
 ## Return value
 
