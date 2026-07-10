@@ -2,7 +2,7 @@
 description: The single mat.theme() definition applied at the design system's root selector
 project_name: design-system
 name: theme
-artifact_type: service
+element_kind: stylesheet
 change_kind: create
 ---
 
@@ -12,7 +12,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```scss
 // theme.scss
 @use '@angular/material' as mat;
 

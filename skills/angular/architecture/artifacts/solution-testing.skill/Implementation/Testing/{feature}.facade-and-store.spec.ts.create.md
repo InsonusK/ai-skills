@@ -2,7 +2,7 @@
 description: Generic pattern for unit-testing a Facade (faking its Client) and a feature Signal Store (faking its Facade) via TestBed, without any HTTP mocking
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -15,7 +15,7 @@ This is not tied to one concrete feature. It applies to `{feature}.facade.ts` sp
 
 # Implementation changes
 
-```code example
+```typescript
 // orders.facade.spec.ts — fakes the Client, no HttpTestingController involved
 describe('OrdersFacade', () => {
   let facade: OrdersFacade;
@@ -41,7 +41,7 @@ describe('OrdersFacade', () => {
 });
 ```
 
-```code example
+```typescript
 // orders.store.spec.ts — fakes the Facade, no HTTP or Client involved
 describe('OrdersStore', () => {
   let store: InstanceType<typeof OrdersStore>;

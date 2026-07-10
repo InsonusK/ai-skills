@@ -38,6 +38,8 @@ This is a separate repository from the platform monorepo, owned and deployed ind
 ## MUST
 - The repository MUST publish its `remoteEntry` and exposed module path to a location the platform's runtime remote registry can discover (see [[../PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create.md]]) — how that publication happens (a manifest file, a registration API call, etc.) is an operational detail owned by this repository's own deploy pipeline.
 - The repository MUST declare `@platform/contracts` as a `singleton: true` shared dependency in its federation config, at a version compatible with the platform's expected range.
+
+## MUST NOT
 - The repository MUST NOT import platform-shell internals directly — the only contract with the platform is `@platform/contracts` plus the federation `remoteEntry`/exposed-module boundary.
 
 ## SHOULD

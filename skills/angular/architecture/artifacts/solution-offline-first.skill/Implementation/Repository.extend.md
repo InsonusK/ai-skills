@@ -14,7 +14,7 @@ No new top-level directories. This extends `apps/platform-shell` (service worker
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| /apps/platform-shell/src/sw-build.ts | Custom build step invoking `workbox-build`'s programmatic API to generate the service worker from the five routing rules defined in [[./ServiceWorker/workbox-routes.create.md]], run as part of the Nx build target (not a webpack plugin, since this workspace uses the esbuild-based `ApplicationBuilder`). |
+| /apps/platform-shell/src/sw-build.ts | Custom build step invoking `workbox-build`'s programmatic API to generate the service worker from the five routing rules defined in [[./ServiceWorker/service-worker.create.md]], run as part of the Nx build target (not a webpack plugin, since this workspace uses the esbuild-based `ApplicationBuilder`). |
 | /libs/shared/state/src/lib/connectivity | New slice: `isOnline` (combining `navigator.onLine` events and periodic health-check results), following the same classical-NgRx pattern as the existing `auth` slice. |
 | /libs/{feature}/data-access/src/lib/{feature}.client.ts | Extended: catches a network-level failure (no response received at all) and throws `OfflineTransportError` instead of a generic domain error, distinguishing it from a genuine server-side failure (4xx/5xx, which still map to that feature's own domain errors as already established). |
 

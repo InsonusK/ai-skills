@@ -1,5 +1,5 @@
 ---
-name: design-system-tokens
+name: solution-design-system-tokens
 description: Hybrid token consumption — Angular Material's own M3 --mat-sys-* system tokens consumed directly, with a small custom --ds-* layer only for domain-specific gaps (semantic status/priority colors, spacing, radius); light/dark via native CSS light-dark(); a single fixed brand palette for now
 domain: skill
 type: architecture
@@ -108,7 +108,7 @@ sequenceDiagram
 ## Attempting to hand-set a Material token (anti-pattern, caught in review)
 
 1. A developer, needing a one-off visual tweak, writes `button { --mat-sys-primary: #ff0000; }` directly in a component's stylesheet.
-2. This is flagged against [[./Implementation/Repository.extend.md#MUST NOT]] — token values must only be changed through Angular Material's Sass override mixins.
+2. This is flagged against [[./Implementation/Repository.extend.md#MUST]] — token values must only be changed through Angular Material's Sass override mixins.
 3. Fix: use `mat.theme-overrides` or the relevant component-specific override mixin instead, which validates the token name and preserves forward compatibility.
 
 # Rules

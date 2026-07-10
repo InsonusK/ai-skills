@@ -2,7 +2,7 @@
 description: Generic pattern for lazy-loading decisions inside a feature's own routes — when to split off a sub-route with loadComponent, and the feature's own chunk budget
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: module
+element_kind: module
 change_kind: extend
 ---
 
@@ -20,7 +20,7 @@ This extends the routes pattern from [[../../../../solution-app-routing.skill/Im
 
 # Implementation changes
 
-```code example
+```typescript
 // orders.routes.ts
 export const ORDERS_ROUTES: Routes = [
   { path: '', component: OrdersListComponent }, // main path: bundled with the feature's own chunk

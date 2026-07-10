@@ -2,7 +2,7 @@
 description: Global ErrorHandler catching every uncaught exception and routing it through LoggerService.error, so it reaches BackendLogSink like any other error-level log
 project_name: platform-shell
 name: global-error-handler
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -18,7 +18,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   constructor(private readonly logger: LoggerService) {}
@@ -32,7 +32,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 }
 ```
 
-```code example
+```typescript
 // app.config.ts
 providers: [
   { provide: ErrorHandler, useClass: GlobalErrorHandler },

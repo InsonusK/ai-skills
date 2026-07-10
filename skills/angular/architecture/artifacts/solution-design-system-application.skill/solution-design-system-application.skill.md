@@ -1,5 +1,5 @@
 ---
-name: design-system-application
+name: solution-design-system-application
 description: How the platform and independently deployed embeddable apps consume the design system npm package — version-negotiated federation singleton (share when compatible, isolate when not) and theme application scoped to the platform shell in production
 domain: skill
 type: architecture
@@ -13,8 +13,7 @@ triggers:
   - Onboarding the design system into the platform shell or a new embeddable app
   - Deciding how to configure the design system as a shared federation dependency
   - Reviewing why an embeddable app is or isn't sharing the platform's design-system instance
-creates:
-  # No new projects — extends apps/platform-shell and any embeddable app's own federation config
+creates: []
 extends:
   - "apps/platform-shell (federation config, root styles)"
   - "{embeddable-app-name} (federation config, root styles) — from the Встраиваемость платформы solution"
@@ -70,14 +69,8 @@ NPM:
 
 # Template Skill Mutations
 
-Plateau: **платформа**
-
 REPOSITORY:
 - [[./Implementation/PlatformHost/platform-shell.federation.extend.md|apps/platform-shell]] - extend - declare the design system as a version-negotiated shared dependency, apply the theme at the root
-
-Plateau: **встраиваемое приложение**
-
-REPOSITORY:
 - [[./Implementation/EmbeddableApp/federation.extend.md|Embeddable app (generic pattern)]] - extend - declare `requiredVersion` for the design system, import the theme for standalone development only
 
 # Workflow

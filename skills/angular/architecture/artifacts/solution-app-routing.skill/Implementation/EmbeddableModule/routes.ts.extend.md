@@ -1,6 +1,6 @@
 ---
 description: Generic pattern for routing inside an embeddable module — mounts the root segments of the features it contains, the same way the shell mounts modules
-element_kind: repository
+element_kind: module
 change_kind: extend
 ---
 
@@ -17,7 +17,7 @@ This applies inside any embeddable application repository (see the platform-embe
 
 # Implementation changes
 
-```code example
+```typescript
 // exposed as part of the module's federation entry point
 export const MODULE_ROUTES: Routes = [
   {

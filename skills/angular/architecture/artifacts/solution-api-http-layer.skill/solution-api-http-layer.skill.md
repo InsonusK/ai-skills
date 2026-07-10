@@ -16,14 +16,14 @@ triggers:
 creates:
   - "libs/shared/http-core"
 extends:
-  - "libs/{feature}/data-access (internal Facade/Client/Mapper structure)"
+  - "Repository (formalizes Facade/Client/Mapper structure inside feature data-access libs)"
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/facade-client-layering|Facade Client Layering ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/error-handling-strategy|Error Handling Strategy ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/dto-mapping-strategy|Dto Mapping Strategy ADR]]"
+  - "[[adr/facade-client-layering.md|Facade Client Layering ADR]]"
+  - "[[adr/error-handling-strategy.md|Error Handling Strategy ADR]]"
+  - "[[adr/dto-mapping-strategy.md|Dto Mapping Strategy ADR]]"
 ---
 
 # Goal
@@ -48,11 +48,11 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/facade-client-layering|Signal Store calls Facade directly; Client is an internal transport detail — Action/Reducer/Effect collapsed for feature-level operations]]
+- [[adr/facade-client-layering.md|Signal Store calls Facade directly; Client is an internal transport detail — Action/Reducer/Effect collapsed for feature-level operations]]
   - Selected variant: this layering — chosen because it removes duplicated orchestration once Signal Store already owns feature-level state, while preserving the global-state NgRx chain unchanged
-- [[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/error-handling-strategy|Client throws typed domain errors; Facade preserves the throw/reject channel]]
+- [[adr/error-handling-strategy.md|Client throws typed domain errors; Facade preserves the throw/reject channel]]
   - Selected variant: typed domain errors via throw/reject — chosen for compatibility with both existing call-site styles (`try/catch` in Signal Store, `catchError` in NgRx effects) without requiring a `Result<T,E>` rewrite
-- [[skills/angular/architecture/artifacts/solution-api-http-layer.skill/adr/dto-mapping-strategy|Manual mapper functions instead of an automatic mapping library]]
+- [[adr/dto-mapping-strategy.md|Manual mapper functions instead of an automatic mapping library]]
   - Selected variant: manual mappers — chosen because some fields require enrichment from external context that an automatic mapper would not handle cleanly anyway
 
 # Requirements
@@ -89,34 +89,7 @@ Artifact-level (generic patterns, applied by any solution that creates a `libs/{
 4. Otherwise, the Facade calls `OrdersClient.addOrder(input)`, which maps the domain model to a DTO (enriching fields as needed via `{feature}.mapper.ts`), calls `libs/shared/http-core`, and maps the response back to a domain model.
 5. The store method receives the result and calls `patchState` to update its own signals — no Reducer involved.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor UI
-    participant Store as OrdersStore (Signal Store)
-    participant Facade as OrdersFacade
-    participant Client as OrdersClient
-    participant HttpCore as shared/http-core
-    UI->>Store: addOrder(input)
-    activate Store
-    Store->>Facade: addOrder(input)
-    activate Facade
-    Facade->>Facade: validate business rules
-    Facade->>Client: addOrder(input)
-    activate Client
-    Client->>Client: map model -> dto
-    Client->>HttpCore: POST /orders
-    activate HttpCore
-    HttpCore-->>Client: response dto
-    deactivate HttpCore
-    Client->>Client: map dto -> model
-    Client-->>Facade: Order
-    deactivate Client
-    Facade-->>Store: Order
-    deactivate Facade
-    Store->>Store: patchState(orders, loading: false)
-    deactivate Store
-```
+![Feature-level data operation](./diagrams/feature-level-data-operation.mmd)
 
 ## Transport failure mapped to a domain error (failure path)
 

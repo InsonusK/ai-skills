@@ -2,7 +2,7 @@
 description: Extend the generic Facade pattern from the API/HTTP-слой solution to catch OfflineTransportError (from the Offline-first solution) and enqueue queueable operations instead of failing outright
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: service
+element_kind: service
 change_kind: extend
 ---
 
@@ -15,7 +15,7 @@ This extends [[../../../solution-api-http-layer.skill/Implementation/DataAccess/
 
 # Implementation changes
 
-```code example
+```typescript
 // orders.facade.ts — extended
 export class OrdersFacade {
   constructor(

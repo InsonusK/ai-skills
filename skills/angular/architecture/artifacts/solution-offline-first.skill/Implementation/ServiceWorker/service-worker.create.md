@@ -1,8 +1,8 @@
 ---
-description: Workbox routing configuration implementing the five caching strategies from caching-strategy-per-content-type.md
+description: Workbox-generated service worker for apps/platform-shell, including the build script and the five content-type-specific runtime routing rules
 project_name: platform-shell
-name: workbox-routes
-artifact_type: service
+name: service-worker
+element_kind: script
 change_kind: create
 ---
 
@@ -12,7 +12,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 // sw-build.ts (invoked as an Nx build step, not a webpack plugin)
 import { injectManifest } from 'workbox-build';
 
@@ -24,7 +24,7 @@ await injectManifest({
 });
 ```
 
-```code example
+```typescript
 // sw-src.ts — the actual runtime routing rules
 import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';

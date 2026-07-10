@@ -2,7 +2,7 @@
 description: Generic pattern for authoring any design system component — own selector, signal-based API, independently designed axes, per-component internal implementation decision
 project_name: design-system
 name: "{component-name}"
-artifact_type: component
+element_kind: component
 change_kind: create
 ---
 
@@ -23,9 +23,9 @@ This is not tied to one concrete component. Any component added to the design sy
 
 # Implementation changes
 
-Worked example — a button component whose API is organized around this application's real usage axes, not Material's own button categorization, per [[../../../adr/component-encapsulation-strategy.md]]:
+Worked example — a button component whose API is organized around this application's real usage axes, not Material's own button categorization, per [[../../adr/component-encapsulation-strategy.md]]:
 
-```code example
+```typescript
 // ds-button.component.ts
 export type DsButtonVariant = 'solid' | 'text' | 'outline' | 'fab';
 export type DsButtonSize = 'sm' | 'md' | 'lg';

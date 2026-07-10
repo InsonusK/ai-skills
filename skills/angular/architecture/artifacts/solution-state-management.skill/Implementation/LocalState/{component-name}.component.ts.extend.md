@@ -2,7 +2,7 @@
 description: Generic pattern for component-local state using plain Angular Signals — applies to any component in the application
 project_name: "{any}"
 name: "{component-name}"
-artifact_type: component
+element_kind: component
 change_kind: extend
 ---
 
@@ -15,7 +15,7 @@ This is not tied to one concrete component. It defines the rule every component 
 
 # Implementation changes
 
-```code example
+```typescript
 @Component({ /* ... */ })
 export class ExampleDialogComponent {
   protected readonly isOpen = signal(false);

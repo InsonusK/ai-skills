@@ -2,7 +2,7 @@
 description: Replay orchestrator — triggered by connectivity restoration, replays each feature's queue partition independently, and implements the server-wins conflict-handling seam
 project_name: shared-offline-sync
 name: replay-orchestrator
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -19,7 +19,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 @Injectable({ providedIn: 'root' })
 export class ReplayOrchestrator {
   constructor(

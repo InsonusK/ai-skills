@@ -2,7 +2,7 @@
 description: Custom --ds-* tokens covering concepts Material's own M3 token set does not model — semantic status/priority colors, spacing, radius
 project_name: design-system
 name: custom-tokens
-artifact_type: service
+element_kind: stylesheet
 change_kind: create
 ---
 
@@ -20,7 +20,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```scss
 // custom-tokens.scss
 html {
   // Semantic status/priority colors — no Material equivalent

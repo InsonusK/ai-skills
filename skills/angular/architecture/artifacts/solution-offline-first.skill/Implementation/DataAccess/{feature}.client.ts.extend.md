@@ -2,7 +2,7 @@
 description: Extend the generic Client pattern from the API/HTTP-слой solution to distinguish a network-level (offline) failure from a genuine server-side error response
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: service
+element_kind: service
 change_kind: extend
 ---
 
@@ -15,7 +15,7 @@ This extends [[../../../solution-api-http-layer.skill/Implementation/DataAccess/
 
 # Implementation changes
 
-```code example
+```typescript
 // {feature}.client.ts — extended catch block
 try {
   const responseDto = await firstValueFrom(this.http.post<OrderDto>('/orders', dto));

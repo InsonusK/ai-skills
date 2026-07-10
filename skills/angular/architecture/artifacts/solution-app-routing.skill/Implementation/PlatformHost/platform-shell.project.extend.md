@@ -28,7 +28,7 @@ change_kind: extend
 
 # Implementation changes
 
-```code example
+```typescript
 // app.routes.ts
 export const routes: Routes = [
   {

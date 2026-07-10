@@ -1,5 +1,5 @@
 ---
-name: design-system-structure
+name: solution-design-system-structure
 description: Baseline repository structure for the design system — a separate Angular CLI multi-project workspace (library + demo app), ng-packagr build, and Changesets-based releases, published as an independently versioned npm package
 domain: skill
 type: architecture
@@ -16,10 +16,8 @@ triggers:
   - Reviewing the design system's build/release tooling
 creates:
   - "design-system-repo (separate repository, projects/design-system, projects/demo)"
-extends:
-  # No existing repository — this is a separate repository, not part of the platform monorepo
-depends_on:
-  # None — this is the base solution for the design-system's own architecture graph
+extends: []
+depends_on: []
 adr:
   - "[[adr/design-system-workspace-tooling.md]]"
   - "[[adr/library-build-tooling.md]]"

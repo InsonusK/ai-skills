@@ -15,7 +15,10 @@ triggers:
   - Deciding how a new kind of request should be cached
   - Reviewing how the application detects and displays offline state
 creates:
-  - "apps/platform-shell/src/sw-src.ts (service worker)"
+  - "apps/platform-shell/src/sw-src.ts (service worker runtime)"
+  - "apps/platform-shell/src/sw-build.ts (Workbox build script)"
+  - "libs/shared/state/src/lib/connectivity/* (connectivity slice)"
+  - "libs/shared/ui/src/lib/offline-banner/offline-banner.component.ts"
 extends:
   - "apps/platform-shell (service worker registration, build)"
   - "libs/shared/state (new connectivity slice)"
@@ -26,9 +29,9 @@ depends_on:
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
   - "[[../solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/service-worker-mechanism|Service Worker Mechanism ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/caching-strategy-per-content-type|Caching Strategy Per Content Type ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/connectivity-detection|Connectivity Detection ADR]]"
+  - "[[adr/service-worker-mechanism.md|Service Worker Mechanism ADR]]"
+  - "[[adr/caching-strategy-per-content-type.md|Caching Strategy Per Content Type ADR]]"
+  - "[[adr/connectivity-detection.md|Connectivity Detection ADR]]"
 ---
 
 # Goal
@@ -54,11 +57,11 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/service-worker-mechanism|Workbox instead of Angular's built-in (and now feature-frozen) Service Worker]]
+- [[adr/service-worker-mechanism.md|Workbox instead of Angular's built-in (and now feature-frozen) Service Worker]]
   - Selected variant: Workbox — chosen because ngsw is explicitly feature-frozen by Angular's own team, and Workbox supports the per-content-type strategies and runtime caching of dynamically-resolved federation chunks this solution needs
-- [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/caching-strategy-per-content-type|Five strategies by content type instead of one uniform strategy]]
+- [[adr/caching-strategy-per-content-type.md|Five strategies by content type instead of one uniform strategy]]
   - Selected variant: five strategies — chosen because auth/mutations, the app shell, static assets, API reads, and federated remote chunks each have genuinely different freshness/availability requirements
-- [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/connectivity-detection|navigator.onLine events + periodic health-check instead of navigator.onLine alone]]
+- [[adr/connectivity-detection.md|navigator.onLine events + periodic health-check instead of navigator.onLine alone]]
   - Selected variant: combined signal — chosen because `navigator.onLine` alone materially misrepresents real backend reachability in common failure modes (captive portals, backend outages)
 
 # Requirements
@@ -73,15 +76,19 @@ SOLUTION:
 
 NPM:
 - workbox-build, workbox-routing, workbox-strategies, workbox-precaching, workbox-expiration
-  - Service worker generation and routing strategies, per [[skills/angular/architecture/artifacts/solution-offline-first.skill/adr/service-worker-mechanism|Service Worker Mechanism ADR]]
+  - Service worker generation and routing strategies, per [[adr/service-worker-mechanism.md|Service Worker Mechanism ADR]]
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - Workbox build integration in `apps/platform-shell`, new `connectivity` slice, `OfflineTransportError` distinction in every feature's Client
+- [[./Implementation/Repository.extend.md|Repository]] - extend - Workbox build integration, `OfflineTransportError` distinction in every feature's Client
+
+PROJECT:
+- [[./Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - register the generated service worker and add the Workbox build step
+- [[./Implementation/GlobalStore/shared-state.project.extend.md|libs/shared/state]] - extend - register the `connectivity` slice
 
 Artifact-level:
-- [[./Implementation/ServiceWorker/workbox-routes.create.md|workbox-routes (sw-src.ts)]] - create - the five content-type routing rules
+- [[./Implementation/ServiceWorker/service-worker.create.md|service-worker (sw-src.ts / sw-build.ts)]] - create - the five content-type routing rules
 - [[./Implementation/GlobalStore/connectivity.store.ts.create.md|connectivity.store.ts]] - create - `isOnline` signal combining browser events and health-check
 - [[./Implementation/DataAccess/{feature}.client.ts.extend.md|{feature}.client.ts (extend)]] - extend - throws `OfflineTransportError` on network-level failure, generic pattern applied to any feature's Client
 - [[./Implementation/UI/offline-banner.component.ts.create.md|offline-banner.component.ts]] - create - shared offline indicator, mounted once at the shell level
@@ -134,7 +141,7 @@ sequenceDiagram
 
 ## MUST
 - [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[./Implementation/ServiceWorker/workbox-routes.create.md#MUST|ServiceWorker/workbox-routes.create]]
+- [[./Implementation/ServiceWorker/service-worker.create.md#MUST|ServiceWorker/service-worker.create]]
 - [[./Implementation/GlobalStore/connectivity.store.ts.create.md#MUST|GlobalStore/connectivity.store.ts.create]]
 - [[./Implementation/DataAccess/{feature}.client.ts.extend.md#MUST|DataAccess/{feature}.client.ts.extend]]
 - [[./Implementation/UI/offline-banner.component.ts.create.md#MUST|UI/offline-banner.component.ts.create]]
@@ -145,7 +152,7 @@ sequenceDiagram
 # Anti-patterns
 
 - [[./Implementation/Repository.extend.md|See Repository.extend.md]] — building even a minimal mutation queue as part of this solution; caching auth/mutation endpoints with anything other than network-only.
-- [[./Implementation/ServiceWorker/workbox-routes.create.md|See workbox-routes.create.md]] — registering routes in an order that lets a mutation be matched by the API-reads rule.
+- [[./Implementation/ServiceWorker/service-worker.create.md|See service-worker.create.md]] — registering routes in an order that lets a mutation be matched by the API-reads rule.
 - [[./Implementation/GlobalStore/connectivity.store.ts.create.md|See connectivity.store.ts.create.md]] — relying on the browser's online signal alone without the health-check.
 - [[./Implementation/DataAccess/{feature}.client.ts.extend.md|See {feature}.client.ts.extend.md]] — treating a network-level failure the same as a server error.
 - [[./Implementation/UI/offline-banner.component.ts.create.md|See offline-banner.component.ts.create.md]] — a feature building its own local offline indicator instead of the shared one.

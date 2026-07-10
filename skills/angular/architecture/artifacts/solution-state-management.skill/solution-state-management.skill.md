@@ -17,11 +17,12 @@ triggers:
 creates:
   - "libs/shared/state"
 extends:
-  # Individual feature libs extend this pattern as they are created by future feature-owning solutions; no specific project is extended by this solution itself
+  - "libs/{feature}/feature (feature-level Signal Store)"
+  - "{component-name}.component.ts (component-local Signals)"
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-state-management.skill/adr/state-management-tiering|State Management Tiering ADR]]"
+  - "[[adr/state-management-tiering.md|State Management Tiering ADR]]"
 ---
 
 # Goal
@@ -47,7 +48,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-state-management.skill/adr/state-management-tiering|Three-tier state management: Signals / NgRx Signal Store / classical NgRx Store]]
+- [[adr/state-management-tiering.md|Three-tier state management: Signals / NgRx Signal Store / classical NgRx Store]]
   - Selected variant: three-tier — chosen to match each tier's tooling cost to its actual state complexity, and to preserve NgRx's auditability and effect-based retry/conflict handling specifically for auth and offline-sync
 
 # Requirements

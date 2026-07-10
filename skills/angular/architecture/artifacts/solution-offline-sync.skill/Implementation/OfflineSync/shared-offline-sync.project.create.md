@@ -34,7 +34,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 // mutation-queue.db.ts
 export interface QueuedMutation {
   id?: number;
@@ -57,7 +57,7 @@ export class MutationQueueDb extends Dexie {
 }
 ```
 
-```code example
+```typescript
 // mutation-queue.service.ts
 @Injectable({ providedIn: 'root' })
 export class MutationQueueService {

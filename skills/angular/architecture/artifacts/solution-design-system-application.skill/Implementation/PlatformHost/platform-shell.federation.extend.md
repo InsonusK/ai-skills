@@ -12,13 +12,13 @@ No new directories. This extends `apps/platform-shell`'s federation config (from
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| /apps/platform-shell/federation.config.ts | Extended: declares the design system as a shared dependency with `singleton: true`, `strictVersion: false`, and the platform's currently targeted version range, per [[../adr/design-system-version-negotiation.md]]. |
-| /apps/platform-shell/src/styles.scss | Imports the design system's `theme.scss` and `custom-tokens.scss` at the root, per [[../adr/theme-application-scope.md]] — the only production consumer required to do so. |
+| /apps/platform-shell/federation.config.ts | Extended: declares the design system as a shared dependency with `singleton: true`, `strictVersion: false`, and the platform's currently targeted version range, per [[../../adr/design-system-version-negotiation.md]]. |
+| /apps/platform-shell/src/styles.scss | Imports the design system's `theme.scss` and `custom-tokens.scss` at the root, per [[../../adr/theme-application-scope.md]] — the only production consumer required to do so. |
 
 # Rules
 
 ## MUST
-- `federation.config.ts` MUST declare the design system with `singleton: true` and `strictVersion: false` — never `strictVersion: true`, per [[../adr/design-system-version-negotiation.md]].
+- `federation.config.ts` MUST declare the design system with `singleton: true` and `strictVersion: false` — never `strictVersion: true`, per [[../../adr/design-system-version-negotiation.md]].
 - `apps/platform-shell`'s root styles MUST import both `theme.scss` and `custom-tokens.scss` from the design system package.
 - The platform's declared design-system version range MUST be kept up to date as the platform itself upgrades, so embeddable apps have an accurate, current range to negotiate against.
 

@@ -2,7 +2,7 @@
 description: Auth session slice inside libs/shared/state — classical NgRx actions/reducer/effects/selectors
 project_name: shared-state
 name: auth
-artifact_type: store
+element_kind: store
 change_kind: create
 ---
 
@@ -22,7 +22,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 // auth.actions.ts
 export const AuthActions = createActionGroup({
   source: 'Auth',
@@ -36,7 +36,7 @@ export const AuthActions = createActionGroup({
 });
 ```
 
-```code example
+```typescript
 // auth.effects.ts
 export class AuthEffects {
   login$ = createEffect(() =>

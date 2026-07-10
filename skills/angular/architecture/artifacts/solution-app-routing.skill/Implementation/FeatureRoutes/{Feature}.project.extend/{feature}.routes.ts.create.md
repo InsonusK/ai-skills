@@ -2,7 +2,7 @@
 description: Generic pattern for a feature's own routes — defined and exported relative to the feature's own root only, applies to any {Feature}/feature project
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: module
+element_kind: module
 change_kind: create
 ---
 
@@ -21,7 +21,7 @@ This is not tied to one concrete feature. Any solution that creates a new `libs/
 
 # Implementation changes
 
-```code example
+```typescript
 // orders.routes.ts
 export const ORDERS_ROUTES: Routes = [
   { path: '', component: OrdersListComponent },
@@ -29,7 +29,7 @@ export const ORDERS_ROUTES: Routes = [
 ];
 ```
 
-```code example
+```typescript
 // index.ts
 export { ORDERS_ROUTES } from './lib/orders.routes';
 ```

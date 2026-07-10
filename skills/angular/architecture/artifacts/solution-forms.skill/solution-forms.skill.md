@@ -13,15 +13,14 @@ triggers:
   - Building a new form in any feature
   - Reviewing whether a form should use Signal Forms or Reactive Forms
   - Deciding whether a form's field schema should be extracted into its own file
-creates:
-  # No new Nx projects — this is a per-component pattern applied inside existing feature libs
+creates: []
 extends:
   - "libs/{feature}/feature (form components)"
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-forms.skill/adr/forms-approach|Forms Approach ADR]]"
+  - "[[adr/forms-approach.md|Forms Approach ADR]]"
 ---
 
 # Goal
@@ -46,7 +45,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-forms.skill/adr/forms-approach|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]
+- [[adr/forms-approach.md|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]
   - Selected variant: Signal Forms as the default — chosen because it is now stable (Angular 22), matches the Signal-based reactivity already adopted for state management, and Angular 22 resolves the main historical blocker (ControlValueAccessor compatibility) for control-heavy forms
 
 # Requirements
@@ -86,28 +85,7 @@ Artifact-level:
 2. The component imports the schema-building function and applies it to its own data Signal.
 3. The rest of the workflow (submission, error display) is identical to the simple case.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant Component as Form component
-    participant Field as FieldTree (Signal Forms)
-    participant Facade as Feature data-access facade
-    User->>Component: fills form, clicks submit
-    Component->>Field: submitForm(field, callback)
-    activate Field
-    Field->>Field: run validators
-    alt invalid
-        Field-->>Component: false (field errors() reflect why)
-    else valid
-        Field->>Facade: callback(value) -> facade call
-        activate Facade
-        Facade-->>Field: result
-        deactivate Facade
-        Field-->>Component: true
-    end
-    deactivate Field
-```
+![Build a non-trivial form with cross-field validation (happy path)](./diagrams/build-a-non-trivial-form-with-cross-field-validation-happy-p.mmd)
 
 ## Existing Reactive Forms form is left untouched (steady state)
 

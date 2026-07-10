@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    actor Dev
+    participant Shell as platform-shell (app.routes.ts)
+    participant Module as Embeddable module
+    participant Feature as Feature (libs/{feature}/feature)
+    Shell->>Module: mount at root segment "module1/" (loadChildren, via remote registry)
+    activate Module
+    Module->>Feature: mount at root segment "feature-map/feature2" (loadChildren)
+    activate Feature
+    Feature-->>Module: FEATURE2_ROUTES (relative to its own root)
+    deactivate Feature
+    Module-->>Shell: MODULE_ROUTES (relative to its own root)
+    deactivate Module

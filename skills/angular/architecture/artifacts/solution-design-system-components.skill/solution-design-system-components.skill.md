@@ -1,5 +1,5 @@
 ---
-name: design-system-components
+name: solution-design-system-components
 description: Signal-based component API authoring (input/output/model), full API encapsulation over Angular Material with independently designed usage axes, and a per-component decision rule for delegating to Material internally versus building a custom implementation
 domain: skill
 type: architecture
@@ -15,9 +15,10 @@ triggers:
   - Deciding how to shape a component's public API
   - Deciding whether a component should delegate to Angular Material internally or be custom-built
 creates:
-  # No fixed set of components — this solution defines the pattern any component follows
+  - "projects/design-system/src/lib/{component-name}/ds-{component-name}.component.ts"
+  - "Ds{ComponentName}Component"
 extends:
-  - "projects/design-system (from the Дизайн-система: структура solution)"
+  - "projects/design-system (publishable library project from solution-design-system-structure)"
 depends_on:
   - "[[../solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]"
   - "[[../solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|Дизайн-система: токены и theming]]"

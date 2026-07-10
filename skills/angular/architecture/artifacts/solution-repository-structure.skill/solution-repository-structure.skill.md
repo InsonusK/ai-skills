@@ -17,12 +17,10 @@ creates:
   - "apps/platform-shell"
   - "libs/shared/ui"
   - "libs/shared/util"
-extends:
-  # No existing repository — this is the base solution everything else extends
-depends_on:
-  # None — this is the base solution for the whole architecture graph
+extends: []
+depends_on: []
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace|Nx Vs Angular Cli Workspace ADR]]"
+  - "[[adr/nx-vs-angular-cli-workspace.md|Nx Vs Angular Cli Workspace ADR]]"
 ---
 
 # Goal
@@ -50,7 +48,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace|Nx monorepo instead of plain Angular CLI workspace]]
+- [[adr/nx-vs-angular-cli-workspace.md|Nx monorepo instead of plain Angular CLI workspace]]
   - Selected variant: Nx monorepo — chosen for affected-based builds, enforced module boundaries, and readiness for the planned embeddability (Module Federation) and offline-first extensions
 
 # Requirements

@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant Facade as OrdersFacade
+    participant Queue as MutationQueueService (Dexie)
+    participant Orchestrator as ReplayOrchestrator
+    participant Backend
+    User->>Facade: addOrder() while offline
+    activate Facade
+    Facade->>Facade: catches OfflineTransportError
+    Facade->>Queue: enqueue(addOrder, payload, idempotencyKey)
+    deactivate Facade
+    Note over Queue: connectivity restored later
+    Queue->>Orchestrator: isOnline becomes true
+    activate Orchestrator
+    Orchestrator->>Facade: addOrder(payload, { idempotencyKey })
+    activate Facade
+    Facade->>Backend: POST /orders (idempotencyKey)
+    activate Backend
+    Backend-->>Facade: 201 Created
+    deactivate Backend
+    Facade-->>Orchestrator: success
+    deactivate Facade
+    Orchestrator->>Queue: markSynced(entry)
+    deactivate Orchestrator

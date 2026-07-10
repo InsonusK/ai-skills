@@ -2,7 +2,7 @@
 description: HTTP interceptor that attaches the in-memory access token to outgoing requests and triggers a silent refresh on 401 responses
 project_name: shared-state
 name: auth
-artifact_type: interceptor
+element_kind: interceptor
 change_kind: create
 ---
 
@@ -19,7 +19,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const store = inject(Store);
   const accessToken = store.selectSignal(selectAccessToken)();

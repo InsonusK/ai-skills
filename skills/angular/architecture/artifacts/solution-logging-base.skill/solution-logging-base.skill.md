@@ -14,11 +14,11 @@ triggers:
 creates:
   - "libs/shared/logging"
 extends:
-  # No existing project extended — this is the base logging solution
+  - "Repository (adds libs/shared/logging project and logging conventions)"
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-logging-base.skill/adr/logging-architecture|Logging Architecture ADR]]"
+  - "[[adr/logging-architecture.md|Logging Architecture ADR]]"
 ---
 
 # Goal
@@ -42,7 +42,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-logging-base.skill/adr/logging-architecture|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
+- [[adr/logging-architecture.md|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
   - Selected variant: `LoggerService` + `LOG_SINKS` + structured entries — chosen so the future backend-logging extension adds a sink without touching any existing call site, and so logs are filterable/queryable from the start
 
 # Requirements
@@ -79,22 +79,7 @@ PROJECT:
 1. The "Логирование (глобальное)" solution adds `BackendLogSink` and registers it alongside `ConsoleLogSink` via the same `LOG_SINKS` multi-provider token.
 2. Every existing `LoggerService` call, across the entire codebase, now also reaches the backend — with zero call-site changes.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Code as Feature code
-    participant Logger as LoggerService
-    participant Sinks as LOG_SINKS
-    participant Console as ConsoleLogSink
-    Code->>Logger: info('Order submitted', { orderId })
-    activate Logger
-    Logger->>Logger: check level against MIN_LOG_LEVEL
-    Logger->>Sinks: forward entry to every registered sink
-    activate Sinks
-    Sinks->>Console: write(entry)
-    deactivate Sinks
-    deactivate Logger
-```
+![Future extension point in use (illustrative, not part of this solution)](./diagrams/future-extension-point-in-use-illustrative-not-part-of-this.mmd)
 
 # Rules
 

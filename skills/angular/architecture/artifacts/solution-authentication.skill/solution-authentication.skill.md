@@ -24,8 +24,8 @@ depends_on:
   - "[[../solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]"
   - "[[../solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-authentication.skill/adr/token-storage-strategy|Token Storage Strategy ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-authentication.skill/adr/authorization-model|Authorization Model ADR]]"
+  - "[[adr/token-storage-strategy.md|Token Storage Strategy ADR]]"
+  - "[[adr/authorization-model.md|Authorization Model ADR]]"
 ---
 
 # Goal
@@ -52,9 +52,9 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-authentication.skill/adr/token-storage-strategy|In-memory access token + HttpOnly refresh cookie instead of localStorage or fully cookie-based auth]]
+- [[adr/token-storage-strategy.md|In-memory access token + HttpOnly refresh cookie instead of localStorage or fully cookie-based auth]]
   - Selected variant: in-memory access + HttpOnly refresh cookie — chosen to minimize what an XSS payload (including from a misbehaving federated remote) can steal
-- [[skills/angular/architecture/artifacts/solution-authentication.skill/adr/authorization-model|Granular permissions instead of coarse roles]]
+- [[adr/authorization-model.md|Granular permissions instead of coarse roles]]
   - Selected variant: granular permissions — chosen for scalability and to decouple embeddable apps from the platform's internal role taxonomy
 
 # Requirements
@@ -103,26 +103,7 @@ This solution's interceptor is a contract point the future "API/HTTP-слой" s
 3. On success, the app has a fresh `accessToken`; the originating request can be retried by the caller (full retry orchestration is finalized in the future "API/HTTP-слой" solution).
 4. The user experiences no visible interruption.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant Interceptor as authInterceptor
-    participant API
-    participant AuthSlice as shared-state (auth)
-    User->>API: request with expired access token
-    activate API
-    API-->>Interceptor: 401
-    deactivate API
-    Interceptor->>AuthSlice: dispatch Silent Refresh Requested
-    activate AuthSlice
-    AuthSlice->>API: refresh call (HttpOnly cookie sent automatically)
-    activate API
-    API-->>AuthSlice: new access token + permissions
-    deactivate API
-    AuthSlice-->>Interceptor: Silent Refresh Succeeded
-    deactivate AuthSlice
-```
+![Transparent recovery from an expired access token (happy path)](./diagrams/transparent-recovery-from-an-expired-access-token-happy-path.mmd)
 
 ## Guarding a feature's own route (happy path)
 

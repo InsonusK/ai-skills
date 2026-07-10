@@ -23,9 +23,9 @@ depends_on:
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-storage-mechanism|Queue Storage Mechanism ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-partitioning-and-ordering|Queue Partitioning And Ordering ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/conflict-resolution-strategy|Conflict Resolution Strategy ADR]]"
+  - "[[adr/queue-storage-mechanism.md|Queue Storage Mechanism ADR]]"
+  - "[[adr/queue-partitioning-and-ordering.md|Queue Partitioning And Ordering ADR]]"
+  - "[[adr/conflict-resolution-strategy.md|Conflict Resolution Strategy ADR]]"
 ---
 
 # Goal
@@ -54,11 +54,11 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-storage-mechanism|Dexie.js + custom orchestration instead of RxDB's document-replication engine or raw IndexedDB]]
+- [[adr/queue-storage-mechanism.md|Dexie.js + custom orchestration instead of RxDB's document-replication engine or raw IndexedDB]]
   - Selected variant: Dexie.js — chosen because this application's backend exposes command-style operations, not a document store RxDB's replication protocol assumes, and Dexie's `liveQuery()` gives reactive UI without RxDB's unused replication weight
-- [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-partitioning-and-ordering|Partition by feature instead of global FIFO or per-entity partitioning]]
+- [[adr/queue-partitioning-and-ordering.md|Partition by feature instead of global FIFO or per-entity partitioning]]
   - Selected variant: per-feature partitioning — chosen to directly prevent one struggling feature from blocking others, while staying meaningfully simpler than per-entity dependency tracking
-- [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/conflict-resolution-strategy|Server wins with field-scoped diff, extension point deferred, instead of full-snapshot diffing, client-wins, or mandatory manual resolution]]
+- [[adr/conflict-resolution-strategy.md|Server wins with field-scoped diff, extension point deferred, instead of full-snapshot diffing, client-wins, or mandatory manual resolution]]
   - Selected variant: server-wins + field-scoped diff — chosen to give the user real information about what conflicted without requiring client-side entity snapshots, and to keep this solution's scope bounded while explicitly preparing a seam for smarter future resolution logic
 
 # Requirements
@@ -73,7 +73,7 @@ SOLUTION:
 
 NPM:
 - dexie
-  - Typed, reactive IndexedDB storage for the mutation queue, per [[skills/angular/architecture/artifacts/solution-offline-sync.skill/adr/queue-storage-mechanism|Queue Storage Mechanism ADR]]
+  - Typed, reactive IndexedDB storage for the mutation queue, per [[adr/queue-storage-mechanism.md|Queue Storage Mechanism ADR]]
 
 BACKEND CONTRACT:
 - Every mutation endpoint MUST support idempotency keys (rejecting or deduplicating a retried request with the same key) and MUST return, on a 409-style conflict, the current values of only the fields the original request attempted to change — this is a required cross-team contract, not solely a frontend concern
@@ -101,33 +101,7 @@ Artifact-level:
 4. Connectivity is restored; the `connectivity` slice's `isOnline` becomes `true`.
 5. `ReplayOrchestrator` replays the `orders` partition FIFO; `addOrder` succeeds; the entry is removed from the queue; the indicator updates to 0.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant Facade as OrdersFacade
-    participant Queue as MutationQueueService (Dexie)
-    participant Orchestrator as ReplayOrchestrator
-    participant Backend
-    User->>Facade: addOrder() while offline
-    activate Facade
-    Facade->>Facade: catches OfflineTransportError
-    Facade->>Queue: enqueue(addOrder, payload, idempotencyKey)
-    deactivate Facade
-    Note over Queue: connectivity restored later
-    Queue->>Orchestrator: isOnline becomes true
-    activate Orchestrator
-    Orchestrator->>Facade: addOrder(payload, { idempotencyKey })
-    activate Facade
-    Facade->>Backend: POST /orders (idempotencyKey)
-    activate Backend
-    Backend-->>Facade: 201 Created
-    deactivate Backend
-    Facade-->>Orchestrator: success
-    deactivate Facade
-    Orchestrator->>Queue: markSynced(entry)
-    deactivate Orchestrator
-```
+![Mutation attempted offline, later synced (happy path)](./diagrams/mutation-attempted-offline-later-synced-happy-path.mmd)
 
 ## Conflict during replay (failure path)
 

@@ -2,7 +2,7 @@
 description: New connectivity slice in libs/shared/state — combines navigator.onLine events with a periodic health-check for an accurate isOnline signal
 project_name: shared-state
 name: connectivity
-artifact_type: store
+element_kind: store
 change_kind: create
 ---
 
@@ -16,7 +16,7 @@ Follows the same convention as the existing `auth` slice: `ConnectivityActions`,
 
 # Implementation changes
 
-```code example
+```typescript
 // connectivity.actions.ts
 export const ConnectivityActions = createActionGroup({
   source: 'Connectivity',
@@ -29,7 +29,7 @@ export const ConnectivityActions = createActionGroup({
 });
 ```
 
-```code example
+```typescript
 // connectivity.effects.ts
 export class ConnectivityEffects {
   browserEvents$ = createEffect(() =>
@@ -52,7 +52,7 @@ export class ConnectivityEffects {
 }
 ```
 
-```code example
+```typescript
 // connectivity.reducer.ts — isOnline is true only when both signals agree
 interface ConnectivityState {
   browserOnline: boolean;

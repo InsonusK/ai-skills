@@ -2,7 +2,7 @@
 description: Generic pattern for a feature's Client — the internal transport layer of its data-access lib, never exported outside it
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -21,7 +21,7 @@ This is not tied to one concrete feature. Any solution that creates a new `libs/
 
 # Implementation changes
 
-```code example
+```typescript
 @Injectable({ providedIn: 'root' })
 export class OrdersClient {
   constructor(

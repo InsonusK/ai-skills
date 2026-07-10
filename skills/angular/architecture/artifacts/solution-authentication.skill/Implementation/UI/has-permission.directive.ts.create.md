@@ -2,7 +2,7 @@
 description: Structural directive that shows/hides UI elements based on a required permission, sharing the same permission model as route guards
 project_name: shared-auth-ui
 name: has-permission
-artifact_type: directive
+element_kind: directive
 change_kind: create
 ---
 
@@ -18,7 +18,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 @Directive({ selector: '[hasPermission]' })
 export class HasPermissionDirective {
   private readonly permissions = inject(Store).selectSignal(selectPermissions);
@@ -35,7 +35,7 @@ export class HasPermissionDirective {
 }
 ```
 
-```code example
+```typescript
 <button *hasPermission="'orders.delete'" (click)="delete()">Delete order</button>
 ```
 

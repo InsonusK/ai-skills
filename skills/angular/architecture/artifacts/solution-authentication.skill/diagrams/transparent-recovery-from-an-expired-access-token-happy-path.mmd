@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant Interceptor as authInterceptor
+    participant API
+    participant AuthSlice as shared-state (auth)
+    User->>API: request with expired access token
+    activate API
+    API-->>Interceptor: 401
+    deactivate API
+    Interceptor->>AuthSlice: dispatch Silent Refresh Requested
+    activate AuthSlice
+    AuthSlice->>API: refresh call (HttpOnly cookie sent automatically)
+    activate API
+    API-->>AuthSlice: new access token + permissions
+    deactivate API
+    AuthSlice-->>Interceptor: Silent Refresh Succeeded
+    deactivate AuthSlice

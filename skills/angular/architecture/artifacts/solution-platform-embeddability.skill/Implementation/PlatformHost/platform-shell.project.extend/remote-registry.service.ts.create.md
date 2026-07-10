@@ -2,7 +2,7 @@
 description: Add a runtime remote registry service that resolves embeddable apps' remoteEntry URLs from configuration instead of build-time federation config
 project_name: platform-shell
 name: remote-registry
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -20,7 +20,7 @@ change_kind: create
 
 `RemoteRegistryService` fetches a remotes manifest (embeddable app name → remoteEntry URL → exposed module path) and exposes it as a signal so the shell can react to registry updates without a full reload.
 
-```code example
+```typescript
 @Injectable({ providedIn: 'root' })
 export class RemoteRegistryService {
   private readonly manifest = signal<RemoteManifestEntry[]>([]);

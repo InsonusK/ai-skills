@@ -21,7 +21,7 @@ change_kind: extend
 
 # Implementation changes
 
-```code example
+```typescript
 // selective-preloading.strategy.ts
 @Injectable({ providedIn: 'root' })
 export class SelectivePreloadingStrategy implements PreloadingStrategy {
@@ -31,7 +31,7 @@ export class SelectivePreloadingStrategy implements PreloadingStrategy {
 }
 ```
 
-```code example
+```typescript
 // app.routes.ts (mounting point — see App routing solution)
 export const routes: Routes = [
   {
@@ -47,7 +47,7 @@ export const routes: Routes = [
 ];
 ```
 
-```code example
+```typescript
 // app.config.ts
 provideRouter(routes, withPreloading(SelectivePreloadingStrategy));
 ```

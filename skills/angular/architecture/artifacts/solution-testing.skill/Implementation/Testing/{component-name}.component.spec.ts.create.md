@@ -2,7 +2,7 @@
 description: Generic pattern for component tests using Angular Testing Library, interacting through the rendered DOM and faking the component's Signal Store
 project_name: "{Feature}"
 name: "{component-name}"
-artifact_type: component
+element_kind: component
 change_kind: create
 ---
 
@@ -15,7 +15,7 @@ This is not tied to one concrete component. Any component rendering a template g
 
 # Implementation changes
 
-```code example
+```typescript
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 

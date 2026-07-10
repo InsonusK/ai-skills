@@ -2,7 +2,7 @@
 description: Generic pattern for building a form component with Signal Forms — applies to any component in any feature that renders a form
 project_name: "{Feature}"
 name: "{form-name}"
-artifact_type: component
+element_kind: component
 change_kind: extend
 ---
 
@@ -25,7 +25,7 @@ This is not tied to one concrete form. Any component that renders a form follows
 
 Simple form — schema defined inline in the component:
 
-```code example
+```typescript
 @Component({ /* ... */ })
 export class LoginFormComponent {
   protected readonly credentials = signal({ email: '', password: '' });
@@ -47,7 +47,7 @@ export class LoginFormComponent {
 
 Non-trivial form — field schema extracted into its own file when validators/cross-field logic grow large enough to obscure the component:
 
-```code example
+```typescript
 // order-form.form.ts
 export function createOrderForm(data: Signal<OrderFormValue>) {
   return form(data, (path) => {
@@ -58,7 +58,7 @@ export function createOrderForm(data: Signal<OrderFormValue>) {
 }
 ```
 
-```code example
+```typescript
 // order-form.component.ts
 export class OrderFormComponent {
   protected readonly orderData = signal<OrderFormValue>(initialOrderFormValue);

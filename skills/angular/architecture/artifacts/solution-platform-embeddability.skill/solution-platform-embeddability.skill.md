@@ -16,14 +16,14 @@ triggers:
   - Onboarding a new embeddable app built by a separate team/repository
   - Reviewing whether a platform/embedded-app boundary violates the federation contract
 creates:
-  - "apps/platform-shell (extended: federation host)"
-  - "{embeddable-app-name} (separate repository, plateau: встраиваемое приложение)"
+  - "{embeddable-app-name} (separate repository for an independently deployed embeddable app)"
 extends:
-  - "apps/platform-shell"
+  - "apps/platform-shell (turned into a Native Federation dynamic host)"
+  - "Repository (type:host tag, shared-dependency rules, @platform/contracts)"
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-platform-embeddability.skill/adr/embedding-mechanism|Embedding Mechanism ADR]]"
+  - "[[adr/embedding-mechanism.md|Embedding Mechanism ADR]]"
 ---
 
 # Goal
@@ -49,7 +49,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-platform-embeddability.skill/adr/embedding-mechanism|Native Federation + Dynamic Federation instead of Webpack Module Federation, Web Components, or iframe]]
+- [[adr/embedding-mechanism.md|Native Federation + Dynamic Federation instead of Webpack Module Federation, Web Components, or iframe]]
   - Selected variant: Native Federation + Dynamic Federation — chosen because it matches Angular's current esbuild-based build system, shares one Angular runtime between host and remotes for real singleton state sharing, and lets embeddable apps be discovered and loaded at runtime without a platform rebuild
 
 # Requirements
@@ -67,18 +67,13 @@ NPM:
 
 # Template Skill Mutations
 
-Plateau: **платформа** (extends the base repository from solution #1)
-
 REPOSITORY:
 - [[./Implementation/PlatformHost/Repository.extend.md|Repository]] - extend - add `type:host` tag, federation shared-dependency requirements, and `@platform/contracts` NPM dependency
+- [[./Implementation/EmbeddableApp/Repository.create.md|Repository]] - create - baseline structure any independent embeddable-app repository must follow: federation remote config, `@platform/contracts` dependency, independent CI/deploy
+
 PROJECT:
 - [[./Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - turn into a Native Federation dynamic host
   - [[./Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts]] - create - runtime resolver for available embeddable apps' remoteEntry URLs
-
-Plateau: **встраиваемое приложение** (separate, independently deployed repository)
-
-REPOSITORY:
-- [[./Implementation/EmbeddableApp/Repository.create.md|Repository]] - create - baseline structure any independent embeddable-app repository must follow: federation remote config, `@platform/contracts` dependency, independent CI/deploy
 
 This solution intentionally does not prescribe an internal `feature`/`data-access` structure for the embeddable app's own repository — that repository is free to apply solution #1's structure internally if it also chooses Nx, but it is only required to satisfy the federation contract described in [[./Implementation/EmbeddableApp/Repository.create.md]].
 
@@ -92,23 +87,7 @@ This solution intentionally does not prescribe an internal `feature`/`data-acces
 4. Platform shell loads the remote's exposed component via `loadRemoteModule` and mounts it.
 5. Host and embedded app exchange events/state through the shared `@platform/contracts` EventBus, both resolving to the same singleton instance.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Team as Embeddable app team
-    participant Manifest as Remotes manifest
-    participant Shell as platform-shell (host)
-    participant Remote as Embeddable app (remote)
-    Team->>Manifest: publish remoteEntry URL + exposed module
-    Shell->>Manifest: fetch manifest (runtime)
-    activate Shell
-    Shell->>Remote: loadRemoteModule(remoteEntry, exposedModule)
-    activate Remote
-    Remote-->>Shell: exposed component
-    deactivate Remote
-    Shell-->>Shell: mount component into shell slot
-    deactivate Shell
-```
+![Onboard a new embeddable app (happy path)](./diagrams/onboard-a-new-embeddable-app-happy-path.mmd)
 
 ## Independent redeploy of an embeddable app (happy path)
 
@@ -141,7 +120,7 @@ sequenceDiagram
 
 ## MUST NOT
 - [[./Implementation/PlatformHost/Repository.extend.md#MUST NOT|PlatformHost/Repository.extend]]
-- [[./Implementation/EmbeddableApp/Repository.create.md#MUST|EmbeddableApp/Repository.create (import restriction)]]
+- [[./Implementation/EmbeddableApp/Repository.create.md#MUST NOT|EmbeddableApp/Repository.create (import restriction)]]
 
 # Anti-patterns
 

@@ -2,7 +2,7 @@
 description: Generic pattern for a feature's Facade — the public entry point of its data-access lib, owning business validation and orchestration
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -22,7 +22,7 @@ This is not tied to one concrete feature. Any solution that creates a new `libs/
 
 # Implementation changes
 
-```code example
+```typescript
 @Injectable({ providedIn: 'root' })
 export class OrdersFacade {
   constructor(private readonly client: OrdersClient) {}

@@ -2,7 +2,7 @@
 description: Generic functional route guard pattern checking a required permission against the auth slice's permission set — this is where auth guards, deferred from the App routing solution, are formally defined
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: guard
+element_kind: guard
 change_kind: create
 ---
 
@@ -21,7 +21,7 @@ This is not tied to one concrete feature. Any feature that needs to restrict acc
 
 # Implementation changes
 
-```code example
+```typescript
 // permission.guard.ts (shared, in libs/shared/auth-ui, imported by any feature)
 export function requirePermission(permission: string): CanActivateFn & CanMatchFn {
   return () => {
@@ -33,7 +33,7 @@ export function requirePermission(permission: string): CanActivateFn & CanMatchF
 }
 ```
 
-```code example
+```typescript
 // orders.routes.ts — attaching the guard at the feature's own route
 export const ORDERS_ROUTES: Routes = [
   { path: '', component: OrdersListComponent },

@@ -2,7 +2,7 @@
 description: BackendLogSink — batches warn/error/report entries and sends them to the backend, with a beacon-based flush on unload and retry-queue fallback on failure
 project_name: shared-logging
 name: backend-log-sink
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -18,7 +18,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 @Injectable()
 export class BackendLogSink implements LogSink {
   private buffer: LogEntry[] = [];

@@ -2,7 +2,7 @@
 description: Bounded, IndexedDB-persisted retry queue for log batches that failed to send, evicting the oldest entries when any of three limits (count, age, size) is exceeded
 project_name: shared-logging
 name: log-retry-queue
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -19,7 +19,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 export interface LogRetryQueueLimits {
   maxEntryCount: number; // e.g. 500
   maxAgeMs: number;      // e.g. 7 days

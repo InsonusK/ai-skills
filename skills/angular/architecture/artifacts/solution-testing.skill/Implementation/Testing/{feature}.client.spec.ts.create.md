@@ -2,7 +2,7 @@
 description: Generic pattern for unit-testing a feature's Client via TestBed and HttpTestingController — the only place HttpTestingController is used
 project_name: "{Feature}"
 name: "{feature}.client"
-artifact_type: service
+element_kind: service
 change_kind: create
 ---
 
@@ -15,7 +15,7 @@ This is not tied to one concrete feature. Any `{feature}.client.ts` created per 
 
 # Implementation changes
 
-```code example
+```typescript
 describe('OrdersClient', () => {
   let client: OrdersClient;
   let httpTesting: HttpTestingController;

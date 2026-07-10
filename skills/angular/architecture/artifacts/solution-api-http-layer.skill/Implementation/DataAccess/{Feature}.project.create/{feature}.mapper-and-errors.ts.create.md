@@ -2,7 +2,7 @@
 description: Generic pattern for a feature's hand-written DTO/domain mapper functions and its typed domain error hierarchy
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: service
+element_kind: functions
 change_kind: create
 ---
 
@@ -23,7 +23,7 @@ This is not tied to one concrete feature. It covers two small, related files eve
 
 # Implementation changes
 
-```code example
+```typescript
 // orders.mapper.ts
 export function orderDtoToModel(dto: OrderDto): Order {
   return {
@@ -41,7 +41,7 @@ export function orderModelToDto(model: AddOrderInput, context: { tenantId: strin
 }
 ```
 
-```code example
+```typescript
 // orders.errors.ts
 export class OrdersConflictError extends Error {
   constructor(public readonly orderId: string, options?: ErrorOptions) {

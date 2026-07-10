@@ -13,14 +13,17 @@ triggers:
   - Mounting a new embeddable module or feature into the shell
   - Reviewing whether a route definition reaches outside the segment it owns
 creates:
-  - "apps/platform-shell (app.routes.ts)"
+  - "libs/{feature}/feature/src/lib/{feature}.routes.ts"
 extends:
-  # Individual feature libs extend this pattern as they are created by future feature-owning solutions
+  - "apps/platform-shell/src/app/app.routes.ts"
+  - "{embeddable-module}/routes.ts"
+  - "libs/{feature}/feature"
+  - "Repository"
 depends_on:
   - "[[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
   - "[[../solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-app-routing.skill/adr/route-ownership-location|Route Ownership Location ADR]]"
+  - "[[adr/route-ownership-location.md|Route Ownership Location ADR]]"
 ---
 
 # Goal
@@ -44,7 +47,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-app-routing.skill/adr/route-ownership-location|Hierarchical route ownership instead of a single centralized routes file in the shell]]
+- [[adr/route-ownership-location.md|Hierarchical route ownership instead of a single centralized routes file in the shell]]
   - Selected variant: hierarchical ownership — chosen to mirror the module-boundary principle from solution #1, preserve affected-based CI, and compose cleanly with the federation-based embeddability from solution #2
 
 # Requirements
@@ -82,22 +85,7 @@ PROJECT:
 2. The shell mounts it exactly like a feature — one root-segment entry in `app.routes.ts`, resolved via the runtime remote registry from the platform-embeddability solution instead of a static import.
 3. Inside the module, its own features are mounted the same way, one level down.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev
-    participant Shell as platform-shell (app.routes.ts)
-    participant Module as Embeddable module
-    participant Feature as Feature (libs/{feature}/feature)
-    Shell->>Module: mount at root segment "module1/" (loadChildren, via remote registry)
-    activate Module
-    Module->>Feature: mount at root segment "feature-map/feature2" (loadChildren)
-    activate Feature
-    Feature-->>Module: FEATURE2_ROUTES (relative to its own root)
-    deactivate Feature
-    Module-->>Shell: MODULE_ROUTES (relative to its own root)
-    deactivate Module
-```
+![Mount an embeddable module (happy path)](./diagrams/mount-an-embeddable-module-happy-path.mmd)
 
 ## Boundary violation (failure path)
 

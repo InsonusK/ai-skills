@@ -14,15 +14,14 @@ triggers:
   - Deciding whether a mounted feature/module should be preloaded in the background
   - Deciding whether a sub-route inside a feature should be split into its own loadComponent chunk
   - Reviewing a bundle-size regression or a preloading configuration change
-creates:
-  # No new projects — extends app-routing and repository-structure conventions
+creates: []
 extends:
   - "apps/platform-shell"
   - "libs/{feature}/feature (routes)"
 depends_on:
   - "[[../solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-lazy-loading-routing.skill/adr/preloading-strategy|Preloading Strategy ADR]]"
+  - "[[adr/preloading-strategy.md|Preloading Strategy ADR]]"
 ---
 
 # Goal
@@ -46,7 +45,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-lazy-loading-routing.skill/adr/preloading-strategy|Custom selective preloading instead of PreloadAllModules or NoPreloading]]
+- [[adr/preloading-strategy.md|Custom selective preloading instead of PreloadAllModules or NoPreloading]]
   - Selected variant: custom selective preloading via a `data.preload` route flag — chosen to avoid unconditionally prefetching federated embeddable-module chunks while still warming up genuinely high-traffic sections
 
 # Requirements

@@ -2,7 +2,7 @@
 description: Extend the auth slice created by the State management solution with an in-memory access token, granular permissions, and silent-refresh handling
 project_name: shared-state
 name: auth
-artifact_type: store
+element_kind: store
 change_kind: extend
 ---
 
@@ -15,7 +15,7 @@ change_kind: extend
 
 Extends the actions/state already defined in [[../../../solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create.md]]:
 
-```code example
+```typescript
 // auth.actions.ts — additional events
 export const AuthActions = createActionGroup({
   source: 'Auth',
@@ -28,7 +28,7 @@ export const AuthActions = createActionGroup({
 });
 ```
 
-```code example
+```typescript
 // auth.reducer.ts — additional state shape
 interface AuthState {
   accessToken: string | null; // in-memory only — never persisted, see token-storage-strategy ADR
@@ -38,7 +38,7 @@ interface AuthState {
 }
 ```
 
-```code example
+```typescript
 // auth.effects.ts — bootstrap silent refresh
 export class AuthEffects {
   silentRefreshOnInit$ = createEffect(() =>

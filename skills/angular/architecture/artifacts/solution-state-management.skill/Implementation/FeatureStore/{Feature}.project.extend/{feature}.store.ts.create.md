@@ -2,7 +2,7 @@
 description: Generic pattern for a feature-level NgRx Signal Store — applies to any {Feature}/feature lib created by a future feature-owning solution
 project_name: "{Feature}"
 name: "{feature}"
-artifact_type: store
+element_kind: store
 change_kind: create
 ---
 
@@ -22,7 +22,7 @@ This is not tied to one concrete feature. Any solution that creates a new `libs/
 
 # Implementation changes
 
-```code example
+```typescript
 export const OrdersStore = signalStore(
   withState<OrdersState>({ orders: [], loading: false, error: null }),
   withComputed(({ orders }) => ({

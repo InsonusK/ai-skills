@@ -2,7 +2,7 @@
 description: Generic pattern for a feature-level integration test spanning Signal Store, Facade, and Client together, using MSW to intercept at the network boundary
 project_name: "{Feature}"
 name: "{feature}.integration"
-artifact_type: component
+element_kind: component
 change_kind: create
 ---
 
@@ -15,7 +15,7 @@ This applies only when a test deliberately exercises more than one architectural
 
 # Implementation changes
 
-```code example
+```typescript
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 

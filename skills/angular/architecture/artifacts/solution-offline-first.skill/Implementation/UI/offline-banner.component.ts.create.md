@@ -2,7 +2,7 @@
 description: Shared offline banner component, reading the connectivity slice to inform the user when the application is offline
 project_name: shared-ui
 name: offline-banner
-artifact_type: component
+element_kind: component
 change_kind: create
 ---
 
@@ -18,7 +18,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 @Component({
   selector: 'app-offline-banner',
   template: `

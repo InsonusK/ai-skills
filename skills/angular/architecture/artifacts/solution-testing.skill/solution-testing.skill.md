@@ -24,9 +24,9 @@ depends_on:
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
   - "[[../solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-testing.skill/adr/test-runner-choice|Test runner choice ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-testing.skill/adr/e2e-framework-choice|E2E framework choice ADR]]"
-  - "[[skills/angular/architecture/artifacts/solution-testing.skill/adr/testing-layers-and-mocking|Testing layers and mocking ADR]]"
+  - "[[adr/test-runner-choice.md|Test runner choice ADR]]"
+  - "[[adr/e2e-framework-choice.md|E2E framework choice ADR]]"
+  - "[[adr/testing-layers-and-mocking.md|Testing layers and mocking ADR]]"
 ---
 
 # Goal
@@ -53,11 +53,11 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-testing.skill/adr/test-runner-choice|Vitest instead of Jest or Karma/Jasmine]]
+- [[adr/test-runner-choice.md|Vitest instead of Jest or Karma/Jasmine]]
   - Selected variant: Vitest — Angular's own current default, matching the esbuild-based build pipeline already in use
-- [[skills/angular/architecture/artifacts/solution-testing.skill/adr/e2e-framework-choice|Playwright instead of Cypress]]
+- [[adr/e2e-framework-choice.md|Playwright instead of Cypress]]
   - Selected variant: Playwright — true multi-browser coverage (including WebKit) and better fit for scenarios involving federated embeddable modules
-- [[skills/angular/architecture/artifacts/solution-testing.skill/adr/testing-layers-and-mocking|TestBed for non-DOM units, Testing Library for components; HttpTestingController only at the Client, MSW only for cross-layer integration tests]]
+- [[adr/testing-layers-and-mocking.md|TestBed for non-DOM units, Testing Library for components; HttpTestingController only at the Client, MSW only for cross-layer integration tests]]
   - Selected variant: this layered strategy — chosen to give each HTTP mock exactly one source of truth and to keep component tests decoupled from implementation details
 
 # Requirements
@@ -74,12 +74,15 @@ NPM:
 - @playwright/test
   - End-to-end testing framework
 - msw
-  - Network-level mocking for genuine cross-layer integration tests only, per [[skills/angular/architecture/artifacts/solution-testing.skill/adr/testing-layers-and-mocking|Testing Layers And Mocking ADR]]
+  - Network-level mocking for genuine cross-layer integration tests only, per [[adr/testing-layers-and-mocking.md|Testing Layers And Mocking ADR]]
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - add `apps/platform-shell-e2e`, enforce Vitest/Playwright workspace-wide, enforce coverage thresholds in CI, add the `type:e2e` tag
+- [[./Implementation/Repository.extend.md|Repository]] - extend - enforce Vitest/Playwright workspace-wide, enforce coverage thresholds in CI, add the `type:e2e` tag
+
+PROJECT:
+- [[./Implementation/platform-shell-e2e.project.create.md|apps/platform-shell-e2e]] - create - Playwright end-to-end test project for the platform shell
 
 Artifact-level (generic patterns):
 - [[./Implementation/Testing/{feature}.client.spec.ts.create.md|{feature}.client.spec.ts]] - create - Client unit test via `TestBed` + `HttpTestingController`
@@ -99,19 +102,7 @@ Artifact-level (generic patterns):
 5. If a genuinely cross-layer scenario needs verifying as a whole, one MSW-based integration spec covers it — not a substitute for the layer-specific tests above.
 6. A small number of critical user journeys involving this feature get Playwright e2e coverage in `apps/platform-shell-e2e`.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant ClientSpec as {feature}.client.spec.ts (HttpTestingController)
-    participant FacadeSpec as {feature}.facade.spec.ts (fakes Client)
-    participant StoreSpec as {feature}.store.spec.ts (fakes Facade)
-    participant ComponentSpec as {component}.component.spec.ts (fakes Store, Testing Library)
-    Note over ClientSpec,ComponentSpec: each layer fakes only the layer directly beneath it
-    ClientSpec->>ClientSpec: assert exact HTTP request/response + DTO mapping
-    FacadeSpec->>FacadeSpec: assert business validation, fake Client
-    StoreSpec->>StoreSpec: assert state transitions, fake Facade
-    ComponentSpec->>ComponentSpec: assert rendered DOM/user interaction, fake Store
-```
+![Testing a new feature end-to-end (happy path)](./diagrams/testing-a-new-feature-end-to-end-happy-path.mmd)
 
 ## Misusing a mocking tool at the wrong layer (anti-pattern, caught in review)
 

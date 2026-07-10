@@ -2,7 +2,7 @@
 description: Extend LoggerService (from the base logging solution) with an explicit report() level, always sent to the backend regardless of severity
 project_name: shared-logging
 name: logger
-artifact_type: service
+element_kind: service
 change_kind: extend
 ---
 
@@ -12,7 +12,7 @@ change_kind: extend
 
 # Implementation changes
 
-```code example
+```typescript
 // logger.service.ts — additional method
 export class LoggerService {
   // ...existing debug/info/warn/error from the base solution...

@@ -2,7 +2,7 @@
 description: Generic pattern for a Playwright end-to-end test in apps/platform-shell-e2e
 project_name: platform-shell-e2e
 name: "{scenario-name}"
-artifact_type: component
+element_kind: component
 change_kind: create
 ---
 
@@ -15,7 +15,7 @@ Applies to any Playwright spec added to `apps/platform-shell-e2e`, exercising a 
 
 # Implementation changes
 
-```code example
+```typescript
 import { test, expect } from '@playwright/test';
 
 test('user can add an order from the orders feature', async ({ page }) => {

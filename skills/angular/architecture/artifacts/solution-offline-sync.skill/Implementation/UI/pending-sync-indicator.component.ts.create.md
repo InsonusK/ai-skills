@@ -2,7 +2,7 @@
 description: Shared pending-sync indicator, reactively reading MutationQueueService's live query
 project_name: shared-ui
 name: pending-sync-indicator
-artifact_type: component
+element_kind: component
 change_kind: create
 ---
 
@@ -18,7 +18,7 @@ change_kind: create
 
 # Implementation changes
 
-```code example
+```typescript
 @Component({
   selector: 'app-pending-sync-indicator',
   template: `

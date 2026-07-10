@@ -1,0 +1,15 @@
+sequenceDiagram
+    autonumber
+    actor Team as Embeddable app team
+    participant Manifest as Remotes manifest
+    participant Shell as platform-shell (host)
+    participant Remote as Embeddable app (remote)
+    Team->>Manifest: publish remoteEntry URL + exposed module
+    Shell->>Manifest: fetch manifest (runtime)
+    activate Shell
+    Shell->>Remote: loadRemoteModule(remoteEntry, exposedModule)
+    activate Remote
+    Remote-->>Shell: exposed component
+    deactivate Remote
+    Shell-->>Shell: mount component into shell slot
+    deactivate Shell

@@ -14,7 +14,9 @@ triggers:
   - Reviewing how uncaught exceptions are captured
   - Investigating why logs are missing after a network outage
 creates:
-  # No new Nx project — extends libs/shared/logging and apps/platform-shell
+  - "libs/shared/logging/src/lib/backend-log-sink.ts (BackendLogSink)"
+  - "libs/shared/logging/src/lib/log-retry-queue.ts (LogRetryQueue)"
+  - "apps/platform-shell/src/app/global-error-handler.ts (GlobalErrorHandler)"
 extends:
   - "libs/shared/logging (adds BackendLogSink, LogRetryQueue, LoggerService.report())"
   - "apps/platform-shell (registers GlobalErrorHandler)"
@@ -22,7 +24,7 @@ depends_on:
   - "[[../solution-logging-base.skill/solution-logging-base.skill.md|Логирование (база)]]"
   - "[[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
 adr:
-  - "[[skills/angular/architecture/artifacts/solution-logging-global.skill/adr/backend-log-sink-strategy|Backend Log Sink Strategy ADR]]"
+  - "[[adr/backend-log-sink-strategy.md|Backend Log Sink Strategy ADR]]"
 ---
 
 # Goal
@@ -47,7 +49,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/artifacts/solution-logging-global.skill/adr/backend-log-sink-strategy|Selective levels, batched sending, bounded IndexedDB-persisted retry queue, global ErrorHandler]]
+- [[adr/backend-log-sink-strategy.md|Selective levels, batched sending, bounded IndexedDB-persisted retry queue, global ErrorHandler]]
   - Selected variant: this combination — chosen to balance backend visibility against network/storage cost, and to guarantee uncaught exceptions are captured without relying on explicit instrumentation everywhere
 
 # Requirements
@@ -64,7 +66,10 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - register `BackendLogSink` alongside `ConsoleLogSink`, register `GlobalErrorHandler` in `apps/platform-shell`
+- [[./Implementation/Repository.extend.md|Repository]] - extend - register `BackendLogSink` alongside `ConsoleLogSink`, extend `LoggerService` with `report()`
+
+PROJECT:
+- [[./Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - register `GlobalErrorHandler` as the application-wide `ErrorHandler`
 
 Artifact-level:
 - [[./Implementation/Logging/backend-log-sink.ts.create.md|backend-log-sink.ts]] - create - batches and sends `warn`/`error`/`report` entries to the backend
