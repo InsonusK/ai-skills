@@ -8,9 +8,9 @@ tags:
   - skill/template/plateau
   - plateau/design-system
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
 ---
 
 > This plateau lives in its own repository, separate from the main Nx platform monorepo. It is a standalone product (an npm package), not a stage that the main application's own plateau chain passes through. The main application's [[skills/angular/architecture/plateau/tested/plateau-tested.skill.md|tested]] plateau onward consumes this package directly as an npm dependency; federation-aware consumption (version-negotiated sharing between the platform host and embeddable apps) is added by the [[skills/angular/architecture/plateau/platform/plateau-platform.skill.md|platform]] plateau.
