@@ -1,0 +1,83 @@
+---
+name: plateau-name
+description: Describe which plateau does skill describe
+domain: skill
+type: template
+version:
+tags:
+  - skill/template/plateau
+parent_plateau:
+created_by:
+---
+# How Apply this template
+- add to header properties `tags` tag `plateau/{plateau-name}`
+
+# Core Principles
+```hint
+Summarise core principles from applied solutions.
+
+MUST:
+- If Core Principles conflicted to each other as user to solve the problem
+- Don't just copy principles, make brief summary
+
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- Every business feature is split into at least a `feature` lib and a `data-access` lib from the start
+```
+# Capabilities
+```hint
+What capabilities does this plateau has
+
+MUST:
+- If Capabilities conflicted to each other as user to solve the problem
+- Summaraize all capabilities from all used solutions and logicaly group them
+
+RECOMENDATION:
+- Prefer bullet list
+```
+```example
+- state management
+	- component-local state lives in Signals, feature state in a Signal Store, cross-cutting state in classical NgRx
+- routing
+	- every routable feature exports its `Routes` from `index.ts`, relative to its own root only
+```
+
+# Usecases
+```hint
+fill usecases for plateau
+- example of interactions
+- example of async workflows (optimistic update, offline retry, etc.)
+```
+## {Case name}
+```hint
+write short description and mermaid workflow
+```
+````example
+Create an entity with optimistic UI update
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Component
+    participant Store as {Feature}Store
+    participant Facade as {Feature}Facade
+    participant Client as {Feature}Client
+    participant Api as Backend
+
+    User->>Component: submit create form
+    Component->>Store: dispatch create(payload)
+    Store->>Store: set item status = "creating"
+    Store->>Facade: create(payload)
+    Facade->>Client: POST /{feature}
+    Client->>Api: HTTP request
+    activate Api
+    Api-->>Client: 201 Created
+    deactivate Api
+    Client-->>Facade: created entity
+    Facade-->>Store: dispatch createSuccess(entity)
+    Store->>Store: set item status = "created"
+    Store-->>Component: updated state (signal)
+```
+````
