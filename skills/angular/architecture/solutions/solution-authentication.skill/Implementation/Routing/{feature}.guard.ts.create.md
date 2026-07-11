@@ -48,7 +48,8 @@ export const ORDERS_ROUTES: Routes = [
 # Rule changes
 
 ## MUST
-- The guard MUST check a permission string against the `shared-state` auth slice's `permissions`, never a role name (see [[../[[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model]] The guard MUST be attached inside the feature's own routes, at the specific path it protects — never centralized in `apps/platform-shell`'s `app.routes.ts`, consistent with the hierarchical route ownership from the "App routing (база)" solution.
+- The guard MUST check a permission string against the `shared-state` auth slice's `permissions`, never a role name (see [[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model|authorization-model ADR]]).
+- The guard MUST be attached inside the feature's own routes, at the specific path it protects — never centralized in `apps/platform-shell`'s `app.routes.ts`, consistent with the hierarchical route ownership from the "App routing (база)" solution.
 - A failed permission check MUST redirect to a forbidden/not-authorized route, not silently fail navigation.
 
 # Anti-patterns

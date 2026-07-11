@@ -42,7 +42,8 @@ export class HasPermissionDirective {
 # Rule changes
 
 ## MUST
-- The directive MUST check a permission string, never a role name, consistent with [[../[[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model]]Hiding an element with this directive MUST NOT be treated as a substitute for a server-side authorization check — it is a UI convenience only; the corresponding action MUST still be authorized on the backend.
+- The directive MUST check a permission string, never a role name, consistent with [[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model|authorization-model ADR]].
+- Hiding an element with this directive MUST NOT be treated as a substitute for a server-side authorization check — it is a UI convenience only; the corresponding action MUST still be authorized on the backend.
 
 # Anti-patterns
 

@@ -71,7 +71,8 @@ interface ConnectivityState {
 # Anti-patterns
 
 - **Relying on `browserOnline` alone without factoring in the health-check result**
-  - Consequence: the application can report itself as online while the backend is actually unreachable (captive portal, backend outage), per [[../..[[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection]]nstead: `isOnline` always requires both signals to agree
+  - Consequence: the application can report itself as online while the backend is actually unreachable (captive portal, backend outage), per [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection]]
+  - Instead: `isOnline` always requires both signals to agree
 
 # Check list
 

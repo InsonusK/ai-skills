@@ -45,15 +45,16 @@ adr:
 
 # Adr
 
-- [[adr/forms-approach.md|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]
-  - Selected variant[[skills/angular/architecture/solutions/solution-forms.skill/adr/forms-approach|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]in historical blocker (ControlValueAccessor compatibility) for control-heavy forms
+- [[skills/angular/architecture/solutions/solution-forms.skill/adr/forms-approach|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]
+  - Selected variant: Signal Forms as the default for all new forms — chosen now that it is stable (Angular 22+) and resolves the main historical blocker (ControlValueAccessor compatibility) for control-heavy forms
 
 # Requirements
 
 SOLUTION:
-- [[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
-  - Form components live inside their owning feature's `libs/{feature}/feature` project, per[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]ement]]
-  - A form's underlying data Signal follows the same component-local/feature-level tiering already established —[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]re, per that solution's rules
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+  - Form components live inside their owning feature's `libs/{feature}/feature` project, per that solution's structure
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+  - A form's underlying data Signal follows the same component-local/feature-level tiering already established there, per that solution's rules
 
 NPM:
 - @angular/forms (signals entry point: `@angular/forms/signals`)
@@ -62,14 +63,19 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - bump minimum Angular version to 22+, add the convention for extracting non-trivial field schemas into `.form.ts` files
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend|Repository]] - extend - bump minimum Angular version to 22+, add the convention for extracting non-trivial field schemas into `.form.ts` files
+
 PROJECT:
-- No proje[[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend|Repository]]es at the component level, inside existing feature projects
+- No new project — this solution's changes apply at the component level, inside existing feature projects
 
 Artifact-level:
-- [[./Implementation/FormComponent/{component-name}.component.ts.extend.md|{form-name} (generic pattern)]] - extend - build the form with Signal Forms, applied to any form component in any feature
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend|{form-name} (generic pattern)]] - extend - build the form with Signal Forms, applied to any form component in any feature
 
-# Work[[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend|{form-name} (generic pattern)]]alue.
+# Workflow
+
+## Build a simple form (happy path)
+
+1. A component holds its draft form data as a plain Signal, initialized to a starting value.
 2. `form()` wraps that Signal with inline validators (`required`, etc.), producing a `FieldTree`.
 3. Submission calls `submitForm()`, which runs validation and, if valid, invokes the provided async callback (typically calling the feature's data-access facade).
 4. On failure, the returned `false` and the field-level `invalid()`/`errors()` signals give the component everything needed to show validation feedback — no manual error-state bookkeeping.
@@ -90,16 +96,24 @@ Artifact-level:
 # Rules
 
 ## MUST
-- [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[./Implementation/FormComponent/{component-name}.component.ts.extend.md#MUST|{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend#MUST|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend#MUST|{component-name}.component.ts.extend]]
 
 ## SHOULD
-- [[./Implementation/FormComponent/{component-name}.component.ts.extend.md#SHOULD|{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend#SHOULD|{component-name}.component.ts.extend]]
 
 ## SHOULD NOT
-- [[./Implementation/Repository.extend.md#SHOULD NOT|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend#SHOULD NOT|Repository.extend]]
 
 # Anti-patterns
 
-- [[./Implementation/Repository.extend.md|See Repository.extend.md]] — starting a new form with Reactive Forms out of habit; mass-migrating existing forms for consistency's sake alone.
-- [[./Implementation/FormComponent/{component-name}.component.ts.extend.md|See {component-name}.component.ts.exte[[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend#MUST|Repository]] the[[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend#MUST|{component-name}.component.ts]] runs Angular >= [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend#SHOULD|{component-name}.component.ts]]m has been migrated p[[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend#SHOULD NOT|Repository]]rivial field schemas are [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend|See Repository.extend.md]]- [ ] Every custom design-system control used inside a form implements `ControlValueAccessor`[[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend|See {component-name}.component.ts.extend.md]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/Repository.extend|See Repository.extend.md]] — starting a new form with Reactive Forms out of habit; mass-migrating existing forms for consistency's sake alone.
+- [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend|See {component-name}.component.ts.extend.md]] — manually subscribing to a signal-based field's changes instead of reading it in a computed/effect.
+
+# Check list
+
+- [ ] The workspace runs Angular >= 22
+- [ ] Every new form is built with `form()`/`FieldTree`, not `FormGroup`/`FormControl`
+- [ ] No existing Reactive Forms form has been migrated purely for consistency's sake
+- [ ] Non-trivial field schemas are extracted into their own `{form-name}.form.ts` file
+- [ ] Every custom design-system control used inside a form implements `ControlValueAccessor`

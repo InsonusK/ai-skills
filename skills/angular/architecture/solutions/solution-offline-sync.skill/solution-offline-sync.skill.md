@@ -54,33 +54,46 @@ adr:
 
 # Adr
 
-- [[adr/queue-storage-mechanism.md|Dexie.js + custom orchestration instead of RxDB's document-replication engine or raw IndexedDB]]
-  - Selected variant: Dexie.js — chosen because this appli[[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism|Dexie.js + custom orchestration instead of RxDB's document-replication engine or raw IndexedDB]]t
-- [[adr/queue-partitioning-and-ordering.md|Partition by feature instead of global FIFO or per-entity partitioning]]
-  - Selected variant: per-feature partitioning — chosen to directly prevent one struggling feature from blocking others, while staying me[[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering|Partition by feature instead of global FIFO or per-entity partitioning]]apshot diffing, client-wins, or mandatory manual resolution]]
-  - Selected variant: server-wins + field-scoped diff — chosen to give the user real information about what conflicted without requiri[[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy|Server wins with field-scoped diff, extension point deferred, instead of full-snapshot diffing, client-wins, or mandatory manual resolution]]md|Offline-first]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism|Dexie.js + custom orchestration instead of RxDB's document-replication engine or raw IndexedDB]]
+  - Selected variant: Dexie.js — chosen because this application needs a typed, reactive local store with custom command-replay logic, not a generic document-sync protocol
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering|Partition by feature instead of global FIFO or per-entity partitioning]]
+  - Selected variant: per-feature partitioning — chosen to directly prevent one struggling feature from blocking others, while staying meaningfully simple to reason about
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy|Server wins with field-scoped diff, extension point deferred, instead of full-snapshot diffing, client-wins, or mandatory manual resolution]]
+  - Selected variant: server-wins + field-scoped diff — chosen to give the user real information about what conflicted without requiring full entity snapshots client-side
+
+# Requirements
+
+SOLUTION:
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]
   - `OfflineTransportError` (Client-level network-failure distinction) and the `connectivity` slice's `isOnline` signal are both consumed directly by this solution
-- [[../solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]
-  - The replay orchestrator calls existing [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]n path is introduced
-- [[../solution-state-management.skill/solution-state-management.skill.md|State management]]
-  - Conflict notifications are surfaced via the `noti[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]ctivity`
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]
+  - The replay orchestrator calls existing Facade methods directly; no new HTTP transport path is introduced
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+  - Conflict notifications are surfaced via the `notifications` global-state slice, alongside the existing `auth`/`connectivity`
 
 NPM:
 - dexie
-  - Typed, reactive IndexedDB storage for the mutation queue, per [[adr/queue-storage-mechanism.md|Queue Storage Mechanism [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]ting or deduplicating a retried request with the same key) and MUST return, on a 409-style conflict, the current values of only the fields the original request attempted to change — this is a required cross-team contract, not solel[[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism|Queue Storage Mechanism ADR]]xtend - add `libs/shared/offline-sync`, idempotency-key requirement, Facade-queueing convention
+  - Typed, reactive IndexedDB storage for the mutation queue, per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism|Queue Storage Mechanism ADR]]
+
+# Template Skill Mutations
+
+REPOSITORY:
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository]] - extend - add `libs/shared/offline-sync`, idempotency-key requirement, Facade-queueing convention
 
 PROJECT:
-- [[./Implementation/OfflineSync/shared-offline-sync.project.create.md|libs/shared/offline-sync]] - create - Dexie schema, `MutationQueueService`, per-feature partitioning
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create|libs/shared/offline-sync]] - create - Dexie schema, `MutationQueueService`, per-feature partitioning
 
 Artifact-level:
-- [[./Implementation/OfflineSync/replay-orchestrator.ts.create.md|replay-orchestrato[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository]] by `connectivity`, server-wins conflict seam
-- [[./Implementation/DataAccess/{feature}.facade.ts.extend.md|{featu[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create|libs/shared/offline-sync]]ons, generic pattern applied to any feature
-- [[./Implementation/UI/pending-sync-indicator.compo[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|replay-orchestrator.ts]]ending sync" indicator, mounted per feature
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|replay-orchestrator.ts]] - create - replays each feature's queue partition, triggered by `connectivity`, server-wins conflict seam
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend|{feature}.facade.ts (extend)]] - extend - catches `OfflineTransportError` and enqueues queueable operations, generic pattern applied to any feature
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create|pending-sync-indicator.component.ts]] - create - shared "pending sync" indicator, mounted per feature
 
 # Workflow
 
-## Mutation attempted offline, lat[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend|{feature}.facade.ts (extend)]]flineTransportError` (per the "Offline-first" solution).
-2. `OrdersFacade` catches it, confirms `addOrder` is a queue[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create|pending-sync-indicator.component.ts]]shly generated idempotency key — returning `{ queued: true }` instead of throwing.
+## Mutation attempted offline, later synced (happy path)
+
+1. A user attempts to add an order while offline; `OrdersClient` throws `OfflineTransportError` (per the "Offline-first" solution).
+2. `OrdersFacade` catches it, confirms `addOrder` is a queueable operation, and enqueues it via `MutationQueueService` with a freshly generated idempotency key — returning `{ queued: true }` instead of throwing.
 3. `PendingSyncIndicatorComponent`, reading `pendingForFeature$('orders')`, shows "1 action waiting to sync."
 4. Connectivity is restored; the `connectivity` slice's `isOnline` becomes `true`.
 5. `ReplayOrchestrator` replays the `orders` partition FIFO; `addOrder` succeeds; the entry is removed from the queue; the indicator updates to 0.
@@ -103,20 +116,29 @@ Artifact-level:
 # Rules
 
 ## MUST
-- [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[./Implementation/OfflineSync/shared-offline-sync.project.create.md#MUST|OfflineSync/shared-offline-sync.project.create]]
-- [[./Implementation/OfflineSync/replay-orchestrator.ts.create.md#MUST|OfflineSync/replay-orchestrator.ts.create]]
-- [[./Implementation/DataAccess/{feature}.facade.ts.extend.md#MUST|DataAccess/{feature}.facade.ts.extend]]
-- [[./Implementation/UI/pending-sync-indicator.component.ts.create.md#MUST|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend#MUST|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create#MUST|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create#MUST|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend#MUST|DataAccess/{feature}.facade.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create#MUST|UI/pending-sync-indicator.component.ts.create]]
 
 ## MUST NOT
-- [[./Implementation/OfflineSync/replay-orchestrator.ts.create.md#MUST NOT|OfflineSync/replay-orchestrator.ts.create]]
-- [[./Implementation/DataAccess/{feature}.facade.ts.extend.md#MUST NOT|DataAccess/{feature}.facade.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create#MUST NOT|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend#MUST NOT|DataAccess/{feature}.facade.ts.extend]]
 
 # Anti-patterns
 
-- [[./Implementation/Repository.extend.md|See Repository.extend.md]] — enqueueing every `OfflineTransportError` unconditionally; reusing idempotency keys incorrectly.
-- [[./Implementation/OfflineSync/shared-offline-sync.project.create.md|See shared-offline-sync.project.create.md]] — querying the queue table without using the feature index.
-- [[./Implementation/OfflineSync/replay-orchestrator.ts.create.md|See replay-orchestrator[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend#MUST|Repository]]hand[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create#MUST|OfflineSync/shared-offline-sync.project.create]]ade.[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create#MUST|OfflineSync/replay-orchestrator.ts.create]]on.[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend#MUST|DataAccess/{feature}.facade.ts.extend]]ent.[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create#MUST|UI/pending-sync-indicator.component.ts.create]]ffline-sync` is the[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create#MUST NOT|OfflineSync/replay-orchestrator.ts.create]]d on[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend#MUST NOT|DataAccess/{feature}.facade.ts.extend]]tition doesn't block othe[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|See Repository.extend.md]]ransportError`
-- [ ] Conflict handling is server-wins by default, surfaced with field-scoped detail, [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create|See shared-offline-sync.project.create.md]]omewhere in its UI
-- [ ] Backend mutation endpoints support ide[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|See replay-orchestrator.ts.create.md]]ns/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create|See pending-sync-indicator.component.ts.[[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend|See {feature}.facade.ts.extend.md]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|See Repository.extend.md]] — enqueueing every `OfflineTransportError` unconditionally; reusing idempotency keys incorrectly.
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create|See shared-offline-sync.project.create.md]] — querying the queue table without using the feature index.
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|See replay-orchestrator.ts.create.md]] — inlining conflict-handling logic directly inside the replay loop instead of the separate `handleConflict` method.
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend|See {feature}.facade.ts.extend.md]] — enqueueing an operation whose business validation already failed before the Client was ever called.
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create|See pending-sync-indicator.component.ts.create.md]] — a feature queueing mutations without ever showing a pending indicator.
+
+# Check list
+
+- [ ] Every queued mutation carries a stable idempotency key, generated once at enqueue time and reused across replay attempts
+- [ ] Feature partitions replay concurrently; a stuck partition does not delay others
+- [ ] Conflict handling is server-wins by default, surfaced with field-scoped detail, never a full entity snapshot
+- [ ] Backend mutation endpoints support idempotency keys and return field-scoped conflict detail on a 409
+- [ ] Every feature that enqueues mutations surfaces the pending-sync indicator somewhere in its UI
+- [ ] No Facade enqueues an operation whose business validation already failed before the Client was ever called

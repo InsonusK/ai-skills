@@ -48,27 +48,35 @@ adr:
 
 # Adr
 
-- [[adr/state-management-tiering.md|Three-tier state management: Signals / NgRx Signal Store / classical NgR[[skills/angular/architecture/solutions/solution-state-management.skill/adr/state-management-tiering|Three-tier state management: Signals / NgRx Signal Store / classical NgRx Store]]lict handling specifically for auth and offline-sync
+- [[skills/angular/architecture/solutions/solution-state-management.skill/adr/state-management-tiering|Three-tier state management: Signals / NgRx Signal Store / classical NgRx Store]]
+  - Selected variant: three-tier — chosen to give every piece of state an unambiguous home, with the global tier providing the auditability and effect-based retry/conflict handling specifically for auth and offline-sync
 
 # Requirements
 
 SOLUTION:
-- [[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
-  - [[../solution-repository-structure.skill/Implementation/R[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]/signa[[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|libs/{feature}/feature]]bal/cross-cutting state slices (`libs/shared/state`)
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+  - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|libs/{feature}/feature]] - the feature-level Signal Store is colocated inside this project
+  - `libs/shared` - hosts the new global/cross-cutting state slices (`libs/shared/state`)
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/state`, the `type:store` tag, and the module-boundary rules for global state
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend|Repository]] - extend - add `libs/shared/state`, the `type:store` tag, and the module-boundary rules for global state
+
 PROJECT:
-- [[[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend|Repository]]eate.md|libs/shared/state]] - create - host classical NgRx slices for auth, notifications, offline-sync
-  - [[./Implem[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create|libs/shared/state]]re.ts]] - create - auth session slice (actions/reducer/effects/selectors)
-- [[./I[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|auth.store.ts]]end - add a feature-level Signal Store
-  - [[./Implementation/Feature[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend|{Feature}/feature (generic pattern)]]re-level Signal Store pattern, applied by any futu[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create|{feature}.store.ts]]nent-name} (generic pattern)]] - extend - component-local state via plain Signals, applied to any[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend|{component-name} (generic pattern)]]oncrete worked example. The `notifications` and `offline-sync` slices follow the same structural pattern (see [[./Implementation/GlobalStore/shared-state.project.create.md]]) and will be filled in by the solutions that actually introduce them.
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create|libs/shared/state]] - create - host classical NgRx slices for auth, notifications, offline-sync
+  - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|auth.store.ts]] - create - auth session slice (actions/reducer/effects/selectors)
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend|{Feature}/feature (generic pattern)]] - extend - add a feature-level Signal Store
+  - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create|{feature}.store.ts]] - create - feature-level Signal Store pattern, applied by any future feature-owning solution
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend|{component-name} (generic pattern)]] - extend - component-local state via plain Signals, applied to any component in the application
+
+`auth.store.ts` is the concrete worked example. The `notifications` and `offline-sync` slices follow the same structural pattern (see [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create]]) and will be filled in by the solutions that actually introduce them.
 
 # Workflow
 
-## Deciding where new [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create]]n by exactly one component (and optionally its direct children)? → plain Signal on the component.
+## Deciding where new state belongs (happy path)
+
+1. Is this state owned by exactly one component (and optionally its direct children)? → plain Signal on the component.
 2. Otherwise, ask: is this state owned by exactly one feature? → NgRx Signal Store inside that feature's `feature` lib.
 3. Otherwise (more than one unrelated feature needs to read or dispatch it) → classical NgRx Store slice inside `libs/shared/state`.
 
@@ -101,10 +109,31 @@ sequenceDiagram
 # Rules
 
 ## MUST
-- [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[./Implementation/GlobalStore/shared-state.project.create.md#MUST|GlobalStore/shared-state.project.creat[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend#MUST|Repository]]ate/[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create#MUST|GlobalStore/shared-state.project.create]]end/{f[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create#MUST|auth.store.ts]]comp[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create#MUST|{feature}.store.ts]]e}.p[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend#MUST|{component-name}.component.ts]]n/Repository.exte[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create#SHOULD|{feature}.store.ts]]/shared-state.proje[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend#MUST NOT|Repository]].cre[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create#MUST NOT|GlobalStore/shared-state.project.create]]mponen[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create#MUST NOT|auth.store.ts]]ry.e[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend#MUST NOT|{component-name}.component.ts]]obalStore/shared-state.pr[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend|See Repository.extend.md]] — a feature caching auth state locally instead of selecting [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|See auth.store.ts.create.md]]e {feature}.store.ts.create.md]] — a feature store re-implementing cross-cutting stat[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create|See {feature}.store.ts.create.md]]tend.md]] — creating a feature or global store for state only one c[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend|See {component-name}.component.ts.extend.md]]/shared/state`
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend#MUST|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create#MUST|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create#MUST|auth.store.ts]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create#MUST|{feature}.store.ts]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend#MUST|{component-name}.component.ts]]
+
+## SHOULD
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create#SHOULD|{feature}.store.ts]]
+
+## MUST NOT
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend#MUST NOT|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create#MUST NOT|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create#MUST NOT|auth.store.ts]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend#MUST NOT|{component-name}.component.ts]]
+
+# Anti-patterns
+
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend|See Repository.extend.md]] — a feature caching auth state locally instead of selecting from `libs/shared/state`.
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|See auth.store.ts.create.md]] — dispatching HTTP calls directly from a component against this store's actions, bypassing effects.
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create|See {feature}.store.ts.create.md]] — a feature store re-implementing cross-cutting state instead of reading `libs/shared/state`.
+- [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/LocalState/{component-name}.component.ts.extend|See {component-name}.component.ts.extend.md]] — creating a feature or global store for state only one component ever reads.
+
+# Check list
+
 - [ ] No component-local Signal has been unnecessarily promoted to a feature or global store
 - [ ] `libs/shared/state` contains only genuinely global/cross-cutting slices (auth, notifications, offline-sync, and similar)
 - [ ] Every feature-level Signal Store lives inside that feature's own `libs/{feature}/feature` project, not in a shared location
-- [ ] `@nx/enforce-module-boundaries` passes with the extended allow-list from [[./Implementation/Repository.extend.md]]
-[[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend]]
+- [ ] `@nx/enforce-module-boundaries` passes with the extended allow-list from [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend]]

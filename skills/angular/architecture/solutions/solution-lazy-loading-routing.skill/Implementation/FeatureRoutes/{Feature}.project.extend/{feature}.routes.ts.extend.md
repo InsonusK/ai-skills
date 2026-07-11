@@ -34,7 +34,7 @@ export const ORDERS_ROUTES: Routes = [
 # Rule changes
 
 ## MUST
-- A feature's own chunk MUST declare a per-chunk bundle budget (see [[.[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend#MUST|Repository]]a sub-route split via `loadComponent` gets its own separate budget.
+- A feature's own chunk MUST declare a per-chunk bundle budget (see [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend#MUST|Repository]]); a sub-route split via `loadComponent` gets its own separate budget.
 
 ## SHOULD
 - A sub-route SHOULD be split via `loadComponent` when it pulls in a dependency not needed by the feature's main path (e.g. a charting or PDF library used only on one rarely-visited screen).

@@ -87,7 +87,8 @@ export class MutationQueueService {
 
 ## MUST
 - `queuedMutations` MUST be indexed by `feature` and `enqueuedAt` to support efficient per-partition FIFO reads.
-- `touchedFields` MUST be stored per queued mutation at enqueue time — it is derived directly from the command's own payload, never a separately captured entity snapshot, per [[..[[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy]] `idempotencyKey` MUST be generated exactly once, at enqueue time, and reused unchanged across every replay attempt of that entry.
+- `touchedFields` MUST be stored per queued mutation at enqueue time — it is derived directly from the command's own payload, never a separately captured entity snapshot, per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy]].
+- `idempotencyKey` MUST be generated exactly once, at enqueue time, and reused unchanged across every replay attempt of that entry.
 
 # Anti-patterns
 

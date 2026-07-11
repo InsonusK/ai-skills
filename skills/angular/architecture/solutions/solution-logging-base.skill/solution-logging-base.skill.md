@@ -42,13 +42,14 @@ adr:
 
 # Adr
 
-- [[adr/logging-architecture.md|Custom LoggerService over [[skills/angular/architecture/solutions/solution-logging-base.skill/adr/logging-architecture|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]sion adds a sink without touching any existing call site, and so logs are filterable/queryable from the start
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/adr/logging-architecture|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
+  - Selected variant: custom LoggerService with pluggable LogSinks — chosen so a future extension adds a sink without touching any existing call site, and so logs are filterable/queryable from the start
 
 # Requirements
 
 SOLUTION:
-- [[../solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
-  - `li[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]beyond Angular's own DI/core APIs
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+  - `libs/shared/logging` hosts this solution's `LoggerService` and `ConsoleLogSink`, with no other dependency beyond Angular's own DI/core APIs
 
 # Template Skill Mutations
 
