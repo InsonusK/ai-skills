@@ -5,11 +5,13 @@ tasks:
     source:
       include:
         - "skills/angular/architecture/plateau/**/plateau-*.skill.md"
-        - "skills/angular/architecture/solutions/**/*.skill.md"
+    metadata:
+      subpath: "# Capabilities"
     links:
       - name: created_by
         type: frontmatter_field
         field: created_by
+        transitive_reduction: true
     output:
       format: obsidian_canvas
       destination: "skills/angular/architecture/plateau/angular-plateaus-overview.canvas"
