@@ -8,8 +8,8 @@ tags:
   - skill/template/plateau
   - plateau/foundation
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
 ---
 
 > First plateau in the main application's chain. Next: [[skills/angular/architecture/plateau/navigable/plateau-navigable.skill.md|navigable]].
