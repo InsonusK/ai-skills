@@ -12,43 +12,65 @@ created_by:
 # How Apply this template
 - add to header properties `tags` tag `plateau/{plateau-name}`
 
-# Core Principles
+# Goal
 ```hint
-Summarise core principles from applied solutions.
+Describe the purpose of this plateau.
 
 MUST:
-- If Core Principles conflicted to each other as user to solve the problem
-- Don't just copy principles, make brief summary
+- If `parent_plateau` is set, explain what problem the solutions in `created_by` solve or what behavior they introduce on top of the parent plateau.
+- If `parent_plateau` is empty, explain the overall purpose of the plateau.
 
 RECOMENDATION:
-- Prefer bullet list
+- Keep it to one or two sentences.
 ```
 ```example
-- Every CLI entry point configures logging and exposes `--debug`
+Add a typed CLI framework with command dispatch and validation on top of the default Python package structure.
 ```
-# Capabilities
+
+# Core Principles
 ```hint
-What capabilities does this plateau has
+Summarise core principles introduced or changed by the solutions in `created_by`.
 
 MUST:
-- If Capabilities conflicted to each other as user to solve the problem
-- Summaraize all capabilities from all used solutions and logicaly group them
+- If `parent_plateau` is set, describe only the delta relative to the parent plateau.
+- If Core Principles conflict with each other, ask the user to resolve the problem.
+- Don't just copy principles; make a brief summary.
 
 RECOMENDATION:
-- Prefer bullet list
+- Prefer bullet list.
+```
+```example
+- Logging: every CLI entry point configures logging and exposes `--debug`.
+```
+
+# Capabilities
+```hint
+What capabilities does this plateau add or change.
+
+MUST:
+- If `parent_plateau` is set, describe only the delta relative to the parent plateau.
+- If Capabilities conflict with each other, ask the user to resolve the problem.
+- Summarize capabilities from the solutions in `created_by` and group them logically.
+
+RECOMENDATION:
+- Prefer bullet list.
 ```
 ```example
 - workflow
-	- CLI parses arguments and dispatches to typed Commands
+	- CLI parses arguments and dispatches to typed Commands.
 - validation
-	- Commands validate typed parameters before orchestrating Functions and Services
+	- Commands validate typed parameters before orchestrating Functions and Services.
 ```
 
 # Usecases
 ```hint
-fill usecases for plateau
-- example of interactions
-- example of cron jobs
+Fill use cases that demonstrate new or changed interactions introduced by this plateau.
+
+MUST:
+- If `parent_plateau` is set, focus on scenarios that are added or changed relative to the parent plateau.
+
+RECOMENDATION:
+- Include examples of interactions and cron jobs if applicable.
 ```
 ## {Case name}
 ```hint
