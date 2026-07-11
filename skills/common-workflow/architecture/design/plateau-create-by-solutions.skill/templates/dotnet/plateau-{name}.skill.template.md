@@ -12,43 +12,65 @@ created_by:
 # How Apply this template
 - add to header properties `tags` tag `plateau/{plateau-name}`
 
-# Core Principles
+# Goal
 ```hint
-Summarise core principles from applied solutions.
+Describe the purpose of this plateau.
 
 MUST:
-- If Core Principles conflicted to each other as user to solve the problem
-- Don't just copy principles, make brief summary
+- If `parent_plateau` is set, explain what problem the solutions in `created_by` solve or what behavior they introduce on top of the parent plateau.
+- If `parent_plateau` is empty, explain the overall purpose of the plateau.
 
 RECOMENDATION:
-- Prefer bullet list
+- Keep it to one or two sentences.
 ```
 ```example
-- Validation entity version on change
+Add command-query separation and optimistic concurrency control on top of the default .NET solution structure.
 ```
-# Capabilities
+
+# Core Principles
 ```hint
-What capabilities does this plateau has
+Summarise core principles introduced or changed by the solutions in `created_by`.
 
 MUST:
-- If Capabilities conflicted to each other as user to solve the problem
-- Summaraize all capabilities from all used solutions and logicaly group them
+- If `parent_plateau` is set, describe only the delta relative to the parent plateau.
+- If Core Principles conflict with each other, ask the user to resolve the problem.
+- Don't just copy principles; make a brief summary.
 
 RECOMENDATION:
-- Prefer bullet list
+- Prefer bullet list.
+```
+```example
+- Validation: entity version is validated on every change.
+```
+
+# Capabilities
+```hint
+What capabilities does this plateau add or change.
+
+MUST:
+- If `parent_plateau` is set, describe only the delta relative to the parent plateau.
+- If Capabilities conflict with each other, ask the user to resolve the problem.
+- Summarize capabilities from the solutions in `created_by` and group them logically.
+
+RECOMENDATION:
+- Prefer bullet list.
 ```
 ```example
 - workflow
-	- All command and queries validate by FluentValidator in `ValidatorBahaviour`
+	- All commands and queries are validated by FluentValidator in `ValidationBehavior`.
 - validation
-	- all modules valudate dto and soft{ValueObject} from other module using there validator
+	- All modules validate DTOs and soft value objects from other modules using their validators.
 ```
 
 # Usecases
 ```hint
-fill usecases for plateau
-- example of interactions
-- example of cron jobs
+Fill use cases that demonstrate new or changed interactions introduced by this plateau.
+
+MUST:
+- If `parent_plateau` is set, focus on scenarios that are added or changed relative to the parent plateau.
+
+RECOMENDATION:
+- Include examples of interactions and cron jobs if applicable.
 ```
 ## {Case name}
 ```hint
