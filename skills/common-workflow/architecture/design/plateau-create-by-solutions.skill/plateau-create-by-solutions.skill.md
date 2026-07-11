@@ -78,9 +78,10 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
     - Follow `# How Apply this template` instructions inside each template
     - Remove all `hint` and `example` blocks from the final skill files
 11. Fill header properties
-    - `plateau` by name {plateau-name}
+    - `name` by {plateau-name}
     - `version` by current UTC timestamp with format `YYYYMMDDHHMMSS`
-    - `created_by` add links to all solutions which made effect on this skill
+    - `parent_plateau` — link to the plateau this plateau extends. Leave empty when the plateau is built from scratch without a parent. Use a wikilink, for example `[[skills/dotnet/architecture/plateau/base/plateau-base.skill.md|base]]`. When this field is set, `created_by` must list only the solutions added on top of the parent plateau. When this field is empty, `created_by` must list all solutions that define the plateau.
+    - `created_by` — list of wikilinks to all solution skills that contributed to this plateau. If `parent_plateau` is set, include only the solutions that extend the parent plateau. If `parent_plateau` is empty, include all solutions.
 
 # Mapping rules
 
