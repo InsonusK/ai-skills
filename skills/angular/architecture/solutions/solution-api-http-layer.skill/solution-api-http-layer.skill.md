@@ -48,44 +48,33 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering|Signal Store calls Facade directly; Client is an internal transport detail — Action/Reducer/Effect collapsed for feature-level operations]]
-  - Selected variant: Signal Store → Facade → Client — chosen since Signal Store already owns the orchestration role, making the classical NgRx chain redundant for feature-level operations
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy|Client throws typed domain errors; Facade preserves the throw/reject channel]]
-  - Selected variant: typed domain errors via throw/reject — chosen for compatibility with both existing call-site styles (`try/catch` and Promise rejection)
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy|Manual mapper functions instead of an automatic mapping library]]
+- [[adr/facade-client-layering.md|Signal Store calls Facade directly; Client is an internal transport detail — Action/Reducer/Effect collapsed for feature-level operations]]
+  - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering|Signal Store calls Facade directly; Client is an internal transport detail — Action/Reducer/Effect collapsed for feature-level operations]]hrows typed domain errors; Facade preserves the throw/reject channel]]
+  - Selected variant: typed domain errors via throw/reject — chosen for compatibility with both existing call-site styles (`try/c[[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy|Client throws typed domain errors; Facade preserves the throw/reject channel]]mapping library]]
   - Selected variant: manual mappers — chosen because some fields require enrichment from external context that an automatic mapper would not handle cleanly anyway
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
-  - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|libs/{feature}/data-access]] - internal structure formalized by this solution
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
-  - Feature-level Signal Store methods call the Facade/Client exactly as already established there; global/cross-cutting effects keep calling into the same Facade/Client layering
-
-NPM:
-- `HttpClient`, already a base Angular dependency
+- [[../solutio[[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy|Manual mapper functions instead of an automatic mapping library]]Repository.create.md|libs/{feature}/data-access]] - internal structure formalized by this solution
+- [[../solution-state-management.skill/solution-state-management.skill.md|State management]]
+  - Fe[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]that s[[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|libs/{feature}/data-access]] Client exactly as already established there and in t[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]HttpClient`, already a base Angular dependency
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend|Repository]] - extend - add `libs/shared/http-core`, formalize the Facade/Client/Mapper/Errors structure inside every `data-access` project
-
+- [[./Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/http-core`, formalize the Facade/Client/Mapper/Errors structure inside every `data-access` project
 PROJECT:
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create|libs/shared/http-core]] - create - base HTTP service (base URL, timeout, retry) shared by every feature's Client
+- [[./Implementation/HttpCore/shared-http-core.project.create.md|libs/shared/http-core]] - create - base HTTP service (base URL, timeout, retry) shared by every feature's Client
 
-Artifact-level (generic pattern, applied by any solution that creates a `libs/{feature}/data-access` project):
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|{feature}.facade.ts]] - create - public API, business validation/orchestration
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|{feature}.client.ts]] - create - internal transport/DTO layer
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|{feature}.mapper.ts / {feature}.errors.ts]] - create - hand-written DTO mapping and typed domain errors
+[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend|Repository]]ution that creates a `libs/{feature}/data-access` project):
+- [[./Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.cre[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create|libs/shared/http-core]]
+- [[./Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create.md|{feature}.client.ts]] - create - internal transport/DTO layer
+- [[./Implementation/DataAccess/{Feature}.project.create/[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|{feature}.facade.ts]]en DTO mapping and typed domain errors
 
 # Workflow
 
-## Feature-level create operation (happy path)
-
-1. A component calls a Signal Store method (e.g. `OrdersStore.addOrder(input)`).
-2. The store method calls `OrdersFacade.addOrder(input)` directly — no Action is dispatched, per the "State management" solution's tiering.
-3. The Facade validates business-level input (e.g. quantity > 0); if they fail, it throws immediately without calling the Client.
+## Fe[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|{feature}.client.ts]]nput)`), per the "State management" solution[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|{feature}.mapper.ts / {feature}.errors.ts]] they fail, it throws immediately without calling the Client.
 4. Otherwise, the Facade calls `OrdersClient.addOrder(input)`, which maps the domain model to a DTO (enriching fields as needed via `{feature}.mapper.ts`), calls `libs/shared/http-core`, and maps the response back to a domain model.
 5. The store method receives the result and calls `patchState` to update its own signals — no Reducer involved.
 
@@ -106,26 +95,20 @@ Artifact-level (generic pattern, applied by any solution that creates a `libs/{f
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend#MUST|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create#MUST|HttpCore/shared-http-core.project.create]]
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create#MUST|{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create#MUST|{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create#MUST|{feature}.mapper-and-errors.ts.create]]
+- [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[./Implementation/HttpCore/shared-http-core.project.create.md#MUST|HttpCore/shared-http-core.project.create]]
+- [[./Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create.md#MUST|{feature}.facade.ts.create]]
+- [[./Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create.md#MUST|{feature}.client.ts.create]]
+- [[./Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create.md#MUST|{feature}.mapper-and-errors.ts.create]]
 
 ## MUST NOT
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend#MUST NOT|Repository.extend]]
+- [[./Implementation/Repository.extend.md#MUST NOT|Repository.extend]]
 
 # Anti-patterns
 
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend|See Repository.extend.md]] — a Signal Store method calling a feature's Client directly, skipping the Facade; a Client letting a raw `HttpErrorResponse` escape.
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create|See shared-http-core.project.create.md]] — adding feature-specific special cases into the shared base HTTP service.
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|See {feature}.facade.ts.create.md]] — putting DTO mapping or direct HTTP calls inside the Facade instead of delegating to the Client.
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|See {feature}.client.ts.create.md]] — a component or Signal Store method importing the feature's Client directly instead of going through the Facade.
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|See {feature}.mapper-and-errors.ts.create.md]] — a mapper silently dropping a DTO field with no domain equivalent and no explanatory comment.
-
-# Check list
-
-- [ ] Every DTO ↔ model conversion has a corresponding function in `{feature}.mapper.ts`
-- [ ] Global/cross-cutting state (auth, notifications, offline-sync) still uses its existing classical NgRx chain, unchanged by this solution
-- [ ] Every feature's `index.ts` exports the Facade and domain error types only, never the Client or Mapper
-- [ ] No component or Signal Store method imports a feature's Client directly, bypassing the Facade
+- [[./Implementation/Repository.extend.md|See Repository.extend.md]] — a Signal Store method calling a feature's Client directly, skipping the Facade; a Client letting a raw `HttpErrorResponse` escape.
+- [[./Implementation/HttpCore/shared-http-core.project.create.md|See shared-http-core.project.create.md]] — adding feature-specific special cases into the shared base HTTP service.
+- [[./Implementation/DataAccess/{Feature}.project.create/{feature}.facade[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend#MUST|Repository]]mapp[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create#MUST|HttpCore/shared-http-core.project.create]]}.cl[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create#MUST|{feature}.facade.ts]]appe[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create#MUST|{feature}.client.ts]]etho[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create#MUST|{feature}.mapper-and-errors.ts]]Client` directly
+-[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend#MUST NOT|Repository]]Client
+- [ ] Every DTO ↔[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend|See Repository.extend.md]]functions
+- [ ] Global/cross-cutting state (auth, notifications, offline-sync) still uses its existing classical NgRx chain, unchanged b[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create|See shared-http-core.project.create.md]]aAccess/{Feature}.project.create/{feature}.client.ts.create|See {feature}.clien[[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|See {feature}.facade.ts.create.md]]
