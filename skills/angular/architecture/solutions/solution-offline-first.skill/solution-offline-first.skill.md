@@ -27,7 +27,6 @@ depends_on:
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
   - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]"
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]"
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|Встраиваемость платформы]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/adr/service-worker-mechanism|Service Worker Mechanism ADR]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type|Caching Strategy Per Content Type ADR]]"
@@ -44,23 +43,22 @@ adr:
 
 - The app shell always loads, even with no network, via an atomically-updated precached bundle
 - Feature data screens show last-known-good data instantly (stale-while-revalidate) instead of a blank/error state when offline
-- Federated embeddable modules (per the "Встраиваемость платформы" solution) keep working from their last-cached version if their independent deployment is temporarily unreachable
-- Auth and mutation requests are never served from or written to any cache, protecting the token-handling guarantees from the "Аутентификация" solution
+- Auth and mutation requests are never served from or written to any cache, protecting the token-handling guarantees required of any future authentication solution
 - A clear, accurate offline indicator, backed by more than just `navigator.onLine`
 
 # Core Principles
 
 - This solution's scope is read resilience only ("Сценарий A"): the app shell always loads, and API reads fall back to last-known-good cached data when offline. It deliberately does not implement write queueing, retry, or conflict handling for mutations attempted while offline — that is the explicit scope of the future "Синхронизация offline-данных" solution, which this solution only prepares a hook for
-- Five distinct caching strategies apply by content type: precache (app shell), cache-first (static assets), stale-while-revalidate (API reads and federated remote chunks), network-only (auth and all non-GET requests)
+- Four distinct caching strategies apply by content type: precache (app shell), cache-first (static assets), stale-while-revalidate (API reads), network-only (auth and all non-GET requests). A future platform-embeddability solution adds a fifth strategy (stale-while-revalidate for federated remote chunks) as its own extension once that concept exists — this solution's own scope has no notion of a federated remote
 - Connectivity is judged by combining `navigator.onLine` events with a periodic backend health-check — neither alone is trustworthy on its own
 - Every feature's Client distinguishes a network-level failure (`OfflineTransportError`) from a genuine server-side error — this is the one architectural hook this solution adds toward the future write-queueing solution
 
 # Adr
 
 - [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/service-worker-mechanism|Workbox instead of Angular's built-in (and now feature-frozen) Service Worker]]
-  - Selected variant: Workbox — chosen because ngsw is explicitly feature-frozen by Angular's own team, and Workbox supports the per-content-type strategies and runtime caching of dynamically-resolved federation chunks this solution needs
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type|Five strategies by content type instead of one uniform strategy]]
-  - Selected variant: five strategies — chosen because auth/mutations, the app shell, static assets, API reads, and federated remote chunks each have genuinely different freshness/availability requirements
+  - Selected variant: Workbox — chosen because ngsw is explicitly feature-frozen by Angular's own team, and Workbox supports per-content-type strategies and is extensible enough for a future solution to add further runtime-caching rules without replacing the mechanism
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type|Content-type-specific strategies instead of one uniform strategy]]
+  - Selected variant: strategy per content type — chosen because auth/mutations, the app shell, static assets, and API reads each have genuinely different freshness/availability requirements
 - [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection|navigator.onLine events + periodic health-check instead of navigator.onLine alone]]
   - Selected variant: combined signal — chosen because `navigator.onLine` alone materially misrepresents real backend reachability in common failure modes (captive portals, backend outages)
 
@@ -71,8 +69,6 @@ SOLUTION:
   - New `connectivity` slice added to `libs/shared/state`, following the same classical-NgRx pattern as the existing `auth` slice
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]
   - Every feature's `{feature}.client.ts` extended to throw `OfflineTransportError` on network-level failures
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|Встраиваемость платформы]]
-  - Federated remote chunks are runtime-cached using the same origin list as `RemoteRegistryService`
 
 NPM:
 - workbox-build, workbox-routing, workbox-strategies, workbox-precaching, workbox-expiration
@@ -131,12 +127,6 @@ sequenceDiagram
     Note over Client,User: This solution stops here — surfaced as a failure.<br/>The future sync solution will catch this error and queue instead.
 ```
 
-## Federated remote temporarily unreachable (failure path)
-
-1. An embeddable app's independently-deployed `remoteEntry` is temporarily unreachable (that team's own outage, unrelated to the user's connectivity).
-2. The stale-while-revalidate runtime-caching rule serves the last-cached version of that remote instead of failing to load it entirely.
-3. Once that team's deployment is reachable again, the next load revalidates and updates the cached version.
-
 # Rules
 
 ## MUST
@@ -162,7 +152,6 @@ sequenceDiagram
 - [ ] The app shell loads fully with no network connection
 - [ ] API GET requests show last-known cached data when offline, via stale-while-revalidate
 - [ ] Auth and every non-GET request are always `network-only`, never cached
-- [ ] Federated remote chunks are runtime-cached (stale-while-revalidate), not precached
 - [ ] `isOnline` reflects both `navigator.onLine` and the health-check, not either alone
 - [ ] Every feature's Client throws `OfflineTransportError` for network-level failures, distinct from server-side domain errors
 - [ ] No mutation queueing, retry, or persistence exists in this solution — mutations attempted offline simply fail, deferred entirely to the future "Синхронизация offline-данных" solution
