@@ -22,6 +22,8 @@ extends:
   - Repository (type:host tag, shared-dependency rules, @platform/contracts)
 depends_on:
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/adr/embedding-mechanism|Embedding Mechanism ADR]]"
 ---
@@ -58,6 +60,10 @@ SOLUTION:
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
   - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|apps/platform-shell]]
     - Extended by this solution into a federation host (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend]])
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]
+  - This solution's hierarchical route-ownership pattern is reused one level down inside an embeddable module, unmodified (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableModule/routes.ts.extend]])
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]
+  - This solution's four-rule service worker gains a fifth rule for federated remote chunks, once `RemoteRegistryService` exists to source known remote origins from (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend]])
 
 NPM:
 - @angular-architects/native-federation
@@ -74,6 +80,8 @@ REPOSITORY:
 PROJECT:
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend|apps/platform-shell]] - extend - turn into a Native Federation dynamic host
   - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|remote-registry.service.ts]] - create - runtime resolver for available embeddable apps' remoteEntry URLs
+  - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|service-worker (extend)]] - extend - adds the fifth caching rule (federated remote chunks) to the offline-first solution's service worker, once both solutions are present
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableModule/routes.ts.extend|Embeddable module (generic pattern)]] - extend - mounts its own features' root segments, reusing the app-routing solution's hierarchical ownership pattern one level down
 
 This solution intentionally does not prescribe an internal `feature`/`data-access` structure for the embeddable app's own repository — that repository is free to apply solution #1's structure internally if it also chooses Nx, but it is only required to satisfy the federation contract described in [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create]].
 
@@ -100,6 +108,20 @@ This solution intentionally does not prescribe an internal `feature`/`data-acces
 2. The failure is caught at the point of loading, not allowed to propagate to a shell-wide crash.
 3. The shell renders a fallback in place of that remote's slot; the rest of the platform, and any other already-loaded remotes, keep working.
 
+## Mount an embeddable module (happy path)
+
+1. The embeddable module exposes its own root-relative routes as part of its federation entry point (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableModule/routes.ts.extend]]), reusing the "App routing (база)" solution's hierarchical ownership pattern one level down.
+2. The shell mounts it exactly like a directly-owned feature — one root-segment entry in `app.routes.ts`, resolved via `RemoteRegistryService` instead of a static import.
+3. Inside the module, its own features are mounted the same way, one level down.
+
+![Mount an embeddable module (happy path)](skills/angular/architecture/solutions/solution-platform-embeddability.skill/diagrams/mount-an-embeddable-module-happy-path.mmd)
+
+## Federated remote temporarily unreachable, if offline-first is also present (failure path)
+
+1. An embeddable app's independently-deployed `remoteEntry` is temporarily unreachable (that team's own outage, unrelated to the user's connectivity).
+2. If the "Offline-first" solution is also present, the fifth stale-while-revalidate runtime-caching rule (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend]]) serves the last-cached version of that remote instead of failing to load it entirely.
+3. Once that team's deployment is reachable again, the next load revalidates and updates the cached version.
+
 ## Version-incompatible shared contract (cross-cutting failure path)
 
 1. An embeddable app is built and deployed against a major version of `@platform/contracts` incompatible with the one the platform host expects.
@@ -113,6 +135,8 @@ This solution intentionally does not prescribe an internal `feature`/`data-acces
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend#MUST|PlatformHost/platform-shell.project.extend]]
   - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create#MUST|remote-registry.service.ts]]
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create#MUST|EmbeddableApp/Repository.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableModule/routes.ts.extend#MUST|EmbeddableModule/routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend#MUST|ServiceWorker/service-worker.ts.extend]]
 
 ## SHOULD
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend#SHOULD|PlatformHost/platform-shell.project.extend]]
@@ -127,6 +151,8 @@ This solution intentionally does not prescribe an internal `feature`/`data-acces
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|See PlatformHost/Repository.extend.md]] — hardcoding a remote's URL/version into the host, or bypassing `@platform/contracts` to import a remote's internals directly.
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|See remote-registry.service.ts.create.md]] — caching the remotes manifest for the whole tab lifetime with no refresh path.
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|See EmbeddableApp/Repository.create.md]] — bumping `@platform/contracts` to an incompatible major version without cross-team coordination, or depending on platform-shell internals instead of the shared contract.
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableModule/routes.ts.extend|See EmbeddableModule/routes.ts.extend.md]] — a module hardcoding its own expected mount prefix.
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|See ServiceWorker/service-worker.ts.extend.md]] — hardcoding `KNOWN_REMOTE_ORIGINS` instead of deriving it from `RemoteRegistryService`'s own manifest.
 
 # Check list
 
@@ -136,3 +162,5 @@ This solution intentionally does not prescribe an internal `feature`/`data-acces
 - [ ] Every embeddable app repository builds, tests, and deploys independently of the platform's own CI/CD pipeline
 - [ ] A failure to load one remote does not take down the rest of the platform shell
 - [ ] No import exists, in either direction, between platform-shell internals and an embeddable app's internals outside of `@platform/contracts` and the federation `remoteEntry` boundary
+- [ ] An embeddable module mounts its own features the same way the shell mounts a feature — one root segment per `loadChildren` entry
+- [ ] If offline-first is also present, federated remote chunks are runtime-cached (stale-while-revalidate), sourced from `RemoteRegistryService`'s manifest

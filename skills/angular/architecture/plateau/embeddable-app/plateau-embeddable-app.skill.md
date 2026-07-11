@@ -3,7 +3,7 @@ name: plateau-embeddable-app
 description: The baseline structure any independently deployed, separately repositoried embeddable application must follow to be loadable by the platform host — Native Federation remote config, version-negotiated design-system and @platform/contracts singletons, and read-only session consumption via SessionContract
 domain: skill
 type: template
-version: 20260711140000
+version: 20260711230000
 tags:
   - skill/template/plateau
   - plateau/embeddable-app
@@ -14,7 +14,7 @@ created_by:
 parent_plateau:
 ---
 
-> This is a sibling plateau to [[skills/angular/architecture/plateau/platform/plateau-platform.skill.md|platform]], not a continuation of the main application's own plateau chain. It lives in its own repository — separate from both the main Nx platform monorepo and the design-system repository — owned and deployed independently by its own team. Any independently deployed application in this architecture, regardless of which team builds it, must conform to this plateau's structure to be embeddable. It becomes loadable by the platform host once the [[skills/angular/architecture/plateau/platform/plateau-platform.skill.md|platform]] plateau exists (`apps/platform-shell` turned into a Native Federation dynamic host).
+> This is a sibling plateau to the main application's chain, not a continuation of it. It lives in its own repository — separate from both the main Nx platform monorepo and the design-system repository — owned and deployed independently by its own team. Any independently deployed application in this architecture, regardless of which team builds it, must conform to this plateau's structure to be embeddable. It becomes loadable by the platform host once [[skills/angular/architecture/plateau/platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]] exists (`apps/platform-shell` turned into a Native Federation dynamic host) — though `SessionContract` has nothing real to share until [[skills/angular/architecture/plateau/multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the final main-chain plateau: an embeddable app mounted before then sees `isAuthenticated: false`.
 
 # Core Principles
 

@@ -1,5 +1,5 @@
 ---
-description: Workbox-generated service worker for apps/platform-shell, including the build script and the five content-type-specific runtime routing rules
+description: Workbox-generated service worker for apps/platform-shell, including the build script and the four content-type-specific runtime routing rules
 project_name: platform-shell
 name: service-worker
 element_kind: script
@@ -8,7 +8,7 @@ change_kind: create
 
 # Goals
 
-- Implement the five content-type-specific caching strategies as concrete Workbox routing rules
+- Implement the four content-type-specific caching strategies as concrete Workbox routing rules
 
 # Implementation changes
 
@@ -51,19 +51,12 @@ registerRoute(
   ({ url, request }) => url.pathname.startsWith('/auth/') || request.method !== 'GET',
   new NetworkOnly(),
 );
-
-// 5. Federated remote chunks — stale-while-revalidate runtime caching (URLs unknown at build time)
-registerRoute(
-  ({ url }) => KNOWN_REMOTE_ORIGINS.some(origin => url.origin === origin),
-  new StaleWhileRevalidate({ cacheName: 'federation-remotes' }),
-);
 ```
 
 # Rule changes
 
 ## MUST
 - Rule 4 (network-only for auth/mutations) MUST be registered so it takes precedence over rule 3 for any non-GET request, even one under `/api/` — route matching order matters.
-- `KNOWN_REMOTE_ORIGINS` MUST be sourced from the same runtime remote registry configuration the platform-embeddability solution's `RemoteRegistryService` uses, not hardcoded separately, to avoid the two falling out of sync.
 
 # Anti-patterns
 
@@ -73,8 +66,7 @@ registerRoute(
 
 # Check list
 
-- [ ] The five rules are registered in an order that guarantees auth/mutations always resolve to `network-only`
-- [ ] `KNOWN_REMOTE_ORIGINS` is derived from the same configuration source as `RemoteRegistryService`
+- [ ] The four rules are registered in an order that guarantees auth/mutations always resolve to `network-only`
 
 # Unittest TestCases
 
@@ -82,5 +74,3 @@ registerRoute(
   - [ ] the cached response is served immediately, and a background revalidation is attempted
 - [ ] WHEN a POST request to `/api/orders` is made THEN
   - [ ] it always goes to the network, never served from or written to any cache
-- [ ] WHEN a request to a known federated remote's origin is made THEN
-  - [ ] it is served stale-while-revalidate, not precached
