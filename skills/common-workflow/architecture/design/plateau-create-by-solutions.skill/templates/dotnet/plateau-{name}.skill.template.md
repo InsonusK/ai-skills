@@ -6,6 +6,7 @@ type: template
 version:
 tags:
   - skill/template/plateau
+parent_plateau:
 created_by:
 ---
 # How Apply this template
