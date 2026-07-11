@@ -8,13 +8,8 @@ tags:
   - skill/template/plateau
   - plateau/authenticated
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
-  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
-  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+parent_plateau: "[[skills/angular/architecture/plateau/data-capable/plateau-data-capable.skill.md|data-capable]]"
 ---
 
 > Fourth plateau in the main application's chain. Previous: [[skills/angular/architecture/plateau/data-capable/plateau-data-capable.skill.md|data-capable]]. Next: [[skills/angular/architecture/plateau/observable/plateau-observable.skill.md|observable]].
@@ -30,9 +25,7 @@ created_by:
 
 # Capabilities
 
-- structure
-  - `nx affected` runs CI tasks only for projects impacted by a change; enforced module boundaries via Nx tags
-- state management, routing, forms, data access
+- structure, state management, routing, forms, data access
   - Unchanged from [[skills/angular/architecture/plateau/data-capable/plateau-data-capable.skill.md|data-capable]]
 - authentication & session
   - No token value ever persists in `localStorage`/`sessionStorage`, closing off the most common XSS-driven token theft vector

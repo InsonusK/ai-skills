@@ -8,26 +8,17 @@ tags:
   - skill/template/plateau
   - plateau/platform
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
-  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
-  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
-  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-  - "[[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]]"
-  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]]"
   - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+parent_plateau: "[[skills/angular/architecture/plateau/offline-app/plateau-offline-app.skill.md|offline-app]]"
 ---
 
-> Final plateau in the main application's chain. Previous: [[skills/angular/architecture/plateau/offline-app/plateau-offline-app.skill.md|offline-app]]. There is no next plateau in this chain — every one of the 17 solutions under `skills/angular/architecture/solutions/` is fully applied here (see [[skills/angular/architecture/plateau/platform/structure/repo-platform.skill.md|repo-platform]]'s "No further deferrals" section for the full accounting). This plateau has a **sibling**, not a successor: [[skills/angular/architecture/plateau/embeddable-app/plateau-embeddable-app.skill.md|embeddable-app]] — the baseline structure any independently deployed, separately repositoried application must follow to be loadable by the host modeled here. The [[skills/angular/architecture/plateau/design-system/plateau-design-system.skill.md|design-system]] plateau is a third, independent product this plateau consumes as a version-negotiated npm dependency.
+> Final plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/offline-app/plateau-offline-app.skill.md|offline-app]]. There is no next plateau in this chain — every one of the 17 solutions under `skills/angular/architecture/solutions/` is fully applied here (see [[skills/angular/architecture/plateau/platform/structure/repo-platform.skill.md|repo-platform]]'s "No further deferrals" section for the full accounting). This plateau has a **sibling**, not a successor: [[skills/angular/architecture/plateau/embeddable-app/plateau-embeddable-app.skill.md|embeddable-app]] — the baseline structure any independently deployed, separately repositoried application must follow to be loadable by the host modeled here. The [[skills/angular/architecture/plateau/design-system/plateau-design-system.skill.md|design-system]] plateau is a third, independent product this plateau consumes as a version-negotiated npm dependency.
+>
+> `created_by` lists five solutions, not two, even though this plateau's delta is really "add embeddability + federation-aware design-system consumption": `solution-app-routing`, `solution-authentication`, and `solution-offline-first` reappear here because each of them has a narrow, Module-Federation-specific slice that every earlier plateau in this chain deliberately deferred (see each earlier plateau's own repo skill for the deferral note). Those three solutions genuinely contribute new delta content at *this* plateau — their base slices were already applied earlier and are not repeated.
 
 # Core Principles
 
