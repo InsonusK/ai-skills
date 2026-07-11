@@ -8,10 +8,9 @@ tags:
   - skill/template/plateau
   - plateau/navigable
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
   - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
   - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
+parent_plateau: "[[skills/angular/architecture/plateau/foundation/plateau-foundation.skill.md|foundation]]"
 ---
 
 > Second plateau in the main application's chain. Previous: [[skills/angular/architecture/plateau/foundation/plateau-foundation.skill.md|foundation]]. Next: [[skills/angular/architecture/plateau/data-capable/plateau-data-capable.skill.md|data-capable]].
@@ -27,11 +26,8 @@ created_by:
 
 # Capabilities
 
-- structure
-  - `nx affected` runs CI tasks only for projects impacted by a change
-  - A dependency graph (`nx graph`) that reflects the real architecture, enforced by lint
-- state management
-  - No NgRx boilerplate for purely local UI state; feature state stays encapsulated; a single auditable global store (`libs/shared/state`)
+- structure, state management
+  - Unchanged from [[skills/angular/architecture/plateau/foundation/plateau-foundation.skill.md|foundation]]
 - routing
   - Any feature can be mounted, remounted, or moved without changing its own code — it never knows its own URL prefix
   - One consistent mounting mechanism (`loadChildren` against an exported `Routes` array) for every directly-owned feature

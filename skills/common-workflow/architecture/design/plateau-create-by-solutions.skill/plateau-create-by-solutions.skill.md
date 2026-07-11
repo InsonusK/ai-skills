@@ -72,15 +72,18 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
 9. Create `plateau-{plateau-name}.skill.md` using the plateau template that matches {stack}
    - .NET: [templates/dotnet/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/plateau-{name}.skill.template.md)
    - Python: [templates/python/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/plateau-{name}.skill.template.md)
-   - This is the plateau summary: goals, core principles, capabilities, use-cases
-   - It is not a code-generation template; it explains what the plateau as a whole provides
+   - This is the plateau summary: goal, core principles, capabilities, use-cases
+   - It is not a code-generation template
+   - If `parent_plateau` is set, describe only the delta that the solutions in `created_by` add or change on top of the parent plateau. The reader combines this summary with the parent plateau to get the full picture.
+   - If `parent_plateau` is empty, describe the complete plateau built from all solutions in `created_by`
 10. Fill every skill template with real content
     - Follow `# How Apply this template` instructions inside each template
     - Remove all `hint` and `example` blocks from the final skill files
 11. Fill header properties
-    - `plateau` by name {plateau-name}
+    - `name` by {plateau-name}
     - `version` by current UTC timestamp with format `YYYYMMDDHHMMSS`
-    - `created_by` add links to all solutions which made effect on this skill
+    - `parent_plateau` — link to the plateau this plateau extends. Leave empty when the plateau is built from scratch without a parent. Use a wikilink, for example `[[skills/dotnet/architecture/plateau/base/plateau-base.skill.md|base]]`. When this field is set, `created_by` must list only the solutions added on top of the parent plateau. When this field is empty, `created_by` must list all solutions that define the plateau.
+    - `created_by` — list of wikilinks to all solution skills that contributed to this plateau. If `parent_plateau` is set, include only the solutions that extend the parent plateau. If `parent_plateau` is empty, include all solutions.
 
 # Mapping rules
 
@@ -205,8 +208,10 @@ MUST:
 - Merge `.create.md` and `.extend.md` files for the same project/package/class/module into a single skill file.
 - Include every solution that contributes project/package, class/module, or repository-level content in `created_by`.
 - If two solutions define conflicting rules for the same project/package/class/module, resolve the conflict or ask the user before merging.
+- When `parent_plateau` is set, the plateau root skill must describe only the delta added or changed by the solutions in `created_by` on top of the parent plateau.
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Omit the parent solution skill link from `__Applied solutions:__` bullets.
 - List class/module skill files in the repository/root skill `## Directory and class skills` table.
 - Create separate skill files for `.create.md` and `.extend.md` of the same project/package/class/module.
+- Duplicate the full parent plateau content in the plateau root skill when `parent_plateau` is set.

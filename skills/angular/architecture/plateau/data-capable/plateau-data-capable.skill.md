@@ -8,12 +8,9 @@ tags:
   - skill/template/plateau
   - plateau/data-capable
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
-  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+parent_plateau: "[[skills/angular/architecture/plateau/navigable/plateau-navigable.skill.md|navigable]]"
 ---
 
 > Third plateau in the main application's chain. Previous: [[skills/angular/architecture/plateau/navigable/plateau-navigable.skill.md|navigable]]. Next: [[skills/angular/architecture/plateau/authenticated/plateau-authenticated.skill.md|authenticated]].
@@ -29,12 +26,8 @@ created_by:
 
 # Capabilities
 
-- structure
-  - `nx affected` runs CI tasks only for projects impacted by a change; enforced module boundaries via Nx tags
-- state management
-  - Component Signal → feature Signal Store → global NgRx Store tiering, unchanged from foundation
-- routing
-  - Hierarchical, root-relative route ownership; selective preloading; `loadComponent` sub-splitting — unchanged from navigable
+- structure, state management, routing
+  - Unchanged from [[skills/angular/architecture/plateau/navigable/plateau-navigable.skill.md|navigable]]
 - forms
   - Fine-grained, synchronous field-level validity/touched/error state with no manual `valueChanges` subscriptions
   - A single submission pattern (`submitForm()`) reporting success/failure without hand-rolled pre-submit validity checks

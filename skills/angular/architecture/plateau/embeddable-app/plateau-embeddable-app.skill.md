@@ -11,6 +11,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+parent_plateau:
 ---
 
 > This is a sibling plateau to [[skills/angular/architecture/plateau/platform/plateau-platform.skill.md|platform]], not a continuation of the main application's own plateau chain. It lives in its own repository — separate from both the main Nx platform monorepo and the design-system repository — owned and deployed independently by its own team. Any independently deployed application in this architecture, regardless of which team builds it, must conform to this plateau's structure to be embeddable. It becomes loadable by the platform host once the [[skills/angular/architecture/plateau/platform/plateau-platform.skill.md|platform]] plateau exists (`apps/platform-shell` turned into a Native Federation dynamic host).

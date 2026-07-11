@@ -104,6 +104,25 @@ plateau/default/
             └── class-query.skill.md
 ```
 
+## Resulting `plateau-default.skill.md` frontmatter
+
+```yaml
+---
+name: default
+description: Default .NET plateau with solution structure, command integration and entity concurrency control
+domain: skill
+type: template
+version: 20250101120000
+tags:
+  - skill/template/plateau
+parent_plateau:
+created_by:
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]
+---
+```
+
 ## Key observations
 - `Shared.csproj.create.md` + `Shared.csproj.extend.md` (from two solutions) → one `csproj-shared.skill.md`.
 - `ICommand.cs.create.md` → `class-i-command.skill.md`; `IVersioned.cs.create.md` → `class-i-versioned.skill.md`.
