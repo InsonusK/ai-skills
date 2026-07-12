@@ -1,0 +1,144 @@
+---
+name: solution-ui-testing
+description: Behavioral component tests (Testing Library, reused from solution-app-testing's tooling ADRs) plus two layers no prior solution covers — Playwright screenshot regression and @axe-core/playwright accessibility scans, run against each plateau's own demo/preview pages, without Storybook or Chromatic
+domain: skill
+type: architecture
+version: 1
+tags:
+  - skill/architecture/solution
+  - angular
+  - testing
+  - ui
+  - accessibility
+  - visual-regression
+triggers:
+  - Writing a new UI component (platform feature component, form component, or design-system component)
+  - Deciding whether a component needs business-layer mocking in its test
+  - Reviewing whether a visual or accessibility regression could have been caught automatically
+creates:
+  - apps/component-preview (platform plateau only)
+extends:
+  - libs/{feature}/feature (component test files, platform plateau)
+  - libs/shared/ui (component test files, platform plateau)
+  - projects/design-system (component test files, design-system plateau)
+  - projects/demo (visual/a11y spec target, design-system plateau)
+depends_on:
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|App testing]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Design system: структура]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|Design system: компоненты]]"
+  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|Формы]]"
+adr:
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach|Visual regression approach ADR]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach|Accessibility testing approach ADR]]"
+---
+
+# Goal
+
+- Test a UI component (including a form component, per [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|Формы]]) purely on its own `input()`/`output()`/`model()` surface — independent of whatever business logic, if any, happens to sit around it in a real application
+- Cover the visual and accessibility regressions that a behavioral component test structurally cannot detect (no layout engine in jsdom/happy-dom, no WCAG rule evaluation in a DOM-structure assertion)
+- Apply the exact same approach, tooling, and rules to two distinct plateaus that live in two different repositories with two different workspace tools — the platform's own presentational/form components, and the design system's `ds-*` components
+- Reuse this architecture's already-adopted tools (Vitest, Playwright, Testing Library) rather than introducing a new one
+
+# Capabilities
+
+- Fast, ESM-native component tests via Vitest + Testing Library, verifying rendered behavior without ever needing business-layer mocks
+- Automated visual regression coverage (Playwright screenshots, light and dark) for every component with a demo/preview page
+- Automated accessibility regression coverage (`@axe-core/playwright`) for the same components, catching WCAG-checkable violations no human review step guarantees to catch
+- One consistent approach across both the platform monorepo and the independently-repositoried design system — the only thing that differs between them is where the demo/preview pages physically live
+
+# Core Principles
+
+- A UI component is tested independently of the business logic around it: a signal/input on the way in, a rendered result/event on the way out — the test never needs to know what Facade, Client, or backend (if any) exists beyond the component's own immediate collaborator
+- Two independent layers of UI testing exist, and neither substitutes for the other: **behavioral** (Testing Library — reused unchanged from the prior `solution-testing`, now scoped here) catches what a test author explicitly anticipated; **visual + accessibility** (Playwright screenshots + axe-core) catches what nobody anticipated — a broken layout, a silently-failing dark-mode branch, lost contrast, a specificity conflict, or a WCAG violation
+- Visual and accessibility checks run directly against each plateau's own demo/preview pages via Playwright — no Storybook, no Chromatic (see both ADRs for why)
+- Both plateaus (platform, design system) apply the identical approach to all three layers; only the physical location of the demo/preview pages differs — `apps/component-preview` for the platform (a new, minimal harness this solution introduces), `projects/demo` for the design system (already existing, extended here)
+
+# Adr
+
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach|Playwright screenshot testing against demo/preview pages instead of Storybook + Chromatic]]
+  - Selected variant: Playwright `toHaveScreenshot()` against existing demo/preview pages — reuses the already-adopted e2e tool, avoids re-introducing Storybook (already rejected for this team), and avoids a paid external SaaS
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach|@axe-core/playwright against demo/preview pages]]
+  - Selected variant: automated axe-core scans reusing the same Playwright pages the visual specs already navigate to
+
+# Requirements
+
+SOLUTION:
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|App testing]]
+  - Reuses its Vitest ADR ([[skills/angular/architecture/solutions/solution-app-testing.skill/adr/test-runner-choice]]) and Playwright ADR ([[skills/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice]]) without re-arguing the tool choice — this solution only extends how those same tools are applied to UI/visual concerns
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
+  - Platform plateau: the base Nx workspace `apps/component-preview` is added to
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Design system: структура]]
+  - Design-system plateau: `projects/demo`, already established there, is reused and extended as the visual/a11y target — see [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling|component-preview-tooling ADR]], which this solution's own visual-regression ADR builds directly on
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|Design system: компоненты]]
+  - The `ds-*` component authoring convention (signal-based API, full Material encapsulation) is exactly what gets tested at all three layers here
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|Формы]]
+  - A form component is the clearest example of a component tested purely at the UI level: its Signal Forms `FieldTree` state is entirely internal, and a test only ever needs to interact with the rendered form and assert on it — never on business logic around it
+
+NPM:
+- @testing-library/angular, @testing-library/user-event
+  - DOM-level component testing utilities (reused from `solution-app-testing`'s dependency list — this solution is the actual consumer)
+- @axe-core/playwright
+  - Automated accessibility scanning inside a Playwright page
+
+# Template Skill Mutations
+
+PROJECT:
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create|apps/component-preview]] - create - platform plateau's minimal harness app for rendering components in isolation
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|projects/demo]] - extend - design-system plateau's existing demo app, now also the visual/a11y target
+
+Artifact-level (generic patterns, applied identically to both plateaus):
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|{component-name}.component.spec.ts]] - create - behavioral component test via Testing Library, faking only the component's own immediate dependency (if any)
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|{component-name}.visual.spec.ts]] - create - Playwright screenshot-regression spec against the component's demo/preview page
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|{component-name}.a11y.spec.ts]] - create - `@axe-core/playwright` scan against the same demo/preview page
+
+# Workflow
+
+## Adding a new UI component, fully tested (happy path)
+
+1. Build the component (per [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|Design system: компоненты]] or [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|Формы]], depending on plateau/kind) with a signal-based `input()`/`output()`/`model()` API.
+2. Add a `{component-name}.component.spec.ts` (Testing Library) covering rendered behavior for each meaningfully distinct state.
+3. Add the component to the relevant demo/preview page — `apps/component-preview` (platform) or `projects/demo` (design system) — one route/section per state.
+4. Add a `{component-name}.visual.spec.ts` screenshotting each state (both color schemes, where applicable).
+5. Add a `{component-name}.a11y.spec.ts` scanning the same states.
+
+![Testing a new feature end-to-end (happy path)](skills/angular/architecture/solutions/solution-app-testing.skill/diagrams/testing-a-new-feature-end-to-end-happy-path.mmd)
+
+## A visual regression slips past behavioral tests (the gap this solution closes)
+
+1. A CSS change unintentionally breaks a component's dark-mode branch — every `light-dark()` value now resolves incorrectly in dark scheme.
+2. The component's behavioral spec (Testing Library, jsdom/happy-dom) still passes — the DOM structure, roles, and text content are all unchanged; jsdom has no layout/paint engine and cannot evaluate computed color values at all.
+3. The component's `{component-name}.visual.spec.ts` dark-scheme screenshot fails against its committed baseline, catching the regression before merge.
+
+## Reaching for Chromatic instead (rejected path, caught in review)
+
+1. An engineer, missing built-in diff-review tooling, proposes adopting Storybook + Chromatic for visual regression.
+2. This is flagged against [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach#Storybook + Chromatic|the rejected variant in this solution's ADR]] — Chromatic requires Storybook as a mandatory foundation, and Storybook was already evaluated and rejected for this team (see [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling]]).
+3. Fix: use the existing demo/preview page and a Playwright screenshot spec instead — no new tool, no reversal of the prior Storybook decision.
+
+# Rules
+
+## MUST
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create#MUST|{component-name}.component.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create#MUST|{component-name}.visual.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create#MUST|{component-name}.a11y.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create#MUST|apps/component-preview]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend#MUST|projects/demo]]
+
+## MUST NOT
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create#MUST NOT|apps/component-preview]]
+
+# Anti-patterns
+
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|See {component-name}.component.spec.ts.create.md]] — asserting against `fixture.componentInstance` instead of the rendered DOM; wiring a mock the component doesn't actually inject.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|See {component-name}.visual.spec.ts.create.md]] — updating a baseline screenshot without understanding why it changed; screenshotting non-deterministic content.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|See {component-name}.a11y.spec.ts.create.md]] — disabling axe-core entirely instead of scoping an exception to one rule.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create|See component-preview.project.create.md]] — wiring a previewed component to a real Facade/Store/backend "to keep it realistic."
+- **Reaching for `HttpTestingController` or a faked Facade/Client to test a component** — that concern belongs to [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]], not this solution; a component test never needs it.
+
+# Check list
+
+- [ ] Every UI component has a behavioral spec, a visual spec, and an a11y spec — the three layers ship together, not independently
+- [ ] No component test fakes anything beyond the component's own immediate injected dependency
+- [ ] Every demo/preview page state has a committed baseline screenshot and a passing axe-core scan
+- [ ] No Storybook or Chromatic dependency exists anywhere in either plateau's `package.json`

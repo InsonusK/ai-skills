@@ -1,6 +1,6 @@
 ---
 name: plateau-online-monolith
-description: The base online application — Nx workspace structure, three-tier state management, hierarchical routing, Signal Forms, a Facade/Client HTTP data-access layer with optimistic-update-friendly Signal Store orchestration, console-only logging, and enforced Vitest/Playwright test coverage. Single deployable unit, no offline support, no Module Federation, no authentication yet.
+description: The base online application — Nx workspace structure, three-tier state management, hierarchical routing, Signal Forms, a Facade/Client HTTP data-access layer with optimistic-update-friendly Signal Store orchestration, console-only logging, and enforced Vitest/Playwright test coverage across both the business layer and the UI layer (behavioral, visual, and accessibility). Single deployable unit, no offline support, no Module Federation, no authentication yet.
 domain: skill
 type: template
 version: 20260711180000
@@ -14,8 +14,9 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
-  - "[[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]]"
-parent_plateau: "[[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md|plateau-design-system.skill]]"
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+parent_plateau:
 ---
 
 > First plateau in the main application's chain (no parent — built from scratch). Next: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md|async-monolith]]. This is the **"online-monolith"** milestone: everything the application needs to run online, end to end, as a single deployable unit — structure, state, navigation, forms, data flow with optimistic updates, console logging, and a real test suite. No lazy-loading yet, no offline resilience, no platform/embeddability, no backend log delivery, and — deliberately — no authentication: every user is implicitly trusted until [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the final plateau in this chain. The [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] npm package is already a real dependency of `apps/platform-shell`.
@@ -29,7 +30,8 @@ parent_plateau: "[[skills/angular/architecture/plateau/plateau-design-system/pla
 - Every feature's `data-access` lib is layered Facade (public API, business validation) → Client (internal transport + DTO mapping) → shared `libs/shared/http-core`; a raw `HttpErrorResponse` never escapes a Client
 - For feature-scoped operations, the Signal Store calls the Facade directly — no Action/Reducer/Effect — which is what makes an optimistic "creating…" → "created" status transition a simple `patchState` around a Facade call, not an NgRx round trip
 - Everything logs through `LoggerService`, currently forwarding only to the console — no direct `console.*` call anywhere else
-- Every Nx project runs unit/component tests via Vitest; `HttpTestingController` is used only inside a feature's own Client spec
+- Every Nx project runs unit tests via Vitest; `HttpTestingController` is used only inside a feature's own Client spec
+- A UI component is tested independently of business logic around it, at three layers: behavioral (Testing Library), visual (Playwright screenshot against `apps/component-preview`), and accessibility (`@axe-core/playwright`) — never with a faked Facade/Client
 
 # Capabilities
 
@@ -49,9 +51,10 @@ parent_plateau: "[[skills/angular/architecture/plateau/plateau-design-system/pla
 - observability
   - A single, structured logging entry point, ready for a future backend sink to be added with zero call-site rewrites
 - testing
-  - Every component has a fast, DOM-accurate Testing Library spec, faking its Signal Store — no browser, no HTTP
+  - Every component has a fast, DOM-accurate Testing Library spec, faking only its own immediate dependency (if any) — no browser, no HTTP
   - Every feature's Client has exactly one place `HttpTestingController` verifies the real request shape and DTO mapping
   - A small number of critical, cross-cutting user journeys are covered end-to-end via Playwright
+  - Every component also gets a Playwright screenshot-regression spec and an `@axe-core/playwright` accessibility scan, run against `apps/component-preview` — catching layout/dark-mode/contrast regressions and WCAG violations no behavioral test can detect
 
 # Usecases
 
