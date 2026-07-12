@@ -10,10 +10,10 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
-parent_plateau: "[[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith|online-monolith]]"
+parent_plateau: "[[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]]"
 ---
 
-> Parent: [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith|online-monolith]] (structure, state, routing, forms, HTTP layer, console logging, testing — 7 solutions). This plateau adds `solution-lazy-loading-routing` and `solution-offline-first` on top, unchanged otherwise. Next: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith|offline-monolith]], which adds the durable write-queue that lets a mutation attempted while offline be replayed later instead of failing outright. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]], the last plateau), no Module Federation, no backend log delivery.
+> Parent: [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]] (structure, state, routing, forms, HTTP layer, console logging, testing — 7 solutions). This plateau adds `solution-lazy-loading-routing` and `solution-offline-first` on top, unchanged otherwise. Next: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]], which adds the durable write-queue that lets a mutation attempted while offline be replayed later instead of failing outright. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the last plateau), no Module Federation, no backend log delivery.
 
 # Core Principles
 

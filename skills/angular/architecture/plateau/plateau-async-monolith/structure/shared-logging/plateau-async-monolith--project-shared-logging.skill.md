@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill|solution-logging-base]]"
 ---
 
-> No backend log delivery yet — `BackendLogSink` and its retry queue arrive with [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]].
+> No backend log delivery yet — `BackendLogSink` and its retry queue arrive with [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]].
 
 # Goal
 

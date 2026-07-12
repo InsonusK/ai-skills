@@ -14,7 +14,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
 ---
 
-> No authentication yet — the auth slice below is still `solution-state-management`'s own worked example, not a real session lifecycle. That arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]].
+> No authentication yet — the auth slice below is still `solution-state-management`'s own worked example, not a real session lifecycle. That arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]].
 
 # Goal
 

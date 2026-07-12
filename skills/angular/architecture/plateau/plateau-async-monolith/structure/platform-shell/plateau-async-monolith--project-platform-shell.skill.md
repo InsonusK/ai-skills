@@ -14,7 +14,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
 ---
 
-> No global error handler yet — `GlobalErrorHandler` arrives with [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]]. Also depends on the `design-system` npm package, unchanged from `online-monolith`.
+> No global error handler yet — `GlobalErrorHandler` arrives with [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]. Also depends on the `design-system` npm package, unchanged from `online-monolith`.
 
 # Goal
 
@@ -67,7 +67,7 @@ __Applied solutions:__
 ## What Does NOT Belong Here
 
 - HTTP calls, business state, feature-specific components
-- Any durable, persisted mutation queue — that arrives with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith|offline-monolith]]
+- Any durable, persisted mutation queue — that arrives with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]

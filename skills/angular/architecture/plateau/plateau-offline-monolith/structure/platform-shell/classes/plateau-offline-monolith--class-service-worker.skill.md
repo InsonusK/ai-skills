@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
 ---
 
-> This plateau applies all four caching strategies defined by `solution-offline-first`. A fifth rule — stale-while-revalidate for federated remote chunks — is added later, as its own extension, by [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith|platform-monolith]], where `solution-platform-embeddability` is applied.
+> This plateau applies all four caching strategies defined by `solution-offline-first`. A fifth rule — stale-while-revalidate for federated remote chunks — is added later, as its own extension, by [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]], where `solution-platform-embeddability` is applied.
 
 # Goal
 
@@ -142,7 +142,7 @@ __Applied solutions:__
 
 # Extended later
 
-A fifth caching rule — stale-while-revalidate for requests to a federated remote's origin — is not part of `solution-offline-first` and does not exist at this plateau. There are no embeddable remotes to cache yet. It is added as its own extension by `solution-platform-embeddability`, applied at [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith|platform-monolith]], sourcing `KNOWN_REMOTE_ORIGINS` from `RemoteRegistryService`'s own runtime configuration.
+A fifth caching rule — stale-while-revalidate for requests to a federated remote's origin — is not part of `solution-offline-first` and does not exist at this plateau. There are no embeddable remotes to cache yet. It is added as its own extension by `solution-platform-embeddability`, applied at [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]], sourcing `KNOWN_REMOTE_ORIGINS` from `RemoteRegistryService`'s own runtime configuration.
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]

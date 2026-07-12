@@ -12,7 +12,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]]"
 ---
 
-> Fifth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith|platform-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]], the final plateau in the chain. This is the **"monitored-app"** milestone: the application's monitoring level is raised — `warn`/`error`/`report()` log entries now reach the backend, batched and resilient to transient network failures, and every uncaught exception is captured by a global `ErrorHandler` instead of silently crashing the app. Still no authentication (that arrives at `multiuser-app`).
+> Fifth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the final plateau in the chain. This is the **"monitored-app"** milestone: the application's monitoring level is raised — `warn`/`error`/`report()` log entries now reach the backend, batched and resilient to transient network failures, and every uncaught exception is captured by a global `ErrorHandler` instead of silently crashing the app. Still no authentication (that arrives at `multiuser-app`).
 
 # Structure
 
@@ -85,7 +85,7 @@ __Applied solutions:__
 - `BackendLogSink` MUST filter to `warn`/`error`/`report` entries only, discarding `debug`/`info` before they are ever buffered.
 - On a failed flush, the batch MUST be handed to `LogRetryQueue.enqueue(...)` — never silently discarded.
 - `app.config.ts` MUST provide `GlobalErrorHandler` under the `ErrorHandler` token.
-- All other rules from [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith|platform-monolith]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]] continue to apply unchanged.
 
 ## MUST NOT
 - `GlobalErrorHandler` MUST NOT be registered only in a module or component-level provider — it must be at the application root.

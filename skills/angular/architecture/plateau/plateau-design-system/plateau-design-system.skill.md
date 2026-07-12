@@ -14,7 +14,7 @@ created_by:
 parent_plateau:
 ---
 
-> This plateau lives in its own repository, separate from the main Nx platform monorepo. It is a standalone product (an npm package), not a stage that the main application's own plateau chain passes through. The main application's [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith|online-monolith]] plateau onward consumes this package directly as an npm dependency; federation-aware consumption (version-negotiated sharing between the platform host and embeddable apps) is added by [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith|platform-monolith]].
+> This plateau lives in its own repository, separate from the main Nx platform monorepo. It is a standalone product (an npm package), not a stage that the main application's own plateau chain passes through. The main application's [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]] plateau onward consumes this package directly as an npm dependency; federation-aware consumption (version-negotiated sharing between the platform host and embeddable apps) is added by [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]].
 
 # Core Principles
 

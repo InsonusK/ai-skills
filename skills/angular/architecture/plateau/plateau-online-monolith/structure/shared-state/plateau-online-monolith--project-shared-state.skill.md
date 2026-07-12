@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]]"
 ---
 
-> No authentication yet — the auth slice below is `solution-state-management`'s own worked example of the global-state tier, not a real session lifecycle. That arrives in full with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]], the last plateau in this chain.
+> No authentication yet — the auth slice below is `solution-state-management`'s own worked example of the global-state tier, not a real session lifecycle. That arrives in full with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the last plateau in this chain.
 
 # Goal
 
