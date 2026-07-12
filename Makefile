@@ -1,10 +1,10 @@
 init:
 	python3 -m venv .venv
 	.venv/bin/pip install -r requirements.txt
-	.venv/bin/python3 aism sync
+	.venv/bin/aism sync
 
 ai-skill-sync:
-	.venv/bin/python3 aism sync
+	.venv/bin/aism sync
 
 test-lib:
 	bash ./test/test.sh
