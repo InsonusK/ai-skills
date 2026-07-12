@@ -8,17 +8,17 @@ tags:
   - skill/template/plateau
   - plateau/online-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]]"
-  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|solution-app-routing]]"
-  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill|solution-forms]]"
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill|solution-logging-base]]"
-  - "[[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill|solution-testing]]"
-parent_plateau: "[[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill|plateau-design-system.skill]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
+  - "[[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]]"
+parent_plateau: "[[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md|plateau-design-system.skill]]"
 ---
 
-> First plateau in the main application's chain (no parent — built from scratch). Next: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill|async-monolith]]. This is the **"online-monolith"** milestone: everything the application needs to run online, end to end, as a single deployable unit — structure, state, navigation, forms, data flow with optimistic updates, console logging, and a real test suite. No lazy-loading yet, no offline resilience, no platform/embeddability, no backend log delivery, and — deliberately — no authentication: every user is implicitly trusted until [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the final plateau in this chain. The [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill|design-system]] npm package is already a real dependency of `apps/platform-shell`.
+> First plateau in the main application's chain (no parent — built from scratch). Next: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md|async-monolith]]. This is the **"online-monolith"** milestone: everything the application needs to run online, end to end, as a single deployable unit — structure, state, navigation, forms, data flow with optimistic updates, console logging, and a real test suite. No lazy-loading yet, no offline resilience, no platform/embeddability, no backend log delivery, and — deliberately — no authentication: every user is implicitly trusted until [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the final plateau in this chain. The [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] npm package is already a real dependency of `apps/platform-shell`.
 
 # Core Principles
 

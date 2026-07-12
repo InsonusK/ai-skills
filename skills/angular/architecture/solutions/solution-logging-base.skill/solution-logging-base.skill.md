@@ -16,7 +16,7 @@ creates:
 extends:
   - Repository (adds libs/shared/logging project and logging conventions)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/adr/logging-architecture|Logging Architecture ADR]]"
 ---
@@ -48,7 +48,7 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
   - `libs/shared/logging` hosts this solution's `LoggerService` and `ConsoleLogSink`, with no other dependency beyond Angular's own DI/core APIs
 
 # Template Skill Mutations

@@ -8,11 +8,11 @@ tags:
   - skill/template/plateau
   - plateau/offline-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]]"
-parent_plateau: "[[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill|async-monolith]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+parent_plateau: "[[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md|async-monolith]]"
 ---
 
-> Parent: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill|async-monolith]] (lazy-loaded routing plus read resilience — 2 solutions on top of `online-monolith`'s 7). This plateau adds `solution-offline-sync` on top, unchanged otherwise. Next: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]], where the monolith is split into independent, embeddable modules. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the last plateau), no Module Federation, no backend log delivery.
+> Parent: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md|async-monolith]] (lazy-loaded routing plus read resilience — 2 solutions on top of `online-monolith`'s 7). This plateau adds `solution-offline-sync` on top, unchanged otherwise. Next: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]], where the monolith is split into independent, embeddable modules. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the last plateau), no Module Federation, no backend log delivery.
 
 # Core Principles
 

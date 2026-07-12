@@ -20,7 +20,7 @@ extends:
   - libs/{feature}/feature (feature-level Signal Store)
   - "{component-name}.component.ts (component-local Signals)"
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-state-management.skill/adr/state-management-tiering|State Management Tiering ADR]]"
 ---
@@ -54,7 +54,7 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
   - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|libs/{feature}/feature]] - the feature-level Signal Store is colocated inside this project
   - `libs/shared` - hosts the new global/cross-cutting state slices (`libs/shared/state`)
 

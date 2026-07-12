@@ -9,12 +9,12 @@ tags:
   - skill/template/repo
   - plateau/embeddable-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]]"
-  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 ---
 
-> This is a separate repository from the platform monorepo, owned and deployed independently by its own team. It is not required to be an Nx workspace — a plain Angular CLI workspace is sufficient, since this repo hosts a single deployable unit and does not need affected-based builds or cross-project boundary enforcement the way the platform monorepo does. The repository does not split into distinguishable sub-projects (unlike, e.g., the [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill|design-system]] repo's library/demo split) — it is one flat app, so this plateau has no dedicated project-tier skill; everything below the repository level is documented here directly.
+> This is a separate repository from the platform monorepo, owned and deployed independently by its own team. It is not required to be an Nx workspace — a plain Angular CLI workspace is sufficient, since this repo hosts a single deployable unit and does not need affected-based builds or cross-project boundary enforcement the way the platform monorepo does. The repository does not split into distinguishable sub-projects (unlike, e.g., the [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] repo's library/demo split) — it is one flat app, so this plateau has no dedicated project-tier skill; everything below the repository level is documented here directly.
 
 # Structure
 
@@ -31,9 +31,9 @@ created_by:
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
-- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]
 
 ## Directory and project skills
 
@@ -42,7 +42,7 @@ __Applied solutions:__
 | /src | — | The embeddable app itself — the repository's single deployable unit, no Nx apps/libs split required or expected. Federation remote config, the exposed root component, and root styles all live here. No project-tier skill exists for this plateau; see Workspace Structure above for file-level detail. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
 
 ## NPM Packages
 
@@ -50,11 +50,11 @@ __Applied solutions:__
 | ------- | ------------------- | ------- |
 | @angular-architects/native-federation | pinned minor, matching the Angular major version in use | Federation remote build plugin; builds `federation.config.ts` into a `remoteEntry` |
 | @platform/contracts | semver range compatible with the platform's declared range | Shared EventBus/`SessionContract` singleton; MUST be the same singleton contract the platform host shares |
-| design system (per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|solution-design-system-structure]]'s npm package) | version-negotiated `requiredVersion` range, kept current as this team adopts newer releases | Theme (`theme.scss`/`custom-tokens.scss`) and `ds-*` components; shared with the platform's instance when ranges are compatible, isolated copy otherwise |
+| design system (per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]'s npm package) | version-negotiated `requiredVersion` range, kept current as this team adopts newer releases | Theme (`theme.scss`/`custom-tokens.scss`) and `ds-*` components; shared with the platform's instance when ranges are compatible, isolated copy otherwise |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
-- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
 
 # Rules
 
@@ -76,9 +76,9 @@ __Applied solutions:__
 - The repository MUST NOT import platform-shell internals directly — the only contract with the platform is `@platform/contracts` plus the federation `remoteEntry`/exposed-module boundary.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
-- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]
 
 # Anti-patterns
 
@@ -99,9 +99,9 @@ __Applied solutions:__
   - Instead: only ever read `SessionContract`; the platform alone is responsible for establishing a session
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
-- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]
 
 # Unittest TestCases
 
@@ -118,6 +118,6 @@ __Applied solutions:__
   - [ ] `SessionContract.isAuthenticated` becomes `false` for this app, without any action needed on its own part
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
-- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableApp/Repository.create|EmbeddableApp/Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/EmbeddableApp/federation.extend|EmbeddableApp/federation.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|EmbeddableApp/platform-contracts.extend]]

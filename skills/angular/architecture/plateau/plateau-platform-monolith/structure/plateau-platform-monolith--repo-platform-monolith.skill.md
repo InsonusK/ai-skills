@@ -9,11 +9,11 @@ tags:
   - skill/template/repo
   - plateau/platform-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]]"
 ---
 
-> Fourth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]. This is the **"platform-monolith"** milestone: the monolith becomes a platform — `apps/platform-shell` is a Native Federation dynamic host that discovers and mounts independently built and deployed embeddable apps at runtime, sharing a single Angular runtime, `@platform/contracts` instance, and (when version-compatible) the design system. See the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill|embeddable-app]] plateau for what an embeddable app repository itself must look like. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the last plateau — the platform host has nothing to share via `SessionContract` until then), no backend log delivery.
+> Fourth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md|offline-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md|monitored-app]]. This is the **"platform-monolith"** milestone: the monolith becomes a platform — `apps/platform-shell` is a Native Federation dynamic host that discovers and mounts independently built and deployed embeddable apps at runtime, sharing a single Angular runtime, `@platform/contracts` instance, and (when version-compatible) the design system. See the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md|embeddable-app]] plateau for what an embeddable app repository itself must look like. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the last plateau — the platform host has nothing to share via `SessionContract` until then), no backend log delivery.
 
 # Structure
 
@@ -37,10 +37,10 @@ created_by:
     /[data-access](./feature-data-access/plateau-platform-monolith--project-feature-data-access.skill.md)
 ```
 
-- No new top-level project inside this monorepo — federation host capability is added entirely inside `apps/platform-shell`. What's new is external to this repo: any number of independently repositoried, independently deployed embeddable apps, each conforming to the [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill|embeddable-app]] plateau.
+- No new top-level project inside this monorepo — federation host capability is added entirely inside `apps/platform-shell`. What's new is external to this repo: any number of independently repositoried, independently deployed embeddable apps, each conforming to the [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md|embeddable-app]] plateau.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
 
 ## Directory and project skills
 
@@ -58,7 +58,7 @@ __Applied solutions:__
 | /libs/{feature}/data-access | [[skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/plateau-platform-monolith--project-feature-data-access.skill\|project-feature-data-access]] | Generic template — unchanged. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
 
 ## Nx Tag Taxonomy
 
@@ -69,7 +69,7 @@ Unchanged axes from `online-monolith`: `type` ∈ {`app`, `e2e`, `feature`, `dat
 | `type` (addition) | `host` | Marks `apps/platform-shell` as a Native Federation dynamic host, in addition to its existing `type:app` tag |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
 
 ## Cross-cutting conventions
 
@@ -80,8 +80,8 @@ These rules apply inside every project in the workspace and have no single proje
 - **Design-system version negotiation**: the platform host and every embeddable app declare `requiredVersion` ranges for the design system as a version-negotiated singleton (`singleton: true`, `strictVersion: false`) — sharing the platform's instance when ranges are compatible, isolating otherwise.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/PlatformHost/platform-shell.federation.extend|PlatformHost/platform-shell.federation.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/PlatformHost/platform-shell.federation.extend|PlatformHost/platform-shell.federation.extend]]
 
 # Rules
 
@@ -90,14 +90,14 @@ __Applied solutions:__
 - `apps/platform-shell` MUST mark `@platform/contracts` (and Angular) as `singleton: true` shared dependencies.
 - The list of available remotes (embeddable apps) and their URLs MUST be resolved at runtime (Dynamic Federation manifest), never hardcoded into the host's build output.
 - The design system MUST be shared as a version-negotiated singleton between the host and every embeddable app, per each side's declared `requiredVersion` range.
-- All other rules from [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md|offline-monolith]] continue to apply unchanged.
 
 ## MUST NOT
 - The host MUST NOT bundle a specific embeddable app's code at build time.
 - The host MUST NOT depend on an embeddable app's internal implementation — only on `@platform/contracts` and the federation `remoteEntry` contract.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
 
 # Anti-patterns
 
@@ -109,7 +109,7 @@ __Applied solutions:__
   - Instead: any cross-boundary type, event, or shared service interface must be defined in `@platform/contracts`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
 
 # Unittest TestCases
 
@@ -121,5 +121,5 @@ __Applied solutions:__
   - [ ] no separate design-system bundle is fetched — the shared instance is used
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/PlatformHost/platform-shell.federation.extend|PlatformHost/platform-shell.federation.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]] - [[skills/angular/architecture/solutions/solution-design-system-application.skill/Implementation/PlatformHost/platform-shell.federation.extend|PlatformHost/platform-shell.federation.extend]]

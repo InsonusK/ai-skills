@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/platform-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 ---
 
 # Goal
@@ -19,7 +19,7 @@ created_by:
 - Implement the server-wins conflict default, while exposing a single, clearly separated conflict-handling step a future solution can override
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
 
 # Core Principles
 
@@ -28,7 +28,7 @@ __Applied solutions:__
 - `handleConflict` is the single, overridable extension seam — never inlined into the replay loop
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
 
 # Naming convention
 
@@ -94,7 +94,7 @@ export class ReplayOrchestrator {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
 
 # Rules
 
@@ -108,7 +108,7 @@ __Applied solutions:__
 - This orchestrator MUST NOT implement per-operation or per-field custom conflict logic beyond server-wins.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
 
 # Anti-patterns
 
@@ -121,7 +121,7 @@ __Applied solutions:__
   - Instead: stop the partition on the first failure; the next connectivity-restoration event tries again
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
 
 # Check list
 
@@ -131,7 +131,7 @@ __Applied solutions:__
 - [ ] Conflict notifications reference only touched fields, never the full entity
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
 
 # Unittest TestCases
 
@@ -143,4 +143,4 @@ __Applied solutions:__
   - [ ] replay is triggered automatically, without manual intervention
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|OfflineSync/replay-orchestrator.ts.create]]

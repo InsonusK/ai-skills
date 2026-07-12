@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/design-system
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
 ---
 
 # Goal
@@ -18,7 +18,7 @@ created_by:
 - Define the one fixed brand palette as a single M3 theme, with light/dark handled via `light-dark()`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
 
 # Core Principles
 
@@ -26,7 +26,7 @@ __Applied solutions:__
 - Consume `--mat-sys-*` tokens directly; this file is the only place the brand palette itself is declared
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
 
 # Naming convention
 
@@ -57,7 +57,7 @@ html {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
 
 # Rules
 
@@ -67,7 +67,7 @@ __Applied solutions:__
 - Only one palette MUST be defined — no second/alternate palette or theme-swapping mechanism.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
 
 # Anti-patterns
 
@@ -76,7 +76,7 @@ __Applied solutions:__
   - Instead: always apply at `html` (or the highest-level selector available to the consumer)
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
 
 # Check list
 
@@ -85,7 +85,7 @@ __Applied solutions:__
 - [ ] Only a single palette is defined
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
 
 # Unittest TestCases
 
@@ -93,4 +93,4 @@ __Applied solutions:__
   - [ ] every Material and custom component reflects the dark variant automatically, without any JavaScript
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|Tokens/theme.scss.create]]

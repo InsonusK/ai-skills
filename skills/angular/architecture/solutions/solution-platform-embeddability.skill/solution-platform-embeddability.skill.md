@@ -21,9 +21,9 @@ extends:
   - apps/platform-shell (turned into a Native Federation dynamic host)
   - Repository (type:host tag, shared-dependency rules, @platform/contracts)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|Offline-first]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/adr/embedding-mechanism|Embedding Mechanism ADR]]"
 ---
@@ -57,12 +57,12 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
   - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|apps/platform-shell]]
     - Extended by this solution into a federation host (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend]])
-- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]
   - This solution's hierarchical route-ownership pattern is reused one level down inside an embeddable module, unmodified (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/EmbeddableModule/routes.ts.extend]])
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|Offline-first]]
   - This solution's four-rule service worker gains a fifth rule for federated remote chunks, once `RemoteRegistryService` exists to source known remote origins from (see [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend]])
 
 NPM:

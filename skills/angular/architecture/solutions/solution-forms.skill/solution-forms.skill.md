@@ -17,8 +17,8 @@ creates: []
 extends:
   - libs/{feature}/feature (form components)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-forms.skill/adr/forms-approach|Forms Approach ADR]]"
 ---
@@ -51,9 +51,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
   - Form components live inside their owning feature's `libs/{feature}/feature` project, per that solution's structure
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]
   - A form's underlying data Signal follows the same component-local/feature-level tiering already established there, per that solution's rules
 
 NPM:

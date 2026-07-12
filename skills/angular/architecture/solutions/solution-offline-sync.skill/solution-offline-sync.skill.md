@@ -19,9 +19,9 @@ creates:
 extends:
   - libs/{feature}/data-access (Facade queueing)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]"
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|Offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism|Queue Storage Mechanism ADR]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering|Queue Partitioning And Ordering ADR]]"
@@ -64,11 +64,11 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|Offline-first]]
   - `OfflineTransportError` (Client-level network-failure distinction) and the `connectivity` slice's `isOnline` signal are both consumed directly by this solution
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]
   - The replay orchestrator calls existing Facade methods directly; no new HTTP transport path is introduced
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]
   - Conflict notifications are surfaced via the `notifications` global-state slice, alongside the existing `auth`/`connectivity`
 
 NPM:

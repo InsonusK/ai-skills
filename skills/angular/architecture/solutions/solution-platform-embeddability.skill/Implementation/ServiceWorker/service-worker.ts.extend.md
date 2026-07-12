@@ -7,7 +7,7 @@ change_kind: extend
 ---
 
 # How this file is used
-This applies only once both [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|Offline-first]] and this solution are both present — it extends [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|the base service worker's four content-type rules]] with a fifth rule for federated remote chunks, whose origins are only known once this solution's `RemoteRegistryService` exists. Not applicable to a plateau that has offline-first without platform-embeddability.
+This applies only once both [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|Offline-first]] and this solution are both present — it extends [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|the base service worker's four content-type rules]] with a fifth rule for federated remote chunks, whose origins are only known once this solution's `RemoteRegistryService` exists. Not applicable to a plateau that has offline-first without platform-embeddability.
 
 # Goals
 

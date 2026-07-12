@@ -8,12 +8,12 @@ tags:
   - skill/template/plateau
   - plateau/platform-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]]"
-parent_plateau: "[[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]]"
+parent_plateau: "[[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md|offline-monolith]]"
 ---
 
-> Parent: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]] (full offline-capable PWA — 10 solutions applied so far in the main chain). This plateau adds `solution-platform-embeddability` and `solution-design-system-application` on top. Next: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]. See also the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill|embeddable-app]] plateau — the baseline structure any independently deployed application must follow to be loadable here. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the last plateau — `SessionContract` has nothing real to share yet, so an embeddable app mounted at this stage sees `isAuthenticated: false`), no backend log delivery.
+> Parent: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md|offline-monolith]] (full offline-capable PWA — 10 solutions applied so far in the main chain). This plateau adds `solution-platform-embeddability` and `solution-design-system-application` on top. Next: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md|monitored-app]]. See also the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md|embeddable-app]] plateau — the baseline structure any independently deployed application must follow to be loadable here. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the last plateau — `SessionContract` has nothing real to share yet, so an embeddable app mounted at this stage sees `isAuthenticated: false`), no backend log delivery.
 
 # Core Principles
 

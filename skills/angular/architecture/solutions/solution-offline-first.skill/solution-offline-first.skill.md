@@ -24,9 +24,9 @@ extends:
   - libs/shared/state (new connectivity slice)
   - libs/{feature}/data-access (Client offline-error distinction)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]"
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/adr/service-worker-mechanism|Service Worker Mechanism ADR]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type|Caching Strategy Per Content Type ADR]]"
@@ -65,9 +65,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]
   - New `connectivity` slice added to `libs/shared/state`, following the same classical-NgRx pattern as the existing `auth` slice
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]
   - Every feature's `{feature}.client.ts` extended to throw `OfflineTransportError` on network-level failures
 
 NPM:

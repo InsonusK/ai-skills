@@ -19,10 +19,10 @@ extends:
   - libs/shared/state (auth slice, created by the State management solution)
   - "@platform/contracts (from the Встраиваемость платформы solution)"
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]"
-  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|Встраиваемость платформы]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/adr/token-storage-strategy|Token Storage Strategy ADR]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model|Authorization Model ADR]]"
@@ -60,11 +60,11 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]
   - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|libs/shared/state auth slice]] - extended by this solution with the in-memory access token, permission list, and silent-refresh handling
-- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]
   - Formally implements the auth guards that solution deliberately deferred (see [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create]])
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|Встраиваемость платформы]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]
   - Extends the shared [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/adr/embedding-mechanism|@platform/contracts]] package with `SessionContract`, so embeddable apps can read the platform's session
 
 # Template Skill Mutations

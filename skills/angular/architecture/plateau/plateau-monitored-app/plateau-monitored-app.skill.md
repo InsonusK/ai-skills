@@ -8,11 +8,11 @@ tags:
   - skill/template/plateau
   - plateau/monitored-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]]"
-parent_plateau: "[[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+parent_plateau: "[[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]]"
 ---
 
-> Parent: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]] (the monolith-as-platform — 12 solutions applied so far in the main chain). This plateau adds `solution-logging-global` on top, unchanged otherwise. Next: [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the final plateau in the chain. Still no authentication — every user remains implicitly trusted until then.
+> Parent: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]] (the monolith-as-platform — 12 solutions applied so far in the main chain). This plateau adds `solution-logging-global` on top, unchanged otherwise. Next: [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the final plateau in the chain. Still no authentication — every user remains implicitly trusted until then.
 
 # Core Principles
 

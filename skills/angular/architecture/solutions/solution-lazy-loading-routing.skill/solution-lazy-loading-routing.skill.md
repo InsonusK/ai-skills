@@ -19,7 +19,7 @@ extends:
   - apps/platform-shell
   - libs/{feature}/feature (routes)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/adr/preloading-strategy|Preloading Strategy ADR]]"
 ---
@@ -51,7 +51,7 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]]
   - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend|apps/platform-shell (app.routes.ts)]] - top-level segments gain the `data.preload` flag at their mounting point
   - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create|{Feature}/feature routes]] - feature's own sub-routes gain `loadComponent` splitting where justified
 
