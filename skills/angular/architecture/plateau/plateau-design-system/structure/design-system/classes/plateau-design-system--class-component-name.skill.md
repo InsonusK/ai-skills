@@ -1,6 +1,6 @@
 ---
 name: plateau-design-system--class-component-name
-description: Generic pattern for authoring any design system component — own ds-* selector, signal-based API, independently designed axes, per-component internal implementation decision — design-system plateau
+description: Generic pattern for authoring any design system component — own ds-* selector, signal-based API, independently designed axes, per-component internal implementation decision, tested behaviorally (Testing Library), visually (Playwright screenshot), and for accessibility (@axe-core/playwright) — design-system plateau
 domain: skill
 type: template
 plateau: design-system
@@ -11,6 +11,7 @@ tags:
   - plateau/design-system
 created_by:
   - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 ---
 
 > This is not tied to one concrete component — every component added to the design system follows this pattern (worked example below uses a button).
@@ -19,9 +20,11 @@ created_by:
 
 - Give application developers a component API designed around real usage needs, with zero required knowledge of Angular Material
 - Keep the internal implementation free to delegate to Material or be fully custom, per this component's own real requirements
+- Test the component purely on its own `input()`/`output()`/`model()` surface, with no dependency to fake at all, plus catch the visual/accessibility regressions a behavioral test structurally cannot
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Core Principles
 
@@ -29,9 +32,11 @@ __Applied solutions:__
 - Every component uses `input()`, `output()`, `model()` exclusively — no decorators, no `EventEmitter`
 - Every component has its own `ds-*` selector and independently designed API — never a direct passthrough of an underlying Material component's inputs
 - No Angular Material type, selector, or enum ever appears in this library's public API surface
+- A component test provides nothing beyond the component's own inputs — no store, no Facade, no HTTP mock, since a pure `ds-*` component injects no dependency to fake
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Naming convention
 
@@ -80,8 +85,34 @@ export class DsButtonComponent {
 
 Internally, `DsButtonComponent` may render Angular Material's `<button mat-button>` (or `mat-fab`, etc.) under the hood for the plain-button case, since Material's own implementation is sufficient there — none of that is visible in the component's public API.
 
+Component spec — Testing Library, nothing to fake:
+
+```typescript
+import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
+
+describe('DsButtonComponent', () => {
+  it('renders its label and reflects the disabled input', async () => {
+    await render(DsButtonComponent, { inputs: { label: 'Save', disabled: true } });
+    expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
+  });
+
+  it('emits (clicked) when clicked', async () => {
+    const clicked = vi.fn();
+    await render(DsButtonComponent, { inputs: { label: 'Save' }, on: { clicked } });
+    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+    expect(clicked).toHaveBeenCalled();
+  });
+});
+```
+
+The same component also gets a `projects/demo` example page (per this solution's SHOULD rule below), a `{component-name}.visual.spec.ts`, and a `{component-name}.a11y.spec.ts` against that page, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
+
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Rules
 
@@ -89,30 +120,40 @@ __Applied solutions:__
 - The component's inputs/outputs MUST be named and organized around real usage concepts, never mirrored from an underlying Material component's own input names.
 - If this component wraps a Material component internally, no Material type/enum MUST leak into this component's own input/output types.
 - If this component is a form control, it MUST implement `ControlValueAccessor`.
+- A component test MUST provide nothing beyond the component's own inputs — no provider/mock setup for a dependency the component doesn't inject.
+- The component MUST have a `projects/demo` example page covering each meaningfully distinct state, a passing visual spec, and a passing accessibility spec.
 
 ## SHOULD
 - The internal implementation SHOULD default to delegating to Angular Material where it fully satisfies the requirement, and SHOULD only be built fully custom when a specific, identified gap justifies it.
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
 
 # Anti-patterns
 
 - **Naming an input identically to Material's own corresponding input, with the same enum of values**
   - Consequence: even without directly re-exporting Material's type, this mirrors Material's categorization closely enough that any change to Material's own API will likely force a parallel change here — the encapsulation exists in name only
   - Instead: design the input around this application's own real usage, as the button's `variant`/`action`/`dropdown` example does
+- **Wiring up a mock dependency in a component test "just in case"**
+  - Consequence: invents a dependency the component doesn't actually have
+  - Instead: a pure `ds-*` component's test provides only its inputs, nothing else
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Check list
 
 - [ ] The component's API reads naturally in this application's own vocabulary, not Material's
 - [ ] No Material type/selector/enum is exposed through the component's public API
 - [ ] The internal implementation choice (delegate to Material vs custom) is a deliberate decision, documented in the component's own goals if it deviates from delegating
+- [ ] The component has a behavioral spec, a visual spec, and an accessibility spec — all three, not a subset
+- [ ] No component test provides a mock for a dependency the component doesn't inject
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -120,6 +161,12 @@ __Applied solutions:__
   - [ ] no knowledge of Angular Material's own API is required to use it correctly
 - [ ] WHEN Angular Material's own underlying component (if used internally) changes its API in a version bump THEN
   - [ ] this component's own public API and behavior remain unchanged, absorbing the change internally
+- [ ] WHEN the component's CSS changes such that its layout shifts THEN
+  - [ ] the visual spec fails against its committed baseline
+- [ ] WHEN the component loses an accessible label or drops below the required contrast ratio THEN
+  - [ ] the accessibility spec fails with the corresponding axe-core violation
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|Testing/{component-name}.a11y.spec.ts.create]]

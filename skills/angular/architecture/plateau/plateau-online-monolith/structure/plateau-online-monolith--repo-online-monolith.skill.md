@@ -15,7 +15,8 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
-  - "[[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 ---
 
 > First plateau in the main application's chain (no parent) — the **"online-monolith" milestone**: a single deployable Nx application with structure, state, routing, forms, an HTTP data layer, console logging, and enforced test coverage. No lazy-loading yet (that's [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md|async-monolith]]), no offline support, no Module Federation, no backend log delivery, and no authentication (that's [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the last plateau in the chain) — every user is implicitly trusted at this stage. The [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] npm package is already a real, plain dependency of `apps/platform-shell` (see `platform-shell`'s own project skill's NPM Packages table).
@@ -28,6 +29,7 @@ created_by:
 /apps
   /[platform-shell](./platform-shell/plateau-online-monolith--project-platform-shell.skill.md)
   /[platform-shell-e2e](./platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill.md)
+  /component-preview      <- new (solution-ui-testing), harness for behavioral/visual/a11y component specs
 
 /libs
   /shared
@@ -50,6 +52,7 @@ created_by:
 | ---------- | ------------- | ----------- |
 | /apps/platform-shell | [[skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell/plateau-online-monolith--project-platform-shell.skill\|project-platform-shell]] | The only deployable unit at this plateau. Composition root: bootstraps the app, owns top-level routing, registers root providers. |
 | /apps/platform-shell-e2e | [[skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill\|project-platform-shell-e2e]] | Playwright end-to-end scenario specs against the real built application. |
+| /apps/component-preview | — | Minimal harness rendering components in isolation with static example data — the target for visual/a11y specs. Tagged `type:preview`, `scope:platform`. Excluded from production deploy. |
 | /libs/shared/ui | [[skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-ui/plateau-online-monolith--project-shared-ui.skill\|project-shared-ui]] | Reusable, app-specific UI composed from design-system primitives. |
 | /libs/shared/util | [[skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-util/plateau-online-monolith--project-shared-util.skill\|project-shared-util]] | Framework-agnostic pure helpers shared across features. |
 | /libs/shared/state | [[skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-state/plateau-online-monolith--project-shared-state.skill\|project-shared-state]] | Classical NgRx Store for global, cross-cutting state (e.g. auth session skeleton, notifications). |
@@ -60,14 +63,15 @@ created_by:
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create|PlatformComponents/component-preview.project.create]]
 
 ## Nx Tag Taxonomy
 
 | Axis | Values | Meaning |
 | ----- | ------- | ------- |
-| `type` | `app`, `e2e`, `feature`, `data-access`, `ui`, `util`, `store` | What role the project plays |
+| `type` | `app`, `e2e`, `preview`, `feature`, `data-access`, `ui`, `util`, `store` | What role the project plays |
 | `scope` | `platform`, `shared`, `{feature-name}` (e.g. `orders`) | Which business area the project belongs to |
 
 `@nx/enforce-module-boundaries` allow-list:
@@ -76,6 +80,7 @@ __Applied solutions:__
 | ----- | -------------- |
 | `app` | any `type:feature` with matching or `scope:platform` |
 | `e2e` (scope:platform) | nothing |
+| `preview` (scope:platform) | any `type:feature`/`type:ui` with matching or `scope:platform`/`scope:shared` |
 | `feature` | `type:data-access` with the same `scope`, `type:ui`/`type:util`/`type:store` with `scope:shared` |
 | `data-access` | `type:util` with `scope:shared` |
 | `ui` (scope:shared) | `type:util` with `scope:shared` |
@@ -84,7 +89,8 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create|PlatformComponents/component-preview.project.create]]
 
 ## Cross-cutting conventions
 
@@ -92,14 +98,16 @@ __Applied solutions:__
 - **Hierarchical route ownership**: the shell only knows first-level root segments; a feature only knows paths relative to its own root; the parent assigns the mount segment.
 - **Facade/Client/Mapper layering**: every feature's `data-access` lib is Facade (public API, business validation) → Client (internal transport + DTO mapping) → shared `libs/shared/http-core`.
 - **Single logging seam**: everything logs through `LoggerService`, currently forwarding only to `ConsoleLogSink` — no direct `console.*` call anywhere else.
-- **Testing conventions**: every Nx project runs unit/component tests via Vitest; end-to-end tests are Playwright specs in `apps/platform-shell-e2e`; `HttpTestingController` is used only inside a feature's own `{feature}.client.ts` spec — every other layer fakes the layer directly beneath it; CI enforces a minimum coverage threshold as a hard error.
+- **Business-layer testing**: every Nx project runs unit tests via Vitest; end-to-end tests are Playwright specs in `apps/platform-shell-e2e`; `HttpTestingController` is used only inside a feature's own `{feature}.client.ts` spec — every other business layer fakes the layer directly beneath it; CI enforces a minimum coverage threshold as a hard error.
+- **UI-layer testing**: a component is tested independently of business logic, at three layers — behavioral (Testing Library), visual (Playwright screenshot against `apps/component-preview`), accessibility (`@axe-core/playwright`) — never with a faked Facade/Client, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/Repository.extend|Repository.extend]]
 - [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/Repository.extend|Repository.extend]]
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend|Repository.extend]]
 - [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create|PlatformComponents/component-preview.project.create]]
 
 # Rules
 
@@ -111,11 +119,13 @@ __Applied solutions:__
 - New forms MUST use Signal Forms by default.
 - A Client MUST catch every `HttpErrorResponse` and rethrow a typed domain error.
 - Every part of the application MUST log through `LoggerService` — no direct `console.*` call outside `libs/shared/logging`'s own `ConsoleLogSink`.
-- Every Nx project MUST run its unit/component tests via Vitest — no project may configure Karma or Jest as its test runner.
+- Every Nx project MUST run its unit tests via Vitest — no project may configure Karma or Jest as its test runner.
 - End-to-end tests MUST be written with Playwright, in the dedicated `type:e2e` project.
 - `HttpTestingController` MUST be used only inside a feature's own `{feature}.client.ts` unit tests.
 - MSW MUST be used only for tests that deliberately span more than one architectural layer.
 - CI MUST enforce a minimum code-coverage threshold per project as a hard `error`.
+- Every UI component MUST have a behavioral (Testing Library), visual (Playwright screenshot), and accessibility (`@axe-core/playwright`) spec, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] — none of the three substitutes for another.
+- A component test MUST NOT fake a Facade/Client or use `HttpTestingController` — that concern belongs to `solution-app-testing`, not UI-level tests.
 
 ## SHOULD
 - New business features SHOULD be scaffolded as a `{feature}/feature` + `{feature}/data-access` pair from the start.
@@ -130,7 +140,7 @@ __Applied solutions:__
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
 - [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Anti-patterns
 
@@ -150,7 +160,7 @@ __Applied solutions:__
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
 - [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Unittest TestCases
 
@@ -167,4 +177,4 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend|Repository.extend]]

@@ -26,7 +26,7 @@ change_kind: create
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| `src/e2e/{scenario-name}.e2e.spec.ts` | One spec per real user scenario, per [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create]]. |
+| `src/e2e/{scenario-name}.e2e.spec.ts` | One spec per real user scenario, per [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create]]. |
 | `playwright.config.ts` | Playwright configuration: base URL, browsers, CI reporter. |
 
 # NPM Packages

@@ -17,7 +17,7 @@ change_kind: extend
     /...
   /{feature}
     /feature
-      /src/lib/**/*.spec.ts        <- component tests (Testing Library)
+      /src/lib/**/*.store.spec.ts        <- Signal Store unit tests (TestBed)
     /data-access
       /src/lib/**/*.spec.ts        <- Client/Facade unit tests (TestBed)
 ```
@@ -28,7 +28,7 @@ change_kind: extend
 | ---------- | ----------- |
 | /apps/platform-shell-e2e | New Nx project, tagged `type:e2e`, `scope:platform`. Playwright specs exercising the running application end-to-end. |
 | /libs/{feature}/data-access/**/*.spec.ts | `TestBed`-based unit tests for `{feature}.client.ts` (using `HttpTestingController`) and `{feature}.facade.ts` (faking the Client). |
-| /libs/{feature}/feature/**/*.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade) and component tests (Testing Library, faking the Signal Store). |
+| /libs/{feature}/feature/**/*.store.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade). Component-level test files in this same directory belong to [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution. |
 
 # Nx tag taxonomy — extension
 
@@ -39,9 +39,9 @@ change_kind: extend
 # Rules
 
 ## MUST
-- Every Nx project MUST run its unit/component tests via Vitest — no project may configure Karma or Jest as its test runner, per [[skills/angular/architecture/solutions/solution-testing.skill/adr/test-runner-choice]].
-- End-to-end tests MUST be written with Playwright, in a dedicated `type:e2e` project, per [[skills/angular/architecture/solutions/solution-testing.skill/adr/e2e-framework-choice]].
-- `HttpTestingController` MUST be used only inside a feature's own `{feature}.client.ts` unit tests — no other test may use it, per [[skills/angular/architecture/solutions/solution-testing.skill/adr/testing-layers-and-mocking]].
+- Every Nx project MUST run its unit tests via Vitest — no project may configure Karma or Jest as its test runner, per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/test-runner-choice]].
+- End-to-end tests MUST be written with Playwright, in a dedicated `type:e2e` project, per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice]].
+- `HttpTestingController` MUST be used only inside a feature's own `{feature}.client.ts` unit tests — no other test may use it, per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking]].
 - MSW MUST be used only for tests that deliberately span more than one architectural layer (e.g. a feature-level integration test), never as a substitute for faking the layer directly below the unit under test.
 - CI MUST enforce a minimum code coverage threshold per project (`error`, not `warning`, consistent with the bundle-budget enforcement pattern from the "Lazy loading routing" solution); the exact percentage is a configurable, deployment-specific parameter.
 
