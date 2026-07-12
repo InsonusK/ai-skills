@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant Component as Form component
+    participant Field as FieldTree (Signal Forms)
+    participant Facade as Feature data-access facade
+    User->>Component: fills form, clicks submit
+    Component->>Field: submitForm(field, callback)
+    activate Field
+    Field->>Field: run validators
+    alt invalid
+        Field-->>Component: false (field errors() reflect why)
+    else valid
+        Field->>Facade: callback(value) -> facade call
+        activate Facade
+        Facade-->>Field: result
+        deactivate Facade
+        Field-->>Component: true
+    end
+    deactivate Field

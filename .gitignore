@@ -2,6 +2,11 @@
 .obsidian/workspace.json
 __pycache__
 
+# Virtual environments
+.venv/
+venv/
+
+
 # Ignore AI agent worktrees to avoid committing temporary workspace directories.
 /.ai-worktree
 /.ai-skill-manager
@@ -9,3 +14,6 @@ __pycache__
 /.agents/skills
 /.claude/skills
 /test/tmp
+
+# Ignore diagram-renderer cache directory.
+.cache/

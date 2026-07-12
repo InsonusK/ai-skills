@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor UI
+    participant Store as OrdersStore (Signal Store)
+    participant Facade as OrdersFacade
+    participant Client as OrdersClient
+    participant HttpCore as shared/http-core
+    UI->>Store: addOrder(input)
+    activate Store
+    Store->>Facade: addOrder(input)
+    activate Facade
+    Facade->>Facade: validate business rules
+    Facade->>Client: addOrder(input)
+    activate Client
+    Client->>Client: map model -> dto
+    Client->>HttpCore: POST /orders
+    activate HttpCore
+    HttpCore-->>Client: response dto
+    deactivate HttpCore
+    Client->>Client: map dto -> model
+    Client-->>Facade: Order
+    deactivate Client
+    Facade-->>Store: Order
+    deactivate Facade
+    Store->>Store: patchState(orders, loading: false)
+    deactivate Store
