@@ -21,8 +21,8 @@ extends:
   - libs/shared/logging (adds BackendLogSink, LogRetryQueue, LoggerService.report())
   - apps/platform-shell (registers GlobalErrorHandler)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill|Логирование (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|Логирование (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy|Backend Log Sink Strategy ADR]]"
 ---
@@ -55,9 +55,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill|Логирование (база)]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|Логирование (база)]]
   - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]] - extended with `BackendLogSink`, `LogRetryQueue`, `LoggerService.report()`
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]
   - `BackendLogSink` sends batches through `libs/shared/http-core`'s base HTTP service, consistent with that solution's conventions
 
 NPM:

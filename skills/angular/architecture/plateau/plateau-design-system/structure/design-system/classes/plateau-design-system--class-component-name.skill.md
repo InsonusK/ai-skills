@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/design-system
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
 ---
 
 > This is not tied to one concrete component — every component added to the design system follows this pattern (worked example below uses a button).
@@ -21,7 +21,7 @@ created_by:
 - Keep the internal implementation free to delegate to Material or be fully custom, per this component's own real requirements
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
 
 # Core Principles
 
@@ -31,7 +31,7 @@ __Applied solutions:__
 - No Angular Material type, selector, or enum ever appears in this library's public API surface
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
 
 # Naming convention
 
@@ -81,7 +81,7 @@ export class DsButtonComponent {
 Internally, `DsButtonComponent` may render Angular Material's `<button mat-button>` (or `mat-fab`, etc.) under the hood for the plain-button case, since Material's own implementation is sufficient there — none of that is visible in the component's public API.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
 
 # Rules
 
@@ -94,7 +94,7 @@ __Applied solutions:__
 - The internal implementation SHOULD default to delegating to Angular Material where it fully satisfies the requirement, and SHOULD only be built fully custom when a specific, identified gap justifies it.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
 
 # Anti-patterns
 
@@ -103,7 +103,7 @@ __Applied solutions:__
   - Instead: design the input around this application's own real usage, as the button's `variant`/`action`/`dropdown` example does
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
 
 # Check list
 
@@ -112,7 +112,7 @@ __Applied solutions:__
 - [ ] The internal implementation choice (delegate to Material vs custom) is a deliberate decision, documented in the component's own goals if it deviates from delegating
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
 
 # Unittest TestCases
 
@@ -122,4 +122,4 @@ __Applied solutions:__
   - [ ] this component's own public API and behavior remain unchanged, absorbing the change internally
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]

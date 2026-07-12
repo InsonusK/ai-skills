@@ -10,9 +10,9 @@ tags:
   - skill/template/class
   - plateau/monitored-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
-  - "[[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill|solution-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]]"
 ---
 
 > Generic pattern, not tied to one concrete feature.
@@ -23,8 +23,8 @@ created_by:
 - Let the Facade (and the offline-sync replay orchestrator) distinguish "this failed because we're offline" from "the server rejected this request"
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
 
 # Core Principles
 
@@ -33,8 +33,8 @@ __Applied solutions:__
 - Every error path ends in a typed domain error; a network-level failure (`status === 0`) is checked before any status-code-specific handling and throws the shared `OfflineTransportError`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
 
 # Naming convention
 
@@ -74,8 +74,8 @@ export class OrdersClient {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
 
 # Rules
 
@@ -87,9 +87,9 @@ __Applied solutions:__
 - Every test in this file's spec MUST use `HttpTestingController` to assert the exact request (method, URL, body), and `httpTesting.verify()` MUST run in `afterEach`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]
 
 # Anti-patterns
 
@@ -105,9 +105,9 @@ __Applied solutions:__
   - Instead: `HttpTestingController` is used only inside this Client's own spec file
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]
 
 # Check list
 
@@ -117,8 +117,8 @@ __Applied solutions:__
 - [ ] Every Client method has at least one success-path and one failure-path test, each using `HttpTestingController`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
+- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -132,6 +132,6 @@ __Applied solutions:__
   - [ ] it throws that feature's own typed domain error, unaffected by the offline extension
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
-- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md|solution-testing]] - [[skills/angular/architecture/solutions/solution-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|Testing/{feature}.client.spec.ts.create]]

@@ -9,10 +9,10 @@ tags:
   - skill/template/repo
   - plateau/offline-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 ---
 
-> Third plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill|async-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]]. This is the **"offline-monolith"** milestone: a mutation attempted while genuinely offline is no longer an immediate failure — it is durably queued, per feature, and replayed automatically once connectivity returns. This is the full offline-capable PWA. Still no authentication, no Module Federation, no backend log delivery.
+> Third plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md|async-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]]. This is the **"offline-monolith"** milestone: a mutation attempted while genuinely offline is no longer an immediate failure — it is durably queued, per feature, and replayed automatically once connectivity returns. This is the full offline-capable PWA. Still no authentication, no Module Federation, no backend log delivery.
 
 # Structure
 
@@ -39,7 +39,7 @@ created_by:
 - `libs/shared/offline-sync` is the only new top-level project at this plateau — everything else already existed at `async-monolith` and is extended here: each feature's Facade gains the queueing decision, `shared/ui` gains a pending-sync indicator.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Directory and project skills
 
@@ -57,7 +57,7 @@ __Applied solutions:__
 | /libs/{feature}/data-access | [[skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/plateau-offline-monolith--project-feature-data-access.skill\|project-feature-data-access]] | Generic template: Facade/Client/Mapper/Errors, the Facade now able to queue a mutation for later sync. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Nx Tag Taxonomy
 
@@ -70,7 +70,7 @@ Unchanged axes from `online-monolith`: `type` ∈ {`app`, `e2e`, `feature`, `dat
 | `util` (scope:shared) | nothing (leaf) — except `libs/shared/offline-sync`, which is tagged `type:util` but may additionally depend on `libs/shared/state` (to read the `connectivity` slice) |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Cross-cutting conventions
 
@@ -80,21 +80,21 @@ These rules apply inside every project in the workspace and have no single proje
 - **Offline-aware mutations**: a Facade explicitly opts a mutation into the offline queue by catching `OfflineTransportError` and calling `MutationQueueService.enqueue(...)`; queueing is never automatic for every method.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend|DataAccess/{feature}.facade.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend|DataAccess/{feature}.facade.ts.extend]]
 
 # Rules
 
 ## MUST
 - Every queued mutation MUST carry a client-generated idempotency key, reused unchanged across every replay attempt, and MUST be partitioned by the feature that created it.
 - Replay MUST process all feature partitions concurrently, and entries within one partition strictly FIFO.
-- All other rules from [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill|async-monolith]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md|async-monolith]] continue to apply unchanged.
 
 ## MUST NOT
 - A Facade MUST NOT enqueue an operation whose business validation already failed before the Client was ever called.
 - This project MUST NOT implement per-operation or per-field custom conflict logic beyond the shared server-wins default.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Anti-patterns
 
@@ -106,7 +106,7 @@ __Applied solutions:__
   - Instead: each Facade explicitly decides which of its operations are queueable
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Unittest TestCases
 
@@ -116,4 +116,4 @@ __Applied solutions:__
   - [ ] it is sent with the same idempotency key it was enqueued with
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend|Repository.extend]]

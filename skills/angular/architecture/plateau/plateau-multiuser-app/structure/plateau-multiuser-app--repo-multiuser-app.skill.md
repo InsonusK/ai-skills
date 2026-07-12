@@ -9,10 +9,10 @@ tags:
   - skill/template/repo
   - plateau/multiuser-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 ---
 
-> Sixth and final plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]. This is the **"multiuser-app"** milestone: the application scales to many users — every user is authenticated, session state lives in a single auditable NgRx slice with an in-memory-only access token, authorization is expressed as permission strings enforced both at the route level (guards) and the UI level (`*hasPermission`), and the platform host now shares a real `SessionContract` with every mounted embeddable app. All 17 solutions in the main chain are now applied.
+> Sixth and final plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md|monitored-app]]. This is the **"multiuser-app"** milestone: the application scales to many users — every user is authenticated, session state lives in a single auditable NgRx slice with an in-memory-only access token, authorization is expressed as permission strings enforced both at the route level (guards) and the UI level (`*hasPermission`), and the platform host now shares a real `SessionContract` with every mounted embeddable app. All 17 solutions in the main chain are now applied.
 
 # Structure
 
@@ -40,7 +40,7 @@ created_by:
 - `libs/shared/auth-ui` is the only new top-level project — the permission-checking directive and route-guard factory shared by every feature. `libs/shared/state`'s `auth` slice, a skeleton since `online-monolith`, becomes a real session lifecycle here.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Directory and project skills
 
@@ -59,15 +59,15 @@ __Applied solutions:__
 | /libs/{feature}/data-access | [[skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/plateau-multiuser-app--project-feature-data-access.skill\|project-feature-data-access]] | Generic template — unchanged. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create|shared-auth-ui.project.create]]
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.extend|GlobalStore/auth.store.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create|shared-auth-ui.project.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.extend|GlobalStore/auth.store.ts.extend]]
 
 ## Nx Tag Taxonomy
 
 Unchanged axes from `platform-monolith`: `type` ∈ {`app`, `host`, `e2e`, `feature`, `data-access`, `ui`, `util`, `store`}, `scope` ∈ {`platform`, `shared`, `{feature-name}`}. `libs/shared/auth-ui` is tagged `type:ui`, `scope:shared`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Cross-cutting conventions
 
@@ -79,7 +79,7 @@ These rules apply inside every project in the workspace and have no single proje
 - **SessionContract**: the platform host is the sole source of `SessionContract` (`currentUser`, `permissions`, `isAuthenticated`); every embeddable app reads it read-only, never implementing its own login flow.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Rules
 
@@ -88,14 +88,14 @@ __Applied solutions:__
 - `authInterceptor` MUST be the only place an outgoing request is decorated with the `Authorization` header.
 - Every permission check (route guard or UI directive) MUST check a permission string, never a role name.
 - `SessionContract` MUST be read-only from an embeddable app's point of view.
-- All other rules from [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md|monitored-app]] continue to apply unchanged.
 
 ## MUST NOT
 - No feature MUST maintain its own copy of "is logged in"/"current user"/permissions state — every read goes through `auth.selectors.ts` or `libs/shared/auth-ui`.
 - Permission guards MUST NOT be centralized in `apps/platform-shell`'s root routes — each feature attaches its own.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Anti-patterns
 
@@ -110,7 +110,7 @@ __Applied solutions:__
   - Instead: the embeddable app only ever reads `SessionContract`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Unittest TestCases
 
@@ -122,4 +122,4 @@ __Applied solutions:__
   - [ ] none are found
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository.extend]]

@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/offline-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
 ---
 
 > This is the base auth slice, created here as the worked example of the global-state tier. Session lifecycle logic (login flow, silent refresh, permissions) is added by a future authentication-owning solution — this plateau establishes only the slice's shape.
@@ -21,14 +21,14 @@ created_by:
 - Be the only place any part of the application reads "is the user logged in" / "what is the current user"
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
 
 # Core Principles
 
 - Apply ONE plateau template per class/artifact
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
 
 # Naming convention
 
@@ -75,7 +75,7 @@ export class AuthEffects {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
 
 # Rules
 
@@ -87,7 +87,7 @@ __Applied solutions:__
 - No feature MUST maintain its own copy of "is logged in"/"current user" state — every read goes through `auth.selectors.ts`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
 
 # Anti-patterns
 
@@ -96,7 +96,7 @@ __Applied solutions:__
   - Instead: always select `selectCurrentUser` from `shared-state`; never duplicate session data into feature-level state
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
 
 # Check list
 
@@ -104,7 +104,7 @@ __Applied solutions:__
 - [ ] `SessionExpired` is only ever dispatched from one central location
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
 
 # Unittest TestCases
 
@@ -117,4 +117,4 @@ __Applied solutions:__
   - [ ] `selectCurrentUser` becomes null and any feature relying on it reacts accordingly
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]] - [[skills/angular/architecture/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|GlobalStore/shared-state.project.create/auth.store.ts.create]]

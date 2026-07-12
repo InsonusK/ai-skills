@@ -9,10 +9,10 @@ tags:
   - skill/template/repo
   - plateau/monitored-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
 ---
 
-> Fifth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the final plateau in the chain. This is the **"monitored-app"** milestone: the application's monitoring level is raised — `warn`/`error`/`report()` log entries now reach the backend, batched and resilient to transient network failures, and every uncaught exception is captured by a global `ErrorHandler` instead of silently crashing the app. Still no authentication (that arrives at `multiuser-app`).
+> Fifth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the final plateau in the chain. This is the **"monitored-app"** milestone: the application's monitoring level is raised — `warn`/`error`/`report()` log entries now reach the backend, batched and resilient to transient network failures, and every uncaught exception is captured by a global `ErrorHandler` instead of silently crashing the app. Still no authentication (that arrives at `multiuser-app`).
 
 # Structure
 
@@ -39,7 +39,7 @@ created_by:
 - No new top-level project — `libs/shared/logging` gains `BackendLogSink` and `LogRetryQueue`, `apps/platform-shell` gains `GlobalErrorHandler`. Everything else already existed at `platform-monolith` and is unchanged.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Directory and project skills
 
@@ -57,15 +57,15 @@ __Applied solutions:__
 | /libs/{feature}/data-access | [[skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/plateau-monitored-app--project-feature-data-access.skill\|project-feature-data-access]] | Generic template — unchanged. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create|Logging/backend-log-sink.ts.create]]
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create|Logging/backend-log-sink.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
 
 ## Nx Tag Taxonomy
 
 Unchanged from `platform-monolith`: `type` ∈ {`app`, `host`, `e2e`, `feature`, `data-access`, `ui`, `util`, `store`}, `scope` ∈ {`platform`, `shared`, `{feature-name}`}.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Cross-cutting conventions
 
@@ -76,8 +76,8 @@ These rules apply inside every project in the workspace and have no single proje
 - **Global error capture**: every uncaught exception anywhere in the platform shell is routed through `LoggerService.error` by `GlobalErrorHandler`, registered exactly once at the application root.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend|Logging/logger.service.ts.extend]]
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend|Logging/logger.service.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
 
 # Rules
 
@@ -85,14 +85,14 @@ __Applied solutions:__
 - `BackendLogSink` MUST filter to `warn`/`error`/`report` entries only, discarding `debug`/`info` before they are ever buffered.
 - On a failed flush, the batch MUST be handed to `LogRetryQueue.enqueue(...)` — never silently discarded.
 - `app.config.ts` MUST provide `GlobalErrorHandler` under the `ErrorHandler` token.
-- All other rules from [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]] continue to apply unchanged.
 
 ## MUST NOT
 - `GlobalErrorHandler` MUST NOT be registered only in a module or component-level provider — it must be at the application root.
 - `LoggerService`/any sink MUST NOT ever be given a token, password, or PII value to log, regardless of level.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Anti-patterns
 
@@ -104,7 +104,7 @@ __Applied solutions:__
   - Instead: always route through `LoggerService.error` so `BackendLogSink` receives them
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Unittest TestCases
 
@@ -114,4 +114,4 @@ __Applied solutions:__
   - [ ] `GlobalErrorHandler.handleError` is invoked, `LoggerService.error` is called, and `BackendLogSink` eventually receives the entry
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository.extend]]

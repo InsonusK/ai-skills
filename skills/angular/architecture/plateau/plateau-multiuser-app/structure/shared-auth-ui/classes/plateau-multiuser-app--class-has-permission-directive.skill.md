@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/multiuser-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 ---
 
 # Goal
@@ -18,7 +18,7 @@ created_by:
 - Let any template conditionally render UI based on the current user's permissions, without each component re-implementing its own permission check
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
 
 # Core Principles
 
@@ -26,7 +26,7 @@ __Applied solutions:__
 - Checks a permission string, never a role name
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
 
 # Naming convention
 
@@ -58,7 +58,7 @@ export class HasPermissionDirective {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
 
 # Rules
 
@@ -67,7 +67,7 @@ __Applied solutions:__
 - Hiding an element with this directive MUST NOT be treated as a substitute for a server-side authorization check.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
 
 # Anti-patterns
 
@@ -77,14 +77,14 @@ __Applied solutions:__
   - Instead: treat this directive purely as UI polish
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
 
 # Check list
 
 - [ ] Every use of `*hasPermission` corresponds to an action that is also authorized server-side
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
 
 # Unittest TestCases
 
@@ -94,4 +94,4 @@ __Applied solutions:__
   - [ ] the embedded view is not rendered
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|UI/has-permission.directive.ts.create]]

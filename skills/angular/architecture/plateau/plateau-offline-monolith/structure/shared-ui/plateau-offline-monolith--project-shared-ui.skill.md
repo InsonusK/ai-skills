@@ -10,17 +10,17 @@ tags:
   - skill/template/project
   - plateau/offline-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
-  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 ---
 
 # Goal
 
-- Host reusable, app-specific UI composed out of [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill|design-system]] primitives, including offline read and write feedback
+- Host reusable, app-specific UI composed out of [[skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] primitives, including offline read and write feedback
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
 
 # Structure
 
@@ -43,8 +43,8 @@ __Applied solutions:__
 | pending-sync-indicator.component.ts | Reactively shows how many actions are queued and waiting to sync for a given feature | [[skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-ui/classes/plateau-offline-monolith--class-pending-sync-indicator-component.skill\|class-pending-sync-indicator-component]] |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create|UI/offline-banner.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create|UI/pending-sync-indicator.component.ts.create]]
 
 ## What Does NOT Belong Here
 
@@ -52,7 +52,7 @@ __Applied solutions:__
 - The design-system components themselves (consumed as the `design-system` npm package, not reimplemented here)
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
 
 # Rules
 
@@ -60,4 +60,4 @@ __Applied solutions:__
 - [[skills/angular/architecture/plateau/plateau-offline-monolith/structure/plateau-offline-monolith--repo-offline-monolith.skill#MUST|repo-offline-monolith]]
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]

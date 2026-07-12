@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/platform-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 ---
 
 > Generic pattern, not tied to one concrete feature. Covers two small, related files every feature's `data-access` project has: `{feature}.mapper.ts` and `{feature}.errors.ts`.
@@ -21,7 +21,7 @@ created_by:
 - Give every feature a small, typed set of domain errors its Client can throw and its Facade/callers can narrow on
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
 
 # Core Principles
 
@@ -29,7 +29,7 @@ __Applied solutions:__
 - No inline field renaming anywhere else — every conversion goes through `{feature}.mapper.ts`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
 
 # Naming convention
 
@@ -75,7 +75,7 @@ export class OrdersAlreadySubmittedError extends Error {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
 
 # Rules
 
@@ -84,7 +84,7 @@ __Applied solutions:__
 - Every domain error thrown by this feature's Client or Facade MUST be one of the classes defined in `{feature}.errors.ts` (or the shared `OfflineTransportError` from `libs/shared/http-core`).
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
 
 # Anti-patterns
 
@@ -94,7 +94,7 @@ __Applied solutions:__
   - Instead: if a DTO field is intentionally unused, leave a short comment stating so
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
 
 # Check list
 
@@ -102,7 +102,7 @@ __Applied solutions:__
 - [ ] Every error type thrown by this feature's data-access code is declared in `{feature}.errors.ts`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
 
 # Unittest TestCases
 
@@ -112,4 +112,4 @@ __Applied solutions:__
   - [ ] it returns a correctly shaped DTO
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]

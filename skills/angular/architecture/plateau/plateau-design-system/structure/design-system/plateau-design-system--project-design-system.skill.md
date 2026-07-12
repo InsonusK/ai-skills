@@ -10,19 +10,19 @@ tags:
   - skill/template/project
   - plateau/design-system
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
 ---
 
-> No solution produced a dedicated `design-system.project.create.md` file — this project is established implicitly by [[skills/angular/architecture/plateau/plateau-design-system/structure/plateau-design-system--repo-design-system.skill|repo-design-system]]'s `Repository.create`/`Repository.extend` entries. This skill exists so the project's classes have a consistent home, per the plateau's 3-tier (repo → project → class) convention.
+> No solution produced a dedicated `design-system.project.create.md` file — this project is established implicitly by [[skills/angular/architecture/plateau/plateau-design-system/structure/plateau-design-system--repo-design-system.skill.md|repo-design-system]]'s `Repository.create`/`Repository.extend` entries. This skill exists so the project's classes have a consistent home, per the plateau's 3-tier (repo → project → class) convention.
 
 # Goal
 
 - Provide a single, independently versioned npm package that both the platform monorepo and every independently deployed embeddable app consume for theming (M3 theme + `--ds-*` tokens) and UI components
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|solution-design-system-structure]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
 
 # Core Principles
 
@@ -31,8 +31,8 @@ __Applied solutions:__
 - Every component uses `input()`/`output()`/`model()` exclusively, has its own `ds-*` selector, and fully encapsulates whether it delegates to Angular Material or is custom-built internally
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]]
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]
 
 # Structure
 
@@ -60,8 +60,8 @@ __Applied solutions:__
 | /src/lib/{component-name} | One directory per component — generic pattern for every `ds-*` component | [[skills/angular/architecture/plateau/plateau-design-system/structure/design-system/classes/plateau-design-system--class-component-name.skill\|class-component-name]] |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## NPM Packages
 
@@ -72,9 +72,9 @@ __Applied solutions:__
 | @changesets/cli | — | Version bump classification and CHANGELOG generation |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|solution-design-system-structure]]
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]]
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]
 
 ## What Does NOT Belong Here
 
@@ -83,8 +83,8 @@ __Applied solutions:__
 - Business/domain logic — this library only ever contains presentation and theming primitives
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]]
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]
 
 # Rules
 
@@ -105,6 +105,6 @@ __Applied solutions:__
 - [ ] Every form-participating component implements `ControlValueAccessor`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|solution-design-system-structure]]
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|solution-design-system-tokens]]
-- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|solution-design-system-components]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]

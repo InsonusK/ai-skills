@@ -9,11 +9,11 @@ tags:
   - skill/template/repo
   - plateau/async-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]]"
-  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
 ---
 
-> Second plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]. This is the **"async-monolith"** milestone: feature chunks are lazy-loaded and selectively preloaded, and the app keeps working against cached GET data — with a visible offline indicator — when the network is unreliable. Auth/mutation endpoints stay strictly `network-only`; a genuinely offline mutation still fails immediately (durable queueing and replay arrive with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]). Still no authentication, no Module Federation, no backend log delivery.
+> Second plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md|online-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md|offline-monolith]]. This is the **"async-monolith"** milestone: feature chunks are lazy-loaded and selectively preloaded, and the app keeps working against cached GET data — with a visible offline indicator — when the network is unreliable. Auth/mutation endpoints stay strictly `network-only`; a genuinely offline mutation still fails immediately (durable queueing and replay arrive with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md|offline-monolith]]). Still no authentication, no Module Federation, no backend log delivery.
 
 # Structure
 
@@ -39,8 +39,8 @@ created_by:
 - No new top-level project at this plateau — every directory already existed at `online-monolith` and is extended here: feature chunks become lazy, `platform-shell` gains a preloading strategy and service-worker registration, `shared/state` gains a `connectivity` slice, `shared/ui` gains an offline banner.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Directory and project skills
 
@@ -57,15 +57,15 @@ __Applied solutions:__
 | /libs/{feature}/data-access | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/plateau-async-monolith--project-feature-data-access.skill\|project-feature-data-access]] | Generic template: Facade/Client/Mapper/Errors, the Client now distinguishing an offline network failure from a server rejection. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Nx Tag Taxonomy
 
 Unchanged from `online-monolith`: `type` ∈ {`app`, `e2e`, `feature`, `data-access`, `ui`, `util`, `store`}, `scope` ∈ {`platform`, `shared`, `{feature-name}`}. The `@nx/enforce-module-boundaries` allow-list is unchanged.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
 
 ## Cross-cutting conventions
 
@@ -78,8 +78,8 @@ These rules apply inside every project in the workspace and have no single proje
 - **Offline-aware transport errors**: a feature's Client throws the shared `OfflineTransportError` when an HTTP call never reaches the server (`status === 0`), distinct from a typed domain error for an actual server rejection.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Rules
 
@@ -90,7 +90,7 @@ __Applied solutions:__
 - A feature's Client MUST check for a network-level failure (`HttpErrorResponse` with `status === 0`) before any status-code-specific handling, and throw the shared `OfflineTransportError` in that case.
 - `selectIsOnline` MUST be the only public selector feature code uses to read connectivity; `navigator.onLine` MUST NOT be read directly outside the `connectivity` slice's own effect.
 - The service worker MUST be generated via Workbox's programmatic build API; auth endpoints and every non-GET request MUST remain `network-only`, never cached.
-- All other rules from [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md|online-monolith]] continue to apply unchanged.
 
 ## SHOULD
 - Bundle budget thresholds SHOULD be reviewed and adjusted deliberately when a feature's legitimate size grows, rather than silenced by raising the threshold reflexively.
@@ -101,8 +101,8 @@ __Applied solutions:__
 - A genuinely offline mutation MUST NOT be silently queued at this plateau — durable queueing does not exist until `offline-monolith`; the Facade lets the `OfflineTransportError` surface as an immediate failure.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Anti-patterns
 
@@ -120,8 +120,8 @@ __Applied solutions:__
   - Instead: auth and all non-GET requests are always `network-only`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
 
 # Unittest TestCases
 
@@ -135,5 +135,5 @@ __Applied solutions:__
   - [ ] every auth/mutation endpoint resolves to `network-only`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository.extend]]

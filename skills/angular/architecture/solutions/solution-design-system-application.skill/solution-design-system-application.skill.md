@@ -18,10 +18,10 @@ extends:
   - apps/platform-shell (federation config, root styles)
   - "{embeddable-app-name} (federation config, root styles) — from the Встраиваемость платформы solution"
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|Дизайн-система: структура]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|Дизайн-система: токены и theming]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill|Дизайн-система: компонентный слой]]"
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|Встраиваемость платформы]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|Дизайн-система: токены и theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|Дизайн-система: компонентный слой]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/adr/design-system-version-negotiation]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/adr/theme-application-scope]]"
@@ -56,11 +56,11 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|Дизайн-система: структура]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]
   - The design system consumed here is the npm package that solution publishes
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|Дизайн-система: токены и theming]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|Дизайн-система: токены и theming]]
   - `theme.scss`/`custom-tokens.scss`, applied per this solution's scope rules
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|Встраиваемость платформы]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|Встраиваемость платформы]]
   - This solution extends both plateaus that solution established — the platform host's federation config, and every embeddable app's own federation config
 
 NPM:

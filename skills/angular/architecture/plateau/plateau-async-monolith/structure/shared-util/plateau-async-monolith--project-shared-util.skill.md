@@ -10,17 +10,17 @@ tags:
   - skill/template/project
   - plateau/async-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
 ---
 
-> No solution produced a dedicated `shared-util.project.create.md` file — this project is established implicitly by [[skills/angular/architecture/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill|repo-async-monolith]]'s `Repository.create` entry. Unchanged by every solution applied since.
+> No solution produced a dedicated `shared-util.project.create.md` file — this project is established implicitly by [[skills/angular/architecture/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill.md|repo-async-monolith]]'s `Repository.create` entry. Unchanged by every solution applied since.
 
 # Goal
 
 - Host framework-agnostic pure helpers (pure functions, RxJS operators, mapping utilities) shared across features
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
 
 # Structure
 
@@ -38,7 +38,7 @@ __Applied solutions:__
 - Angular DI, HTTP calls, state — this lib is pure and framework-agnostic
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
 
 # Rules
 
@@ -46,4 +46,4 @@ __Applied solutions:__
 - MUST NOT add a `type:util` project with any `scope:*` other than `shared`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]

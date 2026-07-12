@@ -10,8 +10,8 @@ tags:
   - skill/template/class
   - plateau/multiuser-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
 ---
 
 > This plateau applies all four caching strategies defined by `solution-offline-first`, plus a fifth rule from `solution-platform-embeddability` for federated remote chunks, now that `RemoteRegistryService` exists.
@@ -21,8 +21,8 @@ created_by:
 - Implement content-type-specific caching strategies as concrete Workbox routing rules, so the application keeps working for reads while the network is unreliable, including reads from an embedded remote's own chunks
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
 
 # Core Principles
 
@@ -32,8 +32,8 @@ __Applied solutions:__
 - `KNOWN_REMOTE_ORIGINS` is sourced from the same runtime manifest `RemoteRegistryService` resolves, never hardcoded separately
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
 
 # Naming convention
 
@@ -98,8 +98,8 @@ registerRoute(
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
 
 # Rules
 
@@ -115,8 +115,8 @@ __Applied solutions:__
 - Auth endpoints and non-GET requests MUST NOT be cached under any strategy other than network-only.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
 
 # Anti-patterns
 
@@ -132,8 +132,8 @@ __Applied solutions:__
   - Instead: derive `KNOWN_REMOTE_ORIGINS` from the same manifest `RemoteRegistryService` fetches
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
 
 # Check list
 
@@ -142,8 +142,8 @@ __Applied solutions:__
 - [ ] `KNOWN_REMOTE_ORIGINS` is derived from the same configuration source as `RemoteRegistryService`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
 
 # Unittest TestCases
 
@@ -157,5 +157,5 @@ __Applied solutions:__
   - [ ] it is served stale-while-revalidate, not precached
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/ServiceWorker/service-worker.ts.extend|ServiceWorker/service-worker.ts.extend]]

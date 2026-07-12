@@ -20,8 +20,8 @@ creates:
 extends:
   - projects/design-system (publishable library project from solution-design-system-structure)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|Дизайн-система: структура]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|Дизайн-система: токены и theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|Дизайн-система: токены и theming]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-api-authoring-style]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy]]"
@@ -58,9 +58,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|Дизайн-система: структура]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]
   - Components live inside `projects/design-system`, the publishable library project
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill|Дизайн-система: токены и theming]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|Дизайн-система: токены и theming]]
   - Every component consumes `--mat-sys-*`/`--ds-*` tokens per that solution's rules, rather than hardcoding style values
 
 NPM:

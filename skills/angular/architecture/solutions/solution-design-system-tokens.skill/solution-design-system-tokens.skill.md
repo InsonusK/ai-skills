@@ -20,7 +20,7 @@ creates:
 extends:
   - "projects/design-system (from the Дизайн-система: структура solution)"
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|Дизайн-система: структура]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/token-consumption-strategy]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/light-dark-mode-strategy]]"
@@ -61,7 +61,7 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill|Дизайн-система: структура]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]
   - Theme and token files live inside `projects/design-system`, the publishable library project established by that solution
 
 NPM:

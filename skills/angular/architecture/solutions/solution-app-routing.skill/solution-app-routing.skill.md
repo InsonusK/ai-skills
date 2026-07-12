@@ -19,7 +19,7 @@ extends:
   - libs/{feature}/feature
   - Repository
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-app-routing.skill/adr/route-ownership-location|Route Ownership Location ADR]]"
 ---
@@ -51,7 +51,7 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
   - Extends the `index.ts` public-API convention to include a feature's exported `Routes`
 
 NPM:

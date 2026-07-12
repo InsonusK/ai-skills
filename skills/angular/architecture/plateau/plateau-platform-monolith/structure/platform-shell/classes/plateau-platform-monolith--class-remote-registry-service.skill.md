@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/platform-monolith
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
 ---
 
 # Goal
@@ -18,7 +18,7 @@ created_by:
 - Resolve which embeddable apps are available and where their `remoteEntry` is served from, at runtime, from an externally updatable source — not from the host's build output
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
 
 # Core Principles
 
@@ -26,7 +26,7 @@ __Applied solutions:__
 - The manifest is fetched at runtime, never inlined at build time — this is what makes onboarding a new embeddable app a config change, not a platform redeploy
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
 
 # Naming convention
 
@@ -64,7 +64,7 @@ export class RemoteRegistryService {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
 
 # Rules
 
@@ -73,7 +73,7 @@ __Applied solutions:__
 - A missing or unreachable remote MUST resolve to an error the caller can catch and render a fallback for — it must not throw uncaught during bootstrap.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
 
 # Anti-patterns
 
@@ -83,7 +83,7 @@ __Applied solutions:__
   - Instead: allow re-fetching the manifest (e.g. on shell navigation to a section hosting remotes, or an explicit refresh trigger)
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
 
 # Check list
 
@@ -91,7 +91,7 @@ __Applied solutions:__
 - [ ] A failure to resolve one remote does not prevent other remotes from loading
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
 
 # Unittest TestCases
 
@@ -101,4 +101,4 @@ __Applied solutions:__
   - [ ] the service rejects with a descriptive error instead of throwing an unhandled exception
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create|PlatformHost/platform-shell.project.extend/remote-registry.service.ts.create]]

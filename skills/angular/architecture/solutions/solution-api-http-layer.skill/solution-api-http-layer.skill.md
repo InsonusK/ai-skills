@@ -18,8 +18,8 @@ creates:
 extends:
   - Repository (formalizes Facade/Client/Mapper structure inside feature data-access libs)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering|Facade Client Layering ADR]]"
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy|Error Handling Strategy ADR]]"
@@ -58,9 +58,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]
   - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|libs/{feature}/data-access]] - internal structure formalized by this solution
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]
   - Feature-level Signal Store methods call the Facade/Client exactly as already established there; global/cross-cutting effects keep calling into the same Facade/Client layering
 
 NPM:

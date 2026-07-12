@@ -5,7 +5,7 @@ change_kind: extend
 ---
 
 # How this generic file is used
-This applies inside any embeddable application repository (see this solution's "embeddable application" plateau) that itself contains more than one feature. It extends the hierarchical route-ownership pattern from [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill|App routing (база)]] one level down: an embeddable module mounts its own features' root segments exactly the way the platform shell mounts a feature.
+This applies inside any embeddable application repository (see this solution's "embeddable application" plateau) that itself contains more than one feature. It extends the hierarchical route-ownership pattern from [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|App routing (база)]] one level down: an embeddable module mounts its own features' root segments exactly the way the platform shell mounts a feature.
 
 # Structure
 

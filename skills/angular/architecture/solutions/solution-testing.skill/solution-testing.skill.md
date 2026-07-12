@@ -20,9 +20,9 @@ extends:
   - libs/{feature}/data-access (test files)
   - libs/{feature}/feature (test files)
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|Структура репозитория (база)]]"
-  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]"
-  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
+  - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]"
 adr:
   - "[[skills/angular/architecture/solutions/solution-testing.skill/adr/test-runner-choice|Test runner choice ADR]]"
   - "[[skills/angular/architecture/solutions/solution-testing.skill/adr/e2e-framework-choice|E2E framework choice ADR]]"
@@ -63,9 +63,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill|API/HTTP-слой]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]
   - Test patterns here directly test the Facade/Client structure that solution establishes
-- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill|State management]]
+- [[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|State management]]
   - Signal Store test pattern here directly tests the store methods that solution establishes
 
 NPM:
