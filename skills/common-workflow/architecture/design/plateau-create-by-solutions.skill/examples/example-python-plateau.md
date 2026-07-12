@@ -40,6 +40,23 @@ plateau/default/
             └── module-service-service.skill.md
 ```
 
+## Resulting `plateau-default.skill.md` frontmatter
+
+```yaml
+---
+name: default
+description: Default Python CLI plateau
+domain: skill
+type: template
+version: 20250101120000
+tags:
+  - skill/template/plateau
+parent_plateau:
+created_by:
+  - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
+---
+```
+
 ## Key observations
 - `{App}.create.md` (`element_kind: project`) becomes the foundation of `package-app.skill.md`.
 - `{App}.cli.py.create.md` → `module-cli.skill.md`; `{App}.cli.__init__.py.create.md` → `module-cli-init.skill.md`.

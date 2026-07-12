@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-python -m venv .venv
+python3 -m venv .venv
 
 if [ -f ".venv/Scripts/python.exe" ]; then
     VENV_PYTHON=".venv/Scripts/python.exe"

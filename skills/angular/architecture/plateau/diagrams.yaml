@@ -1,0 +1,17 @@
+cache_dir: .cache/diagram-renderer
+
+tasks:
+  - id: angular-plateaus-overview
+    source:
+      include:
+        - "skills/angular/architecture/plateau/**/plateau-*.skill.md"
+    metadata:
+      subpath: "# Capabilities"
+    links:
+      - name: parent_plateau
+        type: frontmatter_field
+        field: parent_plateau
+        reverse: true
+    output:
+      format: obsidian_canvas
+      destination: "skills/angular/architecture/plateau/angular-plateaus-overview.canvas"
