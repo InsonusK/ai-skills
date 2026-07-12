@@ -7,7 +7,7 @@ change_kind: extend
 ---
 
 # How this generic file is used
-This extends the routes pattern from [[[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]] It applies inside any `libs/{feature}/feature` project, once that feature itself is already lazily loaded as a whole via `loadChildren` at its mounting point.
+This extends the routes pattern from [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]] It applies inside any `libs/{feature}/feature` project, once that feature itself is already lazily loaded as a whole via `loadChildren` at its mounting point.
 
 # Goals
 
