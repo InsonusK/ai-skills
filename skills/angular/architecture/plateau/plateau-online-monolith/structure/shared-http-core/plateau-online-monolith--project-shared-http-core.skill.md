@@ -53,7 +53,7 @@ __Applied solutions:__
 ## What Does NOT Belong Here
 
 - DTO mapping — belongs in each feature's own `{feature}.client.ts`/`{feature}.mapper.ts`
-- Auth token attachment — handled globally by [[../shared-state/classes/class-auth-interceptor.skill.md|authInterceptor]], registered independently of this service
+- Auth token attachment — handled globally in the future, authentication doesn't implemented in this plateau
 - Business-specific retry/conflict logic (e.g. offline-sync retry queues) — belongs to a future offline-sync solution
 
 __Applied solutions:__
