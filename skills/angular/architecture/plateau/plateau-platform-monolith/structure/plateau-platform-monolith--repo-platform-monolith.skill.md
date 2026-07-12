@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill|solution-design-system-application]]"
 ---
 
-> Fourth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith|offline-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]]. This is the **"platform-monolith"** milestone: the monolith becomes a platform — `apps/platform-shell` is a Native Federation dynamic host that discovers and mounts independently built and deployed embeddable apps at runtime, sharing a single Angular runtime, `@platform/contracts` instance, and (when version-compatible) the design system. See the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app|embeddable-app]] plateau for what an embeddable app repository itself must look like. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]], the last plateau — the platform host has nothing to share via `SessionContract` until then), no backend log delivery.
+> Fourth plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]. This is the **"platform-monolith"** milestone: the monolith becomes a platform — `apps/platform-shell` is a Native Federation dynamic host that discovers and mounts independently built and deployed embeddable apps at runtime, sharing a single Angular runtime, `@platform/contracts` instance, and (when version-compatible) the design system. See the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill|embeddable-app]] plateau for what an embeddable app repository itself must look like. Still no authentication (that arrives at [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]], the last plateau — the platform host has nothing to share via `SessionContract` until then), no backend log delivery.
 
 # Structure
 
@@ -37,7 +37,7 @@ created_by:
     /[data-access](./feature-data-access/plateau-platform-monolith--project-feature-data-access.skill.md)
 ```
 
-- No new top-level project inside this monorepo — federation host capability is added entirely inside `apps/platform-shell`. What's new is external to this repo: any number of independently repositoried, independently deployed embeddable apps, each conforming to the [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app|embeddable-app]] plateau.
+- No new top-level project inside this monorepo — federation host capability is added entirely inside `apps/platform-shell`. What's new is external to this repo: any number of independently repositoried, independently deployed embeddable apps, each conforming to the [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill|embeddable-app]] plateau.
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]] - [[skills/angular/architecture/solutions/solution-platform-embeddability.skill/Implementation/PlatformHost/Repository.extend|PlatformHost/Repository.extend]]
@@ -90,7 +90,7 @@ __Applied solutions:__
 - `apps/platform-shell` MUST mark `@platform/contracts` (and Angular) as `singleton: true` shared dependencies.
 - The list of available remotes (embeddable apps) and their URLs MUST be resolved at runtime (Dynamic Federation manifest), never hardcoded into the host's build output.
 - The design system MUST be shared as a version-negotiated singleton between the host and every embeddable app, per each side's declared `requiredVersion` range.
-- All other rules from [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith|offline-monolith]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]] continue to apply unchanged.
 
 ## MUST NOT
 - The host MUST NOT bundle a specific embeddable app's code at build time.

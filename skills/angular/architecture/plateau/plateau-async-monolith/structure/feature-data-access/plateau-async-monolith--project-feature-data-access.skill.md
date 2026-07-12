@@ -16,7 +16,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
 ---
 
-> Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template, substituting `{Feature}`/`{feature}` with the real feature name. The bare project placeholder already existed in [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith|online-monolith]]; `solution-offline-first` only extends the Client's error handling, not the Facade.
+> Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template, substituting `{Feature}`/`{feature}` with the real feature name. The bare project placeholder already existed in [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]]; `solution-offline-first` only extends the Client's error handling, not the Facade.
 
 # Goal
 
@@ -92,7 +92,7 @@ __Applied solutions:__
 - UI components, feature-level state (Signal Store) — belong in this feature's own `libs/{feature}/feature`
 - Direct `HttpClient` usage — every HTTP call goes through `libs/shared/http-core`'s base service
 - `HttpTestingController` usage anywhere outside `{feature}.client.spec.ts`
-- Any durable, persisted mutation queue — that arrives with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith|offline-monolith]]
+- Any durable, persisted mutation queue — that arrives with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create|Repository.create]]

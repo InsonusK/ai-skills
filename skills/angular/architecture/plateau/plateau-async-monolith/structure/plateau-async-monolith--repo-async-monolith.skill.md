@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
 ---
 
-> Second plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith|online-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith|offline-monolith]]. This is the **"async-monolith"** milestone: feature chunks are lazy-loaded and selectively preloaded, and the app keeps working against cached GET data — with a visible offline indicator — when the network is unreliable. Auth/mutation endpoints stay strictly `network-only`; a genuinely offline mutation still fails immediately (durable queueing and replay arrive with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith|offline-monolith]]). Still no authentication, no Module Federation, no backend log delivery.
+> Second plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]. This is the **"async-monolith"** milestone: feature chunks are lazy-loaded and selectively preloaded, and the app keeps working against cached GET data — with a visible offline indicator — when the network is unreliable. Auth/mutation endpoints stay strictly `network-only`; a genuinely offline mutation still fails immediately (durable queueing and replay arrive with [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill|offline-monolith]]). Still no authentication, no Module Federation, no backend log delivery.
 
 # Structure
 
@@ -90,7 +90,7 @@ __Applied solutions:__
 - A feature's Client MUST check for a network-level failure (`HttpErrorResponse` with `status === 0`) before any status-code-specific handling, and throw the shared `OfflineTransportError` in that case.
 - `selectIsOnline` MUST be the only public selector feature code uses to read connectivity; `navigator.onLine` MUST NOT be read directly outside the `connectivity` slice's own effect.
 - The service worker MUST be generated via Workbox's programmatic build API; auth endpoints and every non-GET request MUST remain `network-only`, never cached.
-- All other rules from [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith|online-monolith]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]] continue to apply unchanged.
 
 ## SHOULD
 - Bundle budget thresholds SHOULD be reviewed and adjusted deliberately when a feature's legitimate size grows, rather than silenced by raising the threshold reflexively.

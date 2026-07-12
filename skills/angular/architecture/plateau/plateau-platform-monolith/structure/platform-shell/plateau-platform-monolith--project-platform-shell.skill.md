@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill|solution-platform-embeddability]]"
 ---
 
-> No global error handler yet — `GlobalErrorHandler` arrives with [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]]. Also depends on the `design-system` npm package, unchanged from `online-monolith`.
+> No global error handler yet — `GlobalErrorHandler` arrives with [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]. Also depends on the `design-system` npm package, unchanged from `online-monolith`.
 
 # Goal
 

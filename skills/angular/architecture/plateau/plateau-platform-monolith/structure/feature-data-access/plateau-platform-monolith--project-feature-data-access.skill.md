@@ -17,7 +17,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]]"
 ---
 
-> Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template, substituting `{Feature}`/`{feature}` with the real feature name. The bare project placeholder already existed in [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith|online-monolith]]; `solution-offline-first` extends the Client's error handling, `solution-offline-sync` extends the Facade with the queueing decision.
+> Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template, substituting `{Feature}`/`{feature}` with the real feature name. The bare project placeholder already existed in [[skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill|online-monolith]]; `solution-offline-first` extends the Client's error handling, `solution-offline-sync` extends the Facade with the queueing decision.
 
 # Goal
 

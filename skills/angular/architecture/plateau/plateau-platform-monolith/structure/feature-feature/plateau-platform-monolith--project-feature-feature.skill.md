@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]]"
 ---
 
-> Generic pattern, not tied to one concrete feature — every business feature added to the workspace gets its own `libs/{feature}/feature` project following this template. No permission guards yet — attaching one to `{feature}.routes.ts` arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]].
+> Generic pattern, not tied to one concrete feature — every business feature added to the workspace gets its own `libs/{feature}/feature` project following this template. No permission guards yet — attaching one to `{feature}.routes.ts` arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]].
 
 # Goal
 
@@ -67,7 +67,7 @@ __Applied solutions:__
 - HTTP client wiring / DTO mapping — belongs in this feature's own `data-access` lib
 - Cross-cutting state (connectivity, notifications) — belongs in `libs/shared/state`
 - Any durable, persisted queue implementation — belongs in `libs/shared/offline-sync`
-- A permission guard — that arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]]
+- A permission guard — that arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]]
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill|solution-lazy-loading-routing]] - [[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]

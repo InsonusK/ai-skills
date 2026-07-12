@@ -12,7 +12,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill|solution-offline-sync]]"
 ---
 
-> Third plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill|async-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith|platform-monolith]]. This is the **"offline-monolith"** milestone: a mutation attempted while genuinely offline is no longer an immediate failure — it is durably queued, per feature, and replayed automatically once connectivity returns. This is the full offline-capable PWA. Still no authentication, no Module Federation, no backend log delivery.
+> Third plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill|async-monolith]]. Next: [[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill|platform-monolith]]. This is the **"offline-monolith"** milestone: a mutation attempted while genuinely offline is no longer an immediate failure — it is durably queued, per feature, and replayed automatically once connectivity returns. This is the full offline-capable PWA. Still no authentication, no Module Federation, no backend log delivery.
 
 # Structure
 

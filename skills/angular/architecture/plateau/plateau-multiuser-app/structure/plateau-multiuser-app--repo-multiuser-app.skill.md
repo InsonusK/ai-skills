@@ -12,7 +12,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]]"
 ---
 
-> Sixth and final plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]]. This is the **"multiuser-app"** milestone: the application scales to many users — every user is authenticated, session state lives in a single auditable NgRx slice with an in-memory-only access token, authorization is expressed as permission strings enforced both at the route level (guards) and the UI level (`*hasPermission`), and the platform host now shares a real `SessionContract` with every mounted embeddable app. All 17 solutions in the main chain are now applied.
+> Sixth and final plateau in the main application's chain. Parent: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]. This is the **"multiuser-app"** milestone: the application scales to many users — every user is authenticated, session state lives in a single auditable NgRx slice with an in-memory-only access token, authorization is expressed as permission strings enforced both at the route level (guards) and the UI level (`*hasPermission`), and the platform host now shares a real `SessionContract` with every mounted embeddable app. All 17 solutions in the main chain are now applied.
 
 # Structure
 
@@ -88,7 +88,7 @@ __Applied solutions:__
 - `authInterceptor` MUST be the only place an outgoing request is decorated with the `Authorization` header.
 - Every permission check (route guard or UI directive) MUST check a permission string, never a role name.
 - `SessionContract` MUST be read-only from an embeddable app's point of view.
-- All other rules from [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]] continue to apply unchanged.
+- All other rules from [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]] continue to apply unchanged.
 
 ## MUST NOT
 - No feature MUST maintain its own copy of "is logged in"/"current user"/permissions state — every read goes through `auth.selectors.ts` or `libs/shared/auth-ui`.

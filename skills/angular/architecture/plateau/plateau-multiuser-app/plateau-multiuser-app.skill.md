@@ -9,10 +9,10 @@ tags:
   - plateau/multiuser-app
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill|solution-authentication]]"
-parent_plateau: "[[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]]"
+parent_plateau: "[[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]]"
 ---
 
-> Parent: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app|monitored-app]] (a monitored, federated, offline-capable platform — 16 solutions applied so far in the main chain). This plateau adds `solution-authentication` on top — the last solution in the main chain. **Final plateau**: every user is now authenticated, and the application is ready to scale to many users. See also the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app|embeddable-app]] plateau — an embeddable app mounted before this plateau existed saw `SessionContract.isAuthenticated: false`; from here on it sees a real session.
+> Parent: [[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill|monitored-app]] (a monitored, federated, offline-capable platform — 16 solutions applied so far in the main chain). This plateau adds `solution-authentication` on top — the last solution in the main chain. **Final plateau**: every user is now authenticated, and the application is ready to scale to many users. See also the sibling [[skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill|embeddable-app]] plateau — an embeddable app mounted before this plateau existed saw `SessionContract.isAuthenticated: false`; from here on it sees a real session.
 
 # Core Principles
 

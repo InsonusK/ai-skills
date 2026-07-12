@@ -14,7 +14,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill|solution-offline-first]]"
 ---
 
-> No authentication yet — the auth slice below is still `solution-state-management`'s own worked example, not a real session lifecycle. That arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app|multiuser-app]].
+> No authentication yet — the auth slice below is still `solution-state-management`'s own worked example, not a real session lifecycle. That arrives with [[skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill|multiuser-app]].
 
 # Goal
 
@@ -60,7 +60,7 @@ __Applied solutions:__
 | /auth | Skeleton auth slice — worked example of the global-state tier. Real session lifecycle arrives with `multiuser-app`. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/classes/plateau-async-monolith--class-auth-store.skill\|class-auth-store]] |
 | /connectivity | `isOnline` slice combining `navigator.onLine` events with a periodic health check. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/classes/plateau-async-monolith--class-connectivity-store.skill\|class-connectivity-store]] |
 | /notifications | Global notification/toast queue slice (filled in by a future notifications-owning solution) | — |
-| /offline-sync | Offline-sync queue state (filled in by [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.md|offline-monolith]]) | — |
+| /offline-sync | Offline-sync queue state (filled in by [[skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md|offline-monolith]]) | — |
 | index.ts | Public API: exported actions and selectors per slice only; reducers/effects are registration-only | — |
 
 __Applied solutions:__
