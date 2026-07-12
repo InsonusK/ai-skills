@@ -5,3 +5,6 @@ init:
 
 ai-skill-sync:
 	.venv/bin/python3 aism sync
+
+test-lib:
+	bash ./test/test.sh
