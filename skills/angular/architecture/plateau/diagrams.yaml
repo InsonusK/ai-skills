@@ -8,10 +8,10 @@ tasks:
     metadata:
       subpath: "# Capabilities"
     links:
-      - name: created_by
+      - name: parent_plateau
         type: frontmatter_field
-        field: created_by
-        transitive_reduction: true
+        field: parent_plateau
+        reverse: true
     output:
       format: obsidian_canvas
       destination: "skills/angular/architecture/plateau/angular-plateaus-overview.canvas"

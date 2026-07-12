@@ -11,7 +11,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md|solution-design-system-application]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-parent_plateau:
+parent_plateau: "[[skills/angular/architecture/plateau/plateau-platform-monolith.skill/plateau-platform-monolith.skill|platform-monolith]]"
 ---
 
 > This is a sibling plateau to the main application's chain, not a continuation of it. It lives in its own repository — separate from both the main Nx platform monorepo and the design-system repository — owned and deployed independently by its own team. Any independently deployed application in this architecture, regardless of which team builds it, must conform to this plateau's structure to be embeddable. It becomes loadable by the platform host once [[skills/angular/architecture/plateau/plateau-platform-monolith.skill/plateau-platform-monolith.skill|platform-monolith]] exists (`apps/platform-shell` turned into a Native Federation dynamic host) — though `SessionContract` has nothing real to share until [[skills/angular/architecture/plateau/plateau-multiuser-app.skill/plateau-multiuser-app.skill|multiuser-app]], the final main-chain plateau: an embeddable app mounted before then sees `isAuthenticated: false`.
