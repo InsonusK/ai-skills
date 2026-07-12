@@ -10,6 +10,20 @@ whenToUse: when you write skills for building a plateau
 - {stack} - target language/stack of the plateau (`dotnet`, `python`, ...). Detect it from the {solutions} (their `domain`/`tags` header properties) or ask the user if it is unclear
 - {output} - folder where you should put created plateau skills. Default `skills/{stack}/architecture/plateau`
 
+# Plateau element skill naming
+Every skill that describes a plateau element (repository/solution, project/package, class/module, etc.) must include the plateau name in its identity:
+
+1. **Skill file name** — must start with the prefix `plateau-{plateau-name}--`.
+   - Example for a class skill: `plateau-{plateau-name}--class-{name}.skill.md`
+   - Example for a project skill: `plateau-{plateau-name}--csproj-{name}.skill.md`
+   - Example for a package skill: `plateau-{plateau-name}--package-{name}.skill.md`
+   - Example for a module skill: `plateau-{plateau-name}--module-{name}.skill.md`
+   - Example for a repository/solution skill: `plateau-{plateau-name}--sln-{plateau-name}.skill.md` (or `plateau-{plateau-name}--repo-{plateau-name}.skill.md` for Python)
+
+2. **Skill description** — the `description` header of an element skill must explicitly state which plateau the element belongs to.
+   - Example: `Class {name} in the {plateau-name} plateau`
+   - Example: `Project {name} of the {plateau-name} plateau`
+
 # Prerequisites
 Read [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first. It defines how a solution-skill is structured per stack and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 
@@ -19,25 +33,25 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
 ## .NET (`stack: dotnet`)
 | File pattern | What it describes | Becomes |
 | ------------ | ----------------- | ------- |
-| `Implementation/Repository.create.md` | Repository-level changes: solution layout, project list, layer responsibilities | Content for `sln-{plateau-name}.skill.md` |
-| `Implementation/{Project}.csproj.create.md` | A project created by this solution | One `csproj-{normalized}.skill.md` |
-| `Implementation/{Project}.csproj.extend.md` | A project extended by this solution | Merged into the same `csproj-{normalized}.skill.md` |
-| `Implementation/{Project}.csproj.create/{Class}.cs.create.md` | A class created inside a project | One `class-{normalized}.skill.md` |
-| `Implementation/{Project}.csproj.extend/{Class}.cs.create.md` | A class created inside an extended project | One `class-{normalized}.skill.md` |
-| `Implementation/{Project}.csproj.extend/{Class}.cs.extend.md` | A class extended inside a project | Merged into the same `class-{normalized}.skill.md` |
+| `Implementation/Repository.create.md` | Repository-level changes: solution layout, project list, layer responsibilities | Content for `plateau-{plateau-name}--sln-{plateau-name}.skill.md` |
+| `Implementation/{Project}.csproj.create.md` | A project created by this solution | One `plateau-{plateau-name}--csproj-{normalized}.skill.md` |
+| `Implementation/{Project}.csproj.extend.md` | A project extended by this solution | Merged into the same `plateau-{plateau-name}--csproj-{normalized}.skill.md` |
+| `Implementation/{Project}.csproj.create/{Class}.cs.create.md` | A class created inside a project | One `plateau-{plateau-name}--class-{normalized}.skill.md` |
+| `Implementation/{Project}.csproj.extend/{Class}.cs.create.md` | A class created inside an extended project | One `plateau-{plateau-name}--class-{normalized}.skill.md` |
+| `Implementation/{Project}.csproj.extend/{Class}.cs.extend.md` | A class extended inside a project | Merged into the same `plateau-{plateau-name}--class-{normalized}.skill.md` |
 
 > `{Project}` can be a concrete name (`Shared`, `BuildingBlocks`, `App.Host`) or a placeholder (`{Module}.Api`, `{Module}.Application`, `{Module}.Domain`, `{Module}.Interfaces`).
 
 ## Python (`stack: python`)
 | File pattern | What it describes | Becomes |
 | ------------ | ----------------- | ------- |
-| `Implementation/Repository.create.md` | Repository-level changes that are not specific to a single package/app: how several packages/apps in the same repo relate to each other | Content for `repo-{plateau-name}.skill.md` |
-| `Implementation/{App}.create.md` (`element_kind: project`) | The root package/app created by this solution | One `package-{normalized}.skill.md` |
-| `Implementation/{App}.extend.md` (`element_kind: project`) | The root package/app extended by this solution | Merged into the same `package-{normalized}.skill.md` |
-| `Implementation/{App}.{dotted.path}.py.create.md` (`element_kind: class` or `functions`) | A class or a functions module created inside the package | One `module-{normalized}.skill.md` |
-| `Implementation/{App}.{dotted.path}.py.extend.md` | A class or a functions module extended inside the package | Merged into the same `module-{normalized}.skill.md` |
-| `Implementation/{App}.{dotted.path}.__init__.py.create.md` (`element_kind: init`) | A package `__init__.py` created inside the package | One `module-{normalized}.skill.md` |
-| `Implementation/{App}.{dotted.path}.__init__.py.extend.md` | A package `__init__.py` extended inside the package | Merged into the same `module-{normalized}.skill.md` |
+| `Implementation/Repository.create.md` | Repository-level changes that are not specific to a single package/app: how several packages/apps in the same repo relate to each other | Content for `plateau-{plateau-name}--repo-{plateau-name}.skill.md` |
+| `Implementation/{App}.create.md` (`element_kind: project`) | The root package/app created by this solution | One `plateau-{plateau-name}--package-{normalized}.skill.md` |
+| `Implementation/{App}.extend.md` (`element_kind: project`) | The root package/app extended by this solution | Merged into the same `plateau-{plateau-name}--package-{normalized}.skill.md` |
+| `Implementation/{App}.{dotted.path}.py.create.md` (`element_kind: class` or `functions`) | A class or a functions module created inside the package | One `plateau-{plateau-name}--module-{normalized}.skill.md` |
+| `Implementation/{App}.{dotted.path}.py.extend.md` | A class or a functions module extended inside the package | Merged into the same `plateau-{plateau-name}--module-{normalized}.skill.md` |
+| `Implementation/{App}.{dotted.path}.__init__.py.create.md` (`element_kind: init`) | A package `__init__.py` created inside the package | One `plateau-{plateau-name}--module-{normalized}.skill.md` |
+| `Implementation/{App}.{dotted.path}.__init__.py.extend.md` | A package `__init__.py` extended inside the package | Merged into the same `plateau-{plateau-name}--module-{normalized}.skill.md` |
 
 > `{App}` can be a concrete name (`myapp`, `billing_service`) or a placeholder (`{App}`, `{Package}`, `{Service}`). `{dotted.path}` mirrors the folder path with `.` instead of `/` (e.g. `cli.backup` means `cli/backup.py`).
 >
@@ -55,18 +69,18 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
    - Python: collect all `{App}.create.md`/`{App}.extend.md` (`element_kind: project`), and all class/functions/init files nested under them
    - Normalize placeholder names (`{Module}`, `{App}`) to generic templates (see [Mapping rules](#mapping-rules))
 6. Create the repository-level skill using the template that matches {stack}
-   - .NET: `sln-{plateau-name}.skill.md` using [templates/dotnet/sln-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/sln-{name}.skill.template.md)
-   - Python: `repo-{plateau-name}.skill.md` using [templates/python/repo-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/repo-{name}.skill.template.md)
+   - .NET: `plateau-{plateau-name}--sln-{plateau-name}.skill.md` using [templates/dotnet/sln-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/sln-{name}.skill.template.md)
+   - Python: `plateau-{plateau-name}--repo-{plateau-name}.skill.md` using [templates/python/repo-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/repo-{name}.skill.template.md)
    - Aggregate all `Repository.create.md`/`Repository.extend.md` files from {solutions}
    - Keep repository-level content only
 7. For each discovered project/package create its skill using the template that matches {stack}
-   - .NET: `csproj-{normalized-name}.skill.md` using [templates/dotnet/csproj-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/csproj-{name}.skill.template.md)
-   - Python: `package-{normalized-name}.skill.md` using [templates/python/package-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/package-{name}.skill.template.md)
+   - .NET: `plateau-{plateau-name}--csproj-{normalized-name}.skill.md` using [templates/dotnet/csproj-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/csproj-{name}.skill.template.md)
+   - Python: `plateau-{plateau-name}--package-{normalized-name}.skill.md` using [templates/python/package-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/package-{name}.skill.template.md)
    - Merge `.create.md` and all `.extend.md` files for the same project/package
    - Keep project/package-level content only
 8. For each discovered class/module create its skill using the template that matches {stack}
-   - .NET: `class-{normalized-name}.skill.md` using [templates/dotnet/class-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/class-{name}.skill.template.md)
-   - Python: `module-{normalized-name}.skill.md` using [templates/python/module-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/module-{name}.skill.template.md)
+   - .NET: `plateau-{plateau-name}--class-{normalized-name}.skill.md` using [templates/dotnet/class-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/class-{name}.skill.template.md)
+   - Python: `plateau-{plateau-name}--module-{normalized-name}.skill.md` using [templates/python/module-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/module-{name}.skill.template.md)
    - Merge `.create.md` and `.extend.md` files for the same class/module
    - Keep class/module-level content only
 9. Create `plateau-{plateau-name}.skill.md` using the plateau template that matches {stack}
@@ -92,50 +106,50 @@ Map the project file name to the skill file name using kebab-case:
 
 | Project file | Skill file | Notes |
 | ------------ | ---------- | ----- |
-| `Shared.csproj` | `csproj-shared.skill.md` | Concrete cross-cutting project |
-| `BuildingBlocks.csproj` | `csproj-building-blocks.skill.md` | Concrete technical-patterns project |
-| `App.Host.csproj` | `csproj-app-host.skill.md` | Concrete composition-root project |
-| `App.Infrastructure.csproj` | `csproj-app-infrastructure.skill.md` | Concrete persistence project |
-| `App.Infrastructure.Migrations.csproj` | `csproj-app-infrastructure-migrations.skill.md` | Concrete migrations project |
-| `App.Queries.csproj` | `csproj-app-queries.skill.md` | Concrete cross-module read-model project |
-| `{Module}.Api.csproj` | `csproj-module-api.skill.md` | Generic module template |
-| `{Module}.Application.csproj` | `csproj-module-application.skill.md` | Generic module template |
-| `{Module}.Domain.csproj` | `csproj-module-domain.skill.md` | Generic module template |
-| `{Module}.Interfaces.csproj` | `csproj-module-interfaces.skill.md` | Generic module template |
+| `Shared.csproj` | `plateau-{plateau-name}--csproj-shared.skill.md` | Concrete cross-cutting project |
+| `BuildingBlocks.csproj` | `plateau-{plateau-name}--csproj-building-blocks.skill.md` | Concrete technical-patterns project |
+| `App.Host.csproj` | `plateau-{plateau-name}--csproj-app-host.skill.md` | Concrete composition-root project |
+| `App.Infrastructure.csproj` | `plateau-{plateau-name}--csproj-app-infrastructure.skill.md` | Concrete persistence project |
+| `App.Infrastructure.Migrations.csproj` | `plateau-{plateau-name}--csproj-app-infrastructure-migrations.skill.md` | Concrete migrations project |
+| `App.Queries.csproj` | `plateau-{plateau-name}--csproj-app-queries.skill.md` | Concrete cross-module read-model project |
+| `{Module}.Api.csproj` | `plateau-{plateau-name}--csproj-module-api.skill.md` | Generic module template |
+| `{Module}.Application.csproj` | `plateau-{plateau-name}--csproj-module-application.skill.md` | Generic module template |
+| `{Module}.Domain.csproj` | `plateau-{plateau-name}--csproj-module-domain.skill.md` | Generic module template |
+| `{Module}.Interfaces.csproj` | `plateau-{plateau-name}--csproj-module-interfaces.skill.md` | Generic module template |
 
 ## .NET class name normalization
 Map the class file name to the skill file name using kebab-case. Preserve interface prefix `I-` as `i-`:
 
 | Class file | Skill file |
 | ---------- | ---------- |
-| `ICommand.cs` | `class-i-command.skill.md` |
-| `IQuery.cs` | `class-i-query.skill.md` |
-| `ValidationBehavior.cs` | `class-validation-behavior.skill.md` |
-| `ConcurrencyBehavior.cs` | `class-concurrency-behavior.skill.md` |
-| `ModuleRegistration.cs` | `class-module-registration.skill.md` |
-| `EntityVersionResolverFactory.cs` | `class-entity-version-resolver-factory.skill.md` |
+| `ICommand.cs` | `plateau-{plateau-name}--class-i-command.skill.md` |
+| `IQuery.cs` | `plateau-{plateau-name}--class-i-query.skill.md` |
+| `ValidationBehavior.cs` | `plateau-{plateau-name}--class-validation-behavior.skill.md` |
+| `ConcurrencyBehavior.cs` | `plateau-{plateau-name}--class-concurrency-behavior.skill.md` |
+| `ModuleRegistration.cs` | `plateau-{plateau-name}--class-module-registration.skill.md` |
+| `EntityVersionResolverFactory.cs` | `plateau-{plateau-name}--class-entity-version-resolver-factory.skill.md` |
 
 ## Python package/app root normalization
 Map the package/app root name to the skill file name using kebab-case:
 
 | Package/app root | Skill file | Notes |
 | ----------------- | ---------- | ----- |
-| `{App}` | `package-app.skill.md` | Generic app/package template |
-| `myapp` | `package-myapp.skill.md` | Concrete top-level package |
-| `{Service}` | `package-service.skill.md` | Generic service package template |
-| `billing_service` | `package-billing-service.skill.md` | Concrete service package |
+| `{App}` | `plateau-{plateau-name}--package-app.skill.md` | Generic app/package template |
+| `myapp` | `plateau-{plateau-name}--package-myapp.skill.md` | Concrete top-level package |
+| `{Service}` | `plateau-{plateau-name}--package-service.skill.md` | Generic service package template |
+| `billing_service` | `plateau-{plateau-name}--package-billing-service.skill.md` | Concrete service package |
 
 ## Python module normalization
 Drop the `{App}.` prefix and the trailing `.py`/`.__init__.py`, replace remaining `.` separators with `-`, convert `snake_case` to kebab-case, and replace `__init__` with `init`:
 
 | Implementation file | Skill file |
 | -------------------- | ---------- |
-| `{App}.cli.py.create.md` | `module-cli.skill.md` |
-| `{App}.cli.__init__.py.create.md` | `module-cli-init.skill.md` |
-| `{App}.cli.{Command}.py.create.md` | `module-cli-command.skill.md` |
-| `{App}.command.backup.py.create.md` | `module-command-backup.skill.md` |
-| `{App}.functions.helpers.py.create.md` | `module-functions-helpers.skill.md` |
-| `{App}.service.backup_service.py.create.md` | `module-service-backup-service.skill.md` |
+| `{App}.cli.py.create.md` | `plateau-{plateau-name}--module-cli.skill.md` |
+| `{App}.cli.__init__.py.create.md` | `plateau-{plateau-name}--module-cli-init.skill.md` |
+| `{App}.cli.{Command}.py.create.md` | `plateau-{plateau-name}--module-cli-command.skill.md` |
+| `{App}.command.backup.py.create.md` | `plateau-{plateau-name}--module-command-backup.skill.md` |
+| `{App}.functions.helpers.py.create.md` | `plateau-{plateau-name}--module-functions-helpers.skill.md` |
+| `{App}.service.backup_service.py.create.md` | `plateau-{plateau-name}--module-service-backup-service.skill.md` |
 
 ## .create vs .extend
 Both file types contribute to the same target skill:
@@ -173,7 +187,7 @@ __Applied solutions:__
 ```
 
 # Repository/root skill structure
-The repository/root skill (`sln-*.skill.md` for .NET, `repo-*.skill.md` for Python) describes the whole plateau at the highest level. Its sections must stay at that level.
+The repository/root skill (`plateau-*--sln-*.skill.md` for .NET, `plateau-*--repo-*.skill.md` for Python) describes the whole plateau at the highest level. Its sections must stay at that level.
 
 `## Project Structure`:
 - Show **only project/package folders**.
@@ -186,18 +200,20 @@ The repository/root skill (`sln-*.skill.md` for .NET, `repo-*.skill.md` for Pyth
 ```example
 | `Directory\|file` | template link | Description |
 | ---------------- | ------------- | ----------- |
-| /Shared | [[csproj-Shared.skill.md\|csproj-Shared.skill]] | Cross-cutting primitives |
-| /{Module}.Domain | [[csproj-module-domain.skill.md\|csproj-module-domain.skill]] | Business logic |
+| /Shared | [[plateau-{plateau-name}--csproj-Shared.skill.md\|plateau-{plateau-name}--csproj-Shared.skill]] | Cross-cutting primitives |
+| /{Module}.Domain | [[plateau-{plateau-name}--csproj-module-domain.skill.md\|plateau-{plateau-name}--csproj-module-domain.skill]] | Business logic |
 ```
 
 ```example
 | `Directory\|file` | template link | Description |
 | ---------------- | ------------- | ----------- |
-| /{App} | [[package-app.skill.md\|package-app.skill]] | CLI application root |
+| /{App} | [[plateau-{plateau-name}--package-app.skill.md\|plateau-{plateau-name}--package-app.skill]] | CLI application root |
 ```
 
 # Rules
 MUST:
+- Give every plateau element skill file a name that starts with `plateau-{plateau-name}--`.
+- Write the `description` header of every plateau element skill so that it clearly states the element belongs to the `{plateau-name}` plateau.
 - Detect {stack} before selecting a template folder, and select the template folder (`templates/dotnet/` or `templates/python/`) that matches it.
 - Remove all `hint` and `example` blocks from final skill file. Do not keep them in the final skill file.
 - Follow "# How Apply this template" rules defined in the selected template.
