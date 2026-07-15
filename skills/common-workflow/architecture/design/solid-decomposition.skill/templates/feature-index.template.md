@@ -5,7 +5,7 @@ The frontmatter `depends_on` links are what `diagram-renderer` reads to render t
 keep them accurate and let the tool render the picture; do not add a hand-drawn diagram here.
 
 ## Template
-```Example
+```example
 ---
 feature: {feature-name}
 depends_on: # list of links to every unit touched
