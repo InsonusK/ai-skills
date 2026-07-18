@@ -3,8 +3,7 @@ name: documentation-for-human
 description: How to document a project for human readers using README.md and a docs directory
 whenToUse: when you need to create or update human-readable documentation for a project, library, CLI, or API
 tags:
-  - documentation
-  - skill
+  - skill/documentation/for-human
   - common-workflow
   - human
 ---
@@ -43,8 +42,8 @@ docs/
 
 **Templates to use**
 
-- `README.md`: [templates/readme.template.md](./templates/readme.template.md)
-- Method format: follow [templates/method-calls.template.md](./templates/method-calls.template.md) and copy the level of detail from [examples/simple_skill/docs/api/reference.md](./examples/simple_skill/docs/api/reference.md).
+- `README.md`: [templates/readme.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/readme.template.md)
+- Method format: follow [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/method-calls.template.md) and copy the level of detail from [examples/simple_skill/docs/api/reference.md](skills/common-workflow/documentation/documentation-for-human.skill/examples/simple_skill/docs/api/reference.md).
 
 **Worked example**
 
@@ -73,9 +72,9 @@ docs/
 
 **Templates to use**
 
-- `README.md`: [templates/readme.template.md](./templates/readme.template.md)
-- Domain reference page: [templates/api-reference-group.template.md](./templates/api-reference-group.template.md)
-- Method format inside each page: follow [templates/method-calls.template.md](./templates/method-calls.template.md).
+- `README.md`: [templates/readme.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/readme.template.md)
+- Domain reference page: [templates/api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md)
+- Method format inside each page: follow [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/method-calls.template.md).
 
 **Worked example**
 
@@ -85,10 +84,10 @@ See [examples/complex_skill/](./examples/complex_skill/) for a complete page-gro
 
 This skill is split into focused sections. Read them in order when writing documentation for a new project, or jump to the relevant section when updating existing docs.
 
-- [templates/method-calls.template.md](./templates/method-calls.template.md) — General requirements for documenting methods, commands, or endpoints for human readers.
-- [templates/installation.md](./templates/installation.md) — Rules and example format for `README.md`/`docs/installation.md`.
-- [templates/readme.template.md](./templates/readme.template.md) — Fill-in-the-blank template for `README.md` (single reference page shape, or the index of a page group).
-- [templates/api-reference-group.template.md](./templates/api-reference-group.template.md) — Fill-in-the-blank template for a `docs/api/<domain>.md` page (page-group shape only).
+- [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/method-calls.template.md) — General requirements for documenting methods, commands, or endpoints for human readers.
+- [templates/installation.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/installation.md) — Rules and example format for `README.md`/`docs/installation.md`.
+- [templates/readme.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/readme.template.md) — Fill-in-the-blank template for `README.md` (single reference page shape, or the index of a page group).
+- [templates/api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md) — Fill-in-the-blank template for a `docs/api/<domain>.md` page (page-group shape only).
 - [examples/simple_skill/](./examples/simple_skill/) — Worked example of the single reference page shape.
 - [examples/complex_skill/](./examples/complex_skill/) — Worked example of the page group shape.
 
@@ -97,7 +96,7 @@ This skill is split into focused sections. Read them in order when writing docum
 At minimum, `README.md` MUST contain:
 - Project title and one-sentence description.
 - What problem the project solves and why it exists.
-- Installation instructions (can link to [templates/installation.md](./templates/installation.md) if detailed).
+- Installation instructions (can link to [templates/installation.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/installation.md) if detailed).
 - A quick-start usage example.
 - Pointers to the `docs/` directory for detailed documentation (a single reference page, or a link table to domain pages — see [# One page or a page group?](#one-page-or-a-page-group)).
 
@@ -121,7 +120,7 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 - In a page group, document installation/setup once (in `README.md` or `docs/installation.md`) and link to it from every domain page instead of duplicating it.
 
 ## SHOULD
-- Use [templates/readme.template.md](./templates/readme.template.md) for `README.md` and [templates/api-reference-group.template.md](./templates/api-reference-group.template.md) for each domain reference page.
+- Use [templates/readme.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/readme.template.md) for `README.md` and [templates/api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md) for each domain reference page.
 - Add a table of contents in `README.md` if it is longer than one screen.
 - Use diagrams or screenshots when they clarify architecture or UI flows.
 - Cross-link between `README.md` and `docs/` files.
@@ -173,8 +172,8 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 - [ ] `README.md` contains a runnable quick-start example.
 - [ ] `README.md` links to the `docs/` directory.
 - [ ] The single-page-vs-page-group decision was made deliberately using [# One page or a page group?](#one-page-or-a-page-group), not defaulted without thought.
-- [ ] The `README.md` was built from [templates/readme.template.md](./templates/readme.template.md); any domain reference page was built from [templates/api-reference-group.template.md](./templates/api-reference-group.template.md).
-- [ ] Detailed method documentation follows the rules in [templates/method-calls.template.md](./templates/method-calls.template.md).
+- [ ] The `README.md` was built from [templates/readme.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/readme.template.md); any domain reference page was built from [templates/api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md).
+- [ ] Detailed method documentation follows the rules in [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/method-calls.template.md).
 - [ ] Every public method, command, or endpoint has human-readable documentation.
 - [ ] In a page group, installation/setup is documented once and linked from every domain page.
 - [ ] Links between `README.md` and `docs/` files are valid.

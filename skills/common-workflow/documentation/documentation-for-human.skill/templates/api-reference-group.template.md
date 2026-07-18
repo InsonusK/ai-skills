@@ -1,7 +1,7 @@
 # How Apply this template
-1. Use this template once per functional domain (a group of related methods, commands, or endpoints), never once per individual method — see the "separate page per individual method" anti-pattern in [documentation-for-human.skill.md](../documentation-for-human.skill.md).
+1. Use this template once per functional domain (a group of related methods, commands, or endpoints), never once per individual method — see the "separate page per individual method" anti-pattern in [documentation-for-human.skill.md](skills/common-workflow/documentation/documentation-for-human.skill/documentation-for-human.skill.md).
 2. Link back to the project's `README.md` / `docs/installation.md` for setup instead of repeating it.
-3. Document every method in this domain following [method-calls.template.md](./method-calls.template.md), at the level of detail shown in the worked page-group examples at [examples/complex_skill/docs/api/](../examples/complex_skill/docs/api/).
+3. Document every method in this domain following [method-calls.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/method-calls.template.md), at the level of detail shown in the worked page-group examples at [examples/complex_skill/docs/api/](../examples/complex_skill/docs/api/).
 4. Remove all `hint` and `example` blocks, and this `# How Apply this template` section, before saving as `docs/api/{domain}.md`.
 
 # {Domain}

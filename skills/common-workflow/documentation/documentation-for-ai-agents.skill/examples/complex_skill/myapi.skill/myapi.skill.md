@@ -3,9 +3,8 @@ name: myapi
 description: How to install and access myapi — root skill with links to auth and billing domain skills
 whenToUse: when an agent needs to know how to install, authenticate against, or navigate myapi's capabilities
 tags:
-  - documentation
-  - ai-agent
-  - example
+  - skill/documentation/for-ai
+  - skill/example
 ---
 
 # Goal
@@ -16,13 +15,13 @@ Give an agent the installation, authentication, and navigation information for m
 - All domain skills share the same base URL and authentication mechanism.
 
 # Installation and access
-See [installation.md](./installation.md) for base URL, credentials, and token setup.
+See [installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/complex_skill/myapi.skill/installation.md) for base URL, credentials, and token setup.
 
 # Domain skills
 | Domain  | Skill                                              | Covers                                      |
 | ------- | -------------------------------------------------- | ------------------------------------------- |
-| Auth    | [myapi-auth.skill.md](../myapi-auth.skill.md)       | Login, token refresh, logout.               |
-| Billing | [myapi-billing.skill.md](../myapi-billing.skill.md) | Charges, refunds, invoices.                 |
+| Auth    | [myapi-auth.skill.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/complex_skill/myapi-auth.skill.md)       | Login, token refresh, logout.               |
+| Billing | [myapi-billing.skill.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/complex_skill/myapi-billing.skill.md) | Charges, refunds, invoices.                 |
 
 # Rule
 

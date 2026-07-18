@@ -15,7 +15,7 @@ pip install myapi-client==2.0.0
 export MYAPI_KEY="sk-..."
 ```
 
-See [docs/installation.md](docs/installation.md) for detailed setup.
+See [docs/installation.md](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/installation.md) for detailed setup.
 
 ## Quick start
 
@@ -37,5 +37,5 @@ print(charge["id"])
 
 | Topic   | Docs                          | Covers                         |
 | ------- | ----------------------------- | ------------------------------ |
-| Auth    | [docs/api/auth.md](docs/api/auth.md)     | Login, token refresh, logout.  |
-| Billing | [docs/api/billing.md](docs/api/billing.md) | Charges, refunds, invoices.    |
+| Auth    | [docs/api/auth.md](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/api/auth.md)     | Login, token refresh, logout.  |
+| Billing | [docs/api/billing.md](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/api/billing.md) | Charges, refunds, invoices.    |

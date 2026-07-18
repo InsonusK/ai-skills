@@ -3,16 +3,15 @@ name: myapi-auth
 description: How to authenticate against myapi and manage session tokens
 whenToUse: when an agent needs to log in to myapi, refresh a token, or log out
 tags:
-  - documentation
-  - ai-agent
-  - example
+  - skill/documentation/for-ai
+  - skill/example
 ---
 
 # Goal
 Authenticate an agent against myapi and manage the resulting session token.
 
 # Prerequisites
-Install and configure myapi first — see [myapi.skill.md](./myapi.skill/myapi.skill.md) and its attached [installation.md](./myapi.skill/installation.md).
+Install and configure myapi first — see [myapi.skill.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/complex_skill/myapi.skill/myapi.skill.md) and its attached [installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/complex_skill/myapi.skill/installation.md).
 
 # Methods
 

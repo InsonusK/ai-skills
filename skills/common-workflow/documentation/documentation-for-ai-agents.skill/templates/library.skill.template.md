@@ -3,15 +3,15 @@ name: library-name
 description: How to install, access, and call {library-name} — the root/overview skill, with links to method-group skills when it has more than one
 whenToUse: when an agent needs to know how to install, import, or access {library-name}, or which skill covers a specific capability of it
 tags:
-  - documentation
-  - ai-agent
+  - skill/documentation/for-ai
+  - skill/template
 ---
 
 # How Apply this template
 1. Decide the skill shape first:
-   - **Single skill** — {library-name} has one coherent domain and roughly ten or fewer entry points. Document every method as a fragment file inside this same skill folder. Follow the format in [method-calls.template.md](./method-calls.template.md) and the worked single-skill example at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/) and skip `# Method-group skills` below.
-   - **Skill group** — {library-name} has several independent functional domains, or more entry points than fit one index. Use this template only for the root/overview skill. Create one child skill per domain from [method-group.skill.template.md](./method-group.skill.template.md), and fill `# Method-group skills` with links to them. See the worked skill-group example at [examples/complex_skill/](../examples/complex_skill/).
-2. Keep installation/access instructions attached to this skill as `installation.md` in the same folder (see [templates/installation.md](../templates/installation.md) for the format). Installation is never its own skill — every child skill links back here for it instead of repeating it.
+   - **Single skill** — {library-name} has one coherent domain and roughly ten or fewer entry points. Document every method as a fragment file inside this same skill folder. Follow the format in [method-calls.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-calls.template.md) and the worked single-skill example at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/) and skip `# Method-group skills` below.
+   - **Skill group** — {library-name} has several independent functional domains, or more entry points than fit one index. Use this template only for the root/overview skill. Create one child skill per domain from [method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md), and fill `# Method-group skills` with links to them. See the worked skill-group example at [examples/complex_skill/](../examples/complex_skill/).
+2. Keep installation/access instructions attached to this skill as `installation.md` in the same folder (see [templates/installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/installation.md) for the format). Installation is never its own skill — every child skill links back here for it instead of repeating it.
 3. Fill every section below with real content about {library-name}.
 4. Remove all `hint` and `example` blocks, and this `# How Apply this template` section, before finalizing the skill.
 

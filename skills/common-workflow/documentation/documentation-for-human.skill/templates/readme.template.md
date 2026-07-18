@@ -1,7 +1,7 @@
 # How Apply this template
-1. Decide the shape first, following [documentation-for-human.skill.md's "One page or a page group?"](../documentation-for-human.skill.md#one-page-or-a-page-group):
+1. Decide the shape first, following [documentation-for-human.skill.md's "One page or a page group?"](skills/common-workflow/documentation/documentation-for-human.skill/documentation-for-human.skill.md#one-page-or-a-page-group):
    - **Single reference page** — link `## Documentation` to one `docs/api/reference.md`.
-   - **Page group** — link `## Documentation` to one row per domain page (for example, `docs/api/auth.md`, `docs/api/billing.md`), each built from [api-reference-group.template.md](./api-reference-group.template.md).
+   - **Page group** — link `## Documentation` to one row per domain page (for example, `docs/api/auth.md`, `docs/api/billing.md`), each built from [api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md).
 2. Fill every section below with real content about the project.
 3. Keep installation/setup here (or in an attached `docs/installation.md` linked from here) — never duplicate it inside a domain page.
 4. Remove all `hint` and `example` blocks, and this `# How Apply this template` section, before saving as `README.md`.

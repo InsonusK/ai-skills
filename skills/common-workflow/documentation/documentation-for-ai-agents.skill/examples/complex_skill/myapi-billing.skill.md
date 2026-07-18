@@ -3,16 +3,15 @@ name: myapi-billing
 description: How to call myapi's billing endpoints — charges, refunds, and invoices
 whenToUse: when an agent needs to create a charge, issue a refund, or list invoices in myapi
 tags:
-  - documentation
-  - ai-agent
-  - example
+  - skill/documentation/for-ai
+  - skill/example
 ---
 
 # Goal
 Create and manage charges, refunds, and invoices through myapi's billing endpoints.
 
 # Prerequisites
-Install and authenticate against myapi first — see [myapi.skill.md](./myapi.skill/myapi.skill.md) and its attached [installation.md](./myapi.skill/installation.md).
+Install and authenticate against myapi first — see [myapi.skill.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/complex_skill/myapi.skill/myapi.skill.md) and its attached [installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/complex_skill/myapi.skill/installation.md).
 
 # Methods
 

@@ -4,7 +4,7 @@ This page covers authentication: logging in, refreshing a token, and logging out
 
 ## Setup
 
-Install and configure myapi first — see the [README](../../README.md) and [installation guide](../installation.md).
+Install and configure myapi first — see the [README](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/README.md) and [installation guide](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/installation.md).
 
 ## `login(api_key)`
 
@@ -63,4 +63,4 @@ client.auth.logout()
 
 ## See also
 
-- [Billing](billing.md) — create charges and list invoices after authenticating.
+- [Billing](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/api/billing.md) — create charges and list invoices after authenticating.

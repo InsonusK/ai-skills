@@ -3,9 +3,8 @@ name: mylib
 description: How to install and call mylib — a small Python data-processing library
 whenToUse: when an agent needs to install, import, or call mylib's process_data or fetch_records methods
 tags:
-  - documentation
-  - ai-agent
-  - example
+  - skill/documentation/for-ai
+  - skill/example
 ---
 
 # Goal
@@ -16,11 +15,11 @@ Give an agent everything needed to install mylib and call its two entry points c
 - All methods accept Python primitives; no authentication is required.
 
 # Installation and access
-See [installation.md](./installation.md) for the install command, import statement, and environment prerequisites.
+See [installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/simple_skill/mylib.skill/installation.md) for the install command, import statement, and environment prerequisites.
 
 # Methods
-- [process_data](./method-process_data.md) — process a raw input source into a list of records.
-- [fetch_records](./method-fetch_records.md) — retrieve stored records with optional filtering and pagination.
+- [process_data](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/simple_skill/mylib.skill/method-process_data.md) — process a raw input source into a list of records.
+- [fetch_records](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/simple_skill/mylib.skill/method-fetch_records.md) — retrieve stored records with optional filtering and pagination.
 
 # Rule
 

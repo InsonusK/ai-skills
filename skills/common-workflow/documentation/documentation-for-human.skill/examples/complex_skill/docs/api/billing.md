@@ -4,7 +4,7 @@ This page covers billing operations: creating charges and listing invoices.
 
 ## Setup
 
-Install, configure, and authenticate against myapi first — see the [README](../../README.md), [installation guide](../installation.md), and [auth reference](auth.md).
+Install, configure, and authenticate against myapi first — see the [README](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/README.md), [installation guide](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/installation.md), and [auth reference](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/api/auth.md).
 
 ## `create_charge(amount, currency, customer_id)`
 
@@ -64,4 +64,4 @@ invoices = client.billing.list_invoices(
 
 ## See also
 
-- [Auth](auth.md) — obtain a token before calling billing endpoints.
+- [Auth](skills/common-workflow/documentation/documentation-for-human.skill/examples/complex_skill/docs/api/auth.md) — obtain a token before calling billing endpoints.

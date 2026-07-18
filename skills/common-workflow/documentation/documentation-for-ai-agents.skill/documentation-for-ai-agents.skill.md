@@ -3,10 +3,8 @@ name: documentation-for-ai-agents
 description: How to document a library, CLI tool, or API so another AI agent can use it correctly
 whenToUse: when you need to create or update documentation for a library, CLI, or API that will be consumed by AI agents
 tags:
-  - documentation
-  - skill
+  - skill/documentation/for-ai
   - common-workflow
-  - ai-agent
 ---
 
 # Goal
@@ -42,8 +40,8 @@ docs/skills/<domain>/<library>.skill/
 
 **Templates to use**
 
-- Root skill: [templates/library.skill.template.md](./templates/library.skill.template.md)
-- Method fragment format: follow [templates/method-calls.template.md](./templates/method-calls.template.md) and copy the level of detail from [examples/simple_skill/mylib.skill/method-process_data.md](./examples/simple_skill/mylib.skill/method-process_data.md) and [examples/simple_skill/mylib.skill/method-fetch_records.md](./examples/simple_skill/mylib.skill/method-fetch_records.md).
+- Root skill: [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md)
+- Method fragment format: follow [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-calls.template.md) and copy the level of detail from [examples/simple_skill/mylib.skill/method-process_data.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/simple_skill/mylib.skill/method-process_data.md) and [examples/simple_skill/mylib.skill/method-fetch_records.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/examples/simple_skill/mylib.skill/method-fetch_records.md).
 
 **Worked example**
 
@@ -70,9 +68,9 @@ docs/skills/<domain>/<library>-<domain>.skill.md    # one child skill per domain
 
 **Templates to use**
 
-- Root skill: [templates/library.skill.template.md](./templates/library.skill.template.md)
-- Domain child skill: [templates/method-group.skill.template.md](./templates/method-group.skill.template.md)
-- Method fragment format inside each child skill: follow [templates/method-calls.template.md](./templates/method-calls.template.md).
+- Root skill: [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md)
+- Domain child skill: [templates/method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md)
+- Method fragment format inside each child skill: follow [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-calls.template.md).
 
 **Worked example**
 
@@ -82,24 +80,24 @@ See [examples/complex_skill/](./examples/complex_skill/) for a complete skill gr
 
 This skill is split into focused sections. Read them in order when writing a new skill, or jump to the relevant section when updating an existing one.
 
-- [templates/method-calls.template.md](./templates/method-calls.template.md) — General requirements that apply to every documented method, command, or endpoint.
-- [templates/installation.md](./templates/installation.md) — Rules and example format for the attached `installation.md` file of a library or API skill.
-- [templates/library.skill.template.md](./templates/library.skill.template.md) — Fill-in-the-blank template for the root/overview skill (single-skill shape, or the root of a skill group).
-- [templates/method-group.skill.template.md](./templates/method-group.skill.template.md) — Fill-in-the-blank template for a child skill covering one functional domain (skill-group shape only).
+- [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-calls.template.md) — General requirements that apply to every documented method, command, or endpoint.
+- [templates/installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/installation.md) — Rules and example format for the attached `installation.md` file of a library or API skill.
+- [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md) — Fill-in-the-blank template for the root/overview skill (single-skill shape, or the root of a skill group).
+- [templates/method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md) — Fill-in-the-blank template for a child skill covering one functional domain (skill-group shape only).
 - [examples/simple_skill/mylib.skill/](./examples/simple_skill/mylib.skill/) — Worked example of the single-skill shape.
 - [examples/complex_skill/](./examples/complex_skill/) — Worked example of the skill-group shape.
 
 # Rule
 
 ## MUST
-- Write the documentation as a skill following [skill-design.skill](../skill-design.skill/skill-design.skill.md).
+- Write the documentation as a skill following [skill-design.skill](skills/common-workflow/skill-design.skill/skill-design.skill.md).
 - Save the skill in the `docs/skills/` directory under the correct domain (for example, `docs/skills/python/`, `docs/skills/dotnet/`, `docs/skills/devops/`, or `docs/skills/common-workflow/` if it is cross-domain).
 - Decide between a single skill and a skill group using [# One skill or a skill group?](#one-skill-or-a-skill-group) before writing any content.
 - Write `whenToUse` as concrete trigger conditions, not as a generic description. In a skill group, make each child skill's `whenToUse` specific to its own domain so it does not overlap with sibling skills.
 - Provide actionable rules that an agent can execute directly.
 - Cover all information another agent needs to call the library, CLI, or API:
-  - How to install, import, or access it ([templates/installation.md](./templates/installation.md)).
-  - Entry points: functions, commands, endpoints, or classes ([templates/method-calls.template.md](./templates/method-calls.template.md)).
+  - How to install, import, or access it ([templates/installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/installation.md)).
+  - Entry points: functions, commands, endpoints, or classes ([templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-calls.template.md)).
   - Required and optional parameters with their types and default values.
   - Return values, response format, or output shape.
   - Error handling and common failure modes.
@@ -108,7 +106,7 @@ This skill is split into focused sections. Read them in order when writing a new
 - Keep installation/access as a file attached to the root/library skill (`installation.md`). Never create a separate skill whose only purpose is installation instructions.
 
 ## SHOULD
-- Use [templates/library.skill.template.md](./templates/library.skill.template.md) for the root/overview skill and [templates/method-group.skill.template.md](./templates/method-group.skill.template.md) for each domain child skill; fall back to the generic [skill.template.md](../skill-design.skill/templates/skill.template.md) only if neither fits.
+- Use [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md) for the root/overview skill and [templates/method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md) for each domain child skill; fall back to the generic [skill.template.md](skills/common-workflow/skill-design.skill/templates/skill.template.md) only if neither fits.
 - Keep one skill focused on one library, tool, or API — or, for a skill group, one skill focused on one domain within that library, tool, or API.
 - Add tags that help other agents discover the skill.
 - Link to official human-readable documentation only as supplementary context; do not rely on it as the primary instruction source.
@@ -162,12 +160,12 @@ This skill is split into focused sections. Read them in order when writing a new
 # Check list
 - [ ] The documentation is saved as a skill in the `docs/skills/` directory.
 - [ ] The single-skill-vs-skill-group decision was made deliberately using [# One skill or a skill group?](#one-skill-or-a-skill-group), not defaulted without thought.
-- [ ] The root/library skill was built from [templates/library.skill.template.md](./templates/library.skill.template.md); any domain child skill was built from [templates/method-group.skill.template.md](./templates/method-group.skill.template.md).
+- [ ] The root/library skill was built from [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md); any domain child skill was built from [templates/method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md).
 - [ ] `whenToUse` clearly states when another agent should apply the skill, and in a skill group, each child's `whenToUse` is specific to its own domain.
-- [ ] The skill covers installation/import ([templates/installation.md](./templates/installation.md)), entry points, parameters, return/output, errors, and examples.
+- [ ] The skill covers installation/import ([templates/installation.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/installation.md)), entry points, parameters, return/output, errors, and examples.
 - [ ] Installation/access lives only in `installation.md`, attached to the root/library skill — it is never its own skill file.
 - [ ] In a skill group, installation/access is documented once in the root skill and linked from every child skill.
-- [ ] Every method follows the general requirements in [templates/method-calls.template.md](./templates/method-calls.template.md).
+- [ ] Every method follows the general requirements in [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-calls.template.md).
 - [ ] Examples show exact code, commands, or requests, not only descriptions.
 - [ ] No human-oriented marketing or conceptual-only text remains.
-- [ ] The skill follows [skill-design.skill](../skill-design.skill/skill-design.skill.md).
+- [ ] The skill follows [skill-design.skill](skills/common-workflow/skill-design.skill/skill-design.skill.md).

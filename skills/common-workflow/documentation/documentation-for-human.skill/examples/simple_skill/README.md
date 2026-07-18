@@ -14,7 +14,7 @@ Requires Python 3.10 or later.
 pip install mylib==1.2.3
 ```
 
-See [docs/installation.md](docs/installation.md) for platform-specific notes.
+See [docs/installation.md](skills/common-workflow/documentation/documentation-for-human.skill/examples/simple_skill/docs/installation.md) for platform-specific notes.
 
 ## Quick start
 
@@ -30,4 +30,4 @@ print(result)
 
 ## Documentation
 
-- [API reference](docs/api/reference.md) — all public methods.
+- [API reference](skills/common-workflow/documentation/documentation-for-human.skill/examples/simple_skill/docs/api/reference.md) — all public methods.
