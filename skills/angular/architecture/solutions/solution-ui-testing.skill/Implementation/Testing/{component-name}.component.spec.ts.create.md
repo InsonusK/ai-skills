@@ -1,13 +1,13 @@
 ---
-description: Generic pattern for component tests using Angular Testing Library, interacting through the rendered DOM — a component is tested purely on its own input()/output()/model() surface, independent of whatever business logic (if any) sits around it
+description: Generic pattern for a component test under spec/, using Angular Testing Library and interacting through the rendered DOM — a component is tested purely on its own input()/output()/model() surface, independent of whatever business logic (if any) sits around it
 project_name: "{Feature}"
-name: "{component-name}"
+name: "spec/{component-name}"
 element_kind: component
 change_kind: create
 ---
 
 # How this generic file is used
-This is not tied to one concrete component, and applies identically to both plateaus this solution covers: a platform feature component (may fake a Signal Store, if it injects one) and a design-system component (pure `input()`/`output()`/`model()`, no store, no injected dependency to fake at all). In both cases the [behavioral component test](../../glossary/behavioral-component-testing.md) never mocks HTTP, never fakes a Facade/Client — see [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] for that separate, business-layer concern.
+Created at `spec/{component-name}.component.spec.ts` next to the component implementation. This is not tied to one concrete component, and applies identically to both plateaus this solution covers: a platform feature component (may fake a Signal Store, if it injects one) and a design-system component (pure `input()`/`output()`/`model()`, no store, no injected dependency to fake at all). In both cases the [behavioral component test](../../glossary/behavioral-component-testing.md) never mocks HTTP, never fakes a Facade/Client — see [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] for that separate, business-layer concern.
 
 # Goals
 
@@ -18,8 +18,10 @@ This is not tied to one concrete component, and applies identically to both plat
 
 ```typescript
 // Platform plateau example — OrdersListComponent, faking its Signal Store
+// File: libs/{feature}/feature/src/lib/{feature}/orders-list/spec/orders-list.component.spec.ts
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
+import { OrdersListComponent } from '../orders-list.component';
 
 describe('OrdersListComponent', () => {
   it('shows the loading state, then the list of orders', async () => {
@@ -49,8 +51,10 @@ describe('OrdersListComponent', () => {
 
 ```typescript
 // Design-system plateau example — DsButtonComponent, pure input()/output(), nothing to fake
+// File: projects/design-system/src/lib/ds-button/spec/ds-button.component.spec.ts
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
+import { DsButtonComponent } from '../ds-button.component';
 
 describe('DsButtonComponent', () => {
   it('renders its label and reflects the disabled input', async () => {
@@ -75,6 +79,7 @@ describe('DsButtonComponent', () => {
 # Rule changes
 
 ## MUST
+- The file MUST be created at `spec/{component-name}.component.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
 - Component tests MUST query and interact with the rendered DOM via Testing Library (`screen.getByRole`, `userEvent`), not via `fixture.componentInstance` or `fixture.debugElement` reaching into internals.
 - A component test MUST NOT use `HttpTestingController`, let a real HTTP call occur, or fake a Facade/Client — if the component injects a Signal Store or Facade directly, the test fakes only that one dependency, going no further down than the component's own immediate collaborator.
 - A component that injects no dependency at all (e.g. a pure `input()`/`output()`/`model()` design-system component) MUST have a test that provides nothing beyond its own inputs — no provider setup is needed or expected.
@@ -96,6 +101,7 @@ describe('DsButtonComponent', () => {
 
 # Check list
 
+- [ ] The file is created at `spec/{component-name}.component.spec.ts`, not next to `component.ts`
 - [ ] No test reaches into `fixture.componentInstance` or `debugElement` for assertions
 - [ ] Every test fakes only what the component itself directly injects (a Signal Store/Facade, or nothing), never performs a real HTTP call
 - [ ] Queries prefer accessible roles/labels over test IDs

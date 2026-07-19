@@ -1,13 +1,13 @@
 ---
-description: Generic pattern for an @axe-core/playwright accessibility scan against a component's demo/preview page
+description: Generic pattern for an @axe-core/playwright accessibility scan under spec/, targeting a component's demo/preview page
 project_name: "{demo-or-preview-app}"
-name: "{component-name}.a11y"
+name: "spec/{component-name}.a11y"
 element_kind: component
 change_kind: create
 ---
 
 # How this generic file is used
-Applies identically to both plateaus this solution covers, reusing the same demo/preview page a visual spec already navigates to for [accessibility testing](../../glossary/accessibility-testing.md) (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]). Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]].
+Created at `spec/{component-name}.a11y.spec.ts` next to the component implementation. Applies identically to both plateaus this solution covers, reusing the same demo/preview page a visual spec already navigates to for [accessibility testing](../../glossary/accessibility-testing.md) (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]). Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]].
 
 # Goals
 
@@ -16,6 +16,7 @@ Applies identically to both plateaus this solution covers, reusing the same demo
 # Implementation changes
 
 ```typescript
+// File: projects/design-system/src/lib/ds-button/spec/ds-button.a11y.spec.ts
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -37,6 +38,7 @@ test.describe('DsButtonComponent — accessibility', () => {
 # Rule changes
 
 ## MUST
+- The file MUST be created at `spec/{component-name}.a11y.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
 - An a11y spec MUST navigate directly to the component's stable demo/preview URL, the same one used by its visual spec.
 - Every meaningfully distinct state the component's demo/preview page exposes MUST have its own axe-core scan, since a state change (e.g. `disabled`, an error message appearing) can introduce a violation absent from the default state.
 - Any explicit, individually justified exception to a specific axe rule MUST be scoped to that one rule and documented inline with the reason — never a blanket disable of the whole scan.
@@ -56,6 +58,7 @@ test.describe('DsButtonComponent — accessibility', () => {
 
 # Check list
 
+- [ ] The file is created at `spec/{component-name}.a11y.spec.ts`, not next to `component.ts`
 - [ ] Every component/state with a demo/preview page has a corresponding axe-core scan
 - [ ] No scan is disabled wholesale — any rule exception is scoped and documented
 - [ ] CI fails the build on any unexpected violation, not just a warning

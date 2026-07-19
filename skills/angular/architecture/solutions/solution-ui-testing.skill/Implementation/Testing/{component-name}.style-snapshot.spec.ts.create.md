@@ -1,13 +1,13 @@
 ---
-description: Generic pattern for a computed-CSS-property snapshot spec, run alongside a component's pixel screenshot spec so a failing visual diff can be explained rather than just observed
+description: Generic pattern for a computed-CSS-property snapshot spec under spec/, run alongside a component's pixel screenshot spec so a failing visual diff can be explained rather than just observed
 project_name: "{demo-or-preview-app}"
-name: "{component-name}.style-snapshot"
+name: "spec/{component-name}.style-snapshot"
 element_kind: component
 change_kind: create
 ---
 
 # How this generic file is used
-Applies identically to both plateaus this solution covers: navigate to the same demo/preview page a `.visual.spec.ts` already navigates to (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]), and assert a [computed-style snapshot](../../glossary/style-snapshot-testing.md) via [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties]]. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]].
+Created at `spec/{component-name}.style-snapshot.spec.ts` next to the component implementation. Applies identically to both plateaus this solution covers: navigate to the same demo/preview page a `.visual.spec.ts` already navigates to (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]), and assert a [computed-style snapshot](../../glossary/style-snapshot-testing.md) via [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties]]. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]].
 
 # Goals
 
@@ -17,8 +17,11 @@ Applies identically to both plateaus this solution covers: navigate to the same 
 # Implementation changes
 
 ```typescript
+// File: projects/design-system/src/lib/ds-button/spec/ds-button.style-snapshot.spec.ts
 import { test, expect } from '@playwright/test';
-import { readVisualStyleProperties } from '../support/read-visual-style-properties';
+// The helper is a single shared file in the project's test-support directory
+// (e.g. projects/design-system/testing/read-visual-style-properties.ts)
+import { readVisualStyleProperties } from '@test/read-visual-style-properties';
 
 test.describe('DsButtonComponent — style snapshot', () => {
   for (const scheme of ['light', 'dark'] as const) {
@@ -41,9 +44,11 @@ test.describe('DsButtonComponent — style snapshot', () => {
 # Rule changes
 
 ## MUST
+- The file MUST be created at `spec/{component-name}.style-snapshot.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
+- Text snapshot baselines (`*.styles.txt`) MUST be committed under `spec/snapshot/` next to the spec. Configure `snapshotPathTemplate` in `playwright.config.ts` so that `toMatchSnapshot()` stores text snapshots in `spec/snapshot/` rather than the default `__snapshots__` folder.
 - A style-snapshot spec MUST cover exactly the same states (and color schemes) as the component's `.visual.spec.ts` — the two specs stay paired, one per state.
 - A style-snapshot spec MUST read properties only through [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|the shared `readVisualStyleProperties` helper]], never a component-specific ad hoc property list.
-- Before updating a failing `.visual.spec.ts` baseline (`--update-snapshots`), the corresponding style-snapshot diff MUST be inspected first: no property change means the pixel diff is rendering noise (safe to accept); a property change means the diff itself states what moved, and that change must be confirmed intentional before either snapshot is updated.
+- Before updating a failing `.visual.spec.ts` baseline (`--update-snapshots`), the corresponding style-snapshot diff MUST be inspected first: no property change means the pixel diff is rendering noise (safe to accept); a property change means the diff itself states what moved, and that change must be confirmed intentional before either snapshot is updated. Note: `--update-snapshots` is the single Playwright flag that updates both the PNG baseline and the paired `.styles.txt` text snapshot; both files are updated together.
 
 ## MUST NOT
 - A style-snapshot spec MUST NOT be treated as a replacement for the pixel screenshot spec — it does not catch layout/paint issues that fall outside the shared property list (e.g. `z-index` stacking, `overflow` clipping); both specs ship together.
@@ -64,6 +69,8 @@ test.describe('DsButtonComponent — style snapshot', () => {
 
 # Check list
 
+- [ ] The file is created at `spec/{component-name}.style-snapshot.spec.ts`, not next to `component.ts`
+- [ ] Text snapshots are committed under `spec/snapshot/`
 - [ ] Every component/state with a `.visual.spec.ts` has a paired `.style-snapshot.spec.ts` covering the identical states and color schemes
 - [ ] Every style-snapshot spec reads properties through the shared `readVisualStyleProperties` helper
 - [ ] No `.visual.spec.ts` baseline was updated without first checking its paired style-snapshot diff

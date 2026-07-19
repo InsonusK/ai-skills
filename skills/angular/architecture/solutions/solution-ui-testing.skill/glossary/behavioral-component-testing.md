@@ -22,8 +22,23 @@ flowchart LR
   D --> E[Утверждения по DOM]
 ```
 
+### Что делает `screen.getByRole('button', { name: /save/i })`
+
+`getByRole` — это query Angular Testing Library, который ищет элемент по его ** accessibility-роли**. Роль — это семантическое назначение элемента: у обычного `<button>` роль `button`, у `<input type="text">` роль `textbox`, у `<nav>` роль `navigation` и т. д. Роль сообщает скринридерам, что это за элемент, поэтому тест, который использует `getByRole`, одновременно проверяет, что компонент правильно раскрывает семантику.
+
+`{ name: /save/i }` — фильтр по **accessible name** (доступное имя). Accessible name — это текст, который вспомогательная технология читает пользователю. Для кнопки обычно это видимый текст внутри кнопки. Регулярное выражение `/save/i` ищет подстроку «save» без учёта регистра (`i`). Если в DOM есть только кнопка с текстом «Save changes», запрос найдёт её; если кнопки нет или у неё нет правильного имени, тест сразу падает с понятной ошибкой.
+
+### Почему `userEvent.click`, а не `element.click()`
+
+`userEvent.click` имитирует реальную цепочку событий указателя: `pointerdown`, `mousedown`, `pointerup`, `mouseup`, `click`. Это позволяет проверить обработку фокуса, `disabled`-состояние, двойные клики и другие поведенческие детали, которые простой `element.click()` может пропустить.
+
+### Почему `expect(pressed).toHaveBeenCalled()`
+
+`pressed` — это шпион (mock-функция), подставленный вместо `(pressed)` output. Такое утверждение проверяет, что компонент действительно эмитнул выходное событие, а не просто изменил внутреннее поле.
+
 ## How it is structured
 
+- **Spec file location** — the test file is created at `spec/{component-name}.component.spec.ts`, not next to the implementation.
 - **Inputs** — статические входные данные, передаваемые в компонент.
 - **Fake collaborator** — минимальный мок для единственного зависимого сервиса, который компонент внедряет напрямую; HTTP, Facade и бэкенд не мокаются.
 - **Rendering helper** — `render()` из Angular Testing Library.
@@ -34,12 +49,15 @@ flowchart LR
 ## Example
 
 ```typescript
+// File: projects/design-system/src/lib/ds-button/spec/ds-button.component.spec.ts
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
+import { DsButtonComponent } from '../ds-button.component';
 
 describe('DsButtonComponent', () => {
   it('renders its label and reflects the disabled input', async () => {
     await render(DsButtonComponent, { inputs: { label: 'Save', disabled: true } });
+    // getByRole('button') ищет кнопку; { name: /save/i } — фильтр по её видимому тексту
     expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
   });
 
@@ -65,5 +83,6 @@ describe('DsButtonComponent', () => {
 ## Sources
 
 - [Angular Testing Library — официальная документация](https://testing-library.com/docs/angular-testing-library/intro/)
+- [Which query should I use? — Testing Library](https://testing-library.com/docs/queries/about/#priority)
 - [Generic pattern для компонентных тестов в решении](../Implementation/Testing/{component-name}.component.spec.ts.create.md)
 - [solution-ui-testing.skill.md — общее описание слоёв тестирования](../solution-ui-testing.skill.md)

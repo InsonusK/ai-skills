@@ -13,7 +13,7 @@ decision: Playwright screenshot testing (toHaveScreenshot()) directly against ea
 
 **Selected variant:** [[#Playwright screenshot testing against demo/preview pages]]
 
-Every component that ships a demo/preview page (design system: `projects/demo`; platform: `apps/component-preview`, see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create]]) gets a Playwright spec asserting `expect(page).toHaveScreenshot()` against that page, in both light and dark color schemes. No Storybook, no Chromatic — screenshots are taken directly against the same demo/preview app already used for manual visual review, using Playwright, which this architecture has already adopted for e2e testing (see [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice|e2e-framework-choice ADR]]).
+Every component that ships a demo/preview page (design system: `projects/demo`; platform: `apps/component-preview`, see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create]]) gets a Playwright `spec/{component-name}.visual.spec.ts` asserting `expect(page).toHaveScreenshot()` against that page, in both light and dark color schemes. Baseline PNGs are committed under `spec/snapshot/`. No Storybook, no Chromatic — screenshots are taken directly against the same demo/preview app already used for manual visual review, using Playwright, which this architecture has already adopted for e2e testing (see [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice|e2e-framework-choice ADR]]).
 
 # Searched variants
 

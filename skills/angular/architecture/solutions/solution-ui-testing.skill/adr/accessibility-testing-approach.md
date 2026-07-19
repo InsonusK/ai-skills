@@ -13,7 +13,7 @@ Testing Library-based [behavioral component tests](../glossary/behavioral-compon
 
 **Selected variant:** [[#@axe-core/playwright against demo/preview pages]]
 
-Every component/state covered by a visual regression spec (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]]) also gets an `@axe-core/playwright` scan against the same demo/preview page, asserting zero violations. This reuses the same Playwright + demo/preview-page infrastructure the visual regression decision already established — no separate harness.
+Every component/state covered by a visual regression spec (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]]) also gets a `spec/{component-name}.a11y.spec.ts` scan against the same demo/preview page, asserting zero violations. This reuses the same Playwright + demo/preview-page infrastructure the visual regression decision already established — no separate harness.
 
 # Searched variants
 
