@@ -9,7 +9,7 @@ change_kind: create
 # Goals
 
 - Give the platform plateau a place to render a component with representative inputs/states, independent of routing, a real backend, or a real Signal Store — the same practical role `projects/demo` plays for the design system
-- Be the target Playwright screenshots and axe-core scans run against, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]]
+- Be the target [visual regression](../../glossary/visual-regression-testing.md) Playwright screenshots and [accessibility](../../glossary/accessibility-testing.md) axe-core scans run against, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]]
 
 # Structure
 

@@ -7,7 +7,7 @@ change_kind: create
 ---
 
 # How this generic file is used
-One shared helper, imported by every `{component-name}.style-snapshot.spec.ts` (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create]]) in both plateaus. Centralizing the property list here is what keeps the snapshot readable — per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]], a full computed-style dump is noisy; a shared, curated list is not.
+One shared helper, imported by every `{component-name}.style-snapshot.spec.ts` ([style-snapshot testing](../../glossary/style-snapshot-testing.md)) (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create]]) in both plateaus. Centralizing the property list here is what keeps the snapshot readable — per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]], a full computed-style dump is noisy; a shared, curated list is not.
 
 # Goals
 

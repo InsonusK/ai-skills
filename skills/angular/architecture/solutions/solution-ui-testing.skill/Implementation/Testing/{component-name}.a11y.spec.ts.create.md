@@ -7,7 +7,7 @@ change_kind: create
 ---
 
 # How this generic file is used
-Applies identically to both plateaus this solution covers, reusing the same demo/preview page a visual spec already navigates to (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]). Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]].
+Applies identically to both plateaus this solution covers, reusing the same demo/preview page a visual spec already navigates to for [accessibility testing](../../glossary/accessibility-testing.md) (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]). Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]].
 
 # Goals
 

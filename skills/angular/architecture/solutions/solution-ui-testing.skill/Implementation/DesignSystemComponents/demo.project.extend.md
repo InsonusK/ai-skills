@@ -11,7 +11,7 @@ This extends [[skills/angular/architecture/solutions/solution-design-system-stru
 
 # Goals
 
-- Reuse the demo app already built for manual visual review as the target for automated visual regression and accessibility checks, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]]
+- Reuse the demo app already built for manual visual review as the target for automated [visual regression](../../glossary/visual-regression-testing.md) and [accessibility](../../glossary/accessibility-testing.md) checks, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach]]
 
 # Structure
 

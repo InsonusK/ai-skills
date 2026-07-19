@@ -43,10 +43,10 @@ adr:
 
 # Capabilities
 
-- Fast, ESM-native component tests via Vitest + Testing Library, verifying rendered behavior without ever needing business-layer mocks
-- Automated visual regression coverage (Playwright screenshots, light and dark) for every component with a demo/preview page
-- Computed-style snapshot coverage (`getComputedStyle()` on a fixed, shared property list — not CSS class names) paired with every visual spec, turning a failing pixel diff into a named property/value change instead of an unexplained image difference
-- Automated accessibility regression coverage (`@axe-core/playwright`) for the same components, catching WCAG-checkable violations no human review step guarantees to catch
+- Fast, ESM-native [behavioral component tests](./glossary/behavioral-component-testing.md) via Vitest + Testing Library, verifying rendered behavior without ever needing business-layer mocks
+- Automated [visual regression](./glossary/visual-regression-testing.md) coverage (Playwright screenshots, light and dark) for every component with a demo/preview page
+- [Computed-style snapshot](./glossary/style-snapshot-testing.md) coverage (`getComputedStyle()` on a fixed, shared property list — not CSS class names) paired with every visual spec, turning a failing pixel diff into a named property/value change instead of an unexplained image difference
+- Automated [accessibility](./glossary/accessibility-testing.md) regression coverage (`@axe-core/playwright`) for the same components, catching WCAG-checkable violations no human review step guarantees to catch
 - One consistent approach across both the platform monorepo and the independently-repositoried design system — the only thing that differs between them is where the demo/preview pages physically live
 
 # Core Principles
@@ -110,7 +110,7 @@ Artifact-level (generic patterns, applied identically to both plateaus):
 5. Add a paired `{component-name}.style-snapshot.spec.ts` for the same states, via [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties]].
 6. Add a `{component-name}.a11y.spec.ts` scanning the same states.
 
-![Testing a new feature end-to-end (happy path)](skills/angular/architecture/solutions/solution-app-testing.skill/diagrams/testing-a-new-feature-end-to-end-happy-path.mmd)
+![Testing a new feature end-to-end (happy path)](../solution-app-testing.skill/diagrams/testing-a-new-feature-end-to-end-happy-path.mmd)
 
 ## A visual regression slips past behavioral tests (the gap this solution closes)
 

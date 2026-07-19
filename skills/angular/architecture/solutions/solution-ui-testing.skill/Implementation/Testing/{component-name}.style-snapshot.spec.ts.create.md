@@ -7,7 +7,7 @@ change_kind: create
 ---
 
 # How this generic file is used
-Applies identically to both plateaus this solution covers: navigate to the same demo/preview page a `.visual.spec.ts` already navigates to (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]), and assert a computed-style snapshot via [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties]]. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]].
+Applies identically to both plateaus this solution covers: navigate to the same demo/preview page a `.visual.spec.ts` already navigates to (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]), and assert a [computed-style snapshot](../../glossary/style-snapshot-testing.md) via [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties]]. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]].
 
 # Goals
 

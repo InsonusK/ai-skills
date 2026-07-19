@@ -7,7 +7,7 @@ change_kind: create
 ---
 
 # How this generic file is used
-Applies identically to both plateaus this solution covers: navigate to the component's existing demo/preview page (design system: `projects/demo`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend]]; platform: `apps/component-preview`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create]]) and assert a screenshot match. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] — no Storybook, no Chromatic.
+Applies identically to both plateaus this solution covers: navigate to the component's existing demo/preview page (design system: `projects/demo`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend]]; platform: `apps/component-preview`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create]]) and assert a [visual regression](../../glossary/visual-regression-testing.md) screenshot match. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] — no Storybook, no Chromatic.
 
 # Goals
 

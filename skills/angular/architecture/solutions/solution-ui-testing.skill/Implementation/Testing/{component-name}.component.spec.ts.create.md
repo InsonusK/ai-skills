@@ -7,7 +7,7 @@ change_kind: create
 ---
 
 # How this generic file is used
-This is not tied to one concrete component, and applies identically to both plateaus this solution covers: a platform feature component (may fake a Signal Store, if it injects one) and a design-system component (pure `input()`/`output()`/`model()`, no store, no injected dependency to fake at all). In both cases the test never mocks HTTP, never fakes a Facade/Client — see [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] for that separate, business-layer concern.
+This is not tied to one concrete component, and applies identically to both plateaus this solution covers: a platform feature component (may fake a Signal Store, if it injects one) and a design-system component (pure `input()`/`output()`/`model()`, no store, no injected dependency to fake at all). In both cases the [behavioral component test](../../glossary/behavioral-component-testing.md) never mocks HTTP, never fakes a Facade/Client — see [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] for that separate, business-layer concern.
 
 # Goals
 
