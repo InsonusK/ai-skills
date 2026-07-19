@@ -90,6 +90,7 @@ This skill is split into focused sections. Read them in order when writing docum
 - [templates/api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md) — Fill-in-the-blank template for a `docs/api/<domain>.md` page (page-group shape only).
 - [examples/simple_skill/](./examples/simple_skill/) — Worked example of the single reference page shape.
 - [examples/complex_skill/](./examples/complex_skill/) — Worked example of the page group shape.
+- [documentation-for-concept.skill.md](skills/common-workflow/documentation/documentation-for-concept.skill/documentation-for-concept.skill.md) — Use this when the docs need to explain a term, library, technology, or pattern a reader may not already know.
 
 # README.md structure
 
@@ -107,6 +108,7 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 - `docs/usage.md` or per-feature guides.
 - `docs/api/` — one `reference.md` for the single-page shape, or one page per domain (`docs/api/<domain>.md`) for the page-group shape. Never one page per individual method.
 - `docs/examples/` with runnable or copy-pasteable examples.
+- `docs/glossary/` — one page per unfamiliar term, library, technology, or pattern the docs rely on, built with [documentation-for-concept.skill.md](skills/common-workflow/documentation/documentation-for-concept.skill/documentation-for-concept.skill.md). Link the first substantive mention of such a term, anywhere in `README.md` or `docs/`, to its glossary page instead of leaving it unexplained.
 
 # Rule
 
@@ -118,6 +120,7 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 - Provide at least one complete, runnable usage example in `README.md`.
 - Document every public method, command, or endpoint that a human user is expected to call.
 - In a page group, document installation/setup once (in `README.md` or `docs/installation.md`) and link to it from every domain page instead of duplicating it.
+- When `README.md` or `docs/` uses a term, library, technology, or pattern a reader may not already know, either explain it inline or link it to a `docs/glossary/` page built with [documentation-for-concept.skill.md](skills/common-workflow/documentation/documentation-for-concept.skill/documentation-for-concept.skill.md).
 
 ## SHOULD
 - Use [templates/readme.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/readme.template.md) for `README.md` and [templates/api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md) for each domain reference page.
@@ -176,4 +179,5 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 - [ ] Detailed method documentation follows the rules in [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/method-calls.template.md).
 - [ ] Every public method, command, or endpoint has human-readable documentation.
 - [ ] In a page group, installation/setup is documented once and linked from every domain page.
+- [ ] Unfamiliar terms, libraries, technologies, or patterns are explained inline or linked to a `docs/glossary/` page (see [documentation-for-concept.skill.md](skills/common-workflow/documentation/documentation-for-concept.skill/documentation-for-concept.skill.md)).
 - [ ] Links between `README.md` and `docs/` files are valid.
