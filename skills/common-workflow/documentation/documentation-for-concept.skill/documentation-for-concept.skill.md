@@ -3,10 +3,7 @@ name: documentation-for-concept
 description: How to write an accessible glossary/concept page for a term, library, technology, or pattern, in the location that owns it (a solution skill's own glossary/ folder, or a project's docs/glossary/), and link every place that uses that term back to it
 whenToUse: when a term, library, technology, or pattern used in a skill, in code, or in project docs is unfamiliar and the user asks you to document it, or when applying documentation-for-human or solution-create and a concept a reader may not know needs an explanation
 tags:
-  - skill/documentation/for-concept
-  - common-workflow
-  - human
-  - glossary
+  - skill/documentation/for-human/concept
 ---
 
 # Goal

@@ -4,7 +4,6 @@ description: How to document a library, CLI tool, or API so another AI agent can
 whenToUse: when you need to create or update documentation for a library, CLI, or API that will be consumed by AI agents
 tags:
   - skill/documentation/for-ai
-  - common-workflow
 ---
 
 # Goal
