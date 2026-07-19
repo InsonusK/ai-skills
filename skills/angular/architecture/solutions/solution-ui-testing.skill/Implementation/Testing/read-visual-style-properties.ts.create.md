@@ -1,13 +1,18 @@
 ---
-description: Shared helper that reads a fixed, curated set of visually meaningful computed CSS properties from a page element, for use by every {component-name}.style-snapshot.spec.ts
-project_name: "{demo-or-preview-app}"
+description: Shared helper that reads a fixed, curated set of visually meaningful computed CSS properties from a page element, for use by every spec/{component-name}.style-snapshot.spec.ts
+project_name: "{project-test-support}"
 name: read-visual-style-properties
 element_kind: test-helper
 change_kind: create
 ---
 
 # How this generic file is used
-One shared helper, imported by every `{component-name}.style-snapshot.spec.ts` (see [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create]]) in both plateaus. Centralizing the property list here is what keeps the snapshot readable — per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]], a full computed-style dump is noisy; a shared, curated list is not.
+Create one shared helper per plateau, not per component. Example locations:
+
+- Platform plateau: `libs/{feature}/feature/testing/read-visual-style-properties.ts` (or `libs/shared/testing/read-visual-style-properties.ts` if shared across libraries)
+- Design-system plateau: `projects/design-system/testing/read-visual-style-properties.ts`
+
+It is imported by every `spec/{component-name}.style-snapshot.spec.ts` ([style-snapshot testing](../../glossary/style-snapshot-testing.md)) in both plateaus. Centralizing the property list here is what keeps the snapshot readable — per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach]], a full computed-style dump is noisy; a shared, curated list is not.
 
 # Goals
 
@@ -52,6 +57,7 @@ export async function readVisualStyleProperties(locator: Locator): Promise<Visua
 
 ## MUST
 - `VISUAL_STYLE_PROPERTIES` MUST stay a single shared list imported by every style-snapshot spec — never redefined per component.
+- The helper MUST be created in the project's test-support directory (e.g., `libs/{feature}/feature/testing/` or `projects/design-system/testing/`), not duplicated inside each component's `spec/` folder.
 - The helper MUST read computed property values via `getComputedStyle()`, never a CSS class name or a Tailwind/utility-class string — a class name can stay unchanged while the value it resolves to changes.
 
 ## SHOULD
@@ -67,8 +73,13 @@ export async function readVisualStyleProperties(locator: Locator): Promise<Visua
   - Consequence: snapshots become incomparable across components, and the curation cost of "which properties matter" is paid over and over
   - Instead: extend the one shared `VISUAL_STYLE_PROPERTIES` list when a real gap is found
 
+- **Copying the helper into every component's `spec/` folder**
+  - Consequence: the property list drifts apart between components, and the curated, comparable snapshot format is lost
+  - Instead: keep one shared helper per plateau and import it from the component spec via the workspace path alias or relative path
+
 # Check list
 
+- [ ] The helper is located in a project-level test-support directory, not duplicated per component
 - [ ] Every style-snapshot spec imports `VISUAL_STYLE_PROPERTIES`/`readVisualStyleProperties` from this one shared helper
 - [ ] No spec reads `className` or a raw `style` attribute string in place of `getComputedStyle()`
 

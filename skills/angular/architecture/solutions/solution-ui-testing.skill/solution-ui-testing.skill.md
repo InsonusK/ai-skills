@@ -18,10 +18,10 @@ triggers:
 creates:
   - apps/component-preview (platform plateau only)
 extends:
-  - libs/{feature}/feature (component test files, platform plateau)
-  - libs/shared/ui (component test files, platform plateau)
-  - projects/design-system (component test files, design-system plateau)
-  - projects/demo (visual/a11y spec target, design-system plateau)
+  - libs/{feature}/feature (component spec files under spec/, platform plateau)
+  - libs/shared/ui (component spec files under spec/, platform plateau)
+  - projects/design-system (component spec files under spec/, design-system plateau)
+  - projects/demo (visual/a11y spec target via spec/preview/, design-system plateau)
 depends_on:
   - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|App testing]]"
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
@@ -43,10 +43,10 @@ adr:
 
 # Capabilities
 
-- Fast, ESM-native component tests via Vitest + Testing Library, verifying rendered behavior without ever needing business-layer mocks
-- Automated visual regression coverage (Playwright screenshots, light and dark) for every component with a demo/preview page
-- Computed-style snapshot coverage (`getComputedStyle()` on a fixed, shared property list — not CSS class names) paired with every visual spec, turning a failing pixel diff into a named property/value change instead of an unexplained image difference
-- Automated accessibility regression coverage (`@axe-core/playwright`) for the same components, catching WCAG-checkable violations no human review step guarantees to catch
+- Fast, ESM-native [behavioral component tests](./glossary/behavioral-component-testing.md) via Vitest + Testing Library, verifying rendered behavior without ever needing business-layer mocks
+- Automated [visual regression](./glossary/visual-regression-testing.md) coverage (Playwright screenshots, light and dark) for every component with a demo/preview page
+- [Computed-style snapshot](./glossary/style-snapshot-testing.md) coverage (`getComputedStyle()` on a fixed, shared property list — not CSS class names) paired with every visual spec, turning a failing pixel diff into a named property/value change instead of an unexplained image difference
+- Automated [accessibility](./glossary/accessibility-testing.md) regression coverage (`@axe-core/playwright`) for the same components, catching WCAG-checkable violations no human review step guarantees to catch
 - One consistent approach across both the platform monorepo and the independently-repositoried design system — the only thing that differs between them is where the demo/preview pages physically live
 
 # Core Principles
@@ -99,30 +99,55 @@ Artifact-level (generic patterns, applied identically to both plateaus):
 - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties.ts]] - create - shared helper + curated property list read by every style-snapshot spec
 - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|{component-name}.a11y.spec.ts]] - create - `@axe-core/playwright` scan against the same demo/preview page
 
+# Directory layout
+
+All test files and their assets live under a single `spec/` directory next to the component implementation files. This keeps `component.ts`, `component.html` and `component.scss` free from test-related clutter.
+
+```text
+libs/{feature}/feature/src/lib/{feature}/{component-name}/
+  {component-name}.component.ts
+  {component-name}.component.html
+  {component-name}.component.scss
+  spec/
+    {component-name}.component.spec.ts
+    {component-name}.visual.spec.ts
+    {component-name}.style-snapshot.spec.ts
+    {component-name}.a11y.spec.ts
+    snapshot/
+      {component-name}-default-light.png
+      {component-name}-default-dark.png
+      {component-name}-default-light.styles.txt
+      {component-name}-default-dark.styles.txt
+    preview/
+      {component-name}.preview.ts
+```
+
+For the design-system plateau the project prefix differs (`projects/design-system/src/lib/{component-name}/`), but the `spec/` structure is identical. The `snapshot/` files are committed baselines. The `preview/` files are small harness components consumed by the preview app (`apps/component-preview` for platform, `projects/demo` for design system). The shared `readVisualStyleProperties` helper is stored in the project's test-support directory (e.g., `libs/{feature}/feature/testing/read-visual-style-properties.ts` or `projects/design-system/testing/read-visual-style-properties.ts`) and is not duplicated per component.
+
 # Workflow
 
 ## Adding a new UI component, fully tested (happy path)
 
 1. Build the component (per [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|Design system: компоненты]] or [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|Формы]], depending on plateau/kind) with a signal-based `input()`/`output()`/`model()` API.
-2. Add a `{component-name}.component.spec.ts` (Testing Library) covering rendered behavior for each meaningfully distinct state.
-3. Add the component to the relevant demo/preview page — `apps/component-preview` (platform) or `projects/demo` (design system) — one route/section per state.
-4. Add a `{component-name}.visual.spec.ts` screenshotting each state (both color schemes, where applicable).
-5. Add a paired `{component-name}.style-snapshot.spec.ts` for the same states, via [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties]].
-6. Add a `{component-name}.a11y.spec.ts` scanning the same states.
+2. Add a `spec/{component-name}.component.spec.ts` (Testing Library) covering rendered behavior for each meaningfully distinct state.
+3. Add a preview harness for the component — create `spec/preview/{component-name}.preview.ts` and register it in the preview app (`apps/component-preview` for platform or `projects/demo` for design system), one route/section per state.
+4. Add a `spec/{component-name}.visual.spec.ts` screenshotting each state (both color schemes, where applicable).
+5. Add a paired `spec/{component-name}.style-snapshot.spec.ts` for the same states, via [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|read-visual-style-properties]].
+6. Add a `spec/{component-name}.a11y.spec.ts` scanning the same states.
 
-![Testing a new feature end-to-end (happy path)](skills/angular/architecture/solutions/solution-app-testing.skill/diagrams/testing-a-new-feature-end-to-end-happy-path.mmd)
+![Testing a new feature end-to-end (happy path)](../solution-app-testing.skill/diagrams/testing-a-new-feature-end-to-end-happy-path.mmd)
 
 ## A visual regression slips past behavioral tests (the gap this solution closes)
 
 1. A CSS change unintentionally breaks a component's dark-mode branch — every `light-dark()` value now resolves incorrectly in dark scheme.
 2. The component's behavioral spec (Testing Library, jsdom/happy-dom) still passes — the DOM structure, roles, and text content are all unchanged; jsdom has no layout/paint engine and cannot evaluate computed color values at all.
-3. The component's `{component-name}.visual.spec.ts` dark-scheme screenshot fails against its committed baseline, catching the regression before merge.
-4. The paired `{component-name}.style-snapshot.spec.ts` also fails, naming exactly which properties (e.g. `color`, `backgroundColor`) no longer resolve to their dark-mode values — confirming this is a real regression, not rendering noise.
+3. The component's `spec/{component-name}.visual.spec.ts` dark-scheme screenshot fails against its committed baseline, catching the regression before merge.
+4. The paired `spec/{component-name}.style-snapshot.spec.ts` also fails, naming exactly which properties (e.g. `color`, `backgroundColor`) no longer resolve to their dark-mode values — confirming this is a real regression, not rendering noise.
 
 ## An agent blindly updates a screenshot baseline (the gap style-snapshot closes)
 
-1. A `.visual.spec.ts` fails after an unrelated CSS refactor; the agent, unable to interpret the pixel diff, is tempted to just run `--update-snapshots` and move on.
-2. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach|style-snapshot-approach]], the agent checks the paired `.style-snapshot.spec.ts` diff first.
+1. A `spec/{component-name}.visual.spec.ts` fails after an unrelated CSS refactor; the agent, unable to interpret the pixel diff, is tempted to just run `--update-snapshots` and move on.
+2. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach|style-snapshot-approach]], the agent checks the paired `spec/{component-name}.style-snapshot.spec.ts` diff first.
 3. If the style-snapshot diff is empty, the pixel change is rendering noise (anti-aliasing/font hinting) — safe to accept. If it names a changed property (e.g. `padding: 8px → 12px`), that is a real, reviewable change the agent must confirm as intentional before updating either baseline.
 
 ## Reaching for Chromatic instead (rejected path, caught in review)
@@ -134,11 +159,11 @@ Artifact-level (generic patterns, applied identically to both plateaus):
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create#MUST|{component-name}.component.spec.ts]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create#MUST|{component-name}.visual.spec.ts]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create#MUST|{component-name}.style-snapshot.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create#MUST|spec/{component-name}.component.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create#MUST|spec/{component-name}.visual.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create#MUST|spec/{component-name}.style-snapshot.spec.ts]]
 - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create#MUST|read-visual-style-properties.ts]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create#MUST|{component-name}.a11y.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create#MUST|spec/{component-name}.a11y.spec.ts]]
 - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create#MUST|apps/component-preview]]
 - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend#MUST|projects/demo]]
 
@@ -147,10 +172,10 @@ Artifact-level (generic patterns, applied identically to both plateaus):
 
 # Anti-patterns
 
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|See {component-name}.component.spec.ts.create.md]] — asserting against `fixture.componentInstance` instead of the rendered DOM; wiring a mock the component doesn't actually inject.
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|See {component-name}.visual.spec.ts.create.md]] — updating a baseline screenshot without understanding why it changed; screenshotting non-deterministic content.
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create|See {component-name}.style-snapshot.spec.ts.create.md]] — running `--update-snapshots` on a failing visual spec without checking the paired style-snapshot diff first; defining a component-specific property list instead of using the shared helper.
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|See {component-name}.a11y.spec.ts.create.md]] — disabling axe-core entirely instead of scoping an exception to one rule.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|See spec/{component-name}.component.spec.ts.create.md]] — asserting against `fixture.componentInstance` instead of the rendered DOM; wiring a mock the component doesn't actually inject.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|See spec/{component-name}.visual.spec.ts.create.md]] — updating a baseline screenshot without understanding why it changed; screenshotting non-deterministic content.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create|See spec/{component-name}.style-snapshot.spec.ts.create.md]] — running `--update-snapshots` on a failing visual spec without checking the paired style-snapshot diff first; defining a component-specific property list instead of using the shared helper.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|See spec/{component-name}.a11y.spec.ts.create.md]] — disabling axe-core entirely instead of scoping an exception to one rule.
 - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create|See component-preview.project.create.md]] — wiring a previewed component to a real Facade/Store/backend "to keep it realistic."
 - **Reaching for `HttpTestingController` or a faked Facade/Client to test a component** — that concern belongs to [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]], not this solution; a component test never needs it.
 

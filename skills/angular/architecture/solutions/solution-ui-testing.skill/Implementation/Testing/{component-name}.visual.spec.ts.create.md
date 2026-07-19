@@ -1,13 +1,13 @@
 ---
-description: Generic pattern for a Playwright screenshot-regression spec against a component's demo/preview page, in both light and dark color schemes
+description: Generic pattern for a Playwright screenshot-regression spec under spec/, targeting a component's demo/preview page in both light and dark color schemes
 project_name: "{demo-or-preview-app}"
-name: "{component-name}.visual"
+name: "spec/{component-name}.visual"
 element_kind: component
 change_kind: create
 ---
 
 # How this generic file is used
-Applies identically to both plateaus this solution covers: navigate to the component's existing demo/preview page (design system: `projects/demo`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend]]; platform: `apps/component-preview`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create]]) and assert a screenshot match. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] — no Storybook, no Chromatic.
+Created at `spec/{component-name}.visual.spec.ts` next to the component implementation. Applies identically to both plateaus this solution covers: navigate to the component's existing demo/preview page (design system: `projects/demo`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend]]; platform: `apps/component-preview`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create]]) and assert a [visual regression](../../glossary/visual-regression-testing.md) screenshot match. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]] — no Storybook, no Chromatic.
 
 # Goals
 
@@ -16,6 +16,7 @@ Applies identically to both plateaus this solution covers: navigate to the compo
 # Implementation changes
 
 ```typescript
+// File: projects/design-system/src/lib/ds-button/spec/ds-button.visual.spec.ts
 import { test, expect } from '@playwright/test';
 
 test.describe('DsButtonComponent — visual', () => {
@@ -37,6 +38,8 @@ test.describe('DsButtonComponent — visual', () => {
 # Rule changes
 
 ## MUST
+- The file MUST be created at `spec/{component-name}.visual.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
+- Baseline PNG files MUST be committed under `spec/snapshot/` next to the spec. Configure `snapshotPathTemplate` in `playwright.config.ts` so that `toHaveScreenshot()` stores baselines in `spec/snapshot/` rather than the default `__snapshots__` folder.
 - A visual spec MUST navigate directly to the component's stable demo/preview URL — it MUST NOT drive the UI through unrelated navigation to reach it.
 - Every component that ships both a light and a dark rendering path MUST be screenshotted in both `page.emulateMedia({ colorScheme })` states.
 - Every meaningfully distinct state the component's demo/preview page exposes (default, disabled, error, loading, etc.) MUST have its own baseline screenshot.
@@ -57,6 +60,8 @@ test.describe('DsButtonComponent — visual', () => {
 
 # Check list
 
+- [ ] The file is created at `spec/{component-name}.visual.spec.ts`, not next to `component.ts`
+- [ ] Baseline PNGs are committed under `spec/snapshot/`
 - [ ] Every component/state with a demo/preview page has at least one committed baseline screenshot
 - [ ] Both light and dark color schemes are covered for any component with a dark-mode-aware rendering path
 - [ ] No baseline was updated without a reviewed, intentional visual change in the same PR
