@@ -6,6 +6,7 @@ sources:
       - skills/common-workflow/work-in-git-tree.skill.md
       - skills/common-workflow/mermaid-diagram.skill.md
       - skills/common-workflow/architecture/design
+      - skills/common-workflow/documentation/documentation-for-concept.skill
       - skills/common-workflow/skill-design.skill
   - path: https://github.com/InsonusK/ai-skill-graph-draw.git
     type: github

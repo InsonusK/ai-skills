@@ -3,9 +3,7 @@ name: skill-design
 description: Rules for writing skills that AI agents can understand and apply correctly
 whenToUse: when you create a new skill or update an existing one
 tags:
-  - skill
-  - common-workflow
-  - documentation
+  - skill/core
 ---
 
 # Goal
@@ -13,7 +11,7 @@ tags:
 - Standardize skill structure, naming, and cross-references across the repository.
 
 # Scope
-This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow (for example, [solution-create.skill](skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md)), use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
+This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow, use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
 
 # Core Principle
 - Write every skill as instructions you would need to execute the task yourself.
@@ -55,6 +53,7 @@ This skill applies to every skill-writing task in the repository. It defines the
 ## MUST NOT
 - Put supporting files for a Human Flat skill outside the single markdown file.
 - Use confusing or generic `whenToUse` text like "when needed" or "for development".
+- Link to another skill's file as an example for this skill. Instead, create an `examples/` folder inside this skill's own folder (Human Dir), place the example there, and link to it.
 
 # Anti-patterns
 - **Writing for a human reader instead of an AI agent**
@@ -87,6 +86,11 @@ This skill applies to every skill-writing task in the repository. It defines the
   - Consequence: The resulting skill may have vague `whenToUse`, broken links, a missing checklist, an inconsistent format, or instructions that are hard for an agent to apply.
   - Instead: Use the domain-specific skill for specialized guidance, but verify that the baseline requirements from this skill are still met.
 
+- **Linking to another skill as an example**
+  - Example: `See [some-example](../other-skill.skill/other-skill.skill.md) for an example.`
+  - Consequence: Creates an unnecessary dependency between skills that have no real relationship. The other skill can be renamed, restructured, or removed independently, silently breaking this skill's example.
+  - Instead: Create an `examples/` folder inside this skill's own folder, put the example file there, and link to `[example](./examples/example.md)`.
+
 # Check list
 - [ ] The skill is written with the agent's understanding and convenience as the primary measure of quality.
 - [ ] If a domain-specific skill/template is used, the baseline requirements of this skill are still satisfied.
@@ -98,3 +102,4 @@ This skill applies to every skill-writing task in the repository. It defines the
 - [ ] All supporting files are inside the skill folder (for Human Dir).
 - [ ] Template hints and example blocks are removed from the final skill.
 - [ ] `# Anti-patterns` and `# Check list` sections are filled.
+- [ ] Examples referenced by this skill live in this skill's own `examples/` folder, not in another skill.

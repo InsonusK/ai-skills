@@ -1,6 +1,6 @@
 {
   "collapse-filter": false,
-  "search": "tag: #skill/architecture/solution ",
+  "search": "tag: #skill",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
@@ -8,7 +8,7 @@
   "collapse-color-groups": false,
   "colorGroups": [
     {
-      "query": "[]",
+      "query": "#angular",
       "color": {
         "a": 1,
         "rgb": 14701138
@@ -25,6 +25,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 1.0000000000000033,
+  "scale": 0.3628873693012132,
   "close": false
 }

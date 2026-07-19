@@ -1,302 +1,41 @@
 {
-  "edges": [
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md",
-      "fromSide": "top",
-      "id": "439e280df6bfcad0",
-      "toNode": "skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md",
-      "toSide": "bottom"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md",
-      "fromSide": "right",
-      "id": "d10637f63eb0f406",
-      "toNode": "skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md",
-      "fromSide": "right",
-      "id": "6bc7458ceb771171",
-      "toNode": "skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md",
-      "fromSide": "right",
-      "id": "db874260b989dec0",
-      "toNode": "skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md",
-      "fromSide": "right",
-      "id": "93dd71a25714fb89",
-      "toNode": "skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md",
-      "fromSide": "right",
-      "id": "1d3df68252df5b0e",
-      "toNode": "skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md",
-      "fromSide": "right",
-      "id": "c36eb0bff3a03e8b",
-      "toNode": "skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md",
-      "fromSide": "right",
-      "id": "16f14ab75881f739",
-      "toNode": "skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md",
-      "fromSide": "right",
-      "id": "451bd5baddea00d8",
-      "toNode": "skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md",
-      "fromSide": "right",
-      "id": "e6180ddbd4b4d740",
-      "toNode": "skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md",
-      "fromSide": "right",
-      "id": "c9651b4fa7603266",
-      "toNode": "skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md",
-      "fromSide": "right",
-      "id": "e4bf979d92ab69a8",
-      "toNode": "skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md",
-      "fromSide": "top",
-      "id": "eceecd110323e07d",
-      "toNode": "skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md",
-      "toSide": "bottom"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md",
-      "fromSide": "right",
-      "id": "8b06c3e10982f7ec",
-      "toNode": "skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md",
-      "fromSide": "right",
-      "id": "f107ae0947810763",
-      "toNode": "skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md",
-      "fromSide": "right",
-      "id": "4c751a6e67c04746",
-      "toNode": "skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md",
-      "toSide": "left"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md",
-      "fromSide": "bottom",
-      "id": "45baed3d716a9133",
-      "toNode": "skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md",
-      "toSide": "top"
-    },
-    {
-      "fromNode": "skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md",
-      "fromSide": "right",
-      "id": "b991ad6b99c2c320",
-      "toNode": "skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md",
-      "toSide": "left"
-    }
-  ],
-  "nodes": [
-    {
-      "file": "skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 1200.0,
-      "y": 2000.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 1800.0,
-      "y": 1500.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 3000.0,
-      "y": 1750.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 3000.0,
-      "y": 0.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 1200.0,
-      "y": 0.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 0.0,
-      "y": 0.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 600.0,
-      "y": 0.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 1200.0,
-      "y": 1000.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 2400.0,
-      "y": 1000.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 600.0,
-      "y": 500.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 1800.0,
-      "y": 500.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 1800.0,
-      "y": 2000.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 2400.0,
-      "y": 2250.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 2400.0,
-      "y": 1750.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 0.0,
-      "y": 1000.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 600.0,
-      "y": 1000.0
-    },
-    {
-      "file": "skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md",
-      "height": 400.0,
-      "id": "skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md",
-      "subpath": "# Capabilities",
-      "type": "file",
-      "width": 400.0,
-      "x": 1800.0,
-      "y": 2500.0
-    }
-  ]
+	"edges":[
+		{"fromNode":"skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md","fromSide":"top","id":"439e280df6bfcad0","toNode":"skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md","toSide":"bottom"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md","fromSide":"right","id":"d10637f63eb0f406","toNode":"skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md","fromSide":"right","id":"6bc7458ceb771171","toNode":"skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md","fromSide":"right","id":"db874260b989dec0","toNode":"skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md","fromSide":"right","id":"93dd71a25714fb89","toNode":"skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md","fromSide":"right","id":"1d3df68252df5b0e","toNode":"skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md","fromSide":"right","id":"c36eb0bff3a03e8b","toNode":"skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md","fromSide":"right","id":"16f14ab75881f739","toNode":"skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md","fromSide":"right","id":"451bd5baddea00d8","toNode":"skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md","fromSide":"right","id":"e6180ddbd4b4d740","toNode":"skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md","fromSide":"right","id":"c9651b4fa7603266","toNode":"skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md","fromSide":"right","id":"e4bf979d92ab69a8","toNode":"skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md","fromSide":"top","id":"eceecd110323e07d","toNode":"skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md","toSide":"bottom"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md","fromSide":"right","id":"8b06c3e10982f7ec","toNode":"skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md","fromSide":"right","id":"f107ae0947810763","toNode":"skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md","fromSide":"right","id":"4c751a6e67c04746","toNode":"skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md","toSide":"left"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md","fromSide":"bottom","id":"45baed3d716a9133","toNode":"skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md","toSide":"top"},
+		{"fromNode":"skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md","fromSide":"right","id":"b991ad6b99c2c320","toNode":"skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md","toSide":"left"}
+	],
+	"nodes":[
+		{"file":"skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":1200,"y":2000},
+		{"file":"skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":1800,"y":1500},
+		{"file":"skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":3000,"y":1750},
+		{"file":"skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-design-system-application.skill/solution-design-system-application.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":3000,"y":0},
+		{"file":"skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":1200,"y":0},
+		{"file":"skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":0,"y":0},
+		{"file":"skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":600,"y":0},
+		{"file":"skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":1200,"y":1000},
+		{"file":"skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":2400,"y":1000},
+		{"file":"skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":600,"y":500},
+		{"file":"skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":1800,"y":500},
+		{"file":"skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":1800,"y":2000},
+		{"file":"skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":2400,"y":2250},
+		{"file":"skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":2400,"y":1750},
+		{"file":"skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":0,"y":1000},
+		{"file":"skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":600,"y":1000},
+		{"file":"skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md","height":400,"id":"skills/angular/architecture/solutions/solution-testing.skill/solution-testing.skill.md","subpath":"# Capabilities","type":"file","width":400,"x":1800,"y":2500}
+	]
 }

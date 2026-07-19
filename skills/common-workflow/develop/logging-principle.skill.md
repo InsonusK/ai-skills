@@ -3,9 +3,8 @@ name: logging-principle
 description: Describes logging rules for development
 whenToUse: when writing code that requires logging or choosing a log level
 tags:
+  - skill/develop
   - logging
-  - development
-  - common-workflow
 ---
 
 # Goal

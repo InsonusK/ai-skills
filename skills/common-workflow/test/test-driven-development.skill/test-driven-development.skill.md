@@ -17,7 +17,7 @@ tags:
 This skill defines the order of writing tests vs. code. It does not define the test case format or coverage rules:
 - Use [usecases_list.md](../workflow-unittest-testplan.skill/templates/usecases_list.md) (from [workflow-unittest-testplan](../workflow-unittest-testplan.skill/workflow-unittest-testplan.skill.md)) as the source of test cases to drive red-green cycles for a unit.
 - Use [code-coverage](../code-coverage.skill.md) to decide what must be covered.
-- When the task is new business logic decomposed into units, this skill governs step 4-5 of [solid-decomposition](../../architecture/design/solid-decomposition.skill/solid-decomposition.skill.md) (attach test cases, then generate code): drive each unit with red-green-refactor instead of writing the implementation first.
+- When the task is new business logic decomposed into units, this skill governs step 4-5 of [solid-decomposition](skills/common-workflow/develop/solid-decomposition.skill/solid-decomposition.skill.md) (attach test cases, then generate code): drive each unit with red-green-refactor instead of writing the implementation first.
 
 # Core Principle
 - Classify the task before choosing an approach — new behavior, large-scale refactor, and local/mechanical change need different rigor.

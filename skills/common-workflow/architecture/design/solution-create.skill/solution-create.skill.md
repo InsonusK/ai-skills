@@ -2,6 +2,8 @@
 name: solution-create
 description: Define how to create new solution skills by patterns
 whenToUse: when you write a solution skill
+tags:
+  - skill/architecture/solution/design
 ---
 
 # Workflow
@@ -37,6 +39,7 @@ MUST:
 - When the skill depends on other solutions, each implementation variant or section must explicitly state which dependency solution(s) are applied and which are intentionally not applied.
 - When an ADR is created, the selected variant must also be listed in `# Searched variants` and clearly marked as selected.
 - The `# Selected variant` section must explicitly name and link to the selected variant from `# Searched variants`.
+- When the solution relies on a term, library, technology, or pattern a reader may not already know, document it inside the solution skill's own `glossary/` folder (`solution-{Solution}.skill/glossary/`) following [documentation-for-concept.skill.md](skills/common-workflow/documentation/documentation-for-concept.skill/documentation-for-concept.skill.md), and link to it from the solution skill file instead of leaving it unexplained. Keep the glossary inside the skill folder so the solution stays self-contained and portable.
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Leave the `Implementation/` folder empty or claim "no direct mutations" unless the solution truly produces no code, configuration, or project changes.
