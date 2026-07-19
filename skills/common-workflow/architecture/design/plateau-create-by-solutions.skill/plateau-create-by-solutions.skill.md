@@ -2,6 +2,8 @@
 name: plateau-create-by-solutions
 description: Define how to build plateau skills from a set of solution skills, for any target language/stack
 whenToUse: when you write skills for building a plateau
+tags:
+  - skill/architecture/plateau/design
 ---
 
 # Input parameters

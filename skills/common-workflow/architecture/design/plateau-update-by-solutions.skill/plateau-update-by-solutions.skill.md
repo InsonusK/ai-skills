@@ -5,6 +5,8 @@ whenToUse:
   - adding a new solution to a plateau
   - updating an existing solution that is referenced by a plateau
   - removing a solution from a plateau
+tags:
+  - skill/architecture/plateau/design
 ---
 
 # Goal

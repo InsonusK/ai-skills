@@ -3,11 +3,10 @@ name: solid-decomposition
 description: Decompose a new piece of business logic into SOLID-compliant services/functions, confirm the decomposition with the user before generating code, and produce a compact per-feature index of usecases and test cases
 whenToUse: before implementing any new business logic — a new service, function, command, or class that does more than parse input or wire dependencies. Apply it before writing code, not after.
 tags:
+  - skill/develop
+  - unit-testing
+  - usecase
   - architecture
-  - design
-  - solid
-  - testing
-  - documentation
 ---
 
 # Goal
@@ -46,7 +45,7 @@ This skill governs the process of decomposing and confirming design, independent
 4. **Attach test cases.** For each confirmed unit, write its test case list using the [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md) format, following [code-coverage](skills/common-workflow/test/code-coverage.skill.md) rules for what to cover.
 5. **Generate code.** Implement exactly the confirmed units, one responsibility per unit, following [test-driven-development](skills/common-workflow/test/test-driven-development.skill/test-driven-development.skill.md) for the test/implementation order: a brand-new unit gets full red-green-refactor per test case; a unit created by refactoring existing code needs a green baseline before restructuring. Apply the stack's plateau/module skill if one exists for the unit's kind.
 6. **Validate.** Run [architect-validator](skills/common-workflow/test/architect-validator.skill.md) against the generated files.
-7. **Update the feature index.** Create or update `docs/features/{feature}.md` from [feature-index.template.md](./templates/feature-index.template.md): capabilities, units, links to their test case lists, and frontmatter `depends_on` links to every unit touched.
+7. **Update the feature index.** Create or update `docs/features/{feature}.md` from [feature-index.template.md](skills/common-workflow/develop/solid-decomposition.skill/templates/feature-index.template.md): capabilities, units, links to their test case lists, and frontmatter `depends_on` links to every unit touched.
 8. **Render the diagram.** Run the `diagram-renderer` CLI against `docs/features/{feature}.md` (or the `docs/features/diagrams.yaml` config if one exists) to produce the `.canvas` diagram. Do not draw the diagram by hand.
 
 ## Decomposition list format
@@ -63,11 +62,11 @@ This skill governs the process of decomposing and confirming design, independent
 - Produce and confirm the decomposition list with the user before writing implementation code for new business logic.
 - Give every unit exactly one responsibility sentence with no "and".
 - Express `depends_on` as roles/abstractions the unit needs, not concrete classes it constructs itself.
-- Attach a test case list (via [usecases_list.md](../../../test/workflow-unittest-testplan.skill/templates/usecases_list.md)) to every confirmed unit before or immediately after generating its code.
+- Attach a test case list (via [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md)) to every confirmed unit before or immediately after generating its code.
 - Keep the orchestrator/entry point free of business logic; it only calls units in sequence.
 - Create or update `docs/features/{feature}.md` for every feature that added or changed units.
 - Render feature diagrams with `diagram-renderer`; never hand-draw them as mermaid/ASCII in the index document.
-- Run [architect-validator](../../../test/architect-validator.skill.md) after generating or changing units belonging to a plateau.
+- Run [architect-validator](skills/common-workflow/test/architect-validator.skill.md) after generating or changing units belonging to a plateau.
 
 ## SHOULD
 - Reuse an existing unit instead of creating a near-duplicate when one already covers the responsibility.
@@ -90,7 +89,7 @@ This skill governs the process of decomposing and confirming design, independent
 
 - **No clear test cases per unit**
   - Consequence: nobody knows whether current behavior is correct or which cases are missing; regressions go unnoticed.
-  - Instead: attach a [usecases_list.md](../../../test/workflow-unittest-testplan.skill/templates/usecases_list.md)-formatted list to every unit at design time.
+  - Instead: attach a [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md)-formatted list to every unit at design time.
 
 - **No documentation of how a complex process decomposes**
   - Consequence: nobody can see what a feature is built from without re-reading all the code.
