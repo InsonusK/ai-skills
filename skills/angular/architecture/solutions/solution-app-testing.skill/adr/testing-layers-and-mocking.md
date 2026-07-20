@@ -2,7 +2,7 @@
 name: testing-layers-and-mocking
 description: Which tool mocks HTTP at which business layer, given the Facade/Client/Signal Store architecture already established
 problem: Using both HttpTestingController and MSW without a clear rule for which layer each belongs to risks duplicated mocks and confusion about which one is the source of truth
-decision: TestBed for non-DOM business-layer unit tests (Client, Facade, Signal Store); HttpTestingController only at the Client's own unit tests; MSW only for integration tests that span multiple layers or need mocks shared with dev tooling
+decision: TestBed for non-DOM business-layer units (Client, Facade, Signal Store); HttpTestingController only at the Client's own unit tests; MSW only for integration tests that span multiple layers or need mocks shared with dev tooling
 ---
 
 # Problem
@@ -14,7 +14,7 @@ The "API/HTTP-слой" solution already establishes three internal layers per f
 **Selected variant:** [[#Layered strategy: TestBed for non-DOM business-layer units; HttpTestingController only at Client tests, MSW only for cross-layer/integration tests]]
 
 - **Non-DOM business-layer tests** (Client, Facade, Signal Store, any plain service): `TestBed` for DI wiring, asserting behavior via the class's public methods/signals directly.
-- **HTTP mocking**: `HttpTestingController` is used exclusively inside a feature's own `{feature}.client.ts` unit tests, to assert the exact request shape and DTO mapping. Every layer above the Client (Facade, Signal Store) fakes the layer directly beneath it instead of mocking HTTP at all — a Facade test fakes its `Client`; a Signal Store test fakes its `Facade`. MSW is reserved for tests that deliberately span multiple layers together (e.g. a feature-level integration test exercising Signal Store → Facade → Client → an intercepted network boundary) or where mocks need to be shared with non-test tooling (local dev against a mocked backend).
+- **HTTP mocking**: `HttpTestingController` is used exclusively inside `spec/{feature}.client.spec.ts` — the unit test for a feature's own `{feature}.client.ts` — to assert the exact request shape and DTO mapping. Every layer above the Client (Facade, Signal Store) fakes the layer directly beneath it instead of mocking HTTP at all — a Facade test fakes its `Client`; a Signal Store test fakes its `Facade`. MSW is reserved for tests that deliberately span multiple layers together (e.g. a feature-level integration test exercising Signal Store → Facade → Client → an intercepted network boundary) or where mocks need to be shared with non-test tooling (local dev against a mocked backend).
 
 This ADR does not cover how a component itself is tested — a component's own behavior is tested independently of this business layer entirely; see [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
 
@@ -28,7 +28,7 @@ See "Selected variant" above — this is the strategy being adopted.
 
 ### Benefits
 
-- Each HTTP mock has exactly one place it is defined as the source of truth: DTO/request-shape correctness lives only in `{feature}.client.ts` tests via `HttpTestingController`; nothing above the Client re-mocks HTTP, so there is no risk of two different tests asserting two different shapes for the same request
+- Each HTTP mock has exactly one place it is defined as the source of truth: DTO/request-shape correctness lives only in `spec/{feature}.client.spec.ts` via `HttpTestingController`; nothing above the Client re-mocks HTTP, so there is no risk of two different tests asserting two different shapes for the same request
 - Non-DOM unit tests (`TestBed` for Client/Facade/Store) stay fast and precise, asserting exact method calls and return values without the overhead of rendering a template
 - MSW's presence is deliberately scoped to genuine cross-layer/integration scenarios, and doubles as a natural source of shared mocks if local dev tooling needs the same backend mocks
 

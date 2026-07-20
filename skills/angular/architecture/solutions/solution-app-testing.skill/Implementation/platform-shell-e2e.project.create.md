@@ -17,7 +17,7 @@ change_kind: create
 ```
 /apps/platform-shell-e2e
   /src
-    /e2e
+    /spec
       {scenario-name}.e2e.spec.ts
   playwright.config.ts
 ```
@@ -26,7 +26,7 @@ change_kind: create
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| `src/e2e/{scenario-name}.e2e.spec.ts` | One spec per real user scenario, per [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create]]. |
+| `src/spec/{scenario-name}.e2e.spec.ts` | One spec per real user scenario, per [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create]]. |
 | `playwright.config.ts` | Playwright configuration: base URL, browsers, CI reporter. |
 
 # NPM Packages
@@ -42,7 +42,7 @@ change_kind: create
 - Each spec MUST run against the real built application, not against mocked backend or isolated components.
 
 ## MUST NOT
-- The project MUST NOT contain unit or integration tests — those belong in `libs/{feature}/data-access` or `libs/{feature}/feature` per this solution's other implementation files.
+- The project MUST NOT contain unit or integration tests — those belong in `libs/{feature}/data-access/src/lib/spec` or `libs/{feature}/feature/src/lib/spec` per this solution's other implementation files.
 
 # Anti-patterns
 

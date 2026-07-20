@@ -7,7 +7,7 @@ change_kind: create
 ---
 
 # How this generic file is used
-This is not tied to one concrete feature. It applies to `{feature}.facade.ts` specs (faking the Client) and `{feature}.store.ts` specs (faking the Facade), created per the "API/HTTP-слой" and "State management" solutions respectively.
+This is not tied to one concrete feature. It applies to `spec/{feature}.facade.spec.ts` (faking the Client) and `spec/{feature}.store.spec.ts` (faking the Facade), created per the "API/HTTP-слой" and "State management" solutions respectively.
 
 # Goals
 
@@ -15,8 +15,12 @@ This is not tied to one concrete feature. It applies to `{feature}.facade.ts` sp
 
 # Implementation changes
 
+## `spec/{feature}.facade.spec.ts`
+
 ```typescript
-// orders.facade.spec.ts — fakes the Client, no HttpTestingController involved
+import { OrdersFacade, OrdersValidationError } from '../orders.facade';
+import { OrdersClient } from '../orders.client';
+
 describe('OrdersFacade', () => {
   let facade: OrdersFacade;
   const clientMock = { addOrder: vi.fn() };
@@ -41,8 +45,12 @@ describe('OrdersFacade', () => {
 });
 ```
 
+## `spec/{feature}.store.spec.ts`
+
 ```typescript
-// orders.store.spec.ts — fakes the Facade, no HTTP or Client involved
+import { OrdersStore } from '../orders.store';
+import { OrdersFacade } from '../orders.facade';
+
 describe('OrdersStore', () => {
   let store: InstanceType<typeof OrdersStore>;
   const facadeMock = { addOrder: vi.fn() };

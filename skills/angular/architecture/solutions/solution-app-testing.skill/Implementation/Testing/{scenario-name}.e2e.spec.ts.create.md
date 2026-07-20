@@ -7,13 +7,15 @@ change_kind: create
 ---
 
 # How this generic file is used
-Applies to any Playwright spec added to `apps/platform-shell-e2e`, exercising a real user scenario against the running application.
+Applies to any Playwright spec added to `apps/platform-shell-e2e/src/spec`, exercising a real user scenario against the running application.
 
 # Goals
 
 - Verify a complete user-facing scenario through a real browser, across real routing (including lazy-loaded features and, where relevant, federated embeddable modules)
 
 # Implementation changes
+
+File: `apps/platform-shell-e2e/src/spec/{scenario-name}.e2e.spec.ts`
 
 ```typescript
 import { test, expect } from '@playwright/test';

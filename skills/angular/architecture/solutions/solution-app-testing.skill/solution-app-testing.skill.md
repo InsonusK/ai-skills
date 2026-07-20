@@ -17,8 +17,8 @@ triggers:
 creates:
   - apps/platform-shell-e2e
 extends:
-  - libs/{feature}/data-access (test files)
-  - libs/{feature}/feature (Signal Store test files)
+  - libs/{feature}/data-access (spec/ test files)
+  - libs/{feature}/feature (spec/ Signal Store test files)
 depends_on:
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|API/HTTP-слой]]"
@@ -46,10 +46,36 @@ adr:
 # Core Principles
 
 - Non-DOM units (Client, Facade, Signal Store, plain services) are tested via `TestBed`, faking the layer directly beneath the unit under test — never skipping a layer, never reaching further down than necessary
-- `HttpTestingController` is used only inside a feature's own `{feature}.client.ts` tests — nowhere else
+- `HttpTestingController` is used only inside `spec/{feature}.client.spec.ts` — the unit test for a feature's own `{feature}.client.ts` — nowhere else
 - MSW is reserved for tests that deliberately span multiple layers (Signal Store → Facade → Client → network), and may double as shared mocks for local dev tooling
 - End-to-end tests (Playwright) are reserved for a small number of critical, cross-cutting user journeys — not a substitute for unit/integration coverage
 - Coverage thresholds are enforced in CI as an error, following the same enforcement pattern already established for bundle budgets in the "Lazy loading routing" solution
+
+# Directory layout
+
+All business-layer test files live under a `spec/` directory next to the source files they test. This keeps `{feature}.client.ts`, `{feature}.facade.ts`, and `{feature}.store.ts` free from test-related clutter.
+
+```text
+libs/{feature}/data-access/src/lib/
+  {feature}.client.ts
+  {feature}.facade.ts
+  spec/
+    {feature}.client.spec.ts
+    {feature}.facade.spec.ts
+    {feature}.integration.spec.ts
+
+libs/{feature}/feature/src/lib/
+  {feature}.store.ts
+  spec/
+    {feature}.store.spec.ts
+
+apps/platform-shell-e2e/
+  src/spec/
+    {scenario-name}.e2e.spec.ts
+  playwright.config.ts
+```
+
+The integration spec sits under the feature library because it exercises the whole `Signal Store → Facade → Client` chain. End-to-end specs live in the dedicated `apps/platform-shell-e2e` project.
 
 # Adr
 
@@ -85,21 +111,21 @@ PROJECT:
 - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|apps/platform-shell-e2e]] - create - Playwright end-to-end test project for the platform shell
 
 Artifact-level (generic patterns):
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|{feature}.client.spec.ts]] - create - Client unit test via `TestBed` + `HttpTestingController`
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|{feature}.facade.spec.ts / {feature}.store.spec.ts]] - create - Facade/Signal Store unit tests, each faking the layer directly beneath it
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create|{feature}.integration.spec.ts]] - create - cross-layer integration test via MSW, reserved for genuine multi-layer scenarios
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create|{scenario-name}.e2e.spec.ts]] - create - Playwright end-to-end scenario in `apps/platform-shell-e2e`
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create|spec/{feature}.client.spec.ts]] - create - Client unit test via `TestBed` + `HttpTestingController`
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|spec/{feature}.facade.spec.ts / spec/{feature}.store.spec.ts]] - create - Facade/Signal Store unit tests, each faking the layer directly beneath it
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create|spec/{feature}.integration.spec.ts]] - create - cross-layer integration test via MSW, reserved for genuine multi-layer scenarios
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create|apps/platform-shell-e2e/src/spec/{scenario-name}.e2e.spec.ts]] - create - Playwright end-to-end scenario in `apps/platform-shell-e2e`
 
 # Workflow
 
 ## Testing a new feature end-to-end (happy path)
 
-1. `{feature}.client.ts` gets a `TestBed` + `HttpTestingController` spec asserting exact request/response shape and DTO mapping — the one and only place this endpoint's HTTP contract is verified in detail.
-2. `{feature}.facade.ts` gets a `TestBed` spec faking the Client, verifying business validation and orchestration.
-3. `{feature}.store.ts` (Signal Store) gets a `TestBed` spec faking the Facade, verifying state transitions (`loading`, data, `error`).
+1. `spec/{feature}.client.spec.ts` gets a `TestBed` + `HttpTestingController` spec asserting exact request/response shape and DTO mapping — the one and only place this endpoint's HTTP contract is verified in detail.
+2. `spec/{feature}.facade.spec.ts` gets a `TestBed` spec faking the Client, verifying business validation and orchestration.
+3. `spec/{feature}.store.spec.ts` (Signal Store) gets a `TestBed` spec faking the Facade, verifying state transitions (`loading`, data, `error`).
 4. The feature's components get their own UI-level test coverage — see [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution.
-5. If a genuinely cross-layer scenario needs verifying as a whole, one MSW-based integration spec covers it — not a substitute for the layer-specific tests above.
-6. A small number of critical user journeys involving this feature get Playwright e2e coverage in `apps/platform-shell-e2e`.
+5. If a genuinely cross-layer scenario needs verifying as a whole, one MSW-based integration spec (`spec/{feature}.integration.spec.ts`) covers it — not a substitute for the layer-specific tests above.
+6. A small number of critical user journeys involving this feature get Playwright e2e coverage in `apps/platform-shell-e2e/src/spec`.
 
 ![Testing a new feature end-to-end (happy path)](skills/angular/architecture/solutions/solution-app-testing.skill/diagrams/testing-a-new-feature-end-to-end-happy-path.mmd)
 
@@ -113,23 +139,23 @@ Artifact-level (generic patterns):
 
 ## MUST
 - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create#MUST|{feature}.client.spec.ts]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create#MUST|{feature}.facade-and-store.spec.ts]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create#MUST|{feature}.integration.spec.ts]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create#MUST|{scenario-name}.e2e.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create#MUST|spec/{feature}.client.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create#MUST|spec/{feature}.facade-and-store.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create#MUST|spec/{feature}.integration.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create#MUST|src/spec/{scenario-name}.e2e.spec.ts]]
 
 # Anti-patterns
 
 - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend|See Repository.extend.md]] — using `HttpTestingController` outside a Client spec; lowering a coverage threshold to silence a CI failure.
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|See {feature}.facade-and-store.spec.ts.create.md]] — a Signal Store test faking the Client instead of the Facade, skipping a layer.
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create|See {feature}.integration.spec.ts.create.md]] — reaching for the MSW integration pattern as the default way to test a Facade or Store.
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create|See {scenario-name}.e2e.spec.ts.create.md]] — writing a large number of fine-grained e2e tests instead of pushing detailed coverage down to cheaper layers.
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|See spec/{feature}.facade-and-store.spec.ts.create.md]] — a Signal Store test faking the Client instead of the Facade, skipping a layer.
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create|See spec/{feature}.integration.spec.ts.create.md]] — reaching for the MSW integration pattern as the default way to test a Facade or Store.
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create|See src/spec/{scenario-name}.e2e.spec.ts.create.md]] — writing a large number of fine-grained e2e tests instead of pushing detailed coverage down to cheaper layers.
 - **Reaching for `HttpTestingController` or a faked Facade/Client to test a component** — a component's own behavior never needs business-layer mocking; see [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] instead.
 
 # Check list
 
 - [ ] Every project runs its tests via Vitest, none via Karma or Jest
 - [ ] `apps/platform-shell-e2e` runs Playwright specs for a small set of critical user journeys
-- [ ] `HttpTestingController` appears only in `{feature}.client.spec.ts` files
+- [ ] `HttpTestingController` appears only in `spec/{feature}.client.spec.ts` files
 - [ ] Every Facade/Signal Store test fakes only the layer directly beneath it
 - [ ] CI enforces a coverage threshold as an error, not a warning

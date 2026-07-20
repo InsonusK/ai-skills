@@ -9,15 +9,23 @@ change_kind: create
 # How this generic file is used
 This applies only when a test deliberately exercises more than one architectural layer together (Signal Store → Facade → Client → network) rather than a single unit in isolation — the exception to the "fake the layer directly below" rule, reserved for scenarios worth verifying end-to-end at the module level without a real backend.
 
+Create this file as `spec/{feature}.integration.spec.ts` inside the feature library, next to `{feature}.store.ts`.
+
 # Goals
 
 - Verify that Signal Store, Facade, and Client are wired together correctly as a whole, using network-level mocks that can also be shared with Storybook/local dev tooling if needed
 
 # Implementation changes
 
+File: `spec/{feature}.integration.spec.ts`
+
 ```typescript
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
+import { OrdersStore } from '../orders.store';
+import { OrdersFacade } from '../orders.facade';
+// Import the Client from the feature's data-access library (use the workspace path alias in real code).
+import { OrdersClient } from '../../../../data-access/src/lib/orders.client';
 
 const server = setupServer(
   http.post('/orders', () => HttpResponse.json({ id: '1', qty: 2, created_at: '2026-01-01' })),

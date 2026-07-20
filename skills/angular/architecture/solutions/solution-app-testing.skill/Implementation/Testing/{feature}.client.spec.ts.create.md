@@ -7,7 +7,7 @@ change_kind: create
 ---
 
 # How this generic file is used
-This is not tied to one concrete feature. Any `{feature}.client.ts` created per the "API/HTTP-слой" solution gets a matching spec file following this pattern.
+This is not tied to one concrete feature. Any `{feature}.client.ts` created per the "API/HTTP-слой" solution gets a matching spec file at `spec/{feature}.client.spec.ts`, next to the source file.
 
 # Goals
 
@@ -15,7 +15,11 @@ This is not tied to one concrete feature. Any `{feature}.client.ts` created per 
 
 # Implementation changes
 
+File: `spec/{feature}.client.spec.ts`
+
 ```typescript
+import { OrdersClient, OrdersConflictError } from '../orders.client';
+
 describe('OrdersClient', () => {
   let client: OrdersClient;
   let httpTesting: HttpTestingController;

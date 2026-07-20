@@ -17,9 +17,16 @@ change_kind: extend
     /...
   /{feature}
     /feature
-      /src/lib/**/*.store.spec.ts        <- Signal Store unit tests (TestBed)
+      /src/lib/
+        {feature}.store.ts
+        spec/{feature}.store.spec.ts        <- Signal Store unit tests (TestBed)
+        spec/{feature}.integration.spec.ts    <- cross-layer integration tests (MSW)
     /data-access
-      /src/lib/**/*.spec.ts        <- Client/Facade unit tests (TestBed)
+      /src/lib/
+        {feature}.client.ts
+        {feature}.facade.ts
+        spec/{feature}.client.spec.ts       <- Client unit tests (HttpTestingController)
+        spec/{feature}.facade.spec.ts       <- Facade unit tests (TestBed)
 ```
 
 ## Directory and project skills
@@ -27,8 +34,9 @@ change_kind: extend
 | Directory | Description |
 | ---------- | ----------- |
 | /apps/platform-shell-e2e | New Nx project, tagged `type:e2e`, `scope:platform`. Playwright specs exercising the running application end-to-end. |
-| /libs/{feature}/data-access/**/*.spec.ts | `TestBed`-based unit tests for `{feature}.client.ts` (using `HttpTestingController`) and `{feature}.facade.ts` (faking the Client). |
-| /libs/{feature}/feature/**/*.store.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade). Component-level test files in this same directory belong to [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution. |
+| /libs/{feature}/data-access/src/lib/spec/*.spec.ts | `TestBed`-based unit tests for `{feature}.client.ts` (using `HttpTestingController`) and `{feature}.facade.ts` (faking the Client). |
+| /libs/{feature}/feature/src/lib/spec/*.store.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade). Component-level test files in this same directory belong to [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution. |
+| /libs/{feature}/feature/src/lib/spec/*.integration.spec.ts | Cross-layer integration tests using MSW, reserved for genuine multi-layer scenarios. |
 
 # Nx tag taxonomy — extension
 
@@ -41,7 +49,7 @@ change_kind: extend
 ## MUST
 - Every Nx project MUST run its unit tests via Vitest — no project may configure Karma or Jest as its test runner, per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/test-runner-choice]].
 - End-to-end tests MUST be written with Playwright, in a dedicated `type:e2e` project, per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice]].
-- `HttpTestingController` MUST be used only inside a feature's own `{feature}.client.ts` unit tests — no other test may use it, per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking]].
+- `HttpTestingController` MUST be used only inside `spec/{feature}.client.spec.ts` — no other test may use it, per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking]].
 - MSW MUST be used only for tests that deliberately span more than one architectural layer (e.g. a feature-level integration test), never as a substitute for faking the layer directly below the unit under test.
 - CI MUST enforce a minimum code coverage threshold per project (`error`, not `warning`, consistent with the bundle-budget enforcement pattern from the "Lazy loading routing" solution); the exact percentage is a configurable, deployment-specific parameter.
 
@@ -60,4 +68,4 @@ change_kind: extend
 - [ ] WHEN a project's test configuration is inspected THEN
   - [ ] it runs via Vitest, not Karma or Jest
 - [ ] WHEN the codebase is searched for `HttpTestingController` usage THEN
-  - [ ] every occurrence is inside a `{feature}.client.ts` spec file
+  - [ ] every occurrence is inside a `spec/{feature}.client.spec.ts` file
