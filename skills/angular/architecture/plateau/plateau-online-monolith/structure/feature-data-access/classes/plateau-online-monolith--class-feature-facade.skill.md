@@ -11,7 +11,7 @@ tags:
   - plateau/online-monolith
 created_by:
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]]"
 ---
 
 > Generic pattern, not tied to one concrete feature — any feature's own `{feature}.facade.ts` follows this, substituting `{Feature}`/`{feature}` with the real feature name.
@@ -24,7 +24,7 @@ created_by:
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
 
 # Naming convention
 
@@ -98,7 +98,7 @@ describe('OrdersFacade', () => {
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
 
 # Rules
 
@@ -110,7 +110,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
 
 # Anti-patterns
 
@@ -124,7 +124,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
 
 # Check list
 
@@ -135,7 +135,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -148,4 +148,4 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create|Testing/{feature}.facade-and-store.spec.ts.create]]

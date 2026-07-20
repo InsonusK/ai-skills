@@ -11,7 +11,7 @@ tags:
   - plateau/design-system
 created_by:
   - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]]"
 ---
 
 > This is not tied to one concrete component — every component added to the design system follows this pattern (worked example below uses a button).
@@ -24,7 +24,7 @@ created_by:
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Core Principles
 
@@ -36,7 +36,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Naming convention
 
@@ -106,13 +106,13 @@ describe('DsButtonComponent', () => {
 });
 ```
 
-The same component also gets a `projects/demo` example page (per this solution's SHOULD rule below), a `{component-name}.visual.spec.ts`, and a `{component-name}.a11y.spec.ts` against that page, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
+The same component also gets a `projects/demo` example page (per this solution's SHOULD rule below), a `{component-name}.visual.spec.ts`, and a `{component-name}.a11y.spec.ts` against that page, per [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]].
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Rules
 
@@ -128,7 +128,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
 
 # Anti-patterns
 
@@ -141,7 +141,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Check list
 
@@ -153,7 +153,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create|Testing/{component-name}.component.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -168,5 +168,5 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create|Testing/{component-name}.a11y.spec.ts.create]]

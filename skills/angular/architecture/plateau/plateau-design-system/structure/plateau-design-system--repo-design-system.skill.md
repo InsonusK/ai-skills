@@ -12,7 +12,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]]"
 ---
 
 > This is a separate repository from the main platform monorepo (which uses Nx) — the design system is deliberately a plain Angular CLI multi-project workspace, published and consumed as an independently versioned npm package.
@@ -45,13 +45,13 @@ created_by:
 | Directory | template link | Description |
 | ---------- | ------------- | ----------- |
 | /projects/design-system | [[skills/angular/architecture/plateau/plateau-design-system/structure/design-system/plateau-design-system--project-design-system.skill\|project-design-system]] | Publishable component library — theme, custom tokens, `ds-*` components. Built with ng-packagr, producing Ivy partial compilation (Angular Package Format) output. The only project published to npm. |
-| /projects/demo | [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend\|demo.project.extend]] | Plain Angular application, not published. Imports `design-system` as a regular dependency and renders example usage of every component — the answer to component preview/visual review (Storybook was deliberately rejected after prior friction), and the navigation target for every component's visual and accessibility spec. |
+| /projects/demo | [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend\|demo.project.extend]] | Plain Angular application, not published. Imports `design-system` as a regular dependency and renders example usage of every component — the answer to component preview/visual review (Storybook was deliberately rejected after prior friction), and the navigation target for every component's visual and accessibility spec. |
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create|Repository.create]]
 - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend|Repository.extend]]
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
 
 ## NPM Packages
 
@@ -62,7 +62,7 @@ __Applied solutions:__
 | @axe-core/playwright | latest compatible | Accessibility scans against `projects/demo` |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
 
 # Rules
 
@@ -80,7 +80,7 @@ __Applied solutions:__
 - Every component's API MUST be designed around this application's real usage axes — MUST NOT mirror Material's own input names or category model 1:1.
 - Any component participating in forms MUST implement `ControlValueAccessor`.
 - No Angular Material selector, input, or type MUST appear in this library's public API surface.
-- Every component MUST have a behavioral (Testing Library) spec, a visual (Playwright screenshot) spec, and an accessibility (`@axe-core/playwright`) spec — all three, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
+- Every component MUST have a behavioral (Testing Library) spec, a visual (Playwright screenshot) spec, and an accessibility (`@axe-core/playwright`) spec — all three, per [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]].
 - A component test MUST NOT provide a mock for any dependency the component doesn't itself inject.
 
 ## SHOULD
@@ -105,7 +105,7 @@ __Applied solutions:__
   - Instead: add the component's preview to the existing `demo` app
 - **Adopting Chromatic for visual regression instead of a Playwright screenshot spec against `demo`**
   - Consequence: Chromatic requires Storybook as a mandatory foundation — this reverses the Storybook rejection decision above, and adds a paid external SaaS for a capability Playwright already provides in-house
-  - Instead: use `expect(page).toHaveScreenshot()` against the existing `demo` app, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach]]
+  - Instead: use `expect(page).toHaveScreenshot()` against the existing `demo` app, per [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/adr/visual-regression-approach]]
 - **Defining `--ds-color-primary: var(--mat-sys-primary)` "for consistency"**
   - Consequence: adds an indirection layer with no naming improvement — two names now exist for the same concept
   - Instead: reference `--mat-sys-primary` directly; reserve `--ds-*` for concepts Material doesn't model
@@ -139,10 +139,10 @@ __Applied solutions:__
 - [ ] WHEN any component's source is inspected THEN
   - [ ] no `@Input()`/`@Output()` decorator or `EventEmitter` is used
 - [ ] WHEN a component ships without a visual or accessibility spec THEN
-  - [ ] CI fails, since all three test layers are required per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]
+  - [ ] CI fails, since all three test layers are required per [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]]
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create|Repository.create]]
 - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend|Repository.extend]]
 - [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend|Repository.extend]]
-- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]
+- [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]] - [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/DesignSystemComponents/demo.project.extend|DesignSystemComponents/demo.project.extend]]

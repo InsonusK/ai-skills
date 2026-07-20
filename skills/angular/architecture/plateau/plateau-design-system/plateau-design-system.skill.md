@@ -11,7 +11,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]]"
 parent_plateau:
 ---
 
