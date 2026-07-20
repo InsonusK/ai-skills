@@ -57,7 +57,7 @@ __Applied solutions:__
 
 | Package | Version constraint | Purpose |
 | ------- | ------------------- | ------- |
-| vitest, @testing-library/angular, @testing-library/user-event | latest compatible | Behavioral component tests, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] |
+| vitest, @testing-library/angular, @testing-library/user-event | latest compatible | Behavioral component tests, per [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] |
 | @playwright/test | latest compatible | Visual regression screenshots against `projects/demo` |
 | @axe-core/playwright | latest compatible | Accessibility scans against `projects/demo` |
 

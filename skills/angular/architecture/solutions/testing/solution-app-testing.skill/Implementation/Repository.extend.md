@@ -35,7 +35,7 @@ change_kind: extend
 | ---------- | ----------- |
 | /apps/platform-shell-e2e | New Nx project, tagged `type:e2e`, `scope:platform`. Playwright specs exercising the running application end-to-end. |
 | /libs/{feature}/data-access/src/lib/spec/*.spec.ts | `TestBed`-based unit tests for `{feature}.client.ts` (using `HttpTestingController`) and `{feature}.facade.ts` (faking the Client). |
-| /libs/{feature}/feature/src/lib/spec/*.store.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade). Component-level test files in this same directory belong to [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution. |
+| /libs/{feature}/feature/src/lib/spec/*.store.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade). Component-level test files in this same directory belong to [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution. |
 | /libs/{feature}/feature/src/lib/spec/*.integration.spec.ts | Cross-layer integration tests using MSW, reserved for genuine multi-layer scenarios. |
 
 # Nx tag taxonomy — extension
