@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant pip
+    participant GitHub
+    participant Backend as setuptools.build_meta
+    participant Env as Target environment
+
+    User->>pip: pip install git+https://github.com/{org}/{app-name}.git
+    activate pip
+    pip->>GitHub: fetch repository source
+    activate GitHub
+    GitHub-->>pip: source tree (incl. pyproject.toml)
+    deactivate GitHub
+    pip->>pip: read [build-system] from pyproject.toml
+    pip->>Backend: install build deps, invoke build_wheel()
+    activate Backend
+    Backend->>Backend: read [project] + [tool.setuptools.packages.find]
+    Backend-->>pip: built wheel
+    deactivate Backend
+    pip->>Env: install wheel, write console-script from [project.scripts]
+    activate Env
+    Env-->>User: "{app-name}" command available on PATH
+    deactivate Env
+    deactivate pip
