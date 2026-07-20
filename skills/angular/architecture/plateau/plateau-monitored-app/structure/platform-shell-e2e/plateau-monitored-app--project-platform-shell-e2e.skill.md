@@ -10,7 +10,7 @@ tags:
   - skill/template/project
   - plateau/monitored-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]]"
 ---
 
 # Goal
@@ -18,7 +18,7 @@ created_by:
 - Provide a dedicated project for cross-cutting, browser-based end-to-end tests of the platform shell and its integrated features
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 # Core Principles
 
@@ -26,7 +26,7 @@ __Applied solutions:__
 - The suite stays focused on a small number of critical, cross-cutting user journeys — detailed logic coverage is pushed down to unit/component/integration tests
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 # Structure
 
@@ -48,7 +48,7 @@ __Applied solutions:__
 | playwright.config.ts | Base URL, browsers, CI reporter | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 ## NPM Packages
 
@@ -57,21 +57,21 @@ __Applied solutions:__
 | @playwright/test | latest stable | E2E test runner and browser automation |
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 ## What Does NOT Belong Here
 
 - Unit or integration tests — those belong in `libs/{feature}/data-access` or `libs/{feature}/feature`
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 ## Allowed Dependencies
 
 - None — drives the built application through the browser only, no source-level Nx project dependency
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 # Rules
 
@@ -83,7 +83,7 @@ __Applied solutions:__
 - The project MUST NOT contain unit or integration tests.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 # Anti-patterns
 
@@ -92,7 +92,7 @@ __Applied solutions:__
   - Instead: keep e2e specs focused on complete user scenarios
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
 
 # Check list
 
@@ -101,4 +101,4 @@ __Applied solutions:__
 - [ ] CI runs the e2e suite against the production-like build
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]] - [[skills/angular/architecture/solutions/testing/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create|platform-shell-e2e.project.create]]
