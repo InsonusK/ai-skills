@@ -1,15 +1,16 @@
 ---
 name: plateau-plateau-python-cli
-description: Python CLI application plateau with layered architecture and mirrored test structure
+description: Python CLI application plateau with layered architecture, mirrored test structure, and pip-installable packaging via pyproject.toml
 domain: skill
 type: template
-version: 20260710003814
+version: 20260720120000
 tags:
   - skill/template/plateau
   - plateau/plateau-python-cli
 created_by:
   - "[[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]"
   - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
+  - "[[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]"
 ---
 
 # Core Principles
@@ -20,10 +21,12 @@ created_by:
 - Functions are stateless and reusable; Services encapsulate stateful or dependency-heavy behavior.
 - Test structure mirrors source structure so every source module has a predictable test location.
 - Tests are excluded from the installed package via explicit `pyproject.toml` rules.
+- `pyproject.toml` is the single descriptor for build system and project metadata, and exposes the CLI as a `pip`-installed console command (see [[skills/python/architecture/solutions/solution-cli-packaging.skill/glossary/pyproject-toml.md|glossary: pyproject.toml]]).
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
 - [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]
 
 # Capabilities
 
@@ -39,10 +42,15 @@ __Applied solutions:__
   - Mirror source structure in `test/` with one test module per source module.
   - Optionally co-locate tests next to source modules in large projects.
   - Exclude test directories and modules from the installed package.
+- **Packaging**
+  - Describe the application as an installable package with `pyproject.toml` (name, version, dependencies, supported Python versions).
+  - Expose a console command via `[project.scripts]`, backed by `{App}.cli:main`.
+  - Support `pip install` from a local checkout, a source archive, or directly from a Git/GitHub URL.
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
 - [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]
 
 # Usecases
 
@@ -93,3 +101,28 @@ sequenceDiagram
 1. Append `--debug` to any CLI invocation.
 2. `cli.py` sets the root logger level to `DEBUG` before invoking the Command.
 3. Commands, Functions, and Services emit debug logs with specific context.
+
+## Install the CLI application with pip
+
+User installs the application directly from its GitHub repository. `pip` reads `pyproject.toml`, builds a wheel via the declared backend, and installs a console command from `[project.scripts]`.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant pip
+    participant GitHub
+    participant Backend as setuptools.build_meta
+
+    User->>pip: pip install git+https://github.com/{org}/{app-name}.git
+    activate pip
+    pip->>GitHub: fetch repository source
+    GitHub-->>pip: source tree (incl. pyproject.toml)
+    pip->>Backend: build wheel per [build-system]
+    Backend-->>pip: built wheel
+    pip->>pip: install wheel + write console-script from [project.scripts]
+    pip-->>User: "{app-name}" command available on PATH
+    deactivate pip
+```
+
+See [glossary: pyproject.toml](skills/python/architecture/solutions/solution-cli-packaging.skill/glossary/pyproject-toml.md) for why a bare `https://github.com/...` URL does not work and `git+` is required.
