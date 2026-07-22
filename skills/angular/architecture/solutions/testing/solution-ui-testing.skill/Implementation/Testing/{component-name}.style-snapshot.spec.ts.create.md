@@ -47,6 +47,7 @@ test.describe('DsButtonComponent — style snapshot', () => {
 - The file MUST be created at `spec/{component-name}.style-snapshot.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
 - Text snapshot baselines (`*.styles.txt`) MUST be committed under `spec/snapshot/` next to the spec. Configure `snapshotPathTemplate` in `playwright.config.ts` so that `toMatchSnapshot()` stores text snapshots in `spec/snapshot/` rather than the default `__snapshots__` folder.
 - A style-snapshot spec MUST cover exactly the same states (and color schemes) as the component's `.visual.spec.ts` — the two specs stay paired, one per state.
+- Tests in a style-snapshot spec MUST be grouped under a `test.describe('<component-name> — style snapshot', () => { ... })` block.
 - A style-snapshot spec MUST read properties only through [[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|the shared `readVisualStyleProperties` helper]], never a component-specific ad hoc property list.
 - Before updating a failing `.visual.spec.ts` baseline (`--update-snapshots`), the corresponding style-snapshot diff MUST be inspected first: no property change means the pixel diff is rendering noise (safe to accept); a property change means the diff itself states what moved, and that change must be confirmed intentional before either snapshot is updated. Note: `--update-snapshots` is the single Playwright flag that updates both the PNG baseline and the paired `.styles.txt` text snapshot; both files are updated together.
 
@@ -74,6 +75,7 @@ test.describe('DsButtonComponent — style snapshot', () => {
 - [ ] Every component/state with a `.visual.spec.ts` has a paired `.style-snapshot.spec.ts` covering the identical states and color schemes
 - [ ] Every style-snapshot spec reads properties through the shared `readVisualStyleProperties` helper
 - [ ] No `.visual.spec.ts` baseline was updated without first checking its paired style-snapshot diff
+- [ ] Style-snapshot specs group tests under a `test.describe('<component-name> — style snapshot', ...)` block
 
 # Unittest TestCases
 

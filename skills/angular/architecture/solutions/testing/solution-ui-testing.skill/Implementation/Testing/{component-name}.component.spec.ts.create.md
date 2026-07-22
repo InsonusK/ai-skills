@@ -24,27 +24,31 @@ import userEvent from '@testing-library/user-event';
 import { OrdersListComponent } from '../orders-list.component';
 
 describe('OrdersListComponent', () => {
-  it('shows the loading state, then the list of orders', async () => {
-    const storeMock = {
-      orders: signal([{ id: '1', quantity: 2 }]),
-      loading: signal(false),
-      load: vi.fn(),
-    };
-    await render(OrdersListComponent, {
-      providers: [{ provide: OrdersStore, useValue: storeMock }],
-    });
+  describe('rendering', () => {
+    it('shows the loading state, then the list of orders', async () => {
+      const storeMock = {
+        orders: signal([{ id: '1', quantity: 2 }]),
+        loading: signal(false),
+        load: vi.fn(),
+      };
+      await render(OrdersListComponent, {
+        providers: [{ provide: OrdersStore, useValue: storeMock }],
+      });
 
-    expect(screen.getByText(/quantity: 2/i)).toBeInTheDocument();
+      expect(screen.getByText(/quantity: 2/i)).toBeInTheDocument();
+    });
   });
 
-  it('calls the store when the user clicks "Add order"', async () => {
-    const storeMock = { orders: signal([]), loading: signal(false), addOrder: vi.fn() };
-    await render(OrdersListComponent, {
-      providers: [{ provide: OrdersStore, useValue: storeMock }],
-    });
+  describe('user interactions', () => {
+    it('calls the store when the user clicks "Add order"', async () => {
+      const storeMock = { orders: signal([]), loading: signal(false), addOrder: vi.fn() };
+      await render(OrdersListComponent, {
+        providers: [{ provide: OrdersStore, useValue: storeMock }],
+      });
 
-    await userEvent.click(screen.getByRole('button', { name: /add order/i }));
-    expect(storeMock.addOrder).toHaveBeenCalled();
+      await userEvent.click(screen.getByRole('button', { name: /add order/i }));
+      expect(storeMock.addOrder).toHaveBeenCalled();
+    });
   });
 });
 ```
@@ -57,21 +61,25 @@ import userEvent from '@testing-library/user-event';
 import { DsButtonComponent } from '../ds-button.component';
 
 describe('DsButtonComponent', () => {
-  it('renders its label and reflects the disabled input', async () => {
-    await render(DsButtonComponent, { inputs: { label: 'Save', disabled: true } });
+  describe('rendering', () => {
+    it('renders its label and reflects the disabled input', async () => {
+      await render(DsButtonComponent, { inputs: { label: 'Save', disabled: true } });
 
-    expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
+      expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
+    });
   });
 
-  it('emits (pressed) when clicked', async () => {
-    const pressed = vi.fn();
-    await render(DsButtonComponent, {
-      inputs: { label: 'Save' },
-      on: { pressed },
-    });
+  describe('interactions', () => {
+    it('emits (pressed) when clicked', async () => {
+      const pressed = vi.fn();
+      await render(DsButtonComponent, {
+        inputs: { label: 'Save' },
+        on: { pressed },
+      });
 
-    await userEvent.click(screen.getByRole('button', { name: /save/i }));
-    expect(pressed).toHaveBeenCalled();
+      await userEvent.click(screen.getByRole('button', { name: /save/i }));
+      expect(pressed).toHaveBeenCalled();
+    });
   });
 });
 ```
@@ -84,6 +92,7 @@ describe('DsButtonComponent', () => {
 - A component test MUST NOT use `HttpTestingController`, let a real HTTP call occur, or fake a Facade/Client — if the component injects a Signal Store or Facade directly, the test fakes only that one dependency, going no further down than the component's own immediate collaborator.
 - A component that injects no dependency at all (e.g. a pure `input()`/`output()`/`model()` design-system component) MUST have a test that provides nothing beyond its own inputs — no provider setup is needed or expected.
 - Queries MUST prefer accessible roles/labels (`getByRole`, `getByLabelText`) over test-id attributes, so the test also implicitly checks the component is accessible.
+- Component tests MUST group related cases under nested `describe('<behavior-area>', () => { ... })` blocks (e.g., `rendering`, `user interactions`).
 
 # Anti-patterns
 
@@ -105,6 +114,7 @@ describe('DsButtonComponent', () => {
 - [ ] No test reaches into `fixture.componentInstance` or `debugElement` for assertions
 - [ ] Every test fakes only what the component itself directly injects (a Signal Store/Facade, or nothing), never performs a real HTTP call
 - [ ] Queries prefer accessible roles/labels over test IDs
+- [ ] Related test cases are grouped under nested `describe('<behavior-area>', ...)` blocks
 
 # Unittest TestCases
 

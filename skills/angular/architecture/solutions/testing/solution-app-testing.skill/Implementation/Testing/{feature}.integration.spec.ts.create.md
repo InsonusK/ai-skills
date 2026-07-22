@@ -36,15 +36,17 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe('Orders feature integration', () => {
-  it('adds an order through the real Store -> Facade -> Client chain', async () => {
-    TestBed.configureTestingModule({
-      providers: [OrdersStore, OrdersFacade, OrdersClient, provideHttpClient()],
+  describe('addOrder', () => {
+    it('adds an order through the real Store -> Facade -> Client chain', async () => {
+      TestBed.configureTestingModule({
+        providers: [OrdersStore, OrdersFacade, OrdersClient, provideHttpClient()],
+      });
+      const store = TestBed.inject(OrdersStore);
+
+      await store.addOrder({ quantity: 2 });
+
+      expect(store.orders()).toEqual([{ id: '1', quantity: 2, createdAt: new Date('2026-01-01') }]);
     });
-    const store = TestBed.inject(OrdersStore);
-
-    await store.addOrder({ quantity: 2 });
-
-    expect(store.orders()).toEqual([{ id: '1', quantity: 2, createdAt: new Date('2026-01-01') }]);
   });
 });
 ```
@@ -54,6 +56,7 @@ describe('Orders feature integration', () => {
 ## MUST
 - This pattern MUST only be used when the test's purpose is genuinely to verify multiple layers wired together — a test that could be satisfied by faking one layer below the unit under test MUST use the corresponding unit-test pattern instead, not this one.
 - MSW request handlers used here MAY be shared with Storybook or local dev-mode mocking, but MUST NOT be duplicated with equivalent `HttpTestingController` expectations elsewhere for the same endpoint.
+- Tests for each Signal Store method exercised by this integration spec MUST be grouped under a nested `describe('<methodName>', () => { ... })` block.
 
 # Anti-patterns
 
@@ -65,6 +68,7 @@ describe('Orders feature integration', () => {
 
 - [ ] This pattern is used only for genuine cross-layer scenarios, not as a substitute for narrower unit tests
 - [ ] MSW handlers here do not duplicate assertions already covered by the Client's own `HttpTestingController` tests
+- [ ] Every Signal Store method exercised by this integration spec has its own `describe('<methodName>', ...)` block
 
 # Unittest TestCases
 

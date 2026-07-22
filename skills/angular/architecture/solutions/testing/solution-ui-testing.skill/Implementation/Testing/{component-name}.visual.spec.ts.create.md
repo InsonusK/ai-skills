@@ -41,6 +41,7 @@ test.describe('DsButtonComponent — visual', () => {
 - The file MUST be created at `spec/{component-name}.visual.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
 - Baseline PNG files MUST be committed under `spec/snapshot/` next to the spec. Configure `snapshotPathTemplate` in `playwright.config.ts` so that `toHaveScreenshot()` stores baselines in `spec/snapshot/` rather than the default `__snapshots__` folder.
 - A visual spec MUST navigate directly to the component's stable demo/preview URL — it MUST NOT drive the UI through unrelated navigation to reach it.
+- Tests in a visual spec MUST be grouped under a `test.describe('<component-name> — visual', () => { ... })` block.
 - Every component that ships both a light and a dark rendering path MUST be screenshotted in both `page.emulateMedia({ colorScheme })` states.
 - Every meaningfully distinct state the component's demo/preview page exposes (default, disabled, error, loading, etc.) MUST have its own baseline screenshot.
 - A baseline screenshot MUST only be updated (`--update-snapshots`) as a deliberate, reviewed part of a PR that intentionally changes the component's appearance — never to silence an unexplained CI failure.
@@ -65,6 +66,7 @@ test.describe('DsButtonComponent — visual', () => {
 - [ ] Every component/state with a demo/preview page has at least one committed baseline screenshot
 - [ ] Both light and dark color schemes are covered for any component with a dark-mode-aware rendering path
 - [ ] No baseline was updated without a reviewed, intentional visual change in the same PR
+- [ ] Visual specs group tests under a `test.describe('<component-name> — visual', ...)` block
 
 # Unittest TestCases
 
