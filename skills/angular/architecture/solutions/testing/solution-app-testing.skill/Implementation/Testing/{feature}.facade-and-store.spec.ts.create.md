@@ -32,15 +32,17 @@ describe('OrdersFacade', () => {
     facade = TestBed.inject(OrdersFacade);
   });
 
-  it('rejects with a validation error before calling the Client for invalid input', async () => {
-    await expect(facade.addOrder({ quantity: 0 })).rejects.toBeInstanceOf(OrdersValidationError);
-    expect(clientMock.addOrder).not.toHaveBeenCalled();
-  });
+  describe('addOrder', () => {
+    it('rejects with a validation error before calling the Client for invalid input', async () => {
+      await expect(facade.addOrder({ quantity: 0 })).rejects.toBeInstanceOf(OrdersValidationError);
+      expect(clientMock.addOrder).not.toHaveBeenCalled();
+    });
 
-  it('delegates to the Client for valid input', async () => {
-    clientMock.addOrder.mockResolvedValue({ id: '1', quantity: 2 });
-    await facade.addOrder({ quantity: 2 });
-    expect(clientMock.addOrder).toHaveBeenCalledWith({ quantity: 2 });
+    it('delegates to the Client for valid input', async () => {
+      clientMock.addOrder.mockResolvedValue({ id: '1', quantity: 2 });
+      await facade.addOrder({ quantity: 2 });
+      expect(clientMock.addOrder).toHaveBeenCalledWith({ quantity: 2 });
+    });
   });
 });
 ```
@@ -62,12 +64,14 @@ describe('OrdersStore', () => {
     store = TestBed.inject(OrdersStore);
   });
 
-  it('sets loading while addOrder is in flight, then clears it on success', async () => {
-    facadeMock.addOrder.mockResolvedValue({ id: '1', quantity: 2 });
-    const promise = store.addOrder({ quantity: 2 });
-    expect(store.loading()).toBe(true);
-    await promise;
-    expect(store.loading()).toBe(false);
+  describe('addOrder', () => {
+    it('sets loading while addOrder is in flight, then clears it on success', async () => {
+      facadeMock.addOrder.mockResolvedValue({ id: '1', quantity: 2 });
+      const promise = store.addOrder({ quantity: 2 });
+      expect(store.loading()).toBe(true);
+      await promise;
+      expect(store.loading()).toBe(false);
+    });
   });
 });
 ```
@@ -77,6 +81,8 @@ describe('OrdersStore', () => {
 ## MUST
 - A Facade test MUST fake its Client directly (e.g. `{ provide: {Feature}Client, useValue: clientMock }`) — it MUST NOT use `HttpTestingController` or MSW.
 - A Signal Store test MUST fake its Facade directly — it MUST NOT reach further down to fake the Client or mock HTTP.
+- Tests for each Facade method MUST be grouped under a nested `describe('<methodName>', () => { ... })` block.
+- Tests for each Signal Store method MUST be grouped under a nested `describe('<methodName>', () => { ... })` block.
 
 # Anti-patterns
 
@@ -88,6 +94,8 @@ describe('OrdersStore', () => {
 
 - [ ] Every Facade test fakes the Client, never HTTP directly
 - [ ] Every Signal Store test fakes the Facade, never the Client or HTTP
+- [ ] Every Facade method has its own `describe('<methodName>', ...)` block
+- [ ] Every Signal Store method has its own `describe('<methodName>', ...)` block
 
 # Unittest TestCases
 

@@ -20,13 +20,15 @@ File: `apps/platform-shell-e2e/src/spec/{scenario-name}.e2e.spec.ts`
 ```typescript
 import { test, expect } from '@playwright/test';
 
-test('user can add an order from the orders feature', async ({ page }) => {
-  await page.goto('/feature1');
-  await page.getByRole('button', { name: /add order/i }).click();
-  await page.getByLabel(/quantity/i).fill('2');
-  await page.getByRole('button', { name: /submit/i }).click();
+test.describe('Orders feature', () => {
+  test('user can add an order from the orders feature', async ({ page }) => {
+    await page.goto('/feature1');
+    await page.getByRole('button', { name: /add order/i }).click();
+    await page.getByLabel(/quantity/i).fill('2');
+    await page.getByRole('button', { name: /submit/i }).click();
 
-  await expect(page.getByText(/order added/i)).toBeVisible();
+    await expect(page.getByText(/order added/i)).toBeVisible();
+  });
 });
 ```
 
@@ -35,6 +37,7 @@ test('user can add an order from the orders feature', async ({ page }) => {
 ## MUST
 - E2E scenarios MUST navigate and interact exactly as a real user would (URLs, roles, labels) — not by calling internal application APIs directly.
 - E2E tests MUST NOT be used as a substitute for unit/component/integration coverage — they are reserved for a small number of critical user-facing scenarios, given their higher cost per test (real browser, real navigation, generally slower than the layers below).
+- E2E specs MUST group related scenarios under a `test.describe('<feature-or-journey>', () => { ... })` block.
 
 # Anti-patterns
 
@@ -46,6 +49,7 @@ test('user can add an order from the orders feature', async ({ page }) => {
 
 - [ ] E2E scenarios interact only through real user-facing navigation and controls
 - [ ] The e2e suite stays focused on critical journeys, not exhaustive logic coverage already provided elsewhere
+- [ ] E2E specs group related scenarios under a `test.describe('<feature-or-journey>', ...)` block
 
 # Unittest TestCases
 

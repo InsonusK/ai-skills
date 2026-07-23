@@ -57,12 +57,14 @@ All business-layer test files live under a `spec/` directory next to the source 
 
 ```text
 libs/{feature}/data-access/src/lib/
-  {feature}.client.ts
-  {feature}.facade.ts
-  spec/
-    {feature}.client.spec.ts
-    {feature}.facade.spec.ts
-    {feature}.integration.spec.ts
+  service/
+    {feature}.facade.ts
+    spec/
+      {feature}.facade.spec.ts
+  api/
+    {feature}.client.ts
+    spec/
+      {feature}.client.spec.ts
 
 libs/{feature}/feature/src/lib/
   {feature}.store.ts

@@ -41,6 +41,7 @@ test.describe('DsButtonComponent — accessibility', () => {
 - The file MUST be created at `spec/{component-name}.a11y.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
 - An a11y spec MUST navigate directly to the component's stable demo/preview URL, the same one used by its visual spec.
 - Every meaningfully distinct state the component's demo/preview page exposes MUST have its own axe-core scan, since a state change (e.g. `disabled`, an error message appearing) can introduce a violation absent from the default state.
+- Tests in an a11y spec MUST be grouped under a `test.describe('<component-name> — accessibility', () => { ... })` block.
 - Any explicit, individually justified exception to a specific axe rule MUST be scoped to that one rule and documented inline with the reason — never a blanket disable of the whole scan.
 
 ## MUST NOT
@@ -62,6 +63,7 @@ test.describe('DsButtonComponent — accessibility', () => {
 - [ ] Every component/state with a demo/preview page has a corresponding axe-core scan
 - [ ] No scan is disabled wholesale — any rule exception is scoped and documented
 - [ ] CI fails the build on any unexpected violation, not just a warning
+- [ ] A11y specs group tests under a `test.describe('<component-name> — accessibility', ...)` block
 
 # Unittest TestCases
 
