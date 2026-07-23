@@ -13,6 +13,7 @@ change_kind: create
 # Core Principles
 - The default-tier variable is named `_{{ role_name }}_defaults` — prefixed with the role's own name and a leading underscore to mark it as role-internal (not meant to be set directly by a consumer).
 - Every key the role will ever read through `_{{ role_name }}_config` (see [[../vars/main.yml.create.md|vars/main.yml]]) must appear here first, with a safe value.
+- Secret keys are the one exception: they are never added here. There is no safe default for a password or key, so secret keys live only in `_{{ role_name }}_secret_config` (no defaults tier at all) — see [[../vars/main.yml.create.md|vars/main.yml]] and [[../../glossary/sops-secrets.md|SOPS-encrypted inventory secrets]].
 
 # Naming convention
 
