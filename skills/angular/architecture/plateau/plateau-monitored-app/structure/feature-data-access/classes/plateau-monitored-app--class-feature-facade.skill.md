@@ -5,7 +5,7 @@ domain: skill
 type: template
 plateau: monitored-app
 artifact_type: service
-version: 20260711220000
+version: 20260723041000
 tags:
   - skill/template/class
   - plateau/monitored-app
@@ -42,6 +42,7 @@ __Applied solutions:__
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------- | ---------------- | -------------------- | --------- |
 | Facade | `{Feature}Facade` | `OrdersFacade` | `{feature}.facade.ts` | `orders.facade.ts` |
+| Multiple facets | `{Feature}_{Facet}Facade` | `Orders_PaymentFacade` | `facade/{feature}_{facet}.facade.ts` | `facade/orders_payment.facade.ts` |
 | Facade spec | `{Feature}Facade` (tested) | `OrdersFacade` | `{feature}.facade-and-store.spec.ts` | `orders.facade-and-store.spec.ts` |
 
 # Implementation
@@ -127,6 +128,7 @@ __Applied solutions:__
 - [ ] The Facade never performs DTO mapping or calls `http-core`/`HttpClient` directly
 - [ ] Only operations explicitly marked queueable catch `OfflineTransportError` and enqueue
 - [ ] Every Facade test fakes the Client, never HTTP directly
+- [ ] When a feature has multiple data facets, every Facade is exported and named `{Feature}_{Facet}Facade` under `facade/`
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]

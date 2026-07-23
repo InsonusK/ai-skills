@@ -3,7 +3,7 @@ name: plateau-platform-monolith
 description: The offline-monolith application turned into a platform — apps/platform-shell becomes a Native Federation dynamic host that discovers and mounts independently deployed embeddable apps at runtime, sharing Angular, @platform/contracts, and (version-negotiated) the design system as singletons
 domain: skill
 type: template
-version: 20260711210000
+version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/platform-monolith
@@ -21,6 +21,7 @@ parent_plateau: "[[skills/angular/architecture/plateau/plateau-offline-monolith/
 - Remote discovery is a runtime concern (Dynamic Federation manifest), never compiled into the host, so a new embeddable app can be onboarded without a platform rebuild
 - Angular and `@platform/contracts` are shared as strict `singleton: true` dependencies between host and every mounted remote; the design system is shared as a version-negotiated singleton, falling back to an isolated copy when ranges are incompatible
 - Read resilience extends to federated remote chunks: a temporarily unreachable embeddable app still mounts from its last-cached version, the same mechanism already established for the rest of the app
+- When a feature has multiple distinct data facets, each facet owns its own Facade/Client/Mapper trio, grouped under `facade/`, `client/`, and `mapper/` with files named `{feature}_N.{kind}.ts`; the `index.ts` exports every Facade and its public errors, never any Client or Mapper.
 
 # Capabilities
 

@@ -5,7 +5,7 @@ domain: skill
 type: template
 plateau: online-monolith
 artifact_type: service
-version: 20260711180000
+version: 20260723041000
 tags:
   - skill/template/class
   - plateau/online-monolith
@@ -40,6 +40,7 @@ __Applied solutions:__
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------- | --------------- | -------------------- | --------- |
 | Client | `{Feature}Client` | `OrdersClient` | `{feature}.client.ts` | `orders.client.ts` |
+| Multiple facets | `{Feature}_{Facet}Client` | `Orders_PaymentClient` | `client/{feature}_{facet}.client.ts` | `client/orders_payment.client.ts` |
 | Client spec | — | — | `{feature}.client.spec.ts` | `orders.client.spec.ts` |
 
 # Implementation
@@ -145,6 +146,7 @@ __Applied solutions:__
 - [ ] All DTO/model conversion goes through `{feature}.mapper.ts`
 - [ ] Every Client method has at least one success-path and one failure-path test
 - [ ] `httpTesting.verify()` runs after every test
+- [ ] When a feature has multiple data facets, every Client stays internal and named `{Feature}_{Facet}Client` under `client/`
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create|DataAccess/{Feature}.project.create/{feature}.client.ts.create]]
