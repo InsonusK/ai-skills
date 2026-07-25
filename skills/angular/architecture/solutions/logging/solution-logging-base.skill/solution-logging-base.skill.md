@@ -18,7 +18,7 @@ extends:
 depends_on:
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|Структура репозитория (база)]]"
 adr:
-  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/adr/logging-architecture|Logging Architecture ADR]]"
+  - "[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/adr/logging-architecture|Logging Architecture ADR]]"
 ---
 
 # Goal
@@ -42,7 +42,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/solutions/solution-logging-base.skill/adr/logging-architecture|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/adr/logging-architecture|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
   - Selected variant: custom LoggerService with pluggable LogSinks — chosen so a future extension adds a sink without touching any existing call site, and so logs are filterable/queryable from the start
 
 # Requirements
@@ -54,9 +54,9 @@ SOLUTION:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/logging`, enforce "log only through `L[[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Repository.extend|Repository]] workspace-wide
+- [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend|Repository]] - extend - add `libs/shared/logging`, enforce "log only through [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend|Repository]] workspace-wide"
 PROJECT:
-- [[./Implementation/Logging/shared-logging.project.create.md|libs/shared/logging]] - create - `LoggerService`, the `LogS[[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]]rkflow
+- [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]] - create - `LoggerService` workflow
 
 ## Logging from a feature (happy path)
 
@@ -71,21 +71,21 @@ PROJECT:
 
 ## Future extension point in use (illustrative, not part of this solution)
 
-1. The "Логирование (глобальное)" solution adds `BackendLogSink` and registers it alongside `ConsoleLogSink` via the same `LOG_SINKS` multi-provider token.
+1. The Logging base solution adds `BackendLogSink` and registers it alongside `ConsoleLogSink` via the same `LOG_SINKS` multi-provider token.
 2. Every existing `LoggerService` call, across the entire codebase, now also reaches the backend — with zero call-site changes.
 
-![Future extension point in use (illustrative, not part of this solution)](./diagrams/future-extension-point-in-use-illustrative-not-part-of-this.mmd)
+![Future extension point in use (illustrative, not part of this solution)](skills/angular/architecture/solutions/logging/solution-logging-base.skill/diagrams/future-extension-point-in-use-illustrative-not-part-of-this.mmd)
 
 # Rules
 
 ## MUST
-- [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[./Implementation/Logging/shared-logging.project.create.md#MUST|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend#MUST|Repository]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST|Logging/shared-logging.project.create]]
 
 ## MUST NOT
-- [[./Implementation/Logging/shared-logging.project.create.md#MUST NOT|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST NOT|Logging/shared-logging.project.create]]
 
 # Anti-patterns
 
-- [[./Implementation/Repository.extend.md|See Repository.extend.md]] — calling `console.*` directly from feature code; logging a token/passwo[[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Repository.extend#MUST|Repository]]shar[[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST|Logging/shared-logging.project.create]]console wrapper ins[[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST NOT|Logging/shared-logging.project.create]]tside `libs/shared/loggin[[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Repository.extend|See Repository.extend.md]] context, not an interpolated string
-- [ ] Production builds filter out `debug`/`info`, keeping `warn`/`error[[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|See shared-logging.project.create.md]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend|See Repository.extend.md]] — calling `console.*` directly from feature code; logging a token/passwo[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend#MUST|Repository]]shar[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST|Logging/shared-logging.project.create]]console wrapper ins[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST NOT|Logging/shared-logging.project.create]]tside `libs/shared/loggin[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend|See Repository.extend.md]] context, not an interpolated string
+- [ ] Production builds filter out `debug`/`info`, keeping `warn`/`error[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|See shared-logging.project.create.md]]
