@@ -3,7 +3,7 @@ name: plateau-async-monolith
 description: The online-monolith application extended with lazy-loaded, selectively-preloaded feature chunks and read resilience against an unreliable network — a Workbox service worker and an accurate connectivity signal. Mutations still fail immediately when genuinely offline; durable queueing arrives at the next plateau.
 domain: skill
 type: template
-version: 20260711190000
+version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/async-monolith
@@ -22,6 +22,7 @@ parent_plateau: "[[skills/angular/architecture/plateau/plateau-online-monolith/p
 - Connectivity is a first-class, accurate signal (`isOnline`, combining `navigator.onLine` with a periodic health check) exposed from `libs/shared/state`, not a per-feature guess
 - A feature's Client distinguishes "we're offline" (`OfflineTransportError`) from "the server rejected this" — a network-level failure is never conflated with a domain error
 - A mutation attempted while genuinely offline still fails immediately at this plateau — there is no queue yet; the user sees the failure via the offline banner and the rejected Facade call
+- When a feature has multiple distinct data facets, each facet owns its own Facade/Client/Mapper trio, grouped under `facade/`, `client/`, and `mapper/` with files named `{feature}_N.{kind}.ts`; the `index.ts` exports every Facade and its public errors, never any Client or Mapper.
 
 # Capabilities
 

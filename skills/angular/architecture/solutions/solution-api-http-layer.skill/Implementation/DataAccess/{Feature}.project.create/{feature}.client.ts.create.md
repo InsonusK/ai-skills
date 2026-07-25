@@ -18,6 +18,7 @@ This is not tied to one concrete feature. Any solution that creates a new `libs/
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------- | --------------- | -------------------- | --------- |
 | Client | {Feature}Client | OrdersClient | {feature}.client.ts | orders.client.ts |
+| Multiple facets | {Feature}_{Facet}Client | Orders_PaymentClient | client/{feature}_{facet}.client.ts | client/orders_payment.client.ts |
 
 # Implementation changes
 

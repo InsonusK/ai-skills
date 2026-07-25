@@ -3,7 +3,7 @@ name: plateau-offline-monolith
 description: The async-monolith application extended with a durable, per-feature-partitioned mutation write-queue with automatic replay and server-wins conflict handling — the app keeps working, both reading and writing, while the network is unreliable. A full offline-capable PWA.
 domain: skill
 type: template
-version: 20260711200000
+version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/offline-monolith
@@ -20,6 +20,7 @@ parent_plateau: "[[skills/angular/architecture/plateau/plateau-async-monolith/pl
 - Replay is automatic on connectivity restoration, FIFO within a feature, concurrent across features, with a server-wins conflict default and one clean seam for future custom resolution
 - The user is never left guessing: a per-feature pending-sync count, alongside the existing offline banner, makes write-queueing visible
 - Everything `async-monolith` already provides — lazy-loaded chunks, selective preloading, service-worker read resilience, an accurate `isOnline` signal — is unchanged
+- When a feature has multiple distinct data facets, each facet owns its own Facade/Client/Mapper trio, grouped under `facade/`, `client/`, and `mapper/` with files named `{feature}_N.{kind}.ts`; the `index.ts` exports every Facade and its public errors, never any Client or Mapper.
 
 # Capabilities
 

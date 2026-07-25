@@ -3,7 +3,7 @@ name: plateau-multiuser-app
 description: The monitored-app application extended with real authentication — session lifecycle, in-memory access token, permission-based route guards and UI directives, and a platform-host SessionContract shared with every embeddable app. Final plateau in the main chain — all 17 solutions applied.
 domain: skill
 type: template
-version: 20260711230000
+version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/multiuser-app
@@ -21,6 +21,7 @@ parent_plateau: "[[skills/angular/architecture/plateau/plateau-monitored-app/pla
 - Authorization is always expressed as permission strings, never role names, checked identically whether the check happens in a route guard or a UI `*hasPermission` directive
 - A route-level permission guard is attached at the feature's own route, using a shared `requirePermission` factory — never centralized in the shell, consistent with hierarchical route ownership
 - The platform host is the sole source of truth for `SessionContract`; every embeddable app reads it read-only and never implements its own login flow
+- When a feature has multiple distinct data facets, each facet owns its own Facade/Client/Mapper trio, grouped under `facade/`, `client/`, and `mapper/` with files named `{feature}_N.{kind}.ts`; the `index.ts` exports every Facade and its public errors, never any Client or Mapper.
 
 # Capabilities
 

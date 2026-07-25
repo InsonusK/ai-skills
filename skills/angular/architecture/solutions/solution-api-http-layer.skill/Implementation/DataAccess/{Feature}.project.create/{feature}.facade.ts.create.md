@@ -19,6 +19,7 @@ This is not tied to one concrete feature. Any solution that creates a new `libs/
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------- | ---------------- | -------------------- | --------- |
 | Facade | {Feature}Facade | OrdersFacade | {feature}.facade.ts | orders.facade.ts |
+| Multiple facets | {Feature}_{Facet}Facade | Orders_PaymentFacade | facade/{feature}_{facet}.facade.ts | facade/orders_payment.facade.ts |
 
 # Implementation changes
 

@@ -3,7 +3,7 @@ name: solution-api-http-layer
 description: Facade/Client layering inside each feature's data-access lib, a shared base HTTP service, typed domain errors, and hand-written DTO mapping — collapses the classical NgRx Action/Reducer/Effect chain for feature-level operations in favor of Signal Store calling the Facade directly
 domain: skill
 type: architecture
-version: 1
+version: 2
 tags:
   - skill/architecture/solution
   - angular
@@ -45,6 +45,20 @@ adr:
 - **Client** is internal to a feature's `data-access` lib, never exported: DTO mapping (via that feature's `{feature}.mapper.ts`) plus the actual HTTP call through `libs/shared/http-core`. It is the single point where a raw `HttpErrorResponse` is caught and converted into a typed domain error.
 - For feature-level operations, no Action/Reducer/Effect is introduced — the Signal Store method calls the Facade directly and updates its own state from the result. Global/cross-cutting state (auth, notifications, offline-sync) keeps its existing classical NgRx chain (Effect → Facade → Client), unchanged by this solution.
 - DTO ↔ domain model mapping is always a hand-written function in `{feature}.mapper.ts`, including any enrichment from data not present in the DTO itself.
+- When a feature's `data-access` lib owns several distinct data facets (for example, separate endpoints for orders, payments, and delivery), each facet keeps its own Facade/Client/Mapper trio. The files are grouped by role under `libs/{feature}/data-access/src/lib`:
+  ```
+  libs/{feature}/data-access/src/lib
+  - facade/
+    - {feature}_1.facade.ts
+    - {feature}_2.facade.ts
+  - client/
+    - {feature}_1.client.ts
+    - {feature}_2.client.ts
+  - mapper/
+    - {feature}_1.mapper.ts
+    - {feature}_2.mapper.ts
+  ```
+  The `index.ts` exports every facet's Facade and its public error types; no Client or Mapper is exported. The same Facade/Client/Mapper rules apply to every facet.
 
 # Adr
 
@@ -128,4 +142,5 @@ Artifact-level (generic pattern, applied by any solution that creates a `libs/{f
 - [ ] Every DTO ↔ model conversion has a corresponding function in `{feature}.mapper.ts`
 - [ ] Global/cross-cutting state (auth, notifications, offline-sync) still uses its existing classical NgRx chain, unchanged by this solution
 - [ ] Every feature's `index.ts` exports the Facade and domain error types only, never the Client or Mapper
+- [ ] When a feature has multiple data facets, each facet's files are grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`
 - [ ] No component or Signal Store method imports a feature's Client directly, bypassing the Facade
