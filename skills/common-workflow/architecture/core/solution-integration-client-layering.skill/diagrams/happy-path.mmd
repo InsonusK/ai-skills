@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor App as Application code
+    participant Client as {Api}Client
+    participant Integration as {Api}Integration
+    participant API as External API
+    App->>Client: getResource(id)
+    activate Client
+    Client->>Integration: getResource(id)
+    activate Integration
+    Integration->>API: GET /resource/{id}
+    activate API
+    API-->>Integration: raw response
+    deactivate API
+    Integration-->>Client: typed response
+    deactivate Integration
+    Client-->>App: application model
+    deactivate Client
