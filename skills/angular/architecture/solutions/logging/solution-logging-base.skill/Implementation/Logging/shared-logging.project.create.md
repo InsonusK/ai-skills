@@ -47,7 +47,7 @@ None beyond Angular's own DI/core APIs.
 - `LogEntry`'s `context` MUST be a plain, structured object — never a pre-formatted string standing in for context.
 
 ## MUST NOT
-- `LoggerService`/`ConsoleLogSink` MUST NOT ever be given a token, password, or PII value to log, regardless of level (see [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Repository.extend#MUST]]).
+- `LoggerService`/`ConsoleLogSink` MUST NOT ever be given a token, password, or PII value to log, regardless of level (see [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend#MUST]]).
 
 # Anti-patterns
 

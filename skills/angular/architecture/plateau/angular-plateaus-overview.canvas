@@ -1,21 +1,1768 @@
 {
-	"edges":[
-		{"id":"9892955fea1b9d4e","fromNode":"skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md","fromSide":"right","toNode":"skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md","toSide":"left"},
-		{"id":"ed2d90d094bc3a16","fromNode":"skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md","fromSide":"right","toNode":"skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md","toSide":"left"},
-		{"id":"487c22ab34ffad21","fromNode":"skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md","fromSide":"right","toNode":"skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md","toSide":"left"},
-		{"id":"cc2e5dd6294e63fb","fromNode":"skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md","fromSide":"right","toNode":"skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md","toSide":"left"},
-		{"id":"fcba9bd6aecd955a","fromNode":"skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md","fromSide":"right","toNode":"skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md","toSide":"left"},
-		{"id":"f938cd633435d372","fromNode":"skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md","fromSide":"right","toNode":"skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md","toSide":"left"},
-		{"id":"20631abed6ed96b9","fromNode":"skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md","fromSide":"bottom","toNode":"skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md","toSide":"left"}
-	],
-	"nodes":[
-		{"file":"skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md","id":"skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md","subpath":"# Capabilities","type":"file","x":-40,"y":600,"width":400,"height":1200},
-		{"file":"skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md","id":"skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md","subpath":"# Capabilities","type":"file","x":600,"y":770,"width":400,"height":860},
-		{"file":"skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md","id":"skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md","subpath":"# Capabilities","type":"file","x":1200,"y":835,"width":400,"height":730},
-		{"file":"skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md","id":"skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md","subpath":"# Capabilities","type":"file","x":1800,"y":725,"width":400,"height":950},
-		{"file":"skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md","id":"skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md","subpath":"# Capabilities","type":"file","x":2400,"y":843,"width":400,"height":715},
-		{"file":"skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md","id":"skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md","subpath":"# Capabilities","type":"file","x":3000,"y":741,"width":400,"height":920},
-		{"file":"skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md","id":"skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md","subpath":"# Capabilities","type":"file","x":-680,"y":870,"width":400,"height":660},
-		{"file":"skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md","id":"skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md","subpath":"# Capabilities","type":"file","x":2400,"y":1800,"width":400,"height":980}
-	]
+  "edges": [
+    {
+      "fromNode": "skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md",
+      "fromSide": "right",
+      "id": "05145d33f73aaea6",
+      "toNode": "skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md",
+      "fromSide": "right",
+      "id": "6026c0f5c51685f2",
+      "toNode": "skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md",
+      "fromSide": "right",
+      "id": "fa0d8e5e6fab5d2a",
+      "toNode": "skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md",
+      "fromSide": "right",
+      "id": "cdfe43a59df20a5a",
+      "toNode": "skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md",
+      "fromSide": "right",
+      "id": "7c2873d672a2c86e",
+      "toNode": "skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md",
+      "fromSide": "right",
+      "id": "82dc606a9e906e7b",
+      "toNode": "skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md",
+      "toSide": "left"
+    }
+  ],
+  "nodes": [
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 600.0,
+      "y": 250.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-client.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-client.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 1000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-facade.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-facade.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 1500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-mapper-and-errors.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-mapper-and-errors.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 2000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/plateau-async-monolith--project-feature-data-access.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/plateau-async-monolith--project-feature-data-access.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 2500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/classes/plateau-async-monolith--class-feature-routes.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/classes/plateau-async-monolith--class-feature-routes.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 3000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/classes/plateau-async-monolith--class-feature-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/classes/plateau-async-monolith--class-feature-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 3500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/classes/plateau-async-monolith--class-form-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/classes/plateau-async-monolith--class-form-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 4000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/plateau-async-monolith--project-feature-feature.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-feature/plateau-async-monolith--project-feature-feature.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 4500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 5000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell-e2e/classes/plateau-async-monolith--class-scenario-name-e2e-spec.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell-e2e/classes/plateau-async-monolith--class-scenario-name-e2e-spec.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 5500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell-e2e/plateau-async-monolith--project-platform-shell-e2e.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell-e2e/plateau-async-monolith--project-platform-shell-e2e.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 6000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell/classes/plateau-async-monolith--class-service-worker.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell/classes/plateau-async-monolith--class-service-worker.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 6500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell/plateau-async-monolith--project-platform-shell.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/platform-shell/plateau-async-monolith--project-platform-shell.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 7000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-http-core/plateau-async-monolith--project-shared-http-core.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-http-core/plateau-async-monolith--project-shared-http-core.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 7500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-logging/classes/plateau-async-monolith--class-logger-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-logging/classes/plateau-async-monolith--class-logger-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 8000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-logging/plateau-async-monolith--project-shared-logging.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-logging/plateau-async-monolith--project-shared-logging.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 8500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/classes/plateau-async-monolith--class-auth-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/classes/plateau-async-monolith--class-auth-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 9000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/classes/plateau-async-monolith--class-connectivity-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/classes/plateau-async-monolith--class-connectivity-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 9500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/plateau-async-monolith--project-shared-state.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-state/plateau-async-monolith--project-shared-state.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 10000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-ui/classes/plateau-async-monolith--class-offline-banner-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-ui/classes/plateau-async-monolith--class-offline-banner-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 10500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-ui/plateau-async-monolith--project-shared-ui.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-ui/plateau-async-monolith--project-shared-ui.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 11000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-util/plateau-async-monolith--project-shared-util.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-async-monolith/structure/shared-util/plateau-async-monolith--project-shared-util.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 11500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 12000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/classes/plateau-design-system--class-component-name.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/classes/plateau-design-system--class-component-name.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 12500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/classes/plateau-design-system--class-custom-tokens.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/classes/plateau-design-system--class-custom-tokens.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 13000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/classes/plateau-design-system--class-theme.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/classes/plateau-design-system--class-theme.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 13500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/plateau-design-system--project-design-system.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-design-system/structure/design-system/plateau-design-system--project-design-system.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 14000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-design-system/structure/plateau-design-system--repo-design-system.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-design-system/structure/plateau-design-system--repo-design-system.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 14500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-embeddable-app/plateau-embeddable-app.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 2400.0,
+      "y": 0.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-embeddable-app/structure/plateau-embeddable-app--repo-embeddable-app.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-embeddable-app/structure/plateau-embeddable-app--repo-embeddable-app.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 15000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 2400.0,
+      "y": 500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/classes/plateau-monitored-app--class-feature-client.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/classes/plateau-monitored-app--class-feature-client.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 15500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/classes/plateau-monitored-app--class-feature-facade.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/classes/plateau-monitored-app--class-feature-facade.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 16000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/classes/plateau-monitored-app--class-feature-mapper-and-errors.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/classes/plateau-monitored-app--class-feature-mapper-and-errors.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 16500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/plateau-monitored-app--project-feature-data-access.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-data-access/plateau-monitored-app--project-feature-data-access.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 17000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/classes/plateau-monitored-app--class-feature-routes.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/classes/plateau-monitored-app--class-feature-routes.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 17500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/classes/plateau-monitored-app--class-feature-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/classes/plateau-monitored-app--class-feature-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 18000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/classes/plateau-monitored-app--class-form-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/classes/plateau-monitored-app--class-form-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 18500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/plateau-monitored-app--project-feature-feature.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/feature-feature/plateau-monitored-app--project-feature-feature.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 19000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/plateau-monitored-app--repo-monitored-app.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/plateau-monitored-app--repo-monitored-app.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 19500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell-e2e/classes/plateau-monitored-app--class-scenario-name-e2e-spec.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell-e2e/classes/plateau-monitored-app--class-scenario-name-e2e-spec.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 20000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell-e2e/plateau-monitored-app--project-platform-shell-e2e.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell-e2e/plateau-monitored-app--project-platform-shell-e2e.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 20500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/classes/plateau-monitored-app--class-global-error-handler.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/classes/plateau-monitored-app--class-global-error-handler.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 21000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/classes/plateau-monitored-app--class-remote-registry-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/classes/plateau-monitored-app--class-remote-registry-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 21500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/classes/plateau-monitored-app--class-service-worker.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/classes/plateau-monitored-app--class-service-worker.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 22000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/plateau-monitored-app--project-platform-shell.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/platform-shell/plateau-monitored-app--project-platform-shell.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 22500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-http-core/plateau-monitored-app--project-shared-http-core.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-http-core/plateau-monitored-app--project-shared-http-core.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 23000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/classes/plateau-monitored-app--class-backend-log-sink.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/classes/plateau-monitored-app--class-backend-log-sink.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 23500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/classes/plateau-monitored-app--class-log-retry-queue.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/classes/plateau-monitored-app--class-log-retry-queue.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 24000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/classes/plateau-monitored-app--class-logger-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/classes/plateau-monitored-app--class-logger-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 24500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/plateau-monitored-app--project-shared-logging.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-logging/plateau-monitored-app--project-shared-logging.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 25000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-offline-sync/classes/plateau-monitored-app--class-mutation-queue-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-offline-sync/classes/plateau-monitored-app--class-mutation-queue-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 25500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-offline-sync/classes/plateau-monitored-app--class-replay-orchestrator.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-offline-sync/classes/plateau-monitored-app--class-replay-orchestrator.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 26000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-offline-sync/plateau-monitored-app--project-shared-offline-sync.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-offline-sync/plateau-monitored-app--project-shared-offline-sync.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 26500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-state/classes/plateau-monitored-app--class-auth-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-state/classes/plateau-monitored-app--class-auth-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 27000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-state/classes/plateau-monitored-app--class-connectivity-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-state/classes/plateau-monitored-app--class-connectivity-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 27500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-state/plateau-monitored-app--project-shared-state.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-state/plateau-monitored-app--project-shared-state.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 28000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-ui/classes/plateau-monitored-app--class-offline-banner-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-ui/classes/plateau-monitored-app--class-offline-banner-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 28500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-ui/classes/plateau-monitored-app--class-pending-sync-indicator-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-ui/classes/plateau-monitored-app--class-pending-sync-indicator-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 29000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-ui/plateau-monitored-app--project-shared-ui.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-ui/plateau-monitored-app--project-shared-ui.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 29500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-util/plateau-monitored-app--project-shared-util.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-monitored-app/structure/shared-util/plateau-monitored-app--project-shared-util.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 30000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 3000.0,
+      "y": 500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/classes/plateau-multiuser-app--class-feature-client.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/classes/plateau-multiuser-app--class-feature-client.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 30500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/classes/plateau-multiuser-app--class-feature-facade.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/classes/plateau-multiuser-app--class-feature-facade.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 31000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/classes/plateau-multiuser-app--class-feature-mapper-and-errors.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/classes/plateau-multiuser-app--class-feature-mapper-and-errors.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 31500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/plateau-multiuser-app--project-feature-data-access.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-data-access/plateau-multiuser-app--project-feature-data-access.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 32000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/classes/plateau-multiuser-app--class-feature-routes.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/classes/plateau-multiuser-app--class-feature-routes.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 32500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/classes/plateau-multiuser-app--class-feature-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/classes/plateau-multiuser-app--class-feature-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 33000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/classes/plateau-multiuser-app--class-form-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/classes/plateau-multiuser-app--class-form-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 33500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/plateau-multiuser-app--project-feature-feature.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/feature-feature/plateau-multiuser-app--project-feature-feature.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 34000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/plateau-multiuser-app--repo-multiuser-app.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/plateau-multiuser-app--repo-multiuser-app.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 34500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell-e2e/classes/plateau-multiuser-app--class-scenario-name-e2e-spec.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell-e2e/classes/plateau-multiuser-app--class-scenario-name-e2e-spec.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 35000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell-e2e/plateau-multiuser-app--project-platform-shell-e2e.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell-e2e/plateau-multiuser-app--project-platform-shell-e2e.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 35500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/classes/plateau-multiuser-app--class-global-error-handler.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/classes/plateau-multiuser-app--class-global-error-handler.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 36000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/classes/plateau-multiuser-app--class-remote-registry-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/classes/plateau-multiuser-app--class-remote-registry-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 36500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/classes/plateau-multiuser-app--class-service-worker.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/classes/plateau-multiuser-app--class-service-worker.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 37000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/plateau-multiuser-app--project-platform-shell.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/platform-shell/plateau-multiuser-app--project-platform-shell.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 37500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-auth-ui/classes/plateau-multiuser-app--class-has-permission-directive.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-auth-ui/classes/plateau-multiuser-app--class-has-permission-directive.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 38000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-auth-ui/classes/plateau-multiuser-app--class-permission-guard.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-auth-ui/classes/plateau-multiuser-app--class-permission-guard.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 38500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-auth-ui/plateau-multiuser-app--project-shared-auth-ui.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-auth-ui/plateau-multiuser-app--project-shared-auth-ui.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 39000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-http-core/plateau-multiuser-app--project-shared-http-core.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-http-core/plateau-multiuser-app--project-shared-http-core.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 39500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/classes/plateau-multiuser-app--class-backend-log-sink.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/classes/plateau-multiuser-app--class-backend-log-sink.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 40000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/classes/plateau-multiuser-app--class-log-retry-queue.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/classes/plateau-multiuser-app--class-log-retry-queue.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 40500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/classes/plateau-multiuser-app--class-logger-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/classes/plateau-multiuser-app--class-logger-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 41000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/plateau-multiuser-app--project-shared-logging.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-logging/plateau-multiuser-app--project-shared-logging.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 41500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-offline-sync/classes/plateau-multiuser-app--class-mutation-queue-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-offline-sync/classes/plateau-multiuser-app--class-mutation-queue-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 42000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-offline-sync/classes/plateau-multiuser-app--class-replay-orchestrator.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-offline-sync/classes/plateau-multiuser-app--class-replay-orchestrator.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 42500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-offline-sync/plateau-multiuser-app--project-shared-offline-sync.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-offline-sync/plateau-multiuser-app--project-shared-offline-sync.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 43000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/classes/plateau-multiuser-app--class-auth-interceptor.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/classes/plateau-multiuser-app--class-auth-interceptor.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 43500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/classes/plateau-multiuser-app--class-auth-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/classes/plateau-multiuser-app--class-auth-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 44000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/classes/plateau-multiuser-app--class-connectivity-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/classes/plateau-multiuser-app--class-connectivity-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 44500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/plateau-multiuser-app--project-shared-state.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-state/plateau-multiuser-app--project-shared-state.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 45000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-ui/classes/plateau-multiuser-app--class-offline-banner-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-ui/classes/plateau-multiuser-app--class-offline-banner-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 45500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-ui/classes/plateau-multiuser-app--class-pending-sync-indicator-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-ui/classes/plateau-multiuser-app--class-pending-sync-indicator-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 46000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-ui/plateau-multiuser-app--project-shared-ui.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-ui/plateau-multiuser-app--project-shared-ui.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 46500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-util/plateau-multiuser-app--project-shared-util.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-multiuser-app/structure/shared-util/plateau-multiuser-app--project-shared-util.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 47000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/plateau-offline-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 1200.0,
+      "y": 250.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/classes/plateau-offline-monolith--class-feature-client.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/classes/plateau-offline-monolith--class-feature-client.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 47500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/classes/plateau-offline-monolith--class-feature-facade.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/classes/plateau-offline-monolith--class-feature-facade.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 48000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/classes/plateau-offline-monolith--class-feature-mapper-and-errors.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/classes/plateau-offline-monolith--class-feature-mapper-and-errors.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 48500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/plateau-offline-monolith--project-feature-data-access.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-data-access/plateau-offline-monolith--project-feature-data-access.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 49000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/classes/plateau-offline-monolith--class-feature-routes.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/classes/plateau-offline-monolith--class-feature-routes.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 49500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/classes/plateau-offline-monolith--class-feature-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/classes/plateau-offline-monolith--class-feature-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 50000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/classes/plateau-offline-monolith--class-form-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/classes/plateau-offline-monolith--class-form-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 50500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/plateau-offline-monolith--project-feature-feature.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/feature-feature/plateau-offline-monolith--project-feature-feature.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 51000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/plateau-offline-monolith--repo-offline-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/plateau-offline-monolith--repo-offline-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 51500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell-e2e/classes/plateau-offline-monolith--class-scenario-name-e2e-spec.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell-e2e/classes/plateau-offline-monolith--class-scenario-name-e2e-spec.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 52000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell-e2e/plateau-offline-monolith--project-platform-shell-e2e.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell-e2e/plateau-offline-monolith--project-platform-shell-e2e.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 52500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell/classes/plateau-offline-monolith--class-service-worker.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell/classes/plateau-offline-monolith--class-service-worker.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 53000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell/plateau-offline-monolith--project-platform-shell.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/platform-shell/plateau-offline-monolith--project-platform-shell.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 53500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-http-core/plateau-offline-monolith--project-shared-http-core.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-http-core/plateau-offline-monolith--project-shared-http-core.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 54000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-logging/classes/plateau-offline-monolith--class-logger-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-logging/classes/plateau-offline-monolith--class-logger-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 54500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-logging/plateau-offline-monolith--project-shared-logging.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-logging/plateau-offline-monolith--project-shared-logging.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 55000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-offline-sync/classes/plateau-offline-monolith--class-mutation-queue-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-offline-sync/classes/plateau-offline-monolith--class-mutation-queue-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 55500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-offline-sync/classes/plateau-offline-monolith--class-replay-orchestrator.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-offline-sync/classes/plateau-offline-monolith--class-replay-orchestrator.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 56000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-offline-sync/plateau-offline-monolith--project-shared-offline-sync.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-offline-sync/plateau-offline-monolith--project-shared-offline-sync.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 56500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-state/classes/plateau-offline-monolith--class-auth-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-state/classes/plateau-offline-monolith--class-auth-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 57000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-state/classes/plateau-offline-monolith--class-connectivity-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-state/classes/plateau-offline-monolith--class-connectivity-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 57500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-state/plateau-offline-monolith--project-shared-state.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-state/plateau-offline-monolith--project-shared-state.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 58000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-ui/classes/plateau-offline-monolith--class-offline-banner-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-ui/classes/plateau-offline-monolith--class-offline-banner-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 58500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-ui/classes/plateau-offline-monolith--class-pending-sync-indicator-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-ui/classes/plateau-offline-monolith--class-pending-sync-indicator-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 59000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-ui/plateau-offline-monolith--project-shared-ui.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-ui/plateau-offline-monolith--project-shared-ui.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 59500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-util/plateau-offline-monolith--project-shared-util.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-offline-monolith/structure/shared-util/plateau-offline-monolith--project-shared-util.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 60000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/plateau-online-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 250.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/classes/plateau-online-monolith--class-feature-client.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/classes/plateau-online-monolith--class-feature-client.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 60500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/classes/plateau-online-monolith--class-feature-facade.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/classes/plateau-online-monolith--class-feature-facade.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 61000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/classes/plateau-online-monolith--class-feature-mapper-and-errors.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/classes/plateau-online-monolith--class-feature-mapper-and-errors.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 61500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/plateau-online-monolith--project-feature-data-access.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-data-access/plateau-online-monolith--project-feature-data-access.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 62000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-routes.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-routes.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 62500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 63000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-form-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-form-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 63500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/plateau-online-monolith--project-feature-feature.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/feature-feature/plateau-online-monolith--project-feature-feature.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 64000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 64500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell-e2e/classes/plateau-online-monolith--class-scenario-name-e2e-spec.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell-e2e/classes/plateau-online-monolith--class-scenario-name-e2e-spec.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 65000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 65500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell/plateau-online-monolith--project-platform-shell.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/platform-shell/plateau-online-monolith--project-platform-shell.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 66000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-http-core/plateau-online-monolith--project-shared-http-core.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-http-core/plateau-online-monolith--project-shared-http-core.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 66500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-logging/classes/plateau-online-monolith--class-logger-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-logging/classes/plateau-online-monolith--class-logger-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 67000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-logging/plateau-online-monolith--project-shared-logging.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-logging/plateau-online-monolith--project-shared-logging.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 67500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-state/classes/plateau-online-monolith--class-auth-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-state/classes/plateau-online-monolith--class-auth-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 68000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-state/plateau-online-monolith--project-shared-state.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-state/plateau-online-monolith--project-shared-state.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 68500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-ui/plateau-online-monolith--project-shared-ui.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-ui/plateau-online-monolith--project-shared-ui.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 69000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-util/plateau-online-monolith--project-shared-util.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-online-monolith/structure/shared-util/plateau-online-monolith--project-shared-util.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 69500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 1800.0,
+      "y": 250.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/classes/plateau-platform-monolith--class-feature-client.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/classes/plateau-platform-monolith--class-feature-client.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 70000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/classes/plateau-platform-monolith--class-feature-facade.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/classes/plateau-platform-monolith--class-feature-facade.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 70500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/classes/plateau-platform-monolith--class-feature-mapper-and-errors.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/classes/plateau-platform-monolith--class-feature-mapper-and-errors.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 71000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/plateau-platform-monolith--project-feature-data-access.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-data-access/plateau-platform-monolith--project-feature-data-access.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 71500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/classes/plateau-platform-monolith--class-feature-routes.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/classes/plateau-platform-monolith--class-feature-routes.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 72000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/classes/plateau-platform-monolith--class-feature-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/classes/plateau-platform-monolith--class-feature-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 72500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/classes/plateau-platform-monolith--class-form-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/classes/plateau-platform-monolith--class-form-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 73000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/plateau-platform-monolith--project-feature-feature.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/feature-feature/plateau-platform-monolith--project-feature-feature.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 73500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/plateau-platform-monolith--repo-platform-monolith.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/plateau-platform-monolith--repo-platform-monolith.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 74000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell-e2e/classes/plateau-platform-monolith--class-scenario-name-e2e-spec.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell-e2e/classes/plateau-platform-monolith--class-scenario-name-e2e-spec.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 74500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell-e2e/plateau-platform-monolith--project-platform-shell-e2e.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell-e2e/plateau-platform-monolith--project-platform-shell-e2e.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 75000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell/classes/plateau-platform-monolith--class-remote-registry-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell/classes/plateau-platform-monolith--class-remote-registry-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 75500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell/classes/plateau-platform-monolith--class-service-worker.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell/classes/plateau-platform-monolith--class-service-worker.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 76000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell/plateau-platform-monolith--project-platform-shell.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/platform-shell/plateau-platform-monolith--project-platform-shell.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 76500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-http-core/plateau-platform-monolith--project-shared-http-core.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-http-core/plateau-platform-monolith--project-shared-http-core.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 77000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-logging/classes/plateau-platform-monolith--class-logger-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-logging/classes/plateau-platform-monolith--class-logger-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 77500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-logging/plateau-platform-monolith--project-shared-logging.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-logging/plateau-platform-monolith--project-shared-logging.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 78000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-offline-sync/classes/plateau-platform-monolith--class-mutation-queue-service.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-offline-sync/classes/plateau-platform-monolith--class-mutation-queue-service.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 78500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-offline-sync/classes/plateau-platform-monolith--class-replay-orchestrator.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-offline-sync/classes/plateau-platform-monolith--class-replay-orchestrator.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 79000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-offline-sync/plateau-platform-monolith--project-shared-offline-sync.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-offline-sync/plateau-platform-monolith--project-shared-offline-sync.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 79500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-state/classes/plateau-platform-monolith--class-auth-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-state/classes/plateau-platform-monolith--class-auth-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 80000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-state/classes/plateau-platform-monolith--class-connectivity-store.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-state/classes/plateau-platform-monolith--class-connectivity-store.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 80500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-state/plateau-platform-monolith--project-shared-state.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-state/plateau-platform-monolith--project-shared-state.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 81000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-ui/classes/plateau-platform-monolith--class-offline-banner-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-ui/classes/plateau-platform-monolith--class-offline-banner-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 81500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-ui/classes/plateau-platform-monolith--class-pending-sync-indicator-component.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-ui/classes/plateau-platform-monolith--class-pending-sync-indicator-component.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 82000.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-ui/plateau-platform-monolith--project-shared-ui.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-ui/plateau-platform-monolith--project-shared-ui.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 82500.0
+    },
+    {
+      "file": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-util/plateau-platform-monolith--project-shared-util.skill.md",
+      "height": 400.0,
+      "id": "skills/angular/architecture/plateau/plateau-platform-monolith/structure/shared-util/plateau-platform-monolith--project-shared-util.skill.md",
+      "subpath": "# Capabilities",
+      "type": "file",
+      "width": 400.0,
+      "x": 0.0,
+      "y": 83000.0
+    }
+  ]
 }

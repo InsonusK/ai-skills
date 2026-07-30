@@ -10,7 +10,7 @@ tags:
   - skill/template/project
   - plateau/monitored-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/logging/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]]"
 ---
 
 > Also depends on the `design-system` npm package, unchanged from `online-monolith`.
@@ -23,7 +23,7 @@ created_by:
 - Contain no business logic of its own — every feature lives under `libs/{feature}` and is only routed to from here
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
 
 # Core Principles
 
@@ -120,7 +120,7 @@ __Applied solutions:__
 - `GlobalErrorHandler` MUST NOT be registered only in a module or component-level provider — it must be at the application root.
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
 
 # Anti-patterns
 
@@ -141,7 +141,7 @@ __Applied solutions:__
   - Instead: always route through `LoggerService.error` so `BackendLogSink` receives them
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
 
 # Check list
 
@@ -154,4 +154,4 @@ __Applied solutions:__
 - [ ] Uncaught exceptions in the platform shell reach the backend log sink
 
 __Applied solutions:__
-- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]] - [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|PlatformHost/platform-shell.project.extend]]

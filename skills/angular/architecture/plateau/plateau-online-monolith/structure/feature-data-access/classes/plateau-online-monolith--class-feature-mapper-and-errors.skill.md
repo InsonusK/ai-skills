@@ -5,7 +5,7 @@ domain: skill
 type: template
 plateau: online-monolith
 artifact_type: service
-version: 20260711180000
+version: 20260723041000
 tags:
   - skill/template/class
   - plateau/online-monolith
@@ -36,6 +36,7 @@ __Applied solutions:__
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------- | ----------------- | -------------------- | --------- |
 | Mapper functions | `{feature}DtoToModel` / `{feature}ModelToDto` | `orderDtoToModel` / `orderModelToDto` | `{feature}.mapper.ts` | `orders.mapper.ts` |
+| Multiple facets | `{feature}_{facet}DtoToModel` / `{feature}_{facet}ModelToDto` | `orders_paymentDtoToModel` / `orders_paymentModelToDto` | `mapper/{feature}_{facet}.mapper.ts` | `mapper/orders_payment.mapper.ts` |
 | Domain error classes | `{Feature}{Reason}Error` | `OrdersConflictError` | `{feature}.errors.ts` | `orders.errors.ts` |
 
 # Implementation
@@ -98,6 +99,7 @@ __Applied solutions:__
 
 - [ ] Every DTO ↔ model conversion has a corresponding function in `{feature}.mapper.ts`
 - [ ] Every error type thrown by this feature's data-access code is declared in `{feature}.errors.ts`
+- [ ] When a feature has multiple data facets, every mapper lives under `mapper/` with names `{feature}_{facet}DtoToModel` / `{feature}_{facet}ModelToDto`
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create|DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create]]

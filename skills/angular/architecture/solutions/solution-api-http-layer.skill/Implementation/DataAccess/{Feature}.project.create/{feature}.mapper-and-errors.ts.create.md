@@ -19,6 +19,7 @@ This is not tied to one concrete feature. It covers two small, related files eve
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------- | ----------------- | -------------------- | --------- |
 | Mapper functions | {feature}DtoToModel / {feature}ModelToDto | orderDtoToModel / orderModelToDto | {feature}.mapper.ts | orders.mapper.ts |
+| Multiple facets | {feature}_{facet}DtoToModel / {feature}_{facet}ModelToDto | orders_paymentDtoToModel / orders_paymentModelToDto | mapper/{feature}_{facet}.mapper.ts | mapper/orders_payment.mapper.ts |
 | Domain error classes | {Feature}{Reason}Error | OrdersConflictError | {feature}.errors.ts | orders.errors.ts |
 
 # Implementation changes

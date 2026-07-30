@@ -5,7 +5,7 @@ domain: skill
 type: template
 plateau: online-monolith
 artifact_type: service
-version: 20260711180000
+version: 20260723041000
 tags:
   - skill/template/class
   - plateau/online-monolith
@@ -41,6 +41,7 @@ __Applied solutions:__
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------- | ---------------- | -------------------- | --------- |
 | Facade | `{Feature}Facade` | `OrdersFacade` | `{feature}.facade.ts` | `orders.facade.ts` |
+| Multiple facets | `{Feature}_{Facet}Facade` | `Orders_PaymentFacade` | `facade/{feature}_{facet}.facade.ts` | `facade/orders_payment.facade.ts` |
 | Facade spec | — | — | `{feature}.facade.spec.ts` | `orders.facade.spec.ts` |
 
 # Implementation
@@ -132,6 +133,7 @@ __Applied solutions:__
 - [ ] The Facade never performs DTO mapping or calls `http-core`/`HttpClient` directly
 - [ ] Every error surfaced by the Facade is a typed domain error
 - [ ] Every Facade test fakes the Client, never HTTP directly
+- [ ] When a feature has multiple data facets, every Facade is exported and named `{Feature}_{Facet}Facade` under `facade/`
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]

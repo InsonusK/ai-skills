@@ -3,7 +3,7 @@ name: plateau-online-monolith
 description: The base online application — Nx workspace structure, three-tier state management, hierarchical routing, Signal Forms, a Facade/Client HTTP data-access layer with optimistic-update-friendly Signal Store orchestration, console-only logging, and enforced Vitest/Playwright test coverage across both the business layer and the UI layer (behavioral, visual, and accessibility). Single deployable unit, no offline support, no Module Federation, no authentication yet.
 domain: skill
 type: template
-version: 20260711180000
+version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/online-monolith
@@ -13,7 +13,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
+  - "[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/solution-logging-base.skill|solution-logging-base]]"
   - "[[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]]"
   - "[[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]]"
 parent_plateau:
@@ -32,6 +32,7 @@ parent_plateau:
 - Everything logs through `LoggerService`, currently forwarding only to the console — no direct `console.*` call anywhere else
 - Every Nx project runs unit tests via Vitest; `HttpTestingController` is used only inside a feature's own Client spec
 - A UI component is tested independently of business logic around it, at three layers: behavioral (Testing Library), visual (Playwright screenshot against `apps/component-preview`), and accessibility (`@axe-core/playwright`) — never with a faked Facade/Client
+- When a feature has multiple distinct data facets, each facet owns its own Facade/Client/Mapper trio, grouped under `facade/`, `client/`, and `mapper/` with files named `{feature}_N.{kind}.ts`; the `index.ts` exports every Facade and its public errors, never any Client or Mapper.
 
 # Capabilities
 

@@ -3,12 +3,12 @@ name: plateau-monitored-app
 description: The platform-monolith application extended with backend log delivery — warn/error/report entries are batched, sent to the backend, and retried on failure — plus a global ErrorHandler capturing every uncaught exception. The application's monitoring level is raised.
 domain: skill
 type: template
-version: 20260711220000
+version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/monitored-app
 created_by:
-  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/logging/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]]"
 parent_plateau: "[[skills/angular/architecture/plateau/plateau-platform-monolith/plateau-platform-monolith.skill.md|platform-monolith]]"
 ---
 
@@ -21,6 +21,7 @@ parent_plateau: "[[skills/angular/architecture/plateau/plateau-platform-monolith
 - `report()` lets a call site intentionally mark a non-error event as worth tracking on the backend, without inflating its severity to `warn`/`error`
 - Every uncaught exception anywhere in the platform shell is captured by a single, application-root `GlobalErrorHandler` and routed through `LoggerService.error` — nothing crashes silently in production
 - Sensitive data (tokens, passwords, PII) is never logged, at any level, by any sink — unchanged from earlier plateaus
+- When a feature has multiple distinct data facets, each facet owns its own Facade/Client/Mapper trio, grouped under `facade/`, `client/`, and `mapper/` with files named `{feature}_N.{kind}.ts`; the `index.ts` exports every Facade and its public errors, never any Client or Mapper.
 
 # Capabilities
 

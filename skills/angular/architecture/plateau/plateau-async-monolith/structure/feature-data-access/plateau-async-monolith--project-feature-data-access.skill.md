@@ -5,7 +5,7 @@ domain: skill
 type: template
 plateau: async-monolith
 project_kind: library
-version: 20260711190000
+version: 20260723041000
 tags:
   - skill/template/project
   - plateau/async-monolith
@@ -60,15 +60,35 @@ __Applied solutions:__
     index.ts
 ```
 
+### Multiple facets
+
+When a feature's `data-access` lib has several distinct data facets, each facet keeps its own Facade/Client/Mapper trio and files are grouped by role under sub-folders:
+
+```
+libs/{feature}/data-access/src/lib
+- facade/
+  - {feature}_1.facade.ts
+  - {feature}_2.facade.ts
+- client/
+  - {feature}_1.client.ts
+  - {feature}_2.client.ts
+- mapper/
+  - {feature}_1.mapper.ts
+  - {feature}_2.mapper.ts
+```
+
 ## Directory and class skills
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
 | `{feature}.facade.ts` | Public API: business validation/orchestration, calls the Client. Exported from `index.ts`. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-facade.skill\|class-feature-facade]] |
+| `facade/{feature}_N.facade.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-facade.skill\|class-feature-facade]] |
 | `{feature}.facade.spec.ts` | Vitest unit test faking the Client. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-facade.skill\|class-feature-facade]] |
 | `{feature}.client.ts` | Internal: DTO mapping via the Mapper, calls `libs/shared/http-core`, catches `HttpErrorResponse` and throws a typed domain error or the shared `OfflineTransportError`. Never exported. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-client.skill\|class-feature-client]] |
+| `client/{feature}_N.client.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-client.skill\|class-feature-client]] |
 | `{feature}.client.spec.ts` | Vitest unit test using `HttpTestingController` — the only place it is used. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-client.skill\|class-feature-client]] |
 | `{feature}.mapper.ts` / `{feature}.errors.ts` | Internal: hand-written mapping functions and this feature's typed domain error hierarchy. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-mapper-and-errors.skill\|class-feature-mapper-and-errors]] |
+| `mapper/{feature}_N.mapper.ts` / `{feature}_N.errors.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/plateau/plateau-async-monolith/structure/feature-data-access/classes/plateau-async-monolith--class-feature-mapper-and-errors.skill\|class-feature-mapper-and-errors]] |
 | `{feature}.integration.spec.ts` | Reserved for the rare case that genuinely needs Store → Facade → Client wired together, using MSW at the network boundary. | — |
 
 __Applied solutions:__
@@ -112,6 +132,7 @@ __Applied solutions:__
 
 ## MUST
 - A feature's `{feature}.client.ts` MUST NOT be exported from that feature's `index.ts` — only the Facade (and domain error types) is part of the public API.
+- When a feature has multiple distinct data facets, each facet's files MUST be grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`; every Facade is exported from `index.ts`, but no Client or Mapper is exported.
 - The Facade MUST be the only class in this project exported from `index.ts`, along with the feature's domain error types.
 - Every test in `{feature}.client.spec.ts` MUST use `HttpTestingController` to assert the exact request; `httpTesting.verify()` MUST run in `afterEach`.
 - A Facade test MUST fake its Client directly — it MUST NOT use `HttpTestingController` or MSW.
@@ -154,6 +175,7 @@ __Applied solutions:__
 # Check list
 
 - [ ] `index.ts` exports the Facade and domain error types only, never the Client or Mapper
+- [ ] When a feature has multiple data facets, each facet's files are grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`
 - [ ] Every HTTP call in this project goes through `libs/shared/http-core`, not raw `HttpClient`
 - [ ] `HttpTestingController` appears only in `{feature}.client.spec.ts`
 - [ ] Every Facade method has a spec faking the Client

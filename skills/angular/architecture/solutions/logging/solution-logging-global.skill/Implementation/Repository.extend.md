@@ -6,7 +6,7 @@ change_kind: extend
 
 # Structure
 
-No new top-level directories. This extends [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]] (adding `BackendLogSink` and its retry queue) and `apps/platform-shell` (registering a global `ErrorHandler`).
+No new top-level directories. This extends [[skills/angular/architecture/solutions/logging/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]] (adding `BackendLogSink` and its retry queue) and `apps/platform-shell` (registering a global `ErrorHandler`).
 
 ## Directory and project skills
 
@@ -21,7 +21,7 @@ No new top-level directories. This extends [[skills/angular/architecture/solutio
 ## MUST
 - `BackendLogSink` MUST be registered via the same `LOG_SINKS` multi-provider token the base solution already established — it MUST NOT require changing `ConsoleLogSink` or any existing `LoggerService` call site.
 - The global `ErrorHandler` MUST be registered in `apps/platform-shell` via `{ provide: ErrorHandler, useClass: GlobalErrorHandler }`, so it applies to the whole application (and, per the platform-embeddability solution, to embeddable apps sharing the same Angular runtime).
-- `BackendLogSink` MUST only forward `warn`/`error` level entries and explicit `report()` calls to the backend — `debug`/`info` entries MUST NOT reach this sink, per [[skills/angular/architecture/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy]].
+- `BackendLogSink` MUST only forward `warn`/`error` level entries and explicit `report()` calls to the backend — `debug`/`info` entries MUST NOT reach this sink, per [[skills/angular/architecture/solutions/logging/solution-logging-global.skill/adr/backend-log-sink-strategy]].
 
 # Anti-patterns
 

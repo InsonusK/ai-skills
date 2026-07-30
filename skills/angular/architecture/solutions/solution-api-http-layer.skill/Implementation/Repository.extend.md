@@ -26,14 +26,36 @@ change_kind: extend
       index.ts                  <- exports only the Facade and its public error types
 ```
 
+### Multiple facets
+
+When a feature's `data-access` lib has several distinct data facets, each facet keeps its own Facade/Client/Mapper trio and files are grouped by role under sub-folders:
+
+```
+libs/{feature}/data-access/src/lib
+- facade/
+  - {feature}_1.facade.ts
+  - {feature}_2.facade.ts
+- client/
+  - {feature}_1.client.ts
+  - {feature}_2.client.ts
+- mapper/
+  - {feature}_1.mapper.ts
+  - {feature}_2.mapper.ts
+```
+
+`index.ts` still exports every Facade and public error types, and never exports any Client or Mapper.
+
 ## Directory and project skills
 
 | Directory | Description |
 | ---------- | ----------- |
 | /libs/shared/http-core | Base HTTP service wrapping `HttpClient` with common concerns: base URL resolution, timeout, retry policy. Every feature's Client is built on top of this, not on raw `HttpClient` directly. Tagged `type:util`, `scope:shared`. |
 | /libs/{feature}/data-access/src/lib/{feature}.facade.ts | Public API: business validation/orchestration, calls the Client, may enrich or coordinate across multiple Client calls. Exported from `index.ts`. |
+| /libs/{feature}/data-access/src/lib/facade/{feature}_N.facade.ts | Same as above, used when a feature has multiple distinct data facets. Exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/{feature}.client.ts | Internal: DTO mapping via the Mapper, calls `libs/shared/http-core`, catches `HttpErrorResponse` and throws a typed domain error from `{feature}.errors.ts`. Never exported from `index.ts`. |
+| /libs/{feature}/data-access/src/lib/client/{feature}_N.client.ts | Same as above, used when a feature has multiple distinct data facets. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/{feature}.mapper.ts | Internal: hand-written `dtoToModel`/`modelToDto` functions, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy]]. Never exported from `index.ts`. |
+| /libs/{feature}/data-access/src/lib/mapper/{feature}_N.mapper.ts | Same as above, used when a feature has multiple distinct data facets. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/{feature}.errors.ts | Domain error types for this feature's operations. The Facade may re-export these from `index.ts` so callers can narrow on them. |
 
 # Nx tag taxonomy — extension
@@ -44,6 +66,7 @@ No new tag values are introduced; `libs/shared/http-core` uses the existing `typ
 
 ## MUST
 - A feature's `{feature}.client.ts` MUST NOT be exported from that feature's `index.ts` — only the Facade (and, if useful, the feature's domain error types) is part of the public API.
+- When a feature has multiple distinct data facets, each facet's files MUST be grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`; every Facade is exported from `index.ts`, but no Client or Mapper is exported.
 - Every Client MUST build its HTTP calls on top of `libs/shared/http-core`'s base service, never call `HttpClient` directly.
 - A Client MUST catch every `HttpErrorResponse` it can produce and rethrow a typed domain error from that feature's `{feature}.errors.ts`, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy]] — a raw `HttpErrorResponse` MUST NOT escape the Client.
 - For feature-scoped operations, the calling Signal Store method MUST call the Facade directly — no Action/Reducer/Effect is introduced for feature-level data operations, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering]]. This does not apply to global/cross-cutting state, which keeps its existing classical NgRx chain (Effect → Facade → Client) from the "State management" and "Аутентификация" solutions.
