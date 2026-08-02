@@ -94,6 +94,10 @@ tags:
   - Consequence: unnecessary version bumps, noisy history, and slower development.
   - Instead: check the version only for PRs to `master`/`main` and only when code or the workflow has changed.
 
+- **Not adding a final aggregate `test:` job that wraps the (possibly conditional) test job(s)**
+  - Consequence: if branch protection requires the matrix/test job directly (e.g. `test-matrix`) and that job is skipped by a path filter (no `src`/`tests` changes on this PR), GitHub's required status check for it never reports success — the check stays pending or is reported as failing, blocking the PR merge even though nothing needed to be tested.
+  - Instead: add a final `test:` job with `needs: [..., test-matrix]` and `if: always()` that inspects `needs.test-matrix.result`, fails only on an actual `failure`, and treats `skipped`/`success` as passing (see [Python PR workflow example](./templates/python-pr.example.md)). Set this aggregate job — not the underlying matrix job — as the required status check in branch protection.
+
 # Example
 
 See [Python PR workflow example](./templates/python-pr.example.md) for a Python project using `pyproject.toml`.
