@@ -21,6 +21,7 @@ tags:
 2. Use the template folder that matches the target language:
    - .NET: [templates/dotnet/solution-{Solution}.skill.template](./templates/dotnet/solution-{Solution}.skill.template/)
    - Python: [templates/python/solution-{Solution}.skill.template](./templates/python/solution-{Solution}.skill.template/)
+   - TypeScript: [templates/typescript/solution-{Solution}.skill.template](./templates/typescript/solution-{Solution}.skill.template/)
    - Other languages can be added as separate subfolders under `templates/` when needed.
 3. Fill the template with real content.
 4. Follow authoring rules which are defined in each section of the template.
