@@ -1,6 +1,9 @@
 ---
 name: package-name
 description: Describe which plateau package/app does skill describe
+whenToUse: One concrete sentence — which task must make the agent open this skill
+  # MUST name a concrete situation: creating or editing a module inside this package/app, deciding whether new code belongs here, or checking its allowed dependencies/PyPI packages. MUST NOT be vague ("when relevant").
+  # Example: "when adding or editing a module in {App}, or deciding whether a new command belongs in this package"
 domain: skill
 type: template
 plateau:
@@ -10,6 +13,7 @@ tags:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete package-level situations that require this skill (adding/editing a module inside `{App}`, deciding whether new code belongs here, checking allowed dependencies). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by the project-level implementation file (`{App}.create.md`, `element_kind: project`)
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`

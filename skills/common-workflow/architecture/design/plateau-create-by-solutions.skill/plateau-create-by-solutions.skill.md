@@ -216,6 +216,7 @@ The repository/root skill (`plateau-*--sln-*.skill.md` for .NET, `plateau-*--rep
 MUST:
 - Give every plateau element skill file a name that starts with `plateau-{plateau-name}--`.
 - Write the `description` header of every plateau element skill so that it clearly states the element belongs to the `{plateau-name}` plateau.
+- Write `whenToUse` in the plateau root skill and in every plateau element skill (repository/solution, project/package, class/module) as one concrete sentence stating when the agent must open that specific skill — e.g. which file/folder is being created or edited, or which task requires checking that level of the plateau. Follow the `whenToUse` baseline in [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) — an agent must be able to decide to open the skill from that sentence alone. A generic sentence copied across every element (e.g. "when working in the {plateau-name} plateau") is not concrete enough.
 - Detect {stack} before selecting a template folder, and select the template folder (`templates/dotnet/` or `templates/python/`) that matches it.
 - Remove all `hint` and `example` blocks from final skill file. Do not keep them in the final skill file.
 - Follow "# How Apply this template" rules defined in the selected template.

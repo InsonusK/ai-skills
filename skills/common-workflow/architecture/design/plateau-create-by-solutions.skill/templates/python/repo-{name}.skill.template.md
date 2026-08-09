@@ -1,6 +1,9 @@
 ---
 name: repo-name
 description: Describe which plateau repository does skill describe
+whenToUse: One concrete sentence — which task must make the agent open this skill
+  # MUST name a concrete situation: adding/removing a top-level package/app, deciding where a new package belongs, or reviewing the repository-level layout of the `{plateau-name}` plateau. MUST NOT be vague ("when relevant").
+  # Example: "when adding, removing, or relocating a package in the repository, or deciding which existing package a new module belongs to"
 domain: skill
 type: template
 plateau:
@@ -10,6 +13,7 @@ tags:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete repository-level situations that require this skill (adding/removing a package, deciding where new code belongs, reviewing the top-level layout). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by `Repository.create.md` / `Repository.extend.md`
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`

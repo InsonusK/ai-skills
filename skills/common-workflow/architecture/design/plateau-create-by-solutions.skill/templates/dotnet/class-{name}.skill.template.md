@@ -1,6 +1,9 @@
 ---
 name: class-name
-description: Describe what skill define
+description: Describe which class skill define
+whenToUse: One concrete sentence — which task must make the agent open this skill
+  # MUST name a concrete situation: creating or editing this exact class, or creating a new class that plays the same role. MUST NOT be vague ("when relevant").
+  # Example: "when creating or editing {ClassName}, or creating another class that plays the same role in a different module"
 domain: skill
 type: template
 plateau:
@@ -10,6 +13,7 @@ tags:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete class-level situations that require this skill (creating/editing this class, or creating another class with the same role). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by Class.template.md
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`

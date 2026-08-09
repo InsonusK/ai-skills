@@ -1,6 +1,9 @@
 ---
 name: class-name
-description: Describe what skill define
+description: Describe which class skill define
+whenToUse: One concrete sentence — which task must make the agent open this skill
+  # MUST name a concrete situation: creating or editing this exact component/service/store/etc., or creating a new artifact that plays the same role. MUST NOT be vague ("when relevant").
+  # Example: "when creating or editing {ClassName}, or creating another {artifact_type} that plays the same role in a different feature"
 domain: skill
 type: template
 plateau:
@@ -11,6 +14,7 @@ tags:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete class/artifact-level situations that require this skill (creating/editing this artifact, or creating another artifact with the same role). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by the artifact-level implementation file (`{name}.{artifact-type}.ts.create.md` / `{name}.{artifact-type}.ts.extend.md`)
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`
