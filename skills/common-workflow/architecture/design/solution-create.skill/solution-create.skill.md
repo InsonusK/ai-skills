@@ -33,6 +33,7 @@ tags:
 MUST:
 - Select the template folder that matches the target language/stack of the solution.
 - Follow "# How Apply this template" rules defined in the selected template.
+- Write `whenToUse` in the solution skill header as one concrete sentence naming the task types or situations that must make an agent apply this solution (e.g. "when implementing a command/write-operation handler, or adding a new feature to an existing module"). Follow the `whenToUse` baseline in [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) — an agent must be able to decide to apply the solution from that sentence alone, without reading the rest of the skill.
 - Remove all `hint`, `example` and `code example` blocks from the final skill file. Do not keep them in the final skill file.
 - Remove the `# How Apply this template` block from the final skill file.
 - Create an `Implementation/` folder and provide concrete implementation files for every solution skill, including classification, decision, policy, or taxonomy skills. Even when the skill primarily selects between existing solutions, it must still show how each selected variant manifests in code, configuration, or project structure.
@@ -43,3 +44,4 @@ MUST:
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Leave the `Implementation/` folder empty or claim "no direct mutations" unless the solution truly produces no code, configuration, or project changes.
+- Add a separate `triggers` list next to `whenToUse`. Put every trigger condition into `whenToUse` itself instead of splitting it across two fields.
