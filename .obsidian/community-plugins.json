@@ -1,10 +1,10 @@
 [
-  "code-styler",
-  "tag-wrangler",
+  "folder-notes",
   "obsidian-icon-folder",
-  "table-editor-obsidian",
   "mermaid-tools",
   "mermaid-view",
-  "folder-notes",
-  "dataview"
+  "tag-wrangler",
+  "dataview",
+  "code-styler",
+  "table-editor-obsidian"
 ]
