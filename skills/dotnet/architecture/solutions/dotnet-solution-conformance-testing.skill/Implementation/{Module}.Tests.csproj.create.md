@@ -47,15 +47,15 @@ change_kind: create
 
 ## MUST
 - Reference `{Module}` directly; step definitions must call its public types/methods, not duplicate their logic.
+  - Risk: a step definition with its own copy of the rule's logic can pass even after the real implementation breaks.
+  - Fix: call `{Module}`'s public API directly from step definitions.
 - Configure `dotnet test` to run both `[Fact]`/`[Theory]` unit tests and Reqnroll-generated scenario tests in the same run.
-
-## MUST NOT
-- Add a second, separate test project just for Gherkin scenarios — unit tests and scenarios stay in one project per module.
-
-# Anti-patterns
-- **Split unit tests and Gherkin scenarios into separate test projects**
-  - Consequence: coverage and mutation-testing reports get computed against only part of the module's test suite, understating both.
-  - Instead: keep both in `{Module}.Tests` so every gate sees the full picture.
+  - Risk: if only one kind of test runs per invocation, `make cucumber-test` reports an incomplete result and CI/local runs can diverge on what "green" means.
+  - Fix: configure the test project so a single `dotnet test` invocation executes both.
+- Never add a second, separate test project just for Gherkin scenarios — unit tests and scenarios stay in one project per module.
+  - Violation: splitting unit tests and Gherkin scenarios into separate test projects.
+  - Risk: coverage and mutation-testing reports get computed against only part of the module's test suite, understating both.
+  - Fix: keep both in `{Module}.Tests` so every gate sees the full picture.
 
 # Check list
 - [ ] `{Module}.Tests.csproj` references `{Module}`, Reqnroll.xUnit, and coverlet.collector.

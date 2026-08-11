@@ -49,16 +49,15 @@ Then("the result is invalid with error {string}", function (this: World, errorCo
 
 ## MUST
 - Import `validateEmailFormat` (or the package's equivalent real entry point) from `src/index.ts` — never re-implement the validation logic inline in a step.
+  - Violation: the `When` step computes validity with a local regex instead of calling `validateEmailFormat`.
+  - Risk: the scenario can stay green after `validateEmailFormat` is broken.
+  - Fix: call the real exported function and assert on its actual return value.
 - Assert a specific `errorCode`/result value in negative scenarios, not just `assert.equal(this.result.isValid, false)`.
-
-## MUST NOT
-- Stub or mock the package's validator inside these step definitions — the whole point of the scenario is to prove the real implementation.
-
-# Anti-patterns
-- **Re-implementing the rule inside `When`**
-  - Example: the `When` step computes validity with a local regex instead of calling `validateEmailFormat`.
-  - Consequence: the scenario can stay green after `validateEmailFormat` is broken.
-  - Instead: call the real exported function and assert on its actual return value.
+  - Risk: a boolean-only assertion passes for any failure reason, so a scenario claiming a specific error code doesn't actually verify it.
+  - Fix: assert the exact `errorCode` (or equivalent result value) the real validator returns.
+- Never stub or mock the package's validator inside these step definitions — the whole point of the scenario is to prove the real implementation.
+  - Risk: the scenario looks green but no longer proves anything about the real validator, since a stand-in replaced the behavior under test.
+  - Fix: exercise the package's real validator end-to-end; stub only genuine external dependencies, never the validator itself.
 
 # Check list
 - [ ] Every `Given/When/Then` in `{rule}.feature` has a matching, non-duplicated step definition.

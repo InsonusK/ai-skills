@@ -34,12 +34,12 @@ fail_under = 80
 
 ## MUST
 - Add `behave`, `coverage`, `mutmut` to the dev dependency group, not to the package's runtime dependencies.
+  - Violation: adding `behave`/`mutmut` as runtime dependencies.
+  - Risk: end users installing the package pull in test-only tooling.
+  - Fix: keep them under the dev optional-dependency group only.
 - Configure `[tool.coverage.run] source` to point at the package, so both `test/` and `features/` runs contribute to the same coverage data.
-
-# Anti-patterns
-- **Adding `behave`/`mutmut` as runtime dependencies**
-  - Consequence: end users installing the package pull in test-only tooling.
-  - Instead: keep them under the dev optional-dependency group only.
+  - Risk: if `source` doesn't cover the package, coverage numbers silently exclude part of what the gate is supposed to measure.
+  - Fix: point `[tool.coverage.run] source` at the package under test.
 
 # Check list
 - [ ] `behave`, `coverage`, `mutmut` are listed under the dev dependency group.

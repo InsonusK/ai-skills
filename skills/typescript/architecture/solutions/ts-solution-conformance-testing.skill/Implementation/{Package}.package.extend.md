@@ -51,15 +51,15 @@ change_kind: extend
 
 ## MUST
 - Add `test`, `coverage`, and `mutation` scripts to `package.json` that run Vitest and `cucumber-js`/Stryker respectively.
+  - Risk: without these scripts, `make cucumber-test`/`make mutation-test` (implemented by `Repository.extend`'s scripts) have no consistent npm entry point to invoke.
+  - Fix: define `test`, `coverage`, and `mutation` scripts in `package.json` that wrap Vitest and `cucumber-js`/Stryker respectively.
 - Configure `cucumber.mjs` to load `.ts` step definitions (e.g. via `ts-node/esm` or `tsx`).
-
-## MUST NOT
-- Import a validator inside a step definition from anywhere other than `src/index.ts`.
-
-# Anti-patterns
-- **Importing `src/{rule}-validator.ts` directly from a step definition instead of `src/index.ts`**
-  - Consequence: the step definition depends on internal file layout that is free to change, defeating the purpose of a stable public API.
-  - Instead: import only the symbols `index.ts` re-exports.
+  - Risk: without a TypeScript loader configured, `cucumber-js` cannot import `.steps.ts` files and every scenario fails to run.
+  - Fix: configure `cucumber.mjs` to load step definitions through `ts-node/esm` or `tsx`.
+- Never import a validator inside a step definition from anywhere other than `src/index.ts`.
+  - Violation: importing `src/{rule}-validator.ts` directly from a step definition instead of `src/index.ts`.
+  - Risk: the step definition depends on internal file layout that is free to change, defeating the purpose of a stable public API.
+  - Fix: import only the symbols `index.ts` re-exports.
 
 # Check list
 - [ ] `package.json` declares `test`, `coverage`, `mutation` scripts.

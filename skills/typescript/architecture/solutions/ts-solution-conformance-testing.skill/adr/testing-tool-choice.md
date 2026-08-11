@@ -25,7 +25,7 @@ Use `@cucumber/cucumber` (the official JS/TS Cucumber implementation) for Gherki
 
 ### Costs
 - `@cucumber/cucumber` runs as a separate process from Vitest, so combining their coverage output requires configuring both to write to the same coverage provider/output directory.
-- Stryker's mutation runs are slow on large packages, which is why the PR gate must stay delta-scoped per [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#ci-enforcement).
+- Stryker's mutation runs are slow on large packages, which is why `make mutation-test` supports `ONLY_DELTA`/`DELTA_BASE` — see [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md) for how the PR-gate workflow uses it.
 
 ## jest-cucumber instead of @cucumber/cucumber
 

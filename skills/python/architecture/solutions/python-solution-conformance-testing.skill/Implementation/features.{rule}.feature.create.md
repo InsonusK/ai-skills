@@ -36,6 +36,8 @@ Feature: Email format validation
 
 ## MUST
 - Cover the happy path, at least one boundary case, and at least one negative case per rule.
+  - Risk: a feature file that only covers the happy path leaves boundary/negative behavior unproven, so mutation testing over that code has no scenario-driven assertion to kill mutants with.
+  - Fix: write scenarios for the happy path, at least one boundary case, and at least one negative case per rule.
 
 # Check list
 - [ ] Every scenario has a matching step definition in `features/steps/{rule}_steps.py`.

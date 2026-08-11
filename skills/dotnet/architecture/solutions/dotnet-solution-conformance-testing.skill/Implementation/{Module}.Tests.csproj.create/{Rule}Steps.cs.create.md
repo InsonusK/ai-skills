@@ -44,16 +44,15 @@ public sealed class {Rule}Steps
 
 ## MUST
 - Call `{Module}.{Rule}Validator` (or the module's equivalent real entry point) — never re-implement the validation logic inline in a step.
+  - Violation: `WhenTheRuleValidatesIt` computes validity with a local regex instead of calling `{Module}.{Rule}Validator`.
+  - Risk: the scenario can stay green after `{Module}.{Rule}Validator` is broken.
+  - Fix: call the real validator and assert on its actual return value.
 - Assert a specific `ErrorCode`/result value in negative scenarios, not just `Assert.False(_result.IsValid)`.
-
-## MUST NOT
-- Stub or mock `{Module}`'s validator inside these step definitions — the whole point of the scenario is to prove the real implementation.
-
-# Anti-patterns
-- **Re-implementing the rule inside `When`**
-  - Example: `WhenTheRuleValidatesIt` computes validity with a local regex instead of calling `{Module}.{Rule}Validator`.
-  - Consequence: the scenario can stay green after `{Module}.{Rule}Validator` is broken.
-  - Instead: call the real validator and assert on its actual return value.
+  - Risk: a boolean-only assertion passes for any failure reason, so a scenario claiming a specific error code doesn't actually verify it.
+  - Fix: assert the exact `ErrorCode` (or equivalent result value) the real validator returns.
+- Never stub or mock `{Module}`'s validator inside these step definitions — the whole point of the scenario is to prove the real implementation.
+  - Risk: the scenario looks green but no longer proves anything about the real validator, since a stand-in replaced the behavior under test.
+  - Fix: exercise `{Module}`'s real validator end-to-end; stub only genuine external dependencies, never the validator itself.
 
 # Check list
 - [ ] Every `Given/When/Then` in `{Rule}.feature` has a matching, non-duplicated step method.

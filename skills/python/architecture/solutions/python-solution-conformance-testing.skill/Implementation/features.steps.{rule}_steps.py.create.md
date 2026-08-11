@@ -47,16 +47,15 @@ def step_then_invalid_with_error(context, error_code):
 
 ## MUST
 - Import and call `{package}`'s real validation function/class — never re-implement the rule's logic inline in a step.
+  - Violation: `step_when_validated` computes validity with a local regex instead of calling `{package}.{rule}_validator.validate`.
+  - Risk: the scenario can stay green after the real validator is broken.
+  - Fix: call the real function and assert on its actual return value.
 - Assert a specific `error_code`/result value in negative scenarios, not just `assert context.result.is_valid is False`.
-
-## MUST NOT
-- Stub or monkeypatch `{package}`'s validator inside these step definitions — the whole point of the scenario is to prove the real implementation.
-
-# Anti-patterns
-- **Re-implementing the rule inside a step function**
-  - Example: `step_when_validated` computes validity with a local regex instead of calling `{package}.{rule}_validator.validate`.
-  - Consequence: the scenario can stay green after the real validator is broken.
-  - Instead: call the real function and assert on its actual return value.
+  - Risk: a boolean-only assertion passes for any failure reason, so a scenario claiming a specific error code doesn't actually verify it.
+  - Fix: assert the exact `error_code` (or equivalent result value) the real validator returns.
+- Never stub or monkeypatch `{package}`'s validator inside these step definitions — the whole point of the scenario is to prove the real implementation.
+  - Risk: the scenario looks green but no longer proves anything about the real validator, since a stand-in replaced the behavior under test.
+  - Fix: exercise `{package}`'s real validator end-to-end; stub only genuine external dependencies, never the validator itself.
 
 # Check list
 - [ ] Every `Given/When/Then` in `{rule}.feature` has a matching, non-duplicated step function.

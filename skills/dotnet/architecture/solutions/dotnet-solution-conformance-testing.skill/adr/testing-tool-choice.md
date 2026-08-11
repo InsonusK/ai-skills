@@ -25,7 +25,7 @@ Use Reqnroll (the actively maintained successor to SpecFlow) with the xUnit runn
 
 ### Costs
 - Reqnroll is a relatively young rename (2024); existing SpecFlow-based projects need a migration.
-- Stryker.NET mutation runs are slow on large modules, which is why the PR gate must stay delta-scoped per [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#ci-enforcement).
+- Stryker.NET mutation runs are slow on large modules, which is why `make mutation-test` supports `ONLY_DELTA`/`DELTA_BASE` — see [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md) for how the PR-gate workflow uses it.
 
 ## SpecFlow xUnit coverlet Stryker.NET
 
