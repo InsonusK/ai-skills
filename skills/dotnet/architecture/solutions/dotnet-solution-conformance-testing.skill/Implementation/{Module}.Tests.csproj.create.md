@@ -25,12 +25,14 @@ change_kind: create
 ```
 
 ## Directory and class skills
+
 | Directory | file | Description |
 | ----------------- | ----------- |
 | /Rules | {Rule}.feature | Gherkin scenarios for one business rule |
 | /StepDefinitions | {Rule}Steps.cs | Bindings that call `{Module}`'s real validator |
 
 # NuGet Packages
+
 | Package | Version constraint | Purpose |
 | ------- | ------------------ | ------- |
 | Reqnroll.xUnit | latest stable | Run `.feature` files as xUnit tests |
@@ -41,7 +43,7 @@ change_kind: create
 - Gherkin `.feature` files shared with a non-.NET implementation of the same rule — those belong to the shared conformance-spec source, not to a copy inside this project.
 
 # Allowed Dependencies
-- [[{Module}]]
+- {Module}
 
 # Rules
 
