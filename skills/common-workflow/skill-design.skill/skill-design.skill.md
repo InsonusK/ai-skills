@@ -85,10 +85,14 @@ This skill applies to every skill-writing task in the repository. It defines the
   - Violation: a 120-line GitHub Actions YAML workflow pasted directly under `# Example` instead of `./examples/<name>.example.md` (should have been extracted); or, the opposite mistake, a `make`-target contract table moved into `examples/contract.md`, leaving `# Rule` say only "see the example" (should have stayed inline).
   - Risk: in the first case, the example's length and formatting dominate the file, burying the actual rules the agent needs to skim; in the second, the agent must open a second file just to learn a rule it is required to follow.
   - Fix: move only content that illustrates or demonstrates a rule; keep content that states or defines the rule itself inline.
+- Tag every skill's frontmatter `tags:` using the facet vocabulary defined in [facet-vocabulary.md](./facet-vocabulary.md): at least one `concern/*` value, and either one `stack/<value>` tag or the bare `stack` tag for skills that apply regardless of stack. Add `framework/*` and `app-type/*` tags when they apply. Never chain two different facets into one `/`-path, and when using a nested facet value also add its parent value as its own tag.
+  - Violation: tagging a skill `angular/component` (two different facets — framework and app shape — forced into one chain) instead of separate `framework/angular` and `app-type/*` tags; or tagging only `concern/testing/unit` without also adding `concern/testing`.
+  - Risk: an agent resolving its skillset with a tag-expression query (e.g. `stack/typescript & concern/testing`) silently misses the skill, or a query for the parent concern misses every skill that only carries the narrower child value — the skill becomes invisible to exactly the agents that need it.
+  - Fix: tag each facet independently, combine facets on one skill by adding multiple tags, and duplicate the parent tag whenever a nested value is used. Run the self-check in facet-vocabulary.md before inventing a new facet or value.
 
 ## SHOULD
 - Provide a `# Check list` so the agent can verify it has followed the skill.
-- Use tags that help discover related skills.
+- Add free-form tags beyond the required facet tags (e.g. `xunit`, `mediatr`) when they help a reader skim the skill's specific topic; keep them outside the controlled facet vocabulary in facet-vocabulary.md.
 - Prefer short, focused skills over large monolithic ones.
 - Do not use absolute file-system paths or URLs that depend on the local machine.
   - Risk: a path or link that only resolves on the author's machine/checkout is broken for every other agent or contributor who opens the skill.
@@ -117,3 +121,4 @@ This skill applies to every skill-writing task in the repository. It defines the
 - [ ] The skill contains exactly one `# Rule` and one `# Check list` section, each at a consistent heading depth.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately"; if it does, the skill has been split.
 - [ ] No inline code block or table exceeds ~15 lines unless it defines part of the rule/contract itself; longer illustrative examples live in `examples/`/`templates/` with a one-line pointer.
+- [ ] Tags follow the facet vocabulary in [facet-vocabulary.md](./facet-vocabulary.md): at least one `concern/*`, a `stack/*` value or the bare `stack` tag, no two facets chained in one `/`-path, and the parent tag duplicated alongside any nested value.

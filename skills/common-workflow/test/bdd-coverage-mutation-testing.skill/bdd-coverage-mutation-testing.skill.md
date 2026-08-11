@@ -49,6 +49,7 @@ A project applying this skill exposes exactly these `make` targets, regardless o
 | `make cucumber-test` | Run the Cucumber/Gherkin conformance suite | `WITH_CODE_COVERAGE=true` — also collect and report line coverage |
 | `make mutation-test` | Run mutation testing against the project | `ONLY_DELTA=true DELTA_BASE=<git-ref>` — mutate only code changed since `DELTA_BASE`, instead of the whole project |
 | `make result-page` | Assemble a static report site from the normalized results below (no test/build tooling involved — pure assembly, so it can run as its own CI job or locally once the two targets above have populated `tmp/`) | — |
+| `make full-report` | Run `cucumber-test`, `mutation-test`, and `result-page` in sequence to build the report site from scratch | `WITH_CODE_COVERAGE=true`, `ONLY_DELTA=true DELTA_BASE=<git-ref>` (forwarded to the respective test targets) |
 
 Each `*-test` target writes two kinds of output:
 - **Normalized result** — a small, stack-independent JSON file under `tmp/result/`, read by `make result-page` and by badge generation. Minimum schema:
@@ -75,6 +76,10 @@ A reference implementation of this contract (Makefile + normalization scripts) e
   - Violation: a CI workflow or a developer runs `dotnet stryker ...`/`mutmut run ...`/`stryker run ...` directly instead of `make mutation-test`.
   - Risk: any consumer of the project (CI, another developer, a script) now needs to know the stack's native tooling, defeating the point of a uniform contract; switching mutation-testing tools later becomes a breaking change for every caller.
   - Fix: wrap every stack tool behind the `make cucumber-test`/`make mutation-test`/`make result-page` targets, and never call the underlying tool directly outside the `Makefile`.
+- Expose `make full-report` as a convenience target that runs `cucumber-test`, `mutation-test`, and `result-page` in sequence, so a single command builds the result page from scratch.
+  - Violation: a developer or CI job has to remember the exact order of the three targets and invoke them manually.
+  - Risk: the report is assembled from stale result files, or a target is forgotten, producing a misleading report; CI scripts become longer and easier to break.
+  - Fix: add a `full-report` target to the `Makefile` that depends on `cucumber-test`, `mutation-test`, and `result-page` in that order, forwarding the same toggle variables.
 - Normalize each `*-test` target's result into `tmp/result/<name>.json` using the schema above, and keep the tool's native report under `tmp/report/<kind>/`.
   - Risk: without a normalized result file, `make result-page` and badge generation have no stack-independent data to read and would have to parse each tool's native report format instead.
   - Fix: write the small JSON schema from [# Make command contract](#make-command-contract) alongside the tool's native report.
@@ -106,7 +111,7 @@ A reference implementation of this contract (Makefile + normalization scripts) e
 # Check list
 - [ ] Every new/changed behavior has a Cucumber/Gherkin scenario in `Given/When/Then` form.
 - [ ] Every step definition calls production code; none re-implements the rule it proves.
-- [ ] `make cucumber-test`, `make mutation-test`, `make result-page` exist and support the `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` toggles.
+- [ ] `make cucumber-test`, `make mutation-test`, `make result-page`, and `make full-report` exist and support the `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` toggles.
 - [ ] `tmp/result/*.json` follows the schema in [# Make command contract](#make-command-contract); `tmp/report/<kind>/` holds the tool's native report.
 - [ ] No surviving mutant exists in changed business-logic/validation code without an explicit justification in the review.
 - [ ] The stack-specific tool choice (Cucumber implementation, coverage tool, mutation-testing tool) is recorded as an ADR in that stack's solution skill.
