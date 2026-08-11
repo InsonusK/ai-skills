@@ -1,6 +1,9 @@
 ---
 name: module-name
-description: Describe what skill define
+description: Describe which module skill define
+whenToUse: One concrete sentence — which task must make the agent open this skill
+  # MUST name a concrete situation: creating or editing this exact class/function module, or creating a new one that plays the same role. MUST NOT be vague ("when relevant").
+  # Example: "when creating or editing {module-name}.py, or creating another module that plays the same role for a different command"
 domain: skill
 type: template
 plateau:
@@ -10,6 +13,7 @@ tags:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete class/module-level situations that require this skill (creating/editing this module, or creating another module with the same role). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by `Class.template.md`, `functions.template.md` or `{Package}/__init__.py.template.md` (any file with `element_kind: class`, `functions` or `init`)
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`

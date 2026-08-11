@@ -1,15 +1,16 @@
 ---
 name: skill-name
-description: Short description of skill goal
+description: Short description of this solution skill
+whenToUse: One concrete sentence naming the task types or situations that require applying this solution
+  # MUST be concrete enough that an agent decides to apply the solution from this sentence alone (see skill-design.skill.md whenToUse rules).
+  # MUST NOT be vague ("when needed", "for best practices").
+  # Example: "when creating a new Python CLI application, or adding a new CLI command to an existing one"
 domain: skill
 type: architecture
 version: 
 tags:
   - skill/architecture/solution
   # any other tags
-triggers:
-  # What kind of task should agent do to use this solution
-  # - when skill should called
 creates:
   # List of files or packages created by this solution
   # Packages fill {PackageName}
@@ -37,6 +38,7 @@ adr:
 
 # How Apply this template
 - Create a folder named `solution-{SolutionName}.skill` and put this template into it as `solution-{SolutionName}.skill.md`.
+- Fill `whenToUse` first: one concrete sentence naming the task types/situations that must make an agent apply this solution. See the front matter comment above and [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Fill the template using:
   - `hint` blocks — instructions on how the section should be filled;
   - `example` blocks — examples of filled sections;

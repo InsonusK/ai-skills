@@ -27,8 +27,24 @@ Core principles the agent should follow when applying this skill.
 
 # Rule
 ```hint
-Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-If a category has no rules, skip it — do not write an empty subblock.
+Use only three subsections: MUST, SHOULD, MAY — no MUST NOT/SHOULD NOT headings.
+Phrase a prohibition as a negatively-worded bullet ("Never...", "Do not...") inside
+MUST or SHOULD, whichever strength it actually carries. If a category has no rules,
+skip it — do not write an empty subblock.
+
+There is no separate "Anti-patterns" section. Nest an elaboration directly under a
+rule's bullet using exactly these fields, defined relative to the violation (not the
+rule's own polarity):
+
+- {The rule itself, as a plain imperative statement — positive or negative}
+  - Violation: {what not following the rule looks like — an omission/wrong attempt
+    for a positive rule, the forbidden action itself for a negative one} (optional)
+  - Risk: {what breaks because of that violation}
+  - Fix: {the correct action that replaces the violation}
+
+Every MUST bullet requires Risk and Fix (Violation stays optional). SHOULD bullets
+carry the elaboration only when the rule is non-obvious. MAY bullets never carry
+it — permission has nothing to violate.
 ```
 
 ## MUST
@@ -41,39 +57,10 @@ If a category has no rules, skip it — do not write an empty subblock.
 
 ## MAY
 
-## SHOULD NOT
-
-## MUST NOT
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead. Optionally it could contain example.
-
-Format:
-- **{What NOT to do}**
-  - Example: {example of anti pattern}
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-
-RECOMMENDATION:
-- Prefer bullet list
-- Be specific to the skill context
-```
-```example
-- **Skip validation**
-  - Consequence: service may fail during request execution or save invalid data
-  - Instead: validate input at the transport boundary before the handler runs
-
-- **Abstract log message**
-  - Example: "task is done" | "Entity has been created"
-  - Consequence: The message in the log does not give any idea what exactly is being discussed
-  - Instead: Add additional info in message "task 'clear db' is done" | "Entity 1234 has been created"
-```
-
 # Check list
 - [ ] The skill uses the correct format (Human Flat or Human Dir).
 - [ ] Front matter is filled, and `whenToUse` clearly states when to apply the skill.
 - [ ] All rules are actionable for an AI agent.
 - [ ] All links use relative or repository-root-relative markdown/wikilink syntax.
+- [ ] Every `## MUST` bullet carries a nested `Risk` and `Fix` (`Violation` optional); there is no separate `# Anti-patterns` section and no `## MUST NOT`/`## SHOULD NOT` heading.
 - [ ] All template hints and example blocks are removed from the final skill.
