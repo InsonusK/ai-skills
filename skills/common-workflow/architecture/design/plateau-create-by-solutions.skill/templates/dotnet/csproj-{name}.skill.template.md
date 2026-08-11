@@ -1,6 +1,9 @@
 ---
 name: csproj-name
 description: Describe which plateau csproj does skill describe
+whenToUse: One concrete sentence — which task must make the agent open this skill
+  # MUST name a concrete situation: creating or editing a file inside this project, deciding whether new code belongs here, or checking its allowed dependencies/NuGet packages. MUST NOT be vague ("when relevant").
+  # Example: "when adding or editing a class in {ProjectName}, or deciding whether a new class belongs in this project"
 domain: skill
 type: template
 plateau:
@@ -10,6 +13,7 @@ tags:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete project-level situations that require this skill (adding/editing a class inside `{ProjectName}`, deciding whether new code belongs here, checking allowed dependencies). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from created_by files made by Project.template.md
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`

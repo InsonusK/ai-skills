@@ -1,6 +1,9 @@
 ---
 name: plateau-name
 description: Describe which plateau does skill describe
+whenToUse: One concrete sentence — which task must make the agent read this plateau before writing code
+  # MUST name a concrete situation: starting a new Nx app/lib/feature under this plateau, or checking whether a change follows it. MUST NOT be vague ("when relevant").
+  # Example: "when scaffolding a new feature lib, or reviewing whether a change follows the state-management and routing conventions"
 domain: skill
 type: template
 version:
@@ -10,6 +13,7 @@ parent_plateau:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete situations that should make the agent read the plateau before writing code (starting a new app/lib/feature under `{plateau-name}`, or checking whether a change already made follows it). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - add to header properties `tags` tag `plateau/{plateau-name}`
 
 # Core Principles

@@ -1,6 +1,9 @@
 ---
 name: project-name
 description: Describe which plateau Nx project (app or lib) does skill describe
+whenToUse: One concrete sentence — which task must make the agent open this skill
+  # MUST name a concrete situation: creating or editing a file inside this app/lib, deciding whether new code belongs here, or checking its allowed Nx dependencies. MUST NOT be vague ("when relevant").
+  # Example: "when adding or editing a component/store inside {project-name}, or deciding whether a new feature belongs in this lib"
 domain: skill
 type: template
 plateau:
@@ -11,6 +14,7 @@ tags:
 created_by:
 ---
 # How Apply this template
+- Fill `whenToUse` with the concrete project-level situations that require this skill (adding/editing a class/component inside `{project-name}`, deciding whether new code belongs here, checking allowed Nx dependencies). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by the project-level implementation file (`{project-name}.project.create.md` / `{project-name}.project.extend.md`)
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`
