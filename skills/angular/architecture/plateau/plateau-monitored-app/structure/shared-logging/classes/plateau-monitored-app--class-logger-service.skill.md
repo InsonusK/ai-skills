@@ -9,6 +9,9 @@ version: 20260711220000
 tags:
   - skill/template/class
   - plateau/monitored-app
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/solution-logging-base.skill|solution-logging-base]]"
   - "[[skills/angular/architecture/solutions/logging/solution-logging-global.skill/solution-logging-global.skill|solution-logging-global]]"

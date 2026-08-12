@@ -9,6 +9,9 @@ version: 20260711230000
 tags:
   - skill/template/class
   - plateau/multiuser-app
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/testing/solution-app-testing.skill/solution-app-testing.skill|solution-app-testing]]"
 ---

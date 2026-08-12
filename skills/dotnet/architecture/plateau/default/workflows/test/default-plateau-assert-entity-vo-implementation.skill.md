@@ -3,8 +3,11 @@ name: default-plateau-assert-entity-vo-implementation
 description: workflow of assetion implemetation of solution-value-objects-and-rules.skill and solution-soft-value-objects-and-dto-validators.skill
 whenToUse: change code of entities, valueObjects, validators, rules
 tags:
-  - workflow/test
+  - concern/testing
   - plateau/default
+  - stack/dotnet
+  - concern/architecture
+
 ---
 # Goal
 - Assert that [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules.skill]] and [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators.skill]] was implemented correctly

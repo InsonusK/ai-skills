@@ -3,9 +3,11 @@ name: no-test-theater-angular
 description: Angular/TestBed-specific rules for assertion strength — DOM/output assertions over toBeTruthy(), HttpClientTestingModule verification, form-validation assertions, RxJS timing, and the E2E-vs-unit boundary.
 whenToUse: When writing or reviewing TestBed/Jasmine/Jest tests in an Angular project.
 tags:
-  - angular
-  - unit-testing
-  - workflow/test
+  - stack/typescript
+  - concern/testing/unit
+  - concern/testing
+  - framework/angular
+
 ---
 
 # Goal

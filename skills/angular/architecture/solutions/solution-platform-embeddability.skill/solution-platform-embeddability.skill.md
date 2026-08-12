@@ -6,11 +6,14 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - nx
   - module-federation
   - native-federation
   - platform-embeddability
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Turning the base platform-shell into a host capable of loading independently deployed applications
   - Onboarding a new embeddable app built by a separate team/repository

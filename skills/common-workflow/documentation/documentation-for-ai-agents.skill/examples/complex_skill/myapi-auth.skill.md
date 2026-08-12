@@ -5,6 +5,9 @@ whenToUse: when an agent needs to log in to myapi, refresh a token, or log out
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

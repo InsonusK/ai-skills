@@ -3,14 +3,16 @@ name: devops-github-wf-bdd-report-publish
 description: PR-gate Cucumber/mutation-testing jobs and the master-push workflow that publishes coverage/mutation reports and README badges to GitHub Pages, for projects following bdd-coverage-mutation-testing.
 whenToUse: when a project that follows [[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]] needs its `make cucumber-test`/`make mutation-test`/`make result-page` targets wired into CI — a PR-gate workflow that blocks merge, and a master-push workflow that publishes coverage/mutation reports and badges to GitHub Pages.
 tags:
-  - devops
+  - concern/ci
   - github-actions
-  - ci
-  - bdd
+  - concern/testing/bdd
   - cucumber
-  - mutation-testing
+  - concern/testing/mutation
   - github-pages
   - badges
+  - concern/testing
+  - stack
+
 ---
 
 # Goal

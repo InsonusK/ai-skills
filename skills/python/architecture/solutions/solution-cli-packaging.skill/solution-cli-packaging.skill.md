@@ -6,10 +6,12 @@ type: architecture
 version:
 tags:
   - skill/architecture/solution
-  - python
+  - stack/python
   - cli
   - packaging
-  - architecture
+  - concern/architecture
+  - app-type/cli
+
 triggers:
   - Create pyproject.toml for a new Python CLI application
   - Add a console command entry point so `pip install` exposes a runnable CLI command

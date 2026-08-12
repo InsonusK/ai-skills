@@ -6,10 +6,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - routing
   - lazy-loading
   - performance
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Deciding whether a mounted feature/module should be preloaded in the background
   - Deciding whether a sub-route inside a feature should be split into its own loadComponent chunk

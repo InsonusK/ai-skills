@@ -6,12 +6,14 @@ type: architecture
 version: 20260629
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - application
   - infrastructure
   - unit-of-work
   - mediatr
   - pipeline
+  - concern/architecture
+
 triggers:
   - define unit of work
   - commit changes after handler

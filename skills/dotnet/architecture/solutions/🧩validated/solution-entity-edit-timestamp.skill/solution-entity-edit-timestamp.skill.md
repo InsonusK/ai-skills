@@ -6,13 +6,15 @@ type: architecture
 version: 20260629
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - application
   - infrastructure
   - timestamp
   - audit
   - mediatr
+  - concern/architecture
+
 triggers:
   - add creation timestamp
   - add update timestamp

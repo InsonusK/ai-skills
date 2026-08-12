@@ -5,6 +5,9 @@ whenToUse: when you receive any task, when you are about to make an assumption i
 tags:
   - skill/core
   - collaboration
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

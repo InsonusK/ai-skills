@@ -8,6 +8,9 @@ version: 20260711230000
 tags:
   - skill/template/repo
   - plateau/multiuser-app
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 ---

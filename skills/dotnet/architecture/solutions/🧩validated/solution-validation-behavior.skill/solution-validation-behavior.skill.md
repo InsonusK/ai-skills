@@ -6,12 +6,14 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - application
   - validation
   - fluent-validation
   - pipeline
   - mediatr
+  - concern/architecture
+
 triggers:
   - add validation pipeline
   - implement validation behavior

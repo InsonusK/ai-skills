@@ -3,14 +3,15 @@ name: bdd-coverage-mutation-testing
 description: Defines the three-layer testing quality gate — Cucumber/Gherkin scenarios as the readable test plan, code coverage as the floor, mutation testing as proof the assertions actually check behavior — and the uniform `make` command / report contract (`tmp/result/*.json` + `tmp/report/<kind>/`) that lets one CI mechanism enforce it across every stack.
 whenToUse: When setting up or reviewing a project's testing strategy, when the same validation/business rule must be proven on more than one side of a boundary (e.g. frontend pre-flight checks and backend integrity checks), or when deciding what a project's test/coverage/mutation tooling must expose for CI to consume.
 tags:
-  - workflow/test
-  - testing
-  - bdd
+  - concern/testing
+  - concern/testing/bdd
   - cucumber
   - gherkin
   - code-coverage
-  - mutation-testing
+  - concern/testing/mutation
   - make
+  - stack
+
 ---
 
 # Goal

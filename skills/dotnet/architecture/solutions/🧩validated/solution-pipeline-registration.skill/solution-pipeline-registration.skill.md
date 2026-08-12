@@ -6,10 +6,12 @@ type: architecture
 version: 20260612
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - application
   - mediatr
   - pipeline
+  - concern/architecture
+
 triggers:
   - register pipeline behaviors
   - add pipeline registration

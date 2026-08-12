@@ -8,6 +8,9 @@ plateau: default
 tags:
   - skill/template/class
   - plateau/default
+  - stack/dotnet
+  - concern/architecture
+
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]"

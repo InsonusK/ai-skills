@@ -8,6 +8,9 @@ plateau: default
 tags:
   - skill/template/class
   - plateau/default
+  - stack/dotnet
+  - concern/architecture
+
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]"

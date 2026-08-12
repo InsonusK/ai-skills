@@ -5,6 +5,9 @@ whenToUse: when an agent needs to know how to install, authenticate against, or 
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

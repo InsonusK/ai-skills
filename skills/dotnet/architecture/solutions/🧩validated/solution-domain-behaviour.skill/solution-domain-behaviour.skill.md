@@ -6,11 +6,13 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - entity
   - behavior
   - invariants
+  - concern/architecture
+
 triggers:
   - implement entity behavior
   - entity invariant enforcement

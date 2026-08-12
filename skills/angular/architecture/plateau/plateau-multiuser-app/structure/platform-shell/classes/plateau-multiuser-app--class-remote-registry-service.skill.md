@@ -9,6 +9,9 @@ version: 20260711230000
 tags:
   - skill/template/class
   - plateau/multiuser-app
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
 ---

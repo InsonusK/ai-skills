@@ -6,13 +6,15 @@ type: architecture
 version: 20260615
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - application
   - mediatr
   - pipeline
   - pipeline-registration
   - ordering
   - sorting
+  - concern/architecture
+
 triggers:
   - pipeline order
   - pipeline sorting

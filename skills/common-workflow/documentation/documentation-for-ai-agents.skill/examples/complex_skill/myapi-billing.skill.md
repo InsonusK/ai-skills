@@ -5,6 +5,9 @@ whenToUse: when an agent needs to create a charge, issue a refund, or list invoi
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

@@ -9,6 +9,9 @@ version: 20260711200000
 tags:
   - skill/template/class
   - plateau/offline-monolith
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
 ---

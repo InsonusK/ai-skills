@@ -4,6 +4,9 @@ description: Define how to build plateau skills from a set of solution skills, f
 whenToUse: when you write skills for building a plateau
 tags:
   - skill/architecture/plateau/design
+  - stack
+  - concern/architecture
+
 ---
 
 # Input parameters

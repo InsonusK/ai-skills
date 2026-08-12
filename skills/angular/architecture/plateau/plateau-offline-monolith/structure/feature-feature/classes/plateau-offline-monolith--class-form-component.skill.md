@@ -9,6 +9,9 @@ version: 20260711200000
 tags:
   - skill/template/class
   - plateau/offline-monolith
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]]"

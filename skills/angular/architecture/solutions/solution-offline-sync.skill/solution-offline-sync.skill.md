@@ -6,10 +6,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - offline
   - sync
   - dexie
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Deciding whether a mutation should be queueable when offline
   - Reviewing how a conflict during replay is surfaced to the user

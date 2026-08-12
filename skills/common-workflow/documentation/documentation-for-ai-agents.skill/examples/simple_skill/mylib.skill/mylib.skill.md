@@ -5,6 +5,9 @@ whenToUse: when an agent needs to install, import, or call mylib's process_data 
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

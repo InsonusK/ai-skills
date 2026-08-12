@@ -6,13 +6,15 @@ type: architecture
 version: 20260616
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - entity
   - classification
   - concurrency
   - guid
   - idempotency
+  - concern/architecture
+
 triggers:
   - classify entity
   - entity type

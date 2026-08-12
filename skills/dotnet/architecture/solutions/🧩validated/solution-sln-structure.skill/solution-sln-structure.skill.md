@@ -6,12 +6,13 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
-  - architecture
+  - stack/dotnet
+  - concern/architecture
   - module
   - bounded-context
   - structure
   - layers
+
 triggers:
   - create new module
   - design module boundary

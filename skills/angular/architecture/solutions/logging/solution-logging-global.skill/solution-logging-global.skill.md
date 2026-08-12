@@ -6,9 +6,12 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - logging
   - observability
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Deciding whether a log entry should reach the backend
   - Reviewing how uncaught exceptions are captured

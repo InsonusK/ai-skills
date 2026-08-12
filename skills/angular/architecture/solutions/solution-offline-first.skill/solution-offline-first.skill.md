@@ -6,10 +6,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - pwa
   - offline
   - service-worker
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Setting up or reviewing the service worker's caching configuration
   - Deciding how a new kind of request should be cached

@@ -8,6 +8,9 @@ plateau: default
 tags:
   - skill/template/class
   - plateau/default
+  - stack/dotnet
+  - concern/architecture
+
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]"

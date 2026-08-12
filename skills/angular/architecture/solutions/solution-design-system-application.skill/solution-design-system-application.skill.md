@@ -6,9 +6,12 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - design-system
   - native-federation
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Onboarding the design system into the platform shell or a new embeddable app
   - Deciding how to configure the design system as a shared federation dependency

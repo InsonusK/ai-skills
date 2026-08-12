@@ -4,6 +4,9 @@ description: How to document a project for human readers using README.md and a d
 whenToUse: when you need to create or update human-readable documentation for a project, library, CLI, or API
 tags:
   - skill/documentation/for-human
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

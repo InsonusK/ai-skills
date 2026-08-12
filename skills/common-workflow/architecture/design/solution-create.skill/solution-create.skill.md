@@ -4,6 +4,9 @@ description: Define how to create new solution skills by patterns
 whenToUse: when you write a solution skill
 tags:
   - skill/architecture/solution/design
+  - stack
+  - concern/architecture
+
 ---
 
 # Workflow

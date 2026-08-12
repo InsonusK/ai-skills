@@ -7,11 +7,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - dotnet
-  - testing
-  - bdd
+  - stack/dotnet
+  - concern/testing
+  - concern/testing/bdd
   - cucumber
-  - mutation-testing
+  - concern/testing/mutation
+  - concern/architecture
+
 creates:
   - "{Module}.Tests.csproj"
   - "{Module}.Tests.StepDefinitions.{Rule}Steps.cs"

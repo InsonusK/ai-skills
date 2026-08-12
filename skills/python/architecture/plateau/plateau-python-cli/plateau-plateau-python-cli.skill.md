@@ -7,6 +7,9 @@ version: 20260720120000
 tags:
   - skill/template/plateau
   - plateau/plateau-python-cli
+  - stack/python
+  - concern/architecture
+
 created_by:
   - "[[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]"
   - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"

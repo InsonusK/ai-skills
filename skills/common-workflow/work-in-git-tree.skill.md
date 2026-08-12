@@ -5,6 +5,9 @@ whenToUse: work on any tasks in a git repository
 tags:
   - workflow
   - git
+  - stack
+  - concern/documentation
+
 ---
 # Goal
 - Eliminate conflicts when the user and the AI agent work on the same repository in parallel

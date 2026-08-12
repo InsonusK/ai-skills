@@ -6,13 +6,15 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
-  - aspnet-core
+  - stack/dotnet
+  - framework/aspnet-core
   - api
   - controllers
   - minimal-api
   - cqrs
   - mediatr
+  - concern/architecture
+
 triggers:
   - design api endpoint
   - add controller

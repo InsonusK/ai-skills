@@ -9,6 +9,9 @@ version: 20260711210000
 tags:
   - skill/template/project
   - plateau/platform-monolith
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
 ---

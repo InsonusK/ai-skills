@@ -3,10 +3,12 @@ name: test-driven-development
 description: Apply red-green-refactor test-first development, scoped to the task type — new behavior, large-scale refactor, or local/mechanical change
 whenToUse: before writing code for new business logic, before starting a refactor that spans many units/files, or before making a small local code change. Classify the task type first (see Task types) — the required rigor is different for each.
 tags:
-  - testing
+  - concern/testing
   - tdd
   - workflow
   - refactoring
+  - stack
+
 ---
 
 # Goal
