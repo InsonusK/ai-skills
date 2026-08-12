@@ -25,6 +25,13 @@ The kind of program being built — orthogonal to both `stack` and `framework`, 
 
 Values so far: `service` (backend service), `cli` (console application).
 
+### `artifact/*`
+The concrete program element or deliverable the skill is about — orthogonal to `stack`, `framework`, and `app-type`, because the same element (a class, a project file, a solution) appears in every ecosystem.
+
+Values so far: `class`, `interface`, `component`, `template`, `project`, `solution` (`.sln` file).
+
+Use this facet when the skill's content is tied to a specific kind of program element rather than to a general concern (see `concern/*`) or application shape (see `app-type/*`). Example: a skill that describes how to structure a C# class carries `artifact/class`; a skill about wiring up a .NET solution file carries `artifact/solution`.
+
 ### `concern/*`
 What aspect of building software the skill addresses. **Multi-value is expected and normal** — a skill that sets up a testing quality gate through architectural changes carries both `concern/architecture` and `concern/testing`; do not force a single choice.
 
