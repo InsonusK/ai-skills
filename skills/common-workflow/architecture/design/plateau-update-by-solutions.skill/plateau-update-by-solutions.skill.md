@@ -7,6 +7,9 @@ whenToUse:
   - removing a solution from a plateau
 tags:
   - skill/architecture/plateau/design
+  - stack
+  - concern/architecture
+
 ---
 
 # Goal

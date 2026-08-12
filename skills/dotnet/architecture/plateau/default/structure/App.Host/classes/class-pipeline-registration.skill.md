@@ -8,6 +8,9 @@ plateau: default
 tags:
   - skill/template/class
   - plateau/default
+  - stack/dotnet
+  - concern/architecture
+
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill|solution-pipeline-registration-order]]"

@@ -4,9 +4,12 @@ description: Decompose a new piece of business logic into SOLID-compliant servic
 whenToUse: before implementing any new business logic — a new service, function, command, or class that does more than parse input or wire dependencies. Apply it before writing code, not after.
 tags:
   - skill/develop
-  - unit-testing
+  - concern/testing/unit
   - usecase
-  - architecture
+  - concern/architecture
+  - concern/testing
+  - stack
+
 ---
 
 # Goal

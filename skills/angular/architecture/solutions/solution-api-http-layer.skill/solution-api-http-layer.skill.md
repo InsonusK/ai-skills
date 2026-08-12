@@ -6,9 +6,12 @@ type: architecture
 version: 2
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - http
   - data-access
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Adding a new data operation (fetch/create/update/delete) to a feature
   - Reviewing how errors from the backend should be surfaced to a Signal Store or NgRx effect

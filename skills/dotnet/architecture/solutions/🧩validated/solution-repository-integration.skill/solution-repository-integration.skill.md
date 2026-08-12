@@ -6,7 +6,7 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - application
   - infrastructure
@@ -14,6 +14,8 @@ tags:
   - ardalis
   - specification
   - query
+  - concern/architecture
+
 triggers:
   - define repository
   - add data access abstraction

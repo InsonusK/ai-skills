@@ -6,7 +6,7 @@ type: architecture
 version: 20260615
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - application
   - infrastructure
@@ -17,6 +17,8 @@ tags:
   - conflict
   - result
   - idempotent-create
+  - concern/architecture
+
 triggers:
   - external created entity
   - client-generated guid

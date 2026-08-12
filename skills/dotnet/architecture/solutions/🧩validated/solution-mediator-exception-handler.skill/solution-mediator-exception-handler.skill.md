@@ -6,13 +6,15 @@ type: architecture
 version: 20260704
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - application
   - mediatr
   - pipeline
   - exception-handling
   - logging
   - ardalis-result
+  - concern/architecture
+
 triggers:
   - global exception handler
   - unhandled exception pipeline

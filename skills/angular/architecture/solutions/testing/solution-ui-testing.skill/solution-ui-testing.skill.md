@@ -6,11 +6,14 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
-  - testing
+  - stack/typescript
+  - concern/testing
   - ui
   - accessibility
   - visual-regression
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Writing a new UI component (platform feature component, form component, or design-system component)
   - Deciding whether a component needs business-layer mocking in its test

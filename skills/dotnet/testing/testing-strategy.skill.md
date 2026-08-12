@@ -3,8 +3,10 @@ name: testing-strategy
 description: Defines which .NET classes and workflows require their own dedicated unit test — Validators, ValueObjects, Entities, and usecases — and the isolation boundary between them.
 whenToUse: When deciding whether a .NET class needs its own dedicated test class, or reviewing whether a Validator/ValueObject/Entity is tested only indirectly through another component's test.
 tags:
-  - unit-testing
-  - dotnet
+  - concern/testing/unit
+  - stack/dotnet
+  - concern/testing
+
 ---
 
 # Goal

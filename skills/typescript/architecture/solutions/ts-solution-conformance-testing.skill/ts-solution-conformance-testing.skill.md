@@ -8,10 +8,13 @@ version: 1
 tags:
   - skill/architecture/solution
   - typescript
-  - testing
-  - bdd
+  - concern/testing
+  - concern/testing/bdd
   - cucumber
-  - mutation-testing
+  - concern/testing/mutation
+  - stack/typescript
+  - concern/architecture
+
 creates:
   - "{Package}/features/{rule}.feature"
   - "{Package}/features/step-definitions/{rule}.steps.ts"

@@ -3,11 +3,12 @@ name: devops-github-wf-pr-validation
 description: Basic GitHub Actions workflow for PR validation — running unit tests and checking that the application version is bumped when code changes.
 whenToUse: when you need to create or update `.github/workflows/pr.yml` (or a similar file) to validate pull requests into develop/master with unit tests and a version-bump check.
 tags:
-  - devops
+  - concern/ci
   - github-actions
-  - ci
   - pr-validation
-  - testing
+  - concern/testing
+  - stack
+
 ---
 
 # Goal

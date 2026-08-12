@@ -6,11 +6,13 @@ type: architecture
 version: 20260612
 tags:
   - skill/architecture/solution
-  - dotnet
-  - aspnet-core
+  - stack/dotnet
+  - framework/aspnet-core
   - middleware
   - http-pipeline
   - "#draft"
+  - concern/architecture
+
 triggers:
   - register http middleware
   - add middleware registration

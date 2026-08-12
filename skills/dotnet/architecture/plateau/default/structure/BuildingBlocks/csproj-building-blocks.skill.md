@@ -8,6 +8,9 @@ plateau: default
 tags:
   - skill/template/csproj
   - plateau/default
+  - stack/dotnet
+  - concern/architecture
+
 created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|solution-unit-of-work]]"

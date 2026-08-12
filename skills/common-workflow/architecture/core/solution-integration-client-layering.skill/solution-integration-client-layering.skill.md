@@ -9,6 +9,9 @@ tags:
   - integration
   - api-consumption
   - decoupling
+  - stack
+  - concern/architecture
+
 triggers:
   - integrate a new external API
   - add a method that calls an external API

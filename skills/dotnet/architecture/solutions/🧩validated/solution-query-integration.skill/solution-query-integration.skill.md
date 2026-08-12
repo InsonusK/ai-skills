@@ -6,7 +6,7 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - application
   - cqrs
   - mediatr
@@ -15,6 +15,8 @@ tags:
   - read
   - dto
   - projection
+  - concern/architecture
+
 triggers:
   - implement query handler
   - create query

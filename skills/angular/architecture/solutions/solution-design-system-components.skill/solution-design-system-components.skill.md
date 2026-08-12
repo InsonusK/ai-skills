@@ -6,10 +6,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - design-system
   - angular-material
   - components
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Authoring a new design system component
   - Deciding how to shape a component's public API

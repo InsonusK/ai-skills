@@ -6,11 +6,13 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - ddd
   - value-object
   - rules
+  - concern/architecture
+
 triggers:
   - create value object
   - eliminate primitive obsession

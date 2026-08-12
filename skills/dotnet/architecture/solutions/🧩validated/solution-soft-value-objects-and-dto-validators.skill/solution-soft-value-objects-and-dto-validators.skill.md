@@ -6,12 +6,14 @@ type: architecture
 version: 20260701011400
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - validation
   - fluent-validation
   - value-object
   - dto
   - cross-module
+  - concern/architecture
+
 triggers:
   - create soft value object
   - expose value object to other modules

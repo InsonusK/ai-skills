@@ -3,10 +3,11 @@ name: no-test-theater-dotnet
 description: xUnit/.NET-specific rules for assertion strength — Ardalis.Result status checks, branch vs. line coverage, Stryker.NET mutation testing, and integration-test requirements per API endpoint.
 whenToUse: When writing or reviewing xUnit tests in a .NET project.
 tags:
-  - dotnet
-  - unit-testing
+  - stack/dotnet
+  - concern/testing/unit
   - xunit
-  - workflow/test
+  - concern/testing
+
 ---
 
 # Goal

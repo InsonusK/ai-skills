@@ -6,9 +6,11 @@ type: architecture
 version: 
 tags:
   - skill/architecture/solution
-  - python
+  - stack/python
   - cli
-  - architecture
+  - concern/architecture
+  - app-type/cli
+
 triggers:
   - Create a new Python CLI application
   - Add a new CLI command to an existing Python application

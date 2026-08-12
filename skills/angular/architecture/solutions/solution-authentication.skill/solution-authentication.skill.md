@@ -6,9 +6,12 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - auth
   - security
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Adding a login/session flow
   - Restricting a route or UI element to specific permissions

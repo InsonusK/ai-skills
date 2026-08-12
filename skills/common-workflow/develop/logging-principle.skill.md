@@ -5,6 +5,9 @@ whenToUse: when writing code that requires logging or choosing a log level
 tags:
   - skill/develop
   - logging
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

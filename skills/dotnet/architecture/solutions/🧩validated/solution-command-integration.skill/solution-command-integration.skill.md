@@ -6,13 +6,15 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - application
   - cqrs
   - mediatr
   - command
   - handler
   - pipeline
+  - concern/architecture
+
 triggers:
   - implement command handler
   - create command

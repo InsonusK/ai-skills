@@ -3,9 +3,10 @@ name: no-test-theater
 description: Prevents "coverage theater" — tests that execute code but do not verify real behavior. Defines the before/after scenario trace-matrix protocol, mandatory test properties, and banned weak-test patterns.
 whenToUse: When writing new unit/integration tests, reviewing existing tests, or changing an existing test's assertions, mocks, timeouts, or skip/xfail state — for any language.
 tags:
-  - workflow/test
-  - testing
+  - concern/testing
   - quality
+  - stack
+
 ---
 
 # Goal

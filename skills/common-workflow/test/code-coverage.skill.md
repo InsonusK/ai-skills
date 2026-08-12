@@ -2,6 +2,9 @@
 name: code-coverage
 description: How many codes must be codered by unittest
 whenToUse: write code or write test
+tags:
+  - stack
+  - concern/testing
 ---
 
 # How to use it

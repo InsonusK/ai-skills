@@ -7,11 +7,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - python
-  - testing
-  - bdd
+  - stack/python
+  - concern/testing
+  - concern/testing/bdd
   - cucumber
-  - mutation-testing
+  - concern/testing/mutation
+  - concern/architecture
+
 creates:
   - features/{rule}.feature
   - features/steps/{rule}_steps.py

@@ -4,6 +4,9 @@ description: How to write an accessible glossary/concept page for a term, librar
 whenToUse: when a term, library, technology, or pattern used in a skill, in code, or in project docs is unfamiliar and the user asks you to document it, or when applying documentation-for-human or solution-create and a concept a reader may not know needs an explanation
 tags:
   - skill/documentation/for-human/concept
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

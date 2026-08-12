@@ -11,6 +11,9 @@ tags:
   - variables
   - inventory
   - secrets
+  - stack/ansible
+  - concern/architecture
+
 triggers:
   - Creating a new Ansible role that accepts configurable parameters
   - A role's variable name collides with another role's variable in the same group_vars/host_vars scope

@@ -6,11 +6,13 @@ type: architecture
 version: 20260611
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - ddd
   - ef-core
   - configuration
+  - concern/architecture
+
 triggers:
   - create ef configuration
   - configure entity mapping

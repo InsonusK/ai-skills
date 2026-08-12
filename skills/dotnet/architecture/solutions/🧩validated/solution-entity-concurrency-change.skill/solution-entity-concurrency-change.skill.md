@@ -6,7 +6,7 @@ type: architecture
 version: 20260622
 tags:
   - skill/architecture/solution
-  - dotnet
+  - stack/dotnet
   - domain
   - application
   - infrastructure
@@ -14,6 +14,8 @@ tags:
   - etag
   - rowversion
   - mediatr
+  - concern/architecture
+
 triggers:
   - implement concurrency control
   - optimistic concurrency

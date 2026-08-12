@@ -4,6 +4,9 @@ description: Rules for writing skills that AI agents can understand and apply co
 whenToUse: when you create a new skill or update an existing one
 tags:
   - skill/core
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal

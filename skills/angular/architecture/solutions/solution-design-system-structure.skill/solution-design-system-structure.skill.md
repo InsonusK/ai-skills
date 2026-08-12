@@ -6,10 +6,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - design-system
   - ng-packagr
   - changesets
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Setting up the design system's own repository for the first time
   - Adding a new component or preparing a release

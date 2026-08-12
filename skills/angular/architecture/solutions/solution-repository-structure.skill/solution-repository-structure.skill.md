@@ -6,9 +6,12 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - nx
   - repository-structure
+  - framework/angular
+  - concern/architecture
+
 triggers:
   - Starting a new Angular application from scratch
   - Adding a new business feature and deciding where its code should live
