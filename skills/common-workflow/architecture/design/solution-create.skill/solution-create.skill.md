@@ -42,8 +42,7 @@ MUST:
 - Remove the `# How Apply this template` block from the final skill file.
 - Create an `Implementation/` folder and provide concrete implementation files for every solution skill, including classification, decision, policy, or taxonomy skills. Even when the skill primarily selects between existing solutions, it must still show how each selected variant manifests in code, configuration, or project structure.
 - When the skill depends on other solutions, each implementation variant or section must explicitly state which dependency solution(s) are applied and which are intentionally not applied.
-- When an ADR is created, the selected variant must also be listed in `# Searched variants` and clearly marked as selected.
-- The `# Selected variant` section must explicitly name and link to the selected variant from `# Searched variants`.
+- When an architecture decision is made while building or editing the solution, record it as an ADR following [adr-create.skill.md](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md).
 - When the solution relies on a term, library, technology, or pattern a reader may not already know, document it inside the solution skill's own `glossary/` folder (`solution-{Solution}.skill/glossary/`) following [documentation-for-concept.skill.md](skills/common-workflow/documentation/documentation-for-concept.skill/documentation-for-concept.skill.md), and link to it from the solution skill file instead of leaving it unexplained. Keep the glossary inside the skill folder so the solution stays self-contained and portable.
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
