@@ -81,13 +81,7 @@ RECOMMENDATION:
 # Adr
 ```hint
 Use this section only if an architecture decision was made while building or editing the solution.
-1. Create an `adr/` folder inside the solution skill folder.
-2. Add an ADR record using [[./adr/adr.template.md|adr.template.md]].
-3. List created ADRs in the `adr:` property of the YAML header.
-4. In the skill body, briefly summarize the decision and link to the ADR.
-5. The ADR itself must contain `# Selected variant` and `# Searched variants` sections. The selected variant must be clearly marked and linked from `# Searched variants`.
-
-See also a complete example: [[./adr/example.adr.md|example.adr.md]].
+Record every such decision as an ADR following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md|adr-create]]: create ADR files from its template in an `adr/` folder inside the solution skill folder, list them in the `adr:` property of the YAML header, and briefly summarize each decision in the skill body with a link to its ADR.
 RECOMMENDATION:
 - Prefer bullet list
 ```
