@@ -6,7 +6,10 @@ type: architecture
 version: 
 tags:
   - skill/architecture/solution
-  # any other tags
+  - solution/{solution-name}
+  # solution/{solution-name}: the solution name without the `solution-` prefix, kebab-case
+  # (e.g. folder solution-sln-structure.skill -> solution/sln-structure).
+  # Plus facet tags required by skill-design.skill.md: at least one concern/* and one stack/<value>.
 triggers:
   # What kind of task should agent do to use this solution
   # - when skill should called
@@ -205,10 +208,15 @@ sequenceDiagram
 
 # Rules
 ```hint
-Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Show links to same subblock in implementation files.
-Only add a subblock for categories that contain at least one implementation-file link or rule.
-If a category has no links and no rules, skip it — do not write an empty subblock.
+Define MUST, SHOULD, MAY rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never keep a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet that states a rule carries a nested `Risk:` and `Fix:` (`Violation:` is optional); pure link bullets that aggregate implementation-file rules carry none.
+- ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Show links to the same subblock in implementation files.
+- Only add a subblock for categories that contain at least one implementation-file link or rule.
+- If a category has no links and no rules, skip it — do not write an empty subblock.
 
 MUST:
 - Contain link to same subblock in implementation template
@@ -222,6 +230,9 @@ SHOULD:
 ```example
 - [[./Implementation/{Package}.package.extend.md#MUST|{Package}.package.extend]]
   - [[./Implementation/{Package}.package.extend/index.ts.extend.md#MUST|index.ts.extend]]
+- Never import a module by its internal path instead of the package's `index.ts`.
+  - Risk: internal restructuring becomes a breaking change for consumers.
+  - Fix: always import through the package's public `index.ts`.
 ```
 
 ## SHOULD
@@ -232,36 +243,6 @@ SHOULD:
 ## MAY
 ```example
 - [[./Implementation/{Package}.package.extend.md#MAY|{Package}.package.extend]]
-```
-
-## SHOULD NOT
-```example
-- [[./Implementation/{Package}.package.extend.md#SHOULD NOT|{Package}.package.extend]]
-```
-
-## MUST NOT
-```example
-- [[./Implementation/{Package}.package.extend.md#MUST NOT|{Package}.package.extend]]
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the solution and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-
-RECOMMENDATION:
-- Prefer bullet list
-- Be specific to the solution context
-```
-```example
-- **Import a module by its internal path instead of the package's `index.ts`**
-  - Consequence: internal restructuring becomes a breaking change for consumers
-  - Instead: always import through the package's public `index.ts`
 ```
 
 # Check list

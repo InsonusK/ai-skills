@@ -10,7 +10,10 @@ type: architecture
 version: 
 tags:
   - skill/architecture/solution
-  # any other tags
+  - solution/{solution-name}
+  # solution/{solution-name}: the solution name without the `solution-` prefix, kebab-case
+  # (e.g. folder solution-sln-structure.skill -> solution/sln-structure).
+  # Plus facet tags required by skill-design.skill.md: at least one concern/* and one stack/<value>.
 creates:
   # List of classes or project which created by this solution
   # Project fill {ProjectName}.csproj
@@ -235,12 +238,17 @@ sequenceDiagram
 ```
 ````
 
-# Rules
+# Rule
 ```hint
-Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Show links to same subblock in implementation files.
-Only add a subblock for categories that contain at least one implementation-file link or rule.
-If a category has no links and no rules, skip it — do not write an empty subblock.
+Define MUST, SHOULD, MAY rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never keep a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet that states a rule carries a nested `Risk:` and `Fix:` (`Violation:` is optional); pure link bullets that aggregate implementation-file rules carry none.
+- ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Show links to the same subblock in implementation files.
+- Only add a subblock for categories that contain at least one implementation-file link or rule.
+- If a category has no links and no rules, skip it — do not write an empty subblock.
 
 MUST:
 - Contain link to same subblock in implementation template
@@ -256,15 +264,18 @@ SHOULD:
   - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs.create]]
 - Interfaces.csproj.extend
   - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
-- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+- Validate input at the transport boundary before the handler runs.
+  - Risk: the service may fail during request execution or save invalid data.
+  - Fix: validate every command with a validator registered in the pipeline.
+- Never place business rules in handlers.
+  - Risk: logic leaks out of the domain, making the system hard to test and evolve.
+  - Fix: delegate all business decisions to entities and domain services.
 ```
 
 ## SHOULD
 ```example
 - [[./Implementation/Shared.csproj.extend.md#SHOULD|Shared.csproj.extend]]
   - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#SHOULD|App.Host.csproj.extend]]
 ```
 
@@ -272,51 +283,7 @@ SHOULD:
 ```example
 - [[./Implementation/Shared.csproj.extend.md#MAY|Shared.csproj.extend]]
   - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MAY|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MAY|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#MAY|App.Host.csproj.extend]]
-```
-
-## SHOULD NOT
-```example
-- [[./Implementation/Shared.csproj.extend.md#SHOULD NOT|Shared.csproj.extend]]
-  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD NOT|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD NOT|{Dto}.cs.create]]
-- [[./Implementation/App.Host.csproj.extend.md#SHOULD NOT|App.Host.csproj.extend]]
-```
-
-## MUST NOT
-```example
-- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
-  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST NOT|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST NOT|{Dto}.cs.create]]
-- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the solution and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-
-RECOMMENDATION:
-- Prefer bullet list
-- Be specific to the solution context
-```
-```example
-- **Skip validation**
-  - Consequence: service may fail during request execution or save invalid data
-  - Instead: validate input at the transport boundary before the handler runs
-
-- **Business rule in handler**
-  - Consequence: logic leaks out of the domain, making the system hard to test and evolve
-  - Instead: delegate all business decisions to entities and domain services
 ```
 
 # Check list

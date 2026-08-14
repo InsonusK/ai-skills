@@ -4,6 +4,12 @@ element_kind: # repository | project | class
 change_kind: # create | extend
 # - create if solution creates a new repository-level template.
 # - extend if solution extends an existing repository-level template.
+tags:
+  - solution/{solution-name}
+  - element/{element-name}
+  # solution/{solution-name}: the owning solution name without the `solution-` prefix, kebab-case.
+  # element/{element-name}: the repository name in kebab-case, no braces or dots
+  # (e.g. workspace my-org -> element/my-org-repo).
 ---
 
 # How Apply this template
@@ -47,9 +53,13 @@ Define how solution EXTENDS repository top-level directories and the Nx projects
 
 # Rules
 ```hint
-Define how solution EXTENDS repository MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Only add a subblock for categories where this solution introduces new rules.
-If a category has no new rules, skip it — do not write an empty subblock.
+Define how solution EXTENDS repository rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never add a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet carries a nested `Risk:` and `Fix:` (`Violation:` is optional); ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Only add a subblock for categories where this solution introduces new rules.
+- If a category has no new rules, skip it — do not write an empty subblock.
 
 MUST:
 - show all added Rules
@@ -58,6 +68,11 @@ MUST:
 ## MUST
 ```example
 - Every Nx project must declare tags matching the `type:*`/`scope:*` taxonomy
+  - Risk: `@nx/enforce-module-boundaries` cannot classify the project, so boundary checks silently skip it.
+  - Fix: declare the project's `type:*` and `scope:*` tags in its project configuration.
+- Never place a new feature directly under /apps instead of a routed lib under /libs.
+  - Risk: feature can no longer be reused or lazy-loaded independently, and affected-based builds treat the whole app as changed.
+  - Fix: scaffold the feature as a lib under /libs and route to it lazily from the shell app.
 ```
 
 ## SHOULD
@@ -68,32 +83,6 @@ MUST:
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the solution at repository level and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-```
-```example
-- **Place a new feature directly under /apps instead of a routed lib under /libs**
-  - Consequence: feature can no longer be reused or lazy-loaded independently, and affected-based builds treat the whole app as changed
-  - Instead: scaffold the feature as a lib under /libs and route to it lazily from the shell app
 ```
 
 # Unittest TestCases

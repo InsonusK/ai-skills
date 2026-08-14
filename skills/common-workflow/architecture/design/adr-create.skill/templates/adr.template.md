@@ -4,8 +4,11 @@ description: What problem is solved
 problem: Define problem or question
 decision: What decision was chosen
 tags:
+  - solution/{solution-name}
   - stack
+  - concern/documentation
   - concern/documentation/adr
+  # solution/{solution-name}: the owning solution name without the `solution-` prefix, kebab-case.
 ---
 
 # Problem
