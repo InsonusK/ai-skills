@@ -3,6 +3,9 @@ name: example-decision-record
 description: Example architecture decision record showing the expected structure and level of detail.
 problem: When a solution requires an architecture decision, the ADR must document the problem, the selected variant, and all alternatives that were considered.
 decision: Use a lightweight ADR file inside the solution skill's `adr/` folder, linked from the skill header and body.
+tags:
+  - stack
+  - concern/documentation/adr
 ---
 
 # Problem
