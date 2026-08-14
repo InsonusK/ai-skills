@@ -3,6 +3,9 @@ description: Orchestrate use cases by connecting the API contract to the domain 
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/module-application-csproj
 ---
 
 # Goals

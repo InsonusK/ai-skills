@@ -4,6 +4,9 @@ project_name: App.Infrastructure
 name: Repository.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/repository-integration
+  - element/repository-cs
 ---
 
 # Goals

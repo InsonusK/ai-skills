@@ -3,6 +3,9 @@ description: Add command record conventions and MediatR/Ardalis.Result packages 
 name: "{Module}.Interfaces.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/command-integration
+  - element/module-interfaces-csproj
 ---
 
 # Goals

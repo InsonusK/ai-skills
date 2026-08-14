@@ -4,6 +4,9 @@ name: shared-auth-ui
 project_kind: library
 element_kind: project
 change_kind: create
+tags:
+  - solution/authentication
+  - element/shared-auth-ui-project
 ---
 
 # Goals

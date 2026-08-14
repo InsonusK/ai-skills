@@ -2,6 +2,9 @@
 description: Extend the base workspace with a Workbox-generated service worker registered by apps/platform-shell, a new connectivity slice in libs/shared/state, and the offline-error distinction in every feature's Client
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/offline-first
+  - element/repository
 ---
 
 # Structure

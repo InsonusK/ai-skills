@@ -3,6 +3,9 @@ description: Add controllers, extensions, and minimal API endpoints to {Module}.
 name: "{Module}.Api.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/http-api-publication
+  - element/module-api-csproj
 ---
 
 # Goals

@@ -3,6 +3,9 @@ description: Implement reusable framework-level patterns consumed by App.Host an
 name: BuildingBlocks.csproj
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/buildingblocks-csproj
 ---
 
 # Goals

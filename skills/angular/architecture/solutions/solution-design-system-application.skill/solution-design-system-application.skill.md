@@ -11,6 +11,7 @@ tags:
   - framework/native-federation
   - framework/angular
   - concern/architecture
+  - solution/design-system-application
 
 triggers:
   - Onboarding the design system into the platform shell or a new embeddable app

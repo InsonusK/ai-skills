@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "{FeatureName}.Validator.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/featurename-validator-cs
 ---
 
 # Goals

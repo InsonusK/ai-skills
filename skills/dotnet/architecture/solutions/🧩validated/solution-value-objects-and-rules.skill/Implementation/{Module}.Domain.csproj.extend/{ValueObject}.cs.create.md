@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{ValueObject}"
 element_kind: class
 change_kind: create
+tags:
+  - solution/value-objects-and-rules
+  - element/valueobject-cs
 ---
 
 # Goals

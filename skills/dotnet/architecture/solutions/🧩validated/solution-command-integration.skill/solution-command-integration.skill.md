@@ -14,6 +14,7 @@ tags:
   - handler
   - pipeline
   - concern/architecture
+  - solution/command-integration
 
 triggers:
   - implement command handler

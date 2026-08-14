@@ -2,6 +2,9 @@
 description: Add libs/shared/logging hosting LoggerService, the LogSink extension point, and the console sink used by this base solution
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/logging-base
+  - element/repository
 ---
 
 # Structure

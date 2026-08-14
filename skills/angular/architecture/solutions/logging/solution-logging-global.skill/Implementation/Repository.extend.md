@@ -2,6 +2,9 @@
 description: Extend libs/shared/logging with BackendLogSink and the persisted retry queue, and register a global ErrorHandler in apps/platform-shell
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/logging-global
+  - element/repository
 ---
 
 # Structure

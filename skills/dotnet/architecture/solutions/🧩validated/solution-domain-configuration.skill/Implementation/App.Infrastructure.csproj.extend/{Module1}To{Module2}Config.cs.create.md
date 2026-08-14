@@ -4,6 +4,9 @@ project_name: App.Infrastructure
 name: "{Module1}To{Module2}Config.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/domain-configuration
+  - element/module1-to-module2-config-cs
 ---
 
 # Goals

@@ -4,6 +4,9 @@ project_name: Shared
 name: IUpdateInfoModel.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/entity-edit-timestamp
+  - element/iupdateinfomodel-cs
 ---
 
 # Goals

@@ -3,6 +3,9 @@ description: Add per-entity version resolvers to the Application layer
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-concurrency-change
+  - element/module-application-csproj
 ---
 
 # Goals

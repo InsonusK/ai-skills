@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{Entity}Config.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/domain-configuration
+  - element/entity-config-cs
 ---
 
 # Goals

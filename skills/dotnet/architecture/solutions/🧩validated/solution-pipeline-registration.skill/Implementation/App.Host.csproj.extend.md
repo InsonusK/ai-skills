@@ -3,6 +3,9 @@ description: Wire centralized pipeline registration in the composition root
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/pipeline-registration
+  - element/app-host-csproj
 ---
 
 # Goals

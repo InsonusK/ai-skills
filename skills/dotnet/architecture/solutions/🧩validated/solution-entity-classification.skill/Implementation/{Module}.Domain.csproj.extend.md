@@ -1,3 +1,9 @@
+---
+tags:
+  - solution/entity-classification
+  - element/module-domain-csproj
+---
+
 # {Module}.Domain.csproj - extend
 
 Apply entity classification at the domain layer by choosing the correct entity class and configuration variant for each `{EntityName}`.

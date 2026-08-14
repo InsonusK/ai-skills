@@ -14,6 +14,7 @@ tags:
   - audit
   - framework/mediatr
   - concern/architecture
+  - solution/entity-edit-timestamp
 
 triggers:
   - add creation timestamp

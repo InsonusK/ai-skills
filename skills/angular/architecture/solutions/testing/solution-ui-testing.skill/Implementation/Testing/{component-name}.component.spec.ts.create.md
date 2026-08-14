@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "spec/{component-name}"
 element_kind: component
 change_kind: create
+tags:
+  - solution/ui-testing
+  - element/component-name-component-spec-ts
 ---
 
 # How this generic file is used

@@ -4,6 +4,9 @@ project_name: "{demo-or-preview-app}"
 name: "spec/{component-name}.a11y"
 element_kind: component
 change_kind: create
+tags:
+  - solution/ui-testing
+  - element/component-name-a11y-spec-ts
 ---
 
 # How this generic file is used

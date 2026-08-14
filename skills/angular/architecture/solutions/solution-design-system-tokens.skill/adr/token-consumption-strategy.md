@@ -3,6 +3,10 @@ name: token-consumption-strategy
 description: How design system components consume design tokens — Angular Material's own M3 system tokens versus a fully custom semantic layer
 problem: Angular Material's M3 theming already generates a semantic (not primitive) layer of CSS custom properties (--mat-sys-*) for colors, typography, and elevation; building a full custom aliasing layer over all of it would duplicate an already-semantic layer, but Material's token set does not model domain-specific concepts this application needs (priority levels, workflow states, spacing scale)
 decision: Consume --mat-sys-* tokens directly wherever Material already models the concept (colors, typography, elevation); define a small set of custom --ds-* tokens only for genuine gaps — domain-specific semantic colors (e.g. high/medium/low priority, stop/start/in-progress states) and a spacing/radius scale
+tags:
+  - solution/design-system-tokens
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

@@ -3,6 +3,9 @@ description: Register IEntityVersionResolverFactory and module IEntityVersionRes
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-concurrency-change
+  - element/app-host-csproj
 ---
 
 # Goals

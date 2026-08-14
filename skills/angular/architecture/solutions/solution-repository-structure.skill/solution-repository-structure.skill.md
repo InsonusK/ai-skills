@@ -11,6 +11,7 @@ tags:
   - repository-structure
   - framework/angular
   - concern/architecture
+  - solution/repository-structure
 
 triggers:
   - Starting a new Angular application from scratch

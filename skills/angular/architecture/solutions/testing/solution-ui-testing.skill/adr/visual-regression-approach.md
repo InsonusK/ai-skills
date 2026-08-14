@@ -3,6 +3,10 @@ name: visual-regression-approach
 description: How visual (screenshot) regressions in UI components are caught, given behavioral component tests (Testing Library) already exist but cannot detect layout/rendering regressions
 problem: jsdom/happy-dom (used by behavioral component tests) has no layout engine, so a component test can confirm the right text/roles are present but cannot detect a broken layout, a broken dark-mode branch, lost contrast, or a CSS-specificity conflict
 decision: Playwright screenshot testing (toHaveScreenshot()) directly against each plateau's own demo/preview pages, without Storybook or Chromatic
+tags:
+  - solution/ui-testing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

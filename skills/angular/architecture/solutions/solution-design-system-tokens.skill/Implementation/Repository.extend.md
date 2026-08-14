@@ -2,6 +2,9 @@
 description: Extend the design system repository with the M3 theme definition and the custom --ds-* token layer
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/design-system-tokens
+  - element/repository
 ---
 
 # Structure

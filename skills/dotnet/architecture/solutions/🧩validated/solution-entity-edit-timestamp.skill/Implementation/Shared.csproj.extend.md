@@ -3,6 +3,9 @@ description: Add timestamp contracts to Shared
 name: Shared.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/shared-csproj
 ---
 
 # Goals

@@ -12,6 +12,7 @@ tags:
   - state-management
   - framework/angular
   - concern/architecture
+  - solution/state-management
 
 triggers:
   - Deciding where a new piece of state should live

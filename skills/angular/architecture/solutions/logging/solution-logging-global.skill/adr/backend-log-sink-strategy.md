@@ -3,6 +3,10 @@ name: backend-log-sink-strategy
 description: How logs reach the backend — which levels, how they are batched, how failed sends are retried, and how uncaught exceptions are captured
 problem: Sending every log entry to the backend individually and unconditionally is noisy and costly; we need a strategy for what gets sent, how it's batched, what happens when the network is unavailable at send time, and whether uncaught exceptions are captured automatically
 decision: Send only warn/error entries plus explicit report() calls, batched and flushed periodically (with a beacon-based flush on page unload), backed by a bounded, IndexedDB-persisted retry queue, with a global ErrorHandler routing uncaught exceptions through LoggerService.error
+tags:
+  - solution/logging-global
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

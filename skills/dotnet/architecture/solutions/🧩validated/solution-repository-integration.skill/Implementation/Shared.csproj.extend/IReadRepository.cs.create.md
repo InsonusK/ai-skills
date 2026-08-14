@@ -4,6 +4,9 @@ project_name: Shared
 name: IReadRepository.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/repository-integration
+  - element/ireadrepository-cs
 ---
 
 # Goals

@@ -3,6 +3,9 @@ description: Add MediatR package and the IQuery marker interface to Shared
 name: Shared.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/query-integration
+  - element/shared-csproj
 ---
 
 # Goals

@@ -3,6 +3,10 @@ name: caching-strategy-per-content-type
 description: Which Workbox caching strategy applies to each distinct kind of request the application makes
 problem: Different kinds of requests have different freshness/availability trade-offs — a single caching strategy applied uniformly would either serve stale data where correctness matters, or fail to serve anything where availability matters most
 decision: Five distinct strategies by content type — precache for the app shell, cache-first for static design-system assets, stale-while-revalidate for API GET reads, network-only for auth/mutations, and stale-while-revalidate runtime caching for federated remote chunks
+tags:
+  - solution/offline-first
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

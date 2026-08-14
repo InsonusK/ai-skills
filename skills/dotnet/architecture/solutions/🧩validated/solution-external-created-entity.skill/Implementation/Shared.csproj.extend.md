@@ -3,6 +3,9 @@ description: Add ConflictResult, IHasGuid, and IGuidResolver
 name: Shared.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/external-created-entity
+  - element/shared-csproj
 ---
 
 # Goals

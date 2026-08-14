@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{Entity}"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/value-objects-and-rules
+  - element/entity-cs
 ---
 
 # Goals

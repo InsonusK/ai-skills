@@ -4,6 +4,9 @@ project_name: App.Infrastructure
 name: EntityVersionResolverFactory.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/entity-concurrency-change
+  - element/entityversionresolverfactory-cs
 ---
 
 # Goals

@@ -4,6 +4,9 @@ name: platform-shell-e2e
 project_kind: application
 element_kind: project
 change_kind: create
+tags:
+  - solution/app-testing
+  - element/platform-shell-e2e-project
 ---
 
 # Goals

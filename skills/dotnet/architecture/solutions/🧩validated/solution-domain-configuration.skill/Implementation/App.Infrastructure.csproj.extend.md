@@ -3,6 +3,9 @@ description: Add cross-module foreign key configuration support to App.Infrastru
 name: "App.Infrastructure.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/domain-configuration
+  - element/app-infrastructure-csproj
 ---
 
 # Goals

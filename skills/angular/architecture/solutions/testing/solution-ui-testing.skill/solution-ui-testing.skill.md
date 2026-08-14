@@ -13,6 +13,7 @@ tags:
   - visual-regression
   - framework/angular
   - concern/architecture
+  - solution/ui-testing
 
 triggers:
   - Writing a new UI component (platform feature component, form component, or design-system component)

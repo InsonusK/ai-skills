@@ -4,6 +4,9 @@ project_name: shared-state
 name: auth
 element_kind: store
 change_kind: create
+tags:
+  - solution/state-management
+  - element/auth-store-ts
 ---
 
 # Goals

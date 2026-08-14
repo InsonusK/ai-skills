@@ -4,6 +4,9 @@ project_name: BuildingBlocks
 name: ETagEncoder.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/entity-concurrency-change
+  - element/etagencoder-cs
 ---
 
 # Goals

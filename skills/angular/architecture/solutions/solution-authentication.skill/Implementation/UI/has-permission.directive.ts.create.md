@@ -4,6 +4,9 @@ project_name: shared-auth-ui
 name: has-permission
 element_kind: directive
 change_kind: create
+tags:
+  - solution/authentication
+  - element/has-permission-directive-ts
 ---
 
 # Goals

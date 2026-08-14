@@ -1,3 +1,9 @@
+---
+tags:
+  - solution/entity-classification
+  - element/entitynameconfig-cs
+---
+
 # {EntityName}Config.cs - extend
 
 Extend the entity configuration to match the selected classification. Only the mappings required by the classification are added.

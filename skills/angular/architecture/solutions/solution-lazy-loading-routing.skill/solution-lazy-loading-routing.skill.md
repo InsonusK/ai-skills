@@ -12,6 +12,7 @@ tags:
   - performance
   - framework/angular
   - concern/architecture
+  - solution/lazy-loading-routing
 
 triggers:
   - Deciding whether a mounted feature/module should be preloaded in the background

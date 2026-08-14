@@ -4,6 +4,9 @@ project_name: BuildingBlocks
 name: GuidResolvingBehavior.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/external-created-entity
+  - element/guidresolvingbehavior-cs
 ---
 
 # Goals

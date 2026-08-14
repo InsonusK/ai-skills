@@ -3,6 +3,9 @@ description: Add Ardalis.Specification.EntityFrameworkCore and implement Reposit
 name: App.Infrastructure.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/repository-integration
+  - element/app-infrastructure-csproj
 ---
 
 # Goals

@@ -18,6 +18,7 @@ tags:
   - result
   - idempotent-create
   - concern/architecture
+  - solution/external-created-entity
 
 triggers:
   - external created entity

@@ -4,6 +4,9 @@ project_name: "{Module}.Interfaces"
 name: "{Dto}.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/query-integration
+  - element/dto-cs
 ---
 
 # Goals

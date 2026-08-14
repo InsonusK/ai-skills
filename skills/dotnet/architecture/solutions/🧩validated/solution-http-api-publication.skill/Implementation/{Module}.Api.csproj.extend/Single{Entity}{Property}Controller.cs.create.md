@@ -4,6 +4,9 @@ project_name: "{Module}.Api"
 name: "Single{Entity}{Property}Controller.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/http-api-publication
+  - element/single-entity-property-controller-cs
 ---
 
 # Goals

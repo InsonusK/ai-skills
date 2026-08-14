@@ -3,6 +3,9 @@ description: Add ExceptionHandlingBehavior pipeline behavior to BuildingBlocks
 name: BuildingBlocks.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/mediator-exception-handler
+  - element/buildingblocks-csproj
 ---
 
 # Goals

@@ -2,6 +2,9 @@
 description: Extend the base workspace with conventions for auth guards, the token-attaching interceptor, and permission-checking directives
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/authentication
+  - element/repository
 ---
 
 # Structure

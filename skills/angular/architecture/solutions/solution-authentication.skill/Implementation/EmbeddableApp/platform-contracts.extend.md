@@ -2,6 +2,9 @@
 description: Extend the shared @platform/contracts package (from the platform-embeddability solution) so embeddable apps can read the current session and permissions without authenticating on their own
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/authentication
+  - element/platform-contracts
 ---
 
 # Structure

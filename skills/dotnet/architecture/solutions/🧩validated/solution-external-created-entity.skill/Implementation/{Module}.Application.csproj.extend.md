@@ -3,6 +3,9 @@ description: Add {Entity}ByGuidSpec and Create{Entity}GuidResolver
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/external-created-entity
+  - element/module-application-csproj
 ---
 
 # Goals

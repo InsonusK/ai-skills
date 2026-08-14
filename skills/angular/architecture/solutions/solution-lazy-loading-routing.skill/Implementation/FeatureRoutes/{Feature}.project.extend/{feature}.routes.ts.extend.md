@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: module
 change_kind: extend
+tags:
+  - solution/lazy-loading-routing
+  - element/feature-routes-ts
 ---
 
 # How this generic file is used

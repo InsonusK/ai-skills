@@ -13,6 +13,7 @@ tags:
   - platform-embeddability
   - framework/angular
   - concern/architecture
+  - solution/platform-embeddability
 
 triggers:
   - Turning the base platform-shell into a host capable of loading independently deployed applications

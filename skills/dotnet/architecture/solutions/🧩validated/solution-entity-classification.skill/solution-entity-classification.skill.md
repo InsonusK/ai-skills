@@ -14,6 +14,7 @@ tags:
   - guid
   - idempotency
   - concern/architecture
+  - solution/entity-classification
 
 triggers:
   - classify entity

@@ -1,3 +1,9 @@
+---
+tags:
+  - solution/entity-classification
+  - element/entityname-cs
+---
+
 # {EntityName}.cs - extend
 
 Extend the entity class to match the selected classification. Only the parts required by the classification are added.

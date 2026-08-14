@@ -34,6 +34,20 @@ Values so far: `class`, `interface`, `component`, `template`, `project`, `soluti
 
 Use this facet when the skill's content is tied to a specific kind of program element rather than to a general concern (see `concern/*`) or application shape (see `app-type/*`). Example: a skill that describes how to structure a C# class carries `artifact/class`; a skill about wiring up a .NET solution file carries `artifact/solution`.
 
+### `solution/*`
+The concrete solution skill a file belongs to — the owning `solution-{name}.skill/` folder. Used to resolve every file of one solution (the skill file itself, its `Implementation/` files, its ADRs) with a single query term.
+
+- Value: the solution folder name without the `solution-` prefix and `.skill` suffix, already kebab-case (e.g. `solution-sln-structure.skill` → `solution/sln-structure`).
+- Every file inside a solution skill folder carries exactly one `solution/<value>` tag: the main skill file, every file under `Implementation/`, and every ADR under `adr/`.
+- Values are dynamic — one per solution skill — so they are not enumerated row-per-value in [facet-vocabulary.csv](./facet-vocabulary.csv); the pattern itself is registered there.
+
+### `element/*`
+The concrete program element (class, project, solution file, config file) that an `Implementation/` file of a solution skill describes. Complements `artifact/*`: `artifact/*` names the *kind* of element, `element/*` names the *concrete* element.
+
+- Value: the element file name in kebab-case, lowercased, with every run of non-alphanumeric characters (dots, braces) collapsed to a single dash (e.g. `Shared.csproj` → `element/shared-csproj`, `{Module}.Domain.csproj` → `element/module-domain-csproj`, `{feature}.facade.ts` → `element/feature-facade-ts`).
+- Carried by files under a solution skill's `Implementation/` folder, alongside `solution/<value>`.
+- Values are dynamic — one per element — so they are not enumerated row-per-value in [facet-vocabulary.csv](./facet-vocabulary.csv); the pattern itself is registered there.
+
 ### `concern/*`
 What aspect of building software the skill addresses. **Multi-value is expected and normal** — a skill that sets up a testing quality gate through architectural changes carries both `concern/architecture` and `concern/testing`; do not force a single choice.
 

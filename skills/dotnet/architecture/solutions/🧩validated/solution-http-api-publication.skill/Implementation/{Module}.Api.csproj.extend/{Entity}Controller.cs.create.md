@@ -4,6 +4,9 @@ project_name: "{Module}.Api"
 name: "{Entity}Controller.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/http-api-publication
+  - element/entity-controller-cs
 ---
 
 # Goals

@@ -12,6 +12,7 @@ tags:
   - value-object
   - rules
   - concern/architecture
+  - solution/value-objects-and-rules
 
 triggers:
   - create value object

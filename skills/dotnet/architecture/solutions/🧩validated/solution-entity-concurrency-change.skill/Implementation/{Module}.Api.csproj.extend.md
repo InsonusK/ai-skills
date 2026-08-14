@@ -3,6 +3,9 @@ description: Add ETag header to GET responses and If-Match guard to PUT/PATCH
 name: "{Module}.Api.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-concurrency-change
+  - element/module-api-csproj
 ---
 
 # Goals

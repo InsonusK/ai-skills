@@ -16,6 +16,7 @@ tags:
   - dto
   - projection
   - concern/architecture
+  - solution/query-integration
 
 triggers:
   - implement query handler

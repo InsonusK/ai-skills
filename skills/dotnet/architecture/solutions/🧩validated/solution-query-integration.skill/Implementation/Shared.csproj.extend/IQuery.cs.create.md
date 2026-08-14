@@ -4,6 +4,9 @@ project_name: Shared
 name: IQuery.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/query-integration
+  - element/iquery-cs
 ---
 
 # Goals

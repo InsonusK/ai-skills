@@ -3,6 +3,10 @@ name: dto-validators-only-for-request-dtos
 description: DTO validators are created by default only for RequestDto. ResponseDto validators are created only when explicitly required.
 problem: Validating every DTO including responses adds boilerplate and contradicts the command flow: incoming requests are validated, but outgoing responses are produced by the system and are trusted. We need a rule that tells developers when a DTO validator is mandatory and when it is optional.
 decision: Create a FluentValidation validator for every RequestDto in {Module}.Interfaces. Do not create a validator for ResponseDto unless a concrete requirement explicitly demands it.
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

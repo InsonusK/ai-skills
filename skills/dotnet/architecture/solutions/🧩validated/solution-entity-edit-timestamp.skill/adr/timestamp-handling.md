@@ -3,6 +3,10 @@ name: timestamp-handling
 description: Decide how user and server timestamps are validated, assigned, and mapped to entity classifications.
 problem: Where should ActionTimeStamp be validated, where should user timestamps be assigned, where should server timestamps be assigned, which entities receive which timestamp fields, and where should the command marker live?
 decision: Validator checks ActionTimeStamp; handlers assign user timestamps; AppDbContext assigns server timestamps; mutable entities get creation+update timestamps, external immutable get creation only, internal immutable get none; command marker lives in Shared.Timestamps as ICommandWithTimestamp.
+tags:
+  - solution/entity-edit-timestamp
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

@@ -4,6 +4,9 @@ project_name: shared-logging
 name: logger
 element_kind: service
 change_kind: extend
+tags:
+  - solution/logging-global
+  - element/logger-service-ts
 ---
 
 # Goals

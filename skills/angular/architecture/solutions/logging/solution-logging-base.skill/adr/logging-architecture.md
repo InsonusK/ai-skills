@@ -3,6 +3,10 @@ name: logging-architecture
 description: How the application logs to the console, and how that design leaves room for a future backend-sending extension without a rewrite
 problem: Whether to use raw console calls or a custom logging abstraction, and whether log entries are plain strings or structured objects
 decision: A custom LoggerService, backed by a pluggable list of LogSink implementations (this solution registers only a ConsoleLogSink), taking structured log entries (message + context object)
+tags:
+  - solution/logging-base
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

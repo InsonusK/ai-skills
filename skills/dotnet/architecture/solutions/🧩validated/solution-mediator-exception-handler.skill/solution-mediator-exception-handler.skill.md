@@ -14,6 +14,7 @@ tags:
   - logging
   - ardalis-result
   - concern/architecture
+  - solution/mediator-exception-handler
 
 triggers:
   - global exception handler

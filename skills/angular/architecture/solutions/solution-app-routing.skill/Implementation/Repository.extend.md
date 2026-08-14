@@ -2,6 +2,9 @@
 description: Extend the base workspace conventions with the rule that every routable project (feature or embeddable module) exposes its routes through its public API, relative to its own root only
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/app-routing
+  - element/repository
 ---
 
 # Structure

@@ -3,6 +3,10 @@ name: use-abstract-validator-for-soft-value-objects
 description: Why Soft{ValueObject} validators inherit from AbstractValidator<T> instead of PropertyValidator<T, TProperty> so they can be reused by other modules through DI.
 problem: PropertyValidator<T, TProperty> is tied to a specific parent validator and is not exposed as IValidator<Soft{ValueObject}>. This prevents cross-module consumption of SoftVO validators through DI because other modules do not know and cannot share the parent DTO type.
 decision: Implement every Soft{ValueObject} validator as AbstractValidator<Soft{ValueObject}>. Register it via AddValidatorsFromAssembly and let consumers resolve IValidator<Soft{ValueObject}> from DI.
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

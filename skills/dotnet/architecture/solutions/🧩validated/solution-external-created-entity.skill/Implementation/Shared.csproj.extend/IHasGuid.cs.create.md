@@ -4,6 +4,9 @@ project_name: Shared
 name: IHasGuid.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/external-created-entity
+  - element/ihasguid-cs
 ---
 
 # Goals

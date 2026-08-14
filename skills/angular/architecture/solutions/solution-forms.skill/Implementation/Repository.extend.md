@@ -2,6 +2,9 @@
 description: Bump the workspace's minimum Angular version to 22+ to unlock stable Signal Forms, and add the convention for where form field definitions live inside a feature
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/forms
+  - element/repository
 ---
 
 # Structure

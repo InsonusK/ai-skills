@@ -3,6 +3,9 @@ description: Provide cross-module read model handlers that require JOIN queries 
 name: App.Queries.csproj
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/app-queries-csproj
 ---
 
 # Goals

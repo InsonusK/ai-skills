@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{EntityName}Config.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/entityname-config-cs
 ---
 
 # Goals

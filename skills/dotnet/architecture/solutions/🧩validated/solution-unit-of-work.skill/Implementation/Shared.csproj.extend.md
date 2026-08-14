@@ -3,6 +3,9 @@ description: Add IUnitOfWork commit contract without infrastructure coupling
 name: Shared.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/unit-of-work
+  - element/shared-csproj
 ---
 
 # Goals

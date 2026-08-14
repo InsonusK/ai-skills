@@ -4,6 +4,9 @@ project_name: App.Host
 name: ApiRegistration.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/http-api-publication
+  - element/apiregistration-cs
 ---
 
 # Goals

@@ -3,6 +3,9 @@ description: Commands for timestamped entities implement ICommandWithTimestamp
 name: "{Module}.Interfaces.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/module-interfaces-csproj
 ---
 
 # Goals

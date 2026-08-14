@@ -2,6 +2,9 @@
 description: Extend apps/platform-shell to declare the design system as a version-negotiated federation singleton and apply the global theme at the document root
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/design-system-application
+  - element/platform-shell-federation
 ---
 
 # Structure

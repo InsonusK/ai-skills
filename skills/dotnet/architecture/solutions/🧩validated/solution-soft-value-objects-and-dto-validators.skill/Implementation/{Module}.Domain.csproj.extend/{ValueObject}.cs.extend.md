@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{ValueObject}.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - element/valueobject-cs
 ---
 
 # Goals

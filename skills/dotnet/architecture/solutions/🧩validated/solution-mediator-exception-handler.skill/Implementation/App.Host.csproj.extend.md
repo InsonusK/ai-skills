@@ -3,6 +3,9 @@ description: Register ExceptionHandlingBehavior first in the MediatR pipeline ch
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/mediator-exception-handler
+  - element/app-host-csproj
 ---
 
 # Goals

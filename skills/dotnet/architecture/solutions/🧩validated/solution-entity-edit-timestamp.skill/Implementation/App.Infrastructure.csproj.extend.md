@@ -3,6 +3,9 @@ description: Override SaveChanges to assign server timestamps before persisting
 name: App.Infrastructure.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/app-infrastructure-csproj
 ---
 
 # Goals

@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "Create{Entity}GuidResolver.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/external-created-entity
+  - element/create-entity-guidresolver-cs
 ---
 
 # Goals

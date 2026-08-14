@@ -2,6 +2,9 @@
 description: Generic pattern for routing inside an embeddable module — mounts the root segments of the features it contains, the same way the shell mounts modules
 element_kind: module
 change_kind: extend
+tags:
+  - solution/platform-embeddability
+  - element/routes-ts
 ---
 
 # How this generic file is used

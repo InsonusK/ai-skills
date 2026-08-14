@@ -4,6 +4,9 @@ project_name: shared-logging
 name: log-retry-queue
 element_kind: service
 change_kind: create
+tags:
+  - solution/logging-global
+  - element/log-retry-queue-ts
 ---
 
 # Goals

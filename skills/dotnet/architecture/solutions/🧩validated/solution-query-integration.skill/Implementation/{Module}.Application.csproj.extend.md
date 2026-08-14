@@ -3,6 +3,9 @@ description: Add single-module query handler in feature folder alongside command
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/query-integration
+  - element/module-application-csproj
 ---
 
 # Goals

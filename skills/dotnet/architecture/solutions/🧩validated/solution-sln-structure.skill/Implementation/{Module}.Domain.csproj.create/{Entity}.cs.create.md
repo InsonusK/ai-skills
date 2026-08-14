@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{Entity}.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/entity-cs
 ---
 # Goals
 - Represent a domain object with stable identity, mutable state, encapsulated behavior, and invariant enforcement

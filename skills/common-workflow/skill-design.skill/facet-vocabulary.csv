@@ -20,3 +20,5 @@ concern,concern/testing/mutation,Mutation testing (also add the parent concern/t
 concern,concern/documentation,Documentation aspect of building software; parent of the documentation/* sub-values
 concern,concern/documentation/adr,Architecture decision record (ADR) files (also add the parent concern/documentation tag when tagging a skill)
 concern,concern/ci,CI aspect of building software
+solution,solution/*,"Concrete solution skill a file belongs to — dynamic per-solution values (solution folder name without the solution- prefix, kebab-case); not enumerated row-per-value"
+element,element/*,"Concrete program element an Implementation file describes — dynamic per-element values (kebab-case element name, no braces or dots); not enumerated row-per-value"

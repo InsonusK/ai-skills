@@ -3,6 +3,10 @@ name: soft-value-objects-and-application-validators
 description: Where to place soft value objects and their validators so other modules can validate values without referencing Domain or Application
 problem: Other modules need to validate values and DTOs owned by a module. If validators live in Application, consumers cannot instantiate concrete validators without referencing Application, but they can resolve IValidator<T> from DI. Soft value objects must still be visible to consumers so they can declare properties of that type.
 decision: Place Soft{ValueObject} declarations in {Module}.Interfaces, place FluentValidation validators in {Module}.Application, and register them via AddValidatorsFromAssembly so consumers use IValidator<T>.
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

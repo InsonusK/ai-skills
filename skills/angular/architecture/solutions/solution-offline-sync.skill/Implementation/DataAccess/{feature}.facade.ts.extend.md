@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: service
 change_kind: extend
+tags:
+  - solution/offline-sync
+  - element/feature-facade-ts
 ---
 
 # How this generic file is used

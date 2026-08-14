@@ -11,6 +11,7 @@ tags:
   - security
   - framework/angular
   - concern/architecture
+  - solution/authentication
 
 triggers:
   - Adding a login/session flow

@@ -4,6 +4,9 @@ project_name: shared-ui
 name: pending-sync-indicator
 element_kind: component
 change_kind: create
+tags:
+  - solution/offline-sync
+  - element/pending-sync-indicator-component-ts
 ---
 
 # Goals

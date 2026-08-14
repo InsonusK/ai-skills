@@ -4,6 +4,9 @@ project_name: shared-state
 name: auth
 element_kind: store
 change_kind: extend
+tags:
+  - solution/authentication
+  - element/auth-store-ts
 ---
 
 # Goals

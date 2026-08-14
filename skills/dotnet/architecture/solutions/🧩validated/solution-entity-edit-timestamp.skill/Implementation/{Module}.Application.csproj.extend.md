@@ -3,6 +3,9 @@ description: Handlers assign user timestamps; validators reject invalid ActionTi
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/module-application-csproj
 ---
 
 # Goals

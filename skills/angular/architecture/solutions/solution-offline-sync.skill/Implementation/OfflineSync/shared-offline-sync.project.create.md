@@ -4,6 +4,9 @@ name: shared-offline-sync
 project_kind: library
 element_kind: project
 change_kind: create
+tags:
+  - solution/offline-sync
+  - element/shared-offline-sync-project
 ---
 
 # Goals

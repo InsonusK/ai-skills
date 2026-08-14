@@ -4,6 +4,9 @@ project_name: "{Module}.Interfaces"
 name: "{Command}.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/command-cs
 ---
 
 # Goals

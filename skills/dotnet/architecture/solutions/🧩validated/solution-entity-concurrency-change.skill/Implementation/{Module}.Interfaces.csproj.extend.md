@@ -3,6 +3,9 @@ description: Require update and patch commands to implement IHasVersions
 name: "{Module}.Interfaces.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-concurrency-change
+  - element/module-interfaces-csproj
 ---
 
 # Goals

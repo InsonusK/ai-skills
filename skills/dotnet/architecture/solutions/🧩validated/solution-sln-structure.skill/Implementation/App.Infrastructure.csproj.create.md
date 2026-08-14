@@ -3,6 +3,9 @@ description: Provide all persistence implementation — DbContext, repository im
 name: App.Infrastructure.csproj
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/app-infrastructure-csproj
 ---
 
 # Goals

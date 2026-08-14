@@ -3,6 +3,9 @@ description: Add EF Core entity type configuration folder and pattern to module 
 name: "{Module}.Domain.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/domain-configuration
+  - element/module-domain-csproj
 ---
 
 # Goals

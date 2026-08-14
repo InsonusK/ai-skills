@@ -12,6 +12,7 @@ tags:
   - bounded-context
   - structure
   - layers
+  - solution/sln-structure
 
 triggers:
   - create new module

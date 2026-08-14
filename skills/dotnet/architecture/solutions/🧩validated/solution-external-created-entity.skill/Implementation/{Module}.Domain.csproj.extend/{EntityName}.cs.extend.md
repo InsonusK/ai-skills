@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{EntityName}.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/external-created-entity
+  - element/entityname-cs
 ---
 
 # Goals

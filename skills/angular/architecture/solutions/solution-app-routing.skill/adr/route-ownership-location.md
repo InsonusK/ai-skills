@@ -3,6 +3,10 @@ name: route-ownership-location
 description: Where feature routes are defined, and how routing responsibility is split between the shell, embeddable modules, and features
 problem: Should feature routes be centralized in the platform shell, or defined inside each feature/module and only mounted by the level above
 decision: Routes are owned hierarchically — each level (shell, embeddable module, feature) only defines paths relative to its own root segment and cannot reach above it
+tags:
+  - solution/app-routing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

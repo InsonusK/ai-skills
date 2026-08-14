@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "{Entity}SummarySpec.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/repository-integration
+  - element/entity-summaryspec-cs
 ---
 
 # Goals

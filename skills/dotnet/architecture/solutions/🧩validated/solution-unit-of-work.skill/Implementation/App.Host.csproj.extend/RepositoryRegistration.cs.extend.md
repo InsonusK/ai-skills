@@ -4,6 +4,9 @@ project_name: App.Host
 name: RepositoryRegistration.cs
 element_kind: class
 change_kind: extend
+tags:
+  - solution/unit-of-work
+  - element/repositoryregistration-cs
 ---
 
 # Goals

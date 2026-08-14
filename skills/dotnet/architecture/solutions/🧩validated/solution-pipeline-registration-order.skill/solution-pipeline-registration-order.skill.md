@@ -14,6 +14,7 @@ tags:
   - ordering
   - sorting
   - concern/architecture
+  - solution/pipeline-registration-order
 
 triggers:
   - pipeline order

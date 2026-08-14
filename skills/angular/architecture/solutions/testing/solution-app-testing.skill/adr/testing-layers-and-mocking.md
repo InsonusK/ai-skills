@@ -3,6 +3,10 @@ name: testing-layers-and-mocking
 description: Which tool mocks HTTP at which business layer, given the Facade/Client/Signal Store architecture already established
 problem: Using both HttpTestingController and MSW without a clear rule for which layer each belongs to risks duplicated mocks and confusion about which one is the source of truth
 decision: TestBed for non-DOM business-layer units (Client, Facade, Signal Store); HttpTestingController only at the Client's own unit tests; MSW only for integration tests that span multiple layers or need mocks shared with dev tooling
+tags:
+  - solution/app-testing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

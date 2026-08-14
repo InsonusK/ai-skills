@@ -10,6 +10,7 @@ tags:
   - logging
   - framework/angular
   - concern/architecture
+  - solution/logging-base
 
 triggers:
   - Adding a log statement anywhere in the application

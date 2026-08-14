@@ -3,6 +3,9 @@ description: Be the single composition root — wire all modules, infrastructure
 name: App.Host.csproj
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/app-host-csproj
 ---
 # Goals
 - Be the single composition root — wire all modules, infrastructure, pipeline behaviors, and DI registrations together

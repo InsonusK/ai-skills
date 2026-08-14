@@ -12,6 +12,7 @@ tags:
   - dexie
   - framework/angular
   - concern/architecture
+  - solution/offline-sync
 
 triggers:
   - Deciding whether a mutation should be queueable when offline

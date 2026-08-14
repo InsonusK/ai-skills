@@ -4,6 +4,9 @@ project_name: Shared
 name: IEntityVersionResolver.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/entity-concurrency-change
+  - element/ientityversionresolver-cs
 ---
 
 # Goals

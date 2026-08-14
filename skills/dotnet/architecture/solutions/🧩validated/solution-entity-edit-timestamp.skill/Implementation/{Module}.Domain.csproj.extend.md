@@ -3,6 +3,9 @@ description: Add timestamp properties to classified entities and map them in EF 
 name: "{Module}.Domain.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/module-domain-csproj
 ---
 
 # Goals

@@ -3,6 +3,9 @@ description: Add FluentValidation, MediatR, and Ardalis.Result packages for the 
 name: BuildingBlocks.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/validation-behavior
+  - element/buildingblocks-csproj
 ---
 
 # Goals
