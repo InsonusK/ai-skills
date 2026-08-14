@@ -1,0 +1,17 @@
+facet,value,description
+stack,stack,Bare tag for language-agnostic skills that apply across every stack
+stack,stack/python,Python ecosystem
+stack,stack/dotnet,".NET ecosystem — covers C#, F#, and VB.NET alike; never add a competing language-name tag (e.g. csharp) for the same axis"
+stack,stack/typescript,TypeScript/JavaScript ecosystem
+stack,stack/ansible,Ansible ecosystem
+framework,framework/angular,Angular framework (pairs with stack/typescript)
+app-type,app-type/service,Backend service
+app-type,app-type/cli,Console application
+concern,concern/architecture,Architecture aspect of building software
+concern,concern/testing,Testing aspect of building software; parent of the testing/* sub-values
+concern,concern/testing/unit,Unit testing (also add the parent concern/testing tag)
+concern,concern/testing/bdd,BDD testing (also add the parent concern/testing tag)
+concern,concern/testing/mutation,Mutation testing (also add the parent concern/testing tag)
+concern,concern/documentation,Documentation aspect of building software; parent of the documentation/* sub-values
+concern,concern/documentation/adr,Architecture decision record (ADR) files (also add the parent concern/documentation tag when tagging a skill)
+concern,concern/ci,CI aspect of building software

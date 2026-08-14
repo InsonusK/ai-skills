@@ -19,8 +19,8 @@ tags:
 
 # How to create an ADR
 1. Create an `adr/` folder inside the owning skill folder if it does not exist yet.
-2. Add one ADR file per decision using [adr.template.md](./adr.template.md) and fill it with real content:
-   - YAML header: `name`, `description`, `problem`, `decision`.
+2. Add one ADR file per decision using [adr.template.md](./templates/adr.template.md) and fill it with real content:
+   - YAML header: `name`, `description`, `problem`, `decision`, `tags`.
    - `# Problem` — the problem or question the decision solves.
    - `# Selected variant` — the chosen variant, explicitly named and linked to its entry in `# Searched variants`.
    - `# Searched variants` — every considered variant, including the selected one, each with `Description`, `Benefits`, `Costs`.
@@ -37,6 +37,7 @@ See a complete filled example: [examples/example.adr.md](./examples/example.adr.
 - Explicitly name and link the selected variant from `# Selected variant` to its entry in `# Searched variants`.
 - Describe every variant with `Description`, `Benefits` and `Costs` subsections.
 - List every created ADR in the `adr:` property of the owning skill's YAML header and link it from the skill body.
+- Include a `tags` list in the ADR's YAML header with the mandatory tag `concern/documentation/adr`, so ADR files are discoverable by tag-based views and queries. Keep the other tags the template carries (for example the bare `stack` tag for stack-agnostic decisions).
 - Remove all `hint`, `example` and `code example` blocks from the final ADR file.
 
 ## SHOULD
@@ -69,8 +70,9 @@ See a complete filled example: [examples/example.adr.md](./examples/example.adr.
   - Instead: Remove all `hint`, `example`, and `code example` blocks from the final ADR file.
 
 # Check list
-- [ ] ADR file is created from [adr.template.md](./adr.template.md) inside the owning skill's `adr/` folder
-- [ ] YAML header is filled: `name`, `description`, `problem`, `decision`
+- [ ] ADR file is created from [adr.template.md](./templates/adr.template.md) inside the owning skill's `adr/` folder
+- [ ] YAML header is filled: `name`, `description`, `problem`, `decision`, `tags`
+- [ ] The `tags` list contains the mandatory tag `concern/documentation/adr`
 - [ ] `# Problem` states the problem or question the decision solves
 - [ ] `# Selected variant` explicitly names and links to a variant listed in `# Searched variants`
 - [ ] The selected variant appears in `# Searched variants` and is clearly marked as selected
