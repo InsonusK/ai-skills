@@ -3,6 +3,9 @@ name: soft-vo-error-accumulation
 description: Where value-object validation rules live and how Soft{ValueObject}, the domain Value Object, and FluentValidation validators share them without duplication
 problem: Validation rules for shared value objects are duplicated between Domain Rules and Application validators, and consuming modules cannot validate a Soft{ValueObject} without re-implementing the rules
 decision: Soft{ValueObject} exposes a computed Errors property backed by rules co-located in {Module}.Interfaces; the domain Value Object inherits from it and throws an aggregated DomainException when Errors is not empty; validators become thin adapters over Errors; checks are classified into three levels with fixed homes
+tags:
+  - stack
+  - concern/documentation/adr
 ---
 
 # Problem
