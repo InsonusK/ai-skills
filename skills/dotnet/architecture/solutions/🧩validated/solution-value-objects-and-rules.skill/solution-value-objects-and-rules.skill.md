@@ -32,6 +32,8 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]"
+adr:
+  - "[[skills/dotnet/architecture/plateau/draft/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]"
 ---
 # Goal
 - Eliminate primitive obsession by encoding domain semantics into dedicated Value Object types
@@ -76,6 +78,12 @@ depends_on:
 - Rules define predicates — Entities define consistency — Value Objects define correctness
 - Value Objects and Rules used by two or more modules belong in Shared.csproj, not duplicated in each module
 - Rules are tested comprehensively and completely with all corner cases.
+
+# Adr
+- [[skills/dotnet/architecture/plateau/draft/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]
+  - `{ValueObject}` stays sealed in `{Module}.Domain`; it never moves to `{Module}.Interfaces` and `{Module}.Interfaces` never references `{Module}.Domain`
+  - `ResponseDto`/`RequestDto` properties use `Soft{ValueObject}` (or the underlying primitive) from `{Module}.Interfaces`, never the domain `{ValueObject}` directly
+  - `{Module}.Application` maps `{ValueObject}` to `Soft{ValueObject}`/primitive when assembling a DTO
 
 # Requirements
 SOLUTION:
