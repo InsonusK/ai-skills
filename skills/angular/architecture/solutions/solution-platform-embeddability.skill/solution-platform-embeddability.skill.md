@@ -9,7 +9,7 @@ tags:
   - stack/typescript
   - nx
   - module-federation
-  - native-federation
+  - framework/native-federation
   - platform-embeddability
   - framework/angular
   - concern/architecture

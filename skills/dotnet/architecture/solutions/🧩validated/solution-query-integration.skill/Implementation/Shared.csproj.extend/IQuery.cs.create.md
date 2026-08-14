@@ -34,16 +34,13 @@ public interface IQuery<TResponse> : IRequest<TResponse> { }
 
 ## MUST
 - All query records implement `IQuery<Result<T>>` — not `IRequest<T>` directly
-- Defined in Shared — never in BuildingBlocks or any module project
 - `IQuery<TResponse>` extends `IRequest<TResponse>`
 - `IQuery<TResponse>` defined in Shared — not BuildingBlocks, not any module
 - `IQuery` does not extend `ICommand` — queries are read-only operations and must remain distinct from write-side markers
-- All queries implement `IQuery<Result<T>>` — not `IRequest<T>` directly
 
 ## MUST NOT
 - Extend `ICommand` or `ICommand<TResponse>`
 - Contain properties or methods
-- `IQuery` extend `ICommand` — queries must remain distinct from write-side markers
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Mark a MediatR request as a read-only operation

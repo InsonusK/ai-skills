@@ -55,7 +55,6 @@ public static class PipelineRegistration
 - `PipelineRegistration` defined as a static class in `App.Host/DependencyInjection/PipelineRegistration.cs`
 - `AddPipeline()` is an extension method on `IServiceCollection`
 - `AddPipeline()` returns `IServiceCollection`
-- `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineRegistration.cs`
 - All behaviors registered inside `AddPipeline()` using `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
 - Behaviors registered in intended execution order
 

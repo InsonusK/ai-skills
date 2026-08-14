@@ -12,7 +12,6 @@ change_kind: extend
 # Core Principles
 - Shared defines only interfaces and markers — no implementations
 - `ICommand<TResponse>` extends MediatR `IRequest<TResponse>` so MediatR can route commands automatically
-- Any layer may depend on Shared safely
 
 # Structure
 

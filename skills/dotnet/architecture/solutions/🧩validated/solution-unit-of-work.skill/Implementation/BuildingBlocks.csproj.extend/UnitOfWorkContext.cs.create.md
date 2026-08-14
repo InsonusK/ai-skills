@@ -13,7 +13,6 @@ change_kind: create
 # Core Principles
 - Plain class — no interfaces, no base classes, no infrastructure dependencies
 - Thread-safe depth counter — `Enter()` and `Leave()` mutate `_depth` via `Interlocked`, `Depth` is read-only
-- Registered as `Scoped` — one instance shared across all nested `_mediator.Send()` calls within the same HTTP request
 - Never used directly in handlers — only `UnitOfWorkBehavior` reads and writes this
 
 # Naming convention

@@ -13,7 +13,6 @@ change_kind: create
 # Core Principles
 - Dictionary structure: entity name string → (entity Id → expected version)
 - Supports multi-entity updates — a single command can carry versions for multiple entities
-- Entity name keys are stable business strings — `"Task"`, `"TimeLog"` — never C# type names
 - Declared in Shared — update commands in `{Module}.Interfaces` implement this without referencing BuildingBlocks
 
 # Naming convention

@@ -10,7 +10,6 @@ change_kind: create
 - Provide pipeline behaviors, repository implementations, and cross-cutting utilities
 
 # Core Principles
-- BuildingBlocks implements reusable technical patterns, not business logic
 - BuildingBlocks depends only on Shared
 - BuildingBlocks does NOT define common interfaces — it consumes interfaces from Shared
 - All pipeline behavior implementations live here — registered once in App.Host, used by all modules

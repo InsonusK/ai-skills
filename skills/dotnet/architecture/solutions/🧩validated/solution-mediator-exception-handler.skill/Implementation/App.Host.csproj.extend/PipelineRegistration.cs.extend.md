@@ -13,7 +13,6 @@ change_kind: extend
 # Core Principles
 - `PipelineRegistration.cs` is the single source of truth for pipeline behavior order
 - Behaviors are registered in execution order — first registered runs first
-- `ExceptionHandlingBehavior` registered first wraps all subsequent behaviors and the handler
 
 # Structure
 

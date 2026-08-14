@@ -75,7 +75,6 @@ public class {Entity}VersionResolver : IEntityVersionResolver
 - Use `{Entity}ByIdSpec`
 - Return `0` when entity is not found
 - Return current `Version` cast to `int` when found
-- Each `{Entity}VersionResolver` uses `IReadRepository<{Entity}>` and the module's `{Entity}ByIdSpec`
 
 ## MUST NOT
 - Reference EF Core or DbContext directly

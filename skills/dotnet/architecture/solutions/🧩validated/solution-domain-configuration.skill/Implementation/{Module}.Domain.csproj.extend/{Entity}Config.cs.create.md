@@ -13,13 +13,7 @@ change_kind: create
 - Define one EF Core configuration class per entity that owns all persistence concerns
 
 # Core Principles
-- One `IEntityTypeConfiguration<T>` per entity — no exceptions
-- Configuration class owns all persistence concerns — entity owns all domain concerns
-- `TableName`, index, and constraint names are `public const string` constants on the config class
-- Domain entity must have zero EF attributes
-- Configuration is the only place that knows about column names, table names, and constraints
 - Multi-property Value Object properties require `OwnsOne` mapping here
-- Cross-module foreign key configurations live in App.Infrastructure — not here
 
 # Naming convention
 
@@ -95,7 +89,6 @@ entityBuilder.OwnsOne(e => e.Cash, money =>
 - Use `static` instead of `const` for `TableName`, index, or constraint names
 - Put mapping logic in `DbContext.OnModelCreating` directly
 - Configure cross-module foreign keys here — those belong in App.Infrastructure
-- Define table, index, or constraint names as inline strings
 
 # Anti-patterns
 - Mapping multi-property VO properties individually without `OwnsOne` — EF will fail to map or create a shadow table

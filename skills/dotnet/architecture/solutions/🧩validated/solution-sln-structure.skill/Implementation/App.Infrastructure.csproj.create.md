@@ -10,7 +10,6 @@ change_kind: create
 - Be the only layer that knows EF Core implementation details
 
 # Core Principles
-- App.Infrastructure is the only project with a concrete DbContext
 - App.Infrastructure implements interfaces defined in Shared
 - No module Application or Domain layer references App.Infrastructure
 

@@ -12,12 +12,6 @@ change_kind: create
 - Short-circuit with `Result.Invalid(errors)` if any errors exist — handler never runs for invalid input
 - Pass through to the handler if no validators are registered or all validators pass
 
-# Core Principles
-- Receives `IEnumerable<IValidator<TRequest>>` via DI — zero, one, or multiple validators supported
-- Runs all validators and collects all errors before short-circuiting — full error list, not fail-fast per field
-- Maps FluentValidation `ValidationFailure` to `Ardalis.Result` `ValidationError`
-- Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult` — activates on any MediatR request that returns a Result, including commands and queries
-
 # Structure
 
 ## Project Structure
@@ -86,7 +80,6 @@ public class ValidationBehavior<TRequest, TResponse>
 ## MUST NOT
 - Contain any request-specific conditions
 - Throw `ValidationException` — always return typed `Result.Invalid`
-- Contain any command-specific conditions in `ValidationBehavior`
 - Register behaviors inside module registration methods
 
 ## SHOULD

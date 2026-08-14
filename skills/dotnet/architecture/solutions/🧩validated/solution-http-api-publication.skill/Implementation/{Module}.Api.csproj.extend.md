@@ -11,7 +11,6 @@ change_kind: extend
 
 # Core Principles
 - References only `{Module}.Interfaces` — command records, query records, and DTOs live there
-- No business logic, validation logic, or persistence logic in any controller action
 - One controller type per operation category — five types cover all entity lifecycle scenarios
 - Minimal API used exclusively for system, webhook, batch, and cross-aggregate operations
 

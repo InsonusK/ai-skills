@@ -11,9 +11,7 @@ change_kind: extend
 - Keep strict invariant enforcement in Domain
 
 # Core Principles
-- Domain VO inherits from `Soft{ValueObject}`
 - Constructor validates invariants by calling Rules and throws `DomainException`
-- Rule provides a `Soft{ValueObject}` overload that delegates to the primitive overload
 - Implicit conversion operators remain available for single-property VOs
 
 # Naming convention
@@ -109,9 +107,7 @@ public sealed record Money : SoftMoney
 - Validate invariants in constructor by calling Rules
 - Throw `DomainException` on invalid values
 - For every `{ValueObject}` in `/{Module}.Domain/ValueObjects` there is a `Soft{ValueObject}` in `/{Module}.Interfaces/ValueObjects`
-- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` inherits from `{Module}.Interfaces.ValueObjects.Soft{ValueObject}`
 - `Soft{ValueObject}` does not validate values in its constructor or properties
-- `/{Module}.Domain/ValueObjects/{ValueObject}.cs` validates invariants in its constructor by calling Rules and throws `DomainException` on invalid values
 - For every `Soft{ValueObject}` there is a `{ValueObject}PropertyValidator` in `/{Module}.Application/Validators/Property` extending `AbstractValidator<Soft{ValueObject}>`
 - DTO value-concept properties are `Soft{ValueObject}` types, not primitives
 - DTO validators use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property

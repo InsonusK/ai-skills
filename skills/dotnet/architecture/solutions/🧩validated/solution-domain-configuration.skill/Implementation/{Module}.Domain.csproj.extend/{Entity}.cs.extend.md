@@ -9,7 +9,6 @@ change_kind: extend
 - Ensure domain entity remains free of EF attributes — all persistence mapping delegated to config class
 
 # Core Principles
-- Entity has zero EF attributes — `[Column]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]` are all forbidden
 - Entity does not know about its own table name, column names, or constraint names
 
 # Naming convention
@@ -45,7 +44,6 @@ public class TodoTask
 
 ## MUST NOT
 - Entity have any EF attributes (`[Table]`, `[Column]`, `[Key]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]`)
-- Use EF data annotations on domain entities
 
 ## MUST
 - One `IEntityTypeConfiguration<T>` per entity

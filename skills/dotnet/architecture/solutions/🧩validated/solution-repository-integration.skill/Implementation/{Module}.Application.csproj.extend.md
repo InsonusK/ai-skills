@@ -15,10 +15,6 @@ change_kind: extend
 - Command handlers inject `IRepository<T>` — they may read and stage changes
 - Query handlers inject `IReadRepository<T>` — they only read, signaling intent
 - No handler references `AppDbContext` or `App.Infrastructure` directly
-- All specifications for this module live in one place — `/{Module}.Application/Specifications`
-- Simple single-condition specs are reusable across features and event handlers
-- Multi-condition or feature-specific specs belong to one use case
-- Projection specs map entities to DTOs for read models
 
 # Structure
 

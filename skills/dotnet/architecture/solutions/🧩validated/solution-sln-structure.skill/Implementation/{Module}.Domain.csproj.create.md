@@ -10,8 +10,6 @@ change_kind: create
 - Own the business logic and invariant enforcement for all entities in this module
 
 # Core Principles
-- Domain is the innermost layer — pure business logic, no infrastructure dependencies
-- Domain has no knowledge of other modules
 - All entities live in /{Module}.Domain/Entities
 - Domain is the only layer that contains entity definitions
 

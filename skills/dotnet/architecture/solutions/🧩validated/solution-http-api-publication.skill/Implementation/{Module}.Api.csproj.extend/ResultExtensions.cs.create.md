@@ -11,7 +11,6 @@ change_kind: create
 - Keep error mapping consistent across all controllers in the module
 
 # Core Principles
-- `ProblemDetails` is the only error shape returned from the API
 - Validation errors grouped by identifier into a dictionary
 - Plain error messages returned as an array
 

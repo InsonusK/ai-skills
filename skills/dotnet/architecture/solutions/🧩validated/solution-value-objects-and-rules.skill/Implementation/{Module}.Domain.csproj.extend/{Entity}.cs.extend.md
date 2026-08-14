@@ -13,13 +13,9 @@ change_kind: extend
 - Keep entity validation logic DRY by delegating to reusable domain rules instead of inline conditions
 
 # Core Principles
-- Entity properties are Value Object types except `Id`, `Version`, and unconstrained generic parameters
-- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
 - Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state
 - Equality of value properties on Entities is evaluated by Value Object structural equality
-- Entity defines consistency — it decides when and how to enforce invariants
 - Entity methods call domain rules to validate state transitions before applying changes
-- Rule returns `bool` — entity decides whether to throw `DomainException` or reject the change
 - Multiple related conditions are composed from individual rules — not reimplemented inline
 
 # Naming convention
@@ -99,7 +95,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
 - Use the most specific rule available (primitive, VO, or contextual) for the condition being checked
-- Multi-property VO has `OwnsOne` EF configuration on owning entity
 
 ## MUST NOT
 - Use primitive type on Entity property when the value carries business meaning or invariant constraints

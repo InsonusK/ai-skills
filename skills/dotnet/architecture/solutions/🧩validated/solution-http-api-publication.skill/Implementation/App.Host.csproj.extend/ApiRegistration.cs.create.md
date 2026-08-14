@@ -84,7 +84,6 @@ app.Run();
 - All Minimal API endpoint groups mapped explicitly
 - `AddProblemDetails()` registered in DI
 - Every `ResultStatus` handler can return has an explicit `[ProducesResponseType]`
-- Unexpected `ResultStatus` throws `InvalidOperationException` in `switch` default arm
 - `ResultStatus.Ok` → 200 OK
 - `ResultStatus.Created` → 201 Created with `CreatedAtAction`
 - `ResultStatus.NoContent` → 204 No Content

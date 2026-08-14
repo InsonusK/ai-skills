@@ -49,9 +49,7 @@ public interface ICommand<TResponse> : IRequest<TResponse> { }
 ## MUST
 - All command records implement `ICommand<Result<T>>` — not `IRequest<T>` directly
 - `ICommand` used only when the command truly produces no return value
-- Defined in Shared — never in BuildingBlocks or any module project
 - `ICommand` and `ICommand<TResponse>` defined in Shared — not BuildingBlocks, not any module
-- All commands implement `ICommand<Result<T>>` — not `IRequest<T>` directly
 
 ## MUST NOT
 - Add methods or properties to the marker interfaces

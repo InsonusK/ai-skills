@@ -16,7 +16,6 @@ change_kind: create
 - Thin adapter — no business logic, no domain rules
 - `ConflictResult<Create{Entity}Result>` is detected by type so the response status is 409
 - Both 201 and 409 return the same response type (`Create{Entity}Result`) — the API contract is symmetric
-- `Create{Entity}Result` for external-created entities contains only the entity Id, so the 409 body is `{ id: ... }`
 - All other statuses use the standard ProblemDetails mapping from solution-http-api-publication.skill
 
 # Naming convention

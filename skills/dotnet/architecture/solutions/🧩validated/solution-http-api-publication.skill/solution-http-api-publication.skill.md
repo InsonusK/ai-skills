@@ -12,7 +12,7 @@ tags:
   - controllers
   - minimal-api
   - cqrs
-  - mediatr
+  - framework/mediatr
   - concern/architecture
 
 triggers:

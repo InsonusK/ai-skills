@@ -12,10 +12,8 @@ change_kind: create
 - Return a safe, generic `Result.Error` so the API never receives a raw exception
 
 # Core Principles
-- Generic behavior activated for any `IRequest<TResponse>` where `TResponse` implements `IResult`
 - Catches the broad `Exception` base type to guarantee no unhandled exception escapes
 - Logs at `LogLevel.Critical` because an unhandled exception indicates a programming or infrastructure defect
-- Returns a constant user-facing message; internal diagnostic details stay in logs
 
 # Structure
 

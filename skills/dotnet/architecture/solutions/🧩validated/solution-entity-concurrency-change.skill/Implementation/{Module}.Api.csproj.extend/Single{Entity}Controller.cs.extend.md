@@ -148,9 +148,6 @@ public async Task<IActionResult> Update(
 - `Versions` passed to command from decoded `If-Match` — never constructed in controller
 - 412 added to `[ProducesResponseType]` on all PUT/PATCH endpoints for mutable entities
 - DTO returned by GET for mutable entity includes `Version` field
-- GET responses for mutable entities include `ETag` header with encoded versions
-- PUT/PATCH endpoints check `If-Match` presence — return 412 if missing or malformed
-- DTOs returned by GET for mutable entities include `Version` field
 
 ## MUST NOT
 - GET for immutable entity set ETag header — immutable entities have no version

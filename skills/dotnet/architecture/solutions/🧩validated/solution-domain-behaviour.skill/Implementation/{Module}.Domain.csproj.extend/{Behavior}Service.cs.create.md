@@ -16,7 +16,6 @@ change_kind: create
 - Stateless and side-effect free aside from invoking entity mutation methods
 - Delegates all validation to existing domain rules from `{Module}.Domain/Rules`
 - Does not own property mutation — delegates back to the entity's guarded methods or setters
-- A single entity property must not have multiple uncoordinated public mutation points
 
 # Naming convention
 
@@ -72,8 +71,6 @@ public class Order
 - Live in `{Module}.Domain/Services`
 - Use domain rules from `{Module}.Domain/Rules` for every validation
 - Mutate entity state only through entity methods or guarded setters
-- Bulky logic extracted to static extension methods in `{Module}.Domain/Services`
-- Service extensions delegate all validation to domain rules
 
 ## MUST NOT
 - Reimplement rule logic inline

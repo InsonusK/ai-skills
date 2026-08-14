@@ -11,7 +11,6 @@ change_kind: extend
 - Keep the handler focused on orchestration.
 
 # Core Principles
-- The handler knows whether the operation creates or updates the entity.
 - Assignment is done through the mutable timestamp interface so entity class-level setters can remain `internal`.
 - Server timestamps are never touched in the handler.
 

@@ -11,7 +11,6 @@ change_kind: extend
 
 # Core Principles
 - BuildingBlocks implements technical patterns using interfaces defined in Shared or provided by MediatR
-- `ValidationBehavior` is generic — one implementation handles all commands and queries across all modules
 - BuildingBlocks does not define request markers — it consumes `IRequest<T>` from MediatR
 
 # Structure

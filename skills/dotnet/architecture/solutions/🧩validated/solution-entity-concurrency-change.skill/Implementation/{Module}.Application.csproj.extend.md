@@ -11,7 +11,6 @@ change_kind: extend
 
 # Core Principles
 - Each versioned entity has a dedicated `{Entity}VersionResolver` class in `{Module}.Application/Concurrency`
-- Resolvers use the module's `{Entity}ByIdSpec` and `IReadRepository<{Entity}>` from Shared
 - Resolver's `VersionedEntityName` constant matches the Domain config constant exactly
 
 # Structure

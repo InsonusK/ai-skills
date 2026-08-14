@@ -11,7 +11,6 @@ change_kind: create
 - Return `Result.Conflict` immediately on any version mismatch — handler never executes for stale updates
 
 # Core Principles
-- Constrained on `where TRequest : IHasVersions` — only activates for commands that carry versions
 - Gets the correct `IEntityVersionResolver` from `IEntityVersionResolverFactory` per entity name
 - Loads the current version through the resolver — returns `Result.NotFound` if the resolver reports `0`
 - Compares current version against `expectedVersion` from the command — returns `Result.Conflict` on mismatch
@@ -80,7 +79,6 @@ public class ConcurrencyBehavior<TRequest, TResponse>
 - Returns `Result.Conflict` on version mismatch — handler never runs
 - Never calls `SaveChangesAsync`
 - `ETagEncoder` and `ConcurrencyBehavior` live in BuildingBlocks
-- `ConcurrencyBehavior` returns `Result.Conflict` on version mismatch — never throws
 - `ConcurrencyBehavior` returns `Result.NotFound` if resolver reports `0`
 - `ConcurrencyBehavior` returns `Result.Error` for unknown entity name
 ## MUST NOT

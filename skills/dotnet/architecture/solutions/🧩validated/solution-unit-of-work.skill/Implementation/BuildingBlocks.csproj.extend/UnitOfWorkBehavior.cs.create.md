@@ -13,11 +13,7 @@ change_kind: create
 
 # Core Principles
 - Calls `UnitOfWorkContext.Enter()` on entry and `UnitOfWorkContext.Leave()` in `finally` — depth always restored even on exception
-- Calls `SaveChangesAsync` only when `Depth == 1` — the outermost command in the current request
 - Sub-commands reach this behavior with `Depth > 1` — they stage changes but do not commit
-- **No catch/rollback block** — EF Core uses implicit transactions. When `SaveChangesAsync` is not called (because handler threw), the DbContext is disposed at end of request scope and all pending changes are silently abandoned. No explicit rollback is necessary. If explicit transactions are introduced in the future, a catch/rollback block must be added at that point.
-- `try/finally` ensures depth counter is always restored — no leaked depth on exception
-- Constrained to `where TRequest : ICommand` — never activates for query requests
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |

@@ -10,7 +10,6 @@ change_kind: extend
 - Keep timestamp persistence logic in the single persistence boundary.
 
 # Core Principles
-- `AppDbContext` owns server time.
 - Both synchronous and asynchronous `SaveChanges` paths call the same pre-save logic.
 - `OnBeforeSaving` inspects `ChangeTracker` entries that implement the timestamp interfaces.
 

@@ -16,7 +16,6 @@ change_kind: create
 - Two implementation shapes depending on DTO complexity:
   - **Projection via spec** — when DTO maps directly from entity fields, use `Specification<T, TDto>` and `ListAsync`
   - **Load then map in handler** — when DTO requires computed fields, conditional logic, or nested mapping
-- All entity loading uses named specs — no inline LINQ
 - Returns `Result.NotFound()` when entity is missing — never returns null or empty DTO
 
 # When to use projection spec vs in-handler mapping

@@ -91,15 +91,12 @@ public class AssignTaskValidator : AbstractValidator<AssignTaskCommand>
 - Be named `{FeatureName}Validator`
 - Live in `/{Module}.Application/Features/{FeatureName}/{FeatureName}.Validator.cs`
 - For `Soft{ValueObject}` or DTO properties owned by another module, inject `IValidator<T>` from `solution-soft-value-objects-and-dto-validators.skill` and use `SetValidator`
-- Validator file named `{FeatureName}.Validator.cs`, class named `{FeatureName}Validator`
 - Validators registered via `AddValidatorsFromAssembly` in module registration — this also registers property validators and DTO validators from `solution-soft-value-objects-and-dto-validators.skill`
 
 ## MUST NOT
 - Inject repositories, `DbContext`, or any service — purely declarative on command properties
 - Contain business rules — entity existence checks, state checks, or invariant enforcement
 - Be shared across multiple commands
-- Validator contain business rules — transport correctness only
-- Validator inject repositories or services — purely declarative
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Validate transport correctness of one command's input before it reaches the handler

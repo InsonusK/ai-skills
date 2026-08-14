@@ -11,13 +11,6 @@ change_kind: create
 - Prevent duplication of business conditions across controllers, validators, services, and entities
 - Separate the predicate from the enforcement mechanism
 
-# Core Principles
-- Static class with static extension methods — never instantiated
-- Returns `bool` — the caller decides whether to throw
-- Stateless, deterministic, and side-effect free
-- Primitive rule is the single source of truth — VO overloads delegate to it, never duplicate
-- Value Object constructors validate values only by calling Rules
-
 # Naming convention
 
 | use case | class name pattern | class name | file name pattern | file name |
@@ -97,24 +90,15 @@ public static class CanDriveCarRule
 ## MUST
 - Be a `static class`
 - Methods are `static` extension methods
-- Return `bool` — never throw
-- Be stateless and side-effect free
+- Return `bool` — caller decides whether to throw
+- Be stateless, deterministic, and side-effect free
 - Named correctly: `{Type}Rules` for primitive/VO rules, `{Condition}Rule` for contextual rules
 - Primitive tuple overload holds the logic — single source of truth
 - VO tuple overload delegates to primitive overload
-- All rules implemented as static extension methods
-- Rules return `bool` — caller decides whether to throw
-- Rules are stateless and deterministic
-- Primitive rule is single source of truth — VO rules delegate to it
-- Named `{Type}Rules` for primitive/VO rules, `{Condition}Rule` for contextual rules
 - If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
 - Value Object validates values only through Rules — inline validation logic is forbidden
 
 ## MUST NOT
-- Depend on EF Core, FluentValidation, ASP.NET, or HttpContext
-- Mutate any object
-- Duplicate logic that already exists in another primitive rule
-- Reimplement logic that already exists in a primitive rule
 - Rule throw exceptions internally
 - Rule depend on EF Core, FluentValidation, ASP.NET, HttpContext, or any infrastructure
 - Rule mutate any object

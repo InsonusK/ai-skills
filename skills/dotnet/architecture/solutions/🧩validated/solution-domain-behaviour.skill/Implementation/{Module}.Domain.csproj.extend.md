@@ -13,8 +13,6 @@ change_kind: extend
 # Core Principles
 - Entity methods are the primary gatekeepers of state change
 - Domain rules encode reusable predicates; entities decide when and how to enforce them
-- Static domain service extension methods hold complex or multi-step logic that does not fit naturally inside the entity
-- A single property must not be mutated from many independent public entry points
 
 # Structure
 

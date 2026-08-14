@@ -9,7 +9,7 @@ tags:
   - stack/dotnet
   - application
   - cqrs
-  - mediatr
+  - framework/mediatr
   - command
   - handler
   - pipeline

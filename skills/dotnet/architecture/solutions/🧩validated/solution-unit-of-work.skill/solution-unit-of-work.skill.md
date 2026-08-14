@@ -10,7 +10,7 @@ tags:
   - application
   - infrastructure
   - unit-of-work
-  - mediatr
+  - framework/mediatr
   - pipeline
   - concern/architecture
 

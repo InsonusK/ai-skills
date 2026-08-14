@@ -12,7 +12,6 @@ change_kind: extend
 # Core Principles
 - `ETagEncoder` lives in BuildingBlocks — referenced by Api layers
 - `ConcurrencyBehavior` lives in BuildingBlocks — consumes contracts from Shared
-- `ConcurrencyBehavior` constrained on `where TRequest : IHasVersions` — only update commands are checked
 - No per-entity loading logic in BuildingBlocks — version loading is delegated to `IEntityVersionResolver` implementations in module Application projects
 
 # Structure
@@ -53,7 +52,6 @@ change_kind: extend
 - Add EF Core dependency to BuildingBlocks
 - Define `IHasVersions`, `IEntityVersionResolver`, `IEntityVersionResolverFactory`, or `IVersioned` in BuildingBlocks — they belong in Shared
 - Add a generic `EntityByIdSpec<T>` to BuildingBlocks — per-entity specs belong in module Application projects
-- Generic `ByIdSpec` live in BuildingBlocks — per-entity specs belong in `{Module}.Application`
 
 # Anti-patterns
 - `ConcurrencyBehavior` constrained on `IRequest<T>` instead of `IHasVersions` — would check all commands including queries

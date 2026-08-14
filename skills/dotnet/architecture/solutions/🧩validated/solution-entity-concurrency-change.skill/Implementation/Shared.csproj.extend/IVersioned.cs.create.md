@@ -37,7 +37,6 @@ public interface IVersioned
 - `Version` is `uint` and read-only at the interface level
 - Implemented by every mutable entity that participates in optimistic concurrency checks
 - Defined in `Shared/Concurrency/IVersioned.cs`
-- Every mutable entity implements `IVersioned`
 
 ## MUST NOT
 - Add methods or setters to the interface

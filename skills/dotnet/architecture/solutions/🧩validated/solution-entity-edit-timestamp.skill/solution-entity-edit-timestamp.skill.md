@@ -12,7 +12,7 @@ tags:
   - infrastructure
   - timestamp
   - audit
-  - mediatr
+  - framework/mediatr
   - concern/architecture
 
 triggers:

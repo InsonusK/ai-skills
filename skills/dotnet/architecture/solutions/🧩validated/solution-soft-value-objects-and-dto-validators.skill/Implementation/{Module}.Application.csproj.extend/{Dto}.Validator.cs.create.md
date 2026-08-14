@@ -16,7 +16,6 @@ change_kind: create
 - Uses `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 - DTO properties that carry business meaning are `Soft{ValueObject}` types, not primitives
 - Stateless and declarative
-- Registered by FluentValidation's assembly scan of `{Module}.Application`
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -73,16 +72,12 @@ public class SomeHandler
 - Live in `/{Module}.Application/Validators`
 - Use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 - `{Module}.Application` must call `AddValidatorsFromAssembly` for its own assembly so that property and DTO validators are registered in DI
-- For every RequestDto published in `/{Module}.Interfaces` there is a `{Dto}Validator` in `/{Module}.Application/Validators/Model` extending `AbstractValidator<{Dto}>`
 - ResponseDto validators are created only when explicitly required, for example external contract validation, untrusted response sources, or mandated integration boundaries
-- Validators are registered by FluentValidation's assembly scan of `{Module}.Application`
 - Other modules consume validators through `IValidator<T>` resolved from DI
 - Property validators and DTO validators validate values only by calling Rules
 - Property validators are stateless and have no infrastructure dependencies
 
 ## MUST NOT
-- Inject repositories or services
-- Use inline FluentValidation predicates instead of property validators
 - Validate primitive properties directly — every value-concept must be a `Soft{ValueObject}` with its own property validator
 - Validators inject repositories, `DbContext`, or services
 - Validators contain business rules

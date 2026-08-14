@@ -9,7 +9,6 @@ change_kind: create
 - Be the only project that knows about all other projects simultaneously
 
 # Core Principles
-- App.Host is the only composition root — it wires everything together
 - App.Host references BuildingBlocks directly; Shared is consumed transitively through BuildingBlocks
 - App.Host contains no business logic — only wiring
 - Pipeline behaviors are registered once here — not inside individual modules
@@ -57,7 +56,6 @@ change_kind: create
 - App.Host is the only project referencing all modules simultaneously
 - App.Host is the only composition root
 - App.Host references BuildingBlocks; modules and other layers reference Shared directly to implement or consume interfaces
-- Pipeline behaviors registered once in App.Host
 
 ## MUST NOT
 - App.Host contain business logic

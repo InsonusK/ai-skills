@@ -12,7 +12,6 @@ change_kind: create
 
 # Core Principles
 - `Soft{ValueObject}` does not enforce invariants
-- `Soft{ValueObject}` allows invalid values
 - `Soft{ValueObject}` is a plain record with public properties
 
 # Naming convention

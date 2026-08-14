@@ -11,9 +11,7 @@ change_kind: extend
 
 # Core Principles
 - Domain remains the authority on invariant enforcement
-- Domain depends on its own `{Module}.Interfaces` only for `Soft{ValueObject}` shapes
 - Domain Value Objects validate values by calling Rules
-- Rules provide a `Soft{ValueObject}` overload that delegates to the primitive overload
 - Domain does not consume FluentValidation directly
 
 # Structure

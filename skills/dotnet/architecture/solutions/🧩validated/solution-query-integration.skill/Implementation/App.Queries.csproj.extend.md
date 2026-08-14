@@ -10,7 +10,6 @@ change_kind: extend
 - Use DbContext directly with `AsNoTracking()` — no repository abstraction needed for cross-module reads
 
 # Core Principles
-- App.Queries references all module Domain projects — it is the only layer that may do this simultaneously
 - Cross-module handlers use DbContext directly — `IReadRepository<T>` is per-entity-type and cannot span a JOIN
 - `AsNoTracking()` applied on every query — read-only, no tracking overhead
 - Query contract declared in `{Module}.Interfaces/Queries` — App.Queries only implements it, never declares it
@@ -64,7 +63,6 @@ Each query lives in its own folder under `/Queries`. A folder may contain:
 - Handlers use DbContext directly with `AsNoTracking()`
 - Handlers registered via assembly scan in App.Host
 - Query contract declared in owning module's Interfaces — App.Queries only implements
-- Cross-module handlers in `/App.Queries/Queries/{QueryName}` — inject DbContext directly
 
 ## MUST NOT
 - Single-module queries live here — belongs in `{Module}.Application`

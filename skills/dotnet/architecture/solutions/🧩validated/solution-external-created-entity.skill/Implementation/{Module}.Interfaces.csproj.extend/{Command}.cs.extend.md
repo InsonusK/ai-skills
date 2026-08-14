@@ -12,7 +12,6 @@ change_kind: extend
 
 # Core Principles
 - `Guid` is the first property — signals to the reader that this is an external-created entity
-- Command carries the client-generated Guid — never a server-generated value
 - Command implements `IHasGuid` from Shared — `{Module}.Interfaces` does not reference BuildingBlocks
 - Result record unchanged from solution-command-integration.skill — still just `{Entity}Id`
 - Both 201 Created and 409 Conflict return the same response type (`Result<Create{Entity}Result>`)
@@ -42,7 +41,6 @@ public record Create{Entity}Result(int Id);
 - `Guid` typed as `System.Guid` — never `string` or `int`
 - Result record co-located with the command
 - Resolver response type matches `Result<Create{Entity}Result>` exactly
-- `Guid` is first property in create command record
 - 409 response body contains the existing entity result — which is `{ id: ... }` because the result contains only Id
 - `Create{Entity}Result` contains only the entity Id
 

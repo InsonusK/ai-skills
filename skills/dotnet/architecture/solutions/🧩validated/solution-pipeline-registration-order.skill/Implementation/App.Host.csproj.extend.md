@@ -9,10 +9,6 @@ change_kind: extend
 - Extend the centralized `AddPipeline()` extension so it registers all pipeline behaviors in the canonical execution order
 - Ensure `Program.cs` continues to call `AddPipeline()` exactly once
 
-# Core Principles
-- `PipelineRegistration.AddPipeline()` is the single source of truth for behavior order
-- Behaviors are registered in execution order — first registered runs first
-
 # Structure
 
 ## Project Structure

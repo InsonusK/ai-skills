@@ -12,7 +12,6 @@ change_kind: extend
 
 # Core Principles
 - Index name follows the convention: `UX_{TableName}_Guid`
-- Unique index ensures concurrent requests that both pass the pipeline check are rejected at the DB level
 - Constant name `UX_Guid` used in integration tests to assert the correct constraint name in `PostgresException`
 
 # Naming convention
@@ -53,7 +52,6 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 - `UX_Guid` defined as `public static string` on the config class
 - `HasDatabaseName(UX_Guid)` used — never inline string
 - `IsUnique()` on the `Guid` index
-- Unique index on `Guid` configured with named constant `UX_Guid` in entity configuration
 
 ## MUST NOT
 - Use inline string for index name

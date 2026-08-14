@@ -8,7 +8,7 @@ tags:
   - skill/architecture/solution
   - stack/typescript
   - design-system
-  - native-federation
+  - framework/native-federation
   - framework/angular
   - concern/architecture
 

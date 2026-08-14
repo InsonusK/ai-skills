@@ -11,11 +11,6 @@ change_kind: extend
 - Load independently built and deployed embeddable apps into the platform shell at runtime, without rebuilding the shell
 - Share a single Angular runtime and a single instance of `@platform/contracts` between the host and every loaded embeddable app
 
-# Core Principles
-
-- The host never knows about a specific embeddable app at build time — only about the shape of the federation contract and `@platform/contracts`
-- Remote discovery (which apps exist, where they are deployed) is a runtime concern, resolved from configuration, not compiled in
-
 # Structure
 
 ## Project Structure

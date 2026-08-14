@@ -12,7 +12,7 @@ tags:
   - infrastructure
   - guid
   - idempotency
-  - mediatr
+  - framework/mediatr
   - pipeline
   - conflict
   - result

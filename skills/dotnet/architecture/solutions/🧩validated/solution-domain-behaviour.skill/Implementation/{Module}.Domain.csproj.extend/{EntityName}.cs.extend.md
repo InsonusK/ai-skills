@@ -12,8 +12,6 @@ change_kind: extend
 - Extract bulky logic to `{Module}.Domain/Services` while keeping the entity as the gatekeeper of state
 
 # Core Principles
-- Entity defines consistency — it decides when and how to enforce invariants
-- Entity methods call domain rules to validate state transitions before applying changes
 - Rule returns `bool` — entity decides whether to throw `DomainException`
 - Bulky or multi-step behavior can be delegated to a static service extension, but the entity still owns validation
 
@@ -92,10 +90,6 @@ public class Order
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false`
 - Use the most specific rule available (primitive, VO, or contextual)
-- Keep the entity as the single gatekeeper for each property mutation
-- Every entity property mutation validates state through domain rules before assigning
-- Every entity method that changes state validates through domain rules before mutating
-- `DomainException` thrown when a rule returns `false`
 - A single entity property must not have multiple uncoordinated public mutation points
 
 ## MUST NOT

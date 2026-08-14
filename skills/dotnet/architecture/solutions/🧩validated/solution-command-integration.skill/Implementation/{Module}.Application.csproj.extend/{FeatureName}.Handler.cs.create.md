@@ -13,10 +13,7 @@ change_kind: create
 # Core Principles
 - Implements `IRequestHandler<TCommand, Result<T>>`
 - Injects `IRepository<T>` for entity loading and staging — never `DbContext`
-- Follows fixed structure: load → guard → domain call → stage → return result
 - All entity loading uses named specs — no inline LINQ
-- Returns `Ardalis.Result<T>` for all outcomes — no exceptions for flow control
-- Cross-module writes dispatched via `_mediator.Send(new OtherModuleCommand(...))` — never direct calls
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -120,9 +117,6 @@ public class CreateOrderHandler
 - Follow load → guard → domain call → stage → return structure
 - Return `Result<T>` for all outcomes — never throw for flow control
 - Dispatch cross-module writes via `_mediator.Send()` — never direct method calls
-- Handler structure: load → guard → domain call → stage → return result
-- All entity loading in handlers uses named specs from [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration.skill]]
-- Cross-module writes dispatched via `_mediator.Send()` — never direct calls
 - Handlers and validators registered via assembly scan — never manually
 - No validator for query handlers
 
@@ -130,9 +124,7 @@ public class CreateOrderHandler
 - Contain business logic or domain rules — delegate to entity or domain service
 - Reference another module's Domain or Application projects directly
 - Use inline LINQ — all queries go through named specs
-- Handler contain business logic — delegate to domain
 - Handler call `SaveChangesAsync` — Unit of Work owns commit
-- Handler reference another module's Domain or Application directly
 ## SHOULD
 - Handler follow the exact load → guard → domain call → stage → return sequence
 - Use the transport validation boundary table to decide what belongs in validator vs handler vs domain

@@ -8,7 +8,7 @@ tags:
   - skill/architecture/solution
   - stack/dotnet
   - application
-  - mediatr
+  - framework/mediatr
   - pipeline
   - pipeline-registration
   - ordering

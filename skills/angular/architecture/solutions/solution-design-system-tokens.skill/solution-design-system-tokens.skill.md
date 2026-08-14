@@ -8,7 +8,7 @@ tags:
   - skill/architecture/solution
   - stack/typescript
   - design-system
-  - angular-material
+  - framework/angular-material
   - design-tokens
   - framework/angular
   - concern/architecture

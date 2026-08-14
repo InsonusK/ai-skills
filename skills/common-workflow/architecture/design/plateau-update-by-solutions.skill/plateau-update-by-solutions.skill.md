@@ -93,6 +93,21 @@ MUST:
 MUST NOT:
 - Remove other solutions from `created_by` unless explicitly instructed
 
+## Propagating through child plateaus
+
+A plateau can extend another via its `parent_plateau` property (see [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill#how-to-build-a-plateau|plateau-create-by-solutions]], step 11). When {plateau-name} has children, a change to a solution it shares with those children must reach them too — a child's structural skills were assembled from the same solution and go stale otherwise.
+
+MUST:
+- After updating {plateau-name} itself, search every `plateau-*.skill.md` under `skills/{stack}/architecture/plateau/**` for a `parent_plateau` value that links to {plateau-name}
+- For each child plateau found, repeat this same workflow (add/update/remove) for {solution} against that child, using the child's own `{output}` folder
+- Recurse: a child can itself be a parent to a grandchild plateau — keep following `parent_plateau` links outward until no plateau references the one just updated
+- Skip a child plateau only if its own `created_by` never included {solution} to begin with (the change does not reach it) — do not skip a child solely because propagating looks like extra work
+- Record which plateaus were updated in this pass as part of the plateau-level ADR required by [Adding a new solution](#adding-a-new-solution) / [Removing a solution](#removing-a-solution-from-a-plateau), so the decision trail shows the full propagation, not just the root plateau
+
+MUST NOT:
+- Stop at the first plateau updated when child plateaus reference it via `parent_plateau`
+- Assume a plateau has no children without searching for `parent_plateau` links first
+
 ## Removing a solution from a plateau
 
 If a solution is removed from the plateau:
@@ -124,7 +139,8 @@ If a solution is removed from the plateau:
    - `Use cases`
    - `__Applied solutions__`
 6. Bump the plateau root skill `version`
-7. Verify that no `hint`, `example`, or `# How Apply this template` blocks remain in updated skills
+7. Search for plateaus whose `parent_plateau` links to {plateau-name}; for each one found, repeat steps 1-6 against that child (see [Propagating through child plateaus](#propagating-through-child-plateaus)), recursing into grandchildren the same way
+8. Verify that no `hint`, `example`, or `# How Apply this template` blocks remain in updated skills
 
 
 # Examples
@@ -147,3 +163,4 @@ If a solution is removed from the plateau:
 - [ ] `version` timestamps are updated in the plateau root skill and all changed structural skills
 - [ ] No `hint` or `example` blocks remain in rewritten skills
 - [ ] Any conflict resolution, solution exclusion, or solution-removal decision made during this update is recorded as a plateau-level ADR in the plateau's own `adr/` folder, following adr-create, and listed in the plateau root skill's `adr:` property
+- [ ] Searched for plateaus whose `parent_plateau` links to {plateau-name}, and repeated this workflow for every child (and grandchild) found that includes {solution} in its `created_by`

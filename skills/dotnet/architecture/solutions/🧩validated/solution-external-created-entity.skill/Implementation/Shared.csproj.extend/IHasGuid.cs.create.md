@@ -38,7 +38,6 @@ public interface IHasGuid
 
 ## MUST NOT
 - Update, delete, or internally-created entity commands implement `IHasGuid`
-- Update, delete, or internal-create commands implement `IHasGuid`
 
 # Anti-patterns
 - `IHasGuid` on query objects — has no meaning for reads

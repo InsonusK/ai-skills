@@ -38,8 +38,6 @@ change_kind: extend
 - `EntityVersionResolverFactory` receives all module Domain assemblies that contain versioned entities
 - `EntityVersionResolverFactory` receives all module Application assemblies that contain `IEntityVersionResolver` implementations
 - Register every module `IEntityVersionResolver` implementation as `Scoped`
-- Module `IEntityVersionResolver` implementations registered as `Scoped` in App.Host
-- `EntityVersionResolverFactory` receives module Domain assemblies and module Application assemblies from App.Host
 - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
 
 ## MUST NOT

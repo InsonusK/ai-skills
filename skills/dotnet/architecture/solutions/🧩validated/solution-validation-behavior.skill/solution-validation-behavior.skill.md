@@ -9,9 +9,9 @@ tags:
   - stack/dotnet
   - application
   - validation
-  - fluent-validation
+  - framework/fluent-validation
   - pipeline
-  - mediatr
+  - framework/mediatr
   - concern/architecture
 
 triggers:

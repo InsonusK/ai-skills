@@ -8,7 +8,7 @@ tags:
   - skill/architecture/solution
   - stack/dotnet
   - validation
-  - fluent-validation
+  - framework/fluent-validation
   - value-object
   - dto
   - cross-module

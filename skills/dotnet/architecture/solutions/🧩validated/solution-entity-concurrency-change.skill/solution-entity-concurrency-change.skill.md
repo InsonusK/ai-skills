@@ -13,7 +13,7 @@ tags:
   - concurrency
   - etag
   - rowversion
-  - mediatr
+  - framework/mediatr
   - concern/architecture
 
 triggers:

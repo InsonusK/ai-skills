@@ -13,10 +13,6 @@ change_kind: create
 
 # Core Principles
 - Declared as `sealed record` — immutable and structurally equal by default
-- Constructor validates all invariants by calling Rules — throws DomainException on violation; inline validation logic is forbidden
-- Has no infrastructure or application dependencies — pure domain concept
-- Single-property VO provides implicit conversion operators for ergonomic usage
-- Multi-property VO requires a private parameterless constructor for EF Core materialization
 
 # Naming convention
 
@@ -112,18 +108,13 @@ public sealed record Money
 - Have no infrastructure or application dependencies
 - Multi-property VO has `private` parameterless constructor for EF materialization
 - Multi-property VO has `OwnsOne` EF configuration on owning entity (see [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]])
-- All Value Objects declared as `sealed record`
-- All Value Objects immutable — no public setters
-- All Value Objects self-validating — throw `DomainException` on invalid construction
 ## SHOULD
 - Provide implicit conversion operators for single-property VOs
-- Single-property VO has implicit conversion operators
 - All VOs override `ToString()` when used in logs or UI
 ## MUST NOT
 - Depend on repositories, DbContext, or any service
 - Contain business logic beyond invariant validation — use domain rules for that
 - Contain inline validation logic — always delegate to a Rule
-- Value Object depend on infrastructure, repositories, or application services
 - Value Object expose public setters
 - Primitive used in place of VO when the primitive carries business meaning
 # Check list

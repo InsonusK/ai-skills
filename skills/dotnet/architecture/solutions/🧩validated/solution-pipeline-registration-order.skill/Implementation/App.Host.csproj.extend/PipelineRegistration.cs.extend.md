@@ -13,7 +13,6 @@ change_kind: extend
 # Core Principles
 - `PipelineRegistration` remains a static class with one public extension method
 - `AddPipeline()` returns `IServiceCollection` so it can be chained in `Program.cs`
-- Behaviors are registered in execution order — first registered runs first
 
 # Structure
 
@@ -73,8 +72,6 @@ public static class PipelineRegistration
 - All behavior registrations use `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
 - `AddPipeline()` returns `IServiceCollection`
 - `PipelineRegistration.cs` defined in `App.Host/DependencyInjection/PipelineRegistration.cs`
-- All behaviors registered inside `AddPipeline()` using `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(Behavior<,>))`
-- Behaviors registered in this exact execution order:
 
 ## MUST NOT
 - Register behaviors inside module registration methods

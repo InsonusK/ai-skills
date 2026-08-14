@@ -14,7 +14,6 @@ change_kind: extend
 - `ConflictResult<Create{Entity}Result>` is detected by type and mapped to a 409 response
 - Successful creation returns 201 Created with the entity result and a `Location` header pointing to the GET endpoint
 - Validation and error statuses continue to use `ProblemDetails` via the existing `ResultExtensions` from solution-http-api-publication.skill
-- `Create{Entity}Result` contains only the entity Id, so the 409 body is `{ id: ... }`
 
 # Structure
 

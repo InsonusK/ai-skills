@@ -11,7 +11,6 @@ change_kind: create
 
 # Core Principles
 - Shared defines common interfaces and primitives — it has no implementations beyond lightweight result/contract helpers
-- Shared has no business logic — only framework-level contracts and primitives
 - Shared has no dependencies on any other project in this solution
 - Any project at any layer may depend on Shared
 

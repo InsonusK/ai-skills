@@ -13,8 +13,6 @@ change_kind: create
 # Core Principles
 - Extends `AbstractValidator<Soft{ValueObject}>`
 - Stateless and declarative
-- Registered by FluentValidation's assembly scan of `{Module}.Application`
-- Validates values only by calling Rules
 - No infrastructure or business-rule dependencies
 
 # Naming convention

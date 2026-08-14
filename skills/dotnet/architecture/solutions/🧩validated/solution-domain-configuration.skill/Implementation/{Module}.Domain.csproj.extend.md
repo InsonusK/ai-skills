@@ -11,8 +11,6 @@ change_kind: extend
 
 # Core Principles
 - One config class per entity — lives in /{Module}.Domain/Configurations
-- Config class is the only place that defines column names, index names, and constraints for this entity
-- Domain entities have no EF attributes — all mapping is in the config class
 
 # Structure
 

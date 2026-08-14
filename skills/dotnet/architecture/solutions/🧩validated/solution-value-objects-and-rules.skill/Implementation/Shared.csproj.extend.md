@@ -13,7 +13,6 @@ change_kind: extend
 # Core Principles
 - Shared contains only cross-cutting primitives — no business logic specific to a single module
 - Any project at any layer may depend on Shared
-- A VO or rule moves to Shared only when at least two modules need it
 - Shared VOs and rules follow the same patterns as module-local ones
 
 # Structure
@@ -59,7 +58,6 @@ change_kind: extend
 - Shared rules follow the same static extension method, bool-return, stateless rules as module rules
 - Value Objects live in `/{Module}.Domain/ValueObjects` or `/Shared/ValueObjects` when cross-module
 - All rules live in `/{Module}.Domain/Rules` or `/Shared/Rules` when cross-module
-- Extract reusable VO/rule to Shared.csproj when used by two or more modules
 
 ## MUST NOT
 - Place module-specific VO or rule in Shared

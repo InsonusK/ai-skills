@@ -12,7 +12,6 @@ change_kind: create
 # Core Principles
 - Inherits `Specification<T>` from `Ardalis.Specification`
 - Constructor receives filter parameter and calls `Query.Where(...)`
-- Never touches the database — describes what to fetch
 
 # Structure
 
@@ -52,7 +51,6 @@ public class {Entity}ByIdSpec : Specification<{Entity}>
 - Projection specs use `Specification<T, TResult>` — entity filter specs use `Specification<T>`
 - Spec name reflects query intent — not field names or implementation detail
 ## MUST NOT
-- Contain business logic — filtering only
 - Spec call the database or reference DbContext
 - Spec contain business logic — filtering, ordering, and projection only
 - Handler contain inline `Where(...)` LINQ — always delegate to a named spec

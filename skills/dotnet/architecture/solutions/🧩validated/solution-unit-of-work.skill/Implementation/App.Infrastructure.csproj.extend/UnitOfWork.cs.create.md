@@ -51,10 +51,8 @@ public class UnitOfWork : IUnitOfWork
 - `UnitOfWork` implementation in App.Infrastructure
 - `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` — depth always restored on exception
 - `UnitOfWorkBehavior` commits only when `_context.Depth == 1`
-- `IUnitOfWork` and `UnitOfWorkContext` registered as `Scoped`
 
 ## MUST NOT
-- Contain transaction management logic — EF Core manages transactions implicitly via `SaveChangesAsync`
 - Be called from anywhere except `UnitOfWorkBehavior`
 - Any handler call `SaveChangesAsync` or inject `IUnitOfWork`
 - `UnitOfWorkBehavior` activate on queries — constrained to `ICommand`

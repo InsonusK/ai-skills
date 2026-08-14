@@ -11,8 +11,6 @@ change_kind: create
 - Use `IEndpointRouteBuilder` extension methods — one class per system concern
 
 # Core Principles
-- Use Minimal API only when the operation does not belong to a single entity lifecycle
-- Still dispatches exactly one MediatR command or query per endpoint — same dispatch rule as controllers
 - Groups organized by system concern — not by entity
 
 # API surface selection decision table

@@ -10,8 +10,6 @@ change_kind: create
 
 # Core Principles
 - Interfaces is a declarations-only project — no business logic, no implementation
-- Changes to Interfaces are breaking changes and must be versioned
-- Other modules depend on this project only — never on Application or Domain
 
 # Structure
 

@@ -12,7 +12,6 @@ change_kind: extend
 
 # Core Principles
 - Shared defines only interfaces and markers — no implementations
-- `IHasVersions` and `IEntityVersionResolverFactory` are cross-cutting contracts referenced by both Application and Api layers
 - `IVersioned` is implemented by mutable entities in module Domain projects
 - `IEntityVersionResolver` is implemented by module Application projects
 

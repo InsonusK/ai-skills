@@ -47,7 +47,6 @@ public class ConflictResult<T> : Result<T>
 - Set `Status` to `ResultStatus.Conflict`
 - Accept the conflict value via constructor and assign it to `Value`
 - Be defined in `Shared/Results/ConflictResult.cs`
-- `ConflictResult<T>` defined in `Shared/Results/ConflictResult.cs`
 - Resolver returns `ConflictResult<Create{Entity}Result>` when entity exists — same type as handler success response
 - API layer maps `ConflictResult<Create{Entity}Result>` to HTTP 409 with the result body
 

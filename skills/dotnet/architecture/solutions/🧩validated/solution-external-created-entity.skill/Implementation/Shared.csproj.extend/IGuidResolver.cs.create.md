@@ -14,7 +14,6 @@ change_kind: create
 - Generic on `TResponse` — matches the command's response type exactly
 - Returns `TResponse?` — null means Guid not found (first request), non-null means already exists (retry)
 - The returned non-null value must be the same response type the handler would return, but marked as a conflict
-- One implementation per external-created entity type — registered in module DI registration
 - Uses `IReadRepository<T>` and a `{Entity}ByGuidSpec` — never hits the DB directly
 - Lives in Shared so `{Module}.Application` resolvers and BuildingBlocks behavior can both consume it
 
@@ -43,7 +42,6 @@ public interface IGuidResolver<TResponse>
 - `IHasGuid`, `IGuidResolver<TResponse>` defined in Shared
 - Each `IGuidResolver<TResponse>` registered as `Scoped` in module DI registration
 - `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, non-null means conflict
-- `IGuidResolver<TResponse>` `TResponse` matches the command handler response type exactly
 
 ## MUST NOT
 - Throw exceptions — null is the only "not found" signal

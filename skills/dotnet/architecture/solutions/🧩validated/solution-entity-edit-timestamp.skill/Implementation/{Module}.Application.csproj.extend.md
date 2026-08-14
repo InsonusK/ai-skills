@@ -11,8 +11,6 @@ change_kind: extend
 - Keep handlers as orchestrators without business rules.
 
 # Core Principles
-- Validation of `ActionTimeStamp` is transport correctness and belongs in the validator.
-- Handlers know whether the command creates or updates the entity and set the correct user timestamp fields.
 - Handlers cast the entity to the mutable timestamp interface to assign values while respecting internal setters.
 
 # Structure

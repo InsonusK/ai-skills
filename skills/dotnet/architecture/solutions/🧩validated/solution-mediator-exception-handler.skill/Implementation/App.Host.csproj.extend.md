@@ -12,7 +12,6 @@ change_kind: extend
 # Core Principles
 - Pipeline behavior registration is centralized in App.Host
 - `AddPipeline()` is the single place where cross-cutting behaviors are ordered
-- `ExceptionHandlingBehavior` is registered first so it wraps all subsequent behaviors and the handler
 
 # Structure
 

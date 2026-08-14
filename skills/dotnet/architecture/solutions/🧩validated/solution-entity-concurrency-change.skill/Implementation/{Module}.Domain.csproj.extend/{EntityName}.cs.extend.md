@@ -47,7 +47,6 @@ public class {EntityName} : IVersioned
 - All mutable entities implement `IVersioned`
 - Every mutable entity config class declares a public `const string VersionedEntityName` with the stable business name
 - Each `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching `{Entity}Config.VersionedEntityName`
-- Every mutable entity has `public uint Version { get; internal set; }`
 
 ## MUST NOT
 - Immutable entities have `Version` — they are never updated
