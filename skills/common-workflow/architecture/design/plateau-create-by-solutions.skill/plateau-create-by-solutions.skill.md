@@ -32,6 +32,8 @@ Every skill that describes a plateau element (repository/solution, project/packa
 # Prerequisites
 Read [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first. It defines how a solution-skill is structured per stack and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 
+Read [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]] too. Assembling a plateau out of several solutions forces choices — resolving a conflict between solutions, excluding a solution — that belong to the plateau itself, not to any single solution. Record them following [Recording plateau-level decisions](#recording-plateau-level-decisions).
+
 # Solution-skill structure
 Every solution-skill has an `Implementation/` folder with concrete mutations. The file patterns inside `Implementation/` depend on {stack}. Recognize these file patterns:
 
@@ -166,7 +168,14 @@ Both file types contribute to the same target skill:
 ## Solution selection
 - Include every solution that contributes at least one project/package, class/module, or repository-level change
 - Classification, taxonomy, or policy solutions may affect only the repository skill and the plateau root skill (for example, by defining an entity type matrix). Include them in `created_by` and `__Applied solutions:__` even if they have no direct code files
-- If a solution from {solutions} has no `Implementation/` content and does not affect plateau structure, document the decision to exclude it in the plateau root skill or ask the user for clarification
+- If a solution from {solutions} has no `Implementation/` content and does not affect plateau structure, record the decision to exclude it as a plateau-level ADR (see [Recording plateau-level decisions](#recording-plateau-level-decisions)) or ask the user for clarification
+
+# Recording plateau-level decisions
+Building a plateau forces choices that are easy to forget once the plateau is assembled — for example resolving conflicting rules between two solutions, or excluding a solution that has no `Implementation/` content. The plateau owns these decisions, not any single structural skill, because they are about how the solutions combine.
+
+- Store plateau-level ADRs in `{output}/{plateau-name}/adr/`, a folder sibling to `structure/`.
+- Follow [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]] to write each ADR.
+- List every created ADR in the plateau root skill's `adr:` YAML property and link it from the relevant section of the plateau root skill (for example `Core Principals` or `Capabilities`).
 
 # Examples
 - [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/examples/example-dotnet-plateau.md|.NET plateau example]]
@@ -229,8 +238,9 @@ MUST:
 - Normalize placeholder projects/packages (`{Module}`, `{App}`, `{Service}`) to generic module/package templates, not concrete names.
 - Merge `.create.md` and `.extend.md` files for the same project/package/class/module into a single skill file.
 - Include every solution that contributes project/package, class/module, or repository-level content in `created_by`.
-- If two solutions define conflicting rules for the same project/package/class/module, resolve the conflict or ask the user before merging.
+- If two solutions define conflicting rules for the same project/package/class/module, resolve the conflict or ask the user before merging, and record the resolution as a plateau-level ADR (see [Recording plateau-level decisions](#recording-plateau-level-decisions)).
 - When `parent_plateau` is set, the plateau root skill must describe only the delta added or changed by the solutions in `created_by` on top of the parent plateau.
+- Record every plateau-level decision (conflict resolution, solution exclusion) as an ADR in the plateau's own `adr/` folder, following [Recording plateau-level decisions](#recording-plateau-level-decisions).
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Omit the parent solution skill link from `__Applied solutions:__` bullets.

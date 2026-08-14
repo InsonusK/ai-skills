@@ -27,6 +27,8 @@ Read [[skills/common-workflow/architecture/design/plateau-create-by-solutions.sk
 - `.create.md` vs `.extend.md` semantics
 - `{Module}`/`{App}` placeholders become generic templates
 
+Also read [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]. The same plateau-level ADR rules from plateau-create-by-solutions' [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill#recording-plateau-level-decisions|Recording plateau-level decisions]] apply during an update: any conflict resolved, or solution removed, gets recorded as an ADR in the plateau's own `adr/` folder.
+
 # Input parameters
 
 - {plateau-name} - name of the plateau to update
@@ -60,6 +62,7 @@ MUST:
 - Add/update `__Applied solutions__` links in every affected skill
 - Bump `version` of every changed structural skill
 - Bump `version` of the plateau root skill
+- If merging the new solution required resolving a conflict (see [.create vs .extend during update](#create-vs-extend-during-update)), record the resolution as a plateau-level ADR in the plateau's own `adr/` folder, following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]
 
 ## Updating an existing solution
 
@@ -101,6 +104,7 @@ If a solution is removed from the plateau:
   - Remove the solution from `created_by`
   - If the skill becomes empty of content and `created_by`, consider deleting it or ask the user
 - Bump `version` of every changed skill
+- Record the removal, and any decision to delete or keep an emptied structural skill, as a plateau-level ADR in the plateau's own `adr/` folder, following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]
 
 # Workflow
 
@@ -142,3 +146,4 @@ If a solution is removed from the plateau:
 - [ ] `created_by` of every affected skill is up to date and has no duplicates
 - [ ] `version` timestamps are updated in the plateau root skill and all changed structural skills
 - [ ] No `hint` or `example` blocks remain in rewritten skills
+- [ ] Any conflict resolution, solution exclusion, or solution-removal decision made during this update is recorded as a plateau-level ADR in the plateau's own `adr/` folder, following adr-create, and listed in the plateau root skill's `adr:` property

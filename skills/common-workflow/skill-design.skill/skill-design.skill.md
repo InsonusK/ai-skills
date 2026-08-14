@@ -92,6 +92,10 @@ This skill applies to every skill-writing task in the repository. It defines the
   - Violation: tagging a skill `angular/component` (two different facets — framework and artifact — forced into one chain) instead of separate `framework/angular` and `artifact/component` tags; or tagging only `concern/testing/unit` without also adding `concern/testing`.
   - Risk: an agent resolving its skillset with a tag-expression query (e.g. `stack/typescript & concern/testing`) silently misses the skill, or a query for the parent concern misses every skill that only carries the narrower child value — the skill becomes invisible to exactly the agents that need it.
   - Fix: tag each facet independently, combine facets on one skill by adding multiple tags, and duplicate the parent tag whenever a nested value is used. Run the self-check in facet-vocabulary.md before inventing a new facet or value.
+- When an architecture decision is made while writing or updating this skill — a choice made between considered variants, each with real benefits and costs — record it as an ADR following [adr-create.skill.md](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), inside the skill folder that owns the decision.
+  - Violation: choosing between approaches during the writing session and moving on without creating an ADR file, leaving the reasoning only in conversation history.
+  - Risk: the rejected alternatives and the trade-offs behind the choice are lost, and the same decision gets re-opened and re-argued the next time someone touches the skill.
+  - Fix: create the ADR immediately following adr-create.skill, register it in the skill's `adr:` YAML property, and link it from the skill body.
 
 ## SHOULD
 - Provide a `# Check list` so the agent can verify it has followed the skill.
@@ -125,3 +129,4 @@ This skill applies to every skill-writing task in the repository. It defines the
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately"; if it does, the skill has been split.
 - [ ] No inline code block or table exceeds ~15 lines unless it defines part of the rule/contract itself; longer illustrative examples live in `examples/`/`templates/` with a one-line pointer.
 - [ ] Tags follow the facet vocabulary in [facet-vocabulary.md](./facet-vocabulary.md): at least one `concern/*`, a `stack/*` value or the bare `stack` tag, no two facets chained in one `/`-path, and the parent tag duplicated alongside any nested value.
+- [ ] Every architecture decision made while writing this skill is recorded as an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md) and linked from the skill body.
