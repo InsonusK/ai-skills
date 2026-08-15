@@ -1,6 +1,7 @@
 ---
 name: solution-design-system-structure
 description: Baseline repository structure for the design system — a separate Angular CLI multi-project workspace (library + demo app), ng-packagr build, and Changesets-based releases, published as an independently versioned npm package
+whenToUse: when setting up the design system's own repository for the first time, adding a new component, preparing a release, or reviewing the design system's build/release tooling
 domain: skill
 type: architecture
 version: 1
