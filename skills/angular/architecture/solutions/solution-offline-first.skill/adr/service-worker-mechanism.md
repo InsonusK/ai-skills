@@ -3,6 +3,10 @@ name: service-worker-mechanism
 description: Which service worker tooling to use for offline resilience
 problem: Angular's own built-in Service Worker (ngsw) is now feature-frozen and the Angular team itself recommends alternatives for advanced caching needs; we need a mechanism capable of per-content-type caching strategies and runtime caching of dynamically-resolved federated remote chunks
 decision: Use Workbox instead of Angular's built-in Service Worker (ngsw) or a fully hand-written service worker
+tags:
+  - solution/offline-first
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

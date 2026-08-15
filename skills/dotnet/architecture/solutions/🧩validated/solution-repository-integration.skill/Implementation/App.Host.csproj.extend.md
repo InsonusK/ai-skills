@@ -3,6 +3,9 @@ description: Ensure App.Host calls AddRepositories during composition
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/repository-integration
+  - element/app-host-csproj
 ---
 
 # Goals

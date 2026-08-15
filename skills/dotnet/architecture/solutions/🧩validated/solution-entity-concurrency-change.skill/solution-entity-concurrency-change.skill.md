@@ -15,6 +15,7 @@ tags:
   - rowversion
   - framework/mediatr
   - concern/architecture
+  - solution/entity-concurrency-change
 
 triggers:
   - implement concurrency control

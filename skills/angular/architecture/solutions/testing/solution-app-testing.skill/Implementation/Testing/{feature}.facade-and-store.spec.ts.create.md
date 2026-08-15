@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: service
 change_kind: create
+tags:
+  - solution/app-testing
+  - element/feature-facade-and-store-spec-ts
 ---
 
 # How this generic file is used

@@ -3,6 +3,9 @@ description: Add /ValueObjects folder for soft value object declarations that ot
 name: "{Module}.Interfaces.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - element/module-interfaces-csproj
 ---
 
 # Goals

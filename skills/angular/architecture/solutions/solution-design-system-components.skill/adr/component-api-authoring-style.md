@@ -3,6 +3,10 @@ name: component-api-authoring-style
 description: How component inputs, outputs, and two-way bindings are declared
 problem: Angular now offers a signal-based, function-based API (input(), output(), model()) as a full replacement for the decorator-based @Input()/@Output() + EventEmitter approach; the design system should commit to one consistent style rather than mixing both
 decision: Use signal-based input(), output(), and model() exclusively — no @Input()/@Output() decorators, no EventEmitter
+tags:
+  - solution/design-system-components
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

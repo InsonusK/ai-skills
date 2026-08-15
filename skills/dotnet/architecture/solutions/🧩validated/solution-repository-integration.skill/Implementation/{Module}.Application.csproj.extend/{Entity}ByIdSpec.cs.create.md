@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "{Entity}ByIdSpec.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/repository-integration
+  - element/entity-byidspec-cs
 ---
 
 # Goals

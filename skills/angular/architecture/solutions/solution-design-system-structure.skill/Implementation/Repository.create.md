@@ -2,6 +2,9 @@
 description: Baseline structure for the design system's own repository — a plain Angular CLI multi-project workspace with the publishable library, a demo app, ng-packagr build, and Changesets-based releases
 element_kind: repository
 change_kind: create
+tags:
+  - solution/design-system-structure
+  - element/repository
 ---
 
 # Structure

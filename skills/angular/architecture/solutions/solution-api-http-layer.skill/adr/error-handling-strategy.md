@@ -3,6 +3,10 @@ name: error-handling-strategy
 description: How errors flow from the Client (HTTP/DTO layer) through the Facade to the caller (Signal Store method or NgRx effect)
 problem: Whether errors should be communicated as a Result<T,E> discriminated union, as thrown/rejected raw errors, or as thrown/rejected typed domain errors
 decision: The Client always catches transport-level errors and rethrows a typed domain error; it never lets a raw HttpErrorResponse escape. The Facade may add business context but preserves the throw/reject channel.
+tags:
+  - solution/api-http-layer
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

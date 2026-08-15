@@ -13,6 +13,7 @@ tags:
   - changesets
   - framework/angular
   - concern/architecture
+  - solution/design-system-structure
 
 triggers:
   - Setting up the design system's own repository for the first time

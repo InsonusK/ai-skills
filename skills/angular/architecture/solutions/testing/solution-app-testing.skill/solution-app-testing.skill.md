@@ -12,6 +12,7 @@ tags:
   - playwright
   - framework/angular
   - concern/architecture
+  - solution/app-testing
 
 triggers:
   - Writing a new test for a Client, Facade, or Signal Store

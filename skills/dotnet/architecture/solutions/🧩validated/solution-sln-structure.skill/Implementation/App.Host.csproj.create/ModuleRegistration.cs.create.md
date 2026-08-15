@@ -4,6 +4,9 @@ project_name: App.Host
 name: ModuleRegistration.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/moduleregistration-cs
 ---
 
 # Goals

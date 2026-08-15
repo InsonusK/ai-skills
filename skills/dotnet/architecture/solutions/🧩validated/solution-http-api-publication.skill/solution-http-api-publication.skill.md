@@ -14,6 +14,7 @@ tags:
   - cqrs
   - framework/mediatr
   - concern/architecture
+  - solution/http-api-publication
 
 triggers:
   - design api endpoint

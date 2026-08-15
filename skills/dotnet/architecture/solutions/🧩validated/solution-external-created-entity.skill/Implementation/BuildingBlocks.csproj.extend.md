@@ -3,6 +3,9 @@ description: Add GuidResolvingBehavior
 name: BuildingBlocks.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/external-created-entity
+  - element/buildingblocks-csproj
 ---
 
 # Goals

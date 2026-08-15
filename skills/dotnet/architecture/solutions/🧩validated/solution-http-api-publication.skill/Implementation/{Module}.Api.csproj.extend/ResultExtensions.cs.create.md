@@ -4,6 +4,9 @@ project_name: "{Module}.Api"
 name: ResultExtensions.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/http-api-publication
+  - element/resultextensions-cs
 ---
 
 # Goals

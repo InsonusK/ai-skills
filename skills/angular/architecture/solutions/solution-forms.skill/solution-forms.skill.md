@@ -11,6 +11,7 @@ tags:
   - signal-forms
   - framework/angular
   - concern/architecture
+  - solution/forms
 
 triggers:
   - Building a new form in any feature

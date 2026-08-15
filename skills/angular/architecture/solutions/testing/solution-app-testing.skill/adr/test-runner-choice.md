@@ -3,6 +3,10 @@ name: test-runner-choice
 description: Choice of test runner for unit and component tests
 problem: Which test runner to standardize on, given the workspace is upgrading to Angular 22 (for the Signal Forms solution) and the previous team choice (Jest) predates that decision
 decision: Use Vitest, Angular's own default test runner as of Angular 21+
+tags:
+  - solution/app-testing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

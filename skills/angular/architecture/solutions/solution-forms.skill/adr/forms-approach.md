@@ -3,6 +3,10 @@ name: forms-approach
 description: Choice of form-building approach for new forms across the application
 problem: Whether new forms should be built with Signal Forms or Reactive Forms, given that Signal Forms graduated to stable in Angular 22 and the rest of the architecture (state management) already standardizes on Signals
 decision: Use Signal Forms as the default for all new forms; Reactive Forms is permitted only where an existing form is not being touched, or where a specific, documented limitation of Signal Forms in the current Angular version makes it impractical
+tags:
+  - solution/forms
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

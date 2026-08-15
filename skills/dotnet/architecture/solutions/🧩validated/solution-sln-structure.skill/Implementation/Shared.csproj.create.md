@@ -3,6 +3,9 @@ description: Define common cross-cutting interfaces and primitives that every la
 name: Shared.csproj
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/shared-csproj
 ---
 
 # Goals

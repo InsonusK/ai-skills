@@ -4,6 +4,9 @@ project_name: "{project-test-support}"
 name: read-visual-style-properties
 element_kind: test-helper
 change_kind: create
+tags:
+  - solution/ui-testing
+  - element/read-visual-style-properties-ts
 ---
 
 # How this generic file is used

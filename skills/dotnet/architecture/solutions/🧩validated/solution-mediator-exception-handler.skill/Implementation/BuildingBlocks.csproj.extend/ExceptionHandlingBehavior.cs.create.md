@@ -4,6 +4,9 @@ project_name: BuildingBlocks
 name: ExceptionHandlingBehavior.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/mediator-exception-handler
+  - element/exceptionhandlingbehavior-cs
 ---
 
 # Goals

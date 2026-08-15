@@ -4,6 +4,9 @@ project_name: "{Module}.Api"
 name: "ConflictResultExtensions.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/external-created-entity
+  - element/conflictresultextensions-cs
 ---
 
 # Goals

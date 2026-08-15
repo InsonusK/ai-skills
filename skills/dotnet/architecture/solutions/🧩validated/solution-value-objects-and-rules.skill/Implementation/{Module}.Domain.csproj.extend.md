@@ -3,6 +3,9 @@ description: Add ValueObjects and Rules folders to module Domain project
 name: "{Module}.Domain.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/value-objects-and-rules
+  - element/module-domain-csproj
 ---
 
 # Goals

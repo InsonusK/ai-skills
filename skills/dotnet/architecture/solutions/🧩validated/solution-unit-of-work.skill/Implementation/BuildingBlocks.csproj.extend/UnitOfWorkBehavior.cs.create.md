@@ -4,6 +4,9 @@ project_name: BuildingBlocks
 name: UnitOfWorkBehavior.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/unit-of-work
+  - element/unitofworkbehavior-cs
 ---
 
 # Goals

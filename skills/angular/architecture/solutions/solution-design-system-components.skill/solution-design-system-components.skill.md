@@ -12,6 +12,7 @@ tags:
   - components
   - framework/angular
   - concern/architecture
+  - solution/design-system-components
 
 triggers:
   - Authoring a new design system component

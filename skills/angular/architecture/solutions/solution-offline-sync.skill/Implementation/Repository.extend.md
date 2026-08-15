@@ -2,6 +2,9 @@
 description: Add libs/shared/offline-sync (Dexie-backed mutation queue) and extend every feature's Facade to catch OfflineTransportError and enqueue instead of failing outright
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/offline-sync
+  - element/repository
 ---
 
 # Structure

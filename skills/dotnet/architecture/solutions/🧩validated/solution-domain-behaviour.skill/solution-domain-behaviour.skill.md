@@ -12,6 +12,7 @@ tags:
   - behavior
   - invariants
   - concern/architecture
+  - solution/domain-behaviour
 
 triggers:
   - implement entity behavior

@@ -4,6 +4,9 @@ project_name: Shared
 name: ICommand.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/command-integration
+  - element/icommand-cs
 ---
 
 # Goals

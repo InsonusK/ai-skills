@@ -10,6 +10,7 @@ tags:
   - routing
   - framework/angular
   - concern/architecture
+  - solution/app-routing
 
 triggers:
   - Adding routing to a new feature

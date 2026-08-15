@@ -13,6 +13,7 @@ tags:
   - framework/mediatr
   - pipeline
   - concern/architecture
+  - solution/unit-of-work
 
 triggers:
   - define unit of work

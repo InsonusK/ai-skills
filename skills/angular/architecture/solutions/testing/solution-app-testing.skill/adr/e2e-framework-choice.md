@@ -3,6 +3,10 @@ name: e2e-framework-choice
 description: Choice of end-to-end testing framework
 problem: Which framework to use for full end-to-end tests that exercise the running application through a real browser
 decision: Use Playwright
+tags:
+  - solution/app-testing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

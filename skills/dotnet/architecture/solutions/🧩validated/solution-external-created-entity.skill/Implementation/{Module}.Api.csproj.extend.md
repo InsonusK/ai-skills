@@ -3,6 +3,9 @@ description: Add ConflictResult mapping for idempotent create endpoints
 name: "{Module}.Api.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/external-created-entity
+  - element/module-api-csproj
 ---
 
 # Goals

@@ -4,6 +4,9 @@ project_name: App.Host
 name: EntityVersionResolverRegistration.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/entity-concurrency-change
+  - element/entityversionresolverregistration-cs
 ---
 
 # Goals

@@ -3,6 +3,10 @@ name: style-snapshot-approach
 description: How a failing visual (screenshot) spec is turned into a human/agent-readable explanation of what actually changed, instead of a pixel diff nobody can interpret
 problem: A Playwright pixel diff tells you two images differ but not why — an engineer or agent facing a failing `.visual.spec.ts` cannot tell a real regression (color, spacing, contrast) from rendering noise (anti-aliasing, font hinting), and ends up either investigating pixel-by-pixel or blindly running `--update-snapshots`
 decision: Capture a fixed set of visually meaningful computed CSS properties (getComputedStyle, not CSS class names) per element as a committed text/JSON snapshot, alongside the existing pixel screenshot — a `{component-name}.style-snapshot.spec.ts` next to every `{component-name}.visual.spec.ts`
+tags:
+  - solution/ui-testing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

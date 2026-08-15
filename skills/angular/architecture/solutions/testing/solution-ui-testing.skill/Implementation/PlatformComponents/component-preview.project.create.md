@@ -4,6 +4,9 @@ name: component-preview
 project_kind: application
 element_kind: project
 change_kind: create
+tags:
+  - solution/ui-testing
+  - element/component-preview-project
 ---
 
 # Goals

@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "{Entity}VersionResolver.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/entity-concurrency-change
+  - element/entity-versionresolver-cs
 ---
 
 # Goals

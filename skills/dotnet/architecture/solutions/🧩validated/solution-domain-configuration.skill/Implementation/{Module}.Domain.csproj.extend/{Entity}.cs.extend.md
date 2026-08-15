@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{Entity}.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/domain-configuration
+  - element/entity-cs
 ---
 # Goals
 - Ensure domain entity remains free of EF attributes — all persistence mapping delegated to config class

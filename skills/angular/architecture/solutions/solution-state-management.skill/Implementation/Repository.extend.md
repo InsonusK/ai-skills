@@ -2,6 +2,9 @@
 description: Extend the base workspace with a shared/state lib for global, cross-cutting NgRx state, and extend the module-boundary allow-list accordingly
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/state-management
+  - element/repository
 ---
 
 # Structure

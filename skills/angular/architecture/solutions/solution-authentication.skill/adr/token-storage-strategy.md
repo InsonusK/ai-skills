@@ -3,6 +3,10 @@ name: token-storage-strategy
 description: Where the access and refresh tokens are stored on the client
 problem: How to store auth tokens in a way that minimizes exposure to XSS while remaining workable for a micro-frontend architecture with third-party federated code running in the same JS runtime
 decision: Store the access token only in memory (never in localStorage/sessionStorage); store the refresh token in an HttpOnly, Secure, SameSite cookie set by the backend
+tags:
+  - solution/authentication
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

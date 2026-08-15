@@ -11,6 +11,7 @@ tags:
   - observability
   - framework/angular
   - concern/architecture
+  - solution/logging-global
 
 triggers:
   - Deciding whether a log entry should reach the backend

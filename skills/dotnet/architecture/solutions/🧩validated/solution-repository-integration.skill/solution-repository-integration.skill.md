@@ -15,6 +15,7 @@ tags:
   - specification
   - query
   - concern/architecture
+  - solution/repository-integration
 
 triggers:
   - define repository

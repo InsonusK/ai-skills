@@ -2,6 +2,9 @@
 description: Generic pattern for how any embeddable app's own repository declares and consumes the design system — federation shared-dependency negotiation, theme import for standalone dev only
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/design-system-application
+  - element/federation
 ---
 
 # How this generic file is used

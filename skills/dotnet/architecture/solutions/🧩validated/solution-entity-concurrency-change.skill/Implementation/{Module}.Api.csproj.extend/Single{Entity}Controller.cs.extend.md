@@ -4,6 +4,9 @@ project_name: "{Module}.Api"
 name: "Single{Entity}Controller.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/entity-concurrency-change
+  - element/single-entity-controller-cs
 ---
 
 # Goals

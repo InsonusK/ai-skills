@@ -13,6 +13,7 @@ tags:
   - pipeline
   - framework/mediatr
   - concern/architecture
+  - solution/validation-behavior
 
 triggers:
   - add validation pipeline

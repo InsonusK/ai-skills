@@ -4,6 +4,9 @@ project_name: Shared
 name: IHasVersions.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/entity-concurrency-change
+  - element/ihasversions-cs
 ---
 
 # Goals

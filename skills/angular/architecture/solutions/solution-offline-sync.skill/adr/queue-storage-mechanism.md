@@ -3,6 +3,10 @@ name: queue-storage-mechanism
 description: What storage/reactivity layer backs the offline mutation queue
 problem: Raw IndexedDB is too low-level to give reactive UI updates without hand-rolling a change-notification system; RxDB's replication model assumes the backend is a document store synced via whole-document push/pull, which does not match this application's command-oriented API (PUT/PATCH entities, but also distinct RPC-style operations like POST /tasks/{id}/set-complete)
 decision: Use Dexie.js as the storage/reactivity layer, with the actual replay/retry/conflict orchestration built as custom code on top of the existing Facade/Client architecture from the "API/HTTP-слой" solution
+tags:
+  - solution/offline-sync
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

@@ -2,6 +2,9 @@
 description: Extend the design system repository with the ds-* selector convention, signal-based API authoring, ControlValueAccessor requirement for form controls, and the per-component internal-implementation decision rule
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/design-system-components
+  - element/repository
 ---
 
 # Structure

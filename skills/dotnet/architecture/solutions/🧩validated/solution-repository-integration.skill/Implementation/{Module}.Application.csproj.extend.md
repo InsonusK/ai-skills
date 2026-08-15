@@ -3,6 +3,9 @@ description: Enforce repository abstraction usage in Application layer handlers 
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/repository-integration
+  - element/module-application-csproj
 ---
 
 # Goals

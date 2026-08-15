@@ -3,6 +3,10 @@ name: use-conflict-result-for-duplicate-guid
 description: How should the pipeline communicate a duplicate externally-created Guid back to the API layer?
 problem: External-created entity commands carry a client-generated Guid. When the Guid already exists, the pipeline must short-circuit and the API must return HTTP 409. How should the pipeline express this conflict so that the API can return the existing entity information without throwing exceptions or adding dedicated middleware?
 decision: Use a custom `ConflictResult<T>` that inherits from `Ardalis.Result.Result<T>` and carries the existing entity result. The resolver returns `ConflictResult<TResponse>` and `GuidResolvingBehavior` passes it through unchanged. The API layer detects the conflict result by type and maps it to HTTP 409.
+tags:
+  - solution/external-created-entity
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

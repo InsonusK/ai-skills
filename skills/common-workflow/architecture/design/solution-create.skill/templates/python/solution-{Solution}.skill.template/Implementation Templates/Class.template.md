@@ -6,6 +6,12 @@ element_kind: class
 change_kind: # create | extend
 # - create if solution creates a new class template. Name of the class/file must be added into the `creates` property in the header of the solution.
 # - extend if solution extends an existing class template. Link to the class/file must be added into the `extends` property in the header of the solution.
+tags:
+  - solution/{solution-name}
+  - element/{element-name}
+  # solution/{solution-name}: the owning solution name without the `solution-` prefix, kebab-case.
+  # element/{element-name}: the class file name in kebab-case, no braces or dots
+  # (e.g. validation_behavior.py -> element/validation-behavior-py, {entity}.py -> element/entity-py).
 ---
 
 # How Apply this template
@@ -65,9 +71,13 @@ class SomeEntity:
 
 # Rule changes
 ```hint
-Define how solution EXTENDS class/file MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Only add a subblock for categories where this solution introduces new rules.
-If a category has no new rules, skip it — do not write an empty subblock.
+Define how solution EXTENDS class/file rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never add a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet carries a nested `Risk:` and `Fix:` (`Violation:` is optional); ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Only add a subblock for categories where this solution introduces new rules.
+- If a category has no new rules, skip it — do not write an empty subblock.
 
 MUST:
 - show all added Rules
@@ -76,6 +86,11 @@ MUST:
 ## MUST
 ```example
 - Class must expose a typed public interface
+  - Risk: callers depend on an untyped surface, so contract violations surface at runtime.
+  - Fix: declare explicit type hints on every public method and attribute.
+- Never use mutable default arguments in constructors.
+  - Risk: shared state between instances causes subtle bugs.
+  - Fix: use `None` as default and initialize mutable values inside `__init__`.
 ```
 
 ## SHOULD
@@ -86,32 +101,6 @@ MUST:
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to implement this class/file and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-```
-```example
-- **Use mutable default arguments in constructors**
-  - Consequence: shared state between instances causes subtle bugs
-  - Instead: use `None` as default and initialize mutable values inside `__init__`
 ```
 
 # Check list

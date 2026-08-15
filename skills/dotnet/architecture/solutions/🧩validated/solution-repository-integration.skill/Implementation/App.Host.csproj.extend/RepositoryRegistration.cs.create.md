@@ -4,6 +4,9 @@ project_name: App.Host
 name: RepositoryRegistration.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/repository-integration
+  - element/repositoryregistration-cs
 ---
 
 # Goals

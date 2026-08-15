@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "{Entity}ByGuidSpec.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/external-created-entity
+  - element/entity-byguidspec-cs
 ---
 
 # Goals

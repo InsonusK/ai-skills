@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{EntityName}"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/domain-behaviour
+  - element/entityname-cs
 ---
 
 # Goals

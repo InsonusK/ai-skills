@@ -3,6 +3,9 @@ description: Register IUnitOfWork and UnitOfWorkContext with scoped lifetimes
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/unit-of-work
+  - element/app-host-csproj
 ---
 
 # Goals

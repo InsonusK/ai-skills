@@ -4,6 +4,9 @@ project_name: App.Infrastructure
 name: AppDbContext.cs
 element_kind: class
 change_kind: extend
+tags:
+  - solution/entity-edit-timestamp
+  - element/appdbcontext-cs
 ---
 
 # Goals

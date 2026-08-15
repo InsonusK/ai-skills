@@ -4,6 +4,9 @@ name: shared-state
 project_kind: library
 element_kind: project
 change_kind: extend
+tags:
+  - solution/offline-first
+  - element/shared-state-project
 ---
 
 # Goals

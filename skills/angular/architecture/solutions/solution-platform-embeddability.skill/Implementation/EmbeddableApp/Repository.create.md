@@ -2,6 +2,9 @@
 description: Baseline structure required of any independent repository that hosts an embeddable application consumed by the platform
 element_kind: repository
 change_kind: create
+tags:
+  - solution/platform-embeddability
+  - element/repository
 ---
 
 # Structure

@@ -12,6 +12,7 @@ tags:
   - ef-core
   - configuration
   - concern/architecture
+  - solution/domain-configuration
 
 triggers:
   - create ef configuration

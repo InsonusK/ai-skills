@@ -2,6 +2,9 @@
 description: Base Nx workspace layout — apps/libs split, tag taxonomy and module boundaries
 element_kind: repository
 change_kind: create
+tags:
+  - solution/repository-structure
+  - element/repository
 ---
 
 # Structure

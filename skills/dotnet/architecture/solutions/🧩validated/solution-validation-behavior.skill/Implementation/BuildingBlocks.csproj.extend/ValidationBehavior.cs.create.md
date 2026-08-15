@@ -4,6 +4,9 @@ project_name: BuildingBlocks
 name: ValidationBehavior.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/validation-behavior
+  - element/validationbehavior-cs
 ---
 
 # Goals

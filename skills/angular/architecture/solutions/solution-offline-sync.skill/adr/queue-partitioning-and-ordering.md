@@ -3,6 +3,10 @@ name: queue-partitioning-and-ordering
 description: How the mutation queue is ordered and partitioned when replaying after connectivity is restored
 problem: A single global FIFO queue means one stuck or slow operation (e.g. a struggling geolocation-dependent feature) blocks every other feature's pending mutations from syncing; a fully per-entity queue solves this precisely but adds real complexity (tracking dependencies between entities, cross-feature entity relationships)
 decision: Partition the queue by feature — FIFO ordering within each feature's own partition, replayed in parallel across features
+tags:
+  - solution/offline-sync
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

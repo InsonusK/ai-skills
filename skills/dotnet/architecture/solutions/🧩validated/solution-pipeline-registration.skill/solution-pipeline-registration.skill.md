@@ -11,6 +11,7 @@ tags:
   - framework/mediatr
   - pipeline
   - concern/architecture
+  - solution/pipeline-registration
 
 triggers:
   - register pipeline behaviors

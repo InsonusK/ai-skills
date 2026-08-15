@@ -4,6 +4,9 @@ project_name: Shared
 name: IUnitOfWork.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/unit-of-work
+  - element/iunitofwork-cs
 ---
 
 # Goals

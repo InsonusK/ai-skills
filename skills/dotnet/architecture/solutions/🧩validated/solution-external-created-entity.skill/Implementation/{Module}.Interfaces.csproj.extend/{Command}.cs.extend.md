@@ -4,6 +4,9 @@ project_name: "{Module}.Interfaces"
 name: "{Command}.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/external-created-entity
+  - element/command-cs
 ---
 
 # Goals

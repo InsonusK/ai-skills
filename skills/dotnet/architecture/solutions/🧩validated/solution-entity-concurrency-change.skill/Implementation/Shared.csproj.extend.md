@@ -3,6 +3,9 @@ description: Add IHasVersions, IEntityVersionResolverFactory, IEntityVersionReso
 name: Shared.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/entity-concurrency-change
+  - element/shared-csproj
 ---
 
 # Goals

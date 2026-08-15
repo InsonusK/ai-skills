@@ -3,6 +3,9 @@ description: Provide the single stable public surface through which other module
 name: "{Module}.Interfaces.csproj"
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/module-interfaces-csproj
 ---
 # Goals
 - Provide the single stable public surface through which other modules interact with this module

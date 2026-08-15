@@ -3,6 +3,10 @@ name: dto-mapping-strategy
 description: How DTOs returned by the backend are converted to domain models used by the rest of the application, and vice versa
 problem: Whether DTO/domain-model mapping should be automatic (a mapping library) or manual (hand-written functions), given some fields require additional data pulled from shared state at mapping time
 decision: Use manual, hand-written mapper functions inside the Client
+tags:
+  - solution/api-http-layer
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

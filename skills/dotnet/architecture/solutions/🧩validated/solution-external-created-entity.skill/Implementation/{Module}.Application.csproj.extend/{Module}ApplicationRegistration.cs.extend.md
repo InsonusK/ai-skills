@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "{Module}ApplicationRegistration.cs"
 element_kind: class
 change_kind: extend
+tags:
+  - solution/external-created-entity
+  - element/module-applicationregistration-cs
 ---
 
 # Goals

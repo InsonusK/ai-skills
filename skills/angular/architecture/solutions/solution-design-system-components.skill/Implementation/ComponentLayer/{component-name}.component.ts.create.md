@@ -4,6 +4,9 @@ project_name: design-system
 name: "{component-name}"
 element_kind: component
 change_kind: create
+tags:
+  - solution/design-system-components
+  - element/component-name-component-ts
 ---
 
 # How this generic file is used

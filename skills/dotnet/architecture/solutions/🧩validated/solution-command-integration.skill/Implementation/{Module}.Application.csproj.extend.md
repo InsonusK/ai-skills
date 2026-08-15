@@ -3,6 +3,9 @@ description: Add feature folder layout, handlers, validators, and module DI self
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/command-integration
+  - element/module-application-csproj
 ---
 
 # Goals

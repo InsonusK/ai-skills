@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{form-name}"
 element_kind: component
 change_kind: extend
+tags:
+  - solution/forms
+  - element/component-name-component-ts
 ---
 
 # How this generic file is used

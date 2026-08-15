@@ -3,6 +3,9 @@ description: Add /Validators folder for Soft{ValueObject} property validators an
 name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - element/module-application-csproj
 ---
 
 # Goals

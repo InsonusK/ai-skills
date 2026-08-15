@@ -4,6 +4,9 @@ name: shared-http-core
 project_kind: library
 element_kind: project
 change_kind: create
+tags:
+  - solution/api-http-layer
+  - element/shared-http-core-project
 ---
 
 # Goals

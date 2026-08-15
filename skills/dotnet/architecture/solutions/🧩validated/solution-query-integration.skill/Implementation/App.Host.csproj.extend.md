@@ -3,6 +3,9 @@ description: Wire App.Queries registration into the composition root
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/query-integration
+  - element/app-host-csproj
 ---
 
 # Goals

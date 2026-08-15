@@ -12,6 +12,7 @@ tags:
   - design-tokens
   - framework/angular
   - concern/architecture
+  - solution/design-system-tokens
 
 triggers:
   - Deciding what token a new custom component should consume for a color/typography/spacing decision

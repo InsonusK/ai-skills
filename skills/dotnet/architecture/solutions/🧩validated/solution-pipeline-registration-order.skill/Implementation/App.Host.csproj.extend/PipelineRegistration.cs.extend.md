@@ -4,6 +4,9 @@ project_name: App.Host
 name: PipelineRegistration.cs
 element_kind: class
 change_kind: extend
+tags:
+  - solution/pipeline-registration-order
+  - element/pipelineregistration-cs
 ---
 
 # Goals

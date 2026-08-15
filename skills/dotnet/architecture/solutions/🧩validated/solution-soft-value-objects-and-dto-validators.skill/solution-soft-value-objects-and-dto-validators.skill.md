@@ -13,6 +13,7 @@ tags:
   - dto
   - cross-module
   - concern/architecture
+  - solution/soft-value-objects-and-dto-validators
 
 triggers:
   - create soft value object

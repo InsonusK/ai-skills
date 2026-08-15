@@ -4,6 +4,9 @@ name: platform-shell
 project_kind: application
 element_kind: project
 change_kind: extend
+tags:
+  - solution/app-routing
+  - element/platform-shell-project
 ---
 
 # Goals

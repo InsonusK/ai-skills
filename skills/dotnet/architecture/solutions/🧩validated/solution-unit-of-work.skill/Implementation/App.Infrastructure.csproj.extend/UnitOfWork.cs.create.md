@@ -4,6 +4,9 @@ project_name: App.Infrastructure
 name: UnitOfWork.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/unit-of-work
+  - element/unitofwork-cs
 ---
 
 # Goals

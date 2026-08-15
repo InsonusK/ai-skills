@@ -3,6 +3,9 @@ description: EF Core migrations only — separated from App.Infrastructure to ke
 name: App.Infrastructure.Migrations.csproj
 element_kind: project
 change_kind: create
+tags:
+  - solution/sln-structure
+  - element/app-infrastructure-migrations-csproj
 ---
 
 # Goals

@@ -4,6 +4,9 @@ project_name: App.Host
 name: PipelineRegistration.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/pipeline-registration
+  - element/pipelineregistration-cs
 ---
 
 # Goals

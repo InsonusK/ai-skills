@@ -3,6 +3,9 @@ description: Add the complete ordered pipeline behavior registrations to the cen
 name: App.Host.csproj
 element_kind: project
 change_kind: extend
+tags:
+  - solution/pipeline-registration-order
+  - element/app-host-csproj
 ---
 
 # Goals

@@ -3,6 +3,10 @@ name: theme-application-scope
 description: Which consumer(s) are responsible for applying the design system's global theme (mat.theme() and custom tokens) at runtime
 problem: The design system's theme is applied via CSS custom properties at the document root; in production every embeddable app renders into the same document as the platform shell (per Native Federation, unlike iframe or Web Components), so requiring every consumer to independently apply the theme would be redundant
 decision: Only apps/platform-shell is required to apply the global theme in production. Each embeddable app's own repository still imports the theme for its own standalone local development/preview, but this is not required for correctness once mounted inside the platform — CSS custom properties set at the document root cascade to any DOM node in that document, regardless of which federated bundle rendered it
+tags:
+  - solution/design-system-application
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

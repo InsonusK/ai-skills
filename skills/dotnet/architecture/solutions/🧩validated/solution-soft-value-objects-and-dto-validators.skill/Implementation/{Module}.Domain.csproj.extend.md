@@ -3,6 +3,9 @@ description: Add {Module}.Interfaces reference so Domain Value Objects can inher
 name: "{Module}.Domain.csproj"
 element_kind: project
 change_kind: extend
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - element/module-domain-csproj
 ---
 
 # Goals

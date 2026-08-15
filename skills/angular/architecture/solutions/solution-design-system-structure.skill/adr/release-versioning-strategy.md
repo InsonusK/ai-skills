@@ -3,6 +3,10 @@ name: release-versioning-strategy
 description: How the design system's version bumps and changelog are determined and published
 problem: The design system is consumed by the platform and by every independently deployed embeddable app; a manual, discipline-dependent versioning process risks an incorrectly classified breaking change reaching multiple independent teams simultaneously
 decision: Use Changesets
+tags:
+  - solution/design-system-structure
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

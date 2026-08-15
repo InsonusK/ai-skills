@@ -4,6 +4,9 @@ project_name: "{Module}.Domain"
 name: "{Behavior}Service"
 element_kind: class
 change_kind: create
+tags:
+  - solution/domain-behaviour
+  - element/behavior-service-cs
 ---
 
 # Goals

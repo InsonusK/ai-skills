@@ -4,6 +4,9 @@ project_name: "{Module}.Application"
 name: "{ValueObject}PropertyValidator.cs"
 element_kind: class
 change_kind: create
+tags:
+  - solution/soft-value-objects-and-dto-validators
+  - element/valueobject-propertyvalidator-cs
 ---
 
 # Goals

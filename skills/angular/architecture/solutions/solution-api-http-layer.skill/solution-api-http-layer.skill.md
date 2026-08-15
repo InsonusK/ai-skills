@@ -11,6 +11,7 @@ tags:
   - data-access
   - framework/angular
   - concern/architecture
+  - solution/api-http-layer
 
 triggers:
   - Adding a new data operation (fetch/create/update/delete) to a feature

@@ -3,6 +3,10 @@ name: accessibility-testing-approach
 description: How component-level accessibility regressions are caught automatically, rather than relying solely on manual review
 problem: Neither behavioral component tests (Testing Library) nor visual screenshot tests assert WCAG-level accessibility rules (color contrast ratios, missing labels/roles, invalid ARIA usage); without an automated check, accessibility regressions only surface if a reviewer happens to notice them
 decision: @axe-core/playwright, run against each plateau's demo/preview pages, as an automatic per-component/per-state check
+tags:
+  - solution/ui-testing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

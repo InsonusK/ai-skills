@@ -4,6 +4,9 @@ project_name: Shared
 name: IRepository.cs
 element_kind: class
 change_kind: create
+tags:
+  - solution/repository-integration
+  - element/irepository-cs
 ---
 
 # Goals
