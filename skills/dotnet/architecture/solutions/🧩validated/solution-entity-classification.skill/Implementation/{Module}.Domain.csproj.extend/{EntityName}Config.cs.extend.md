@@ -1,7 +1,7 @@
 ---
 tags:
   - solution/entity-classification
-  - element/entitynameconfig-cs
+  - element/entityname-config-cs
 ---
 
 # {EntityName}Config.cs - extend
