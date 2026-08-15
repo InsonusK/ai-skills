@@ -1,6 +1,7 @@
 ---
 name: solution-pipeline-registration-order
 description: Defines the canonical execution order of all MediatR pipeline behaviors in App.Host.PipelineRegistration — ValidationBehavior first, then GuidResolvingBehavior, then ConcurrencyBehavior, and UnitOfWorkBehavior last
+whenToUse: when registering MediatR pipeline behaviors in App.Host or changing the execution order of ValidationBehavior, GuidResolvingBehavior, ConcurrencyBehavior, and UnitOfWorkBehavior
 domain: skill
 type: architecture
 version: 20260615

@@ -1,6 +1,7 @@
 ---
 name: solution-entity-classification
 description: Defines the four-type entity classification taxonomy for the domain model — Internal Immutable, External Immutable, Internal Mutable, and External Mutable — and maps each type to the exact combination of solution-entity-concurrency-change.skill and solution-external-created-entity.skill that must be applied.
+whenToUse: when classifying a domain entity by ownership and mutability, or deciding which entity infrastructure solutions (concurrency-change, external-created-entity) to apply to it
 domain: skill
 type: architecture
 version: 20260616
