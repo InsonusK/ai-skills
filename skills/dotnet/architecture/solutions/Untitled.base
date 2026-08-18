@@ -1,0 +1,17 @@
+formulas:
+  Untitled: ""
+  Stack_tag: file.tags.filter(value.startsWith("#stack/"))
+views:
+  - type: notion-table
+    name: Table
+    filters:
+      and:
+        - file.tags.contains("solution")
+        - file.tags.contains("skill/architecture/solution")
+        - '!file.name.contains(".template")'
+        - file.tags.contains("stack/dotnet")
+    order:
+      - formula.Stack_tag
+      - description
+    sort: []
+    openMode: panel
