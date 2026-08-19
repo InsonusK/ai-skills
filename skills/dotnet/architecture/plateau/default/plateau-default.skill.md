@@ -3,7 +3,7 @@ name: plateau-default
 description: Default v3 architecture plateau — modular DDD solution with entity classification, optimistic concurrency, external-created entities, entity edit timestamps, command/query integration, repository abstractions, soft value objects and DTO validators, global exception handling, and centralized pipeline/host wiring
 domain: skill
 type: template
-version: 20260704153836
+version: 20260819000000
 tags:
   - skill/template/plateau
   - plateau/default
@@ -58,7 +58,7 @@ __Applied solutions:__
 # Capabilities
 
 ## Solution structure
-- Defines modules as self-contained bounded contexts with four projects (`Api`, `Application`, `Domain`, `Interfaces`).
+- Defines modules as self-contained bounded contexts with the base set of four projects (`Api`, `Application`, `Domain`, `Interfaces`), extensible by a specific pattern solution when it needs project-level isolation.
 - Enforces inward dependency direction and prevents hidden coupling between modules.
 - Establishes solution-wide layer responsibilities (`Shared`, `BuildingBlocks`, `App.Host`, `App.Infrastructure`, `App.Queries`).
 - Provides clear file and project placement rules across the entire solution.

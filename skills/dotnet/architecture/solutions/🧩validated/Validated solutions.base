@@ -1,11 +1,11 @@
 views:
-  - type: table
+  - type: notion-table
     name: Table
     filters:
       and:
         - file.tags.contains("skill/architecture/solution")
+        - file.tags.contains("stack/dotnet")
     order:
-      - file.name
       - depends_on
     sort:
       - property: depends_on

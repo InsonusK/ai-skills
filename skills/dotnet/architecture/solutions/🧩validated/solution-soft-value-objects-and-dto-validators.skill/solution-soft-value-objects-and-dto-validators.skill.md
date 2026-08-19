@@ -3,7 +3,7 @@ name: solution-soft-value-objects-and-dto-validators
 description: Defines the Soft Value Object pattern. Each module exposes soft, validation-agnostic value objects from its Interfaces project. Domain Value Objects inherit from the soft type and enforce invariants at construction. Property validators for Soft VOs and validators for public RequestDto live in {Module}.Application, are registered by FluentValidation, and are consumed by other modules through IValidator<T>. ResponseDto validators are created only when explicitly required.
 domain: skill
 type: architecture
-version: 20260701011400
+version: 20260819
 tags:
   - skill/architecture/solution
   - stack/dotnet
@@ -35,6 +35,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 adr:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/adr/soft-value-objects-and-application-validators|Soft value objects in Interfaces, validators in Application]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]"
@@ -87,6 +88,8 @@ SOLUTION:
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create|{Rule}.cs]] - defines the Rule used by the Domain Value Object, PropertyValidator, and DTO Validator
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - provides the `ValidationBehavior` pipeline that consumes FluentValidation validators
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]
+  - `DomainException` thrown by the Domain Value Object for invalid values is caught globally by `ExceptionHandlingBehavior` — this solution never adds a local try/catch around it
 
 NUGET:
 - `FluentValidation` {version} - provides `AbstractValidator<T>` for property and DTO validators

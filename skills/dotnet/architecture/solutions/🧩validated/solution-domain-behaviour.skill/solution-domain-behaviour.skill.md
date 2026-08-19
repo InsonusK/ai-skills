@@ -3,7 +3,7 @@ name: solution-domain-behaviour
 description: Defines how domain entities change state, enforce invariants through domain rules, and extract bulky logic into static domain service extension methods
 domain: skill
 type: architecture
-version: 20260611
+version: 20260819
 tags:
   - skill/architecture/solution
   - stack/dotnet
@@ -28,6 +28,7 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 ---
 
 # Goal
@@ -60,6 +61,8 @@ SOLUTION:
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend|{Module}.Domain.csproj]] - provides Value Object and domain rule patterns
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create|{Rule}.cs]] - domain rules used to validate state changes
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create|{ValueObject}.cs]] - immutable Value Objects used by entity behavior
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]
+  - `DomainException` thrown on invariant violation is caught globally by `ExceptionHandlingBehavior` — entity behavior methods never add a local try/catch around it
 
 NUGET:
 - None — relies only on patterns defined by dependency solutions.

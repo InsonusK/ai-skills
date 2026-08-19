@@ -3,7 +3,7 @@ name: solution-value-objects-and-rules
 description: Defines the Value Object and Domain Rule patterns — immutable self-validating types that encode domain semantics, and stateless deterministic predicates that encode reusable business conditions as static extension methods. Also governs extraction of reusable VOs and rules into Shared.csproj.
 domain: skill
 type: architecture
-version: 20260611
+version: 20260819
 tags:
   - skill/architecture/solution
   - stack/dotnet
@@ -33,6 +33,7 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 adr:
   - "[[skills/dotnet/architecture/plateau/draft/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]"
 ---
@@ -95,6 +96,8 @@ SOLUTION:
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend|{Module}.Domain.csproj]] - provides EF Core configuration pattern for multi-property Value Objects
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create|{Entity}Config.cs]] - configures `OwnsOne` for multi-property Value Objects
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]
+  - `DomainException` thrown by a Value Object or Rule-driven Entity mutation is caught globally by `ExceptionHandlingBehavior` — this solution never adds a local try/catch around it
 
 NUGET:
 - None — relies only on patterns defined by dependency solutions.
