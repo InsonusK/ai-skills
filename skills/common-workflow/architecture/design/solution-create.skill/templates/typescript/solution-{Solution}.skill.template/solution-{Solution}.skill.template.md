@@ -82,6 +82,20 @@ RECOMMENDATION:
 ```
 
 # Adr
+# Boundaries
+```hint
+List what this solution's Rules assume exists elsewhere but that this solution does not itself implement and does not require via a named `depends_on` solution.
+Use this section only when such an assumption exists — skip it entirely when the solution is fully self-contained.
+RECOMMENDATION:
+- Prefer bullet list
+- State the gap itself, not who is responsible for it. Name a specific solution only informationally, when one reliably closes the gap in the current catalog today — never as a `depends_on` requirement, since the gap must remain true even if that solution is absent.
+- Do not use this section for a dependency that has a concrete Implementation-file link — that is a real dependency and belongs in `# Requirements` instead.
+```
+```example
+- An unhandled rejection thrown while validating a value is not caught here — some global error boundary/interceptor is expected to catch it. This solution does not require a specific error-boundary package to be installed.
+```
+
+# Adr
 ```hint
 Use this section only if an architecture decision was made while building or editing the solution.
 Record every such decision as an ADR following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md|adr-create]]: create ADR files from its template in an `adr/` folder inside the solution skill folder, list them in the `adr:` property of the YAML header, and briefly summarize each decision in the skill body with a link to its ADR.

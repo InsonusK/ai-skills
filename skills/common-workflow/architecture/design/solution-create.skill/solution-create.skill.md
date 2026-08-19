@@ -62,6 +62,9 @@ tags:
 - When the skill depends on other solutions, state in each implementation variant or section which dependency solution(s) are applied and which are intentionally not applied.
   - Risk: the agent cannot tell whether a missing piece is an oversight or a deliberate exclusion and may apply conflicting solutions together.
   - Fix: name the applied dependency solutions explicitly in the implementation file; name the intentionally skipped ones as well.
+- When a Rule in this solution assumes behavior that this solution does not itself implement and does not require via a named `depends_on` solution, state that assumption in `# Boundaries` instead of adding a `depends_on` link for it.
+  - Risk: a rule reads as self-contained when it silently relies on an unstated external guarantee, `depends_on` gets used for assumptions instead of real structural dependencies, and reviewers cannot tell a genuine dependency from a loose assumption.
+  - Fix: add a `# Boundaries` bullet naming the gap and, only if a solution in the catalog reliably closes it today, mention that solution informationally — never as a `depends_on` requirement.
 - Record every architecture decision made while building or editing the solution as an ADR following [adr-create.skill.md](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md).
   - Risk: the rejected alternatives and trade-offs are lost, and the same decision gets re-argued the next time someone edits the solution.
   - Fix: create the ADR immediately, register it in the solution's `adr:` YAML property, and link it from the skill body.
@@ -87,6 +90,7 @@ tags:
 - [ ] No `hint`, `example`, `code example` blocks and no `# How Apply this template` section remain in the final skill.
 - [ ] `Implementation/` contains concrete files for every created/extended element.
 - [ ] Applied and intentionally skipped dependency solutions are stated where relevant.
+- [ ] Every assumption a Rule relies on but does not itself implement or require via `depends_on` is stated in `# Boundaries`.
 - [ ] Architecture decisions are recorded as ADRs and registered in the `adr:` property.
 - [ ] Unfamiliar terms are documented in the solution's own `glossary/` folder.
 - [ ] Facet tags are filled: `solution/{solution-name}` on the solution file, `solution/{solution-name}` + `element/{element-name}` on Implementation files, `solution/{solution-name}` + `concern/documentation` + `concern/documentation/adr` on ADRs.

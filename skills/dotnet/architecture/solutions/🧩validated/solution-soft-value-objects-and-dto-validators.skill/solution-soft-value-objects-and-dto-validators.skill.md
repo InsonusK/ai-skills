@@ -36,7 +36,6 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 adr:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/adr/soft-value-objects-and-application-validators|Soft value objects in Interfaces, validators in Application]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]"
@@ -51,6 +50,7 @@ adr:
 - Standardise the Soft{ValueObject} / PropertyValidator / DTOValidator triplet across modules
 
 # Capabilities
+
 - Other modules can validate `Soft{ValueObject}` properties by resolving `IValidator<Soft{ValueObject}>` from DI
 - Other modules can validate DTOs by resolving `IValidator<{Dto}>` from DI
 - Domain Value Object remains the authoritative, self-enforcing invariant holder
@@ -66,6 +66,9 @@ adr:
 - `{Module}.Domain` references its own `{Module}.Interfaces` only for the `Soft{ValueObject}` base types
 - Rule is the single source of truth; `{ValueObject}PropertyValidator` and `{Dto}Validator` validate only by calling Rules
 - Rule provides a `Soft{ValueObject}` overload that delegates to the primitive overload; Domain Value Object uses the same Rule because it inherits from `Soft{ValueObject}`
+
+# Boundaries
+- `DomainException` thrown by the Domain Value Object for invalid values is not caught by this solution — some global exception-handling mechanism is expected to catch it. `solution-mediator-exception-handler` currently does this when applied, but this solution does not require it.
 
 # Adr
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/adr/soft-value-objects-and-application-validators|Soft value objects in Interfaces, validators in Application]]
@@ -89,8 +92,6 @@ SOLUTION:
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Rule}.cs.create|{Rule}.cs]] - defines the Rule used by the Domain Value Object, PropertyValidator, and DTO Validator
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - provides the `ValidationBehavior` pipeline that consumes FluentValidation validators
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]
-  - `DomainException` thrown by the Domain Value Object for invalid values is caught globally by `ExceptionHandlingBehavior` — this solution never adds a local try/catch around it
 
 NUGET:
 - `FluentValidation` {version} - provides `AbstractValidator<T>` for property and DTO validators

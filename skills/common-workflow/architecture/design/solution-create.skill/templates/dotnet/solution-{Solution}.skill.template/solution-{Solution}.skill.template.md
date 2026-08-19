@@ -86,6 +86,19 @@ RECOMMENDATION:
 - Entities define consistency.
 ```
 
+# Boundaries
+```hint
+List what this solution's Rules assume exists elsewhere but that this solution does not itself implement and does not require via a named `depends_on` solution.
+Use this section only when such an assumption exists — skip it entirely when the solution is fully self-contained.
+RECOMMENDATION:
+- Prefer bullet list
+- State the gap itself, not who is responsible for it. Name a specific solution only informationally, when one reliably closes the gap in the current catalog today — never as a `depends_on` requirement, since the gap must remain true even if that solution is absent.
+- Do not use this section for a dependency that has a concrete Implementation-file link — that is a real dependency and belongs in `# Requirements` instead.
+```
+```example
+- `DomainException` thrown by this solution's constructor is not caught here — some global exception-handling mechanism is expected to catch it. `solution-mediator-exception-handler` currently does this when applied, but this solution does not require it.
+```
+
 # Adr
 ```hint
 Use this section only if an architecture decision was made while building or editing the solution.

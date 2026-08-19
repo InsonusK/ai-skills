@@ -33,7 +33,6 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
 adr:
   - "[[skills/dotnet/architecture/plateau/draft/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]"
 ---
@@ -81,6 +80,9 @@ adr:
 - Value Objects and Rules used by two or more modules belong in Shared.csproj, not duplicated in each module
 - Rules are tested comprehensively and completely with all corner cases.
 
+# Boundaries
+- `DomainException` thrown by a Value Object or Rule-driven Entity mutation is not caught by this solution — some global exception-handling mechanism is expected to catch it. `solution-mediator-exception-handler` currently does this when applied, but this solution does not require it.
+
 # Adr
 - [[skills/dotnet/architecture/plateau/draft/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]
   - `{ValueObject}` stays sealed in `{Module}.Domain`; it never moves to `{Module}.Interfaces` and `{Module}.Interfaces` never references `{Module}.Domain`
@@ -96,8 +98,6 @@ SOLUTION:
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend|{Module}.Domain.csproj]] - provides EF Core configuration pattern for multi-property Value Objects
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create|{Entity}Config.cs]] - configures `OwnsOne` for multi-property Value Objects
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]
-  - `DomainException` thrown by a Value Object or Rule-driven Entity mutation is caught globally by `ExceptionHandlingBehavior` — this solution never adds a local try/catch around it
 
 NUGET:
 - None — relies only on patterns defined by dependency solutions.
