@@ -39,6 +39,7 @@ depends_on:
 - Register all configurations via assembly scan — never manually per entity
 
 # Capabilities
+
 - Clean separation between domain entities and EF Core mapping concerns
 - Centralized persistence configuration per entity
 - Reusable named constants for tables, indexes, and constraints

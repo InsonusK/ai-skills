@@ -139,7 +139,6 @@ PROJECT:
 - VO with public setter — allows post-construction mutation, invalidates immutability guarantee
 - VO that throws on `ToString()` when null internal state — private constructor must not leave fields unset for EF
 - Multi-property VO without private parameterless constructor — EF materialization fails silently
-- Multi-property VO without `OwnsOne` config — EF creates a shadow table or fails mapping
 - VO with infrastructure dependency — couples domain to persistence layer
 - Reusing same VO type across modules via project reference — each module should reference Shared, not another module's Domain
 - Rule throws `DomainException` itself — rule returns `bool`, the VO or entity caller throws
@@ -159,7 +158,6 @@ PROJECT:
 - [ ] No infrastructure or service dependencies
 - [ ] Single-property VO has implicit conversion operators
 - [ ] Multi-property VO has private parameterless constructor
-- [ ] Multi-property VO has `OwnsOne` EF configuration on owning entity
 - [ ] `ToString()` implemented when used in logs or UI
 - [ ] Lives in `/{Module}.Domain/ValueObjects` or `/Shared/ValueObjects`
 - [ ] Rule is a static class with static extension methods
