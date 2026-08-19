@@ -11,6 +11,7 @@ tags:
   - infrastructure
   - unit-of-work
   - framework/mediatr
+  - framework/ef-core
   - pipeline
   - concern/architecture
   - solution/unit-of-work

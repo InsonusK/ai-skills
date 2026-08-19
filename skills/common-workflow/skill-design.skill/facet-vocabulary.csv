@@ -6,6 +6,7 @@ stack,stack/typescript,TypeScript/JavaScript ecosystem
 stack,stack/ansible,Ansible ecosystem
 framework,framework/angular,Angular framework (pairs with stack/typescript)
 framework,framework/aspnet-core,ASP.NET Core framework (pairs with stack/dotnet)
+framework,framework/ef-core,Entity Framework Core ORM (pairs with stack/dotnet)
 framework,framework/mediatr,MediatR in-process mediator library (pairs with stack/dotnet)
 framework,framework/fluent-validation,FluentValidation library (pairs with stack/dotnet)
 framework,framework/angular-material,Angular Material component library (pairs with framework/angular)

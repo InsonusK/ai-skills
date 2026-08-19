@@ -14,6 +14,7 @@ tags:
   - ardalis
   - specification
   - query
+  - framework/ef-core
   - concern/architecture
   - solution/repository-integration
 

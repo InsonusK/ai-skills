@@ -9,6 +9,7 @@ tags:
   - stack/dotnet
   - validation
   - framework/fluent-validation
+  - framework/ef-core
   - value-object
   - dto
   - cross-module

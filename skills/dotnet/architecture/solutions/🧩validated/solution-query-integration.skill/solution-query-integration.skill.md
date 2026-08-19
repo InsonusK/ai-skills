@@ -10,6 +10,7 @@ tags:
   - application
   - cqrs
   - framework/mediatr
+  - framework/ef-core
   - query
   - handler
   - read

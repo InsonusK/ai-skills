@@ -10,6 +10,7 @@ tags:
   - domain
   - ddd
   - ef-core
+  - framework/ef-core
   - configuration
   - concern/architecture
   - solution/domain-configuration

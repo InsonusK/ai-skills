@@ -7,6 +7,7 @@ version: 20260819
 tags:
   - skill/architecture/solution
   - stack/dotnet
+  - framework/ef-core
   - concern/architecture
   - module
   - bounded-context

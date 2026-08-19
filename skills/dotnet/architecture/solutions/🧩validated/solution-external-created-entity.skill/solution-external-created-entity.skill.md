@@ -13,6 +13,7 @@ tags:
   - guid
   - idempotency
   - framework/mediatr
+  - framework/ef-core
   - pipeline
   - conflict
   - result
