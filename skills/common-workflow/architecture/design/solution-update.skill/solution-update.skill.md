@@ -57,22 +57,19 @@ tags:
   - Risk: plateau root skills and structural skills go stale, so projects generated from the plateau miss the change.
   - Fix: run plateau-update-by-solutions for every affected plateau, including child plateaus linked via `parent_plateau`.
 - Bump `version` of the updated solution skill and of every skill changed during propagation.
-
-## MUST NOT
-- Change a solution without creating an ADR for the decision behind the change.
-- Skip the plateau refresh because the solution change "looks small" — even a small rule change makes plateau structural skills stale.
-- Change solutions or plateaus that do not depend on the updated solution.
-
-# Anti-patterns
-- **Solution updated, ADR skipped**
-  - Example: implementation files are rewritten but no ADR is added to `adr/`.
-  - Consequence: the trade-offs behind the change are lost and the decision gets re-argued later.
-  - Instead: record the ADR in the same pass, following adr-create.
-
-- **Propagation stops at the solution itself**
-  - Example: the solution is updated, but dependent solutions and plateaus still reference the old behavior.
-  - Consequence: the skill set is inconsistent — two skills derived from the same solution contradict each other.
-  - Instead: update dependent solutions, then run plateau-update-by-solutions for every affected plateau.
+  - Risk: consumers cannot tell whether they hold the old or the new version of the skill.
+  - Fix: bump `version` on every skill file touched in this pass.
+- Never change a solution without creating an ADR for the decision behind the change.
+  - Violation: implementation files are rewritten but no ADR is added to `adr/`.
+  - Risk: the trade-offs behind the change are lost and the decision gets re-argued later.
+  - Fix: record the ADR in the same pass, following adr-create.
+- Never skip the plateau refresh because the solution change "looks small" — even a small rule change makes plateau structural skills stale.
+  - Violation: the solution is updated, but dependent solutions and plateaus still reference the old behavior.
+  - Risk: the skill set becomes inconsistent — skills derived from the same solution contradict each other.
+  - Fix: update dependent solutions, then run plateau-update-by-solutions for every affected plateau.
+- Never change solutions or plateaus that do not depend on the updated solution.
+  - Risk: unrelated skills drift and the change escapes review scoped to this update.
+  - Fix: limit edits to the updated solution, its dependents, and the plateaus that apply them.
 
 # Check list
 - [ ] The solution skill file and its `Implementation/` folder are consistent after the update
