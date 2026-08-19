@@ -52,9 +52,13 @@ tags:
 
 ## MUST
 - Every module lives under `/src/Modules/{ModuleName}`
-- Every module has exactly four projects: Api, Application, Domain, Interfaces
+- Every module has at least the base set of four projects: Api, Application, Domain, Interfaces
 - Tests live alongside module projects — not in a global `/tests` folder
+
+## MAY
+- A specific pattern solution add an additional project to a module when it needs project-level isolation
 
 ## MUST NOT
 - Module projects exist outside `/src/Modules`
-- Module have fewer or more than four projects without explicit architectural justification
+- Module have fewer than the base four projects
+- Module have an additional project that no specific pattern solution defines

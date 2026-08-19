@@ -3,7 +3,7 @@ name: solution-sln-structure
 description: Defines the full solution architecture including module boundaries, all non-module layers, their responsibilities, folder placement, and the complete dependency rules between all layers
 domain: skill
 type: architecture
-version: 20260611
+version: 20260819
 tags:
   - skill/architecture/solution
   - stack/dotnet
@@ -37,11 +37,13 @@ creates:
   - App.Queries.csproj
 extends:
 depends_on:
+adr:
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/adr/module-project-set-extensibility|Base set of four projects, extensible by pattern solutions, instead of a fixed ceiling]]"
 ---
 # Goal
 - Define a module as a self-contained bounded context that owns its domain, application logic, API surface, and public contracts
 - Prevent hidden coupling between modules by enforcing interaction only through declared contracts
-- Define the four-project internal structure every module must follow
+- Define the base project structure every module must follow, extensible by a specific pattern solution when it needs project-level isolation
 - Define where modules live in the solution folder structure
 - Define the full solution folder structure — where every layer lives on disk
 - Define the responsibility of each non-module layer: Shared, BuildingBlocks, App.Host, App.Infrastructure, App.Queries
@@ -58,7 +60,7 @@ depends_on:
 # Core Principles
 - A module is a bounded context — it owns everything inside its boundary
 - Modules never depend on each other's implementation — only on Interfaces contracts
-- Each module has exactly four projects: Api, Application, Domain, Interfaces
+- Each module has the base set of four projects — Api, Application, Domain, Interfaces; a specific pattern solution may add an additional project to a module when it needs project-level isolation
 - Interfaces is the only public surface of a module — breaking changes must be versioned
 - Domain is the innermost layer — it has no dependency on any other module or infrastructure
 - Tests are colocated with the module — no global tests folder
@@ -68,6 +70,10 @@ depends_on:
 - Shared and BuildingBlocks have no business logic — Shared defines common contracts, BuildingBlocks implements technical patterns
 - Cross-module JOIN queries belong exclusively in App.Queries — never in Application or Domain
 - App.Infrastructure is the only layer that knows about persistence implementation — DbContext, EF Core, outbox
+
+# Adr
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/adr/module-project-set-extensibility|Base set of four projects, extensible by pattern solutions, instead of a fixed ceiling]]
+  - Selected variant: base set + extensibility — a specific pattern solution may add a project when it needs project-level isolation; `solution-sln-structure` does not enumerate which optional projects currently exist, that is discoverable through the solution dependency graph
 
 # Requirements
 None — this is a foundation solution.
@@ -107,11 +113,14 @@ PROJECT
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create#MUST|{Module}.Domain.csproj]]
 	- [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create#MUST|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Interfaces.csproj.create#MUST|{Module}.Interfaces.csproj]]
-- Each module has exactly Api, Application, Domain, Interfaces projects
+- Each module has at least the base set of projects: Api, Application, Domain, Interfaces
 - Other modules reference only {ModuleName}.Interfaces
 - All cross-module writes go through MediatR command dispatch
 - Tests colocated with module
 - Every project belongs to exactly one layer
+
+## MAY
+- A specific pattern solution may add an additional project to a module when it needs project-level isolation that none of the base four projects can provide
 
 ## MUST NOT
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/App.Host.csproj.create#MUST NOT|App.Host.csproj]]
@@ -145,7 +154,7 @@ PROJECT
 
 # Check list
 - [ ] Module folder exists under /src/Modules/{ModuleName}
-- [ ] Module has exactly four projects: Api, Application, Domain, Interfaces
+- [ ] Module has at least the base set of projects: Api, Application, Domain, Interfaces
 - [ ] Interfaces has no project dependencies
 - [ ] Domain depends only on Shared and EF Core config
 - [ ] Application does not reference Infrastructure or App.Queries
