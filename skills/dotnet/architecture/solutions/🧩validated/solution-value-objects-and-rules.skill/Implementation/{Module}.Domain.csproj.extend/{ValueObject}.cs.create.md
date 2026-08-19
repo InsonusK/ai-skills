@@ -110,7 +110,6 @@ public sealed record Money
 - Throw `DomainException` on invariant violation — never return null or bool
 - Have no infrastructure or application dependencies
 - Multi-property VO has `private` parameterless constructor for EF materialization
-- Multi-property VO has `OwnsOne` EF configuration on owning entity (see [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]])
 ## SHOULD
 - Provide implicit conversion operators for single-property VOs
 - All VOs override `ToString()` when used in logs or UI

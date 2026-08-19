@@ -75,18 +75,7 @@ public class Driver
 }
 ```
 
-Multi-property Value Objects persisted via EF Core `OwnsOne` must be configured in the entity's EF configuration (see [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]):
-
-```csharp
-public class OrderConfiguration : IEntityTypeConfiguration<Order>
-{
-    public void Configure(EntityTypeBuilder<Order> builder)
-    {
-        builder.OwnsOne(o => o.Total);
-        builder.OwnsOne(o => o.CustomerEmail);
-    }
-}
-```
+Multi-property Value Objects are persisted via EF Core `OwnsOne`, configured entirely by [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]] — this file does not define or demonstrate that configuration.
 
 # Rule changes
 
@@ -94,7 +83,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 - Use Value Object on Entity property when the value has invariant state or carries business semantics
 - Entity properties other than `Id` and `Version` must be Value Object types, unless they are unconstrained generic parameters
 - If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
-- Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
 - Call domain rules inside entity methods before mutating state
 - Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
 - Use the most specific rule available (primitive, VO, or contextual) for the condition being checked

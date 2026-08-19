@@ -32,7 +32,6 @@ extends:
   - Shared.csproj
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]"
 adr:
   - "[[skills/dotnet/architecture/plateau/draft/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]"
 ---
@@ -82,6 +81,7 @@ adr:
 
 # Boundaries
 - `DomainException` thrown by a Value Object or Rule-driven Entity mutation is not caught by this solution — some global exception-handling mechanism is expected to catch it. `solution-mediator-exception-handler` currently does this when applied, but this solution does not require it.
+- Multi-property VO persistence mapping (`OwnsOne`) is not configured by this solution — `solution-domain-configuration` owns that entirely, including how it applies to Value Object properties.
 
 # Adr
 - [[skills/dotnet/architecture/plateau/draft/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]
@@ -95,9 +95,6 @@ SOLUTION:
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create|{Module}.Domain.csproj]] - hosts Value Objects, Rules, and entities
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]] - entity pattern extended with Value Object properties and rule calls
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]] - hosts cross-module reusable Value Objects and Rules
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend|{Module}.Domain.csproj]] - provides EF Core configuration pattern for multi-property Value Objects
-    - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create|{Entity}Config.cs]] - configures `OwnsOne` for multi-property Value Objects
 
 NUGET:
 - None — relies only on patterns defined by dependency solutions.
