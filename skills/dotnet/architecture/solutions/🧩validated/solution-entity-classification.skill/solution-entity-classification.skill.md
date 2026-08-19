@@ -14,6 +14,7 @@ tags:
   - concurrency
   - guid
   - idempotency
+  - framework/ef-core
   - concern/architecture
   - solution/entity-classification
 

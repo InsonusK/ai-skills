@@ -14,6 +14,7 @@ tags:
   - etag
   - rowversion
   - framework/mediatr
+  - framework/ef-core
   - concern/architecture
   - solution/entity-concurrency-change
 

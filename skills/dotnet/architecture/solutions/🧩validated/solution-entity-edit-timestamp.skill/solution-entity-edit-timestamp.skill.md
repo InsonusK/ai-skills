@@ -13,6 +13,7 @@ tags:
   - timestamp
   - audit
   - framework/mediatr
+  - framework/ef-core
   - concern/architecture
   - solution/entity-edit-timestamp
 
