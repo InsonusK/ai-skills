@@ -45,6 +45,7 @@ tags:
 
 ## MUST
 - Record every architecture decision made during the update as an ADR in the solution's own `adr/` folder, following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]], and register it in the solution's `adr:` YAML property.
+  - Violation: implementation files are rewritten but no ADR is added to `adr/`.
   - Risk: the reason for the change is lost, and the next editor re-argues or silently reverts the decision.
   - Fix: create the ADR immediately when the change is applied, before moving on to dependent solutions and plateaus.
 - Keep the solution skill file and its `Implementation/` folder consistent after the update.
@@ -53,20 +54,13 @@ tags:
 - Update every other solution that depends on the changed solution.
   - Risk: dependent solutions keep referencing the old behavior and produce conflicting implementations.
   - Fix: search for references to {solution} across solution skills and update each one found.
-- Refresh every plateau that applies the changed solution (or a dependent solution changed in this pass) via [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill|plateau-update-by-solutions]].
+- Refresh every plateau that applies the changed solution (or a dependent solution changed in this pass) via [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill|plateau-update-by-solutions]] — even when the change "looks small", because a small rule change still makes plateau structural skills stale.
+  - Violation: the solution is updated, but plateaus still reference the old behavior.
   - Risk: plateau root skills and structural skills go stale, so projects generated from the plateau miss the change.
   - Fix: run plateau-update-by-solutions for every affected plateau, including child plateaus linked via `parent_plateau`.
 - Bump `version` of the updated solution skill and of every skill changed during propagation.
   - Risk: consumers cannot tell whether they hold the old or the new version of the skill.
   - Fix: bump `version` on every skill file touched in this pass.
-- Never change a solution without creating an ADR for the decision behind the change.
-  - Violation: implementation files are rewritten but no ADR is added to `adr/`.
-  - Risk: the trade-offs behind the change are lost and the decision gets re-argued later.
-  - Fix: record the ADR in the same pass, following adr-create.
-- Never skip the plateau refresh because the solution change "looks small" — even a small rule change makes plateau structural skills stale.
-  - Violation: the solution is updated, but dependent solutions and plateaus still reference the old behavior.
-  - Risk: the skill set becomes inconsistent — skills derived from the same solution contradict each other.
-  - Fix: update dependent solutions, then run plateau-update-by-solutions for every affected plateau.
 - Never change solutions or plateaus that do not depend on the updated solution.
   - Risk: unrelated skills drift and the change escapes review scoped to this update.
   - Fix: limit edits to the updated solution, its dependents, and the plateaus that apply them.
