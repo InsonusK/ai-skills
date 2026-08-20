@@ -45,6 +45,7 @@ adr:
 - Semantics belong to types, not primitives — if a primitive carries business meaning, it gets a `Soft{ValueObject}`/`{ValueObject}` pair
 - `Soft{ValueObject}` is a plain, validation-agnostic record — it allows invalid values on purpose, so a DTO with bad client data can still reach the layer that validates it
 - `{ValueObject}` is immutable, self-validating, and inherits from `Soft{ValueObject}` — it never duplicates the shape, only adds invariant enforcement
+- `{ValueObject}` validates through its own local predicate — a `private static` method on the same class — so this solution is complete and usable entirely on its own, with no dependency on a shared rules abstraction
 - `{ValueObject}` has no identity — it is defined entirely by its value, at both strengths
 - A `Soft{ValueObject}` does not require a matching `{ValueObject}` — some values are only ever consumed at the permissive strength (e.g. presentation-only DTO fields); the reverse does not hold, every `{ValueObject}` requires a `Soft{ValueObject}` base
 - Multi-property types require a private/protected parameterless constructor for EF Core materialization; single-property types should provide implicit conversion operators for ergonomic usage
@@ -52,7 +53,7 @@ adr:
 - Value Objects reusable across two or more modules belong in `Shared.csproj`, not duplicated per module
 
 # Boundaries
-- `{ValueObject}`'s constructor validates by calling `Check()` — this solution does not define `Check()` or any rule condition; `solution-domain-rules` provides it as an extension method on `Soft{ValueObject}`.
+- The validation predicate lives locally in `{ValueObject}.cs`, written and owned by this solution — it is not shared or reusable across VOs by construction. `solution-domain-rules` may later centralize it into a reusable, cross-adapter form, but this solution does not require or assume that centralization exists.
 - `DomainException` thrown by a Value Object constructor is not caught by this solution — some global exception-handling mechanism is expected to catch it; `solution-mediator-exception-handler` currently does this when applied, but this solution does not require it.
 - Multi-property `{ValueObject}` persistence mapping (`OwnsOne`) is not configured by this solution — `solution-domain-configuration` owns that entirely.
 - Cross-module DI resolution of a validator for `Soft{ValueObject}` is not provided by this solution — `solution-dto-property-validators` owns that.
@@ -80,15 +81,15 @@ PROJECT:
 - [[skills/dotnet/architecture/solutions/draft/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend|{Module}.Interfaces.csproj]] - extend - Add ValueObjects folder
   - [[skills/dotnet/architecture/solutions/draft/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]] - create - Permissive value-object record, allows invalid values
 - [[skills/dotnet/architecture/solutions/draft/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend|{Module}.Domain.csproj]] - extend - Add ValueObjects folder, reference `{Module}.Interfaces`
-  - [[skills/dotnet/architecture/solutions/draft/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create|{ValueObject}.cs]] - create - Strict Value Object, inherits from `Soft{ValueObject}`, validates via `Check()`
+  - [[skills/dotnet/architecture/solutions/draft/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create|{ValueObject}.cs]] - create - Strict Value Object, inherits from `Soft{ValueObject}`, validates via its own local predicate
   - [[skills/dotnet/architecture/solutions/draft/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]] - extend - Use `{ValueObject}` types on entity properties
 
 # Workflow
 
 ## Add a value-object-shaped field (happy path)
 
-1. Declare `Soft{ValueObject}` in `{Module}.Interfaces/ValueObjects` — a plain record, no validation, no `Check()`.
-2. Declare `{ValueObject} : Soft{ValueObject}` in `{Module}.Domain/ValueObjects` — constructor calls `this.Check()` (provided by `solution-domain-rules`) and throws `DomainException` on the first blocking failure.
+1. Declare `Soft{ValueObject}` in `{Module}.Interfaces/ValueObjects` — a plain record, no validation.
+2. Declare `{ValueObject} : Soft{ValueObject}` in `{Module}.Domain/ValueObjects` — constructor validates via its own `private static` predicate and throws `DomainException` on failure.
 3. Use `{ValueObject}` on the owning Entity's property.
 4. DTOs and other modules reference `Soft{ValueObject}`, never `{ValueObject}` directly (see the `response-dto-uses-soft-value-objects` ADR).
 
@@ -100,7 +101,7 @@ sequenceDiagram
     participant Domain as {Module}.Domain
     Dev->>Interfaces: declare Soft{ValueObject} (no validation)
     Dev->>Domain: declare {ValueObject} : Soft{ValueObject}
-    Domain->>Domain: constructor calls Check() (from solution-domain-rules)
+    Domain->>Domain: constructor validates via its own local predicate
     alt valid
         Domain-->>Dev: {ValueObject} constructed
     else invalid
@@ -138,7 +139,7 @@ sequenceDiagram
 # Check list
 - [ ] `Soft{ValueObject}` is a plain record in `{Module}.Interfaces/ValueObjects`, no validation, no `Check()`
 - [ ] `{ValueObject}` inherits from `Soft{ValueObject}`, lives in `{Module}.Domain/ValueObjects`
-- [ ] `{ValueObject}` constructor calls `Check()` and throws `DomainException` on the first `Error`-severity failure
+- [ ] `{ValueObject}` constructor validates via a local `private static` predicate and throws `DomainException` on failure
 - [ ] `{ValueObject}` has no public setters, is structurally equal, has no infrastructure dependency
 - [ ] Multi-property types have a parameterless constructor for EF materialization; single-property types have implicit conversion operators
 - [ ] Entity properties other than `Id`/`Version`/unconstrained generics are `{ValueObject}` types when the value carries invariant state or business meaning

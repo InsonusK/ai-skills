@@ -1,5 +1,5 @@
 ---
-description: Create a strict Value Object type — immutable, self-validating record that inherits from Soft{ValueObject} and enforces invariants at construction
+description: Create a strict Value Object type — immutable, self-validating record that inherits from Soft{ValueObject} and enforces invariants at construction, using its own local validation
 project_name: "{Module}.Domain"
 name: "{ValueObject}"
 element_kind: class
@@ -16,7 +16,8 @@ tags:
 
 # Core Principles
 - Declared as `sealed record`, inherits from `Soft{ValueObject}` — never redeclares its properties
-- Constructor calls `Check()` (an extension method on `Soft{ValueObject}`, provided by `solution-domain-rules`) and throws `DomainException` on the first `Error`-severity failure — this solution does not define `Check()` or any rule condition itself
+- Constructor validates via its own local predicate — a `private static` method on the same class — and throws `DomainException` on failure
+- This solution does not require a shared rule abstraction: the condition is written and owned right here, next to the type it protects. A later, optional solution (`solution-domain-rules`) may centralize this condition into a reusable form — see that solution's own scope — but this file works completely on its own without it
 
 # Naming convention
 
@@ -39,11 +40,11 @@ public sealed record Email : SoftEmail
 {
     public Email(string value) : base(value)
     {
-        var result = this.Check();
-        var blocking = result.Errors.FirstOrDefault(e => e.Severity == Severity.Error);
-        if (blocking is not null)
-            throw new DomainException(blocking.ErrorCode, blocking.ErrorMessage);
+        if (!IsValid(value))
+            throw new DomainException("{ModuleName}.Email.Invalid", "Email is not valid.");
     }
+
+    private static bool IsValid(string value) => !string.IsNullOrWhiteSpace(value) && value.Contains('@');
 
     public static implicit operator string(Email obj) => obj.Value;
     public static implicit operator Email(string value) => new(value);
@@ -62,11 +63,12 @@ public sealed record Money : SoftMoney
 {
     public Money(decimal amount, string currency) : base(amount, currency)
     {
-        var result = this.Check();
-        var blocking = result.Errors.FirstOrDefault(e => e.Severity == Severity.Error);
-        if (blocking is not null)
-            throw new DomainException(blocking.ErrorCode, blocking.ErrorMessage);
+        if (!IsValid(amount, currency))
+            throw new DomainException("{ModuleName}.Money.Invalid", "Money amount/currency is not valid.");
     }
+
+    private static bool IsValid(decimal amount, string currency)
+        => amount >= 0 && !string.IsNullOrEmpty(currency);
 
     private Money() : base(0, string.Empty) { } // EF Core materialization only
 
@@ -74,26 +76,22 @@ public sealed record Money : SoftMoney
 }
 ```
 
-Worked example from a real module (`TaskModule`) — `Complexity : SoftComplexity`:
+Worked example from a real module (`TaskModule`) — `Complexity : SoftComplexity`, validated by its own local predicate:
 
 ```csharp
 namespace TaskUnderControl.Srv.TaskModule.Domain.ValueObjects;
 
-using TaskUnderControl.Srv.TaskModule.Domain.Rules;   // Check() extension — defined by solution-domain-rules
 using TaskUnderControl.Srv.TaskModule.Interfaces.ValueObjects;
 
 public sealed record Complexity : SoftComplexity
 {
     public Complexity(int value) : base(value)
     {
-        var result = this.Check();
-
-        // Errors.Any(Severity == Error), НЕ !result.IsValid — ValidationResult.IsValid игнорирует
-        // Severity, так что смешанный Error/Warning результат ошибочно заблокировал бы конструктор.
-        var blocking = result.Errors.FirstOrDefault(e => e.Severity == Severity.Error);
-        if (blocking is not null)
-            throw new DomainException(blocking.ErrorCode, blocking.ErrorMessage);
+        if (!IsValid(value))
+            throw new DomainException("TaskModule.Complexity.NonNegative", $"Complexity must be non-negative, but was {value}.");
     }
+
+    private static bool IsValid(int value) => value >= 0;
 }
 ```
 
@@ -103,7 +101,7 @@ public sealed record Complexity : SoftComplexity
 - Be `sealed record`
 - Inherit from `Soft{ValueObject}` — never redeclare its properties
 - Be immutable — no public setters
-- Constructor calls `Check()` and throws `DomainException` on the first `Error`-severity failure — never on bare `!result.IsValid`
+- Validate via a `private static` predicate declared on the same class, and throw `DomainException` when it fails
 - Have no infrastructure or application dependencies
 - Multi-property VO has a `private` parameterless constructor for EF materialization
 
@@ -113,15 +111,15 @@ public sealed record Complexity : SoftComplexity
 
 ## MUST NOT
 - Depend on repositories, `DbContext`, or any service
-- Contain inline validation logic — always delegate to `Check()`
+- Depend on a separate rules project — the predicate is local to this file
 - Expose public setters
 - Redeclare a property that `Soft{ValueObject}` already declares
 - Be used to carry identity — use the entity `Id` for that
 
 # Check list
 - [ ] Declared as `sealed record`, inherits from `Soft{ValueObject}`
-- [ ] Constructor calls `Check()`, throws `DomainException` on the first `Error`-severity failure
-- [ ] No public setters, no infrastructure dependencies
+- [ ] Constructor validates via a local `private static` predicate and throws `DomainException` on failure
+- [ ] No public setters, no infrastructure dependencies, no separate rules-project dependency
 - [ ] Multi-property VO has a `private` parameterless constructor
 - [ ] Single-property VO has implicit conversion operators
 
@@ -129,7 +127,7 @@ public sealed record Complexity : SoftComplexity
 - [ ] WHEN applied THEN Encode a domain concept with business meaning and invariant enforcement
 - [ ] WHEN applied THEN Guarantee that invalid domain state cannot exist
 - [ ] WHEN applied THEN Inherit from Soft{ValueObject} instead of duplicating its shape
-- [ ] WHEN applied THEN Constructor throws DomainException on the first Error-severity Check() failure
+- [ ] WHEN applied THEN Constructor throws DomainException when its local predicate fails
 - [ ] WHEN applied THEN Has no infrastructure or application dependencies
 - [ ] WHEN naming 'Single-property VO' THEN pattern matches convention
 - [ ] WHEN naming 'Multi-property VO' THEN pattern matches convention
