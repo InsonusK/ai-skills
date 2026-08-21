@@ -1,0 +1,41 @@
+{
+	"nodes":[
+		{"id":"group-box-domain-modeling","type":"group","x":1080,"y":-600,"width":4360,"height":320,"color":"4","label":"group-domain-modeling"},
+		{"id":"group-box-request-handling","type":"group","x":1080,"y":340,"width":2320,"height":340,"color":"6","label":"group-request-handling"},
+		{"id":"group-domain-modeling-file","type":"file","file":"skills/common-workflow/architecture/example_architecture/groups/group-domain-modeling.skill/group-domain-modeling.skill.md","x":1120,"y":-560,"width":320,"height":80},
+		{"id":"group-request-handling-file","type":"file","file":"skills/common-workflow/architecture/example_architecture/groups/group-request-handling.skill/group-request-handling.skill.md","x":1120,"y":380,"width":320,"height":60},
+		{"id":"module-structure","type":"file","file":"skills/common-workflow/architecture/example_architecture/solutions/solution-module-structure.skill/solution-module-structure.skill.md","x":0,"y":20,"width":260,"height":60},
+		{"id":"value-object","type":"file","file":"skills/common-workflow/architecture/example_architecture/solutions/solution-value-object.skill/solution-value-object.skill.md","x":1200,"y":-380,"width":260,"height":80},
+		{"id":"entity-invariant","type":"file","file":"skills/common-workflow/architecture/example_architecture/solutions/solution-entity-invariant.skill/solution-entity-invariant.skill.md","x":2500,"y":-380,"width":260,"height":60},
+		{"id":"domain-rule","type":"file","file":"skills/common-workflow/architecture/example_architecture/solutions/solution-domain-rule.skill/solution-domain-rule.skill.md","x":3800,"y":-380,"width":260,"height":60},
+		{"id":"condition-ownership","type":"file","file":"skills/common-workflow/architecture/example_architecture/solutions/solution-condition-ownership.skill/solution-condition-ownership.skill.md","x":5100,"y":-380,"width":260,"height":60},
+		{"id":"command-handler","type":"file","file":"skills/common-workflow/architecture/example_architecture/solutions/solution-command-handler.skill/solution-command-handler.skill.md","x":1200,"y":560,"width":260,"height":60},
+		{"id":"transport-validation","type":"file","file":"skills/common-workflow/architecture/example_architecture/solutions/solution-transport-validation.skill/solution-transport-validation.skill.md","x":2500,"y":560,"width":260,"height":60},
+		{"id":"plateau-example","type":"file","file":"skills/common-workflow/architecture/example_architecture/plateau/example/plateau-example.skill.md","x":6600,"y":20,"width":340,"height":60,"color":"5"},
+		{"id":"plateau-label","type":"text","text":"**When the plateau appears**\n\nOnly once every solution exists — including `solution-condition-ownership`, which contributes no code but is still required (see the plateau's own ADR). The plateau is the last stage, never a peer of the solutions/groups to its left.","x":6560,"y":-160,"width":380,"height":140},
+		{"id":"callout-exception","type":"text","text":"**Narrow cross-group exception**\n\n`solution-domain-rule` (domain-modeling) `depends_on` `solution-transport-validation` (request-handling) directly — the red edge below. This points the *opposite* way from the green group-level edge, because it records a file-level fact (`domain-rule` extends a file `transport-validation` already created), not the conceptual group ordering. See `solution-domain-rule`'s own `# Requirements` section.","x":2980,"y":80,"width":460,"height":260},
+		{"id":"legend","type":"text","text":"**Legend**\n\n- Black edge — solution-level `depends_on` (prerequisite → dependent, reverse of the YAML)\n- Red edge — the one narrow cross-group solution edge, justified by a concrete `Implementation/*.extend.md` target\n- Green edge — group-level `depends_on` (conceptual: every request-handling solution needs domain-modeling's types to exist)\n- Cyan edges — every solution feeding into `plateau-example` at assembly time\n\nGroup boxes are visual only (Obsidian Canvas groups); membership is also declared in each group skill's `contains:` frontmatter.","x":0,"y":900,"width":620,"height":300}
+	],
+	"edges":[
+		{"id":"e-ms-vo","fromNode":"module-structure","fromSide":"right","toNode":"value-object","toSide":"left"},
+		{"id":"e-ms-ch","fromNode":"module-structure","fromSide":"right","toNode":"command-handler","toSide":"left"},
+		{"id":"e-vo-ei","fromNode":"value-object","fromSide":"right","toNode":"entity-invariant","toSide":"left"},
+		{"id":"e-ch-tv","fromNode":"command-handler","fromSide":"right","toNode":"transport-validation","toSide":"left"},
+		{"id":"e-vo-dr","fromNode":"value-object","fromSide":"right","toNode":"domain-rule","toSide":"left"},
+		{"id":"e-tv-dr","fromNode":"transport-validation","fromSide":"top","toNode":"domain-rule","toSide":"bottom","color":"1","label":"extends target (exception)"},
+		{"id":"e-ei-co","fromNode":"entity-invariant","fromSide":"right","toNode":"condition-ownership","toSide":"left"},
+		{"id":"e-dr-co","fromNode":"domain-rule","fromSide":"right","toNode":"condition-ownership","toSide":"left"},
+		{"id":"e-group-group","fromNode":"group-box-domain-modeling","fromSide":"bottom","toNode":"group-box-request-handling","toSide":"top","color":"4","label":"group depends_on (conceptual)"},
+		{"id":"e-ms-plateau","toFloating":false,"fromNode":"module-structure","fromSide":"right","toNode":"plateau-example","toSide":"bottom","color":"5","label":"feeds plateau assembly"},
+		{"id":"e-vo-plateau","fromNode":"value-object","fromSide":"right","toNode":"plateau-example","toSide":"left","color":"5"},
+		{"id":"e-ei-plateau","fromNode":"entity-invariant","fromSide":"right","toNode":"plateau-example","toSide":"left","color":"5"},
+		{"id":"e-dr-plateau","fromNode":"domain-rule","fromSide":"right","toNode":"plateau-example","toSide":"left","color":"5"},
+		{"id":"e-co-plateau","fromNode":"condition-ownership","fromSide":"right","toNode":"plateau-example","toSide":"left","color":"5"},
+		{"id":"e-ch-plateau","fromNode":"command-handler","fromSide":"right","toNode":"plateau-example","toSide":"bottom","color":"5"},
+		{"id":"e-tv-plateau","fromNode":"transport-validation","fromSide":"right","toNode":"plateau-example","toSide":"bottom","color":"5"}
+	],
+	"metadata":{
+		"version":"1.0-1.0",
+		"frontmatter":{}
+	}
+}
