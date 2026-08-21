@@ -32,6 +32,11 @@ depends_on:
   # List of other architecture solutions which is used by this solution and must be implemented before this solution
   # Example:
   # - "<Link>"
+built_on_plateau:
+  # Optional, at most one: the plateau this solution assumes already exists and builds on top of.
+  # Distinct from depends_on (sibling solutions) — see solution-plateau-hierarchy.skill.md.
+  # Example:
+  # - "<Link>"
 adr:
   # List of architecture decision records which was made due to this solution
   # Example:

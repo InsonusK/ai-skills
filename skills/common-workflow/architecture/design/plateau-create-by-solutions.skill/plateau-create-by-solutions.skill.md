@@ -12,6 +12,8 @@ tags:
 # Input parameters
 - {plateau-name} - name of created plateau
 - {solutions} - list of solutions which must be implemented in created plateau
+- {parent_plateaus} - optional list of existing plateaus this plateau composes, in addition to {solutions}. Empty when the plateau is built from scratch. See [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] for merge semantics.
+- {standalone} - whether the built plateau is meant to be usable/deployable on its own (`true`) or exists only to be composed into a larger plateau (`false`). Ask the user if unclear.
 - {stack} - target language/stack of the plateau (`dotnet`, `python`, ...). Detect it from the {solutions} (their `domain`/`tags` header properties) or ask the user if it is unclear
 - {output} - folder where you should put created plateau skills. Default `skills/{stack}/architecture/plateau`
 
@@ -33,6 +35,8 @@ Every skill that describes a plateau element (repository/solution, project/packa
 Read [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first. It defines how a solution-skill is structured per stack and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 
 Read [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]] too. Assembling a plateau out of several solutions forces choices — resolving a conflict between solutions, excluding a solution — that belong to the plateau itself, not to any single solution. Record them following [Recording plateau-level decisions](#recording-plateau-level-decisions).
+
+Read [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] too, when {solutions} is not the only input — i.e. when this plateau also composes one or more existing plateaus via `parent_plateaus`. It defines the union-by-default merge semantics and the `standalone` field this skill's templates now carry.
 
 # Solution-skill structure
 Every solution-skill has an `Implementation/` folder with concrete mutations. The file patterns inside `Implementation/` depend on {stack}. Recognize these file patterns:
@@ -70,41 +74,46 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
    - If folder exist ask user: Does he want to replace exist plateau.
 3. Create in {output} folder new folder with name {plateau-name}
 4. Create subfolder `{output}/structure`
-5. Discover all projects/packages and classes/modules contributed by {solutions}
+5. If {parent_plateaus} is non-empty, seed `{output}/structure` from every parent plateau's own `structure/` folder first, merged by project/class per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]]'s union-by-default rule
+   - Copy every project/class skill file from each parent's `structure/` folder
+   - When two parents (or a parent and {solutions}) define the same project/class, merge their content the same way step 8/9 merge `.create.md`/`.extend.md` files — by section, keeping `__Applied solutions:__` trailers from every contributor
+   - On any conflict (disagreeing content for the same project/class/rule) between parents, or between a parent and {solutions}, stop and ask the user, then record a plateau-level ADR (see [Recording plateau-level decisions](#recording-plateau-level-decisions))
+6. Discover all projects/packages and classes/modules contributed by {solutions}
    - Scan `Implementation/` folder in every solution-skill
    - .NET: collect all `{Project}.csproj.create.md` and `{Project}.csproj.extend.md`, and all class files nested under them
    - Python: collect all `{App}.create.md`/`{App}.extend.md` (`element_kind: project`), and all class/functions/init files nested under them
    - Normalize placeholder names (`{Module}`, `{App}`) to generic templates (see [Mapping rules](#mapping-rules))
-6. Create the repository-level skill using the template that matches {stack}
+7. Create the repository-level skill using the template that matches {stack}
    - .NET: `plateau-{plateau-name}--sln-{plateau-name}.skill.md` using [templates/dotnet/sln-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/sln-{name}.skill.template.md)
    - Python: `plateau-{plateau-name}--repo-{plateau-name}.skill.md` using [templates/python/repo-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/repo-{name}.skill.template.md)
-   - Aggregate all `Repository.create.md`/`Repository.extend.md` files from {solutions}
+   - Aggregate all `Repository.create.md`/`Repository.extend.md` files from {solutions}, plus every parent's own repository-level skill content when {parent_plateaus} is non-empty
    - Keep repository-level content only
-7. For each discovered project/package create its skill using the template that matches {stack}
+8. For each discovered project/package create its skill using the template that matches {stack}
    - .NET: `plateau-{plateau-name}--csproj-{normalized-name}.skill.md` using [templates/dotnet/csproj-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/csproj-{name}.skill.template.md)
    - Python: `plateau-{plateau-name}--package-{normalized-name}.skill.md` using [templates/python/package-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/package-{name}.skill.template.md)
    - Merge `.create.md` and all `.extend.md` files for the same project/package
    - Keep project/package-level content only
-8. For each discovered class/module create its skill using the template that matches {stack}
+9. For each discovered class/module create its skill using the template that matches {stack}
    - .NET: `plateau-{plateau-name}--class-{normalized-name}.skill.md` using [templates/dotnet/class-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/class-{name}.skill.template.md)
    - Python: `plateau-{plateau-name}--module-{normalized-name}.skill.md` using [templates/python/module-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/module-{name}.skill.template.md)
    - Merge `.create.md` and `.extend.md` files for the same class/module
    - Keep class/module-level content only
-9. Create `plateau-{plateau-name}.skill.md` using the plateau template that matches {stack}
-   - .NET: [templates/dotnet/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/plateau-{name}.skill.template.md)
-   - Python: [templates/python/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/plateau-{name}.skill.template.md)
-   - This is the plateau summary: goal, core principles, capabilities, use-cases
-   - It is not a code-generation template
-   - If `parent_plateau` is set, describe only the delta that the solutions in `created_by` add or change on top of the parent plateau. The reader combines this summary with the parent plateau to get the full picture.
-   - If `parent_plateau` is empty, describe the complete plateau built from all solutions in `created_by`
-10. Fill every skill template with real content
+10. Create `plateau-{plateau-name}.skill.md` using the plateau template that matches {stack}
+    - .NET: [templates/dotnet/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/plateau-{name}.skill.template.md)
+    - Python: [templates/python/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/plateau-{name}.skill.template.md)
+    - This is the plateau summary: goal, core principles, capabilities, use-cases
+    - It is not a code-generation template
+    - If {parent_plateaus} is non-empty, describe the union of every parent's summary plus the delta that {solutions} add or change on top — the reader should not need to open every parent to get the full picture.
+    - If {parent_plateaus} is empty, describe the complete plateau built from all solutions in `created_by`
+11. Fill every skill template with real content
     - Follow `# How Apply this template` instructions inside each template
     - Remove all `hint` and `example` blocks from the final skill files
-11. Fill header properties
+12. Fill header properties
     - `name` by {plateau-name}
     - `version` by current UTC timestamp with format `YYYYMMDDHHMMSS`
-    - `parent_plateau` — link to the plateau this plateau extends. Leave empty when the plateau is built from scratch without a parent. Use a wikilink, for example `[[skills/dotnet/architecture/plateau/base/plateau-base.skill.md|base]]`. When this field is set, `created_by` must list only the solutions added on top of the parent plateau. When this field is empty, `created_by` must list all solutions that define the plateau.
-    - `created_by` — list of wikilinks to all solution skills that contributed to this plateau. If `parent_plateau` is set, include only the solutions that extend the parent plateau. If `parent_plateau` is empty, include all solutions.
+    - `parent_plateaus` — list of wikilinks to every plateau this one composes. Leave empty when the plateau is built from scratch without a parent. Use a wikilink, for example `[[skills/dotnet/architecture/plateau/base/plateau-base.skill.md|base]]`. A single-element list expresses what the old singular `parent_plateau` used to mean; several elements express composition of independent plateaus — see [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] for merge semantics.
+    - `created_by` — list of wikilinks to every solution skill applied directly by this plateau, on top of whatever `parent_plateaus` already contribute. If `parent_plateaus` is empty, `created_by` lists every solution that defines the plateau.
+    - `standalone` — `true` if this plateau is meant to be usable/deployable on its own, `false` if it exists only to be composed into a larger plateau. Use {standalone} if given, otherwise ask the user.
 
 # Mapping rules
 
@@ -171,7 +180,7 @@ Both file types contribute to the same target skill:
 - If a solution from {solutions} has no `Implementation/` content and does not affect plateau structure, record the decision to exclude it as a plateau-level ADR (see [Recording plateau-level decisions](#recording-plateau-level-decisions)) or ask the user for clarification
 
 # Recording plateau-level decisions
-Building a plateau forces choices that are easy to forget once the plateau is assembled — for example resolving conflicting rules between two solutions, or excluding a solution that has no `Implementation/` content. The plateau owns these decisions, not any single structural skill, because they are about how the solutions combine.
+Building a plateau forces choices that are easy to forget once the plateau is assembled — for example resolving conflicting rules between two solutions, resolving conflicting content between two parent plateaus (or a parent and {solutions}) when composing via `parent_plateaus`, or excluding a solution that has no `Implementation/` content. The plateau owns these decisions, not any single structural skill, because they are about how the solutions and plateaus combine.
 
 - Store plateau-level ADRs in `{output}/{plateau-name}/adr/`, a folder sibling to `structure/`.
 - Follow [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]] to write each ADR.
@@ -239,11 +248,14 @@ MUST:
 - Merge `.create.md` and `.extend.md` files for the same project/package/class/module into a single skill file.
 - Include every solution that contributes project/package, class/module, or repository-level content in `created_by`.
 - If two solutions define conflicting rules for the same project/package/class/module, resolve the conflict or ask the user before merging, and record the resolution as a plateau-level ADR (see [Recording plateau-level decisions](#recording-plateau-level-decisions)).
-- When `parent_plateau` is set, the plateau root skill must describe only the delta added or changed by the solutions in `created_by` on top of the parent plateau.
+- Give a plateau with a non-empty `parent_plateaus` the union of every parent's content by default (not just one parent's delta), plus the delta added or changed by the solutions in `created_by` on top of that union, per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]].
+- When two parent plateaus disagree on the same project/package/class/module — or a parent disagrees with a solution in `created_by` — stop and ask the user before merging, and record the resolution as a plateau-level ADR (see [Recording plateau-level decisions](#recording-plateau-level-decisions)).
+- Set `standalone: true`/`false` explicitly on every plateau, per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]].
 - Record every plateau-level decision (conflict resolution, solution exclusion) as an ADR in the plateau's own `adr/` folder, following [Recording plateau-level decisions](#recording-plateau-level-decisions).
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Omit the parent solution skill link from `__Applied solutions:__` bullets.
 - List class/module skill files in the repository/root skill `## Directory and class skills` table.
 - Create separate skill files for `.create.md` and `.extend.md` of the same project/package/class/module.
-- Duplicate the full parent plateau content in the plateau root skill when `parent_plateau` is set.
+- Silently drop or override one parent's content when `parent_plateaus` has more than one entry and two parents disagree — resolve every such conflict per [Recording plateau-level decisions](#recording-plateau-level-decisions) instead.
+- Use the old singular `parent_plateau` field — every plateau uses the `parent_plateaus` list, even for a single parent.

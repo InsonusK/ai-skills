@@ -9,12 +9,14 @@ type: template
 version:
 tags:
   - skill/template/plateau
-parent_plateau:
+parent_plateaus:
 created_by:
+standalone:
 ---
 # How Apply this template
 - Fill `whenToUse` with the concrete situations that should make the agent read the plateau before writing code (starting a new app/lib/feature under `{plateau-name}`, or checking whether a change already made follows it). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - add to header properties `tags` tag `plateau/{plateau-name}`
+- Fill `parent_plateaus` as a list (empty when built from scratch) and `standalone` (`true`/`false`) per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]]. When `parent_plateaus` is non-empty, merge every parent's content by union; stop and ask the user, then record a plateau-level ADR, on any conflict between parents or between a parent and `created_by`.
 
 # Core Principles
 ```hint
