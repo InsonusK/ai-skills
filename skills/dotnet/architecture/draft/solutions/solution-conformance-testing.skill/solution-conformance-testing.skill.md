@@ -23,6 +23,7 @@ creates:
   - "BuildingBlocks.Tests.csproj"
   - "{TestProject}.StepDefinitions.{Rule}Steps.cs"
   - Makefile
+  - report-template/index.html
 extends:
   - README.md
 depends_on:
@@ -133,3 +134,4 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] Every `.feature` scenario has a matching step definition, in the same test project as the code it proves, that calls production code.
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` exist at the repository root, run across every test project, and support the toggles defined by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
 - [ ] `tmp/result/*.json` and `tmp/report/<kind>/` aggregate all five test projects and follow that same contract's schema.
+- [ ] `public/` follows [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#public-site-output|solution-conformance-testing's Public site output]] contract, and `report-template/index.html` exists at the repository root (not under `.github/`).

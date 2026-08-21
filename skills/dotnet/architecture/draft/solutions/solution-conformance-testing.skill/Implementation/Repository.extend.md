@@ -29,9 +29,8 @@ change_kind: extend
   Rules/{Rule}.feature
   StepDefinitions/{Rule}Steps.cs
   reqnroll.json
-/.github
-  /pages
-    index.html
+/report-template
+  index.html
 /scripts
   unit-test.sh
   mutation-test.sh
@@ -44,7 +43,7 @@ README.md
 | Directory | file | Description |
 | ----------------- | ----------- |
 | /{Module}.Domain.Tests, /{Module}.Application.Tests, /{Module}.Interfaces.Tests, /Shared.Tests, /BuildingBlocks.Tests | reqnroll.json | One per test project, configuring Reqnroll's html formatter output path; `unit-test.sh` merges all five into one report |
-| /.github/pages | index.html | Static landing page `test-report.sh` copies into `public/`; links to `tests/`, `coverage/`, `mutation/` |
+| /report-template | index.html | Static landing page `test-report.sh` copies into `public/`; links to `tests/`, `coverage/`, `mutation/`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | /scripts | unit-test.sh | Runs `dotnet test` across every test project in the solution, normalizes the aggregated result into `tmp/result/unit-test.json` (+ `coverage-test.json` when `WITH_CODE_COVERAGE=true`), keeps the merged native report under `tmp/report/tests` (+ `tmp/report/coverage`) |
 | /scripts | mutation-test.sh | Runs `dotnet-stryker` against the whole solution (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
 | /scripts | test-report.sh | Assembles `public/` from `tmp/result/*.json` + `tmp/report/*` — no test/build tooling involved |

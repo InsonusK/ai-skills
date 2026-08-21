@@ -16,6 +16,7 @@ tags:
 
 creates:
   - Makefile
+  - report-template/index.html
 extends:
 depends_on:
 built_on_plateau:
@@ -57,12 +58,21 @@ adr:
 
 `make test-report` reads only the normalized `tmp/result/*.json` files to assemble its readable report; it never re-parses a tool's native report format. `mutation-test` still exits with the underlying mutation tool's own exit code after writing its normalized result — normalizing is a side effect, never a reason to swallow a real failure.
 
+## Public site output
+`test-report` assembles a stack-independent `public/` directory, the one artifact every CI publishing step (e.g. to GitHub Pages) uploads as-is, without knowing anything about the stack:
+
+- `public/<kind>/` — a copy of `tmp/report/<kind>/` for each kind present (`tests`, `coverage`, `mutation`).
+- `public/<label>-badge.json` — one per metric, shields.io's [endpoint badge](https://shields.io/badges/endpoint-badge) schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}`. `label` is `tests`, `coverage`, or `mutation score`; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
+- `public/index.html` — copied verbatim from `report-template/index.html`, a small static landing page the project owns (linking to `tests/`, `coverage/`, `mutation/`) — `test-report` never generates its content, only copies it.
+
+`report-template/index.html` lives outside `.github/` — this solution owns no `.github/workflows/*` file; publishing `public/` (e.g. to GitHub Pages) is a CI concern layered on top, not part of this contract.
+
 # Requirements
 None at this level — stack-specific packages (the Cucumber runner, the coverage collector, the mutation tool) are declared by each stack's own extending solution.
 
 # Template Skill Mutations
 REPOSITORY:
-- [[./Implementation/Repository.create.md|Repository]] - create - `Makefile` exposing the four unified testing targets
+- [[./Implementation/Repository.create.md|Repository]] - create - `Makefile` exposing the four unified testing targets, plus `report-template/index.html`
 
 # Rule
 
@@ -85,6 +95,9 @@ REPOSITORY:
 - Let a `mutation-test` run swallow the underlying mutation tool's own failure exit code while normalizing its result.
   - Risk: a real mutation-testing failure gets hidden, and CI reports success on a run that actually found unkilled mutants.
   - Fix: propagate the underlying tool's exit code after writing `tmp/result/mutation-test.json`.
+- Let `report-template/index.html` live under `.github/`.
+  - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern.
+  - Fix: keep it at `report-template/index.html`, copied by `test-report` — never generated, never placed under `.github/`.
 
 # Check list
 - [ ] Every business scenario is structured as input/expected-result pairs.
@@ -93,3 +106,4 @@ REPOSITORY:
 - [ ] Coverage is collected on every `unit-test` run.
 - [ ] `tmp/result/*.json` follows the schema in [# Report contract](#report-contract); `tmp/report/<kind>/` holds each tool's native report.
 - [ ] `mutation-test` exits with the underlying tool's own exit code after writing its normalized result.
+- [ ] `public/` follows [## Public site output](#public-site-output): per-kind report copies, `*-badge.json` files, and `index.html` copied from `report-template/index.html`.
