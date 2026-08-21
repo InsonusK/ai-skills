@@ -59,11 +59,28 @@ Class naming convention. Fill table:
 # Implementation changes
 ```hint
 Define how solution EXTENDS class implementation.
+
+When this solution is built on a plateau (`built_on_plateau` is set), structure the change as a delta from the plateau:
+- AS IS — copy or summarize the relevant implementation from the plateau class skill.
+- TO BE — show the implementation after the solution's changes.
+
+When `built_on_plateau` is empty, describe the change directly without the AS IS/TO BE split.
 ```
 ```example
+### AS IS
+[[Class skill]] currently ...
+
+### TO BE
 [[Class skill]] must ...
 ```
 ```code example
+### AS IS
+public class SomeEntity
+{
+    public int Id { get; internal set; }
+}
+
+### TO BE
 public class SomeEntity : IGuidEntity
 {
     public int Id { get; internal set; }
