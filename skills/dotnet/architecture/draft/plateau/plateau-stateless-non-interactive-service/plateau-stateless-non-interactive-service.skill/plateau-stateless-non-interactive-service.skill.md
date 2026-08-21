@@ -4,17 +4,17 @@ description: Base composition of the system — module/App layer folder structur
 whenToUse: when scaffolding a brand-new service before any module has business logic, an API, or persistence — or when reviewing whether App.Host wiring, global exception handling, or the conformance-testing gate follow this baseline
 domain: skill
 type: template
-version: 20260822120000
+version: 20260821230300
 tags:
   - skill/template/plateau
   - plateau/stateless-non-interactive-service
 parent_plateaus:
 standalone: false
 created_by:
-  - "[[../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
-  - "[[../../solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]]"
-  - "[[../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
-  - "[[../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
+  - "[[../../../solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]]"
+  - "[[../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
+  - "[[../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 ---
 
 # Goal
@@ -23,7 +23,7 @@ Give every module a fixed four-project shape (Api/Application/Domain/Interfaces)
 # Core Principles
 - Structure: every module lives under `/src/Modules/{ModuleName}` with exactly the base four projects; App.Host is the single composition root and the only project referencing every module at once.
 - Pipeline: `PipelineRegistration.AddPipeline()` is the single, ordered source of truth for MediatR pipeline behaviors; `ExceptionHandlingBehavior` is always registered first, so no other behavior's exception escapes unhandled.
-- Testing: every production project that has one (Domain, Application, Interfaces, Shared, BuildingBlocks) gets exactly one dedicated test project mirroring its Allowed Dependencies exactly — never one combined project per module, never a project reaching wider than its production counterpart. `{ModuleName}.Api` has no dedicated test project. See [[../../solutions/solution-conformance-testing.skill/adr/test-project-per-production-project.md|solution-conformance-testing's ADR]].
+- Testing: every production project that has one (Domain, Application, Interfaces, Shared, BuildingBlocks) gets exactly one dedicated test project mirroring its Allowed Dependencies exactly — never one combined project per module, never a project reaching wider than its production counterpart. `{ModuleName}.Api` has no dedicated test project. See [[../../../solutions/solution-conformance-testing.skill/adr/test-project-per-production-project.md|solution-conformance-testing's ADR]].
 - CI: this plateau assumes [[skills/devops/devops-github-wf-pr-validation.skill/devops-github-wf-pr-validation.skill.md|devops-github-wf-pr-validation]]'s base PR workflow is wired up, extended per [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]] with the PR-gate Cucumber/mutation jobs and the master-push report/Pages/badges workflow — neither workflow file is produced as `structure/` content here; both are practices to apply directly, referenced the same way `solution-conformance-testing` itself already references them.
 - Not standalone: `standalone: false` — this plateau has no API surface and no persistence; nothing can call into it yet. It exists to be composed into every other plateau, not deployed on its own.
 
@@ -39,6 +39,9 @@ Give every module a fixed four-project shape (Api/Application/Domain/Interfaces)
 - ci
   - PR-gate: [[skills/devops/devops-github-wf-pr-validation.skill/devops-github-wf-pr-validation.skill.md|devops-github-wf-pr-validation]]'s base unit-test/version-check jobs, extended by [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]'s Cucumber/mutation-delta jobs.
   - Master-push: full coverage + mutation report, published to GitHub Pages with README badges, via the same `devops-github-wf-bdd-report-publish` workflow.
+
+# Example
+A real runnable reference implementation lives in [[./example|example]]. It shows a minimal .NET solution (`StatelessService`) with one `Sample` module, the `Shared`/`BuildingBlocks` layers, `App.Host` as the composition root, and dedicated test projects for every production project except `Sample.Api`. See `example/README.md` for how to run it.
 
 # Usecases
 
