@@ -37,7 +37,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]"
 ---
 
 # Goal
@@ -69,7 +69,7 @@ depends_on:
 - Validator enforces transport correctness only — presence, length, format, range
 - Business invariants belong in domain entities and domain services — never in validators
 - One validator per command — co-located with the handler in the same feature folder
-- Command validators use `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-soft-value-objects-and-dto-validators.skill` instead of duplicating cross-module validation rules
+- Command validators use `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-dto-property-validators.skill` instead of duplicating cross-module validation rules
 
 # Requirements
 SOLUTION:
@@ -85,8 +85,8 @@ SOLUTION:
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - provides `ValidationBehavior` pipeline behavior
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create|ValidationBehavior.cs]] - intercepts and validates commands before handlers run
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - provides `{ValueObject}PropertyValidator` and `{Dto}Validator` that command validators reuse through `IValidator<T>`
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - provides `{ValueObject}PropertyValidator` and `{Dto}Validator` that command validators reuse through `IValidator<T>`
 
 NUGET:
 - `Ardalis.Result` {version} - provides `Result<T>`, `Result.Created`, `Result.NotFound`, `Result.Conflict`, `Result.Error`, `Result.Invalid`

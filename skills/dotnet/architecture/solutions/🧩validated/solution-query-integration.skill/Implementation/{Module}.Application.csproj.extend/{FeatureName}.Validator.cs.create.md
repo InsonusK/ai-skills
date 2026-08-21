@@ -11,7 +11,7 @@ tags:
 
 # Goals
 - Validate query input before the handler runs
-- Reuse existing property and DTO validators from `solution-soft-value-objects-and-dto-validators.skill` for cross-module properties
+- Reuse existing property and DTO validators from `solution-dto-property-validators.skill` for cross-module properties
 
 # Core Principles
 - Extends `AbstractValidator<TQuery>`
@@ -19,7 +19,7 @@ tags:
 - Transport correctness only: `NotEmpty`, `NotNull`, `MaximumLength`, `GreaterThan`, `InclusiveBetween`, email format, regex format
 - No database access, no repository injection
 - No business logic
-- For `Soft{ValueObject}` or DTO properties owned by another module, inject `IValidator<T>` from `solution-soft-value-objects-and-dto-validators.skill` and use `SetValidator`
+- For `Soft{ValueObject}` or DTO properties owned by another module, inject `IValidator<T>` from `solution-dto-property-validators.skill` and use `SetValidator`
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -68,7 +68,7 @@ public class GetTasksValidator : AbstractValidator<GetTasksQuery>
 - [ ] Extends `AbstractValidator<TQuery>`
 - [ ] Named `{FeatureName}Validator`
 - [ ] Located in `/{Module}.Application/Queries/{FeatureName}`
-- [ ] Uses `IValidator<T>` from `solution-soft-value-objects-and-dto-validators.skill` for cross-module properties
+- [ ] Uses `IValidator<T>` from `solution-dto-property-validators.skill` for cross-module properties
 
 # Unittest TestCases
 - [ ] When query input is valid Then no validation errors

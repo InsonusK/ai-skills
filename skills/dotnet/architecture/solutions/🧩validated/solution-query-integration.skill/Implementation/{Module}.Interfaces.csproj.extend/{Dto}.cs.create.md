@@ -71,7 +71,7 @@ public record TaskWithUserDetailsDto(
 - Declared as `record`
 - Properties are primitives or other DTOs
 - Declared in `/{Module}.Interfaces/DTOs`
-- Every DTO has a matching `{Dto}Validator` in `{Module}.Application/Validators` from `solution-soft-value-objects-and-dto-validators.skill`
+- Every DTO has a matching `{Dto}Validator` in `{Module}.Application/Validators` from `solution-dto-property-validators.skill`
 - Query transport validators use `SetValidator` with `IValidator<Soft{ValueObject}>` or `IValidator<{Dto}>` for cross-module properties
 
 ## SHOULD
@@ -81,7 +81,7 @@ public record TaskWithUserDetailsDto(
 ## MUST NOT
 - Expose domain entity types as properties
 - Have public setters — `record` provides immutability
-- Query validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
+- Query validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-dto-property-validators.skill`
 
 # Anti-patterns
 - DTO containing a domain entity — always project to flat primitives

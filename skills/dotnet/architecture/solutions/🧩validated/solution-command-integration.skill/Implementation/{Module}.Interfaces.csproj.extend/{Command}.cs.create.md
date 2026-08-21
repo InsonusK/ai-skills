@@ -88,7 +88,7 @@ public record AssignTaskCommand(
 ## MUST NOT
 - Command contain methods or logic
 - Command reference domain entity types as properties
-- Command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-soft-value-objects-and-dto-validators.skill`
+- Command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-dto-property-validators.skill`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Express a named write intent as an immutable record that carries all input needed for the operation

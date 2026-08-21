@@ -19,7 +19,7 @@ tags:
 - Transport correctness only: `NotEmpty`, `NotNull`, `MaximumLength`, `GreaterThan`, `InclusiveBetween`, email format, regex format
 - No database access, no repository injection — purely declarative on the command's properties
 - No business logic — existence and state checks belong in handler guard or domain
-- For `Soft{ValueObject}` or DTO properties coming from another module, inject `IValidator<T>` from `solution-soft-value-objects-and-dto-validators.skill` and use `SetValidator`
+- For `Soft{ValueObject}` or DTO properties coming from another module, inject `IValidator<T>` from `solution-dto-property-validators.skill` and use `SetValidator`
 
 ## What belongs in a validator vs domain
 
@@ -93,8 +93,8 @@ public class AssignTaskValidator : AbstractValidator<AssignTaskCommand>
 - Enforce transport correctness only — presence, length, format, numeric range
 - Be named `{FeatureName}Validator`
 - Live in `/{Module}.Application/Features/{FeatureName}/{FeatureName}.Validator.cs`
-- For `Soft{ValueObject}` or DTO properties owned by another module, inject `IValidator<T>` from `solution-soft-value-objects-and-dto-validators.skill` and use `SetValidator`
-- Validators registered via `AddValidatorsFromAssembly` in module registration — this also registers property validators and DTO validators from `solution-soft-value-objects-and-dto-validators.skill`
+- For `Soft{ValueObject}` or DTO properties owned by another module, inject `IValidator<T>` from `solution-dto-property-validators.skill` and use `SetValidator`
+- Validators registered via `AddValidatorsFromAssembly` in module registration — this also registers property validators and DTO validators from `solution-dto-property-validators.skill`
 
 ## MUST NOT
 - Inject repositories, `DbContext`, or any service — purely declarative on command properties

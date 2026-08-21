@@ -46,7 +46,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]"
 ---
 
 # Goal
@@ -73,8 +73,8 @@ depends_on:
 - All single-module entity loading goes through named specs — no inline LINQ in handlers
 - DTOs are the only data shape that crosses module boundaries for read operations — never domain entities
 - Query handlers may have transport validators — `ValidationBehavior` validates structural correctness before the handler runs
-- DTO validators are owned by `solution-soft-value-objects-and-dto-validators.skill` and live in `{Module}.Application/Validators`
-- Query validators reuse `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-soft-value-objects-and-dto-validators.skill` instead of duplicating cross-module validation rules
+- DTO validators are owned by `solution-dto-property-validators.skill` and live in `{Module}.Application/Validators`
+- Query validators reuse `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-dto-property-validators.skill` instead of duplicating cross-module validation rules
 
 # Requirements
 SOLUTION:
@@ -89,8 +89,8 @@ SOLUTION:
     - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create|IReadRepository.cs]] - used by single-module handlers
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]
   - [[skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - provides `ValidationBehavior` that activates for any `IRequest<TResponse>` including queries
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]
-  - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - provides `{ValueObject}PropertyValidator` and `{Dto}Validator` that query validators reuse through `IValidator<T>`
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]
+  - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - provides `{ValueObject}PropertyValidator` and `{Dto}Validator` that query validators reuse through `IValidator<T>`
 
 NUGET:
 - `MediatR` {version} - provides `IRequest<T>`, `IRequestHandler<TRequest, TResponse>`, `ISender`

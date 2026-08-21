@@ -1,5 +1,5 @@
 ---
-description: Extend entity with behavior methods that enforce invariants through domain rules and integrate with domain services
+description: Extend entity with behavior methods that validate via a locally-owned condition before mutating state
 project_name: "{Module}.Domain"
 name: "{EntityName}"
 element_kind: class
@@ -10,13 +10,12 @@ tags:
 ---
 
 # Goals
-- Enforce entity invariants and prevent invalid state by using domain rules inside entity behavior methods
-- Keep entity validation logic DRY by delegating to reusable domain rules
+- Enforce entity invariants and prevent invalid state on every state-changing method
 - Extract bulky logic to `{Module}.Domain/Services` while keeping the entity as the gatekeeper of state
 
 # Core Principles
-- Rule returns `bool` — entity decides whether to throw `DomainException`
-- Bulky or multi-step behavior can be delegated to a static service extension, but the entity still owns validation
+- Every behavior method validates via a condition it owns — either inline or a `private static` helper on the same class — before assigning anything
+- Bulky or multi-step behavior can be delegated to a static service extension, but the entity still owns validation for its own guarded setters
 
 # Naming convention
 
@@ -26,7 +25,7 @@ tags:
 
 # Implementation changes
 
-Entity behavior methods must validate state through domain rules before mutating:
+Entity behavior methods validate locally before mutating:
 
 ```csharp
 public class Order
@@ -37,18 +36,18 @@ public class Order
 
     public void UpdateComment(string comment)
     {
-        if (!comment.IsNotEmpty())
-            throw new DomainException("Comment must not be empty.");
+        if (string.IsNullOrWhiteSpace(comment))
+            throw new DomainException("{ModuleName}.Order.CommentRequired", "Comment must not be empty.");
 
-        if (!comment.IsMaxLength(500))
-            throw new DomainException("Comment must not exceed 500 characters.");
+        if (comment.Length > 500)
+            throw new DomainException("{ModuleName}.Order.CommentTooLong", "Comment must not exceed 500 characters.");
 
         Comment = comment;
     }
 }
 ```
 
-Entity can compose contextual rules for complex invariants:
+Entity composes several conditions for a complex invariant, using a `private static` helper for readability:
 
 ```csharp
 public class Driver
@@ -59,17 +58,22 @@ public class Driver
 
     public void AssignLicense()
     {
-        if (!(Age, Country).IsSatisfied())
-            throw new DomainException("Driver does not meet licensing requirements for this country.");
+        if (!MeetsLicensingRequirements(Age, Country))
+            throw new DomainException("{ModuleName}.Driver.NotEligibleForLicense", "Driver does not meet licensing requirements for this country.");
 
         // ... assign license
     }
+
+    private static bool MeetsLicensingRequirements(Age age, Country country) => country.Code switch
+    {
+        "US" => age.Value >= 16,
+        "NL" => age.Value >= 18,
+        _ => false
+    };
 }
 ```
 
-When behavior becomes too large for the entity, delegate to a Domain Service Extension defined in `{Behavior}Service.cs` (this solution).
-
-Entity may expose guarded internal methods for use by domain service extensions:
+When behavior becomes too large for the entity, delegate to a Domain Service Extension defined in `{Behavior}Service.cs` (this solution). The entity exposes a guarded internal method for the service to call:
 
 ```csharp
 public class Order
@@ -79,8 +83,8 @@ public class Order
 
     internal void SetTotal(decimal total)
     {
-        if (!total.IsPositive())
-            throw new DomainException("Total must be positive.");
+        if (total < 0)
+            throw new DomainException("{ModuleName}.Order.TotalMustBePositive", "Total must be positive.");
 
         Total = total;
     }
@@ -90,26 +94,22 @@ public class Order
 # Rule changes
 
 ## MUST
-- Call domain rules inside entity methods before mutating state
-- Throw `DomainException` when a rule returns `false`
-- Use the most specific rule available (primitive, VO, or contextual)
+- Validate via a locally-owned condition (inline or a `private static` helper) inside entity methods before mutating state
+- Throw `DomainException` when that condition fails
 - A single entity property must not have multiple uncoordinated public mutation points
 
 ## MUST NOT
-- Mutate state before validating with rules
+- Mutate state before validating
 - Allow invalid state to persist silently
 - Let a service extension expose a second public way to change a property that is already changed by an entity method
-- Reimplement rule logic inline inside entity methods or service extensions
 - Let a service extension bypass entity methods and write directly to properties
+
 ## SHOULD
 - Keep entity methods small and delegate complex calculations to service extensions
 
 # Unittest TestCases
-- [ ] WHEN applied THEN Enforce entity invariants and prevent invalid state by using domain rules inside entity behavior methods
-- [ ] WHEN applied THEN Keep entity validation logic DRY by delegating to reusable domain rules
+- [ ] WHEN applied THEN Enforce entity invariants and prevent invalid state on every state-changing method
 - [ ] WHEN applied THEN Extract bulky logic to {Module}.Domain/Services while keeping the entity as the gatekeeper of state
-- [ ] WHEN applied THEN Entity defines consistency — it decides when and how to enforce invariants
-- [ ] WHEN applied THEN Entity methods call domain rules to validate state transitions before applying changes
-- [ ] WHEN applied THEN Rule returns bool — entity decides whether to throw DomainException
-- [ ] WHEN applied THEN Bulky or multi-step behavior can be delegated to a static service extension, but the entity still owns validation
+- [ ] WHEN applied THEN Entity methods validate via a locally-owned condition before applying changes
+- [ ] WHEN applied THEN DomainException is thrown when the condition fails
 - [ ] WHEN naming 'Entity behavior method' THEN pattern matches convention
