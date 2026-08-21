@@ -14,7 +14,7 @@ for required in "$RESULT_DIR/unit-test.json" "$RESULT_DIR/mutation-test.json" "$
 done
 
 mkdir -p "$PUBLIC_DIR"
-cp .github/pages/index.html "$PUBLIC_DIR/index.html"
+cp report-template/index.html "$PUBLIC_DIR/index.html"
 
 for name in tests coverage mutation; do
   if [ -d "$REPORT_DIR/$name" ]; then
