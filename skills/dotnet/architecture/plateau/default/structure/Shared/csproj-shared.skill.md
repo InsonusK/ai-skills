@@ -12,7 +12,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|solution-unit-of-work]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]]"
@@ -46,7 +46,7 @@ created_by:
 - Own `ICommandWithTimestamp` — the marker carried by create/update commands for timestamped entities
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -84,7 +84,7 @@ __Applied solutions:__
 - `ICommandWithTimestamp` is independent of MediatR and EF Core
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -142,7 +142,7 @@ __Applied solutions:__
   - Shared.csproj
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -185,7 +185,7 @@ __Applied solutions:__
 | ICommand.cs                                   | Write operation marker interfaces                                          | [[skills/dotnet/architecture/plateau/default/structure/Shared/classes/class-i-command.skill\|class-ICommand.skill]]                                              |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -205,7 +205,7 @@ __Applied solutions:__
 | `MediatR` | latest stable | Provides `IRequest<T>` that `ICommand<T>` extends |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -217,7 +217,7 @@ __Applied solutions:__
 
 ## What Does NOT Belong Here
 - Module-specific Value Objects — belong in respective `{Module}.Domain/ValueObjects`
-- Module-specific rules — belong in respective `{Module}.Domain/Rules`
+- Module-specific validation conditions — belong locally in the respective `{Module}.Domain`/`{Module}.Application`, or centrally in the module's optional `{Module}.Domain.Rules`
 - Business logic — belongs to Domain
 - Infrastructure implementations — belong to BuildingBlocks or App.Infrastructure
 - Pipeline behaviors — belongs to BuildingBlocks
@@ -225,7 +225,7 @@ __Applied solutions:__
 - Repository or unit-of-work implementations — belong to BuildingBlocks or App.Infrastructure
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -242,7 +242,7 @@ __Applied solutions:__
 - `Ardalis.Result` — required for `ConflictResult<T>` to inherit from `Result<T>`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -301,7 +301,7 @@ MUST NOT:
 	- Add behavior logic to timestamp marker interfaces
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -332,7 +332,7 @@ __Applied solutions:__
 - Adding behavior logic to a marker interface
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
@@ -381,7 +381,7 @@ __Applied solutions:__
 - [ ] `ICommandWithTimestamp` defined in `Shared/Timestamps/ICommandWithTimestamp.cs`
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill|class-unit-of-work]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/Implementation/Shared.csproj.extend|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]]

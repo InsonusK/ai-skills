@@ -12,7 +12,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]]"
 ---
 
 # Goal
@@ -20,7 +20,7 @@ created_by:
 - Serve as the base type for the module's strict domain value object
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
 
 # Core Principles
 - Apply ONE plateau template per class
@@ -29,7 +29,7 @@ __Applied solutions:__
 - `Soft{ValueObject}` is a plain record with public properties
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -38,7 +38,7 @@ __Applied solutions:__
 | Soft multi-property VO | `Soft{Concept}` | `SoftMoney` | `Soft{Concept}.cs` | `SoftMoney.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
 
 # Implementation
 
@@ -72,7 +72,7 @@ public record SoftMoney(decimal Amount, string Currency)
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
 
 # Rules
 MUST:
@@ -88,7 +88,7 @@ MUST NOT:
 	- Contain business logic
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
 
 # Anti-patterns
 - Apply SEVERAL plateau template per class
@@ -96,7 +96,7 @@ __Applied solutions:__
 - Using the domain value object as a command or DTO property directly
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Provide a validation-agnostic value object type that other modules can use in their DTOs and commands
@@ -110,4 +110,4 @@ __Applied solutions:__
 - [ ] WHEN Soft{ValueObject} is created with a valid value THEN properties are set correctly
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]]

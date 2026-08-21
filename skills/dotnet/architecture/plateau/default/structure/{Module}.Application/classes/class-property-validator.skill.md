@@ -12,7 +12,8 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]]"
 ---
 
 # Goal
@@ -20,7 +21,7 @@ created_by:
 - Reuse the same validation contract that the Domain Value Object enforces
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
 
 # Core Principles
 - Apply ONE plateau template per class
@@ -31,7 +32,7 @@ __Applied solutions:__
 - No infrastructure or business-rule dependencies
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -39,7 +40,7 @@ __Applied solutions:__
 | Property validator | `{ValueObject}PropertyValidator` | `EmailPropertyValidator` | `{ValueObject}PropertyValidator.cs` | `EmailPropertyValidator.cs` |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
 
 # Implementation
 
@@ -51,10 +52,10 @@ Write a comment at the top of the created class with the applied skill metadata:
 //Version: 20260629210700
 ```
 
-Single-property soft value object validator:
+Single-property soft value object validator — calls the centralized `IRuleBuilder` extension declared in `{Module}.Domain.Rules` (see `class-rule.skill.md`), never its own `Must(...)`:
 
 ```csharp
-// {Module}.Application/Validators/EmailPropertyValidator.cs
+// {Module}.Application/Validators/Property/EmailPropertyValidator.cs
 using FluentValidation;
 using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
@@ -63,17 +64,14 @@ namespace {Module}.Application.Validators.Property;
 
 public class EmailPropertyValidator : AbstractValidator<SoftEmail>
 {
-    public EmailPropertyValidator()
-    {
-        RuleFor(x => x).Must(x => x.IsValidEmail());
-    }
+    public EmailPropertyValidator() => RuleFor(x => x).EmailIsValid();
 }
 ```
 
 Multi-property example:
 
 ```csharp
-// {Module}.Application/Validators/MoneyPropertyValidator.cs
+// {Module}.Application/Validators/Property/MoneyPropertyValidator.cs
 using FluentValidation;
 using {Module}.Domain.Rules;
 using {Module}.Interfaces.ValueObjects;
@@ -82,10 +80,7 @@ namespace {Module}.Application.Validators.Property;
 
 public class MoneyPropertyValidator : AbstractValidator<SoftMoney>
 {
-    public MoneyPropertyValidator()
-    {
-        RuleFor(x => x).Must(x => x.IsValidMoney());
-    }
+    public MoneyPropertyValidator() => RuleFor(x => x).MoneyIsValid();
 }
 ```
 
@@ -102,7 +97,7 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
 
 # Rules
 MUST:
@@ -117,7 +112,7 @@ MUST NOT:
 	- Throw exceptions
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
 
 # Anti-patterns
 - Apply SEVERAL plateau template per class
@@ -126,7 +121,7 @@ __Applied solutions:__
 - Referencing Domain types inside the property validator
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Validate a Soft{ValueObject} so other modules can check values they receive
@@ -141,4 +136,4 @@ __Applied solutions:__
 - [ ] WHEN applied THEN validates by calling a Rule
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]]

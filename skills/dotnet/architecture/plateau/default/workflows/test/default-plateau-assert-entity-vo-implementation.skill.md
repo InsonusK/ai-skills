@@ -1,6 +1,6 @@
 ---
 name: default-plateau-assert-entity-vo-implementation
-description: workflow of assetion implemetation of solution-value-objects-and-rules.skill and solution-soft-value-objects-and-dto-validators.skill
+description: workflow of assetion implemetation of solution-value-objects.skill and solution-dto-property-validators.skill
 whenToUse: change code of entities, valueObjects, validators, rules
 tags:
   - concern/testing
@@ -10,7 +10,7 @@ tags:
 
 ---
 # Goal
-- Assert that [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules.skill]] and [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators.skill]] was implemented correctly
+- Assert that [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects.skill]] and [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators.skill]] was implemented correctly
 
 # Core Principle
 - Validate each Entity, ValueObject, Rule and Validator

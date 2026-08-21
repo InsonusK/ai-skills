@@ -16,7 +16,8 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]]"
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]]"
 ---
 
@@ -29,6 +30,7 @@ created_by:
       - /[{ModuleName}.Api](skills/dotnet/architecture/plateau/default/structure/{Module}.Api/csproj-module-api.skill.md)
       - /[{ModuleName}.Application](skills/dotnet/architecture/plateau/default/structure/{Module}.Application/csproj-module-application.skill.md)
       - /[{ModuleName}.Domain](skills/dotnet/architecture/plateau/default/structure/{Module}.Domain/csproj-module-domain.skill.md)
+      - /[{ModuleName}.Domain.Rules](skills/dotnet/architecture/plateau/default/structure/{Module}.Domain.Rules/csproj-module-domain-rules.skill.md) *(optional — only when a condition is duplicated across two or more consumers)*
       - /[{ModuleName}.Interfaces](skills/dotnet/architecture/plateau/default/structure/{Module}.Interfaces/csproj-module-interfaces.skill.md)
       - /{ModuleName}.Api.Tests
       - /{ModuleName}.Application.Tests
@@ -44,7 +46,7 @@ created_by:
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]]
 
 ## Directory and class skills
@@ -57,13 +59,14 @@ __Applied solutions:__
 | /App.Infrastructure.Migrations | [[skills/dotnet/architecture/plateau/default/structure/App.Infrastructure.Migrations/csproj-app-infrastructure-migrations.skill\|csproj-App.Infrastructure.Migrations.skill]] | EF Core migrations only                                        |
 | /App.Queries                   | [[skills/dotnet/architecture/plateau/default/structure/App.Queries/csproj-app-queries.skill\|csproj-App.Queries.skill]]                                                       | Cross-module read models and JOIN queries                      |
 | /{Module}.Interfaces           | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Interfaces/csproj-module-interfaces.skill\|csproj-{Module}.Interfaces.skill]]                               | Public contracts — commands, queries, DTOs, events, soft VOs   |
-| /{Module}.Domain               | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Domain/csproj-module-domain.skill\|csproj-{Module}.Domain.skill]]                                           | Business logic — entities, VOs (inherit from soft VOs), rules, events |
+| /{Module}.Domain               | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Domain/csproj-module-domain.skill\|csproj-{Module}.Domain.skill]]                                           | Business logic — entities, VOs (inherit from soft VOs), events |
+| /{Module}.Domain.Rules         | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Domain.Rules/csproj-module-domain-rules.skill\|csproj-{Module}.Domain.Rules.skill]]                        | Optional — centralized business predicates, only when duplicated across consumers |
 | /{Module}.Application          | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Application/csproj-module-application.skill\|csproj-{Module}.Application.skill]]                            | Orchestration — handlers, validators, specs, version resolvers |
 | /{Module}.Api                  | [[skills/dotnet/architecture/plateau/default/structure/{Module}.Api/csproj-module-api.skill\|csproj-{Module}.Api.skill]]                                                    | HTTP endpoints, MediatR dispatch, ETag/If-Match handling       |
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-soft-value-objects-and-dto-validators.skill/solution-soft-value-objects-and-dto-validators.skill|solution-soft-value-objects-and-dto-validators]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]]
 
 # Goal

@@ -1,6 +1,6 @@
 ---
 name: class-entity
-description: Extend entity to use Value Objects for properties with invariants and domain rules inside behavior methods
+description: Extend entity to use Value Objects for properties with invariants and locally-owned validation conditions inside behavior methods
 domain: skill
 type: template
 version: 20260629223200
@@ -12,7 +12,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]"
@@ -20,13 +20,13 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]]"
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]]"
+  - "[[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]]"
 ---
 
 # Goal
 - Encapsulate invariant state on Entity properties into dedicated Value Object types
 - Keep Entity focused on identity, lifecycle, and aggregate consistency while delegating value-level validation to Value Objects
-- Enforce entity invariants and prevent invalid state by using domain rules inside entity behavior methods
-- Keep entity validation logic DRY by delegating to reusable domain rules instead of inline conditions
+- Enforce entity invariants and prevent invalid state by validating via a locally-owned condition inside entity behavior methods
 - Represent a domain object with stable identity, mutable state, encapsulated behavior, and invariant enforcement
 - Select the correct entity type from the type matrix before implementation
 - Define a domain entity as an object with stable identity where identity — not value — determines equality
@@ -38,11 +38,10 @@ created_by:
 - Make every mutable entity implement `IVersioned` so the concurrency infrastructure can discover and read versions without reflection
 - Add creation and update timestamp properties to user-initiated entities based on classification, using `DateTimeOffset` and explicit interface implementation for mutable setters
 - Ensure domain entity remains free of EF attributes — all persistence mapping delegated to config class
-- Keep entity validation logic DRY by delegating to reusable domain rules
 - Extract bulky logic to `{Module}.Domain/Services` while keeping the entity as the gatekeeper of state
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -50,6 +49,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
 # Core Principles
 - Apply ONE plateau template per class
@@ -57,9 +57,10 @@ __Applied solutions:__
 - Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state
 - Equality of value properties on Entities is evaluated by Value Object structural equality
 - Entity defines consistency — it decides when and how to enforce invariants
-- Entity methods call domain rules to validate state transitions before applying changes
-- Rule returns `bool` — entity decides whether to throw `DomainException` or reject the change
-- Multiple related conditions are composed from individual rules — not reimplemented inline
+- Entity methods validate via a condition they own — either inline or a `private static` helper on the same class — before applying changes
+- Entity throws `DomainException` when the condition fails
+- Multiple related conditions are composed via a `private static` helper for readability — not scattered across the method body
+- A condition that depends on data owned by a related entity is enforced by calling that entity's own guarded method — never duplicated locally; when the required navigation was not loaded by the caller, the entity throws `EntityNotLoadedException` instead of `DomainException`, since the failure is a Handler defect, not invalid domain state
 - Entity has stable identity — `int Id` is always the system primary identity
 - Entity has mutable state — unlike Value Objects, state changes over time
 - Entity encapsulates behavior — state changes happen through methods, not direct property assignment from outside
@@ -79,11 +80,10 @@ __Applied solutions:__
 - Entity does not know about its own table name, column names, or constraint names
 - Timestamp properties are `DateTimeOffset` with `internal set`; mutable entities implement `ICreationInfoModel` and `IUpdateInfoModel` explicitly so interface setters remain public while class-level setters stay internal
 - External Immutable entities implement `ICreationInfoModel` only; Internal/External Mutable implement both; Internal Immutable has no timestamp interfaces
-- Rule returns `bool` — entity decides whether to throw `DomainException`
 - Bulky or multi-step behavior can be delegated to a static service extension, but the entity still owns validation
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -91,6 +91,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -102,7 +103,7 @@ __Applied solutions:__
 | Entity behavior method | {Verb}{Noun} or {Verb} | UpdateComment | {EntityName}.cs | Order.cs |
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -110,6 +111,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
 # Implementation
 
@@ -132,23 +134,29 @@ public class Order
 }
 ```
 
-Entity behavior methods must use domain rules to guard state changes:
+Entity behavior methods validate locally before mutating:
 
 ```csharp
 public class Order
 {
     public int Id { get; internal set; }
-    public CommentText Comment { get; internal set; }
+    public string Comment { get; internal set; }
     public uint Version { get; internal set; }
 
     public void UpdateComment(string comment)
     {
-        Comment = new CommentText(comment); // ValueObject validates via Rule
+        if (string.IsNullOrWhiteSpace(comment))
+            throw new DomainException("{ModuleName}.Order.CommentRequired", "Comment must not be empty.");
+
+        if (comment.Length > 500)
+            throw new DomainException("{ModuleName}.Order.CommentTooLong", "Comment must not exceed 500 characters.");
+
+        Comment = comment;
     }
 }
 ```
 
-Entity can compose multiple rules for complex invariants:
+Entity composes several conditions for a complex invariant, using a `private static` helper for readability:
 
 ```csharp
 public class Driver
@@ -159,10 +167,37 @@ public class Driver
 
     public void AssignLicense()
     {
-        if (!(Age, Country).IsSatisfied())
-            throw new DomainException("Driver does not meet licensing requirements for this country.");
+        if (!MeetsLicensingRequirements(Age, Country))
+            throw new DomainException("{ModuleName}.Driver.NotEligibleForLicense", "Driver does not meet licensing requirements for this country.");
 
         // ... assign license
+    }
+
+    private static bool MeetsLicensingRequirements(Age age, Country country) => country.Code switch
+    {
+        "US" => age.Value >= 16,
+        "NL" => age.Value >= 18,
+        _ => false
+    };
+}
+```
+
+When a condition needs data owned by a related entity — reached through a navigation the Handler must have loaded — the entity does not reimplement that data's invariant. It calls the related entity's own guarded method, which validates itself. If the navigation was not loaded, the entity throws `EntityNotLoadedException` (see [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules.skill]]) instead of `DomainException` — the `Transaction` itself is valid and the request could be valid too; a missing navigation is a Handler defect, not invalid domain state:
+
+```csharp
+public class Transaction
+{
+    public int Id { get; internal set; }
+    public Account Account { get; internal set; }
+    public decimal Amount { get; internal set; }
+
+    public void UpdateAmount(decimal newAmount)
+    {
+        if (Account is null)
+            throw new EntityNotLoadedException(nameof(Transaction), nameof(Account));
+
+        Account.Withdraw(newAmount - Amount); // Account validates its own balance invariant
+        Amount = newAmount;
     }
 }
 ```
@@ -251,60 +286,26 @@ public class TodoTask
 }
 ```
 
-Entity behavior methods must validate state through domain rules before mutating:
+When behavior becomes too large for the entity, delegate to a Domain Service Extension defined in `{Behavior}Service.cs` (this solution). The entity exposes a guarded internal method for the service to call:
 
 ```csharp
 public class Order
 {
     public int Id { get; internal set; }
-    public CommentText Comment { get; internal set; }
-    public uint Version { get; internal set; }
+    public decimal Total { get; private set; }
 
-    public void UpdateComment(string comment)
+    internal void SetTotal(decimal total)
     {
-        Comment = new CommentText(comment); // ValueObject validates via Rule
-    }
-}
-```
+        if (total < 0)
+            throw new DomainException("{ModuleName}.Order.TotalMustBePositive", "Total must be positive.");
 
-Entity can compose contextual rules for complex invariants:
-
-```csharp
-public class Driver
-{
-    public int Id { get; internal set; }
-    public Age Age { get; internal set; }
-    public Country Country { get; internal set; }
-
-    public void AssignLicense()
-    {
-        if (!(Age, Country).IsSatisfied())
-            throw new DomainException("Driver does not meet licensing requirements for this country.");
-
-        // ... assign license
-    }
-}
-```
-
-When behavior becomes too large for the entity, delegate to a Domain Service Extension defined in `{Behavior}Service.cs` (this solution).
-
-Entity may expose guarded internal methods for use by domain service extensions:
-
-```csharp
-public class Order
-{
-    public int Id { get; internal set; }
-    public Money Total { get; private set; }
-
-    internal void SetTotal(Money total)
-    {
-        Total = total; // Money validates itself via Rule
+        Total = total;
     }
 }
 ```
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -312,6 +313,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
 # Entity Classification
 
@@ -480,9 +482,10 @@ MUST:
 	- Entity properties other than `Id` and `Version` must be Value Object types, unless they are unconstrained generic parameters
 	- If a property has any validation rule beyond the generic type's contract, the generic type must be replaced with a Value Object
 	- Configure multi-property Value Objects with `OwnsOne` in the entity's EF configuration
-	- Call domain rules inside entity methods before mutating state
-	- Throw `DomainException` when a rule returns `false` — the entity enforces, the rule only predicates
-	- Use the most specific rule available (primitive, VO, or contextual) for the condition being checked
+	- Validate via a locally-owned condition (inline or a `private static` helper) inside entity methods before mutating state
+	- Throw `DomainException` when that condition fails
+	- When a condition needs a related entity's own data, call that entity's guarded method instead of duplicating the condition
+	- Throw `EntityNotLoadedException` (not `DomainException`) when a behavior method requires a navigation the caller did not load
 	- Entity has `int Id` with `internal set`
 	- All public property setters or methods must validation state
 	- `Id` used in all domain logic, persistence, relationships, and internal APIs
@@ -500,15 +503,14 @@ MUST:
 	- Timestamp properties are `DateTimeOffset` with `internal set`
 	- Mutable entities implement `ICreationInfoModel` and `IUpdateInfoModel` with explicit interface setters
 	- External Immutable entities implement `ICreationInfoModel` only
-	- Throw `DomainException` when a rule returns `false`
-	- Use the most specific rule available (primitive, VO, or contextual)
 	- Keep the entity as the single gatekeeper for each property mutation
 MUST NOT:
 	- Use primitive type on Entity property when the value carries business meaning or invariant constraints
 	- Expose a primitive Entity property when a Value Object could enforce the same invariants
-	- Reimplement rule logic inline inside entity methods — always delegate to existing rules
-	- Mutate state before validating with rules
+	- Mutate state before validating
 	- Allow invalid state to persist silently
+	- Assume a related entity's navigation is loaded without checking, when the method needs that entity's data
+	- Reimplement a related entity's own invariant instead of calling its guarded method
 	- Use `public` setters on any entity property
 	- `Guid` used in domain logic, domain events, or as a foreign key in relationships
 	- `Guid` reassigned after entity creation
@@ -525,11 +527,11 @@ MUST NOT:
 	- Update timestamps added to `External Immutable` entities
 	- Timestamp properties expose `public set`
 	- Entity have any EF attributes (`[Table]`, `[Column]`, `[Key]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]`)
-	- Reimplement rule logic inline inside entity methods
 	- Let a service extension expose a second public way to change a property that is already changed by an entity method
+	- Let a service extension bypass entity methods and write directly to properties
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -537,10 +539,14 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
 # Anti-patterns
 - Apply SEVERAL plateau template per class
 - `public string Title { get; set; }` — public setter without validation
+- Using a related entity's property without checking it was loaded, then getting a `NullReferenceException` instead of a clear `EntityNotLoadedException`
+- Throwing `DomainException` when a required navigation is missing — that hides a Handler defect behind a client-facing validation error
+- Copying a related entity's balance/state check into the calling entity instead of delegating to that entity's own guarded method
 - Entity property that is not `Id`, `Version`, or an unconstrained generic is a primitive type
 - Placing entity in Application or Interfaces project — entities belong in Domain only
 - `Guid` with `public set` — application code must never modify it
@@ -558,7 +564,7 @@ __Applied solutions:__
 - Implementing timestamp interfaces implicitly with public setters
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -566,6 +572,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
 # Check list
 - [ ] Entity type selected from the matrix
@@ -573,6 +580,7 @@ __Applied solutions:__
 - [ ] Entity uses Value Object for every property except `Id`, `Version`, and unconstrained generic parameters
 - [ ] Generic properties have no additional validation rules; otherwise they are replaced with Value Objects
 - [ ] All public property setters and methods has validation
+- [ ] Entity methods requiring a related entity's data check the navigation is loaded and throw `EntityNotLoadedException` when it is not
 - [ ] Entity placed in /{Module}.Domain/Entities
 - [ ] `Guid Guid { get; internal set; }` present on external-created entity
 - [ ] `Guid` set in factory method
@@ -588,7 +596,7 @@ __Applied solutions:__
 - [ ] No EF attributes present on entity class or any of its properties
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -596,19 +604,21 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Encapsulate invariant state on Entity properties into dedicated Value Object types
 - [ ] WHEN applied THEN Keep Entity focused on identity, lifecycle, and aggregate consistency while delegating value-level validation to Value Objects
-- [ ] WHEN applied THEN Enforce entity invariants and prevent invalid state by using domain rules inside entity behavior methods
-- [ ] WHEN applied THEN Keep entity validation logic DRY by delegating to reusable domain rules instead of inline conditions
+- [ ] WHEN applied THEN Enforce entity invariants and prevent invalid state by validating via a locally-owned condition inside entity behavior methods
 - [ ] WHEN applied THEN Entity properties that carry business meaning or invariant constraints use Value Objects instead of primitives
 - [ ] WHEN applied THEN Value Object immutability guarantees that once an Entity holds a value, that value cannot be mutated into an invalid state
 - [ ] WHEN applied THEN Equality of value properties on Entities is evaluated by Value Object structural equality
 - [ ] WHEN applied THEN Entity defines consistency — it decides when and how to enforce invariants
-- [ ] WHEN applied THEN Entity methods call domain rules to validate state transitions before applying changes
-- [ ] WHEN applied THEN Rule returns bool — entity decides whether to throw DomainException or reject the change
-- [ ] WHEN applied THEN Multiple related conditions are composed from individual rules — not reimplemented inline
+- [ ] WHEN applied THEN Entity methods validate via a locally-owned condition before applying changes
+- [ ] WHEN applied THEN DomainException is thrown when the condition fails
+- [ ] WHEN applied THEN Multiple related conditions are composed via a private static helper — not scattered inline
+- [ ] WHEN an entity method requires data from a related entity that was not loaded THEN it throws EntityNotLoadedException, not DomainException
+- [ ] WHEN an entity method requires a related entity's data and the navigation is loaded THEN it delegates to that entity's own guarded method instead of duplicating the condition
 - [ ] WHEN naming 'Entity class' THEN pattern matches convention
 - [ ] When entity created Then Id is default (0) until persisted
 - [ ] WHEN applied THEN Add Guid as a required immutable property on External Immutable and External Mutable entity types
@@ -634,9 +644,7 @@ __Applied solutions:__
 - [ ] WHEN applied THEN Entity does not know about its own table name, column names, or constraint names
 - [ ] WHEN verified THEN No EF attributes present on entity class or any of its properties
 - [ ] WHEN naming 'Entity' THEN pattern matches convention
-- [ ] WHEN applied THEN Keep entity validation logic DRY by delegating to reusable domain rules
 - [ ] WHEN applied THEN Extract bulky logic to {Module}.Domain/Services while keeping the entity as the gatekeeper of state
-- [ ] WHEN applied THEN Rule returns bool — entity decides whether to throw DomainException
 - [ ] WHEN applied THEN Bulky or multi-step behavior can be delegated to a static service extension, but the entity still owns validation
 - [ ] WHEN naming 'Entity behavior method' THEN pattern matches convention
 - [ ] WHEN entity is `Internal Immutable` THEN it has no timestamp interfaces
@@ -659,7 +667,7 @@ __Applied solutions:__
 - [ ] WHEN inspected from outside domain THEN class-level timestamp setter is not public
 
 __Applied solutions:__
-- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/solution-value-objects-and-rules.skill|solution-value-objects-and-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects-and-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create|{Entity}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
@@ -667,4 +675,5 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
 - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill|solution-entity-edit-timestamp]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]]
+- [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]] - [[skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]]
 
