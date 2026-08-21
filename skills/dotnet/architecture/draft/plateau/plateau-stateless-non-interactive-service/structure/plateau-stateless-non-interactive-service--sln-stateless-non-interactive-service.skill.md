@@ -34,7 +34,7 @@ created_by:
   /[Shared.Tests](./Shared.Tests/plateau-stateless-non-interactive-service--csproj-shared-tests.skill.md)
   /[BuildingBlocks](./BuildingBlocks/plateau-stateless-non-interactive-service--csproj-building-blocks.skill.md)
   /[BuildingBlocks.Tests](./BuildingBlocks.Tests/plateau-stateless-non-interactive-service--csproj-building-blocks-tests.skill.md)
-/.github/pages
+/report-template
   index.html
 /scripts
   unit-test.sh

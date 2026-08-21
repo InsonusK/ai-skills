@@ -12,6 +12,8 @@ tags:
 ## Project Structure
 ```
 Makefile
+report-template/
+  index.html
 ```
 
 ## Makefile targets
@@ -36,6 +38,17 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 
 `score` in `mutation-test.json` is `killed / (killed+survived+timedout+noCoverage) * 100`, rounded to 1 decimal, `"0.0"` when nothing was mutated. `test-report` reads only the `tmp/result/*.json` files to build its own report — it never re-parses a native report.
 
+## Public site output
+`test-report` assembles `public/` from `tmp/result/*.json` and `tmp/report/<kind>/` — the one stack-independent artifact a CI publishing step (e.g. GitHub Pages) uploads as-is:
+
+| File | Content | Source |
+| --- | --- | --- |
+| `public/<kind>/` | copy of `tmp/report/<kind>/`, for each kind present | `tmp/report/tests`, `tmp/report/coverage`, `tmp/report/mutation` |
+| `public/tests-badge.json`, `public/coverage-badge.json`, `public/mutation-badge.json` | shields.io endpoint-badge schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` | computed from `tmp/result/*.json` |
+| `public/index.html` | copied verbatim, never generated | `report-template/index.html` |
+
+`report-template/index.html` is a small static landing page the project owns (links to `tests/`, `coverage/`, `mutation/`) — it lives at the repository root, never under `.github/`, since this solution owns no `.github/workflows/*` file.
+
 # Rule
 
 ## MUST
@@ -54,6 +67,9 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 - Exit `mutation-test` with the underlying mutation tool's own exit code after writing `tmp/result/mutation-test.json`.
   - Risk: a real mutation-testing failure gets swallowed by the normalization step, and CI reports success on a run with unkilled mutants.
   - Fix: propagate the tool's exit code from the script after it finishes writing the normalized result.
+- Have `test-report` assemble `public/` per [## Public site output](#public-site-output): per-kind report copies, `*-badge.json` files, and `index.html` copied verbatim from `report-template/index.html`.
+  - Risk: without a uniform `public/` shape, every CI publishing step needs stack-specific knowledge of where reports and badges live.
+  - Fix: build `public/` exactly as documented, so a publishing step only ever needs to upload `public/` as-is.
 
 ## MUST NOT
 - Add a caller-facing flag beyond `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE`.
@@ -68,3 +84,4 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 - [ ] `tmp/result/unit-test.json`, `tmp/result/coverage-test.json` (when coverage is on), and `tmp/result/mutation-test.json` all follow the schema in [## Report output](#report-output).
 - [ ] `tmp/report/tests/`, `tmp/report/coverage/`, and `tmp/report/mutation/` hold each tool's native report.
 - [ ] `mutation-test` exits with the underlying tool's own exit code.
+- [ ] `test-report` assembles `public/` per [## Public site output](#public-site-output), and `report-template/index.html` exists at the repository root (not under `.github/`).
