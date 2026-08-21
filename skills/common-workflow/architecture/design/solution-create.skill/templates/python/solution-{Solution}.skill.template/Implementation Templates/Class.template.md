@@ -59,14 +59,31 @@ Class and file naming convention. Fill table:
 # Implementation changes
 ```hint
 Define how solution EXTENDS class implementation.
+
+When this solution is built on a plateau (`built_on_plateau` is set), structure the change as a delta from the plateau:
+- AS IS — copy or summarize the relevant implementation from the plateau class skill.
+- TO BE — show the implementation after the solution's changes.
+
+When `built_on_plateau` is empty, describe the change directly without the AS IS/TO BE split.
 ```
 ```example
+### AS IS
+[[Class skill]] currently ...
+
+### TO BE
 [[Class skill]] must ...
 ```
 ```code example
+### AS IS
 class SomeEntity:
     def __init__(self, entity_id: int) -> None:
         self._id = entity_id
+
+### TO BE
+class SomeEntity:
+    def __init__(self, entity_id: int, guid: UUID) -> None:
+        self._id = entity_id
+        self._guid = guid
 ```
 
 # Rule changes

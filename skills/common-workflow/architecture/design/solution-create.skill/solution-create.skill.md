@@ -65,6 +65,9 @@ tags:
 - When this solution assumes an entire plateau already exists rather than a handful of sibling solutions, declare it via `built_on_plateau`, not by listing every solution that plateau happens to contain in `depends_on`.
   - Risk: listing the plateau's individual solutions in `depends_on` hides the real shape of the dependency and drifts out of sync the moment that plateau's own composition changes.
   - Fix: follow [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]]; give the solution at most one `built_on_plateau`.
+- When `built_on_plateau` is set, every `# Implementation changes` section must explicitly show the AS IS state inherited from the plateau and the TO BE state after applying the solution, so the delta is visible.
+  - Risk: agents cannot tell which code already exists because of the plateau and which code the solution adds, so they duplicate or overwrite existing plateau code.
+  - Fix: in each implementation file that touches a plateau element, describe the AS IS implementation (copy or summarize it from the plateau skill) and the TO BE implementation (the same element after the solution's changes).
 - When a Rule in this solution assumes behavior that this solution does not itself implement and does not require via a named `depends_on` solution, state that assumption in `# Boundaries` instead of adding a `depends_on` link for it.
   - Risk: a rule reads as self-contained when it silently relies on an unstated external guarantee, `depends_on` gets used for assumptions instead of real structural dependencies, and reviewers cannot tell a genuine dependency from a loose assumption.
   - Fix: add a `# Boundaries` bullet naming the gap and, only if a solution in the catalog reliably closes it today, mention that solution informationally — never as a `depends_on` requirement.
@@ -94,6 +97,7 @@ tags:
 - [ ] `Implementation/` contains concrete files for every created/extended element.
 - [ ] Applied and intentionally skipped dependency solutions are stated where relevant.
 - [ ] If this solution assumes an entire plateau exists, `built_on_plateau` names it (at most one) instead of `depends_on` listing that plateau's individual solutions.
+- [ ] When `built_on_plateau` is set, every `# Implementation changes` section shows AS IS (plateau state) and TO BE (after solution) so the delta is visible.
 - [ ] Every assumption a Rule relies on but does not itself implement or require via `depends_on` is stated in `# Boundaries`.
 - [ ] Architecture decisions are recorded as ADRs and registered in the `adr:` property.
 - [ ] Unfamiliar terms are documented in the solution's own `glossary/` folder.
