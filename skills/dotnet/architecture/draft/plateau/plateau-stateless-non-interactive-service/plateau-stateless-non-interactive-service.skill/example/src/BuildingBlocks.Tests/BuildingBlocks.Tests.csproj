@@ -12,4 +12,8 @@
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Reqnroll.xUnit" Version="2.1.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+  </ItemGroup>
 </Project>
