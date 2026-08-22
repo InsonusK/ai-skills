@@ -78,6 +78,7 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
 5. Create subfolder `{output}/{plateau-name}/plateau-{plateau-name}.skill/example/`
    - Put a real, complete, minimal example application built according to the plateau here
    - The example must demonstrate the plateau's patterns in executable/runnable form and must be referenced from the plateau root skill
+   - If {parent_plateaus} is non-empty, seed this `example/` folder from the first parent plateau's `example/` folder first, then extend it with the patterns introduced by this plateau's {solutions}. The child example must evolve the parent example, not recreate it from scratch. When multiple parents exist, pick the parent whose example is closest in shape or ask the user if it is unclear.
 6. Create subfolder `{output}/{plateau-name}/structure`
 7. If {parent_plateaus} is non-empty, seed `{output}/{plateau-name}/structure` from every parent plateau's own `structure/` folder first, merged by project/class per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]]'s union-by-default rule
    - Copy every project/class skill file from each parent's `structure/` folder
@@ -259,6 +260,7 @@ MUST:
 - Record every plateau-level decision (conflict resolution, solution exclusion) as an ADR in the plateau's own `adr/` folder, following [Recording plateau-level decisions](#recording-plateau-level-decisions).
 - Place the plateau root skill file inside `plateau-{plateau-name}.skill/plateau-{plateau-name}.skill.md`, not directly under `{output}/{plateau-name}/`.
 - Create a real example application in `plateau-{plateau-name}.skill/example/` that follows the plateau's patterns and can be used as a runnable reference. Link to the example from the plateau root skill.
+- If `parent_plateaus` is non-empty, the `example/` must be copied from the parent plateau's `example/` and then extended with this plateau's new patterns. Do not build a child plateau example from scratch when a parent example exists.
 MUST NOT:
 - Change other skills except the one you are building without explicit instruction in the template.
 - Omit the parent solution skill link from `__Applied solutions:__` bullets.

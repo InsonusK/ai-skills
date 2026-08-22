@@ -74,3 +74,13 @@ Give a module real business logic and a validated, callable write path, still wi
 1. Module B needs to validate a `Soft{ValueObject}` or DTO it received from Module A, without referencing Module A's `Application` or `Domain` projects.
 2. Module B resolves `IValidator<Soft{ValueObject}>`/`IValidator<{Dto}>` from DI — registered by Module A's own `AddValidatorsFromAssembly` call — and calls `.Validate(...)` or composes it via `SetValidator` in its own validator.
 3. No direct project reference between the two modules' `Application`/`Domain` projects is ever added.
+
+# Example
+A runnable example lives in [`./example`](./example). It is built on top of the [`plateau-stateless-non-interactive-service`](../../plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill.md) example and extends it with:
+- `ValidationBehavior` registered after `ExceptionHandlingBehavior`;
+- `FluentValidation` validators for commands and `Soft{ValueObject}` types;
+- `SoftEmail`/`Email` Value Objects and a `TaskItem` entity with guarded behavior;
+- a `CreateTaskCommand` with co-located handler, validator, and DI self-registration;
+- Reqnroll scenarios proving the validation pipeline and entity behavior.
+
+See `example/README.md` for how to run it and execute the conformance-testing gate.
