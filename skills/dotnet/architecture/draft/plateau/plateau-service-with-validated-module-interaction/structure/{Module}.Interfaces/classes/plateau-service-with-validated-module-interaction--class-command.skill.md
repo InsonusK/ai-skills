@@ -1,0 +1,79 @@
+---
+name: class-command
+description: Class {Command} in the service-with-validated-module-interaction plateau
+whenToUse: when declaring a new write-intent command for this module
+domain: skill
+type: template
+plateau: service-with-validated-module-interaction
+version: 20260822140000
+tags:
+  - skill/template/class
+  - plateau/service-with-validated-module-interaction
+created_by:
+  - "[[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]"
+---
+
+# Goal
+- Express a named write intent as an immutable record that carries all input needed for the operation
+- Implement `ICommand<Result<T>>` so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
+
+__Applied solutions:__
+- [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
+
+# Core Principles
+- Declared as `record` — immutable, structural equality by default
+- Implements `ICommand<Result<{CommandName}Result>>` — return type is always `Result<T>`
+- Properties are primitives, Value Objects (`Soft{ValueObject}`), or DTOs — no domain entity references
+- Result record declared in the same file, named `{CommandName}Result`
+- One command per write intent
+
+__Applied solutions:__
+- [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
+
+# Naming convention
+| use case | class name pattern | class name | file name pattern | file name |
+| -------- | ------------------ | ---------- | ----------------- | --------- |
+| Create entity | Create{Entity}Command | CreateTaskCommand | {Command}.cs | CreateTaskCommand.cs |
+| Update entity | Update{Entity}Command | UpdateTaskCommand | {Command}.cs | UpdateTaskCommand.cs |
+| Domain action | {Verb}{Entity}Command | AssignTaskCommand | {Command}.cs | AssignTaskCommand.cs |
+| Command result | {CommandName}Result | CreateTaskResult | same file as command | CreateTaskCommand.cs |
+
+# Implementation
+```csharp
+//Skill: class-command
+//Plateau: service-with-validated-module-interaction
+//Version: 20260822140000
+
+public record CreateTaskCommand(
+    string Title,
+    int AssigneeId
+) : ICommand<Result<CreateTaskResult>>;
+
+public record CreateTaskResult(int Id);
+```
+
+__Applied solutions:__
+- [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
+
+# Rules
+MUST:
+- Implement `ICommand<Result<T>>` or `ICommand<Result>` — never `IRequest<T>` directly
+- Result type declared in the same file as the command
+- Properties are primitives, Value Objects, or DTOs — no domain entity references
+- Commands declared as `record` in `/{Module}.Interfaces/Commands`
+- When a command property is a `Soft{ValueObject}`/DTO from another module, its `{FeatureName}.Validator.cs` injects `IValidator<T>` and uses `SetValidator`
+MUST NOT:
+- Contain methods or logic
+- Reference domain entity types as properties
+- Have its validator duplicate rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator`
+
+__Applied solutions:__
+- [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
+
+# Check list
+- [ ] Command is a `record` in `/{Module}.Interfaces/Commands`, implements `ICommand<Result<T>>`
+- [ ] Result record co-located in the same file
+- [ ] No domain entity types among the command's properties
+
+__Applied solutions:__
+- [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
