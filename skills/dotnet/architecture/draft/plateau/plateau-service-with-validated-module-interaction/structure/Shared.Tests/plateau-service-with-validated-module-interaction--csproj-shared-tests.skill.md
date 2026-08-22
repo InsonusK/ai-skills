@@ -1,0 +1,69 @@
+---
+name: csproj-shared-tests
+description: Project Shared.Tests in the service-with-validated-module-interaction plateau
+whenToUse: when adding a unit test or Gherkin scenario for Shared, or deciding whether new test code belongs here
+domain: skill
+type: template
+plateau: service-with-validated-module-interaction
+version: 20260822140000
+tags:
+  - skill/template/csproj
+  - plateau/service-with-validated-module-interaction
+created_by:
+  - "[[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+---
+
+# Goal
+- Give `Shared` a dedicated test project, referencing `Shared` only.
+
+__Applied solutions:__
+- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+
+# Core Principles
+- Value-shaped scenarios: given one or more primitive values, prove how they compare/combine — never "is this input valid" (see [[./classes/plateau-service-with-validated-module-interaction--class-rule-steps.skill.md|class-rule-steps]]). `Shared` is mostly interfaces and primitives today, so its own test suite is small.
+
+__Applied solutions:__
+- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+
+# Structure
+
+## Solution place
+```
+/src/Shared.Tests
+```
+
+## Project Structure
+- /Shared.Tests
+  - /Rules
+    - {Rule}.feature
+  - /StepDefinitions
+    - [{Rule}Steps.cs](./classes/plateau-service-with-validated-module-interaction--class-rule-steps.skill.md)
+  - Shared.Tests.csproj
+
+__Applied solutions:__
+- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+
+## Directory and class skills
+| `Directory\|file` | Description | Pattern skill |
+| --- | --- | --- |
+| /Rules | Gherkin scenarios for one Shared primitive | |
+| /StepDefinitions | Bindings that call `Shared`'s real primitives | [[./classes/plateau-service-with-validated-module-interaction--class-rule-steps.skill.md\|class-rule-steps]] |
+
+## NuGet Packages
+Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Microsoft.NET.Test.Sdk`.
+
+## Allowed Dependencies
+- `Shared` — nothing else, mirroring `Shared.csproj`'s own zero project references.
+
+__Applied solutions:__
+- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+
+# Rules
+MUST:
+- Reference `Shared` and nothing else
+MUST NOT:
+- Introduce a module-specific concept into a `Shared.Tests` scenario
+- Add a second, separate test project just for `Shared`'s Gherkin scenarios
+
+__Applied solutions:__
+- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
