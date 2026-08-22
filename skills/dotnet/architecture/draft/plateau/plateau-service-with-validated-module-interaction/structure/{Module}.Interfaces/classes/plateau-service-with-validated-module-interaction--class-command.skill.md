@@ -15,14 +15,14 @@ created_by:
 
 # Goal
 - Express a named write intent as an immutable record that carries all input needed for the operation
-- Implement `ICommand<Result<T>>` so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
+- Implement `ICommand<T>` (or `ICommand` when no payload is returned) so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
 
 # Core Principles
 - Declared as `record` — immutable, structural equality by default
-- Implements `ICommand<Result<{CommandName}Result>>` — return type is always `Result<T>`
+- Implements `ICommand<{CommandName}Result>` — the marker interface wraps the response in `Result<T>` automatically
 - Properties are primitives, Value Objects (`Soft{ValueObject}`), or DTOs — no domain entity references
 - Result record declared in the same file, named `{CommandName}Result`
 - One command per write intent
@@ -47,7 +47,7 @@ __Applied solutions:__
 public record CreateTaskCommand(
     string Title,
     int AssigneeId
-) : ICommand<Result<CreateTaskResult>>;
+) : ICommand<CreateTaskResult>;
 
 public record CreateTaskResult(int Id);
 ```
@@ -57,7 +57,7 @@ __Applied solutions:__
 
 # Rules
 MUST:
-- Implement `ICommand<Result<T>>` or `ICommand<Result>` — never `IRequest<T>` directly
+- Implement `ICommand<T>` or `ICommand` — never `IRequest<T>` directly
 - Result type declared in the same file as the command
 - Properties are primitives, Value Objects, or DTOs — no domain entity references
 - Commands declared as `record` in `/{Module}.Interfaces/Commands`
@@ -71,7 +71,7 @@ __Applied solutions:__
 - [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
 
 # Check list
-- [ ] Command is a `record` in `/{Module}.Interfaces/Commands`, implements `ICommand<Result<T>>`
+- [ ] Command is a `record` in `/{Module}.Interfaces/Commands`, implements `ICommand<T>` (or `ICommand` when no payload is returned)
 - [ ] Result record co-located in the same file
 - [ ] No domain entity types among the command's properties
 

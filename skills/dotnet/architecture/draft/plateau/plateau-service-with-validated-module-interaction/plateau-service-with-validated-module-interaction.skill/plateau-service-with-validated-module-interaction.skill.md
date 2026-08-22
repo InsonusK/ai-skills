@@ -59,7 +59,7 @@ Give a module real business logic and a validated, callable write path, still wi
 4. DTOs and other modules reference `Soft{ValueObject}`, never `{ValueObject}` directly.
 
 ## Add a new command end-to-end
-1. Declare the command record (and its result record) in `{Module}.Interfaces/Commands`, implementing `ICommand<Result<T>>`.
+1. Declare the command record (and its result record) in `{Module}.Interfaces/Commands`, implementing `ICommand<T>` (or `ICommand` when no payload is returned).
 2. Create `{FeatureName}.Handler.cs`/`{FeatureName}.Validator.cs` under `{Module}.Application/Features/{FeatureName}`. The validator covers transport correctness only, composing `IValidator<Soft{ValueObject}>`/`IValidator<{Dto}>` via `SetValidator` for any cross-module property.
 3. The handler guards, calls into the domain (an entity method or a domain service), and returns a typed `Result<T>` — no persisted entity exists yet in this plateau, so there is no load/stage step until a persistence-introducing plateau is composed on top.
 4. `{Module}ApplicationRegistration.cs` picks up the handler and validator automatically via assembly scan — nothing to wire by hand beyond the module's own `Register{ModuleName}Module()` call already present in `ModuleRegistration.AddModules()`.

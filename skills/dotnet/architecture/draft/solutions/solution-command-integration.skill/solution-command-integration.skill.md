@@ -41,7 +41,7 @@ built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-
 ---
 
 # Goal
-- Define `ICommand<TResponse>` in Shared as the marker interface that identifies write operations and activates pipeline behaviors
+- Define `ICommand` (no payload) and `ICommand<TResponse>` in Shared as the marker interfaces that identify write operations and activate pipeline behaviors
 - Define where and how commands are declared — as immutable records in `/{Module}.Interfaces/Commands`
 - Define how handlers are structured — guard, domain call, return `Result<T>`; load/stage a persisted entity through `IRepository<T>`/`IReadRepository<T>` only when the command actually needs one
 - Define how validators are structured — transport correctness only, co-located with the handler in the feature folder
@@ -149,9 +149,9 @@ PROJECT:
 - Duplicating Soft{ValueObject} validation rules in a command validator instead of using `IValidator<Soft{ValueObject}>`
 
 # Check list
-- [ ] `ICommand` and `ICommand<TResponse>` defined in `Shared/MediatR/ICommand.cs`
+- [ ] `ICommand : IRequest<Result>` and `ICommand<TResponse> : IRequest<Result<TResponse>>` defined in `Shared/MediatR/ICommand.cs`
 - [ ] All commands declared as `record` in `/{Module}.Interfaces/Commands`
-- [ ] All commands implement `ICommand<Result<T>>`
+- [ ] All commands implement `ICommand<T>` for a result payload of `T`, or `ICommand` when no payload is returned
 - [ ] Result records co-located with their command in the same file
 - [ ] Each feature has its own folder under `/{Module}.Application/Features`
 - [ ] Handler file named `{FeatureName}.Handler.cs`

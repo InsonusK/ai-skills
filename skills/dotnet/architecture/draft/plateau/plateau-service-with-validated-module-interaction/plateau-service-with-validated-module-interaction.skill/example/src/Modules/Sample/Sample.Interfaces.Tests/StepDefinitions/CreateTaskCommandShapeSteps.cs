@@ -27,7 +27,7 @@ public sealed class CreateTaskCommandShapeSteps
     [When("the CreateTaskCommand is created")]
     public void WhenCreated() => _command = new CreateTaskCommand(_title, _assigneeId, _assigneeEmail);
 
-    [Then("it implements ICommand of Result of CreateTaskResult")]
+    [Then("it implements ICommand of CreateTaskResult")]
     public void ThenImplements()
-        => Assert.IsAssignableFrom<ICommand<Result<CreateTaskResult>>>(_command);
+        => Assert.IsAssignableFrom<ICommand<CreateTaskResult>>(_command);
 }

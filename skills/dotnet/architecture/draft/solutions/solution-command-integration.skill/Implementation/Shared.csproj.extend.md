@@ -14,7 +14,7 @@ tags:
 
 # Core Principles
 - Shared defines only interfaces and markers — no implementations
-- `ICommand<TResponse>` extends MediatR `IRequest<TResponse>` so MediatR can route commands automatically
+- `ICommand<TResponse>` extends MediatR `IRequest<Result<TResponse>>` so MediatR can route commands automatically and every command returns `Result<T>`
 
 # Implementation changes
 
@@ -46,11 +46,11 @@ No NuGet packages; no project references.
 ```
 /Shared
   /MediatR
-    ICommand.cs   (defines ICommand, ICommand<TResponse> : IRequest, IRequest<TResponse>)
+    ICommand.cs   (defines ICommand : IRequest<Result>, ICommand<TResponse> : IRequest<Result<TResponse>>)
     IQuery.cs     (still a placeholder — a future solution-query-integration fills it in)
   ...(unchanged otherwise)
 ```
-NuGet: adds `MediatR`. Project references: unchanged (none).
+NuGet: adds `MediatR` and `Ardalis.Result`. Project references: unchanged (none).
 
 # Structure
 
@@ -71,6 +71,7 @@ NuGet: adds `MediatR`. Project references: unchanged (none).
 | Package | Version constraint | Purpose |
 | --- | --- | --- |
 | `MediatR` | latest stable | Provides `IRequest<T>` that `ICommand<T>` extends |
+| `Ardalis.Result` | latest stable | Provides `Result`/`Result<T>` returned by every command |
 
 # Allowed Dependencies
 - None — Shared has no project dependencies
@@ -79,12 +80,13 @@ NuGet: adds `MediatR`. Project references: unchanged (none).
 
 ## MUST
 - `MediatR` package referenced in `Shared.csproj`
+- `Ardalis.Result` package referenced in `Shared.csproj`
 - `ICommand` and `ICommand<TResponse>` placed in `/Shared/MediatR`
-- Both interfaces extend MediatR `IRequest` / `IRequest<TResponse>`
+- `ICommand` extends `IRequest<Result>` and `ICommand<TResponse>` extends `IRequest<Result<TResponse>>`
 - Handlers inject `IRepository<T>` from Shared — never `DbContext`
 
 ## MUST NOT
-- Add FluentValidation, Ardalis.Result, or EF Core packages to Shared
+- Add FluentValidation or EF Core packages to Shared
 - Add implementation code to Shared
 - Validator be shared across multiple commands
 
@@ -94,6 +96,7 @@ NuGet: adds `MediatR`. Project references: unchanged (none).
 
 # Check list
 - [ ] `MediatR` referenced in `Shared.csproj`
+- [ ] `Ardalis.Result` referenced in `Shared.csproj`
 - [ ] `/Shared/MediatR/ICommand.cs` exists
-- [ ] `ICommand` extends `IRequest`
-- [ ] `ICommand<TResponse>` extends `IRequest<TResponse>`
+- [ ] `ICommand` extends `IRequest<Result>`
+- [ ] `ICommand<TResponse>` extends `IRequest<Result<TResponse>>`
