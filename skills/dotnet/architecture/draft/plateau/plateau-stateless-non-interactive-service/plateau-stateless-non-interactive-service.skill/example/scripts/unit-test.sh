@@ -29,7 +29,7 @@ dotnet test "$SOLUTION" \
   "${COLLECT_ARGS[@]}"
 
 mkdir -p "$REPORT_DIR/tests"
-for report in src/*/bin/Release/net8.0/reqnroll_report.html src/*/*/bin/Release/net8.0/reqnroll_report.html; do
+for report in src/*/bin/Release/net10.0/reqnroll_report.html src/*/*/bin/Release/net10.0/reqnroll_report.html; do
   [ -f "$report" ] || continue
   PROJECT_NAME=$(basename "$(dirname "$(dirname "$(dirname "$(dirname "$report")")")")")
   mkdir -p "$REPORT_DIR/tests/$PROJECT_NAME"

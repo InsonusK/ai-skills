@@ -32,8 +32,8 @@ public sealed class ExceptionHandlingBehaviorSteps
     [Then("the result is an error with message \"([^\"]*)\")]
     public void ThenError(string message)
     {
-        Assert.True(_result!.Value.IsError());
-        Assert.Equal(message, _result.Value.Errors.First());
+        Assert.True(!_result!.IsSuccess);
+        Assert.Equal(message, _result.Errors.First());
     }
 
     private record GreetCommand(string Name) : ICommand<string>;

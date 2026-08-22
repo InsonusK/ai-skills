@@ -20,7 +20,7 @@ public class ExceptionHandlingBehaviorTests
             () => throw new InvalidOperationException("boom"),
             CancellationToken.None);
 
-        Assert.True(result.IsError());
+        Assert.True(!result.IsSuccess);
         Assert.Equal("An unexpected error occurred. Please try again later.", result.Errors.First());
     }
 
