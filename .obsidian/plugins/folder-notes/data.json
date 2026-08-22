@@ -30,7 +30,7 @@
     "id": "",
     "folderPath": "",
     "title": "{{folderName}} overview",
-    "showTitle": true,
+    "showTitle": false,
     "depth": 3,
     "includeTypes": [
       "folder",
@@ -63,7 +63,7 @@
     "explorer": true,
     "path": true
   },
-  "settingsTab": "path",
+  "settingsTab": "general",
   "supportedFileTypes": [
     "md",
     "canvas",
@@ -125,7 +125,7 @@
   },
   "firstTimeInsertOverview": true,
   "fvGlobalSettings": {
-    "autoUpdateLinks": true
+    "autoUpdateLinks": false
   },
   "hideFolderNoteNameInPath": false
 }
