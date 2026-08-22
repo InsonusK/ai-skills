@@ -10,7 +10,7 @@ tags:
   - skill/template/csproj
   - plateau/stateless-non-interactive-service
 created_by:
-  - "[[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
+  - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
 ---
 
 # Goal
@@ -19,14 +19,14 @@ created_by:
 - Own the business logic and invariant enforcement for all entities in this module
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
 
 # Core Principles
 - All entities live in `/{Module}.Domain/Entities`
 - Domain is the only layer that contains entity definitions
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
 
 # Structure
 
@@ -42,7 +42,7 @@ __Applied solutions:__
   - {Module}.Domain.csproj
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
@@ -64,7 +64,7 @@ __Applied solutions:__
 - Microsoft.EntityFrameworkCore (`IEntityTypeConfiguration` only)
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
 
 # Rules
 MUST:
@@ -75,7 +75,7 @@ MUST NOT:
 - Domain use EF Core beyond `IEntityTypeConfiguration`
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
 
 # Check list
 - [ ] Domain.csproj references only EF Core
@@ -84,4 +84,4 @@ __Applied solutions:__
 - [ ] `/Entities` folder exists, all entity classes placed there
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]

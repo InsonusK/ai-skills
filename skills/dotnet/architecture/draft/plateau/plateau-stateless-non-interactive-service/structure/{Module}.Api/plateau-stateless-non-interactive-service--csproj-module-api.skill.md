@@ -10,21 +10,21 @@ tags:
   - skill/template/csproj
   - plateau/stateless-non-interactive-service
 created_by:
-  - "[[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
+  - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
 ---
 
 # Goal
 - Expose HTTP endpoints as thin MediatR adapters for this module
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
 
 # Core Principles
 - Api is a thin adapter — no business logic, no domain rules
 - Api references only its own Interfaces project for contracts
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
 
 # Structure
 
@@ -48,7 +48,7 @@ __Applied solutions:__
 - Shared
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
 
 # Rules
 MUST:
@@ -59,7 +59,7 @@ MUST NOT:
 - Api contain business logic, validation logic, or domain rules
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
 
 # Check list
 - [ ] Api.csproj does not reference Domain or Application
@@ -67,4 +67,4 @@ __Applied solutions:__
 - [ ] No business logic in any controller
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]
+- [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Api.csproj.create.md|{Module}.Api.csproj.create]]

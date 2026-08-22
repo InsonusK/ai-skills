@@ -10,7 +10,7 @@ tags:
   - skill/template/class
   - plateau/stateless-non-interactive-service
 created_by:
-  - "[[../../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
+  - "[[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
 ---
 
 # Goal
@@ -19,7 +19,7 @@ created_by:
 - Return a safe, generic `Result.Error` so the API never receives a raw exception
 
 __Applied solutions:__
-- [[../../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
+- [[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
 
 # Core Principles
 - Apply ONE plateau template per class
@@ -27,7 +27,7 @@ __Applied solutions:__
 - Logs at `LogLevel.Critical` because an unhandled exception indicates a programming or infrastructure defect
 
 __Applied solutions:__
-- [[../../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
+- [[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -80,7 +80,7 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>
 ```
 
 __Applied solutions:__
-- [[../../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
+- [[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
 
 # Rules
 MUST:
@@ -94,7 +94,7 @@ MUST NOT:
 - Catch only specific exception types
 
 __Applied solutions:__
-- [[../../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
+- [[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
 
 # Check list
 - [ ] `ExceptionHandlingBehavior` defined in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
@@ -103,11 +103,11 @@ __Applied solutions:__
 - [ ] No exception details are returned to the caller
 
 __Applied solutions:__
-- [[../../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
+- [[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
 
 # Unittest TestCases
 - [ ] WHEN handler succeeds THEN behavior returns the handler result unchanged
 - [ ] WHEN handler throws THEN behavior logs the exception at Critical level and returns `Result.Error` with a generic message, without re-throwing
 
 __Applied solutions:__
-- [[../../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
+- [[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create.md|ExceptionHandlingBehavior.cs.create]]
