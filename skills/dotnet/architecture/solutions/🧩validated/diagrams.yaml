@@ -12,6 +12,7 @@ tasks:
         type: frontmatter_field
         field: depends_on
         reverse: true
+        transitive_reduction: true
     output:
       format: obsidian_canvas
       destination: "skills/dotnet/architecture/solutions/🧩validated/dotnet-solutions-overview.canvas"

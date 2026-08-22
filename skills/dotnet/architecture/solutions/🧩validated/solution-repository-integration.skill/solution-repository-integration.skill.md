@@ -45,7 +45,7 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
 ---
-# Goal
+ # Goal
 - Decouple Application layer handlers from EF Core and DbContext by providing repository abstractions powered by Ardalis
 - Define `IReadRepository<T>` and `IRepository<T>` in Shared as thin wrappers around `IReadRepositoryBase<T>` and `IRepositoryBase<T>` from `Ardalis.Specification`
 - Provide a single generic `Repository<T>` in App.Infrastructure that inherits `RepositoryBase<T>` from `Ardalis.Specification.EntityFrameworkCore`
