@@ -11,6 +11,7 @@ tags:
   - concern/testing/mutation
   - make
   - stack
+status: deprecated
 
 ---
 
@@ -34,12 +35,11 @@ This skill defines the language-agnostic protocol: what the three layers are, an
 - The case where the same Cucumber spec must be proven by several independently-released implementations (different repositories/packages, possibly different languages). That is a separate, additional pattern layered on top of this one — do not improvise a multi-repository spec-sharing setup from this skill alone; a single implementation repository that owns its own `.feature` files is the default and the common case.
 
 # Core Principle
-- Three layers, each catching a gap the others cannot:
-  - **Cucumber/Gherkin scenarios** are the readable, unambiguous test plan (living documentation): one scenario, one behavior claim, in `Given/When/Then` form.
-  - **Code coverage** proves the code path was *executed*. It is necessary but says nothing about whether the result was checked.
-  - **Mutation testing** proves the assertions actually *check* the executed behavior: a tool mutates the production code (flips a condition, changes a constant, removes a line) and the test suite must fail. A mutant that survives means a gap an assert never protected against — the same "coverage theater" [no-test-theater](../no-test-theater.skill/no-test-theater.skill.md) already warns about, just made mechanically detectable instead of relying on manual review.
-- A step definition calls the real production validation code. It never re-implements the rule it is supposed to prove — that would test the step definition, not the code.
-- The primary use case for this skill is a rule enforced on more than one side of a boundary — for example the same validation rule implemented once on the frontend (fail fast, good UX, avoid a doomed request) and once on the backend (the actual integrity guarantee, since the frontend can always be bypassed). The Cucumber scenarios describe the rule once; each side's test suite proves its own implementation against the same scenarios.
+- Testing runs in four stages, in order: plain tests, tests with code coverage measured, tests with mutation testing run, then report generation from the results of all three.
+- Business functions are described and proven through Cucumber/Gherkin scenarios, in `Given/When/Then` form, so the generated report makes clear which business functions are covered by tests.
+- Technical and architectural functions (a pipeline behavior's ordering, a caching contract, a retry policy) are described through Cucumber/Gherkin scenarios too — not because they need living documentation the way a business rule does, but so they appear in the same report as business functions, instead of being invisible to it.
+- Code coverage proves a code path was *executed*; mutation testing proves the assertions behind it actually *check* that execution, by mutating the production code (flipping a condition, changing a constant, removing a line) and requiring the test suite to fail. A mutant that survives means a gap an assert never protected against — the same "coverage theater" [no-test-theater](../no-test-theater.skill/no-test-theater.skill.md) already warns about, just made mechanically detectable instead of relying on manual review. The preferred mutation-testing tool is Stryker for .NET and for TypeScript/Angular; Python uses a different library — see each stack's own solution skill under [# Scope](#scope).
+- A step definition calls the real production code. It never re-implements the rule it is supposed to prove — that would test the step definition, not the code.
 - Not every layer needs to be re-proven on every run — mutation testing in particular is slow enough that it needs a cheap, scoped mode. That trade-off is exactly why the `make` contract below has `ONLY_DELTA`/`DELTA_BASE` and `WITH_CODE_COVERAGE` toggles: a caller (a developer, or the CI workflow defined in [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]) decides per run how much proof it needs, without the underlying tooling changing.
 
 # Make command contract
