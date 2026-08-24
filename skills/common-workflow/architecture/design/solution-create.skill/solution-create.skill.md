@@ -15,6 +15,7 @@ tags:
 # Core Principle
 - Build every solution skill from the template folder that matches the target stack, fill it with real content, and strip all authoring aids before finalizing.
 - A solution skill is incomplete without its `Implementation/` folder — the rules describe what the implementation files demonstrate.
+- Not every reusable unit is a Solution. Before building, rule out that the candidate is actually a Plateau Component — a self-contained, optional capability (logging, tracing, caching, ...) that ships as its own project, wires in once at the composition root, never touches a module's own files, and is never composed into a plateau's `created_by`. See [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]]'s Solution vs Plateau vs Component test.
 
 # Workflow
 1. Understand 
@@ -43,6 +44,9 @@ tags:
 # Rule
 
 ## MUST
+- Confirm the candidate unit is a Solution, not a Plateau Component, before building it here.
+  - Risk: a self-contained, composition-root-only, optional capability (e.g. logging) built as a Solution ends up either forced into some plateau's `created_by` — forcing every user of that plateau to take it and forcing a second plateau variant for "without it" — or left dangling with nothing to compose it into.
+  - Fix: run [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md#Solution vs Plateau vs Component|plateau-component-create's test]] first; build a Component there instead if it applies.
 - Select the template folder that matches the target language/stack of the solution.
   - Risk: the solution inherits another stack's project layout, file naming, and dependency conventions, so every agent applying it produces wrong code.
   - Fix: use the `templates/{stack}/` folder matching the target stack; if none exists, ask the user before falling back to another stack's template.
@@ -91,6 +95,7 @@ tags:
   - Fix: put every trigger condition into `whenToUse` itself instead of splitting it across two fields.
 
 # Check list
+- [ ] The candidate was checked against `plateau-component-create`'s Solution vs Plateau vs Component test before being built as a Solution.
 - [ ] The template folder matches the target stack.
 - [ ] `whenToUse` is one concrete sentence; there is no separate `triggers` list.
 - [ ] No `hint`, `example`, `code example` blocks and no `# How Apply this template` section remain in the final skill.

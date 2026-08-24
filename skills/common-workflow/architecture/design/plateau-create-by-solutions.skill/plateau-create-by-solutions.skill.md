@@ -38,6 +38,8 @@ Read [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.sk
 
 Read [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] too, when {solutions} is not the only input — i.e. when this plateau also composes one or more existing plateaus via `parent_plateaus`. It defines the union-by-default merge semantics and the `standalone` field this skill's templates now carry.
 
+Be aware of [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] too. A Plateau Component (an optional, cross-cutting capability like logging or tracing) is never part of {solutions} and never belongs in `created_by` or `structure/` — it attaches separately, to an already-composed service, not to the plateau's own definition. If a candidate in {solutions} looks like it only wires itself in at the composition root and never touches a module, verify it against that skill's test before assembling it into this plateau.
+
 # Solution-skill structure
 Every solution-skill has an `Implementation/` folder with concrete mutations. The file patterns inside `Implementation/` depend on {stack}. Recognize these file patterns:
 
@@ -181,6 +183,7 @@ Both file types contribute to the same target skill:
 - List all contributing files in `__Applied solutions:__`
 
 ## Solution selection
+- Never include a Plateau Component in {solutions} — see [Prerequisites](#prerequisites) and [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]].
 - Include every solution that contributes at least one project/package, class/module, or repository-level change
 - Classification, taxonomy, or policy solutions may affect only the repository skill and the plateau root skill (for example, by defining an entity type matrix). Include them in `created_by` and `__Applied solutions:__` even if they have no direct code files
 - If a solution from {solutions} has no `Implementation/` content and does not affect plateau structure, record the decision to exclude it as a plateau-level ADR (see [Recording plateau-level decisions](#recording-plateau-level-decisions)) or ask the user for clarification
@@ -268,3 +271,4 @@ MUST NOT:
 - Create separate skill files for `.create.md` and `.extend.md` of the same project/package/class/module.
 - Silently drop or override one parent's content when `parent_plateaus` has more than one entry and two parents disagree — resolve every such conflict per [Recording plateau-level decisions](#recording-plateau-level-decisions) instead.
 - Use the old singular `parent_plateau` field — every plateau uses the `parent_plateaus` list, even for a single parent.
+- Compose a Plateau Component into `created_by` or `structure/` — a Component is attached separately, outside plateau assembly; see [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]].

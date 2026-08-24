@@ -29,6 +29,8 @@ Read [[skills/common-workflow/architecture/design/plateau-create-by-solutions.sk
 
 Also read [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]. The same plateau-level ADR rules from plateau-create-by-solutions' [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill#recording-plateau-level-decisions|Recording plateau-level decisions]] apply during an update: any conflict resolved, or solution removed, gets recorded as an ADR in the plateau's own `adr/` folder.
 
+Be aware of [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] too. If {solution} is actually a Plateau Component (an optional, cross-cutting capability like logging or tracing that never touches a module and wires in only at the composition root), this workflow does not apply — a Component is attached to an already-composed service separately, never added to a plateau's `created_by` or `structure/`.
+
 # Input parameters
 
 - {plateau-name} - name of the plateau to update
@@ -55,6 +57,7 @@ Also read [[skills/common-workflow/architecture/design/adr-create.skill/adr-crea
 ## Adding a new solution
 
 MUST:
+- Confirm {solution} is actually a Solution and not a Plateau Component before running this workflow — see [Prerequisites](#prerequisites).
 - Update the plateau root skill: `description`, `created_by`, `Core Principles`, `Capabilities`, `Use cases`, `__Applied solutions__`
 - Create any structural skill that does not yet exist but is required by the new solution's `.create.md` files
 - Update any existing structural skill that is targeted by the new solution's `.extend.md` files
@@ -153,6 +156,7 @@ If a solution is removed from the plateau:
 
 # Check list
 
+- [ ] {solution} was confirmed to be a Solution, not a Plateau Component, before this workflow was applied.
 - [ ] `plateau-create-by-solutions.skill` mapping rules were applied for the plateau's {stack}
 - [ ] Plateau root skill references the new/updated solution in `created_by`
 - [ ] Plateau root skill describes the solution in `Core Principles` or `Capabilities`
