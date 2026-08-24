@@ -24,7 +24,7 @@ change_kind: create
 ```
 
 # NuGet Packages
-Same as [[../{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk.
+Same as [[./{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk.
 
 # Allowed Dependencies
 - `{Module}.Interfaces` — nothing else. `{Module}.Interfaces.Tests` may reference exactly what `{Module}.Interfaces.csproj` itself is allowed to reference (per `solution-sln-structure`: nothing), plus `{Module}.Interfaces` itself.

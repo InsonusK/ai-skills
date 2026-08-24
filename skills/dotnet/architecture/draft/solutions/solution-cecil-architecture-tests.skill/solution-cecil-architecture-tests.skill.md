@@ -19,8 +19,8 @@ depends_on:
   - "[[skills/dotnet/architecture/draft/solutions/solution-domain-rules.skill/solution-domain-rules.skill|solution-domain-rules]]"
 built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
 adr:
-  - "[[adr/cecil-over-reflection.md|Mono.Cecil over Reflection/Roslyn for architecture tests]]"
-  - "[[adr/registry-driven-coverage-over-per-rule-tests.md|Registry-driven coverage check over one test per rule]]"
+  - "[[./adr/cecil-over-reflection.md|Mono.Cecil over Reflection/Roslyn for architecture tests]]"
+  - "[[./adr/registry-driven-coverage-over-per-rule-tests.md|Registry-driven coverage check over one test per rule]]"
 ---
 
 # Goal
@@ -37,10 +37,10 @@ adr:
 
 # Core Principles
 
-- Read compiled IL via Mono.Cecil, don't execute it — a check over `MethodDefinition.Body.Instructions` is a fact about what the shipped code does, not a black-box assertion about what it returns for one input. See [[adr/cecil-over-reflection.md|the ADR]] for why Cecil, not Reflection or a Roslyn analyzer.
+- Read compiled IL via Mono.Cecil, don't execute it — a check over `MethodDefinition.Body.Instructions` is a fact about what the shipped code does, not a black-box assertion about what it returns for one input. See [[./adr/cecil-over-reflection.md|the ADR]] for why Cecil, not Reflection or a Roslyn analyzer.
 - Load the same already-built assembly other tests in the project reference, via `typeof(KnownType).Assembly.Location` — never a hardcoded or re-derived path.
 - Match call targets by simple name (`DeclaringType.Name` + `Name`), not full cross-assembly symbol resolution — the calling assembly's own metadata already carries what a name-based match needs, without a `Resolve()` that can fail if the target assembly's model can't be loaded.
-- A coverage registry (`Dictionary<(Entity, Property), Rule[]>`) belongs in the test project, never in production code — it is verification metadata; putting it in `Domain`/`Domain.Rules` would create a dependency a portable Rules project must not carry. See [[examples/guarded-property-coverage.md|guarded-property-coverage.md]].
+- A coverage registry (`Dictionary<(Entity, Property), Rule[]>`) belongs in the test project, never in production code — it is verification metadata; putting it in `Domain`/`Domain.Rules` would create a dependency a portable Rules project must not carry. See [[./examples/guarded-property-coverage.md|guarded-property-coverage.md]].
 - Cecil exposes "what does this method call," never "who calls this method" — a transitive/call-graph check must be written explicitly, with a `visited` guard against cycles; there is no free reverse index to query instead.
 - A single-pass check (scan every method once, flag) and a call-graph/registry-driven check are different in kind — keep them in separate test classes, so a broken recursive check's failure list doesn't bury a broken simple one.
 - Each of the four checks is paired with a `.feature` file that describes, in plain language, what it proves — but the file is documentary, not executable Gherkin: the actual proof is the `[Fact]` itself, since a structural fact ("is this dead," "is this thrown from the right place") has no natural Given/input → Then/output shape a Reqnroll step could meaningfully parameterize. Scenario titles mirror the `[Fact]` method name 1:1 so a reader can find the corresponding test without a real step-definition binding to follow. See [[skills/dotnet/architecture/draft/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Check}.feature.create|{Check}.feature]]
@@ -48,14 +48,14 @@ adr:
 # Boundaries
 - This documentary-`.feature` allowance is scoped to structural/architecture facts specifically — it is not a general license to skip step-definition bindings elsewhere in the codebase; every other `.feature` file in this catalog (including `{Module}.Domain.Rules.Spec`'s own rule-correctness scenarios) still needs a real, executing binding per [[skills/dotnet/architecture/draft/solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]'s own MUST rule
 - The four checks here are fixed and specific (dead-rule, exception-scoping, code-uniqueness, guarded-property-coverage) — this solution does not define a general framework for writing arbitrary new Cecil checks; a genuinely new kind of structural fact is a new worked example added to this solution, not a plug-in point it exposes
-- `GuardedPropertyRuleCoverageTests` only scans `{Module}.Domain` — it does not scan `{Module}.Domain.Rules`, `{Module}.Application`, or any other module's assembly; narrowing a guarded setter to `private` is what actually closes an external bypass, this test only catches what's left reachable within `Domain` itself (see [[examples/guarded-property-coverage.md|guarded-property-coverage.md]])
+- `GuardedPropertyRuleCoverageTests` only scans `{Module}.Domain` — it does not scan `{Module}.Domain.Rules`, `{Module}.Application`, or any other module's assembly; narrowing a guarded setter to `private` is what actually closes an external bypass, this test only catches what's left reachable within `Domain` itself (see [[./examples/guarded-property-coverage.md|guarded-property-coverage.md]])
 - This solution proves the rule *mechanism* is wired correctly as a whole — it does not prove any individual rule's own condition is correct; that is `{Module}.Domain.Rules.Tests`'s job, via [[skills/dotnet/architecture/draft/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]
 
 # Adr
 
-- [[adr/cecil-over-reflection.md|Mono.Cecil over Reflection/Roslyn for architecture tests]]
+- [[./adr/cecil-over-reflection.md|Mono.Cecil over Reflection/Roslyn for architecture tests]]
   - Selected variant: Mono.Cecil, as a plain xUnit `[Fact]` alongside the rest of the module's conformance suite.
-- [[adr/registry-driven-coverage-over-per-rule-tests.md|Registry-driven coverage check over one test per rule]]
+- [[./adr/registry-driven-coverage-over-per-rule-tests.md|Registry-driven coverage check over one test per rule]]
   - Selected variant: one generic registry-driven Cecil test, paired with narrowing guarded setters to `private` wherever the write pattern allows it.
 
 # Requirements
@@ -73,8 +73,8 @@ NUGET:
 
 PROJECT:
 - [[skills/dotnet/architecture/draft/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend|{Module}.Domain.Tests.csproj]] - extend - Add the `Architecture/` folder holding all four checks
-  - [[skills/dotnet/architecture/draft/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Module}ArchitectureTests.cs.create|{Module}ArchitectureTests.cs]] - create - The three single-pass checks (dead-rule detection, exception scoping, code-uniqueness/format), one class, three `[Fact]`s — see [[examples/dead-rule-detection.md|dead-rule-detection.md]], [[examples/exception-scoping.md|exception-scoping.md]], [[examples/code-uniqueness-format.md|code-uniqueness-format.md]] for the full worked implementation and rationale
-  - [[skills/dotnet/architecture/draft/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/GuardedPropertyRuleCoverageTests.cs.create|GuardedPropertyRuleCoverageTests.cs]] - create - The registry-driven call-graph check, its own class — see [[examples/guarded-property-coverage.md|guarded-property-coverage.md]] for the full worked implementation and rationale
+  - [[skills/dotnet/architecture/draft/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Module}ArchitectureTests.cs.create|{Module}ArchitectureTests.cs]] - create - The three single-pass checks (dead-rule detection, exception scoping, code-uniqueness/format), one class, three `[Fact]`s — see [[./examples/dead-rule-detection.md|dead-rule-detection.md]], [[./examples/exception-scoping.md|exception-scoping.md]], [[./examples/code-uniqueness-format.md|code-uniqueness-format.md]] for the full worked implementation and rationale
+  - [[skills/dotnet/architecture/draft/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/GuardedPropertyRuleCoverageTests.cs.create|GuardedPropertyRuleCoverageTests.cs]] - create - The registry-driven call-graph check, its own class — see [[./examples/guarded-property-coverage.md|guarded-property-coverage.md]] for the full worked implementation and rationale
   - [[skills/dotnet/architecture/draft/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Check}.feature.create|{Check}.feature]] - create - Documentary `.feature` file per check, scenario titles mirroring `[Fact]` method names
 
 # Workflow
@@ -100,9 +100,9 @@ PROJECT:
 
 ## Add coverage for a new multi-field rule
 
-1. Confirm [[examples/guarded-property-coverage.md|the existing generic test]] already covers the target Entity's namespace (it does, if the Entity lives under the module's `Domain/Entities` namespace).
+1. Confirm [[./examples/guarded-property-coverage.md|the existing generic test]] already covers the target Entity's namespace (it does, if the Entity lives under the module's `Domain/Entities` namespace).
 2. Add one `(nameof(Entity), nameof(Entity.Property))` → `["RuleClass.Check"]` line to the registry, one line per guarded property.
-3. Where the write pattern allows it, narrow the guarded property's own setter from `internal`/`public` to `private` — this closes external bypasses at compile time, on top of what the test catches. See [[examples/guarded-property-coverage.md|guarded-property-coverage.md]] for why this is necessary, not optional, for a setter the test would otherwise flag on its own.
+3. Where the write pattern allows it, narrow the guarded property's own setter from `internal`/`public` to `private` — this closes external bypasses at compile time, on top of what the test catches. See [[./examples/guarded-property-coverage.md|guarded-property-coverage.md]] for why this is necessary, not optional, for a setter the test would otherwise flag on its own.
 
 # Rules
 
@@ -112,7 +112,7 @@ PROJECT:
   - Fix: always resolve the path from a `typeof(...)` already known to live in the target assembly.
 - Keep a coverage registry (e.g. `RequiredRuleChecks`) inside the test project, never in `Domain`/`Domain.Rules` production code.
   - Violation: moving the `(Entity, Property) -> Rule` dictionary into `Domain` so "production code documents its own invariants."
-  - Risk: `Domain.Rules` referencing `Domain`'s Entity types (or vice versa, depending on which side holds the registry) creates a dependency a portable, other-service-consumable Rules project must not carry — see [[adr/registry-driven-coverage-over-per-rule-tests.md]].
+  - Risk: `Domain.Rules` referencing `Domain`'s Entity types (or vice versa, depending on which side holds the registry) creates a dependency a portable, other-service-consumable Rules project must not carry — see [[./adr/registry-driven-coverage-over-per-rule-tests.md]].
   - Fix: the registry is verification metadata; it lives next to the test that reads it.
 - Guard every recursive call-graph walk with a `visited` set keyed by `MethodDefinition`.
   - Risk: two Entity methods (or private helpers) calling each other, directly or indirectly, causes unbounded recursion and a stack overflow instead of a clean test failure.
@@ -120,7 +120,7 @@ PROJECT:
 - Never rely on a bespoke, per-rule Cecil test as the only guard for "does every Entity method call this rule."
   - Violation: writing a new `XyzRule_IsCalledEverywhere` test class for every multi-field rule instead of adding a line to the shared registry.
   - Risk: N rules become N near-identical tests to remember to write; forgetting to write test N+1 is exactly the same failure mode ("agent forgot") the mechanism exists to prevent, just moved one level up.
-  - Fix: one generic, registry-driven test (see [[examples/guarded-property-coverage.md]]); a new rule adds a dictionary entry, not a new test class.
+  - Fix: one generic, registry-driven test (see [[./examples/guarded-property-coverage.md]]); a new rule adds a dictionary entry, not a new test class.
 - Never put a multi-field rule's check logic inside an individual property setter.
   - Violation: `internal set { Check(value, this.OtherProperty); field = value; }` for a rule spanning two properties.
   - Risk: object-initializer/constructor property assignment happens in a fixed order — a sibling property may still hold its default or previous value when this setter's check runs, so the check validates a transient combination, not the final one. It can silently accept an invalid final state or reject a valid one, depending purely on assignment order.
@@ -132,7 +132,7 @@ PROJECT:
 
 ## SHOULD
 - Prefer narrowing a guarded property to `private` over trying to catch external bypasses by loading and scanning every assembly with `InternalsVisibleTo` access to it.
-  - Risk: `internal` visibility gives a bounded but ever-growing list of assemblies to keep loading and scanning as the solution grows, and `public` visibility gives no bounded list at all — no Cecil-based scan can ever be complete for a `public` member. See [[adr/registry-driven-coverage-over-per-rule-tests.md]].
+  - Risk: `internal` visibility gives a bounded but ever-growing list of assemblies to keep loading and scanning as the solution grows, and `public` visibility gives no bounded list at all — no Cecil-based scan can ever be complete for a `public` member. See [[./adr/registry-driven-coverage-over-per-rule-tests.md]].
   - Fix: `private set` makes the compiler reject the bypass at every caller's compile time, permanently, at zero ongoing maintenance cost — strictly stronger than any scan, for the callers a scan could even reach.
 - Keep a call-graph/registry-driven check in its own test class, separate from single-pass checks in the same module.
   - Risk: mixing a complex recursive check with three simple single-pass ones in one file makes the file's own complexity budget harder to reason about, and a failure in the complex check's output is easy to skim past among simpler ones.

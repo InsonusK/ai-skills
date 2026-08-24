@@ -24,7 +24,7 @@ change_kind: create
 ```
 
 # NuGet Packages
-Same as [[../{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk.
+Same as [[./{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk.
 
 # Allowed Dependencies
 - `Shared` — nothing else, mirroring `Shared.csproj`'s own zero project references.

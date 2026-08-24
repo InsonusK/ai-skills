@@ -2,7 +2,7 @@
 
 A runnable example of the `service-with-validated-module-interaction` plateau.
 
-This example is built on top of the [`stateless-non-interactive-service`](../../plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill.md) example — it keeps the same project shape, composition root, and conformance-testing contract, and adds a validated command chain with Value Objects, entity behavior, and FluentValidation.
+This example is built on top of the [`stateless-non-interactive-service`](../../plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md) example — it keeps the same project shape, composition root, and conformance-testing contract, and adds a validated command chain with Value Objects, entity behavior, and FluentValidation.
 
 ## What the example demonstrates
 

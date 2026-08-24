@@ -9,7 +9,7 @@ tags:
   - skill/template/plateau
   - plateau/service-with-validated-module-interaction
 parent_plateaus:
-  - "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
+  - "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
 standalone: false
 created_by:
   - "[[../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]]"
@@ -27,7 +27,7 @@ Give a module real business logic and a validated, callable write path, still wi
 - Give every module a full command chain: `ICommand`, immutable command records, a handler/validator per feature, and DI self-registration wired into the composition root
 
 # Core Principles
-- Inherited from [[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]: fixed four-project module shape, centralized pipeline/module registration in App.Host, global unhandled-exception handling, and the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` conformance gate — this plateau does not change any of that.
+- Inherited from [[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]: fixed four-project module shape, centralized pipeline/module registration in App.Host, global unhandled-exception handling, and the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` conformance gate — this plateau does not change any of that.
 - Value semantics: a property carrying invariant state or business meaning is a Value Object, not a primitive. `Soft{ValueObject}` (Interfaces, validation-agnostic) and `{ValueObject}` (Domain, self-validating, inherits from the Soft base) are two strengths of the same type, never duplicated shapes. See [[../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]].
 - Entity behavior: every state-changing method validates via a condition it owns before mutating, and throws `DomainException` on failure; bulky or multi-step logic moves to a static domain service extension that still mutates only through the entity's own guarded methods. See [[../../../solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]].
 - Validation pipeline: `ValidationBehavior`, registered right after `ExceptionHandlingBehavior` in `AddPipeline()`, intercepts every `IRequest<TResponse>`, collects all validator errors, and short-circuits with `Result.Invalid` before any handler runs. See [[../../../solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]].
@@ -76,7 +76,7 @@ Give a module real business logic and a validated, callable write path, still wi
 3. No direct project reference between the two modules' `Application`/`Domain` projects is ever added.
 
 # Example
-A runnable example lives in [`./example`](./example). It is built on top of the [`plateau-stateless-non-interactive-service`](../../plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill.md) example and extends it with:
+A runnable example lives in [`./example`](./example). It is built on top of the [`plateau-stateless-non-interactive-service`](../../plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md) example and extends it with:
 - `ValidationBehavior` registered after `ExceptionHandlingBehavior`;
 - `FluentValidation` validators for commands and `Soft{ValueObject}` types;
 - `SoftEmail`/`Email` Value Objects and a `TaskItem` entity with guarded behavior;

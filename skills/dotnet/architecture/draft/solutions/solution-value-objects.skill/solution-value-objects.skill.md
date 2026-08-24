@@ -22,7 +22,7 @@ extends:
   - "{Module}.Domain.Entities.{EntityName}.cs"
   - Shared.csproj
 depends_on:
-built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
+built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
 adr:
   - "[[skills/dotnet/architecture/draft/solutions/solution-value-objects.skill/adr/soft-and-strict-value-object-split|Soft (permissive) and strict Value Object as two types, one inheriting the other]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-value-objects.skill/adr/response-dto-uses-soft-value-objects|ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]"

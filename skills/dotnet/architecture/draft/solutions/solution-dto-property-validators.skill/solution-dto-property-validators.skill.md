@@ -23,7 +23,7 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/draft/solutions/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
-built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
+built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
 adr:
   - "[[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/dto-validators-only-for-request-dtos|DTO validators only for RequestDto by default]]"
