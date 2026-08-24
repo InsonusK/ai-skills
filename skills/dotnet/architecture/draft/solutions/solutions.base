@@ -1,5 +1,5 @@
 formulas:
-  plateas: file.backlinks.map(value.asFile()).filter(value.hasTag("skill/template/plateau")).map(link(value.path, value.properties.name || value.name))
+  plateas: file.backlinks.map(value.asFile()).filter(value.hasTag("skill/template/plateau")).map(link(value.path, value.properties.name))
 views:
   - type: table
     name: Table
