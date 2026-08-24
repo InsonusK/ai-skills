@@ -63,9 +63,7 @@ SOLUTION:
   - [[skills/dotnet/architecture/draft/solutions/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create|BuildingBlocks.csproj]] - hosts `ExceptionHandlingBehavior`
   - [[skills/dotnet/architecture/draft/solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create|App.Host.csproj]] - hosts centralized `PipelineRegistration` where the behavior is registered
 - [[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]
-  - [[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - provides centralized `PipelineRegistration.AddPipeline()` extension point
-- [[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration-order.skill/solution-pipeline-registration-order.skill|solution-pipeline-registration-order]] (when applied)
-  - This skill supersedes the ordering of `solution-pipeline-registration-order` by prepending `ExceptionHandlingBehavior` before `ValidationBehavior`
+  - [[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - provides centralized `PipelineRegistration.AddPipeline()` extension point and is the single source of truth for pipeline behavior order — this solution prepends `ExceptionHandlingBehavior` there, before every other behavior
 
 NUGET:
 - `MediatR` {version} - provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>`
