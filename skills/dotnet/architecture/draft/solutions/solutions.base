@@ -1,5 +1,5 @@
 formulas:
-  plateas: (function(){const tfile=file.path?app.vault.getAbstractFileByPath(file.path):null;const cache=tfile?app.metadataCache.getFileCache(tfile):null;const solutionName=(file.properties?.name)||(cache?.frontmatter?.name)||file.name?.replace(/\.skill$/,"")||"";if(!solutionName)return[];const plates=[];for(const f of app.vault.getMarkdownFiles()){const fm=app.metadataCache.getFileCache(f)?.frontmatter;if(!fm)continue;const tags=Array.isArray(fm.tags)?fm.tags:[];if(!tags.some(t=>t==="skill/template/plateau"||String(t).startsWith("plateau/")))continue;const createdBy=Array.isArray(fm.created_by)?fm.created_by:(fm.created_by?[fm.created_by]:[]);if(createdBy.some(link=>link&&String(link).includes(solutionName))){const displayName=fm.name||f.basename;plates.push("[["+f.path+"|"+displayName+"]]");}}return plates;})()
+  plateas: file.backlinks.map(value.asFile()).filter(value.hasTag("skill/template/plateau")).map(value.asLink())
 views:
   - type: table
     name: Table
