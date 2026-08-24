@@ -38,7 +38,7 @@ adr:
 - Other modules validate a `Soft{ValueObject}` by resolving `IValidator<Soft{ValueObject}>` from DI
 - Other modules validate a DTO by resolving `IValidator<{Dto}>` from DI
 - Isolated, per-field conformance coverage without assembling a whole valid DTO around the field under test
-- A cross-aggregate condition that needs preloaded data is checked before the Handler runs, through a small DI-injected async wrapper
+- A cross-aggregate condition that needs preloaded data is checked before the Handler runs, through a small DI-injected async wrapper — usable once the module has some data-loading abstraction (e.g. `solution-repository-integration`'s `IReadRepository<T>`) to inject; see Boundaries
 
 # Core Principles
 - `{ValueObject}PropertyValidator : AbstractValidator<Soft{ValueObject}>` owns its own condition, written locally in this file
@@ -46,13 +46,14 @@ adr:
 - `{ValueObject}PropertyValidator` exists even though it could look like a one-line pass-through: it gives other modules DI decoupling (they depend on `IValidator<Soft{ValueObject}>`, never on this module's `Application` internals), and gives one field its own isolated conformance surface
 - Every validator is registered via `AddValidatorsFromAssembly` — never manually
 - ResponseDto does not get a validator by default; only when a concrete requirement (external contract check, untrusted response source) explicitly demands one
-- A condition that needs preloaded data becomes a small, DI-injected async wrapper class (`{Feature}Check`) that loads the data and checks it locally, via `CustomAsync`
+- A condition that needs preloaded data becomes a small, DI-injected async wrapper class (`{Feature}Check`) that loads the data and checks it locally, via `CustomAsync` — this solution defines the *pattern* only; it does not create a repository or any other data-loading abstraction, and `{Feature}Check` has nothing to inject until one exists in the module (see Boundaries)
 - This solution does not require a shared rules abstraction to exist — a later, optional `solution-domain-behaviour`/`solution-domain-rules` may keep validator-side and Entity-side conditions in sync some other way, but every validator here already works standalone
 
 # Boundaries
 - Which `Soft{ValueObject}`/DTO exists to validate is not decided by this solution — that's `solution-value-objects`
 - Whether a validator's condition agrees with the same concept's Entity-side enforcement (`solution-domain-behaviour`) is not guaranteed or checked by this solution — the two are written independently today
 - Loading data for an async cross-aggregate check (repository calls) is this solution's job for the *validator* path only — the same load also has to happen again, independently, on the Handler's side before the Entity method runs
+- `built_on_plateau` for this solution is `plateau-stateless-non-interactive-service`, which has no repository or any other data-loading abstraction. `{Feature}Check`'s worked example injects `IReadRepository<T>` for concreteness, but that interface does not exist until `solution-repository-integration` is composed (part of `plateau-statefull-service`, a deeper plateau). Until then, `{Feature}Check` is a documented pattern, not a usable capability — a module with no persistence composed has nothing for it to load and should not attempt this pattern
 
 # Adr
 - [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]

@@ -12,3 +12,7 @@ The following skills MUST be applied to all work in this project:
 
 - Apply all mandatory skills before starting any task.
 - Prefer referencing skills over duplicating their content.
+
+## Role stance
+
+When working on architecture/skill design in this repository, act as an Architect and Prompt Engineer, not just an executor. If a decision looks questionable, incomplete, or inconsistent with an established pattern, say so directly and give the reasoning — never wave it off with "it's your system, do what you want" or equivalent deference. The user relies on that pushback; staying silent about a doubt is a failure to do the job, not politeness.
