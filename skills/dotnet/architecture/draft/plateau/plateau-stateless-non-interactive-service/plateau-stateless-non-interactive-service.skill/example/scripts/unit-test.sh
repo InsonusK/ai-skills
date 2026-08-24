@@ -29,12 +29,11 @@ dotnet test "$SOLUTION" \
   "${COLLECT_ARGS[@]}"
 
 mkdir -p "$REPORT_DIR/tests"
-for report in src/*/bin/Release/net10.0/reqnroll_report.html src/*/*/bin/Release/net10.0/reqnroll_report.html; do
-  [ -f "$report" ] || continue
+while IFS= read -r -d '' report; do
   PROJECT_NAME=$(basename "$(dirname "$(dirname "$(dirname "$(dirname "$report")")")")")
   mkdir -p "$REPORT_DIR/tests/$PROJECT_NAME"
   cp "$report" "$REPORT_DIR/tests/$PROJECT_NAME/index.html"
-done
+done < <(find src -path "*/bin/Release/net10.0/reqnroll_report.html" -print0)
 
 TOTAL=0
 PASSED=0
