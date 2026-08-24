@@ -71,7 +71,7 @@ Allowed Dependencies: unchanged. NuGet: adds `MediatR`, `Ardalis.Result`.
 ## MUST
 - All commands for this module declared in `/{Module}.Interfaces/Commands`
 - Each command file contains the command record and its result record
-- Commands implement `ICommand<Result<T>>` from Shared
+- Commands implement `ICommand<T>` (or `ICommand` when no payload is returned) from Shared
 
 ## MUST NOT
 - Commands contain any logic or methods

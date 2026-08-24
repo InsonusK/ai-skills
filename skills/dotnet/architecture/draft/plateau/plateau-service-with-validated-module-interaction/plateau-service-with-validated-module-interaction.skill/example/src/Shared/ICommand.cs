@@ -3,8 +3,6 @@ using MediatR;
 
 namespace Shared;
 
-public interface ICommand : IRequest { }
+public interface ICommand : IRequest<Result> { }
 
-public interface ICommand<T> : IRequest<Result<T>>
-{
-}
+public interface ICommand<T> : IRequest<Result<T>> { }

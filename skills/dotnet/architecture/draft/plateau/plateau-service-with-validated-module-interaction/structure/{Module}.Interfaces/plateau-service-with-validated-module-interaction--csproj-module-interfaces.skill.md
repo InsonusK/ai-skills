@@ -78,7 +78,7 @@ __Applied solutions:__
 MUST:
 - Interfaces contains only declarations — records, interfaces, DTOs
 - All commands, queries, and integration events declared here
-- All commands implement `ICommand<Result<T>>` from Shared, declared in `/Commands`
+- All commands implement `ICommand<T>` (or `ICommand` when no payload is returned) from Shared, declared in `/Commands`
 - `Soft{ValueObject}` types declared in `/ValueObjects`, validation-agnostic
 MUST NOT:
 - Interfaces reference Domain, Application, or any infrastructure project
@@ -93,7 +93,7 @@ __Applied solutions:__
 - [ ] /Commands, /Queries, /DTOs, /Events, /ValueObjects folders exist
 - [ ] Interfaces.csproj references only Shared
 - [ ] No implementation code in any file
-- [ ] Every command implements `ICommand<Result<T>>`
+- [ ] Every command implements `ICommand<T>` (or `ICommand` when no payload is returned)
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj.create]]

@@ -11,11 +11,11 @@ tags:
 
 # Goals
 - Express a named write intent as an immutable record that carries all input needed for the operation
-- Implement `ICommand<Result<T>>` so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
+- Implement `ICommand<T>` (or `ICommand` when no payload is returned) so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
 
 # Core Principles
 - Declared as `record` — immutable, structural equality by default
-- Implements `ICommand<Result<{CommandName}Result>>` — return type is always `Result<T>`
+- Implements `ICommand<{CommandName}Result>` — the marker interface wraps the response in `Result<T>` automatically
 - Properties are primitives or simple value types — no domain entity references
 - Result record declared in the same file — named `{CommandName}Result`
 - One command per write intent
@@ -52,7 +52,7 @@ namespace {Module}.Interfaces.Commands;
 public record CreateTaskCommand(
     string Title,
     int AssigneeId
-) : ICommand<Result<CreateTaskResult>>;
+) : ICommand<CreateTaskResult>;
 
 public record CreateTaskResult(int Id);
 ```
@@ -67,12 +67,12 @@ namespace {Module}.Interfaces.Commands;
 public record AssignTaskCommand(
     int TaskId,
     int AssigneeId
-) : ICommand<Result>;
+) : ICommand;
 ```
 # Rule changes
 
 ## MUST
-- Implement `ICommand<Result<T>>` or `ICommand<Result>` — never `IRequest<T>` directly
+- Implement `ICommand<T>` for a result payload of `T`, or `ICommand` when no payload is returned — never `IRequest<T>` directly
 - Result type declared in the same file as the command
 - Properties are primitives or simple types — no domain entity references
 - Commands declared as `record` in `/{Module}.Interfaces/Commands`
@@ -92,9 +92,9 @@ public record AssignTaskCommand(
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Express a named write intent as an immutable record that carries all input needed for the operation
-- [ ] WHEN inspected THEN it implement ICommand<Result<T>> so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
+- [ ] WHEN inspected THEN it implement ICommand<T> (or ICommand when no payload) so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
 - [ ] WHEN applied THEN Declared as record — immutable, structural equality by default
-- [ ] WHEN applied THEN Implements ICommand<Result<{CommandName}Result>> — return type is always Result<T>
+- [ ] WHEN applied THEN Implements ICommand<{CommandName}Result> — return type is always wrapped in Result<T>
 - [ ] WHEN applied THEN Properties are primitives or simple value types — no domain entity references
 - [ ] WHEN applied THEN Result record declared in the same file — named {CommandName}Result
 - [ ] WHEN applied THEN One command per write intent
