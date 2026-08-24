@@ -15,7 +15,7 @@ tags:
 
 # Core Principles
 - All read methods are inherited from `IReadRepositoryBase<T>` — no custom signatures needed
-- The interface exists so that Application layers depend on our contract, not directly on Ardalis
+- This does not isolate the codebase from `Ardalis.Specification` — every `{Entity}ByIdSpec` still inherits Ardalis's own `Specification<T>` directly, so `{Module}.Application` already has a hard dependency on the package regardless of this interface. The actual value is narrower: a stable, org-named type (`IRepository<T>`, matching `IUnitOfWork` and the rest of `Shared`'s naming, instead of Ardalis's own `IRepositoryBase<T>`) that gives constructor injection sites one name that doesn't change if the concrete implementation behind it ever does, and one place to add an org-specific method later without forking Ardalis's interface — not a swappable abstraction over the query mechanism itself
 
 # Structure
 
