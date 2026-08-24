@@ -6,6 +6,7 @@ views:
     filters:
       and:
         - file.tags.contains("skill/architecture/solution")
+        - file.folder.startsWith("skills/dotnet/architecture/draft/solutions")
     order:
       - file.name
       - built_on_plateau
