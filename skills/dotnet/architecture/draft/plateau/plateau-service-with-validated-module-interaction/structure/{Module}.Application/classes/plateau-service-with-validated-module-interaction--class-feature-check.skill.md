@@ -23,6 +23,7 @@ __Applied solutions:__
 - Loading is this class's job — a `{Dto}Validator`/`{ValueObject}PropertyValidator` never performs I/O
 - The condition is written locally in this class, alongside the loading step — the owning Entity's own method (`solution-domain-behaviour`) enforces the same invariant independently, as the authoritative backstop
 - Wired into the pipeline via `CustomAsync`, not `MustAsync` spread across the validator body
+- This plateau has no repository or other data-loading abstraction yet — the worked example below injects `IReadRepository<T>` for concreteness, but that interface is only added once `solution-repository-integration` is composed on top (in `plateau-statefull-service`). Until then this class has nothing to load from and is a documented pattern, not a usable capability
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs.create]]

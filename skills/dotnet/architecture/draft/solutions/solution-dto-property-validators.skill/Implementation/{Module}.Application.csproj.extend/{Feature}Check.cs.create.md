@@ -16,6 +16,7 @@ tags:
 - Loading is this class's job — a `{Dto}Validator`/`{ValueObject}PropertyValidator` never performs I/O
 - The condition is written locally in this class, alongside the loading step — this solution owns it and does not require a shared rules abstraction. The owning Entity's own method (`solution-domain-behaviour`) enforces the same invariant independently, as the authoritative backstop; keeping the two conditions in agreement is a manual concern today (see Boundaries in the parent solution)
 - `CustomAsync`, not `MustAsync` alone spread across the validator body — the whole loading-and-checking method lives in this DI-injected class, not inline in the validator, so it can be tested in isolation
+- This solution's own `built_on_plateau` (`plateau-stateless-non-interactive-service`) has no repository or other data-loading abstraction yet — `{Feature}Check` only has something to load from once the module has one (e.g. `IReadRepository<T>`, added by `solution-repository-integration`, composed in `plateau-statefull-service`). The worked example below injects `IReadRepository<T>` to show the concrete shape; treat it as illustrative until that abstraction actually exists in the module you're applying this to
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
