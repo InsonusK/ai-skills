@@ -5,7 +5,7 @@ whenToUse: when adding or editing DI/module/pipeline wiring in App.Host, or deci
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/csproj
   - plateau/shared-rules
@@ -13,6 +13,11 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]]"
   - "[[../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
+  - "[[../../../../solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill.md|solution-infrastructure-project]]"
+  - "[[../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
+  - "[[../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]]"
 ---
 
 # Goal
@@ -48,8 +53,11 @@ __Applied solutions:__
   - /DependencyInjection
     - [ModuleRegistration.cs](./classes/plateau-shared-rules--class-module-registration.skill.md)
     - [PipelineRegistration.cs](./classes/plateau-shared-rules--class-pipeline-registration.skill.md)
+    - [InfrastructureRegistration.cs, RepositoryRegistration.cs, EntityVersionResolverRegistration.cs](./classes/plateau-shared-rules--class-infrastructure-registration.skill.md)
   - Program.cs
   - App.Host.csproj
+
+`Program.cs` now calls `AddModules(builder.Configuration)`, `AddPipeline()`, and `AddInfrastructure(builder.Configuration)` — the third call is new at this plateau, per `solution-infrastructure-project`.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj.create]]
@@ -61,6 +69,7 @@ __Applied solutions:__
 | /DependencyInjection | DI registrations and pipeline setup | |
 | ModuleRegistration.cs | Centralized module registration extension (`AddModules()`) | [[./classes/plateau-shared-rules--class-module-registration.skill.md\|class-module-registration]] |
 | PipelineRegistration.cs | Centralized pipeline behavior registration (`AddPipeline()`), `ExceptionHandlingBehavior` first | [[./classes/plateau-shared-rules--class-pipeline-registration.skill.md\|class-pipeline-registration]] |
+| InfrastructureRegistration.cs, RepositoryRegistration.cs, EntityVersionResolverRegistration.cs | `AppDbContext`, repositories, unit of work, version resolvers — all wired via `AddInfrastructure()` | [[./classes/plateau-shared-rules--class-infrastructure-registration.skill.md\|class-infrastructure-registration]] |
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj.create]]
@@ -84,7 +93,8 @@ __Applied solutions:__
 - {ModuleName}.Api (all modules)
 - {ModuleName}.Application (all modules — for registration methods)
 - BuildingBlocks
-- App.Infrastructure and App.Queries are not created by this plateau — a persistence-introducing plateau adds them here once composed on top
+- App.Infrastructure — new at this plateau, for `AddInfrastructure()`'s `AppDbContext`/repository/unit-of-work/version-resolver registrations
+- App.Queries — new at this plateau, for `RegisterAppQueries()`
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj.create]]

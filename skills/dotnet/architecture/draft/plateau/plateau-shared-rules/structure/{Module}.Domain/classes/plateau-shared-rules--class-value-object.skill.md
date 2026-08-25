@@ -5,12 +5,13 @@ whenToUse: when a domain concept needs invariant enforcement — creating the st
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
 created_by:
   - "[[../../../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]]"
+  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
 # Goal
@@ -39,7 +40,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-value-object
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 public sealed record Email : SoftEmail
 {
@@ -72,17 +73,34 @@ public sealed record Money : SoftMoney
 __Applied solutions:__
 - [[../../../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]] - [[../../../../../solutions/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
 
-## Once the same condition is duplicated elsewhere: redirect to a centralized rule
+## Once the same condition is duplicated elsewhere: redirect to the centralized Check()
 
-Optional, applied only once the same predicate is found duplicated in a second consumer (a `PropertyValidator`, a `Dto`Validator) — the local `private static IsValid` is deleted, not kept alongside:
+Optional, applied only once the same condition genuinely exists in a second consumer (e.g. `{ValueObject}PropertyValidator`). The `DomainException` thrown, its message, and its behavior on invalid input do not change — only where the condition is declared changes. Before (local predicate, per `solution-value-objects`):
 
 ```csharp
 public sealed record Complexity : SoftComplexity
 {
     public Complexity(int value) : base(value)
     {
-        var result = this.Check();   // Check() now comes from {Module}.Domain.Rules
+        if (!IsValid(value))
+            throw new DomainException("TaskModule.Complexity.NonNegative", $"Complexity must be non-negative, but was {value}.");
+    }
 
+    private static bool IsValid(int value) => value >= 0;
+}
+```
+
+After (redirected to the centralized `Check()` from `{Module}.Domain.Rules`):
+
+```csharp
+public sealed record Complexity : SoftComplexity
+{
+    public Complexity(int value) : base(value)
+    {
+        var result = this.Check();
+
+        // Errors.Any(Severity == Error), not !result.IsValid — ValidationResult.IsValid ignores
+        // Severity, so a mixed Error/Warning result would incorrectly block on a Warning.
         var blocking = result.Errors.FirstOrDefault(e => e.Severity == Severity.Error);
         if (blocking is not null)
             throw new DomainException(blocking.ErrorCode, blocking.ErrorMessage);
@@ -90,7 +108,7 @@ public sealed record Complexity : SoftComplexity
 }
 ```
 
-The thrown exception, its message, and behavior on invalid input do not change — only where the condition is declared. See [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] and its [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md|{ValueObject}.cs.extend]].
+The local `private static IsValid` method and its own inline `DomainException` construction are deleted — `{Module}.Domain.Rules` is now the only place the condition exists. See [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] and its [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md|{ValueObject}.cs.extend]].
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md|{ValueObject}.cs.extend]]
@@ -99,12 +117,12 @@ __Applied solutions:__
 MUST:
 - Be `sealed record`, inherit from `Soft{ValueObject}` — never redeclare its properties
 - Be immutable — no public setters
-- Validate via a `private static` predicate declared on the same class, or (once redirected) via `this.Check()` from `{Module}.Domain.Rules` — never both at once — and throw `DomainException` when it fails
+- Validate via a `private static` predicate declared on the same class, and throw `DomainException` when it fails
 - Multi-property VO has a `private` parameterless constructor for EF materialization
-- If redirected, delete the local `private static` predicate — never keep it alongside the centralized one
+- Call `this.Check()` instead of a local predicate, once redirected — delete the local predicate, never keep both
 MUST NOT:
 - Depend on repositories, `DbContext`, or any service
-- Depend on `{Module}.Domain.Rules` speculatively — only once the same condition is genuinely duplicated in a second consumer
+- Depend on a separate rules project — the predicate is local to this file
 - Redeclare a property that `Soft{ValueObject}` already declares
 - Be used to carry identity — use the entity `Id` for that
 
@@ -114,8 +132,8 @@ __Applied solutions:__
 
 # Check list
 - [ ] Declared as `sealed record`, inherits from `Soft{ValueObject}`
-- [ ] Constructor validates via exactly one of a local `private static` predicate or `this.Check()`, never both, and throws `DomainException` on failure
-- [ ] No public setters, no infrastructure dependencies
+- [ ] Constructor validates via a local `private static` predicate and throws `DomainException` on failure
+- [ ] No public setters, no infrastructure dependencies, no separate rules-project dependency
 - [ ] Multi-property VO has a `private` parameterless constructor
 
 __Applied solutions:__

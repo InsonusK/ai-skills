@@ -5,7 +5,7 @@ whenToUse: when adding or editing an entity in {Module}.Domain, or deciding whet
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/csproj
   - plateau/shared-rules
@@ -13,6 +13,11 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]]"
   - "[[../../../../solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]"
+  - "[[../../../../solutions/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../solutions/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]"
+  - "[[../../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
   - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
@@ -56,7 +61,11 @@ __Applied solutions:__
     - [{ValueObject}.cs](./classes/plateau-shared-rules--class-value-object.skill.md)
   - /Services
     - [{Behavior}Service.cs](./classes/plateau-shared-rules--class-behavior-service.skill.md)
+  - /Configurations
+    - [{Entity}Config.cs](./classes/plateau-shared-rules--class-entity-config.skill.md)
   - {Module}.Domain.csproj
+
+Which of `Version`/`Guid`/timestamp fields an entity has, and whether `solution-entity-concurrency-change`/`solution-external-created-entity` apply to it at all, is decided per-entity by `solution-entity-classification`'s Entity Type Matrix — see `class-entity`. This plateau composes `plateau-statefull-service` as its parent, so `/Configurations` is inherited unchanged, not re-derived here.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Domain.csproj.create.md|{Module}.Domain.csproj.create]]
@@ -69,6 +78,7 @@ __Applied solutions:__
 | /Entities | All entity types for this module | [[./classes/plateau-shared-rules--class-entity.skill.md\|class-entity]] |
 | /ValueObjects | Strict, self-validating Value Object types | [[./classes/plateau-shared-rules--class-value-object.skill.md\|class-value-object]] |
 | /Services | Static domain service extensions for bulky entity behavior | [[./classes/plateau-shared-rules--class-behavior-service.skill.md\|class-behavior-service]] |
+| /Configurations | One EF Core config class per entity — mapping, concurrency token, unique Guid index, timestamp columns | [[./classes/plateau-shared-rules--class-entity-config.skill.md\|class-entity-config]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |

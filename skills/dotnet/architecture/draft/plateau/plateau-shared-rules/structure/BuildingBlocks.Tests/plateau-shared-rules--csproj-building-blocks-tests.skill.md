@@ -5,7 +5,7 @@ whenToUse: when adding a unit test or Gherkin scenario for BuildingBlocks, or de
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/csproj
   - plateau/shared-rules

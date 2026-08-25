@@ -5,7 +5,7 @@ whenToUse: when adding step definitions for a new Shared-primitive Gherkin featu
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
@@ -35,7 +35,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-rule-steps
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 [Binding]
 public sealed class {Rule}Steps

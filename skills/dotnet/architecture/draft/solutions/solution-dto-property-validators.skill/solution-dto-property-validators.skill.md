@@ -4,7 +4,7 @@ description: The DTO/Command validation mechanism — a FluentValidation Abstrac
 whenToUse: when a public RequestDto or Command needs FluentValidation coverage for a value-concept property or for the DTO as a whole, or when another module needs to validate a Soft{ValueObject}/DTO it received without referencing the owning module's Domain or Application types directly.
 domain: skill
 type: architecture
-version: 20260820
+version: 20260824
 tags:
   - skill/architecture/solution
   - stack/dotnet
@@ -27,6 +27,7 @@ built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-
 adr:
   - "[[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/dto-validators-only-for-request-dtos|DTO validators only for RequestDto by default]]"
+  - "[[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]]"
 ---
 
 # Goal
@@ -46,20 +47,22 @@ adr:
 - `{ValueObject}PropertyValidator` exists even though it could look like a one-line pass-through: it gives other modules DI decoupling (they depend on `IValidator<Soft{ValueObject}>`, never on this module's `Application` internals), and gives one field its own isolated conformance surface
 - Every validator is registered via `AddValidatorsFromAssembly` — never manually
 - ResponseDto does not get a validator by default; only when a concrete requirement (external contract check, untrusted response source) explicitly demands one
-- A condition that needs preloaded data becomes a small, DI-injected async wrapper class (`{Feature}Check`) that loads the data and checks it locally, via `CustomAsync` — this solution defines the *pattern* only; it does not create a repository or any other data-loading abstraction, and `{Feature}Check` has nothing to inject until one exists in the module (see Boundaries)
+- A condition that needs preloaded data becomes a small, DI-injected async wrapper class (`{Feature}Check`) that loads the data and checks it locally, via `CustomAsync` — this solution defines the *pattern* only; it does not create a repository or any other data-loading abstraction, and `{Feature}Check`'s `Load` step is deliberately left unimplemented until the solution that introduces one supplies the concrete body via its own `.extend.md` on this same class (see Boundaries and [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]])
 - This solution does not require a shared rules abstraction to exist — a later, optional `solution-domain-behaviour`/`solution-domain-rules` may keep validator-side and Entity-side conditions in sync some other way, but every validator here already works standalone
 
 # Boundaries
 - Which `Soft{ValueObject}`/DTO exists to validate is not decided by this solution — that's `solution-value-objects`
 - Whether a validator's condition agrees with the same concept's Entity-side enforcement (`solution-domain-behaviour`) is not guaranteed or checked by this solution — the two are written independently today
 - Loading data for an async cross-aggregate check (repository calls) is this solution's job for the *validator* path only — the same load also has to happen again, independently, on the Handler's side before the Entity method runs
-- `built_on_plateau` for this solution is `plateau-stateless-non-interactive-service`, which has no repository or any other data-loading abstraction. `{Feature}Check`'s worked example injects `IReadRepository<T>` for concreteness, but that interface does not exist until `solution-repository-integration` is composed (part of `plateau-statefull-service`, a deeper plateau). Until then, `{Feature}Check` is a documented pattern, not a usable capability — a module with no persistence composed has nothing for it to load and should not attempt this pattern
+- `built_on_plateau` for this solution is `plateau-stateless-non-interactive-service`, which has no repository or any other data-loading abstraction. `{Feature}Check`'s `Load` method is therefore deliberately left unimplemented by this solution — it stays a documented shape, not a usable capability, until a solution that introduces persistence (e.g. `solution-repository-integration`, composed in `plateau-statefull-service`) supplies the concrete `Load` body via its own `{Feature}Check.cs.extend.md` on this same class. See [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]]
 
 # Adr
 - [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]
   - Selected variant: `AbstractValidator<Soft{ValueObject}>`, not `PropertyValidator<T,TProperty>` — the latter cannot be resolved generically as `IValidator<Soft{ValueObject}>` by another module through DI
 - [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/dto-validators-only-for-request-dtos|DTO validators only for RequestDto by default]]
   - Selected variant: validators created by default only for RequestDto; ResponseDto validators only when explicitly required
+- [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]]
+  - Selected variant: `{Feature}Check.cs.create.md` leaves `Load` unimplemented; `solution-repository-integration` supplies the concrete body via a `{Feature}Check.cs.extend.md` targeting the same class
 
 # Requirements
 SOLUTION:
@@ -126,4 +129,5 @@ sequenceDiagram
 - [ ] Every validator is registered via `AddValidatorsFromAssembly`
 - [ ] ResponseDto has a validator only when an explicit requirement exists
 - [ ] Every `{Feature}Check` loads data and checks its condition in the same class, no comparison duplicated elsewhere
+- [ ] `{Feature}Check.cs.create.md`'s `Load` does not reference a concrete data-loading abstraction — that is left to the persistence-introducing solution's `.extend.md`
 - [ ] Other modules resolve validators through `IValidator<T>`, never by referencing this module's `Application` types

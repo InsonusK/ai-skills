@@ -16,7 +16,7 @@ tags:
 - Loading is this class's job — a `{Dto}Validator`/`{ValueObject}PropertyValidator` never performs I/O
 - The condition is written locally in this class, alongside the loading step — this solution owns it and does not require a shared rules abstraction. The owning Entity's own method (`solution-domain-behaviour`) enforces the same invariant independently, as the authoritative backstop; keeping the two conditions in agreement is a manual concern today (see Boundaries in the parent solution)
 - `CustomAsync`, not `MustAsync` alone spread across the validator body — the whole loading-and-checking method lives in this DI-injected class, not inline in the validator, so it can be tested in isolation
-- This solution's own `built_on_plateau` (`plateau-stateless-non-interactive-service`) has no repository or other data-loading abstraction yet — `{Feature}Check` only has something to load from once the module has one (e.g. `IReadRepository<T>`, added by `solution-repository-integration`, composed in `plateau-statefull-service`). The worked example below injects `IReadRepository<T>` to show the concrete shape; treat it as illustrative until that abstraction actually exists in the module you're applying this to
+- This class defines the *shape* only: a DI-injected wrapper with a `Load` step and a `CheckAsync` step, wired via `CustomAsync`. It never assumes a specific data-loading abstraction — `Load` has nothing to load from until a solution that introduces one (e.g. `solution-repository-integration`'s `IReadRepository<T>`) is composed on top and supplies its own `.extend.md` for this same class. See [[../../solution-dto-property-validators.skill.md#Boundaries|Boundaries]] in the parent solution
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -25,21 +25,19 @@ tags:
 
 # Implementation changes
 
-Worked example (`AccountModule`, hypothetical `Account`/`Transaction`) — preload, then check locally:
+Worked example (`AccountModule`, hypothetical `Account`/`Transaction`) — shape only, no data-loading abstraction assumed:
 
 ```csharp
 // {Module}.Application/Validators/Async/TransactionWithdrawalCheck.cs
-public sealed class TransactionWithdrawalCheck(IReadRepository<Transaction> transactionRepository)
+public sealed class TransactionWithdrawalCheck
 {
-    private async Task<(decimal Balance, decimal Amount)?> Load(UpdateTransactionAmountCommand cmd, CancellationToken ct)
+    private Task<(decimal Balance, decimal Amount)?> Load(UpdateTransactionAmountCommand cmd, CancellationToken ct)
     {
-        var transaction = await transactionRepository.FirstOrDefaultAsync(
-            new TransactionByIdWithAccountSpec(cmd.TransactionId), ct);
-
-        if (transaction?.Account is null)
-            return null; // existence is a different check, not this one
-
-        return (transaction.Account.Balance, cmd.Payload.NewAmount - transaction.Amount);
+        // No data-loading abstraction is assumed by this solution. A solution that introduces one
+        // (e.g. IReadRepository<T> from solution-repository-integration) implements this method
+        // via its own {Feature}Check.cs.extend.md — see that solution for the concrete realization.
+        throw new NotSupportedException(
+            "TransactionWithdrawalCheck has no data-loading abstraction composed yet.");
     }
 
     // Signature for FluentValidation CustomAsync: (value, ValidationContext, CancellationToken) -> Task.
@@ -68,7 +66,7 @@ public sealed class UpdateTransactionAmountValidator : AbstractValidator<UpdateT
 }
 ```
 
-This runs in the pipeline **before** the Handler — the client gets the rejection without the Handler running. The Handler's own preload and the Entity method's own check remain the authoritative backstop: a second Handler, a background job, or a future caller that bypasses this validator still runs into the same condition inside the Entity.
+This runs in the pipeline **before** the Handler — once `Load` has something real to load from, the client gets the rejection without the Handler running. The Handler's own preload and the Entity method's own check remain the authoritative backstop: a second Handler, a background job, or a future caller that bypasses this validator still runs into the same condition inside the Entity.
 
 # Rule changes
 
@@ -76,6 +74,9 @@ This runs in the pipeline **before** the Handler — the client gets the rejecti
 - Load data only inside this class
 - Own its condition locally in this class, next to the loading step
 - Be wired into its Command validator via `RuleFor(x => x).CustomAsync(...)`
+- Never inject or reference a specific data-loading abstraction (e.g. `IReadRepository<T>`) directly in this file.
+  - Risk: baking a concrete repository type into the base pattern makes this file depend on a plateau this solution does not itself require, and duplicates/contradicts whatever the persistence-introducing solution's `.extend.md` later supplies for the same class.
+  - Fix: leave `Load` unimplemented (throwing, as above) here; let the solution that introduces persistence supply the concrete body via its own `{Feature}Check.cs.extend.md`.
 
 ## SHOULD
 - Return early (no failure added) when the data needed to run the check could not be loaded at all — existence is a separate check, not this one
@@ -84,6 +85,7 @@ This runs in the pipeline **before** the Handler — the client gets the rejecti
 - [ ] `{Feature}Check` loads data, then checks it locally — the loading step and the condition live in the same class
 - [ ] Wired via `RuleFor(x => x).CustomAsync(check.CheckAsync)`
 - [ ] The same condition's Entity-side enforcement (via `solution-domain-behaviour`) still runs, independent of this validator
+- [ ] `Load` does not reference a concrete data-loading abstraction unless this file is being extended by the solution that introduces one
 
 # Unittest TestCases
 - [ ] WHEN the preloaded data fails the condition THEN a validation error is added to the ValidationContext

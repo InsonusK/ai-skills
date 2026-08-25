@@ -5,13 +5,19 @@ whenToUse: when adding or editing a cross-cutting interface/primitive in Shared,
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/csproj
   - plateau/shared-rules
 created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]"
+  - "[[../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]]"
+  - "[[../../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
   - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
@@ -27,6 +33,7 @@ __Applied solutions:__
 - Shared defines common interfaces and primitives — it has no implementations beyond lightweight result/contract helpers
 - Shared has no dependencies on any other project in this solution
 - Any project at any layer may depend on Shared
+- This plateau composes `plateau-statefull-service` as its parent, so the repository/unit-of-work/concurrency/Guid/timestamp contracts below are inherited unchanged, not re-derived here
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
@@ -45,24 +52,24 @@ __Applied solutions:__
     - IDomainEvent.cs
   - /MediatR
     - [ICommand.cs](./classes/plateau-shared-rules--class-i-command.skill.md)
-    - IQuery.cs (still a placeholder — a future `solution-query-integration` fills it in)
+    - [IQuery.cs](./classes/plateau-shared-rules--class-i-query.skill.md)
   - /Repositories
-    - IRepository.cs
-    - IReadRepository.cs
+    - [IRepository.cs, IReadRepository.cs](./classes/plateau-shared-rules--class-i-repository.skill.md)
   - /Results
+    - [ConflictResult.cs](./classes/plateau-shared-rules--class-guid-contracts.skill.md)
   - /UnitOfWork
-    - IUnitOfWork.cs
+    - [IUnitOfWork.cs](./classes/plateau-shared-rules--class-i-unit-of-work.skill.md)
   - /Outbox
     - IHasDomainEvents.cs
   - /Concurrency
-    - IVersioned.cs
-    - IHasVersions.cs
-    - IEntityVersionResolver.cs
+    - [IVersioned.cs, IHasVersions.cs, IEntityVersionResolverFactory.cs, IEntityVersionResolver.cs](./classes/plateau-shared-rules--class-concurrency-contracts.skill.md)
+  - /Guid
+    - [IHasGuid.cs, IGuidResolver.cs](./classes/plateau-shared-rules--class-guid-contracts.skill.md)
+  - /Timestamps
+    - [ICreationInfoModel(ReadOnly).cs, IUpdateInfoModel(ReadOnly).cs, ICommandWithTimestamp.cs](./classes/plateau-shared-rules--class-timestamp-contracts.skill.md)
   - /Exceptions
     - [EntityNotLoadedException.cs](./classes/plateau-shared-rules--class-entity-not-loaded-exception.skill.md)
   - Shared.csproj
-
-Guid/external-created-entity primitives (`IHasGuid.cs`, `IGuidResolver.cs`, `/Results/ConflictResult.cs`) are not part of this plateau — they belong to `solution-external-created-entity`, not yet composed here.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
@@ -89,9 +96,9 @@ __Applied solutions:__
 ## NuGet Packages
 | Package | Version constraint | Purpose |
 | --- | --- | --- |
-| `MediatR` | latest stable | Provides `IRequest<T>` that `ICommand<T>` extends |
-
-`Ardalis.Result` is not referenced here — `solution-external-created-entity` is what needs it, not yet composed in.
+| `MediatR` | latest stable | Provides `IRequest<T>` that `ICommand<T>`/`IQuery<T>` extend |
+| `Ardalis.Result` | latest stable | Provides `Result<T>` that `ConflictResult<T>` extends |
+| `Ardalis.Specification` | latest stable | Provides `IReadRepositoryBase<T>`/`IRepositoryBase<T>` that `IReadRepository<T>`/`IRepository<T>` wrap |
 
 ## What Does NOT Belong Here
 - Business logic — belongs to Domain

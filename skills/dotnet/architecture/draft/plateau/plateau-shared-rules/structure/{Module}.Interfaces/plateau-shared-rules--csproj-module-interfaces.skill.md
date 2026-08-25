@@ -5,7 +5,7 @@ whenToUse: when adding or editing a command, query, DTO, or event contract in {M
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/csproj
   - plateau/shared-rules
@@ -13,6 +13,10 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]]"
   - "[[../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]]"
+  - "[[../../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
@@ -45,7 +49,9 @@ __Applied solutions:__
   - /Commands
     - [{Command}.cs](./classes/plateau-shared-rules--class-command.skill.md)
   - /Queries
+    - [{Query}.cs](./classes/plateau-shared-rules--class-query.skill.md)
   - /DTOs
+    - [{Dto}.cs](./classes/plateau-shared-rules--class-query.skill.md)
   - /Events
   - /ValueObjects
     - [Soft{ValueObject}.cs](./classes/plateau-shared-rules--class-soft-value-object.skill.md)
@@ -55,8 +61,8 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Commands | Write intent contracts | [[./classes/plateau-shared-rules--class-command.skill.md\|class-command]] |
-| /Queries | Read intent contracts | |
-| /DTOs | Response shapes | |
+| /Queries | Read intent contracts | [[./classes/plateau-shared-rules--class-query.skill.md\|class-query]] |
+| /DTOs | Response shapes | [[./classes/plateau-shared-rules--class-query.skill.md\|class-query]] |
 | /Events | Integration event contracts | |
 | /ValueObjects | Permissive, validation-agnostic value-object records | [[./classes/plateau-shared-rules--class-soft-value-object.skill.md\|class-soft-value-object]] |
 
@@ -78,7 +84,7 @@ __Applied solutions:__
 MUST:
 - Interfaces contains only declarations — records, interfaces, DTOs
 - All commands, queries, and integration events declared here
-- All commands implement `ICommand<T>` (or `ICommand` when no payload is returned) from Shared, declared in `/Commands`
+- All commands implement `ICommand<Result<T>>` from Shared, declared in `/Commands`
 - `Soft{ValueObject}` types declared in `/ValueObjects`, validation-agnostic
 MUST NOT:
 - Interfaces reference Domain, Application, or any infrastructure project
@@ -93,7 +99,7 @@ __Applied solutions:__
 - [ ] /Commands, /Queries, /DTOs, /Events, /ValueObjects folders exist
 - [ ] Interfaces.csproj references only Shared
 - [ ] No implementation code in any file
-- [ ] Every command implements `ICommand<T>` (or `ICommand` when no payload is returned)
+- [ ] Every command implements `ICommand<Result<T>>`
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj.create]]
