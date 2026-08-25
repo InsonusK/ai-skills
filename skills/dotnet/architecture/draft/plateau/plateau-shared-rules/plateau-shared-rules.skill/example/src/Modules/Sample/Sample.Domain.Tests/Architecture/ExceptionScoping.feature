@@ -1,10 +1,10 @@
-# This feature is documentary only — no step definitions bind to it.
-# The actual proof is DomainException_IsThrownOnlyFromValueObjectsOrEntities,
-# in SampleArchitectureTests.cs, in this same folder.
+Feature: Exception scoping
 
-Feature: DomainException is thrown only from ValueObjects or Entities
+  DomainException is a ValueObject/Entity concern. It must only be constructed inside
+  Sample.Domain.ValueObjects or Sample.Domain.Entities, never from application handlers,
+  validators, pipeline behaviors, or infrastructure adapters.
 
   Scenario: DomainException_IsThrownOnlyFromValueObjectsOrEntities
-    DomainException represents an invariant violation. It must only be constructed
-    from ValueObjects or Entities so that the rest of the application cannot
-    bypass the domain layer's own guard.
+    Given the compiled Sample.Domain assembly is loaded
+    When every type outside ValueObjects and Entities is scanned for DomainException construction
+    Then no violating type or method is found

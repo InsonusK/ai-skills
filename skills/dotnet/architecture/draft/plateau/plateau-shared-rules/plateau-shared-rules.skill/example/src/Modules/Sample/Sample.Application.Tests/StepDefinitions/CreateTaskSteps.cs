@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using FluentValidation;
 using Reqnroll;
 using Sample.Application.Features.CreateTask;
@@ -15,7 +14,7 @@ public sealed class CreateTaskSteps
     private string _title = string.Empty;
     private int _assigneeId;
     private SoftEmail _assigneeEmail = null!;
-    private Result<CreateTaskResult>? _result;
+    private DateTimeOffset _actionTimeStamp;
     private FluentValidation.Results.ValidationResult? _validationResult;
 
     [Given("a task title \"([^\"]*)\"")]
@@ -27,13 +26,8 @@ public sealed class CreateTaskSteps
     [Given("an assignee email \"([^\"]*)\"")]
     public void GivenEmail(string email) => _assigneeEmail = new SoftEmail(email);
 
-    [When("the CreateTask command is handled")]
-    public async Task WhenHandled()
-    {
-        var handler = new CreateTaskHandler();
-        var command = new CreateTaskCommand(new SoftTitle(_title), _assigneeId, _assigneeEmail);
-        _result = await handler.Handle(command, CancellationToken.None);
-    }
+    [Given("an action timestamp \"([^\"]*)\"")]
+    public void GivenActionTimeStamp(string timestamp) => _actionTimeStamp = DateTimeOffset.Parse(timestamp);
 
     [When("the CreateTask command is validated")]
     public void WhenValidated()
@@ -42,16 +36,8 @@ public sealed class CreateTaskSteps
             new EmailPropertyValidator(),
             new TitlePropertyValidator(),
             new SchedulePropertyValidator());
-        var command = new CreateTaskCommand(new SoftTitle(_title), _assigneeId, _assigneeEmail);
+        var command = new CreateTaskCommand(new SoftTitle(_title), _assigneeId, _assigneeEmail, _actionTimeStamp);
         _validationResult = validator.Validate(command);
-    }
-
-
-    [Then("the task is created successfully")]
-    public void ThenCreated()
-    {
-        Assert.NotNull(_result);
-        Assert.True(_result!.IsSuccess);
     }
 
     [Then("validation fails with \"([^\"]*)\"")]

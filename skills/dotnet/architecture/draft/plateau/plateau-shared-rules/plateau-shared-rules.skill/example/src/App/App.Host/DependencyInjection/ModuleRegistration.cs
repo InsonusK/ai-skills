@@ -1,3 +1,4 @@
+using App.Queries;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sample.Application;
@@ -11,6 +12,8 @@ public static class ModuleRegistration
         IConfiguration configuration)
     {
         services.RegisterSampleModule(configuration);
+
+        services.RegisterAppQueries();
 
         return services;
     }

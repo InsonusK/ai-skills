@@ -1,10 +1,10 @@
-# This feature is documentary only — no step definitions bind to it.
-# The actual proof is EveryDomainRuleCheck_IsCalledByProductionCodeOutsideRules,
-# in SampleArchitectureTests.cs, in this same folder.
+Feature: Dead rule detection
 
-Feature: Every centralized rule's Check() is actually called by production code
+  Every centralized rule must be called from production code outside Sample.Domain.Rules.
+  A rule that no adapter (ValueObject, Entity, PropertyValidator, DtoValidator) redirects to
+  is dead code and must be removed or wired.
 
   Scenario: EveryDomainRuleCheck_IsCalledByProductionCodeOutsideRules
-    A Check() extension declared in Domain.Rules that no production code outside
-    Domain.Rules ever calls is dead weight — its own scenario proves the predicate
-    is correct, but proves nothing about whether anything actually uses it.
+    Given there are public static Check methods on Sample.Domain.Rules
+    When production code outside Sample.Domain.Rules is scanned for calls to them
+    Then every Check method is called at least once

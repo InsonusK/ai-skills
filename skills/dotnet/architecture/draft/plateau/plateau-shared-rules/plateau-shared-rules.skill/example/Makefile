@@ -1,7 +1,7 @@
 SOLUTION := SharedRules.sln
 CONFIGURATION := Release
 
-.PHONY: restore build run test unit-test mutation-test test-report test-and-report clean
+.PHONY: restore build test unit-test mutation-test test-report test-and-report clean
 
 WITH_CODE_COVERAGE ?= false
 ONLY_DELTA ?= false
@@ -13,9 +13,6 @@ restore:
 
 build: restore
 	dotnet build $(SOLUTION) --configuration $(CONFIGURATION) --no-restore
-
-run: build
-	dotnet run --project src/App/App.Host/App.Host.csproj --configuration $(CONFIGURATION) --no-build
 
 test: unit-test
 

@@ -1,10 +1,11 @@
-# This feature is documentary only — no step definitions bind to it.
-# The actual proof is GuardedProperties_AreOnlyWrittenByMembersThatCallTheirRequiredRuleChecks,
-# in GuardedPropertyRuleCoverageTests.cs, in this same folder.
+Feature: Guarded property rule coverage
 
-Feature: Entity properties guarded by a rule are only written by members that call that rule
+  Every Entity write of a rule-guarded property must be reachable only through a code path
+  that calls the corresponding centralized rule Check. This is enforced by a recursive
+  call-graph walk over compiled IL, with a registry of guarded properties kept in the
+  test project.
 
   Scenario: GuardedProperties_AreOnlyWrittenByMembersThatCallTheirRequiredRuleChecks
-    A rule that checks a property is correct only if every public or internal
-    write to that property actually calls the rule. A single registry entry per
-    guarded property covers every current and future member that writes it.
+    Given the compiled Sample.Domain assembly is loaded
+    When every Entity method that writes a guarded property is analyzed
+    Then each write path calls the required rule Check registered for that property
