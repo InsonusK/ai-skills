@@ -11,6 +11,8 @@ public sealed record Email : SoftEmail
             throw new DomainException("Sample.Email.Invalid", "Email is not valid.");
     }
 
+    private Email() : base(string.Empty) { } // EF Core materialization only
+
     private static bool IsValid(string value) => !string.IsNullOrWhiteSpace(value) && value.Contains('@');
 
     public static implicit operator string(Email email) => email.Value;

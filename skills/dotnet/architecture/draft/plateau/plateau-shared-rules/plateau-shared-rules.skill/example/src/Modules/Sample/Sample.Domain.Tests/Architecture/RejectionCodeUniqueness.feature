@@ -1,10 +1,11 @@
-# This feature is documentary only — no step definitions bind to it.
-# The actual proof is RejectionCodes_AreUniqueAndFollowModuleDotClassDotReasonFormat,
-# in SampleArchitectureTests.cs, in this same folder.
+Feature: Rejection code uniqueness and format
 
-Feature: Rejection codes are unique and follow the Module.Class.Reason format
+  Every rejection code declared by a centralized rule uses the {ModuleName}.{Class}.{Reason}
+  format, is unique across the Sample.Domain.Rules assembly, and is discoverable as a
+  public static string field ending with "Code".
 
   Scenario: RejectionCodes_AreUniqueAndFollowModuleDotClassDotReasonFormat
-    With rejection codes declared next to each rule, the compile-time guarantee
-    that they stay unique and well-formed replaces the old eyeball check against
-    a central registry.
+    Given the compiled Sample.Domain.Rules assembly is loaded
+    When every public static string field ending with Code is collected
+    Then every value matches Module.Class.Reason
+    And no value is duplicated

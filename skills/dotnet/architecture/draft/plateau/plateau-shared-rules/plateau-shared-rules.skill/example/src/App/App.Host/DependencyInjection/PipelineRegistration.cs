@@ -7,11 +7,12 @@ public static class PipelineRegistration
 {
     public static IServiceCollection AddPipeline(this IServiceCollection services)
     {
-        // Global exception handler must be registered first so it wraps all other behaviors.
+        // Order is the contract: each behavior assumes everything before it already ran.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
-
-        // Validation runs next so invalid requests are rejected before any handler runs.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(GuidResolvingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         return services;
     }
