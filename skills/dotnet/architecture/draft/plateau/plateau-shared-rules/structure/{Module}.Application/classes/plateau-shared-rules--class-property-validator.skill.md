@@ -5,12 +5,13 @@ whenToUse: when another module (or this one) needs to validate a Soft{ValueObjec
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
 created_by:
   - "[[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]"
+  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
 # Goal
@@ -36,7 +37,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-property-validator
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 public class EmailPropertyValidator : AbstractValidator<SoftEmail>
 {
@@ -50,9 +51,19 @@ public class EmailPropertyValidator : AbstractValidator<SoftEmail>
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs.create]]
 
-## Once the same condition is duplicated elsewhere: redirect to a centralized rule
+## Once the same condition is duplicated elsewhere: redirect to the centralized IRuleBuilder extension
 
-Optional, applied only once the same predicate is found duplicated in `{ValueObject}.cs`'s own VO constructor. Local `.Must(...)`/`.WithMessage(...)` deleted, not kept alongside:
+Optional, applied only once the same condition is found to duplicate `{ValueObject}`'s own constructor check. Before (local condition, per `solution-dto-property-validators`):
+
+```csharp
+public class ComplexityPropertyValidator : AbstractValidator<SoftComplexity>
+{
+    public ComplexityPropertyValidator()
+        => RuleFor(x => x.Value).GreaterThanOrEqualTo(0).WithMessage("Complexity must be non-negative.");
+}
+```
+
+After (redirected to the centralized `IRuleBuilder` extension from `{Module}.Domain.Rules`):
 
 ```csharp
 public class ComplexityPropertyValidator : AbstractValidator<SoftComplexity>
@@ -61,7 +72,7 @@ public class ComplexityPropertyValidator : AbstractValidator<SoftComplexity>
 }
 ```
 
-`ErrorCode`/`Message`/`State` now come from the same `IRuleBuilder` extension `{ValueObject}.cs`'s `Check()` also uses. See [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] and its [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md|{ValueObject}PropertyValidator.cs.extend]].
+The local `.Must(...)`/`.WithMessage(...)` chain is deleted — `ErrorCode`/`Message`/`State` now come from the same extension `{ValueObject}.cs`'s `Check()` also uses. See [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] and its [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md|{ValueObject}PropertyValidator.cs.extend]].
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md|{ValueObject}PropertyValidator.cs.extend]]
@@ -71,12 +82,14 @@ MUST:
 - Extend `AbstractValidator<Soft{ValueObject}>`
 - Be named `{ValueObject}PropertyValidator`, live in `/{Module}.Application/Validators/Property`
 - Own its own condition — declared and checkable in this file alone
+- Call the centralized `{ValueObject}IsValid()` extension instead of a local `Must(...)`, once redirected — delete the local condition, never keep both
 MUST NOT:
 - Inject repositories or services
 - Throw exceptions
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs.create]]
+- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md|{ValueObject}PropertyValidator.cs.extend]]
 
 # Check list
 - [ ] Extends `AbstractValidator<Soft{ValueObject}>`, lives in `/Validators/Property`

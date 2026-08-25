@@ -5,7 +5,7 @@ whenToUse: when a DTO, Command, or another module needs a value-object-shaped va
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
@@ -37,7 +37,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-soft-value-object
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 public record SoftEmail(string Value);
 

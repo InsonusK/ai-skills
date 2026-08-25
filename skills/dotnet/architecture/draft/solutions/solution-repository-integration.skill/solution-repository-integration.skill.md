@@ -3,7 +3,7 @@ name: solution-repository-integration
 description: Merges the Ardalis Specification pattern with repository abstractions — defines IReadRepository<T> and IRepository<T> as thin wrappers around Ardalis base interfaces in Shared, provides a generic Repository<T> implementation in App.Infrastructure inheriting Ardalis.RepositoryBase<T>, and governs specification placement across Application and App.Queries
 domain: skill
 type: architecture
-version: 20260611
+version: 20260824
 tags:
   - skill/architecture/solution
   - stack/dotnet
@@ -43,6 +43,7 @@ extends:
   - App.Host.csproj
   - "{Module}.Application.csproj"
   - "{Module}.Domain.csproj"
+  - "{Module}.Application.Validators.Async.{Feature}Check.cs"
 depends_on:
   - "[[skills/dotnet/architecture/draft/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]"
 built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
@@ -84,6 +85,8 @@ SOLUTION:
 - [[skills/dotnet/architecture/draft/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]
   - [[skills/dotnet/architecture/draft/solutions/solution-infrastructure-project.skill/Implementation/App.Infrastructure.csproj.create|App.Infrastructure.csproj]] - hosts generic `Repository<T>` implementation
   - [[skills/dotnet/architecture/draft/solutions/solution-infrastructure-project.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - hosts `AddInfrastructure()`, extended here for repository DI registration
+- [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create|{Feature}Check.cs]] - the abstract shape this solution gives a concrete `Load` body to, once composed together
 
 NUGET:
 - `Ardalis.Specification` {version} - provides `ISpecification<T>`, `Specification<T>`, `IReadRepositoryBase<T>`, `IRepositoryBase<T>`
@@ -103,6 +106,7 @@ PROJECT:
 - [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - extend - Enforce repository usage in handlers and host all specifications
   - [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create|{Entity}ByIdSpec.cs]] - create - Example single-condition spec loading entity by Id
   - [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create|{Entity}SummarySpec.cs]] - create - Example Application projection spec
+  - [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend|{Feature}Check.cs]] - extend - Give `solution-dto-property-validators`'s `{Feature}Check.Load` a real `IReadRepository<T>` implementation
 
 # Rules
 
@@ -118,6 +122,7 @@ PROJECT:
 - [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend#MUST|{Module}.Application.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create#MUST|{Entity}ByIdSpec.cs]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create#MUST|{Entity}SummarySpec.cs]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend#MUST|{Feature}Check.cs]]
 
 ## MUST NOT:
 - [[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
@@ -143,6 +148,7 @@ PROJECT:
 - Business rule inside spec: `Where(t => t.Price * 0.9m > threshold)` — rule belongs in Domain, not spec
 - Specs scattered across Domain and Application — all specs belong in Application
 - Cross-module JOIN spec placed in a module's Application — App.Queries is the only correct location
+- `{Feature}Check.Load` still throwing `NotSupportedException` once this solution is composed — the stub must be replaced, not left alongside a working `IReadRepository<T>` elsewhere in the module
 
 # Check list
 - [ ] `AppDbContext` defined in `App.Infrastructure/Persistence`, applies every module's configurations via `ApplyConfigurationsFromAssembly`
@@ -167,3 +173,4 @@ PROJECT:
 - [ ] All entity filter specs use `Specification<T>`
 - [ ] No inline LINQ in any handler
 - [ ] Spec names reflect intent — not field names or implementation detail
+- [ ] Every `{Feature}Check` composed alongside this solution has its `Load` implemented via `IReadRepository<T>` and a named spec — no `NotSupportedException` stub left in place

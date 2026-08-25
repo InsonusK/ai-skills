@@ -5,7 +5,7 @@ whenToUse: when adding or editing a reusable framework-level pattern (pipeline b
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/csproj
   - plateau/shared-rules
@@ -13,6 +13,9 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
   - "[[../../../../solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
 ---
 
 # Goal
@@ -46,7 +49,14 @@ __Applied solutions:__
   - /MediatR
     - [ExceptionHandlingBehavior.cs](./classes/plateau-shared-rules--class-exception-handling-behavior.skill.md)
     - [ValidationBehavior.cs](./classes/plateau-shared-rules--class-validation-behavior.skill.md)
+    - [ConcurrencyBehavior.cs](./classes/plateau-shared-rules--class-concurrency-behavior.skill.md)
+    - [UnitOfWorkContext.cs, UnitOfWorkBehavior.cs](./classes/plateau-shared-rules--class-unit-of-work-behavior.skill.md)
+    - [GuidResolvingBehavior.cs](./classes/plateau-shared-rules--class-guid-resolving-behavior.skill.md)
+  - /Concurrency
+    - [ETagEncoder.cs](./classes/plateau-shared-rules--class-concurrency-behavior.skill.md)
   - BuildingBlocks.csproj
+
+Pipeline order in `AddPipeline()`: `ExceptionHandlingBehavior` → `ValidationBehavior` → `ConcurrencyBehavior` → `GuidResolvingBehavior` → `UnitOfWorkBehavior`.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/BuildingBlocks.csproj.create.md|BuildingBlocks.csproj.create]]
@@ -59,6 +69,10 @@ __Applied solutions:__
 | /MediatR | Pipeline behavior implementations and context | |
 | ExceptionHandlingBehavior.cs | Catches unhandled exceptions, returns a generic `Result.Error` | [[./classes/plateau-shared-rules--class-exception-handling-behavior.skill.md\|class-exception-handling-behavior]] |
 | ValidationBehavior.cs | Collects FluentValidation errors, returns `Result.Invalid` | [[./classes/plateau-shared-rules--class-validation-behavior.skill.md\|class-validation-behavior]] |
+| ConcurrencyBehavior.cs | Validates `IHasVersions` expected versions, returns `Result.Conflict` on mismatch | [[./classes/plateau-shared-rules--class-concurrency-behavior.skill.md\|class-concurrency-behavior]] |
+| UnitOfWorkContext.cs, UnitOfWorkBehavior.cs | Commits staged changes once per top-level command | [[./classes/plateau-shared-rules--class-unit-of-work-behavior.skill.md\|class-unit-of-work-behavior]] |
+| GuidResolvingBehavior.cs | Short-circuits on a duplicate client-generated `Guid` | [[./classes/plateau-shared-rules--class-guid-resolving-behavior.skill.md\|class-guid-resolving-behavior]] |
+| /Concurrency/ETagEncoder.cs | Base64 JSON version encoding, unused until an HTTP API layer exists | [[./classes/plateau-shared-rules--class-concurrency-behavior.skill.md\|class-concurrency-behavior]] |
 
 __Applied solutions:__
 - [[../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]] - [[../../../../solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj.extend]]

@@ -5,12 +5,13 @@ whenToUse: when a Command validator needs to reject an invalid request before th
 domain: skill
 type: template
 plateau: statefull-service
-version: 20260824100000
+version: 20260824161000
 tags:
   - skill/template/class
   - plateau/statefull-service
 created_by:
   - "[[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]"
+  - "[[../../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
 ---
 
 # Goal
@@ -23,9 +24,11 @@ __Applied solutions:__
 - Loading is this class's job — a `{Dto}Validator`/`{ValueObject}PropertyValidator` never performs I/O
 - The condition is written locally in this class, alongside the loading step — the owning Entity's own method (`solution-domain-behaviour`) enforces the same invariant independently, as the authoritative backstop
 - Wired into the pipeline via `CustomAsync`, not `MustAsync` spread across the validator body
+- `Load` injects `IReadRepository<T>` and queries through a named spec — never `DbContext`, never inline LINQ. This is the concrete realization of the shape `solution-dto-property-validators` defines: only `Load` and the constructor change, `CheckAsync` is untouched
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs.create]]
+- [[../../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[../../../../../solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md|{Feature}Check.cs.extend]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -36,7 +39,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-feature-check
 //Plateau: statefull-service
-//Version: 20260824100000
+//Version: 20260824161000
 
 public sealed class TransactionWithdrawalCheck(IReadRepository<Transaction> transactionRepository)
 {
@@ -68,22 +71,27 @@ Wired into the Command validator: `RuleFor(x => x).CustomAsync(check.CheckAsync)
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs.create]]
+- [[../../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[../../../../../solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md|{Feature}Check.cs.extend]]
 
 # Rules
 MUST:
 - Load data only inside this class, live in `/{Module}.Application/Validators/Async`
 - Own its condition locally in this class, next to the loading step
 - Be wired into its Command validator via `RuleFor(x => x).CustomAsync(...)`
+- Inject `IReadRepository<T>` for the entity this check needs, query through a named spec — never `DbContext`, never inline LINQ
 SHOULD:
 - Return early (no failure added) when the data needed to run the check could not be loaded at all
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs.create]]
+- [[../../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[../../../../../solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md|{Feature}Check.cs.extend]]
 
 # Check list
 - [ ] Loads data, then checks it locally, in the same class
 - [ ] Wired via `RuleFor(x => x).CustomAsync(check.CheckAsync)`
 - [ ] The same condition's Entity-side enforcement still runs, independent of this check
+- [ ] `Load` injects `IReadRepository<T>` and queries through a named spec — no `NotSupportedException` stub remains
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs.create]]
+- [[../../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]] - [[../../../../../solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md|{Feature}Check.cs.extend]]

@@ -4,7 +4,7 @@ description: Composes the validated-module-interaction plateau with real persist
 whenToUse: when a module needs to actually persist and read back entities — or when reviewing whether AppDbContext, Repository<T>, UnitOfWork, concurrency control, idempotent creation, or timestamp assignment follow this baseline
 domain: skill
 type: template
-version: 20260824100000
+version: 20260824161000
 tags:
   - skill/template/plateau
   - plateau/statefull-service
@@ -42,6 +42,7 @@ Give a module real, durable persistence and reads, on top of everything the vali
 - Timestamps: the user may only supply `ActionTimeStamp` (validated in the command validator); the handler assigns `UserCreatedDateTime`/`UserUpdatedDateTime`; only `AppDbContext.OnBeforeSaving` assigns `ServerCreatedDateTime`/`ServerUpdatedDateTime` — the two are never assigned from the same code path. See [[../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]].
 - Reads: a single-module read uses `IReadRepository<T>` + a named spec, in `{Module}.Application/Queries`; a cross-module read uses `AppDbContext` directly with `AsNoTracking()`, in `App.Queries` — the only project allowed to reference every module's entity types at once. See [[../../../solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]].
 - Pipeline order is now: `ExceptionHandlingBehavior` → `ValidationBehavior` → `ConcurrencyBehavior` → `GuidResolvingBehavior` → `UnitOfWorkBehavior`. Each behavior assumes everything before it already passed.
+- Cross-aggregate validation completed: `{Feature}Check` (from `solution-dto-property-validators`, inherited) had its `Load` step deliberately left throwing in every shallower plateau — `solution-repository-integration` now gives it a real `IReadRepository<T>`-based implementation via its own `{Feature}Check.cs.extend.md` targeting the same class. `CheckAsync` itself is untouched. See [[../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]].
 - Not standalone: `standalone: false` — still no HTTP API surface (see `plateau-service-with-api`), so nothing external can reach a command except a test or another module's mediator call. Persistence alone does not make a service deployable.
 
 # Capabilities

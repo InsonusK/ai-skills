@@ -5,7 +5,7 @@ whenToUse: when entity behavior logic grows too large or multi-step to stay read
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
@@ -38,7 +38,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-behavior-service
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 public static class OrderPricingService
 {

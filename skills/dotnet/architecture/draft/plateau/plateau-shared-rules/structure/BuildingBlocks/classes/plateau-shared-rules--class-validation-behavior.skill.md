@@ -5,7 +5,7 @@ whenToUse: when reviewing or changing how any MediatR request gets validated bef
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
@@ -39,7 +39,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-validation-behavior
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 public class ValidationBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>

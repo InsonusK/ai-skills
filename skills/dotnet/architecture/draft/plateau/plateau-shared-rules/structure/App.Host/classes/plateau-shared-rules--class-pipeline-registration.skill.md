@@ -5,13 +5,17 @@ whenToUse: when creating or editing PipelineRegistration, or adding a new pipeli
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
 created_by:
   - "[[../../../../../solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]]"
   - "[[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
+  - "[[../../../../../solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]"
+  - "[[../../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
 ---
 
 # Goal
@@ -42,7 +46,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-pipeline-registration
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 // App.Host/DependencyInjection/PipelineRegistration.cs
 using BuildingBlocks.MediatR;
@@ -54,16 +58,18 @@ public static class PipelineRegistration
 {
     public static IServiceCollection AddPipeline(this IServiceCollection services)
     {
-        // Global exception handler must be registered first so it wraps all other behaviors.
+        // Order is the contract: each behavior assumes everything before it already ran.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
-
-        // Further behavior solutions (validation, concurrency, unit-of-work, ...)
-        // extend this method to append their own registration here, in order.
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(GuidResolvingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         return services;
     }
 }
 ```
+Order: `ExceptionHandlingBehavior` → `ValidationBehavior` → `ConcurrencyBehavior` → `GuidResolvingBehavior` → `UnitOfWorkBehavior`. Each later behavior assumes everything before it already passed — concurrency/Guid checks run only on already-valid input, and the unit of work commits only once every earlier gate has let the request through.
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]] - [[../../../../../solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md|PipelineRegistration.cs.create]]

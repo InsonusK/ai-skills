@@ -5,7 +5,7 @@ whenToUse: when adding or editing a handler, validator, or specification in {Mod
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/csproj
   - plateau/shared-rules
@@ -13,6 +13,10 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]"
   - "[[../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]"
+  - "[[../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]]"
   - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
@@ -33,6 +37,8 @@ __Applied solutions:__
 - One feature folder per write operation under `/Features` — handler and its transport-correctness validator co-located
 - `/Validators/Property` and `/Validators/Model` hold the reusable, cross-module-resolvable field/DTO validators — distinct from the per-command validator under `/Features/{FeatureName}`, which composes them via `SetValidator` rather than duplicating them
 - Each module exposes one `Register{ModuleName}Module()` extension method; pipeline behaviors are NOT registered here — that is App.Host's responsibility
+- This plateau composes `plateau-statefull-service` as its parent, so `/Specifications`, `/Concurrency`, `/Resolvers`, and `/Queries` below are inherited unchanged, not re-derived here
+- `{Module}.Domain.Rules` — new at this plateau, referenced only once a condition has actually been centralized (see `class-dto-validator`/`class-property-validator`/`class-feature-check`)
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj.create]]
@@ -59,7 +65,15 @@ __Applied solutions:__
       - [{Dto}.Validator.cs](./classes/plateau-shared-rules--class-dto-validator.skill.md)
     - /Async
       - [{Feature}Check.cs](./classes/plateau-shared-rules--class-feature-check.skill.md)
+  - /Queries
+    - /{FeatureName}
+      - [{FeatureName}.Handler.cs](./classes/plateau-shared-rules--class-query-handler.skill.md)
   - /Specifications
+    - [{Entity}ByIdSpec.cs, {Entity}SummarySpec.cs, {Entity}ByGuidSpec.cs](./classes/plateau-shared-rules--class-specification.skill.md)
+  - /Concurrency
+    - [{Entity}VersionResolver.cs](./classes/plateau-shared-rules--class-entity-version-resolver.skill.md)
+  - /Resolvers
+    - [Create{Entity}GuidResolver.cs](./classes/plateau-shared-rules--class-guid-resolver.skill.md)
   - [{Module}ApplicationRegistration.cs](./classes/plateau-shared-rules--class-module-application-registration.skill.md)
   - {Module}.Application.csproj
 
@@ -70,8 +84,11 @@ __Applied solutions:__
 | /Validators/Property | Reusable `Soft{ValueObject}` validators, resolvable cross-module | [[./classes/plateau-shared-rules--class-property-validator.skill.md\|class-property-validator]] |
 | /Validators/Model | Reusable RequestDto validators, resolvable cross-module | [[./classes/plateau-shared-rules--class-dto-validator.skill.md\|class-dto-validator]] |
 | /Validators/Async | DI-injected async cross-aggregate checks | [[./classes/plateau-shared-rules--class-feature-check.skill.md\|class-feature-check]] |
-| /Specifications | Query specifications | |
-| {Module}ApplicationRegistration.cs | Module DI self-registration (handlers + validators via assembly scan) | [[./classes/plateau-shared-rules--class-module-application-registration.skill.md\|class-module-application-registration]] |
+| /Queries/{FeatureName} | Single-module read handler (+ optional validator) | [[./classes/plateau-shared-rules--class-query-handler.skill.md\|class-query-handler]] |
+| /Specifications | Named query specs — by-id, by-Guid, projection | [[./classes/plateau-shared-rules--class-specification.skill.md\|class-specification]] |
+| /Concurrency | Per-entity version resolvers used by `ConcurrencyBehavior` | [[./classes/plateau-shared-rules--class-entity-version-resolver.skill.md\|class-entity-version-resolver]] |
+| /Resolvers | Per-entity Guid resolvers used by `GuidResolvingBehavior` | [[./classes/plateau-shared-rules--class-guid-resolver.skill.md\|class-guid-resolver]] |
+| {Module}ApplicationRegistration.cs | Module DI self-registration (handlers + validators + resolvers via assembly scan) | [[./classes/plateau-shared-rules--class-module-application-registration.skill.md\|class-module-application-registration]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -84,7 +101,7 @@ __Applied solutions:__
 ## Allowed Dependencies
 - {Module}.Interfaces (own module)
 - {Module}.Domain (own module)
-- {Module}.Domain.Rules — new at this plateau, only once a condition has actually been centralized
+- {Module}.Domain.Rules — only once a condition has actually been centralized
 - {OtherModule}.Interfaces (other modules — contracts only)
 - Shared
 

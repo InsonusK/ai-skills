@@ -5,13 +5,14 @@ whenToUse: when creating or editing ModuleRegistration, or wiring up a newly add
 domain: skill
 type: template
 plateau: shared-rules
-version: 20260824150000
+version: 20260824163000
 tags:
   - skill/template/class
   - plateau/shared-rules
 created_by:
   - "[[../../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]"
+  - "[[../../../../../solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]]"
 ---
 
 # Goal
@@ -41,7 +42,7 @@ __Applied solutions:__
 ```csharp
 //Skill: class-module-registration
 //Plateau: shared-rules
-//Version: 20260824150000
+//Version: 20260824163000
 
 // App.Host/DependencyInjection/ModuleRegistration.cs
 using Microsoft.Extensions.Configuration;
@@ -57,6 +58,8 @@ public static class ModuleRegistration
     {
         services.Register{ModuleName}Module(configuration);
         // register additional modules here
+
+        services.RegisterAppQueries(); // cross-module query handlers, always last — see App.Queries
 
         return services;
     }

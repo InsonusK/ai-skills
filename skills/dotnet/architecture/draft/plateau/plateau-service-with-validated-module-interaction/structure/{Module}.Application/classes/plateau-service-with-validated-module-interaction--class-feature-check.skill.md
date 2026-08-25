@@ -5,7 +5,7 @@ whenToUse: when a Command validator needs to reject an invalid request before th
 domain: skill
 type: template
 plateau: service-with-validated-module-interaction
-version: 20260822140000
+version: 20260824160000
 tags:
   - skill/template/class
   - plateau/service-with-validated-module-interaction
@@ -23,7 +23,7 @@ __Applied solutions:__
 - Loading is this class's job — a `{Dto}Validator`/`{ValueObject}PropertyValidator` never performs I/O
 - The condition is written locally in this class, alongside the loading step — the owning Entity's own method (`solution-domain-behaviour`) enforces the same invariant independently, as the authoritative backstop
 - Wired into the pipeline via `CustomAsync`, not `MustAsync` spread across the validator body
-- This plateau has no repository or other data-loading abstraction yet — the worked example below injects `IReadRepository<T>` for concreteness, but that interface is only added once `solution-repository-integration` is composed on top (in `plateau-statefull-service`). Until then this class has nothing to load from and is a documented pattern, not a usable capability
+- This class defines the shape only — `Load` deliberately throws `NotSupportedException` here. This plateau has no repository or other data-loading abstraction; a persistence-introducing plateau (`plateau-statefull-service`, via `solution-repository-integration`) gives `Load` a real implementation on top of this same class
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs.create]]
@@ -37,19 +37,17 @@ __Applied solutions:__
 ```csharp
 //Skill: class-feature-check
 //Plateau: service-with-validated-module-interaction
-//Version: 20260822140000
+//Version: 20260824160000
 
-public sealed class TransactionWithdrawalCheck(IReadRepository<Transaction> transactionRepository)
+public sealed class TransactionWithdrawalCheck
 {
-    private async Task<(decimal Balance, decimal Amount)?> Load(UpdateTransactionAmountCommand cmd, CancellationToken ct)
+    private Task<(decimal Balance, decimal Amount)?> Load(UpdateTransactionAmountCommand cmd, CancellationToken ct)
     {
-        var transaction = await transactionRepository.FirstOrDefaultAsync(
-            new TransactionByIdWithAccountSpec(cmd.TransactionId), ct);
-
-        if (transaction?.Account is null)
-            return null; // existence is a different check, not this one
-
-        return (transaction.Account.Balance, cmd.Payload.NewAmount - transaction.Amount);
+        // No data-loading abstraction exists in this plateau. A persistence-introducing plateau
+        // (plateau-statefull-service, via solution-repository-integration) implements this method
+        // via its own {Feature}Check.cs.extend.md.
+        throw new NotSupportedException(
+            "TransactionWithdrawalCheck has no data-loading abstraction composed yet.");
     }
 
     public async Task CheckAsync(
@@ -75,6 +73,7 @@ MUST:
 - Load data only inside this class, live in `/{Module}.Application/Validators/Async`
 - Own its condition locally in this class, next to the loading step
 - Be wired into its Command validator via `RuleFor(x => x).CustomAsync(...)`
+- Never reference a concrete data-loading abstraction in this plateau — `Load` stays a documented shape until a persistence-introducing plateau extends this same class
 SHOULD:
 - Return early (no failure added) when the data needed to run the check could not be loaded at all
 
@@ -85,6 +84,7 @@ __Applied solutions:__
 - [ ] Loads data, then checks it locally, in the same class
 - [ ] Wired via `RuleFor(x => x).CustomAsync(check.CheckAsync)`
 - [ ] The same condition's Entity-side enforcement still runs, independent of this check
+- [ ] `Load` does not reference a concrete data-loading abstraction at this plateau
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] - [[../../../../../solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs.create]]
