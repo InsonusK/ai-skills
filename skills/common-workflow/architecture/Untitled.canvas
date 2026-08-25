@@ -1,24 +1,13 @@
 {
 	"nodes":[
-		{"id":"25dec8961618dec4","type":"group","x":-1360,"y":-640,"width":2080,"height":1400,"label":"plateau-stateless-non-interactive-service"},
-		{"id":"e869d4b9f6456b74","type":"group","x":3040,"y":-2680,"width":2460,"height":960,"label":"plateau-statefull-service"},
+		{"id":"25dec8961618dec4","type":"group","x":-2080,"y":-650,"width":2400,"height":1400,"label":"plateau-stateless-non-interactive-service"},
+		{"id":"e869d4b9f6456b74","type":"group","x":3040,"y":-3000,"width":2460,"height":1280,"label":"plateau-statefull-service"},
 		{"id":"08e6889e9d24b63f","type":"group","x":1040,"y":-2200,"width":1140,"height":1690,"label":"plateau-service-with-validated-module-interaction"},
 		{"id":"628669656ce97d42","type":"group","x":3430,"y":560,"width":800,"height":953,"label":"plateau-service-with-api"},
 		{"id":"4331e92dbeaab806","type":"group","x":3830,"y":-510,"width":440,"height":560,"label":"service-with-share-module-tests"},
 		{"id":"d25a36d54c9d3a5f","type":"group","x":2200,"y":2720,"width":760,"height":300,"label":"plateau-async-integrated-service"},
 		{"id":"b469fd516b439c68","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md","x":1200,"y":-1560,"width":400,"height":400},
-		{"id":"82928ee4954a24d2","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill.md","x":1200,"y":-1040,"width":400,"height":400},
 		{"id":"49554297bf02d6eb","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md","x":1200,"y":-2080,"width":400,"height":400},
-		{
-			"id":"6eecd3b8b48db29d",
-			"type":"text",
-			"text":"# solution-domain-module\nОписывает создание домена в моделя, точка единой логики для всех взаимодействий с модулем",
-			"styleAttributes":{},
-			"x":1670,
-			"y":-1777,
-			"width":440,
-			"height":220
-		},
 		{
 			"id":"b9e9265a74336e7b",
 			"type":"text",
@@ -29,70 +18,16 @@
 			"width":260,
 			"height":60
 		},
-		{"id":"390300e20ec60856","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md","x":1690,"y":-990,"width":400,"height":400},
-		{"id":"203b9c6d209edf7c","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md","x":1690,"y":-1480,"width":400,"height":400},
-		{"id":"40e91e756bca74d5","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md","x":3060,"y":-2140,"width":400,"height":400},
 		{"id":"db83b4926c342ff9","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md","x":3060,"y":-2660,"width":400,"height":400},
-		{"id":"87988bf641688eec","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md","x":3540,"y":-2140,"width":400,"height":400},
-		{
-			"id":"868dfc7f53a40e98",
-			"type":"text",
-			"text":"# solution-module-test\nОпределяет:\n- состав проектов тестирования модуля\n\t- {module}.application.test\n\t- {module}.interface.test",
-			"styleAttributes":{},
-			"x":240,
-			"y":30,
-			"width":350,
-			"height":260
-		},
-		{"id":"b813c88e8862162d","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md","x":-160,"y":-597,"width":400,"height":400},
-		{
-			"id":"1b0d110708b461d2",
-			"type":"text",
-			"text":"# solution-testing-approach\nОпределяет:\n- тест кейсы логики описываются через cucumber\n- тест кейсы технических операций (Equals, ToString, DI) реализуются через xUnit\n- используется Stryker для мутационного тестирования\n- Тестирование проводится в 4 этапа:\n\t- прогон тестов\n\t- оценка покрытия тестов\n\t- мутационное тестирование\n\t- составление 3-х отчетов",
-			"styleAttributes":{},
-			"x":-230,
-			"y":300,
-			"width":380,
-			"height":260
-		},
-		{
-			"id":"3c4ad3b4efb46bf4",
-			"type":"text",
-			"text":"# solution-module\nОпределяет:\n- состав модулей\n\t- {module}.application\n\t- {module}.interface\n\n",
-			"styleAttributes":{},
-			"x":-230,
-			"y":-97,
-			"width":380,
-			"height":255
-		},
-		{"id":"c3cfab62ebb00afd","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md","x":-720,"y":-197,"width":320,"height":200},
-		{
-			"id":"9de9524c699e9abf",
-			"type":"text",
-			"text":"# plateau-stateless-non-interactive-service\n\nБазовый состав сервиса\n- позволяет составлять модули\n- сервис stateless\n- сервис не имеет возможности внешнего взаимодействия\n- сервис тестируется ",
-			"styleAttributes":{
-				"shape":null
-			},
-			"x":-280,
-			"y":-1120,
-			"width":480,
-			"height":240
-		},
-		{"id":"30609cd2a83a8279","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md","x":4020,"y":-2140,"width":400,"height":400},
 		{"id":"4e69a07d83192a2c","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md","x":4020,"y":-2660,"width":400,"height":400},
-		{"id":"7f627621fdd07373","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md","x":4540,"y":-2140,"width":400,"height":400},
 		{"id":"11abb9a9366a42d6","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md","x":4540,"y":-2660,"width":400,"height":400},
+		{"id":"82928ee4954a24d2","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill.md","x":1200,"y":-1040,"width":400,"height":400},
+		{"id":"390300e20ec60856","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md","x":1710,"y":-1440,"width":400,"height":400},
+		{"id":"40e91e756bca74d5","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md","x":3060,"y":-2140,"width":400,"height":400},
+		{"id":"87988bf641688eec","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md","x":3540,"y":-2140,"width":400,"height":400},
+		{"id":"30609cd2a83a8279","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md","x":4020,"y":-2140,"width":400,"height":400},
 		{"id":"1ec62d7c04f1a539","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md","x":5020,"y":-2140,"width":400,"height":400},
-		{
-			"id":"d1a03622183e117d",
-			"type":"text",
-			"text":"# solution-service-platform\nОпределяет:\n- Разделение приложения на модули\n- взаимодействие через mediatr\n- стандартный формат ответа `Result<T>`\n- структура\n\t- App.Host\n\t- App.Infrastructure \n\t- BuildingBlocks\n\t- Shared\n\t- {module}/\n\nАналог solution-sln-structure",
-			"styleAttributes":{},
-			"x":-1200,
-			"y":30,
-			"width":380,
-			"height":380
-		},
+		{"id":"7f627621fdd07373","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md","x":4540,"y":-2140,"width":400,"height":400},
 		{
 			"id":"dfe889f030dc3908",
 			"type":"text",
@@ -102,6 +37,28 @@
 			"y":-720,
 			"width":700,
 			"height":320
+		},
+		{"id":"3df9efd9872a52ca","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill.md","x":3850,"y":-490,"width":400,"height":400},
+		{"id":"203b9c6d209edf7c","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md","x":3540,"y":-2660,"width":400,"height":400},
+		{
+			"id":"6eecd3b8b48db29d",
+			"type":"text",
+			"text":"# solution-domain-module\nОписывает создание домена в моделя, точка единой логики для всех взаимодействий с модулем",
+			"styleAttributes":{},
+			"x":3060,
+			"y":-2960,
+			"width":440,
+			"height":220
+		},
+		{
+			"id":"3e7afeac6f566a78",
+			"type":"text",
+			"text":"# solution-shared-rules-test\nОпределяет отдельные репозитарии для тестирования rules, VO, SoftVO, DTO",
+			"styleAttributes":{},
+			"x":3850,
+			"y":-30,
+			"width":260,
+			"height":60
 		},
 		{
 			"id":"322d620d3013c78a",
@@ -113,17 +70,6 @@
 			"width":360,
 			"height":120
 		},
-		{"id":"3df9efd9872a52ca","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill.md","x":3850,"y":-490,"width":400,"height":400},
-		{
-			"id":"3e7afeac6f566a78",
-			"type":"text",
-			"text":"# solution-shared-rules-test\nОпределяет отдельные репозитарии для тестирования rules, VO, SoftVO, DTO",
-			"styleAttributes":{},
-			"x":3850,
-			"y":-30,
-			"width":260,
-			"height":60
-		},
 		{"id":"14e7351ba3ae9eaa","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md","x":3450,"y":1083,"width":400,"height":400},
 		{
 			"id":"5c9b8081490b1760",
@@ -134,6 +80,60 @@
 			"y":1010,
 			"width":260,
 			"height":60
+		},
+		{"id":"b813c88e8862162d","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md","x":-880,"y":-607,"width":400,"height":400},
+		{
+			"id":"868dfc7f53a40e98",
+			"type":"text",
+			"text":"# solution-module-test\nОпределяет:\n- состав проектов тестирования модуля\n\t- {module}.application.test\n\t- {module}.interface.test",
+			"styleAttributes":{},
+			"x":-480,
+			"y":20,
+			"width":350,
+			"height":260
+		},
+		{
+			"id":"d1a03622183e117d",
+			"type":"text",
+			"text":"# solution-service-platform\nОпределяет:\n- Разделение приложения на модули\n- взаимодействие через mediatr\n- стандартный формат ответа `Result<T>`\n- структура\n\t- App.Host\n\t- App.Infrastructure \n\t- BuildingBlocks\n\t- Shared\n\t- {module}/\n\nАналог solution-sln-structure",
+			"styleAttributes":{},
+			"x":-1920,
+			"y":20,
+			"width":380,
+			"height":380
+		},
+		{"id":"c3cfab62ebb00afd","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md","x":-1440,"y":-207,"width":320,"height":200},
+		{
+			"id":"3c4ad3b4efb46bf4",
+			"type":"text",
+			"text":"# solution-module\nОпределяет:\n- состав модулей\n\t- {module}.application\n\t- {module}.interface\n\n",
+			"styleAttributes":{},
+			"x":-950,
+			"y":-107,
+			"width":380,
+			"height":255
+		},
+		{
+			"id":"1b0d110708b461d2",
+			"type":"text",
+			"text":"# solution-testing-approach\nОпределяет:\n- тест кейсы логики описываются через cucumber\n- тест кейсы технических операций (Equals, ToString, DI) реализуются через xUnit\n- используется Stryker для мутационного тестирования\n- Тестирование проводится в 4 этапа:\n\t- прогон тестов\n\t- оценка покрытия тестов\n\t- мутационное тестирование\n\t- составление 3-х отчетов",
+			"styleAttributes":{},
+			"x":-950,
+			"y":290,
+			"width":380,
+			"height":260
+		},
+		{
+			"id":"9de9524c699e9abf",
+			"type":"text",
+			"text":"# plateau-stateless-non-interactive-service\n\nБазовый состав сервиса\n- позволяет составлять модули\n- сервис stateless\n- сервис не имеет возможности внешнего взаимодействия\n- сервис тестируется ",
+			"styleAttributes":{
+				"shape":null
+			},
+			"x":-920,
+			"y":-1280,
+			"width":480,
+			"height":240
 		}
 	],
 	"edges":[
@@ -242,7 +242,7 @@
 			"id":"abf9325d5d708a8f",
 			"styleAttributes":{},
 			"toFloating":false,
-			"fromNode":"25dec8961618dec4",
+			"fromNode":"08e6889e9d24b63f",
 			"fromSide":"right",
 			"toNode":"d25a36d54c9d3a5f",
 			"toSide":"left"
