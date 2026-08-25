@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\Sample.Interfaces\Sample.Interfaces.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
   </ItemGroup>
 </Project>
