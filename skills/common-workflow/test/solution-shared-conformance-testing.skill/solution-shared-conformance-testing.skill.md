@@ -43,12 +43,12 @@ SOLUTION:
 
 # Template Skill Mutations
 REPOSITORY:
-- [[./Implementation/Repository.create.md|Repository]] - create - shared spec project holding only `.feature` files, no step definitions
+- [[skills/common-workflow/test/solution-shared-conformance-testing.skill/Implementation/Repository.create|Repository]] - create - shared spec project holding only `.feature` files, no step definitions
 
 # Rule
 
 ## MUST
-- [[./Implementation/Repository.create.md#MUST|Repository]]
+- [[skills/common-workflow/test/solution-shared-conformance-testing.skill/Implementation/Repository.create#MUST|Repository]]
 - Extract a scenario group into the shared spec project only once a second component genuinely needs it.
   - Risk: extracting speculatively produces a shared project with exactly one consumer — indirection with no reuse benefit yet.
   - Fix: keep the scenario inside the single component's own project until a real second consumer exists.
