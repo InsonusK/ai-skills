@@ -1,5 +1,5 @@
 ---
-name: class-guid-resolver
+name: plateau-statefull-service--class-guid-resolver
 description: Class Create{Entity}GuidResolver in the statefull-service plateau
 whenToUse: when an idempotent create command needs to detect a duplicate client-generated Guid before the handler runs
 domain: skill

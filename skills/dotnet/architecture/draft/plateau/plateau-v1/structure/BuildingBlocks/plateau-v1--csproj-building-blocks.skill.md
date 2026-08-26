@@ -1,5 +1,5 @@
 ---
-name: csproj-building-blocks
+name: plateau-v1--csproj-building-blocks
 description: Project BuildingBlocks in the v1 plateau
 whenToUse: when adding or editing a reusable framework-level pattern (pipeline behavior, cross-cutting utility) in BuildingBlocks, or deciding whether new code belongs here
 domain: skill

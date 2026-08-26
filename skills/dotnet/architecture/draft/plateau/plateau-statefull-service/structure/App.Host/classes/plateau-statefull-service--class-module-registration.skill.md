@@ -1,5 +1,5 @@
 ---
-name: class-module-registration
+name: plateau-statefull-service--class-module-registration
 description: Class ModuleRegistration in the statefull-service plateau
 whenToUse: when creating or editing ModuleRegistration, or wiring up a newly added module
 domain: skill

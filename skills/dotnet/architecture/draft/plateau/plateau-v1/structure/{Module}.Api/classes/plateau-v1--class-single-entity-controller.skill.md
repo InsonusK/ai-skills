@@ -1,5 +1,5 @@
 ---
-name: class-single-entity-controller
+name: plateau-v1--class-single-entity-controller
 description: Class Single{Entity}Controller in the v1 plateau
 whenToUse: when publishing read/update/delete for one identified entity over REST
 domain: skill

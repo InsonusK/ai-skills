@@ -1,5 +1,5 @@
 ---
-name: class-feature-validator
+name: plateau-v1--class-feature-validator
 description: Class {FeatureName}Validator in the v1 plateau
 whenToUse: when a new command needs transport-correctness validation before it reaches its handler
 domain: skill

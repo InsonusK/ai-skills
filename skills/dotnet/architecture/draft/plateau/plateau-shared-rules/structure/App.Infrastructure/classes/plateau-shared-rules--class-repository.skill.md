@@ -1,5 +1,5 @@
 ---
-name: class-repository
+name: plateau-shared-rules--class-repository
 description: Class Repository<T> in the shared-rules plateau
 whenToUse: when reviewing the generic EF Core repository implementation
 domain: skill

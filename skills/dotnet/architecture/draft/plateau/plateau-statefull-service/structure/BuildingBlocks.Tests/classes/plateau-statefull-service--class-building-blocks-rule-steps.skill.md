@@ -1,5 +1,5 @@
 ---
-name: class-building-blocks-rule-steps
+name: plateau-statefull-service--class-building-blocks-rule-steps
 description: Class {Rule}Steps in BuildingBlocks.Tests, in the statefull-service plateau
 whenToUse: when adding step definitions for a new pipeline-behavior technical-contract Gherkin feature file
 domain: skill

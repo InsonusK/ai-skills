@@ -1,5 +1,5 @@
 ---
-name: class-shared-rule-steps
+name: plateau-service-with-validated-module-interaction--class-shared-rule-steps
 description: Class {Rule}Steps in Shared.Tests, in the service-with-validated-module-interaction plateau
 whenToUse: when adding step definitions for a new Shared-primitive Gherkin feature file
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: package-name
+name: plateau-{plateau-name}--package-{name}
 description: Describe which plateau package/app does skill describe
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: creating or editing a module inside this package/app, deciding whether new code belongs here, or checking its allowed dependencies/PyPI packages. MUST NOT be vague ("when relevant").

@@ -1,5 +1,5 @@
 ---
-name: class-entity-version-resolver
+name: plateau-v1--class-entity-version-resolver
 description: Class {Entity}VersionResolver in the v1 plateau
 whenToUse: when a mutable entity's current version needs to be readable by ConcurrencyBehavior
 domain: skill

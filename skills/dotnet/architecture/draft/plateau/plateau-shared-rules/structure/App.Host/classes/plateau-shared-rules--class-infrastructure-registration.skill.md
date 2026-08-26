@@ -1,5 +1,5 @@
 ---
-name: class-infrastructure-registration
+name: plateau-shared-rules--class-infrastructure-registration
 description: Classes InfrastructureRegistration/RepositoryRegistration/EntityVersionResolverRegistration in the shared-rules plateau
 whenToUse: when wiring AppDbContext, repositories, unit of work, or entity version resolvers into the composition root
 domain: skill

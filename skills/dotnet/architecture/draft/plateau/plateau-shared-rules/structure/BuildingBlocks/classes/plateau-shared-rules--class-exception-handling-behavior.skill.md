@@ -1,5 +1,5 @@
 ---
-name: class-exception-handling-behavior
+name: plateau-shared-rules--class-exception-handling-behavior
 description: Class ExceptionHandlingBehavior in the shared-rules plateau
 whenToUse: when creating or editing ExceptionHandlingBehavior, or creating another pipeline behavior that plays the same role
 domain: skill

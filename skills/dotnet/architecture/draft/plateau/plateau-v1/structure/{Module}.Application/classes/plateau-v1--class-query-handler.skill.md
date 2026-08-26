@@ -1,5 +1,5 @@
 ---
-name: class-query-handler
+name: plateau-v1--class-query-handler
 description: Class {FeatureName}Handler (query) in the v1 plateau
 whenToUse: when implementing a single-module read operation
 domain: skill

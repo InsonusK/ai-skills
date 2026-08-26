@@ -1,5 +1,5 @@
 ---
-name: csproj-module-interfaces-tests
+name: plateau-stateless-non-interactive-service--csproj-module-interfaces-tests
 description: Project {Module}.Interfaces.Tests in the stateless-non-interactive-service plateau
 whenToUse: when adding a unit test or Gherkin scenario for {Module}.Interfaces, or deciding whether new test code belongs here
 domain: skill

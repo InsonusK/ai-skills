@@ -1,5 +1,5 @@
 ---
-name: class-repository
+name: plateau-statefull-service--class-repository
 description: Class Repository<T> in the statefull-service plateau
 whenToUse: when reviewing the generic EF Core repository implementation
 domain: skill

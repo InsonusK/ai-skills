@@ -1,5 +1,5 @@
 ---
-name: class-command
+name: plateau-statefull-service--class-command
 description: Class {Command} in the statefull-service plateau
 whenToUse: when declaring a new write-intent command for this module
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-pipeline-registration
+name: plateau-stateless-non-interactive-service--class-pipeline-registration
 description: Class PipelineRegistration in the stateless-non-interactive-service plateau
 whenToUse: when creating or editing PipelineRegistration, or adding a new pipeline behavior to the composition root
 domain: skill

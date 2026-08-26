@@ -1,5 +1,5 @@
 ---
-name: class-rule-rule-steps
+name: plateau-v1--class-rule-rule-steps
 description: Class {Rule}RuleSteps in {Module}.Domain.Rules.Tests, in the v1 plateau
 whenToUse: when proving a rule's own IsValid()/Check(), against every scenario in its .feature file regardless of classification tag
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-appdbcontext
+name: plateau-statefull-service--class-appdbcontext
 description: Class AppDbContext in the statefull-service plateau
 whenToUse: when reviewing how entity configurations get applied, or how server-assigned timestamps get set before a commit
 domain: skill

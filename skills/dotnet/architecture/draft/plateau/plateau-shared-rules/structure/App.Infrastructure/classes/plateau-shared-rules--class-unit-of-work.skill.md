@@ -1,5 +1,5 @@
 ---
-name: class-unit-of-work
+name: plateau-shared-rules--class-unit-of-work
 description: Class UnitOfWork in the shared-rules plateau
 whenToUse: when reviewing the EF Core implementation of IUnitOfWork
 domain: skill

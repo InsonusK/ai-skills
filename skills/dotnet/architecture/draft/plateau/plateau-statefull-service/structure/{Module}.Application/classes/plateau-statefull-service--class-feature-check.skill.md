@@ -1,5 +1,5 @@
 ---
-name: class-feature-check
+name: plateau-statefull-service--class-feature-check
 description: Class {Feature}Check in the statefull-service plateau
 whenToUse: when a Command validator needs to reject an invalid request before the Handler runs, for a condition whose data must be loaded from a repository
 domain: skill

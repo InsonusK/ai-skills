@@ -1,5 +1,5 @@
 ---
-name: class-i-repository
+name: plateau-shared-rules--class-i-repository
 description: Classes IRepository/IReadRepository in the shared-rules plateau
 whenToUse: when a handler needs to load, add, or stage a persisted entity
 domain: skill

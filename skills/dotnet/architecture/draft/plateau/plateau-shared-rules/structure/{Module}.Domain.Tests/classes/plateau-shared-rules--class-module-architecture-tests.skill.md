@@ -1,5 +1,5 @@
 ---
-name: class-module-architecture-tests
+name: plateau-shared-rules--class-module-architecture-tests
 description: Class {Module}ArchitectureTests in the shared-rules plateau — the three single-pass Cecil checks
 whenToUse: when verifying, over compiled IL, that every centralized rule is actually called, DomainException is thrown only from the right layer, and rejection codes are unique and well-formed
 domain: skill

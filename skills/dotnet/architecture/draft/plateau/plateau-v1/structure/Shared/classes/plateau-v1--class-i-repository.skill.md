@@ -1,5 +1,5 @@
 ---
-name: class-i-repository
+name: plateau-v1--class-i-repository
 description: Classes IRepository/IReadRepository in the v1 plateau
 whenToUse: when a handler needs to load, add, or stage a persisted entity
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: sln-name
+name: plateau-{plateau-name}--sln-{name}
 description: Describe which plateau repository does skill describe
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: adding/removing a top-level project, deciding where a new project belongs, or reviewing the solution-level layout of the `{plateau-name}` plateau. MUST NOT be vague ("when relevant").

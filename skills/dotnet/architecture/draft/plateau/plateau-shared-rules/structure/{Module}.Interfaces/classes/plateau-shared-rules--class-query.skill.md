@@ -1,5 +1,5 @@
 ---
-name: class-query
+name: plateau-shared-rules--class-query
 description: Classes {Query}/{Dto} in the shared-rules plateau
 whenToUse: when declaring a new read operation and its response shape for this module
 domain: skill

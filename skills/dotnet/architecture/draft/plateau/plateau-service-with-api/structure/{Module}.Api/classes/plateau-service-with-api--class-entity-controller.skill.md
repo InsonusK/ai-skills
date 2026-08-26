@@ -1,5 +1,5 @@
 ---
-name: class-entity-controller
+name: plateau-service-with-api--class-entity-controller
 description: Class {Entity}Controller in the service-with-api plateau
 whenToUse: when publishing the collection-level create/list operations for an entity over REST
 domain: skill

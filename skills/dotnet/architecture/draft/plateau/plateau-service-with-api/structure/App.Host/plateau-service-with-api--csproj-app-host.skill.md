@@ -1,5 +1,5 @@
 ---
-name: csproj-app-host
+name: plateau-service-with-api--csproj-app-host
 description: Project App.Host in the service-with-api plateau
 whenToUse: when adding or editing DI/module/pipeline wiring in App.Host, or deciding whether new code belongs here
 domain: skill

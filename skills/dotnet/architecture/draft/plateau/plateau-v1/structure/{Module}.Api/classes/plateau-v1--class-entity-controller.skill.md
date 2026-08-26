@@ -1,5 +1,5 @@
 ---
-name: class-entity-controller
+name: plateau-v1--class-entity-controller
 description: Class {Entity}Controller in the v1 plateau
 whenToUse: when publishing the collection-level create/list operations for an entity over REST
 domain: skill

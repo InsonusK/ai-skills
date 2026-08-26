@@ -1,5 +1,5 @@
 ---
-name: class-pipeline-registration
+name: plateau-v1--class-pipeline-registration
 description: Class PipelineRegistration in the v1 plateau
 whenToUse: when creating or editing PipelineRegistration, or adding a new pipeline behavior to the composition root
 domain: skill

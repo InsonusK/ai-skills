@@ -1,5 +1,5 @@
 ---
-name: class-single-entity-related-controller
+name: plateau-service-with-api--class-single-entity-related-controller
 description: Class Single{Entity}{Related}Controller in the service-with-api plateau
 whenToUse: when publishing read/update/remove for one specific item inside a parent's sub-collection
 domain: skill

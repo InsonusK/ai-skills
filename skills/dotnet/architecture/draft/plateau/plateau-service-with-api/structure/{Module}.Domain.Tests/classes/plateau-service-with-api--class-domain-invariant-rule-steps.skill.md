@@ -1,5 +1,5 @@
 ---
-name: class-domain-invariant-rule-steps
+name: plateau-service-with-api--class-domain-invariant-rule-steps
 description: Class {Rule}Steps in {Module}.Domain.Tests, in the service-with-api plateau
 whenToUse: when adding step definitions for a new Domain-invariant Gherkin feature file
 domain: skill

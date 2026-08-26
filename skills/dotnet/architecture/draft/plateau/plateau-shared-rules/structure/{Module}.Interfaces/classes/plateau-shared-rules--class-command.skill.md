@@ -1,5 +1,5 @@
 ---
-name: class-command
+name: plateau-shared-rules--class-command
 description: Class {Command} in the shared-rules plateau
 whenToUse: when declaring a new write-intent command for this module
 domain: skill

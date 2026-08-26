@@ -1,5 +1,5 @@
 ---
-name: class-concurrency-behavior
+name: plateau-v1--class-concurrency-behavior
 description: Classes ConcurrencyBehavior/ETagEncoder in the v1 plateau
 whenToUse: when reviewing or changing how a mutable entity's version is validated before its handler runs
 domain: skill

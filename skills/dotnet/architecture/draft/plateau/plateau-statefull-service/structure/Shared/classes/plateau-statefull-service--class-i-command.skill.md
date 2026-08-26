@@ -1,5 +1,5 @@
 ---
-name: class-i-command
+name: plateau-statefull-service--class-i-command
 description: Class ICommand in the statefull-service plateau
 whenToUse: when declaring a new command record, or deciding whether a MediatR request is a command
 domain: skill

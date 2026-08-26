@@ -1,5 +1,5 @@
 ---
-name: class-module-registration
+name: plateau-service-with-api--class-module-registration
 description: Class ModuleRegistration in the service-with-api plateau
 whenToUse: when creating or editing ModuleRegistration, or wiring up a newly added module
 domain: skill

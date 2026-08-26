@@ -1,5 +1,5 @@
 ---
-name: class-validation-behavior
+name: plateau-statefull-service--class-validation-behavior
 description: Class ValidationBehavior in the statefull-service plateau
 whenToUse: when reviewing or changing how any MediatR request gets validated before its handler runs
 domain: skill

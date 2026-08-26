@@ -1,5 +1,5 @@
 ---
-name: class-entity-related-controller
+name: plateau-service-with-api--class-entity-related-controller
 description: Class {Entity}{Related}Controller in the service-with-api plateau
 whenToUse: when publishing a sub-collection scoped to one parent entity — comments, attachments, line items
 domain: skill

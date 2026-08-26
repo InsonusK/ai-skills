@@ -1,5 +1,5 @@
 ---
-name: sln-service-with-validated-module-interaction
+name: plateau-service-with-validated-module-interaction--sln-service-with-validated-module-interaction
 description: Repository/solution-level layout of the service-with-validated-module-interaction plateau
 whenToUse: when adding, removing, or relocating a top-level project or module in this plateau's solution, or deciding where new code belongs at the repository level
 domain: skill

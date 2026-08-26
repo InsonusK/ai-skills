@@ -1,5 +1,5 @@
 ---
-name: csproj-module-application
+name: plateau-v1--csproj-module-application
 description: Project {Module}.Application in the v1 plateau
 whenToUse: when adding or editing a handler, validator, or specification in {Module}.Application, or deciding whether new code belongs here
 domain: skill

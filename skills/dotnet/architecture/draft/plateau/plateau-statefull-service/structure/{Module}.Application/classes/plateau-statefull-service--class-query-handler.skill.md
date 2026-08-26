@@ -1,5 +1,5 @@
 ---
-name: class-query-handler
+name: plateau-statefull-service--class-query-handler
 description: Class {FeatureName}Handler (query) in the statefull-service plateau
 whenToUse: when implementing a single-module read operation
 domain: skill

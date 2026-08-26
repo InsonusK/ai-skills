@@ -1,5 +1,5 @@
 ---
-name: class-exception-handling-behavior
+name: plateau-statefull-service--class-exception-handling-behavior
 description: Class ExceptionHandlingBehavior in the statefull-service plateau
 whenToUse: when creating or editing ExceptionHandlingBehavior, or creating another pipeline behavior that plays the same role
 domain: skill

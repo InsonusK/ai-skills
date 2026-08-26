@@ -1,5 +1,5 @@
 ---
-name: class-module-registration
+name: plateau-stateless-non-interactive-service--class-module-registration
 description: Class ModuleRegistration in the stateless-non-interactive-service plateau
 whenToUse: when creating or editing ModuleRegistration, or wiring up a newly added module
 domain: skill

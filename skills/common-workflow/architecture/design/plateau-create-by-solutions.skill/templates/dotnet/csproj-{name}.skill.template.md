@@ -1,5 +1,5 @@
 ---
-name: csproj-name
+name: plateau-{plateau-name}--csproj-{name}
 description: Describe which plateau csproj does skill describe
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: creating or editing a file inside this project, deciding whether new code belongs here, or checking its allowed dependencies/NuGet packages. MUST NOT be vague ("when relevant").

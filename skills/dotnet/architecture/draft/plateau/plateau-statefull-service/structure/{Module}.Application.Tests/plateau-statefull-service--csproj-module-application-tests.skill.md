@@ -1,5 +1,5 @@
 ---
-name: csproj-module-application-tests
+name: plateau-statefull-service--csproj-module-application-tests
 description: Project {Module}.Application.Tests in the statefull-service plateau
 whenToUse: when adding a unit test or Gherkin scenario for {Module}.Application, or deciding whether new test code belongs here
 domain: skill

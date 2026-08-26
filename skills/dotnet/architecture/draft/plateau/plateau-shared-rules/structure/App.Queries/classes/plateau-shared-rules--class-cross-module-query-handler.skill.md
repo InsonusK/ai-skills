@@ -1,5 +1,5 @@
 ---
-name: class-cross-module-query-handler
+name: plateau-shared-rules--class-cross-module-query-handler
 description: Class {CrossModuleQueryHandler} in the shared-rules plateau
 whenToUse: when a read operation needs to JOIN entity types across two or more modules
 domain: skill

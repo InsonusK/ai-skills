@@ -1,5 +1,5 @@
 ---
-name: class-single-entity-related-controller
+name: plateau-v1--class-single-entity-related-controller
 description: Class Single{Entity}{Related}Controller in the v1 plateau
 whenToUse: when publishing read/update/remove for one specific item inside a parent's sub-collection
 domain: skill

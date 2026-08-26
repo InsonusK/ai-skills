@@ -1,5 +1,5 @@
 ---
-name: class-entity
+name: plateau-v1--class-entity
 description: Class {Entity} in the v1 plateau
 whenToUse: when creating or editing an entity in {Module}.Domain, or picking the right entity type from the classification matrix
 domain: skill

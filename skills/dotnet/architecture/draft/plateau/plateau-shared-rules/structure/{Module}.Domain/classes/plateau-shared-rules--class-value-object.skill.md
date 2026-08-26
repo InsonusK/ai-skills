@@ -1,5 +1,5 @@
 ---
-name: class-value-object
+name: plateau-shared-rules--class-value-object
 description: Class {ValueObject} in the shared-rules plateau
 whenToUse: when a domain concept needs invariant enforcement — creating the strict Domain-side Value Object that inherits from its Soft{ValueObject} base
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-specification
+name: plateau-shared-rules--class-specification
 description: Classes {Entity}ByIdSpec/{Entity}SummarySpec/{Entity}ByGuidSpec in the shared-rules plateau
 whenToUse: when a handler or resolver needs to load an entity, or project it to a read shape, without inline LINQ
 domain: skill

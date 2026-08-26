@@ -1,5 +1,5 @@
 ---
-name: csproj-shared-tests
+name: plateau-v1--csproj-shared-tests
 description: Project Shared.Tests in the v1 plateau
 whenToUse: when adding a unit test or Gherkin scenario for Shared, or deciding whether new test code belongs here
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-command-handler-rule-steps
+name: plateau-stateless-non-interactive-service--class-command-handler-rule-steps
 description: Class {Rule}Steps in {Module}.Application.Tests, in the stateless-non-interactive-service plateau
 whenToUse: when adding step definitions for a new command-handler Gherkin feature file
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-entity-grpc-service
+name: plateau-v1--class-entity-grpc-service
 description: Class {Entity}GrpcService in the v1 plateau
 whenToUse: when implementing the generated gRPC server base class for an entity
 domain: skill

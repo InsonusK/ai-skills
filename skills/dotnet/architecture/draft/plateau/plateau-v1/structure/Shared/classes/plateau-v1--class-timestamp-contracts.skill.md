@@ -1,5 +1,5 @@
 ---
-name: class-timestamp-contracts
+name: plateau-v1--class-timestamp-contracts
 description: Classes ICreationInfoModel/IUpdateInfoModel/ICommandWithTimestamp in the v1 plateau
 whenToUse: when a user-initiated entity needs creation/update timestamps, or a command needs to carry the client-supplied action timestamp
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-entity-config
+name: plateau-shared-rules--class-entity-config
 description: Class {Entity}Config in the shared-rules plateau
 whenToUse: when mapping a new entity to the database, or adding a concurrency token, a Guid unique index, or timestamp columns to an existing mapping
 domain: skill

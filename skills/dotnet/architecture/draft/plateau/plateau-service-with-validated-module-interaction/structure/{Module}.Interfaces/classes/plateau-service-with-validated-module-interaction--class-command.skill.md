@@ -1,5 +1,5 @@
 ---
-name: class-command
+name: plateau-service-with-validated-module-interaction--class-command
 description: Class {Command} in the service-with-validated-module-interaction plateau
 whenToUse: when declaring a new write-intent command for this module
 domain: skill

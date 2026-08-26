@@ -1,5 +1,5 @@
 ---
-name: repo-name
+name: plateau-{plateau-name}--repo-{name}
 description: Describe which plateau Nx workspace does skill describe
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: adding/removing a top-level app/lib, deciding where a new app/lib belongs, or reviewing the workspace-level layout of the `{plateau-name}` plateau. MUST NOT be vague ("when relevant").

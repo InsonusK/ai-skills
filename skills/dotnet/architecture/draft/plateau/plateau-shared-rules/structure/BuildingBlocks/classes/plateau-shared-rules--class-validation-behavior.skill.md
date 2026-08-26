@@ -1,5 +1,5 @@
 ---
-name: class-validation-behavior
+name: plateau-shared-rules--class-validation-behavior
 description: Class ValidationBehavior in the shared-rules plateau
 whenToUse: when reviewing or changing how any MediatR request gets validated before its handler runs
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-system-endpoints
+name: plateau-v1--class-system-endpoints
 description: Class {System}Endpoints in the v1 plateau
 whenToUse: when publishing an operation with no natural resource identity — a health probe, a webhook receiver, a batch job
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-unit-of-work
+name: plateau-statefull-service--class-unit-of-work
 description: Class UnitOfWork in the statefull-service plateau
 whenToUse: when reviewing the EF Core implementation of IUnitOfWork
 domain: skill

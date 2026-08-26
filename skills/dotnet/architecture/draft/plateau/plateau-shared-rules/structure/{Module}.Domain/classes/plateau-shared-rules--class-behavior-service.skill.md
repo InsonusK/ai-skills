@@ -1,5 +1,5 @@
 ---
-name: class-behavior-service
+name: plateau-shared-rules--class-behavior-service
 description: Class {Behavior}Service in the shared-rules plateau
 whenToUse: when entity behavior logic grows too large or multi-step to stay readable inside the Entity itself
 domain: skill

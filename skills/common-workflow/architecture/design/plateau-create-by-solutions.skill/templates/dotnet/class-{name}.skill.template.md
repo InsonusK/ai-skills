@@ -1,5 +1,5 @@
 ---
-name: class-name
+name: plateau-{plateau-name}--class-{name}
 description: Describe which class skill define
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: creating or editing this exact class, or creating a new class that plays the same role. MUST NOT be vague ("when relevant").

@@ -1,5 +1,5 @@
 ---
-name: class-feature-handler
+name: plateau-statefull-service--class-feature-handler
 description: Class {FeatureName}Handler in the statefull-service plateau
 whenToUse: when implementing the handler for a new command
 domain: skill

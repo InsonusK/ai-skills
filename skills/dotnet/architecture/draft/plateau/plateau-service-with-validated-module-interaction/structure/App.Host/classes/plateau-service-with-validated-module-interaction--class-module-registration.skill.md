@@ -1,5 +1,5 @@
 ---
-name: class-module-registration
+name: plateau-service-with-validated-module-interaction--class-module-registration
 description: Class ModuleRegistration in the service-with-validated-module-interaction plateau
 whenToUse: when creating or editing ModuleRegistration, or wiring up a newly added module
 domain: skill

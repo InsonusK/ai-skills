@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain-tests
+name: plateau-service-with-api--csproj-module-domain-tests
 description: Project {Module}.Domain.Tests in the service-with-api plateau
 whenToUse: when adding a unit test or Gherkin scenario for {Module}.Domain, or deciding whether new test code belongs here
 domain: skill

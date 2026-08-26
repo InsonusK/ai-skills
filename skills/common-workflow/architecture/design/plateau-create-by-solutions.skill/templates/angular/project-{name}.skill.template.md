@@ -1,5 +1,5 @@
 ---
-name: project-name
+name: plateau-{plateau-name}--project-{name}
 description: Describe which plateau Nx project (app or lib) does skill describe
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: creating or editing a file inside this app/lib, deciding whether new code belongs here, or checking its allowed Nx dependencies. MUST NOT be vague ("when relevant").

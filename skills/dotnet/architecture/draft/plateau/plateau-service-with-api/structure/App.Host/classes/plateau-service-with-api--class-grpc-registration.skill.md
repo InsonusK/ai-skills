@@ -1,5 +1,5 @@
 ---
-name: class-grpc-registration
+name: plateau-service-with-api--class-grpc-registration
 description: Class GrpcRegistration in the service-with-api plateau
 whenToUse: when wiring gRPC service registration into the composition root
 domain: skill

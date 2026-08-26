@@ -1,5 +1,5 @@
 ---
-name: class-shared-rule-steps
+name: plateau-v1--class-shared-rule-steps
 description: Class {Rule}Steps in Shared.Tests, in the v1 plateau
 whenToUse: when adding step definitions for a new Shared-primitive Gherkin feature file
 domain: skill

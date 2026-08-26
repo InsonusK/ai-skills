@@ -1,5 +1,5 @@
 ---
-name: class-unit-of-work-behavior
+name: plateau-statefull-service--class-unit-of-work-behavior
 description: Classes UnitOfWorkContext/UnitOfWorkBehavior in the statefull-service plateau
 whenToUse: when reviewing when staged entity changes actually get committed, especially across nested command dispatch
 domain: skill

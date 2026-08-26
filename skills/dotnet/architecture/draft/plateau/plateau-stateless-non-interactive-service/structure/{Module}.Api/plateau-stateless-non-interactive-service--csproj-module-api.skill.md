@@ -1,5 +1,5 @@
 ---
-name: csproj-module-api
+name: plateau-stateless-non-interactive-service--csproj-module-api
 description: Project {Module}.Api in the stateless-non-interactive-service plateau
 whenToUse: when adding or editing an HTTP endpoint in {Module}.Api, or deciding whether new code belongs here
 domain: skill

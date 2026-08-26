@@ -1,5 +1,5 @@
 ---
-name: class-value-object
+name: plateau-statefull-service--class-value-object
 description: Class {ValueObject} in the statefull-service plateau
 whenToUse: when a domain concept needs invariant enforcement — creating the strict Domain-side Value Object that inherits from its Soft{ValueObject} base
 domain: skill

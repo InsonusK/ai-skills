@@ -1,5 +1,5 @@
 ---
-name: csproj-module-api
+name: plateau-service-with-validated-module-interaction--csproj-module-api
 description: Project {Module}.Api in the service-with-validated-module-interaction plateau
 whenToUse: when adding or editing an HTTP endpoint in {Module}.Api, or deciding whether new code belongs here
 domain: skill

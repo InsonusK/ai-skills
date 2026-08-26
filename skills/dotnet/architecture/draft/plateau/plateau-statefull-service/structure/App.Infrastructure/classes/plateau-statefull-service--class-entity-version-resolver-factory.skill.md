@@ -1,5 +1,5 @@
 ---
-name: class-entity-version-resolver-factory
+name: plateau-statefull-service--class-entity-version-resolver-factory
 description: Class EntityVersionResolverFactory in the statefull-service plateau
 whenToUse: when reviewing how a stable entity-name string maps to the resolver that reads that entity's current version
 domain: skill

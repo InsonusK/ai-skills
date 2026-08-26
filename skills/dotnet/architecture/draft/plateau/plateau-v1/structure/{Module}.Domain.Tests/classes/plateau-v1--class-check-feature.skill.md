@@ -1,5 +1,5 @@
 ---
-name: class-check-feature
+name: plateau-v1--class-check-feature
 description: Documentary .feature file per Cecil check, in the v1 plateau
 whenToUse: when adding a new architecture check, or looking up what an existing one proves without reading its Cecil implementation
 domain: skill

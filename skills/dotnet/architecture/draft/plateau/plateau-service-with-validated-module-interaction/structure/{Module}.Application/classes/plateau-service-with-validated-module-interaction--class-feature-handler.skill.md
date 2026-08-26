@@ -1,5 +1,5 @@
 ---
-name: class-feature-handler
+name: plateau-service-with-validated-module-interaction--class-feature-handler
 description: Class {FeatureName}Handler in the service-with-validated-module-interaction plateau
 whenToUse: when implementing the handler for a new command
 domain: skill

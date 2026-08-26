@@ -1,5 +1,5 @@
 ---
-name: class-entity
+name: plateau-service-with-api--class-entity
 description: Class {Entity} in the service-with-api plateau
 whenToUse: when creating or editing an entity in {Module}.Domain, or picking the right entity type from the classification matrix
 domain: skill

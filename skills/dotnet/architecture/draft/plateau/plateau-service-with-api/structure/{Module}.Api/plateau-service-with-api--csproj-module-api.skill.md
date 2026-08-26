@@ -1,5 +1,5 @@
 ---
-name: csproj-module-api
+name: plateau-service-with-api--csproj-module-api
 description: Project {Module}.Api in the service-with-api plateau
 whenToUse: when adding or editing an HTTP endpoint or gRPC service in {Module}.Api, or deciding whether new code belongs here
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-property-validator
+name: plateau-v1--class-property-validator
 description: Class {ValueObject}PropertyValidator in the v1 plateau
 whenToUse: when another module (or this one) needs to validate a Soft{ValueObject} through DI, without referencing this module's Domain
 domain: skill
