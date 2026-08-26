@@ -21,7 +21,7 @@ Use `@cucumber/cucumber` (the official JS/TS Cucumber implementation) for Gherki
 ### Benefits
 - `@cucumber/cucumber` is the reference implementation of Cucumber for JavaScript/TypeScript, with the widest ecosystem support.
 - Vitest coverage requires no extra tooling beyond the test runner most modern TS packages already use.
-- Stryker Mutator is the same vendor/tool family already selected for .NET in [[skills/dotnet/architecture/solutions/dotnet-solution-conformance-testing.skill/dotnet-solution-conformance-testing.skill|the dotnet variant]] (as Stryker.NET), keeping the mutation-report shape and mental model consistent across stacks.
+- Stryker Mutator is the same vendor/tool family already selected for .NET in [[skills/dotnet/architecture/draft/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|the dotnet variant]] (as Stryker.NET), keeping the mutation-report shape and mental model consistent across stacks.
 
 ### Costs
 - `@cucumber/cucumber` runs as a separate process from Vitest, so combining their coverage output requires configuring both to write to the same coverage provider/output directory.

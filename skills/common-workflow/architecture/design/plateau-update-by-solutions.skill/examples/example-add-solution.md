@@ -6,7 +6,7 @@ This example is based on the real change in commit `8d4766e539b2ff9bcc2ec030f767
 
 - plateau-name: `default`
 - solution: `solution-entity-edit-timestamp`
-- output: `skills/dotnet/architecture/plateau/default`
+- output: `skills/dotnet/architecture/deprecated/v1/plateau/default`
 
 ## Source files discovered in Implementation/
 

@@ -10,21 +10,21 @@ tags:
   - skill/template/class
   - plateau/shared-rules
 created_by:
-  - "[[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 ---
 
 # Goal
 - Prove every scenario in `Rules/{Rule}.feature` against `{Module}.Interfaces`'s real declaration.
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Core Principles
 - Apply ONE plateau template per class
 - Shape-shaped, not validation-shaped: prove the contract survives round-tripping (or compares correctly), never "is this input valid"
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -56,7 +56,7 @@ public sealed class {Rule}Steps
 ```
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Rules
 MUST:
@@ -65,11 +65,11 @@ MUST NOT:
 - Duplicate a validation check here that belongs to `{Module}.Application.Tests`/`{Module}.Domain.Tests`
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Check list
 - [ ] Every `Given/When/Then` in `{Rule}.feature` has a matching, non-duplicated step method
 - [ ] `{Rule}Steps` asserts against the real declared type, not a stand-in shape
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]

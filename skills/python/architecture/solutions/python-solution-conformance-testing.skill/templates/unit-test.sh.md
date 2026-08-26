@@ -1,6 +1,6 @@
-# scripts/cucumber-test.sh
+# scripts/unit-test.sh
 
-Runs `behave` and the plain `test/` suite under `coverage`, then normalizes the result into `tmp/result/*.json`, per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract). The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment.
+Runs `behave` and the plain `test/` suite under `coverage`, then normalizes the result into `tmp/result/*.json`, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment.
 
 ```bash
 #!/usr/bin/env bash
@@ -31,7 +31,7 @@ coverage run -m behave \
   --format progress \
   --format json.pretty --outfile "$BEHAVE_JSON"
 # TODO: also run behave with the chosen HTML formatter (or convert $BEHAVE_JSON with
-# a template) so tmp/report/tests/index.html exists before result-page.sh runs.
+# a template) so tmp/report/tests/index.html exists before test-report.sh runs.
 
 coverage run -a -m pytest test/
 
@@ -41,7 +41,7 @@ coverage run -a -m pytest test/
 TOTAL=$(jq '[.[].elements[]] | length' "$BEHAVE_JSON")
 PASSED=$(jq '[.[].elements[] | select(all(.steps[]; .result.status == "passed"))] | length' "$BEHAVE_JSON")
 FAILED=$((TOTAL - PASSED))
-printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/cucumber-test.json"
+printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/unit-test.json"
 
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   coverage html -d "$REPORT_DIR/coverage"

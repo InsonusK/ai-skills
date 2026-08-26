@@ -11,7 +11,7 @@ tags:
   - plateau/stateless-non-interactive-service
 created_by:
   - "[[../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
-  - "[[../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 ---
 
 # Structure
@@ -44,13 +44,13 @@ Makefile
 README.md
 ```
 
-Every production project has its own dedicated test project, mirroring its Allowed Dependencies exactly — never one combined test project per module. `{ModuleName}.Api` has no dedicated test project (thin MediatR adapter, no business logic of its own). See [[../../../solutions/solution-conformance-testing.skill/adr/test-project-per-production-project.md|solution-conformance-testing's ADR]] for why.
+Every production project has its own dedicated test project, mirroring its Allowed Dependencies exactly — never one combined test project per module. `{ModuleName}.Api` has no dedicated test project (thin MediatR adapter, no business logic of its own). See [[../../../solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project.md|solution-conformance-testing's ADR]] for why.
 
 `App.Infrastructure`, `App.Infrastructure.Migrations`, and `App.Queries` are not part of this plateau — this plateau describes a service with no persistence; a persistence-introducing plateau adds them.
 
 __Applied solutions:__
 - [[../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../solutions/solution-sln-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../solutions/solution-conformance-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 ## Directory and class skills
 | `Directory\|file` | template link | Description |
@@ -70,7 +70,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../solutions/solution-sln-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../solutions/solution-conformance-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Rules
 MUST:
@@ -90,4 +90,4 @@ MUST NOT:
 
 __Applied solutions:__
 - [[../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../solutions/solution-sln-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../solutions/solution-conformance-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend.md|Repository.extend]]

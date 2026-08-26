@@ -10,20 +10,20 @@ tags:
   - skill/template/csproj
   - plateau/service-with-validated-module-interaction
 created_by:
-  - "[[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 ---
 
 # Goal
 - Give `Shared` a dedicated test project, referencing `Shared` only.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
 
 # Core Principles
 - Value-shaped scenarios: given one or more primitive values, prove how they compare/combine — never "is this input valid" (see [[./classes/plateau-service-with-validated-module-interaction--class-rule-steps.skill.md|class-rule-steps]]). `Shared` is mostly interfaces and primitives today, so its own test suite is small.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
 
 # Structure
 
@@ -41,7 +41,7 @@ __Applied solutions:__
   - Shared.Tests.csproj
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
@@ -56,7 +56,7 @@ Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Micros
 - `Shared` — nothing else, mirroring `Shared.csproj`'s own zero project references.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
 
 # Rules
 MUST:
@@ -66,4 +66,4 @@ MUST NOT:
 - Add a second, separate test project just for `Shared`'s Gherkin scenarios
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]

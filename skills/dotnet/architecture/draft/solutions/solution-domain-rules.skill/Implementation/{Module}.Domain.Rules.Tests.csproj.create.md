@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goals
-- Give `{Module}.Domain.Rules` its own dedicated test project, mirroring the one-test-project-per-production-project pattern `solution-conformance-testing` already establishes for the base five projects
+- Give `{Module}.Domain.Rules` its own dedicated test project, mirroring the one-test-project-per-production-project pattern `solution-dotnet-conformance-testing` already establishes for the base five projects
 - Isolate `{Module}.Domain.Rules`'s mutation-testing surface from `{Module}.Domain.Tests`'s broader one (which also covers Entities/VOs) — a survived mutant here is unambiguously a rule bug, not noise from an unrelated Entity method
 
 # Core Principles

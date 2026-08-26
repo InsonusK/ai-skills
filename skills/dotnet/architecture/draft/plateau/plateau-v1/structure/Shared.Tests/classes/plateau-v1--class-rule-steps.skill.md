@@ -10,21 +10,21 @@ tags:
   - skill/template/class
   - plateau/v1
 created_by:
-  - "[[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 ---
 
 # Goal
 - Prove every scenario in `Rules/{Rule}.feature` against `Shared`'s real primitive/result-helper behavior.
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Core Principles
 - Apply ONE plateau template per class
 - Value-shaped: prove how primitive values compare or combine, never a business/orchestration rule
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -63,18 +63,18 @@ public sealed class {Rule}Steps
 ```
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Rules
 MUST:
 - Assert against the real `Shared` type — never a hand-written stand-in
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
 
 # Check list
 - [ ] Every `Given/When/Then` in `{Rule}.feature` has a matching, non-duplicated step method
 - [ ] `{Rule}Steps` asserts against the real `Shared` type
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../../solutions/solution-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
+- [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]

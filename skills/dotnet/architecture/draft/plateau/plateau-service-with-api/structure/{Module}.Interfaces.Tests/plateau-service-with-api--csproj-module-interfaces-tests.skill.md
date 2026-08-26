@@ -10,20 +10,20 @@ tags:
   - skill/template/csproj
   - plateau/service-with-api
 created_by:
-  - "[[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 ---
 
 # Goal
 - Give `{Module}.Interfaces` a dedicated test project, referencing `{Module}.Interfaces` only.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
 
 # Core Principles
 - Shape-shaped scenarios: `{Module}.Interfaces` is declarations-only, so scenarios prove equality/serialization round-trip, never "is this input valid" (see [[./classes/plateau-service-with-api--class-rule-steps.skill.md|class-rule-steps]]).
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
 
 # Structure
 
@@ -41,7 +41,7 @@ __Applied solutions:__
   - {Module}.Interfaces.Tests.csproj
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
@@ -56,7 +56,7 @@ Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Micros
 - `{Module}.Interfaces` — nothing else, mirroring `{Module}.Interfaces.csproj`'s own zero project references.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
 
 # Rules
 MUST:
@@ -66,4 +66,4 @@ MUST NOT:
 - Add a second, separate test project just for `{Module}.Interfaces`'s Gherkin scenarios
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]

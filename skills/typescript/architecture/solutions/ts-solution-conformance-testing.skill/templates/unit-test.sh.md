@@ -1,11 +1,11 @@
-# scripts/cucumber-test.sh
+# scripts/unit-test.sh
 
-Runs `cucumber-js` (and, when `WITH_CODE_COVERAGE=true`, wraps it with `c8` for coverage), then normalizes the result into `tmp/result/*.json`, per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
+Runs `cucumber-js` (and, when `WITH_CODE_COVERAGE=true`, wraps it with `c8` for coverage), then normalizes the result into `tmp/result/*.json`, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
 
 ```bash
 #!/usr/bin/env bash
 # Runs the Cucumber/Gherkin conformance suite via cucumber-js and normalizes the
-# results into tmp/result/cucumber-test.json (+ coverage-test.json when
+# results into tmp/result/unit-test.json (+ coverage-test.json when
 # WITH_CODE_COVERAGE=true), keeping the native HTML report(s) under tmp/report/.
 #
 # Params (env vars, optional):
@@ -42,7 +42,7 @@ fi
 TOTAL=$(jq '[.[].elements[]] | length' "$CUCUMBER_JSON")
 PASSED=$(jq '[.[].elements[] | select(all(.steps[]; .result.status == "passed"))] | length' "$CUCUMBER_JSON")
 FAILED=$((TOTAL - PASSED))
-printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/cucumber-test.json"
+printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/unit-test.json"
 
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   LINE_PCT=$(jq '.total.lines.pct' "$REPORT_DIR/coverage/coverage-summary.json")

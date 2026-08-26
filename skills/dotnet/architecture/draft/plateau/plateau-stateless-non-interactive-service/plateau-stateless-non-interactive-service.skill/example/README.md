@@ -11,7 +11,7 @@ The solution shows a non-interactive .NET worker that:
 - registers modules via `AddModules()` and pipeline behaviors via `AddPipeline()`;
 - registers `ExceptionHandlingBehavior` first in the MediatR pipeline;
 - has no API surface and no persistence layer (`standalone: false`).
-- implements the full conformance-testing contract from `solution-conformance-testing` (`make unit-test` / `mutation-test` / `test-report` / `test-and-report`) using Reqnroll, coverlet, and Stryker.NET.
+- implements the full conformance-testing contract from `solution-dotnet-conformance-testing` (`make unit-test` / `mutation-test` / `test-report` / `test-and-report`) using Reqnroll, coverlet, and Stryker.NET.
 
 ## Run the example
 
