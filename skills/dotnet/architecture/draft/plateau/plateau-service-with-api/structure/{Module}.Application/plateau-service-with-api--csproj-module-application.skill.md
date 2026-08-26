@@ -1,5 +1,5 @@
 ---
-name: csproj-module-application
+name: plateau-service-with-api--csproj-module-application
 description: Project {Module}.Application in the service-with-api plateau
 whenToUse: when adding or editing a handler, validator, or specification in {Module}.Application, or deciding whether new code belongs here
 domain: skill

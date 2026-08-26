@@ -1,5 +1,5 @@
 ---
-name: class-validation-behavior
+name: plateau-service-with-validated-module-interaction--class-validation-behavior
 description: Class ValidationBehavior in the service-with-validated-module-interaction plateau
 whenToUse: when reviewing or changing how any MediatR request gets validated before its handler runs
 domain: skill

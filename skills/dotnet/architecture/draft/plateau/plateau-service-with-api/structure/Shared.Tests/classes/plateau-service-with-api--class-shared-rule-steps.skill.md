@@ -1,5 +1,5 @@
 ---
-name: class-shared-rule-steps
+name: plateau-service-with-api--class-shared-rule-steps
 description: Class {Rule}Steps in Shared.Tests, in the service-with-api plateau
 whenToUse: when adding step definitions for a new Shared-primitive Gherkin feature file
 domain: skill

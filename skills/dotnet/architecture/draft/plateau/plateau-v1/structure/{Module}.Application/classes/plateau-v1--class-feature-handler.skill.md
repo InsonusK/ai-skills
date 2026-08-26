@@ -1,5 +1,5 @@
 ---
-name: class-feature-handler
+name: plateau-v1--class-feature-handler
 description: Class {FeatureName}Handler in the v1 plateau
 whenToUse: when implementing the handler for a new command
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-i-unit-of-work
+name: plateau-v1--class-i-unit-of-work
 description: Class IUnitOfWork in the v1 plateau
 whenToUse: when reviewing where staged entity changes get committed
 domain: skill

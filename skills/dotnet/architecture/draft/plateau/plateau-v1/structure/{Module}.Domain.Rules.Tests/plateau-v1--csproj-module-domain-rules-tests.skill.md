@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain-rules-tests
+name: plateau-v1--csproj-module-domain-rules-tests
 description: Project {Module}.Domain.Rules.Tests in the v1 plateau
 whenToUse: when proving a rule's own IsValid()/Check() correctness, isolated from the broader Entity/VO mutation surface of {Module}.Domain.Tests
 domain: skill

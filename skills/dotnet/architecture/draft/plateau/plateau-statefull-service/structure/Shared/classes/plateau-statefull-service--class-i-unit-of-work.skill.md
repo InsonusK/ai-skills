@@ -1,5 +1,5 @@
 ---
-name: class-i-unit-of-work
+name: plateau-statefull-service--class-i-unit-of-work
 description: Class IUnitOfWork in the statefull-service plateau
 whenToUse: when reviewing where staged entity changes get committed
 domain: skill

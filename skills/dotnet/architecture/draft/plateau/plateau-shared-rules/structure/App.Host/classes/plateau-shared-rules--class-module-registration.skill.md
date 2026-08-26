@@ -1,5 +1,5 @@
 ---
-name: class-module-registration
+name: plateau-shared-rules--class-module-registration
 description: Class ModuleRegistration in the shared-rules plateau
 whenToUse: when creating or editing ModuleRegistration, or wiring up a newly added module
 domain: skill

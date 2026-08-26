@@ -1,5 +1,5 @@
 ---
-name: class-feature-check
+name: plateau-service-with-api--class-feature-check
 description: Class {Feature}Check in the service-with-api plateau
 whenToUse: when a Command validator needs to reject an invalid request before the Handler runs, for a condition whose data must be loaded from a repository
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-behavior-service
+name: plateau-service-with-validated-module-interaction--class-behavior-service
 description: Class {Behavior}Service in the service-with-validated-module-interaction plateau
 whenToUse: when entity behavior logic grows too large or multi-step to stay readable inside the Entity itself
 domain: skill

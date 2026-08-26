@@ -1,5 +1,5 @@
 ---
-name: class-system-endpoints
+name: plateau-service-with-api--class-system-endpoints
 description: Class {System}Endpoints in the service-with-api plateau
 whenToUse: when publishing an operation with no natural resource identity — a health probe, a webhook receiver, a batch job
 domain: skill

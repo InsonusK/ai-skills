@@ -1,5 +1,5 @@
 ---
-name: class-module-application-registration
+name: plateau-v1--class-module-application-registration
 description: Class {Module}ApplicationRegistration in the v1 plateau
 whenToUse: when wiring a module's handlers and validators into DI, or adding this module's registration call to App.Host
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: csproj-building-blocks-tests
+name: plateau-service-with-api--csproj-building-blocks-tests
 description: Project BuildingBlocks.Tests in the service-with-api plateau
 whenToUse: when adding a unit test or Gherkin scenario for BuildingBlocks, or deciding whether new test code belongs here
 domain: skill

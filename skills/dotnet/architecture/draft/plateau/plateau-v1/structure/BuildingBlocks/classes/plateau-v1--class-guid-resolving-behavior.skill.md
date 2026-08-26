@@ -1,5 +1,5 @@
 ---
-name: class-guid-resolving-behavior
+name: plateau-v1--class-guid-resolving-behavior
 description: Class GuidResolvingBehavior in the v1 plateau
 whenToUse: when reviewing how a duplicate client-generated Guid is detected before a create handler runs
 domain: skill

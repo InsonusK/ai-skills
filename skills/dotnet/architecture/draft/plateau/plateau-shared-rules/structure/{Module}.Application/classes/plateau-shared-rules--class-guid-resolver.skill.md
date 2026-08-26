@@ -1,5 +1,5 @@
 ---
-name: class-guid-resolver
+name: plateau-shared-rules--class-guid-resolver
 description: Class Create{Entity}GuidResolver in the shared-rules plateau
 whenToUse: when an idempotent create command needs to detect a duplicate client-generated Guid before the handler runs
 domain: skill

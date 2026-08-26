@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain
+name: plateau-shared-rules--csproj-module-domain
 description: Project {Module}.Domain in the shared-rules plateau
 whenToUse: when adding or editing an entity in {Module}.Domain, or deciding whether new code belongs here
 domain: skill

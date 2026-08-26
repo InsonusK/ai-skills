@@ -1,5 +1,5 @@
 ---
-name: class-app-queries-registration
+name: plateau-v1--class-app-queries-registration
 description: Class AppQueriesRegistration in the v1 plateau
 whenToUse: when wiring cross-module query handlers into the composition root
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-value-object
+name: plateau-v1--class-value-object
 description: Class {ValueObject} in the v1 plateau
 whenToUse: when a domain concept needs invariant enforcement — creating the strict Domain-side Value Object that inherits from its Soft{ValueObject} base
 domain: skill

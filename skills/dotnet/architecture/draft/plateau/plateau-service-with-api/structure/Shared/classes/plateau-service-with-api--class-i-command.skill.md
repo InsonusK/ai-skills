@@ -1,5 +1,5 @@
 ---
-name: class-i-command
+name: plateau-service-with-api--class-i-command
 description: Class ICommand in the service-with-api plateau
 whenToUse: when declaring a new command record, or deciding whether a MediatR request is a command
 domain: skill

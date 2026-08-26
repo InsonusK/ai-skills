@@ -1,5 +1,5 @@
 ---
-name: class-app-queries-registration
+name: plateau-statefull-service--class-app-queries-registration
 description: Class AppQueriesRegistration in the statefull-service plateau
 whenToUse: when wiring cross-module query handlers into the composition root
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain
+name: plateau-service-with-api--csproj-module-domain
 description: Project {Module}.Domain in the service-with-api plateau
 whenToUse: when adding or editing an entity in {Module}.Domain, or deciding whether new code belongs here
 domain: skill

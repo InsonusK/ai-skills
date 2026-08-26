@@ -1,5 +1,5 @@
 ---
-name: class-soft-value-object
+name: plateau-statefull-service--class-soft-value-object
 description: Class Soft{ValueObject} in the statefull-service plateau
 whenToUse: when a DTO, Command, or another module needs a value-object-shaped value without the strict Domain type's throw-on-construct semantics
 domain: skill

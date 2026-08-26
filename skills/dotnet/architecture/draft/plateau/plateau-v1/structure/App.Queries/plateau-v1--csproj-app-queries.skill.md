@@ -1,5 +1,5 @@
 ---
-name: csproj-app-queries
+name: plateau-v1--csproj-app-queries
 description: Project App.Queries in the v1 plateau
 whenToUse: when a read operation needs to JOIN entity types across two or more modules, or deciding whether new query code belongs here
 domain: skill

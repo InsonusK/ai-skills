@@ -1,5 +1,5 @@
 ---
-name: module-domain-rules-spec
+name: plateau-v1--module-domain-rules-spec
 description: Directory {Module}.Domain.Rules.Spec in the v1 plateau — not a project, holds one shared .feature file per rule
 whenToUse: when writing or extending the Gherkin scenarios that describe a centralized rule, provable from every layer that redirects to it
 domain: skill

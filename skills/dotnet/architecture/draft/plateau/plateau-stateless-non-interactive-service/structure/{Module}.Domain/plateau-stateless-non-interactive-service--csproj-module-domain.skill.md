@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain
+name: plateau-stateless-non-interactive-service--csproj-module-domain
 description: Project {Module}.Domain in the stateless-non-interactive-service plateau
 whenToUse: when adding or editing an entity in {Module}.Domain, or deciding whether new code belongs here
 domain: skill

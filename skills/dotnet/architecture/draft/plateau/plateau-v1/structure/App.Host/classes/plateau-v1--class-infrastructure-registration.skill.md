@@ -1,5 +1,5 @@
 ---
-name: class-infrastructure-registration
+name: plateau-v1--class-infrastructure-registration
 description: Classes InfrastructureRegistration/RepositoryRegistration/EntityVersionResolverRegistration in the v1 plateau
 whenToUse: when wiring AppDbContext, repositories, unit of work, or entity version resolvers into the composition root
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-validation-behavior
+name: plateau-v1--class-validation-behavior
 description: Class ValidationBehavior in the v1 plateau
 whenToUse: when reviewing or changing how any MediatR request gets validated before its handler runs
 domain: skill

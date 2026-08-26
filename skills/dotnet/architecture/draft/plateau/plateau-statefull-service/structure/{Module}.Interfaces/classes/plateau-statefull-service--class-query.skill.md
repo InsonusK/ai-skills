@@ -1,5 +1,5 @@
 ---
-name: class-query
+name: plateau-statefull-service--class-query
 description: Classes {Query}/{Dto} in the statefull-service plateau
 whenToUse: when declaring a new read operation and its response shape for this module
 domain: skill

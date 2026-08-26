@@ -1,5 +1,5 @@
 ---
-name: class-unit-of-work
+name: plateau-v1--class-unit-of-work
 description: Class UnitOfWork in the v1 plateau
 whenToUse: when reviewing the EF Core implementation of IUnitOfWork
 domain: skill

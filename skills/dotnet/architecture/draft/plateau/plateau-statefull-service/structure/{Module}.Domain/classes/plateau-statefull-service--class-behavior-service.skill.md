@@ -1,5 +1,5 @@
 ---
-name: class-behavior-service
+name: plateau-statefull-service--class-behavior-service
 description: Class {Behavior}Service in the statefull-service plateau
 whenToUse: when entity behavior logic grows too large or multi-step to stay readable inside the Entity itself
 domain: skill

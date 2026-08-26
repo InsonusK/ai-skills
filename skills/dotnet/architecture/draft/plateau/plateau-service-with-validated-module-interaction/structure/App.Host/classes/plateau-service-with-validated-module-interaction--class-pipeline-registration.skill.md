@@ -1,5 +1,5 @@
 ---
-name: class-pipeline-registration
+name: plateau-service-with-validated-module-interaction--class-pipeline-registration
 description: Class PipelineRegistration in the service-with-validated-module-interaction plateau
 whenToUse: when creating or editing PipelineRegistration, or adding a new pipeline behavior to the composition root
 domain: skill

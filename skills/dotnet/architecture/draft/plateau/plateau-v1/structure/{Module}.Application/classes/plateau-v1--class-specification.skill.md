@@ -1,5 +1,5 @@
 ---
-name: class-specification
+name: plateau-v1--class-specification
 description: Classes {Entity}ByIdSpec/{Entity}SummarySpec/{Entity}ByGuidSpec in the v1 plateau
 whenToUse: when a handler or resolver needs to load an entity, or project it to a read shape, without inline LINQ
 domain: skill

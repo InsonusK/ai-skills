@@ -1,5 +1,5 @@
 ---
-name: class-entity-proto
+name: plateau-service-with-api--class-entity-proto
 description: The {Entity}.proto wire contract in the service-with-api plateau
 whenToUse: when declaring or extending the gRPC contract for one entity
 domain: skill

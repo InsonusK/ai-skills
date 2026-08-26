@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain
+name: plateau-v1--csproj-module-domain
 description: Project {Module}.Domain in the v1 plateau
 whenToUse: when adding or editing an entity in {Module}.Domain, or deciding whether new code belongs here
 domain: skill

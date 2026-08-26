@@ -1,5 +1,5 @@
 ---
-name: csproj-shared
+name: plateau-service-with-validated-module-interaction--csproj-shared
 description: Project Shared in the service-with-validated-module-interaction plateau
 whenToUse: when adding or editing a cross-cutting interface/primitive in Shared, or deciding whether new code belongs here
 domain: skill

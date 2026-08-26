@@ -1,5 +1,5 @@
 ---
-name: class-i-unit-of-work
+name: plateau-shared-rules--class-i-unit-of-work
 description: Class IUnitOfWork in the shared-rules plateau
 whenToUse: when reviewing where staged entity changes get committed
 domain: skill

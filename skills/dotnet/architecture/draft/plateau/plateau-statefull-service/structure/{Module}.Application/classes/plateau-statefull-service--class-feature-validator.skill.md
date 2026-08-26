@@ -1,5 +1,5 @@
 ---
-name: class-feature-validator
+name: plateau-statefull-service--class-feature-validator
 description: Class {FeatureName}Validator in the statefull-service plateau
 whenToUse: when a new command needs transport-correctness validation before it reaches its handler
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-unit-of-work-behavior
+name: plateau-v1--class-unit-of-work-behavior
 description: Classes UnitOfWorkContext/UnitOfWorkBehavior in the v1 plateau
 whenToUse: when reviewing when staged entity changes actually get committed, especially across nested command dispatch
 domain: skill

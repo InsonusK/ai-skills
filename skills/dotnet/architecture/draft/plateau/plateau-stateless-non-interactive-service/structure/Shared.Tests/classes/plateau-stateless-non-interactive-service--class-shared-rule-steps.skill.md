@@ -1,5 +1,5 @@
 ---
-name: class-shared-rule-steps
+name: plateau-stateless-non-interactive-service--class-shared-rule-steps
 description: Class {Rule}Steps in Shared.Tests, in the stateless-non-interactive-service plateau
 whenToUse: when adding step definitions for a new Shared-primitive Gherkin feature file
 domain: skill

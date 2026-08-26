@@ -1,5 +1,5 @@
 ---
-name: csproj-module-api
+name: plateau-shared-rules--csproj-module-api
 description: Project {Module}.Api in the shared-rules plateau
 whenToUse: when adding or editing an HTTP endpoint in {Module}.Api, or deciding whether new code belongs here
 domain: skill

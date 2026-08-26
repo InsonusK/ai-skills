@@ -1,5 +1,5 @@
 ---
-name: class-api-registration
+name: plateau-service-with-api--class-api-registration
 description: Class ApiRegistration in the service-with-api plateau
 whenToUse: when wiring controller discovery, ProblemDetails, or per-module Swagger documents into the composition root
 domain: skill

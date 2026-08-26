@@ -1,5 +1,5 @@
 ---
-name: sln-stateless-non-interactive-service
+name: plateau-stateless-non-interactive-service--sln-stateless-non-interactive-service
 description: Repository/solution-level layout of the stateless-non-interactive-service plateau
 whenToUse: when adding, removing, or relocating a top-level project or module in this plateau's solution, or deciding where new code belongs at the repository level
 domain: skill

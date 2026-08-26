@@ -1,5 +1,5 @@
 ---
-name: class-entity-proto
+name: plateau-v1--class-entity-proto
 description: The {Entity}.proto wire contract in the v1 plateau
 whenToUse: when declaring or extending the gRPC contract for one entity
 domain: skill

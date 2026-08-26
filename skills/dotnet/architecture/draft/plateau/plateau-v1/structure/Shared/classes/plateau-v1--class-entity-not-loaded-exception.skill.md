@@ -1,5 +1,5 @@
 ---
-name: class-entity-not-loaded-exception
+name: plateau-v1--class-entity-not-loaded-exception
 description: Class EntityNotLoadedException in the v1 plateau
 whenToUse: when an Entity method needs a navigation the caller did not load — a Handler defect, not invalid input
 domain: skill

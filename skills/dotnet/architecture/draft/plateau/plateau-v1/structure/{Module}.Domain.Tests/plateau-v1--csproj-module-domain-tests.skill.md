@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain-tests
+name: plateau-v1--csproj-module-domain-tests
 description: Project {Module}.Domain.Tests in the v1 plateau
 whenToUse: when adding a unit test or Gherkin scenario for {Module}.Domain, or deciding whether new test code belongs here
 domain: skill

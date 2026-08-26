@@ -1,5 +1,5 @@
 ---
-name: class-query
+name: plateau-v1--class-query
 description: Classes {Query}/{Dto} in the v1 plateau
 whenToUse: when declaring a new read operation and its response shape for this module
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: csproj-app-host
+name: plateau-stateless-non-interactive-service--csproj-app-host
 description: Project App.Host in the stateless-non-interactive-service plateau
 whenToUse: when adding or editing DI/module/pipeline wiring in App.Host, or deciding whether new code belongs here
 domain: skill

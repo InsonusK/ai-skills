@@ -1,5 +1,5 @@
 ---
-name: csproj-module-interfaces-tests
+name: plateau-service-with-validated-module-interaction--csproj-module-interfaces-tests
 description: Project {Module}.Interfaces.Tests in the service-with-validated-module-interaction plateau
 whenToUse: when adding a unit test or Gherkin scenario for {Module}.Interfaces, or deciding whether new test code belongs here
 domain: skill

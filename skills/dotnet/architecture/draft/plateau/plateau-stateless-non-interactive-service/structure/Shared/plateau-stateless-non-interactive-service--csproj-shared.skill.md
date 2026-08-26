@@ -1,5 +1,5 @@
 ---
-name: csproj-shared
+name: plateau-stateless-non-interactive-service--csproj-shared
 description: Project Shared in the stateless-non-interactive-service plateau
 whenToUse: when adding or editing a cross-cutting interface/primitive in Shared, or deciding whether new code belongs here
 domain: skill

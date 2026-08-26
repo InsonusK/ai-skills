@@ -1,5 +1,5 @@
 ---
-name: class-entity-not-loaded-exception
+name: plateau-shared-rules--class-entity-not-loaded-exception
 description: Class EntityNotLoadedException in the shared-rules plateau
 whenToUse: when an Entity method needs a navigation the caller did not load — a Handler defect, not invalid input
 domain: skill

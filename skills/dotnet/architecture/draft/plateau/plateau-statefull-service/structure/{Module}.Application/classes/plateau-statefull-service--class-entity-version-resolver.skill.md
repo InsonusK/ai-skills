@@ -1,5 +1,5 @@
 ---
-name: class-entity-version-resolver
+name: plateau-statefull-service--class-entity-version-resolver
 description: Class {Entity}VersionResolver in the statefull-service plateau
 whenToUse: when a mutable entity's current version needs to be readable by ConcurrencyBehavior
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-appdbcontext
+name: plateau-v1--class-appdbcontext
 description: Class AppDbContext in the v1 plateau
 whenToUse: when reviewing how entity configurations get applied, or how server-assigned timestamps get set before a commit
 domain: skill

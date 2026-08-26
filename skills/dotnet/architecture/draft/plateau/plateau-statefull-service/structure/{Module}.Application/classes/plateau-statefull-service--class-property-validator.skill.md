@@ -1,5 +1,5 @@
 ---
-name: class-property-validator
+name: plateau-statefull-service--class-property-validator
 description: Class {ValueObject}PropertyValidator in the statefull-service plateau
 whenToUse: when another module (or this one) needs to validate a Soft{ValueObject} through DI, without referencing this module's Domain
 domain: skill

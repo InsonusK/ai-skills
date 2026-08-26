@@ -1,5 +1,5 @@
 ---
-name: csproj-app-infrastructure
+name: plateau-shared-rules--csproj-app-infrastructure
 description: Project App.Infrastructure in the shared-rules plateau
 whenToUse: when adding or editing a persistence implementation detail (DbContext, repository, unit of work, cross-module config), or deciding whether new code belongs here
 domain: skill

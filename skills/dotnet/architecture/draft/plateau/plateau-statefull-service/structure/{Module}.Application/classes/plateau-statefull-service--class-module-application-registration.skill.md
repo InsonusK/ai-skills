@@ -1,5 +1,5 @@
 ---
-name: class-module-application-registration
+name: plateau-statefull-service--class-module-application-registration
 description: Class {Module}ApplicationRegistration in the statefull-service plateau
 whenToUse: when wiring a module's handlers and validators into DI, or adding this module's registration call to App.Host
 domain: skill

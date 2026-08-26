@@ -1,5 +1,5 @@
 ---
-name: csproj-module-application
+name: plateau-shared-rules--csproj-module-application
 description: Project {Module}.Application in the shared-rules plateau
 whenToUse: when adding or editing a handler, validator, or specification in {Module}.Application, or deciding whether new code belongs here
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-rpc-exception-extensions
+name: plateau-v1--class-rpc-exception-extensions
 description: Class RpcExceptionExtensions in the v1 plateau
 whenToUse: when a gRPC service needs to map a failed Result to an RpcException/StatusCode
 domain: skill

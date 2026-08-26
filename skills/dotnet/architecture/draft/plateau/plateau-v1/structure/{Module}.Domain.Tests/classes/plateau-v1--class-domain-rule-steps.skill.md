@@ -1,5 +1,5 @@
 ---
-name: class-domain-rule-steps
+name: plateau-v1--class-domain-rule-steps
 description: Step definitions proving a redirected rule's @format scenarios hold through the VO constructor / Entity method, in the v1 plateau
 whenToUse: when a VO or Entity condition was redirected to a centralized rule and its shared @format scenarios need proving again at this adapter
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-property-validator
+name: plateau-shared-rules--class-property-validator
 description: Class {ValueObject}PropertyValidator in the shared-rules plateau
 whenToUse: when another module (or this one) needs to validate a Soft{ValueObject} through DI, without referencing this module's Domain
 domain: skill

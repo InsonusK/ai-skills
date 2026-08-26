@@ -31,6 +31,12 @@ Every skill that describes a plateau element (repository/solution, project/packa
    - Example: `Class {name} in the {plateau-name} plateau`
    - Example: `Project {name} of the {plateau-name} plateau`
 
+3. **Skill `name` header property** — must carry the same `plateau-{plateau-name}--` prefix as the skill file name (point 1), not just the bare element name.
+   - Example for a class skill: `name: plateau-{plateau-name}--class-{name}`
+   - Example for a project skill: `name: plateau-{plateau-name}--csproj-{name}`
+   - Risk: different plateaus routinely implement overlapping elements — a shared parent plateau's `structure/` is copied into every plateau that composes it (per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]]'s union-merge), and independent plateaus at the same depth often need the same class/project (e.g. every plateau with a `{Module}.Domain.Tests` project needs its own step-definitions class). If `name` is only the bare element name (`class-entity`, `csproj-shared`), every plateau's copy collides on that same `name` value, which breaks any tool that indexes skills by `name`.
+   - Fix: give every element skill's `name` the full `plateau-{plateau-name}--{element-name}` value — identical to its file name minus the `.skill.md` extension. This is unambiguous even when two plateaus define an element with the exact same role and content, and needs no cross-plateau coordination to stay unique.
+
 # Prerequisites
 Read [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first. It defines how a solution-skill is structured per stack and what files it produces. A plateau is built by aggregating those produced files across all selected solutions.
 

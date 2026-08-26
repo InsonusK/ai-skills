@@ -1,5 +1,5 @@
 ---
-name: class-command-handler-rule-steps
+name: plateau-statefull-service--class-command-handler-rule-steps
 description: Class {Rule}Steps in {Module}.Application.Tests, in the statefull-service plateau
 whenToUse: when adding step definitions for a new command-handler Gherkin feature file
 domain: skill

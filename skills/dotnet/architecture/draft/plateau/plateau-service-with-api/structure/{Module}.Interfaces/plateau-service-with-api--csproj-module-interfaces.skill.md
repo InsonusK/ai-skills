@@ -1,5 +1,5 @@
 ---
-name: csproj-module-interfaces
+name: plateau-service-with-api--csproj-module-interfaces
 description: Project {Module}.Interfaces in the service-with-api plateau
 whenToUse: when adding or editing a command, query, DTO, or event contract in {Module}.Interfaces, or deciding whether new code belongs here
 domain: skill

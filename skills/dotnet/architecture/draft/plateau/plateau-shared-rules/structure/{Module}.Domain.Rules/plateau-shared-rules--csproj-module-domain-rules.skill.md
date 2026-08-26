@@ -1,5 +1,5 @@
 ---
-name: csproj-module-domain-rules
+name: plateau-shared-rules--csproj-module-domain-rules
 description: Project {Module}.Domain.Rules in the shared-rules plateau
 whenToUse: when a condition has been duplicated across a VO constructor, an Entity method, a PropertyValidator, or a DTO/Command validator, and needs one centralized, reusable home
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: sln-service-with-api
+name: plateau-service-with-api--sln-service-with-api
 description: Repository/solution-level layout of the service-with-api plateau
 whenToUse: when adding, removing, or relocating a top-level project or module in this plateau's solution, or deciding where new code belongs at the repository level
 domain: skill

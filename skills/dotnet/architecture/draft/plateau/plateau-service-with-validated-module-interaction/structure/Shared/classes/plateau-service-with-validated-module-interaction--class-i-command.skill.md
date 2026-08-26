@@ -1,5 +1,5 @@
 ---
-name: class-i-command
+name: plateau-service-with-validated-module-interaction--class-i-command
 description: Class ICommand in the service-with-validated-module-interaction plateau
 whenToUse: when declaring a new command record, or deciding whether a MediatR request is a command
 domain: skill

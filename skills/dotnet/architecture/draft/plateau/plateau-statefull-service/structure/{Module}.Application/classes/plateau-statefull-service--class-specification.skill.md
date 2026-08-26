@@ -1,5 +1,5 @@
 ---
-name: class-specification
+name: plateau-statefull-service--class-specification
 description: Classes {Entity}ByIdSpec/{Entity}SummarySpec/{Entity}ByGuidSpec in the statefull-service plateau
 whenToUse: when a handler or resolver needs to load an entity, or project it to a read shape, without inline LINQ
 domain: skill

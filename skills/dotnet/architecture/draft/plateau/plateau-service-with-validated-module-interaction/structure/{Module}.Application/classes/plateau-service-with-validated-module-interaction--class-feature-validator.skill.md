@@ -1,5 +1,5 @@
 ---
-name: class-feature-validator
+name: plateau-service-with-validated-module-interaction--class-feature-validator
 description: Class {FeatureName}Validator in the service-with-validated-module-interaction plateau
 whenToUse: when a new command needs transport-correctness validation before it reaches its handler
 domain: skill

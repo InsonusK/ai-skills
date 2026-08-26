@@ -1,5 +1,5 @@
 ---
-name: class-command
+name: plateau-v1--class-command
 description: Class {Command} in the v1 plateau
 whenToUse: when declaring a new write-intent command for this module
 domain: skill

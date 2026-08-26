@@ -1,5 +1,5 @@
 ---
-name: class-entity
+name: plateau-shared-rules--class-entity
 description: Class {Entity} in the shared-rules plateau
 whenToUse: when creating or editing an entity in {Module}.Domain, or picking the right entity type from the classification matrix
 domain: skill

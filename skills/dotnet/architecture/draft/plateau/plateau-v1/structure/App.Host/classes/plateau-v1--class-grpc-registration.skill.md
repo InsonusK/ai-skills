@@ -1,5 +1,5 @@
 ---
-name: class-grpc-registration
+name: plateau-v1--class-grpc-registration
 description: Class GrpcRegistration in the v1 plateau
 whenToUse: when wiring gRPC service registration into the composition root
 domain: skill

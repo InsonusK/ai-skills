@@ -1,5 +1,5 @@
 ---
-name: class-guid-contracts
+name: plateau-statefull-service--class-guid-contracts
 description: Classes IHasGuid/IGuidResolver/ConflictResult in the statefull-service plateau
 whenToUse: when a create command accepts a client-generated Guid for idempotent creation
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-entity-config
+name: plateau-v1--class-entity-config
 description: Class {Entity}Config in the v1 plateau
 whenToUse: when mapping a new entity to the database, or adding a concurrency token, a Guid unique index, or timestamp columns to an existing mapping
 domain: skill

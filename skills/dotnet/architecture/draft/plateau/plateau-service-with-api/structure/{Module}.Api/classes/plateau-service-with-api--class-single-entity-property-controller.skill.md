@@ -1,5 +1,5 @@
 ---
-name: class-single-entity-property-controller
+name: plateau-service-with-api--class-single-entity-property-controller
 description: Class Single{Entity}{Property}Controller in the service-with-api plateau
 whenToUse: when a property is worth addressing independently of the full entity — frequently updated, independently authorized, or independently cacheable
 domain: skill

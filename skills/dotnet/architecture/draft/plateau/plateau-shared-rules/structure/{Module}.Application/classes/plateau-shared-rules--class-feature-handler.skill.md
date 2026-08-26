@@ -1,5 +1,5 @@
 ---
-name: class-feature-handler
+name: plateau-shared-rules--class-feature-handler
 description: Class {FeatureName}Handler in the shared-rules plateau
 whenToUse: when implementing the handler for a new command
 domain: skill

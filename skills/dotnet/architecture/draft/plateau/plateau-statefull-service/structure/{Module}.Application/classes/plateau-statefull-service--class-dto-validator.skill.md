@@ -1,5 +1,5 @@
 ---
-name: class-dto-validator
+name: plateau-statefull-service--class-dto-validator
 description: Class {Dto}Validator in the statefull-service plateau
 whenToUse: when a public RequestDto declared in {Module}.Interfaces needs a reusable, cross-module-resolvable validator
 domain: skill

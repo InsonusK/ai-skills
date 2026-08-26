@@ -1,5 +1,5 @@
 ---
-name: class-repository
+name: plateau-v1--class-repository
 description: Class Repository<T> in the v1 plateau
 whenToUse: when reviewing the generic EF Core repository implementation
 domain: skill

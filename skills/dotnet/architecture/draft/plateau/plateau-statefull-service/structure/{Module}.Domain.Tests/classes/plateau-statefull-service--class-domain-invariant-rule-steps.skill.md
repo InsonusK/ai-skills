@@ -1,5 +1,5 @@
 ---
-name: class-domain-invariant-rule-steps
+name: plateau-statefull-service--class-domain-invariant-rule-steps
 description: Class {Rule}Steps in {Module}.Domain.Tests, in the statefull-service plateau
 whenToUse: when adding step definitions for a new Domain-invariant Gherkin feature file
 domain: skill

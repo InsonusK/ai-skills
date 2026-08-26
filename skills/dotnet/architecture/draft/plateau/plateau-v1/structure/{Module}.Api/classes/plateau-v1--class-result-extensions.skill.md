@@ -1,5 +1,5 @@
 ---
-name: class-result-extensions
+name: plateau-v1--class-result-extensions
 description: Class ResultExtensions in the v1 plateau
 whenToUse: when a controller or Minimal API endpoint needs to map a failed Result to an HTTP ProblemDetails response
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-contract-shape-rule-steps
+name: plateau-service-with-validated-module-interaction--class-contract-shape-rule-steps
 description: Class {Rule}Steps in {Module}.Interfaces.Tests, in the service-with-validated-module-interaction plateau
 whenToUse: when adding step definitions for a new contract-shape Gherkin feature file
 domain: skill

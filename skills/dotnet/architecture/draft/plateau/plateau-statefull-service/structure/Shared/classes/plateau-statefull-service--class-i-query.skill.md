@@ -1,5 +1,5 @@
 ---
-name: class-i-query
+name: plateau-statefull-service--class-i-query
 description: Class IQuery in the statefull-service plateau
 whenToUse: when declaring a new read-only query record
 domain: skill

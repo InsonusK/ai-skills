@@ -1,5 +1,5 @@
 ---
-name: class-guid-contracts
+name: plateau-shared-rules--class-guid-contracts
 description: Classes IHasGuid/IGuidResolver/ConflictResult in the shared-rules plateau
 whenToUse: when a create command accepts a client-generated Guid for idempotent creation
 domain: skill

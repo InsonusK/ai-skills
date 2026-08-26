@@ -1,5 +1,5 @@
 ---
-name: class-module-info
+name: plateau-v1--class-module-info
 description: Class ModuleInfo in the v1 plateau
 whenToUse: when setting up {Module}.Domain.Rules for a new module, or checking every rejection code shares one prefix
 domain: skill

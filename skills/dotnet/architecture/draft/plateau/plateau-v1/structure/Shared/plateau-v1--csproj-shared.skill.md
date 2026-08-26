@@ -1,5 +1,5 @@
 ---
-name: csproj-shared
+name: plateau-v1--csproj-shared
 description: Project Shared in the v1 plateau
 whenToUse: when adding or editing a cross-cutting interface/primitive in Shared, or deciding whether new code belongs here
 domain: skill

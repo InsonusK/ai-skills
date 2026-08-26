@@ -1,5 +1,5 @@
 ---
-name: class-application-rule-steps
+name: plateau-shared-rules--class-application-rule-steps
 description: Step definitions proving a redirected rule's @semantic/@domain scenarios hold through the DtoValidator / {Feature}Check adapter, in the shared-rules plateau
 whenToUse: when a DTO validator or async {Feature}Check condition was redirected to a centralized rule and its shared @semantic/@domain scenarios need proving again at this adapter
 domain: skill

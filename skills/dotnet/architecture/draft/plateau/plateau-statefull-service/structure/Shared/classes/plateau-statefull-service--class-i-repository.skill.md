@@ -1,5 +1,5 @@
 ---
-name: class-i-repository
+name: plateau-statefull-service--class-i-repository
 description: Classes IRepository/IReadRepository in the statefull-service plateau
 whenToUse: when a handler needs to load, add, or stage a persisted entity
 domain: skill

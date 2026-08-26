@@ -1,5 +1,5 @@
 ---
-name: class-dto-validator
+name: plateau-v1--class-dto-validator
 description: Class {Dto}Validator in the v1 plateau
 whenToUse: when a public RequestDto declared in {Module}.Interfaces needs a reusable, cross-module-resolvable validator
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-entity-related-controller
+name: plateau-v1--class-entity-related-controller
 description: Class {Entity}{Related}Controller in the v1 plateau
 whenToUse: when publishing a sub-collection scoped to one parent entity — comments, attachments, line items
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: sln-v1
+name: plateau-v1--sln-v1
 description: Repository/solution-level layout of the v1 plateau — the deployable baseline, the union of plateau-service-with-api, plateau-shared-rules, and plateau-statefull-service
 whenToUse: when adding, removing, or relocating a top-level project or module in this plateau's solution, or deciding where new code belongs at the repository level
 domain: skill

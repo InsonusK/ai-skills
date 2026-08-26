@@ -1,5 +1,5 @@
 ---
-name: class-feature-validator
+name: plateau-shared-rules--class-feature-validator
 description: Class {FeatureName}Validator in the shared-rules plateau
 whenToUse: when a new command needs transport-correctness validation before it reaches its handler
 domain: skill

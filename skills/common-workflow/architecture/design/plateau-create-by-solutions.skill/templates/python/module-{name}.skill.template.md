@@ -1,5 +1,5 @@
 ---
-name: module-name
+name: plateau-{plateau-name}--module-{name}
 description: Describe which module skill define
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: creating or editing this exact class/function module, or creating a new one that plays the same role. MUST NOT be vague ("when relevant").

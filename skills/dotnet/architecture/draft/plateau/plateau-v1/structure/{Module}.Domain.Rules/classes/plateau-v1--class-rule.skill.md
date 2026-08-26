@@ -1,5 +1,5 @@
 ---
-name: class-rule
+name: plateau-v1--class-rule
 description: A business predicate (Rule) in the v1 plateau — IsValid() + IRuleBuilder extension + Check(), covering a single field (Format), several fields of one container (Semantic), or state preloaded elsewhere (Domain), uniformly
 whenToUse: when centralizing a condition already duplicated across a VO constructor, an Entity method, a PropertyValidator, or a DTO/Command validator
 domain: skill

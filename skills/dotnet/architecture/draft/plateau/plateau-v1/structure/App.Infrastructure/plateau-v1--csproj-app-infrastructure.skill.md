@@ -1,5 +1,5 @@
 ---
-name: csproj-app-infrastructure
+name: plateau-v1--csproj-app-infrastructure
 description: Project App.Infrastructure in the v1 plateau
 whenToUse: when adding or editing a persistence implementation detail (DbContext, repository, unit of work, cross-module config), or deciding whether new code belongs here
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: sln-statefull-service
+name: plateau-statefull-service--sln-statefull-service
 description: Repository/solution-level layout of the statefull-service plateau
 whenToUse: when adding, removing, or relocating a top-level project or module in this plateau's solution, or deciding where new code belongs at the repository level
 domain: skill

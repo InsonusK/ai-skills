@@ -1,5 +1,5 @@
 ---
-name: class-module-registration
+name: plateau-v1--class-module-registration
 description: Class ModuleRegistration in the v1 plateau
 whenToUse: when creating or editing ModuleRegistration, or wiring up a newly added module
 domain: skill

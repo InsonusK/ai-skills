@@ -1,5 +1,5 @@
 ---
-name: class-guarded-property-rule-coverage-tests
+name: plateau-v1--class-guarded-property-rule-coverage-tests
 description: Class GuardedPropertyRuleCoverageTests in the v1 plateau — the registry-driven, recursive call-graph Cecil check
 whenToUse: when proving that every public/internal Entity write of a multi-field-rule-guarded property also calls that rule
 domain: skill

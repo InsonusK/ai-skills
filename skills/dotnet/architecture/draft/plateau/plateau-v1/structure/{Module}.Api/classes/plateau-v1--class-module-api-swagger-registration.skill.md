@@ -1,5 +1,5 @@
 ---
-name: class-module-api-swagger-registration
+name: plateau-v1--class-module-api-swagger-registration
 description: Class {Module}ApiSwaggerRegistration in the v1 plateau
 whenToUse: when a module's routes need their own Swagger document instead of being merged into one solution-wide document
 domain: skill

@@ -1,5 +1,5 @@
 ---
-name: class-concurrency-behavior
+name: plateau-statefull-service--class-concurrency-behavior
 description: Classes ConcurrencyBehavior/ETagEncoder in the statefull-service plateau
 whenToUse: when reviewing or changing how a mutable entity's version is validated before its handler runs
 domain: skill

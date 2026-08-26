@@ -1,5 +1,5 @@
 ---
-name: class-command
+name: plateau-service-with-api--class-command
 description: Class {Command} in the service-with-api plateau
 whenToUse: when declaring a new write-intent command for this module
 domain: skill

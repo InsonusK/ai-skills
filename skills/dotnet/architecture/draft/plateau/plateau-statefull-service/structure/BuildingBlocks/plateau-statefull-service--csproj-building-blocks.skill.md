@@ -1,5 +1,5 @@
 ---
-name: csproj-building-blocks
+name: plateau-statefull-service--csproj-building-blocks
 description: Project BuildingBlocks in the statefull-service plateau
 whenToUse: when adding or editing a reusable framework-level pattern (pipeline behavior, cross-cutting utility) in BuildingBlocks, or deciding whether new code belongs here
 domain: skill

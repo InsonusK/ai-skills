@@ -1,5 +1,5 @@
 ---
-name: class-concurrency-contracts
+name: plateau-v1--class-concurrency-contracts
 description: Classes IVersioned/IHasVersions/IEntityVersionResolverFactory/IEntityVersionResolver in the v1 plateau
 whenToUse: when an entity needs optimistic concurrency control, or an update command needs to carry client-supplied version information
 domain: skill

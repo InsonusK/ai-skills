@@ -1,5 +1,5 @@
 ---
-name: class-entity
+name: plateau-stateless-non-interactive-service--class-entity
 description: Class {Entity} in the stateless-non-interactive-service plateau
 whenToUse: when creating or editing an entity in {Module}.Domain, or picking the right entity type from the classification matrix
 domain: skill
