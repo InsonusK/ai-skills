@@ -41,8 +41,11 @@ public class ConcurrencyBehavior<TRequest, TResponse>
     {
         foreach (var (entityName, expected) in request.Versions)
         {
+            if (!request.EntityIds.TryGetValue(entityName, out var entityId))
+                throw new InvalidOperationException($"No entity id provided for '{entityName}'.");
+
             var resolver = _factory.GetFor(entityName);
-            var current = await resolver.GetCurrentVersionForAsync(request.GetEntityId(entityName), ct);
+            var current = await resolver.GetCurrentVersionForAsync(entityId, ct);
 
             if (current != expected)
                 return (TResponse)Result.Conflict($"{entityName} was modified by another request.");

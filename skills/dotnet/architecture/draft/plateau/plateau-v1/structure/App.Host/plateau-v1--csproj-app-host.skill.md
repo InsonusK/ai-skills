@@ -39,7 +39,7 @@ __Applied solutions:__
 - App.Host references BuildingBlocks directly; Shared is consumed transitively through BuildingBlocks
 - App.Host contains no business logic — only wiring
 - Pipeline behaviors are registered once here — not inside individual modules
-- `Program.cs` calls the high-level composition extensions: `AddModules()`, `AddPipeline()`, `AddInfrastructure()`, and — whichever are actually applied — `AddApi()`/`UseApi()` (HTTP) and/or `AddGrpcApi()`/`UseGrpcApi()` (gRPC)
+- `Program.cs` calls the high-level composition extensions: `AddInfrastructure()`, `AddModules()`, `AddPipeline()`, and — whichever are actually applied — `AddApi()`/`UseApi()` (HTTP) and/or `AddGrpcApi()`/`UseGrpcApi()` (gRPC)
 - Pipeline behavior order is enforced inside `PipelineRegistration.AddPipeline()` — not in `Program.cs`
 - `ApiRegistration` and `GrpcRegistration` don't know about each other — each works whether the other is applied or not
 
@@ -67,7 +67,7 @@ __Applied solutions:__
   - Program.cs
   - App.Host.csproj
 
-`Program.cs` uses `WebApplication.CreateBuilder(args)` and calls `AddModules(builder.Configuration)`, `AddPipeline()`, `AddInfrastructure(builder.Configuration)`, and whichever of `AddApi()`/`AddGrpcApi()` are applied — then, after `builder.Build()`, `app.UseApi()`/`app.UseGrpcApi()` (whichever applied) before `app.Run()`.
+`Program.cs` uses `WebApplication.CreateBuilder(args)` and calls `AddInfrastructure(builder.Configuration)`, `AddModules(builder.Configuration)`, `AddPipeline()`, and whichever of `AddApi()`/`AddGrpcApi()` are applied — then, after `builder.Build()`, `app.UseApi()`/`app.UseGrpcApi()` (whichever applied) before `app.Run()`.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj.create]]

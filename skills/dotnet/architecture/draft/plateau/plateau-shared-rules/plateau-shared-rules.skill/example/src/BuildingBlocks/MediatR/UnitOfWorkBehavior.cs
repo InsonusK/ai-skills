@@ -13,7 +13,7 @@ public sealed class UnitOfWorkContext
 
 public class UnitOfWorkBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICommand
+    where TRequest : ICommand<TResponse>
 {
     private readonly UnitOfWorkContext _context;
     private readonly IUnitOfWork _unitOfWork;

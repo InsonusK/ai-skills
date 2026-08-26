@@ -40,7 +40,7 @@ __Applied solutions:__
 //Plateau: shared-rules
 //Version: 20260824163000
 
-public interface ICommand : IRequest { }
+public interface ICommand : IRequest<Result> { }
 
 public interface ICommand<TResponse> : IRequest<TResponse> { }
 ```

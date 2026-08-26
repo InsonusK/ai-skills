@@ -1,3 +1,4 @@
+using Ardalis.Result;
 using Reqnroll;
 using Sample.Interfaces.Commands;
 using Shared;
@@ -13,5 +14,5 @@ public sealed class GreetCommandShapeSteps
     public void GivenCommand(string name) => _command = new GreetCommand(name);
 
     [Then("it implements ICommand of string")]
-    public void ThenImplements() => Assert.IsAssignableFrom<ICommand<string>>(_command);
+    public void ThenImplements() => Assert.IsAssignableFrom<ICommand<Result<string>>>(_command);
 }

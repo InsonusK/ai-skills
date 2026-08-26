@@ -36,5 +36,5 @@ public sealed class ExceptionHandlingBehaviorSteps
         Assert.Equal(message, _result.Errors.First());
     }
 
-    private record GreetCommand(string Name) : ICommand<string>;
+    private record GreetCommand(string Name) : ICommand<Result<string>>;
 }

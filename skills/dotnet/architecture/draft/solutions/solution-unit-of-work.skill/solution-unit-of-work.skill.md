@@ -127,7 +127,7 @@ PROJECT:
 - [ ] `IUnitOfWork` defined in `Shared/UnitOfWork/IUnitOfWork.cs` with single `SaveChangesAsync` method
 - [ ] `UnitOfWorkContext` defined in `BuildingBlocks/MediatR/UnitOfWorkContext.cs`
 - [ ] `UnitOfWorkBehavior` defined in `BuildingBlocks/MediatR/UnitOfWorkBehavior.cs`
-- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
+- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand<TResponse>`
 - [ ] `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` for depth decrement
 - [ ] `UnitOfWorkBehavior` calls `SaveChangesAsync` only when `_context.Depth == 1`
 - [ ] `UnitOfWork` implemented in `App.Infrastructure/UnitOfWork/UnitOfWork.cs`

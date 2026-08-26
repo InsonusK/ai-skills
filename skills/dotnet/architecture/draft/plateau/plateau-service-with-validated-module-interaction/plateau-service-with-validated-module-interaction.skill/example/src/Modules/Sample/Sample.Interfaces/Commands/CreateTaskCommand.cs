@@ -8,6 +8,6 @@ public record CreateTaskCommand(
     string Title,
     int AssigneeId,
     SoftEmail AssigneeEmail
-) : ICommand<CreateTaskResult>;
+) : ICommand<Result<CreateTaskResult>>;
 
 public record CreateTaskResult(int Id);

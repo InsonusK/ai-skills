@@ -67,7 +67,7 @@ public sealed class ValidationBehaviorSteps
         Assert.True(_nextWasCalled);
     }
 
-    private record DummyCommand : ICommand<string>;
+    private record DummyCommand : ICommand<Result<string>>;
 
     private class FailingValidator : AbstractValidator<DummyCommand>
     {

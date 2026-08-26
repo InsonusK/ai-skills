@@ -149,9 +149,9 @@ PROJECT:
 - Duplicating Soft{ValueObject} validation rules in a command validator instead of using `IValidator<Soft{ValueObject}>`
 
 # Check list
-- [ ] `ICommand : IRequest<Result>` and `ICommand<TResponse> : IRequest<Result<TResponse>>` defined in `Shared/MediatR/ICommand.cs`
+- [ ] `ICommand : IRequest<Result>` and `ICommand<TResponse> : IRequest<TResponse>` defined in `Shared/MediatR/ICommand.cs`
 - [ ] All commands declared as `record` in `/{Module}.Interfaces/Commands`
-- [ ] All commands implement `ICommand<T>` for a result payload of `T`, or `ICommand` when no payload is returned
+- [ ] All commands implement `ICommand<Result<T>>` for a result payload of `T`, or `ICommand` when no payload is returned
 - [ ] Result records co-located with their command in the same file
 - [ ] Each feature has its own folder under `/{Module}.Application/Features`
 - [ ] Handler file named `{FeatureName}.Handler.cs`
