@@ -26,7 +26,7 @@ __Applied solutions:__
 # Core Principles
 - Feature files live under `/Rules`, one file per business rule; step definitions live under `/StepDefinitions`, one class per feature file.
 - Step definitions call `{Module}.Domain`'s public API directly — never `{Module}.Application` or `{Module}.Interfaces`, since `{Module}.Domain` itself cannot reach them either.
-- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-v1--class-rule-steps.skill.md|class-rule-steps]]).
+- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-v1--class-domain-invariant-rule-steps.skill.md|class-domain-invariant-rule-steps]]).
 - Once `solution-domain-rules` is applied, `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios are linked in here too and proven again through the VO constructor / Entity method — see [[./classes/plateau-v1--class-domain-rule-steps.skill.md|class-domain-rule-steps]].
 - `/Architecture` holds the four Mono.Cecil structural checks — build-time guarantees plain unit/BDD tests cannot give by construction, over compiled IL rather than by executing it — see [[./classes/plateau-v1--class-module-architecture-tests.skill.md|class-module-architecture-tests]] and [[./classes/plateau-v1--class-guarded-property-rule-coverage-tests.skill.md|class-guarded-property-rule-coverage-tests]].
 
@@ -47,7 +47,7 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-v1--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-v1--class-domain-invariant-rule-steps.skill.md)
     - [{Rule}VoSteps.cs](./classes/plateau-v1--class-domain-rule-steps.skill.md) — `@format` scenarios linked in from `{Module}.Domain.Rules.Spec`
   - /Architecture
     - [{Module}ArchitectureTests.cs](./classes/plateau-v1--class-module-architecture-tests.skill.md)
@@ -66,7 +66,7 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one Domain invariant/rule | |
-| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-v1--class-rule-steps.skill.md\|class-rule-steps]], [[./classes/plateau-v1--class-domain-rule-steps.skill.md\|class-domain-rule-steps]] |
+| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-v1--class-domain-invariant-rule-steps.skill.md\|class-domain-invariant-rule-steps]], [[./classes/plateau-v1--class-domain-rule-steps.skill.md\|class-domain-rule-steps]] |
 | /Architecture | Mono.Cecil structural checks over compiled `{Module}.Domain`/`{Module}.Domain.Rules` IL | [[./classes/plateau-v1--class-module-architecture-tests.skill.md\|class-module-architecture-tests]], [[./classes/plateau-v1--class-guarded-property-rule-coverage-tests.skill.md\|class-guarded-property-rule-coverage-tests]], [[./classes/plateau-v1--class-check-feature.skill.md\|class-check-feature]] |
 
 ## NuGet Packages

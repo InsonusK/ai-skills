@@ -21,7 +21,7 @@ __Applied solutions:__
 - [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md|{Module}.Application.Tests.csproj.create]]
 
 # Core Principles
-- Command-shaped scenarios: a command goes in, a `Result` comes out, proven against the real handler — never `{Module}.Domain`'s types directly (see [[./classes/plateau-v1--class-rule-steps.skill.md|class-rule-steps]]).
+- Command-shaped scenarios: a command goes in, a `Result` comes out, proven against the real handler — never `{Module}.Domain`'s types directly (see [[./classes/plateau-v1--class-command-handler-rule-steps.skill.md|class-command-handler-rule-steps]]).
 - Once `solution-domain-rules` is applied, `{Module}.Domain.Rules.Spec`'s `@semantic`/`@domain`-tagged scenarios are linked in here and proven again through the real `{ValueObject}PropertyValidator`/`{Dto}Validator`/`{Feature}Check` — see [[./classes/plateau-v1--class-application-rule-steps.skill.md|class-application-rule-steps]].
 
 __Applied solutions:__
@@ -40,7 +40,7 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-v1--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-v1--class-command-handler-rule-steps.skill.md)
     - [{Rule}DtoSteps.cs](./classes/plateau-v1--class-application-rule-steps.skill.md) — `@semantic`/`@domain` scenarios linked in from `{Module}.Domain.Rules.Spec`
   - {Module}.Application.Tests.csproj
 
@@ -54,7 +54,7 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one Application orchestration | |
-| /StepDefinitions | Bindings that call `{Module}.Application`'s real handlers/validators | [[./classes/plateau-v1--class-rule-steps.skill.md\|class-rule-steps]], [[./classes/plateau-v1--class-application-rule-steps.skill.md\|class-application-rule-steps]] |
+| /StepDefinitions | Bindings that call `{Module}.Application`'s real handlers/validators | [[./classes/plateau-v1--class-command-handler-rule-steps.skill.md\|class-command-handler-rule-steps]], [[./classes/plateau-v1--class-application-rule-steps.skill.md\|class-application-rule-steps]] |
 
 ## NuGet Packages
 Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Microsoft.NET.Test.Sdk`. Plus `Moq` — needed to mock a `@domain`-tagged scenario's loading step (e.g. `IReadRepository<T>`) without a real persistence implementation.

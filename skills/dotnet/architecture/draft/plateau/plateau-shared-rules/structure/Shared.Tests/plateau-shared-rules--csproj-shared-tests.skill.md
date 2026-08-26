@@ -20,7 +20,7 @@ __Applied solutions:__
 - [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
 
 # Core Principles
-- Value-shaped scenarios: given one or more primitive values, prove how they compare/combine — never "is this input valid" (see [[./classes/plateau-shared-rules--class-rule-steps.skill.md|class-rule-steps]]). `Shared` is mostly interfaces and primitives today, so its own test suite is small.
+- Value-shaped scenarios: given one or more primitive values, prove how they compare/combine — never "is this input valid" (see [[./classes/plateau-shared-rules--class-shared-rule-steps.skill.md|class-shared-rule-steps]]). `Shared` is mostly interfaces and primitives today, so its own test suite is small.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj.create]]
@@ -37,7 +37,7 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-shared-rules--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-shared-rules--class-shared-rule-steps.skill.md)
   - Shared.Tests.csproj
 
 __Applied solutions:__
@@ -47,7 +47,7 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one Shared primitive | |
-| /StepDefinitions | Bindings that call `Shared`'s real primitives | [[./classes/plateau-shared-rules--class-rule-steps.skill.md\|class-rule-steps]] |
+| /StepDefinitions | Bindings that call `Shared`'s real primitives | [[./classes/plateau-shared-rules--class-shared-rule-steps.skill.md\|class-shared-rule-steps]] |
 
 ## NuGet Packages
 Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Microsoft.NET.Test.Sdk`.

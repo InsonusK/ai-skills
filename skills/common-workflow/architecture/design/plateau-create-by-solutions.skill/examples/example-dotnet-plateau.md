@@ -4,9 +4,9 @@
 - plateau-name: `default`
 - stack: `dotnet`
 - solutions:
-  - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
-  - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]]
-  - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-command-integration.skill/solution-command-integration.skill|solution-command-integration]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]
 
 ## Source files discovered in Implementation/
 
@@ -117,9 +117,9 @@ tags:
   - skill/template/plateau
 parent_plateau:
 created_by:
-  - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
-  - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]
-  - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]
 ---
 ```
 

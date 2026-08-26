@@ -20,7 +20,7 @@ __Applied solutions:__
 - [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
 
 # Core Principles
-- Shape-shaped scenarios: `{Module}.Interfaces` is declarations-only, so scenarios prove equality/serialization round-trip, never "is this input valid" (see [[./classes/plateau-v1--class-rule-steps.skill.md|class-rule-steps]]).
+- Shape-shaped scenarios: `{Module}.Interfaces` is declarations-only, so scenarios prove equality/serialization round-trip, never "is this input valid" (see [[./classes/plateau-v1--class-contract-shape-rule-steps.skill.md|class-contract-shape-rule-steps]]).
 
 __Applied solutions:__
 - [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj.create]]
@@ -37,7 +37,7 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-v1--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-v1--class-contract-shape-rule-steps.skill.md)
   - {Module}.Interfaces.Tests.csproj
 
 __Applied solutions:__
@@ -47,7 +47,7 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one contract's shape | |
-| /StepDefinitions | Bindings that prove equality/serialization | [[./classes/plateau-v1--class-rule-steps.skill.md\|class-rule-steps]] |
+| /StepDefinitions | Bindings that prove equality/serialization | [[./classes/plateau-v1--class-contract-shape-rule-steps.skill.md\|class-contract-shape-rule-steps]] |
 
 ## NuGet Packages
 Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Microsoft.NET.Test.Sdk`.

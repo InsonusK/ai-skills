@@ -1,16 +1,16 @@
-# Example: adding solution-entity-edit-timestamp to plateau-default
+# Example: adding solution-example-timestamps to plateau-example
 
-This example is based on the real change in commit `8d4766e539b2ff9bcc2ec030f767497a20b39307`.
+A worked, fully illustrative example — `plateau-example` and `solution-example-timestamps` are stand-ins, not real skills in this catalog. The point is the mechanics: discover a solution's `Implementation/` files, map each one to a structural skill, then update the plateau/repository/project skills that reference it.
 
 ## Input
 
-- plateau-name: `default`
-- solution: `solution-entity-edit-timestamp`
-- output: `skills/dotnet/architecture/deprecated/v1/plateau/default`
+- plateau-name: `example`
+- solution: `solution-example-timestamps`
+- output: `skills/dotnet/architecture/draft/plateau/plateau-example`
 
 ## Source files discovered in Implementation/
 
-`solution-entity-edit-timestamp`:
+`solution-example-timestamps`:
 
 - `Shared.csproj.extend.md`
 - `Shared.csproj.extend/ICreationInfoModel.cs.create.md`
@@ -52,26 +52,26 @@ This example is based on the real change in commit `8d4766e539b2ff9bcc2ec030f767
 
 ## Updates to plateau root skill
 
-- Add `solution-entity-edit-timestamp` to `created_by`
+- Add `solution-example-timestamps` to `created_by`
 - Update `description` to mention "entity edit timestamps"
 - Add a new `Core Principles` bullet about `ActionTimeStamp`, user timestamps, and server timestamps assigned by `AppDbContext`
 - Add a new `Capabilities` section **Entity edit timestamps**
-- Add `solution-entity-edit-timestamp` to every relevant `__Applied solutions__` list
-- Bump `version` from `20260628` to `20260629223200`
+- Add `solution-example-timestamps` to every relevant `__Applied solutions__` list
+- Bump `version`
 
-## Updates to repository skill (`sln-default.skill.md`)
+## Updates to repository skill (`sln-example.skill.md`)
 
-- Add `solution-entity-edit-timestamp` to `created_by`
+- Add `solution-example-timestamps` to `created_by`
 - Add timestamp contracts to `Goal` and `Core Principles`
 - Add `entity-edit-timestamp` column to the `Entity Type Matrix`
-- Add a `solution-entity-edit-timestamp.skill` block under `Requirements` describing which entity types get which timestamp contracts
+- Add a `solution-example-timestamps.skill` block under `Requirements` describing which entity types get which timestamp contracts
 - Update `Rules`, `Anti-patterns`, `Check list`, and `Unittest TestCases` with timestamp-related items
-- Add `solution-entity-edit-timestamp` to all `__Applied solutions__` lists
+- Add `solution-example-timestamps` to all `__Applied solutions__` lists
 - Bump `version`
 
 ## Updates to a project skill (`csproj-shared.skill.md`)
 
-- Add `solution-entity-edit-timestamp` to `created_by`
+- Add `solution-example-timestamps` to `created_by`
 - Add timestamp contract goals to `Goal`
 - Add `Timestamp contracts live in Shared.Timestamps` to `Core Principles`
 - Add `/Timestamps` folder and interface links to `Project Structure`

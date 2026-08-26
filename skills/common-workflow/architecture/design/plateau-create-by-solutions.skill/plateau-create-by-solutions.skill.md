@@ -119,7 +119,7 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
 14. Fill header properties
     - `name` by {plateau-name}
     - `version` by current UTC timestamp with format `YYYYMMDDHHMMSS`
-    - `parent_plateaus` — list of wikilinks to every plateau this one composes. Leave empty when the plateau is built from scratch without a parent. Use a wikilink, for example `[[skills/dotnet/architecture/deprecated/v1/plateau/base/plateau-base.skill.md|base]]`. A single-element list expresses what the old singular `parent_plateau` used to mean; several elements express composition of independent plateaus — see [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] for merge semantics.
+    - `parent_plateaus` — list of wikilinks to every plateau this one composes. Leave empty when the plateau is built from scratch without a parent. Use a wikilink, for example `[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]`. A single-element list expresses what the old singular `parent_plateau` used to mean; several elements express composition of independent plateaus — see [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] for merge semantics.
     - `created_by` — list of wikilinks to every solution skill applied directly by this plateau, on top of whatever `parent_plateaus` already contribute. If `parent_plateaus` is empty, `created_by` lists every solution that defines the plateau.
     - `standalone` — `true` if this plateau is meant to be usable/deployable on its own, `false` if it exists only to be composed into a larger plateau. Use {standalone} if given, otherwise ask the user.
 
@@ -208,14 +208,14 @@ Each bullet must contain **exactly two wikilinks separated by ` - `**:
 
 ```example
 __Applied solutions:__
-- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj extend]]
+- [[skills/dotnet/architecture/draft/solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[skills/dotnet/architecture/draft/solutions/solution-command-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj extend]]
 ```
 
 When the content comes directly from the solution skill file and there is no separate implementation/template file, list the solution skill file once.
 
 ```example
 __Applied solutions:__
-- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]
+- [[skills/dotnet/architecture/draft/solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]
 ```
 
 # Repository/root skill structure

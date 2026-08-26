@@ -22,7 +22,7 @@ __Applied solutions:__
 # Core Principles
 - Feature files live under `/Rules`, one file per business rule; step definitions live under `/StepDefinitions`, one class per feature file.
 - Step definitions call `{Module}.Domain`'s public API directly — never `{Module}.Application` or `{Module}.Interfaces`, since `{Module}.Domain` itself cannot reach them either.
-- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-service-with-api--class-rule-steps.skill.md|class-rule-steps]]).
+- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-service-with-api--class-domain-invariant-rule-steps.skill.md|class-domain-invariant-rule-steps]]).
 
 __Applied solutions:__
 - [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
@@ -39,7 +39,7 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-service-with-api--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-service-with-api--class-domain-invariant-rule-steps.skill.md)
   - {Module}.Domain.Tests.csproj
 
 __Applied solutions:__
@@ -49,7 +49,7 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one Domain invariant/rule | |
-| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-service-with-api--class-rule-steps.skill.md\|class-rule-steps]] |
+| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-service-with-api--class-domain-invariant-rule-steps.skill.md\|class-domain-invariant-rule-steps]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
