@@ -1,0 +1,22 @@
+syntax = "proto3";
+option csharp_namespace = "Sample.Api.Grpc";
+package sample;
+
+service TaskGrpcService {
+  rpc GetTask (GetTaskRequest) returns (TaskReply);
+  rpc CreateTask (CreateTaskRequest) returns (TaskReply);
+}
+
+message GetTaskRequest { int32 id = 1; }
+message CreateTaskRequest {
+  string title = 1;
+  int32 assignee_id = 2;
+  string assignee_email = 3;
+  string action_timestamp = 4;
+  optional string start_date_time = 5;
+  optional string due_date_time = 6;
+}
+message TaskReply {
+  int32 id = 1;
+  string title = 2;
+}
