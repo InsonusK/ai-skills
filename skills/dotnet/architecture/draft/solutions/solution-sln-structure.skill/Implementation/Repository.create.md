@@ -24,7 +24,7 @@ tags:
   /BuildingBlocks
 ```
 
-Test projects (one per production project — not shown here) are defined by whichever testing solution is applied, e.g. `solution-conformance-testing`; this solution only lays out the production projects.
+Test projects (one per production project — not shown here) are defined by whichever testing solution is applied, e.g. `solution-dotnet-conformance-testing`; this solution only lays out the production projects.
 
 ## Directory and class skills
 | `Directory\|file`                      | Description                                                    |

@@ -23,7 +23,7 @@ Load the already-built assembly (`AssemblyDefinition.ReadAssembly(typeof(KnownTy
 
 ### Benefits
 
-- No new test runner, no new CI step, no new report format — it is just another `[Fact]`, picked up by `make cucumber-test` / the module's existing `dotnet test` the same as everything else.
+- No new test runner, no new CI step, no new report format — it is just another `[Fact]`, picked up by `make unit-test` / the module's existing `dotnet test` the same as everything else.
 - `AssemblyDefinition.ReadAssembly` reads the assembly that will actually ship (`--no-build` friendly), not a re-derived model of it.
 - The object model (`TypeDefinition`, `MethodDefinition`, `Instruction`) maps closely enough to IL concepts (`Code.Call`, `Code.Newobj`, `Code.Stfld`, ...) that the tests stay readable without an IL reference open.
 
@@ -60,5 +60,5 @@ Ship the checks as a Roslyn `DiagnosticAnalyzer`/`CodeFixProvider` NuGet package
 ### Costs
 
 - A different project type, packaging, and versioning lifecycle from the rest of the module's test suite — cannot just live as a `[Fact]` in `*.Domain.Tests`.
-- Cannot reuse the existing `make cucumber-test`/`dotnet test` reporting pipeline this solution already has; would need its own discovery and reporting mechanism.
+- Cannot reuse the existing `make unit-test`/`dotnet test` reporting pipeline this solution already has; would need its own discovery and reporting mechanism.
 - Higher authoring overhead (`SyntaxNode`/`IOperation` visitors, analyzer test harness) for checks that, as shown by the four checks in this solution, are naturally expressed as "load the built assembly, walk instructions."

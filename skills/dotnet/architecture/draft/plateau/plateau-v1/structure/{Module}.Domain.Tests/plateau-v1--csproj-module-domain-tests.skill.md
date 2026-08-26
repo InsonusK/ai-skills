@@ -10,7 +10,7 @@ tags:
   - skill/template/csproj
   - plateau/v1
 created_by:
-  - "[[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
   - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
   - "[[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]]"
 ---
@@ -20,18 +20,18 @@ created_by:
 - Prove, via Mono.Cecil over compiled IL, that the rule mechanism itself is wired correctly across `{Module}.Domain`/`{Module}.Domain.Rules` — dead rules, exception scoping, code uniqueness, guarded-property coverage.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 - [[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]] - [[../../../../solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]
 
 # Core Principles
 - Feature files live under `/Rules`, one file per business rule; step definitions live under `/StepDefinitions`, one class per feature file.
 - Step definitions call `{Module}.Domain`'s public API directly — never `{Module}.Application` or `{Module}.Interfaces`, since `{Module}.Domain` itself cannot reach them either.
-- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-v1--class-rule-steps.skill.md|class-rule-steps]]).
+- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-v1--class-domain-invariant-rule-steps.skill.md|class-domain-invariant-rule-steps]]).
 - Once `solution-domain-rules` is applied, `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios are linked in here too and proven again through the VO constructor / Entity method — see [[./classes/plateau-v1--class-domain-rule-steps.skill.md|class-domain-rule-steps]].
 - `/Architecture` holds the four Mono.Cecil structural checks — build-time guarantees plain unit/BDD tests cannot give by construction, over compiled IL rather than by executing it — see [[./classes/plateau-v1--class-module-architecture-tests.skill.md|class-module-architecture-tests]] and [[./classes/plateau-v1--class-guarded-property-rule-coverage-tests.skill.md|class-guarded-property-rule-coverage-tests]].
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 - [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]
 - [[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]] - [[../../../../solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]
 
@@ -47,7 +47,7 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-v1--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-v1--class-domain-invariant-rule-steps.skill.md)
     - [{Rule}VoSteps.cs](./classes/plateau-v1--class-domain-rule-steps.skill.md) — `@format` scenarios linked in from `{Module}.Domain.Rules.Spec`
   - /Architecture
     - [{Module}ArchitectureTests.cs](./classes/plateau-v1--class-module-architecture-tests.skill.md)
@@ -58,7 +58,7 @@ __Applied solutions:__
 `{Module}.Domain.Tests.csproj` links `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios in the same way `{Module}.Domain.Rules.Tests` links the whole directory — see that project's own csproj skill for the `<None Include>` pattern.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 - [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]
 - [[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]] - [[../../../../solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]
 
@@ -66,7 +66,7 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one Domain invariant/rule | |
-| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-v1--class-rule-steps.skill.md\|class-rule-steps]], [[./classes/plateau-v1--class-domain-rule-steps.skill.md\|class-domain-rule-steps]] |
+| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-v1--class-domain-invariant-rule-steps.skill.md\|class-domain-invariant-rule-steps]], [[./classes/plateau-v1--class-domain-rule-steps.skill.md\|class-domain-rule-steps]] |
 | /Architecture | Mono.Cecil structural checks over compiled `{Module}.Domain`/`{Module}.Domain.Rules` IL | [[./classes/plateau-v1--class-module-architecture-tests.skill.md\|class-module-architecture-tests]], [[./classes/plateau-v1--class-guarded-property-rule-coverage-tests.skill.md\|class-guarded-property-rule-coverage-tests]], [[./classes/plateau-v1--class-check-feature.skill.md\|class-check-feature]] |
 
 ## NuGet Packages
@@ -82,7 +82,7 @@ __Applied solutions:__
 - `{Module}.Domain.Rules` — new at this plateau, needed both to prove the `@format`-redirected VO/Entity adapter and to load the assembly the dead-rule/code-uniqueness Cecil checks scan
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 - [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]
 
 # Rules
@@ -97,6 +97,6 @@ MUST NOT:
 - Reference `{Module}.Application` or any other module's project, even to prove an architecture check
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 - [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]
 - [[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]] - [[../../../../solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj.extend]]

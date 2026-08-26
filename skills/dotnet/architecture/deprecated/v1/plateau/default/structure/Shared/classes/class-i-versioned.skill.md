@@ -1,0 +1,104 @@
+---
+name: class-i-versioned
+description: Marker interface for mutable entities that expose a database-generated concurrency version
+domain: skill
+type: template
+version: 20260628
+plateau: default
+tags:
+  - skill/template/class
+  - plateau/default
+  - stack/dotnet
+  - concern/architecture
+
+created_by:
+  - "[[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]]"
+---
+
+# Goal
+- Let the concurrency infrastructure recognize mutable entities without using reflection
+- Let `EntityVersionResolverFactory` discover versioned entity types automatically by scanning assemblies
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]
+
+# Core Principles
+- Apply ONE plateau template per class
+- Single read-only `Version` property
+- Implemented by every mutable entity in module Domain projects
+- Declared in Shared so Domain can implement it without referencing BuildingBlocks or App.Infrastructure
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]
+
+# Naming convention
+| use case | class name pattern | class name | file name pattern | file name |
+| -------- | ------------------ | ---------- | ----------------- | --------- |
+| Versioned entity marker | `IVersioned` | `IVersioned` | `IVersioned.cs` | `IVersioned.cs` |
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]
+
+# Implementation
+
+Write a comment at the top of the created class with the applied skill metadata:
+
+```csharp
+//Skill: class-i-versioned
+//Plateau: default
+//Version: 20260628
+```
+
+```csharp
+// Shared/Concurrency/IVersioned.cs
+namespace Shared.Concurrency;
+
+public interface IVersioned
+{
+    uint Version { get; }
+}
+```
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]
+
+# Rules
+MUST:
+	- `Version` is `uint` and read-only at the interface level
+	- Implemented by every mutable entity that participates in optimistic concurrency checks
+	- Defined in `Shared/Concurrency/IVersioned.cs`
+MUST NOT:
+	- Add methods or setters to the interface
+	- Be implemented by immutable entities or value objects
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]
+
+# Anti-patterns
+- Apply SEVERAL plateau template per class
+- Using reflection on `Version` property instead of casting to `IVersioned`
+- Implementing `IVersioned` on DTOs or commands — belongs on domain entities only
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]
+
+# Check list
+- [ ] `IVersioned` defined in `Shared/Concurrency/IVersioned.cs`
+- [ ] Every mutable entity implements `IVersioned`
+- [ ] `Version` is read-only on the interface
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]
+
+# Unittest TestCases
+- [ ] WHEN applied THEN Let the concurrency infrastructure recognize mutable entities without using reflection
+- [ ] WHEN applied THEN Let `EntityVersionResolverFactory` discover versioned entity types automatically by scanning assemblies
+- [ ] WHEN applied THEN Version is uint and read-only at the interface level
+- [ ] WHEN applied THEN Implemented by every mutable entity in module Domain projects
+- [ ] WHEN applied THEN Declared in Shared so Domain can implement it without referencing BuildingBlocks or App.Infrastructure
+- [ ] WHEN verified THEN IVersioned defined in Shared/Concurrency/IVersioned.cs
+- [ ] WHEN verified THEN Every mutable entity implements IVersioned
+- [ ] WHEN naming 'Versioned entity marker' THEN pattern matches convention
+
+__Applied solutions:__
+- [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill|solution-entity-concurrency-change]] - [[skills/dotnet/architecture/deprecated/v1/solutions/🧩validated/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create|IVersioned.cs]]

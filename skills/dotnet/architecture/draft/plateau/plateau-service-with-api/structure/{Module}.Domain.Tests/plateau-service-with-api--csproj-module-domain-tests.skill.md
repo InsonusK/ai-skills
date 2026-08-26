@@ -10,22 +10,22 @@ tags:
   - skill/template/csproj
   - plateau/service-with-api
 created_by:
-  - "[[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 ---
 
 # Goal
 - Give `{Module}.Domain` a dedicated test project that runs plain unit tests and Gherkin scenarios together, referencing `{Module}.Domain` only.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 
 # Core Principles
 - Feature files live under `/Rules`, one file per business rule; step definitions live under `/StepDefinitions`, one class per feature file.
 - Step definitions call `{Module}.Domain`'s public API directly — never `{Module}.Application` or `{Module}.Interfaces`, since `{Module}.Domain` itself cannot reach them either.
-- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-service-with-api--class-rule-steps.skill.md|class-rule-steps]]).
+- Validator-shaped scenarios: input → valid/invalid + error code (see [[./classes/plateau-service-with-api--class-domain-invariant-rule-steps.skill.md|class-domain-invariant-rule-steps]]).
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 
 # Structure
 
@@ -39,17 +39,17 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-service-with-api--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-service-with-api--class-domain-invariant-rule-steps.skill.md)
   - {Module}.Domain.Tests.csproj
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one Domain invariant/rule | |
-| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-service-with-api--class-rule-steps.skill.md\|class-rule-steps]] |
+| /StepDefinitions | Bindings that call `{Module}.Domain`'s real entity/value-object code | [[./classes/plateau-service-with-api--class-domain-invariant-rule-steps.skill.md\|class-domain-invariant-rule-steps]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -62,7 +62,7 @@ __Applied solutions:__
 - `{Module}.Domain` — nothing else, mirroring `{Module}.Domain.csproj`'s own zero project references.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
 
 # Rules
 MUST:
@@ -73,4 +73,4 @@ MUST NOT:
 - Add a second, separate test project just for `{Module}.Domain`'s Gherkin scenarios
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj.create]]

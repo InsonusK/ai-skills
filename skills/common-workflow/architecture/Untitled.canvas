@@ -6,8 +6,8 @@
 		{"id":"628669656ce97d42","type":"group","x":3430,"y":560,"width":800,"height":953,"label":"plateau-service-with-api"},
 		{"id":"4331e92dbeaab806","type":"group","x":3830,"y":-510,"width":440,"height":560,"label":"service-with-share-module-tests"},
 		{"id":"d25a36d54c9d3a5f","type":"group","x":2200,"y":2720,"width":760,"height":300,"label":"plateau-async-integrated-service"},
-		{"id":"b469fd516b439c68","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md","x":1200,"y":-1560,"width":400,"height":400},
-		{"id":"49554297bf02d6eb","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-validation-behavior.skill/solution-validation-behavior.skill.md","x":1200,"y":-2080,"width":400,"height":400},
+		{"id":"b469fd516b439c68","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md","x":1200,"y":-1560,"width":400,"height":400},
+		{"id":"49554297bf02d6eb","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md","x":1200,"y":-2080,"width":400,"height":400},
 		{
 			"id":"b9e9265a74336e7b",
 			"type":"text",
@@ -18,16 +18,16 @@
 			"width":260,
 			"height":60
 		},
-		{"id":"db83b4926c342ff9","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-configuration.skill/solution-domain-configuration.skill.md","x":3060,"y":-2660,"width":400,"height":400},
-		{"id":"4e69a07d83192a2c","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-entity-classification.skill/solution-entity-classification.skill.md","x":4020,"y":-2660,"width":400,"height":400},
-		{"id":"11abb9a9366a42d6","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-external-created-entity.skill/solution-external-created-entity.skill.md","x":4540,"y":-2660,"width":400,"height":400},
-		{"id":"82928ee4954a24d2","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-value-objects.skill/solution-value-objects.skill.md","x":1200,"y":-1040,"width":400,"height":400},
-		{"id":"390300e20ec60856","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-command-integration.skill/solution-command-integration.skill.md","x":1710,"y":-1440,"width":400,"height":400},
-		{"id":"40e91e756bca74d5","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-repository-integration.skill/solution-repository-integration.skill.md","x":3060,"y":-2140,"width":400,"height":400},
-		{"id":"87988bf641688eec","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md","x":3540,"y":-2140,"width":400,"height":400},
-		{"id":"30609cd2a83a8279","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-unit-of-work.skill/solution-unit-of-work.skill.md","x":4020,"y":-2140,"width":400,"height":400},
-		{"id":"1ec62d7c04f1a539","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md","x":5020,"y":-2140,"width":400,"height":400},
-		{"id":"7f627621fdd07373","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-query-integration.skill/solution-query-integration.skill.md","x":4540,"y":-2140,"width":400,"height":400},
+		{"id":"db83b4926c342ff9","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-domain-configuration.skill/solution-domain-configuration.skill.md","x":3060,"y":-2660,"width":400,"height":400},
+		{"id":"4e69a07d83192a2c","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-entity-classification.skill/solution-entity-classification.skill.md","x":4020,"y":-2660,"width":400,"height":400},
+		{"id":"11abb9a9366a42d6","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md","x":4540,"y":-2660,"width":400,"height":400},
+		{"id":"82928ee4954a24d2","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-value-objects.skill/solution-value-objects.skill.md","x":1200,"y":-1040,"width":400,"height":400},
+		{"id":"390300e20ec60856","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-command-integration.skill/solution-command-integration.skill.md","x":1710,"y":-1440,"width":400,"height":400},
+		{"id":"40e91e756bca74d5","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/solution-repository-integration.skill.md","x":3060,"y":-2140,"width":400,"height":400},
+		{"id":"87988bf641688eec","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md","x":3540,"y":-2140,"width":400,"height":400},
+		{"id":"30609cd2a83a8279","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md","x":4020,"y":-2140,"width":400,"height":400},
+		{"id":"1ec62d7c04f1a539","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md","x":5020,"y":-2140,"width":400,"height":400},
+		{"id":"7f627621fdd07373","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-query-integration.skill/solution-query-integration.skill.md","x":4540,"y":-2140,"width":400,"height":400},
 		{
 			"id":"dfe889f030dc3908",
 			"type":"text",
@@ -38,8 +38,8 @@
 			"width":700,
 			"height":320
 		},
-		{"id":"3df9efd9872a52ca","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-rules.skill/solution-domain-rules.skill.md","x":3850,"y":-490,"width":400,"height":400},
-		{"id":"203b9c6d209edf7c","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md","x":3540,"y":-2660,"width":400,"height":400},
+		{"id":"3df9efd9872a52ca","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md","x":3850,"y":-490,"width":400,"height":400},
+		{"id":"203b9c6d209edf7c","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md","x":3540,"y":-2660,"width":400,"height":400},
 		{
 			"id":"6eecd3b8b48db29d",
 			"type":"text",
@@ -70,7 +70,7 @@
 			"width":360,
 			"height":120
 		},
-		{"id":"14e7351ba3ae9eaa","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-http-api-publication.skill/solution-http-api-publication.skill.md","x":3450,"y":1083,"width":400,"height":400},
+		{"id":"14e7351ba3ae9eaa","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-http-api-publication.skill/solution-http-api-publication.skill.md","x":3450,"y":1083,"width":400,"height":400},
 		{
 			"id":"5c9b8081490b1760",
 			"type":"text",
@@ -81,7 +81,7 @@
 			"width":260,
 			"height":60
 		},
-		{"id":"b813c88e8862162d","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md","x":-880,"y":-607,"width":400,"height":400},
+		{"id":"b813c88e8862162d","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md","x":-880,"y":-607,"width":400,"height":400},
 		{
 			"id":"868dfc7f53a40e98",
 			"type":"text",
@@ -102,7 +102,7 @@
 			"width":380,
 			"height":380
 		},
-		{"id":"c3cfab62ebb00afd","type":"file","file":"skills/dotnet/architecture/solutions/🧩validated/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md","x":-1440,"y":-207,"width":320,"height":200},
+		{"id":"c3cfab62ebb00afd","type":"file","file":"skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md","x":-1440,"y":-207,"width":320,"height":200},
 		{
 			"id":"3c4ad3b4efb46bf4",
 			"type":"text",

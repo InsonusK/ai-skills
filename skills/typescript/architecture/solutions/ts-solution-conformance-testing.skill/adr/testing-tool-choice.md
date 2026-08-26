@@ -1,12 +1,12 @@
 ---
 name: testing tool choice
 description: Which Gherkin runner, coverage tool, and mutation-testing tool the TypeScript conformance-testing solution uses
-problem: Pick one Gherkin/BDD runner, one coverage tool, and one mutation-testing tool for framework-agnostic TypeScript packages that must satisfy the bdd-coverage-mutation-testing gate
+problem: Pick one Gherkin/BDD runner, one coverage tool, and one mutation-testing tool for framework-agnostic TypeScript packages that must satisfy the solution-conformance-testing gate
 decision: "@cucumber/cucumber + Vitest coverage + Stryker (@stryker-mutator/core)"
 ---
 
 # Problem
-[bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md) requires a Gherkin runner, a coverage tool, and a mutation-testing tool, but leaves the concrete choice to each stack. Framework-agnostic TypeScript packages need one specific, documented choice so every package applying this solution uses the same tools, independent of whatever UI framework eventually consumes the package.
+[solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md) requires a Gherkin runner, a coverage tool, and a mutation-testing tool, but leaves the concrete choice to each stack. Framework-agnostic TypeScript packages need one specific, documented choice so every package applying this solution uses the same tools, independent of whatever UI framework eventually consumes the package.
 
 # Selected variant
 **Selected variant:** [[#cucumber-js Vitest coverage Stryker]]
@@ -21,7 +21,7 @@ Use `@cucumber/cucumber` (the official JS/TS Cucumber implementation) for Gherki
 ### Benefits
 - `@cucumber/cucumber` is the reference implementation of Cucumber for JavaScript/TypeScript, with the widest ecosystem support.
 - Vitest coverage requires no extra tooling beyond the test runner most modern TS packages already use.
-- Stryker Mutator is the same vendor/tool family already selected for .NET in [[skills/dotnet/architecture/solutions/dotnet-solution-conformance-testing.skill/dotnet-solution-conformance-testing.skill|the dotnet variant]] (as Stryker.NET), keeping the mutation-report shape and mental model consistent across stacks.
+- Stryker Mutator is the same vendor/tool family already selected for .NET in [[skills/dotnet/architecture/draft/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|the dotnet variant]] (as Stryker.NET), keeping the mutation-report shape and mental model consistent across stacks.
 
 ### Costs
 - `@cucumber/cucumber` runs as a separate process from Vitest, so combining their coverage output requires configuring both to write to the same coverage provider/output directory.
@@ -47,4 +47,4 @@ Use Playwright's test fixtures with a BDD-flavored naming convention instead of 
 - One fewer tool/dependency.
 
 ### Costs
-- Not actually Gherkin — loses the [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md) goal of one readable spec format shared across stacks, and cannot be reused as-is by a non-TypeScript implementation of the same rule.
+- Not actually Gherkin — loses the [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md) goal of one readable spec format shared across stacks, and cannot be reused as-is by a non-TypeScript implementation of the same rule.

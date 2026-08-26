@@ -90,15 +90,15 @@ SOLUTION:
   - [[skills/dotnet/architecture/draft/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create|{Feature}Check.cs]] - already loads data and checks it locally; this solution redirects the check to a Domain-classified `Check()`
 - [[skills/dotnet/architecture/draft/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]]
   - [[skills/dotnet/architecture/draft/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]] - already validates via a local condition inside behavior methods; this solution redirects it to `Check()`
-- [[skills/dotnet/architecture/draft/solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
-  - [[skills/dotnet/architecture/draft/solutions/solution-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj]] - gains a rule-focused step-definition class bound to `{Module}.Domain.Rules.Spec` scenarios, proving the VO/Entity fail-fast adapter
-  - [[skills/dotnet/architecture/draft/solutions/solution-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md|{Module}.Application.Tests.csproj]] - gains a rule-focused step-definition class bound to the same scenarios, proving the DtoValidator collect-all adapter
+- [[skills/dotnet/architecture/draft/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]
+  - [[skills/dotnet/architecture/draft/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj]] - gains a rule-focused step-definition class bound to `{Module}.Domain.Rules.Spec` scenarios, proving the VO/Entity fail-fast adapter
+  - [[skills/dotnet/architecture/draft/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md|{Module}.Application.Tests.csproj]] - gains a rule-focused step-definition class bound to the same scenarios, proving the DtoValidator collect-all adapter
   - `{Module}.Domain.Rules.Tests.csproj` (new here) mirrors the same one-test-project-per-production-project pattern for `{Module}.Domain.Rules` itself
 
 NUGET:
 - FluentValidation {existing solution version}
   - `IRuleBuilder<T,TProperty>`, `AbstractValidator<T>`, `InlineValidator<T>`, `ValidationResult`/`ValidationFailure` — the entire mechanism this solution is built on
-- Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk — same as every other test project in `solution-conformance-testing`, needed by `{Module}.Domain.Rules.Tests`
+- Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk — same as every other test project in `solution-dotnet-conformance-testing`, needed by `{Module}.Domain.Rules.Tests`
 
 # Template Skill Mutations
 

@@ -1,9 +1,9 @@
 # Makefile
 
-Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract).
+Exposes the `unit-test`/`mutation-test`/`test-report`/`test-and-report` targets required by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
 
 ```makefile
-.PHONY: install test cucumber-test mutation-test result-page clean
+.PHONY: install test unit-test mutation-test test-report test-and-report clean
 
 WITH_CODE_COVERAGE ?= false
 ONLY_DELTA ?= false
@@ -12,16 +12,19 @@ DELTA_BASE ?=
 install:
 	pip install -e ".[dev]"
 
-test: cucumber-test
+test: unit-test
 
-cucumber-test: install
-	WITH_CODE_COVERAGE=$(WITH_CODE_COVERAGE) scripts/cucumber-test.sh
+unit-test: install
+	WITH_CODE_COVERAGE=$(WITH_CODE_COVERAGE) scripts/unit-test.sh
 
 mutation-test: install
 	ONLY_DELTA=$(ONLY_DELTA) DELTA_BASE=$(DELTA_BASE) scripts/mutation-test.sh
 
-result-page:
-	scripts/result-page.sh
+test-report:
+	scripts/test-report.sh
+
+test-and-report: WITH_CODE_COVERAGE := true
+test-and-report: unit-test mutation-test test-report
 
 clean:
 	rm -rf tmp/result tmp/report public .coverage

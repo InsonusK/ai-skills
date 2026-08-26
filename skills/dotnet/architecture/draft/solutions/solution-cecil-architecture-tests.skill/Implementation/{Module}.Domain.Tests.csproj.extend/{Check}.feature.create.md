@@ -13,7 +13,7 @@ tags:
 - Give a reader a plain-language description of what each structural check proves, discoverable the same way every other rule's `.feature` file is, without pretending a Gherkin step can meaningfully parameterize "is this dead code"
 
 # Core Principles
-- This is the documented exception to `solution-conformance-testing`'s "every scenario has a matching step definition that calls production code" MUST — architecture/structural facts have no natural input → output shape, so the scenario body is prose, not Given/When/Then assertions, and it carries an explicit banner saying so
+- This is the documented exception to `solution-dotnet-conformance-testing`'s "every scenario has a matching step definition that calls production code" MUST — architecture/structural facts have no natural input → output shape, so the scenario body is prose, not Given/When/Then assertions, and it carries an explicit banner saying so
 - Scenario titles match their `[Fact]` method name 1:1 — a reader lands on the right test by name, not by following a binding
 - One `.feature` file per check, living next to the check's own test class in `/Architecture`
 

@@ -10,20 +10,20 @@ tags:
   - skill/template/csproj
   - plateau/service-with-api
 created_by:
-  - "[[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 ---
 
 # Goal
 - Give `BuildingBlocks` a dedicated test project, referencing exactly what `BuildingBlocks.csproj` itself is allowed to reference.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
 
 # Core Principles
-- Technical-contract-shaped scenarios: proving a pipeline behavior's observable contract (e.g. `ExceptionHandlingBehavior`'s catch-log-return-generic-error contract) as its own `.feature` file, not just plain xUnit (see [[./classes/plateau-service-with-api--class-rule-steps.skill.md|class-rule-steps]]).
+- Technical-contract-shaped scenarios: proving a pipeline behavior's observable contract (e.g. `ExceptionHandlingBehavior`'s catch-log-return-generic-error contract) as its own `.feature` file, not just plain xUnit (see [[./classes/plateau-service-with-api--class-building-blocks-rule-steps.skill.md|class-building-blocks-rule-steps]]).
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
 
 # Structure
 
@@ -37,17 +37,17 @@ __Applied solutions:__
   - /Rules
     - {Rule}.feature
   - /StepDefinitions
-    - [{Rule}Steps.cs](./classes/plateau-service-with-api--class-rule-steps.skill.md)
+    - [{Rule}Steps.cs](./classes/plateau-service-with-api--class-building-blocks-rule-steps.skill.md)
   - BuildingBlocks.Tests.csproj
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /Rules | Gherkin scenarios for one pipeline behavior's contract | |
-| /StepDefinitions | Bindings that exercise `BuildingBlocks`'s real behaviors | [[./classes/plateau-service-with-api--class-rule-steps.skill.md\|class-rule-steps]] |
+| /StepDefinitions | Bindings that exercise `BuildingBlocks`'s real behaviors | [[./classes/plateau-service-with-api--class-building-blocks-rule-steps.skill.md\|class-building-blocks-rule-steps]] |
 
 ## NuGet Packages
 Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Microsoft.NET.Test.Sdk`.
@@ -56,7 +56,7 @@ Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Micros
 - `BuildingBlocks`, `Shared` — the same two projects `BuildingBlocks.csproj` itself is allowed to reference.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
 
 # Rules
 MUST:
@@ -66,4 +66,4 @@ MUST NOT:
 - Add a second, separate test project just for `BuildingBlocks`'s Gherkin scenarios
 
 __Applied solutions:__
-- [[../../../../solutions/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] - [[../../../../solutions/solution-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
+- [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj.create]]
