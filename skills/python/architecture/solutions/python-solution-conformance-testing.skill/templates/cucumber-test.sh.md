@@ -1,6 +1,6 @@
 # scripts/cucumber-test.sh
 
-Runs `behave` and the plain `test/` suite under `coverage`, then normalizes the result into `tmp/result/*.json`, per [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract). The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment.
+Runs `behave` and the plain `test/` suite under `coverage`, then normalizes the result into `tmp/result/*.json`, per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract). The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment.
 
 ```bash
 #!/usr/bin/env bash

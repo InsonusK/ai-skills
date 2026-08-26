@@ -1,12 +1,12 @@
 ---
 name: testing tool choice
 description: Which Gherkin runner, coverage tool, and mutation-testing tool the TypeScript conformance-testing solution uses
-problem: Pick one Gherkin/BDD runner, one coverage tool, and one mutation-testing tool for framework-agnostic TypeScript packages that must satisfy the bdd-coverage-mutation-testing gate
+problem: Pick one Gherkin/BDD runner, one coverage tool, and one mutation-testing tool for framework-agnostic TypeScript packages that must satisfy the solution-conformance-testing gate
 decision: "@cucumber/cucumber + Vitest coverage + Stryker (@stryker-mutator/core)"
 ---
 
 # Problem
-[bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md) requires a Gherkin runner, a coverage tool, and a mutation-testing tool, but leaves the concrete choice to each stack. Framework-agnostic TypeScript packages need one specific, documented choice so every package applying this solution uses the same tools, independent of whatever UI framework eventually consumes the package.
+[solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md) requires a Gherkin runner, a coverage tool, and a mutation-testing tool, but leaves the concrete choice to each stack. Framework-agnostic TypeScript packages need one specific, documented choice so every package applying this solution uses the same tools, independent of whatever UI framework eventually consumes the package.
 
 # Selected variant
 **Selected variant:** [[#cucumber-js Vitest coverage Stryker]]
@@ -47,4 +47,4 @@ Use Playwright's test fixtures with a BDD-flavored naming convention instead of 
 - One fewer tool/dependency.
 
 ### Costs
-- Not actually Gherkin — loses the [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md) goal of one readable spec format shared across stacks, and cannot be reused as-is by a non-TypeScript implementation of the same rule.
+- Not actually Gherkin — loses the [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md) goal of one readable spec format shared across stacks, and cannot be reused as-is by a non-TypeScript implementation of the same rule.

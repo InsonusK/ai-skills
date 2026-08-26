@@ -1,6 +1,6 @@
 # scripts/result-page.sh
 
-Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodified) also works for the Python and TypeScript variants of this solution; see [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract). It is duplicated verbatim in each stack solution rather than shared, so each solution stays self-contained and portable on its own.
+Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodified) also works for the Python and TypeScript variants of this solution; see [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract). It is duplicated verbatim in each stack solution rather than shared, so each solution stays self-contained and portable on its own.
 
 ```bash
 #!/usr/bin/env bash

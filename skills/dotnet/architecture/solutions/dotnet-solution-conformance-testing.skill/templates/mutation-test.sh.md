@@ -1,6 +1,6 @@
 # scripts/mutation-test.sh
 
-Runs Stryker.NET — its native `--since` mode covers `ONLY_DELTA`/`DELTA_BASE` directly, so this script does not need to compute the diff itself. See [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) for the target contract.
+Runs Stryker.NET — its native `--since` mode covers `ONLY_DELTA`/`DELTA_BASE` directly, so this script does not need to compute the diff itself. See [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) for the target contract.
 
 ```bash
 #!/usr/bin/env bash

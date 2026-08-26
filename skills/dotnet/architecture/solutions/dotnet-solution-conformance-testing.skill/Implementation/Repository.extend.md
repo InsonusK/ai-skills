@@ -32,7 +32,7 @@ README.md
 | /scripts | cucumber-test.sh | Runs `dotnet test`, normalizes results into `tmp/result/cucumber-test.json` (+ `coverage-test.json` when `WITH_CODE_COVERAGE=true`), keeps the native report under `tmp/report/tests` (+ `tmp/report/coverage`) |
 | /scripts | mutation-test.sh | Runs `dotnet-stryker` (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
 | /scripts | result-page.sh | Assembles `public/` from `tmp/result/*.json` + `tmp/report/*` — no test/build tooling involved |
-| / | Makefile | Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) |
+| / | Makefile | Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) |
 
 ## Makefile
 See [templates/Makefile.md](../templates/Makefile.md) for the full content.
@@ -49,13 +49,13 @@ Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodi
 # Rules
 
 ## MUST
-- `cucumber-test`, `mutation-test`, and `result-page` targets must exist and behave exactly as documented in [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) — this `Makefile` is the .NET implementation of that contract, not a variation of it.
+- `cucumber-test`, `mutation-test`, and `result-page` targets must exist and behave exactly as documented in [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) — this `Makefile` is the .NET implementation of that contract, not a variation of it.
   - Violation: a CI workflow or a developer runs `dotnet-stryker`/`dotnet test` directly instead of through `make mutation-test`/`make cucumber-test`.
   - Risk: the workflow now needs .NET-specific knowledge, and switching or reconfiguring Stryker.NET later becomes a breaking change for every CI file that calls it directly.
   - Fix: every caller (CI or a developer) goes through the `Makefile`; the CI workflow itself is defined once, stack-agnostically, in [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md).
 - `scripts/cucumber-test.sh` and `scripts/mutation-test.sh` must write their normalized JSON into `tmp/result/` and keep the native HTML report under `tmp/report/<kind>/`, per the same contract.
   - Risk: without the normalized JSON, `make result-page` and badge generation have nothing stack-independent to read.
-  - Fix: write both outputs exactly as [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) specifies.
+  - Fix: write both outputs exactly as [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) specifies.
 - `{Module}.Tests/reqnroll.json` must configure Reqnroll's html formatter to the exact path `scripts/cucumber-test.sh` copies from — without it, the script's `cp` step fails.
   - Risk: `scripts/cucumber-test.sh`'s `cp` step fails because the formatter never wrote to the path it expects, breaking `make cucumber-test` for every caller.
   - Fix: point `reqnroll.json`'s html formatter output at exactly the path the script copies from.
@@ -64,7 +64,7 @@ Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodi
   - Fix: propagate `dotnet-stryker`'s exit code from the script after it finishes writing the normalized result.
 - Never add stack-specific flags to the `make` targets themselves beyond `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` — a caller must not need to know this is a .NET project.
   - Risk: every caller (CI workflow, developer, script) now needs .NET-specific knowledge to invoke the targets correctly, defeating the point of the uniform contract this `Makefile` implements.
-  - Fix: keep the `make` interface limited to the toggles [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) defines; anything .NET-specific stays inside the `Makefile`/scripts.
+  - Fix: keep the `make` interface limited to the toggles [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) defines; anything .NET-specific stays inside the `Makefile`/scripts.
 
 # Unittest TestCases
 - [ ] WHEN `make cucumber-test` runs THEN `tmp/result/cucumber-test.json` and `tmp/report/tests/` exist.

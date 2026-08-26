@@ -22,7 +22,7 @@ extends:
   - pyproject.toml
   - README.md
 depends_on:
-  - "[[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]]"
+  - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
   - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
   - "[[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]"
 adr:
@@ -30,7 +30,7 @@ adr:
 ---
 
 # Goal
-- Give a Python package the concrete tooling to run the three-layer gate defined by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md): Gherkin scenarios, code coverage, mutation testing.
+- Give a Python package the concrete tooling to run the three-layer gate defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md): Gherkin scenarios, code coverage, mutation testing.
 - Add this on top of the plain unit-test structure defined by [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md), without changing that structure.
 - Expose that tooling behind the `make cucumber-test`/`make mutation-test`/`make result-page` contract so [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md) can wire CI without knowing anything Python-specific.
 
@@ -50,7 +50,7 @@ adr:
 
 # Requirements
 SOLUTION:
-- [[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]]
+- [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
   - Defines the `make` command contract and normalized report format this solution implements concretely for Python.
 - [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
   - Defines the `test/` structure for this package's plain unit tests; this solution adds `features/` alongside it, unchanged.
@@ -86,7 +86,7 @@ REPOSITORY:
 ## Surviving mutant found (failure path)
 1. `make mutation-test` reports a mutant that survived in changed code.
 2. The CI job calling it (per [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md)) fails.
-3. Reviewer either strengthens the assertion in the corresponding scenario/step definition, or the PR description explicitly justifies the survivor per [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#must).
+3. Reviewer either strengthens the assertion in the corresponding scenario/step definition, or the PR description explicitly justifies the survivor per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
 
 # Rules
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
@@ -99,5 +99,5 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] `pyproject.toml` lists `behave`, `coverage`, `mutmut` as dev dependencies.
 - [ ] Every `.feature` scenario has a matching step definition that calls the package's real API.
 - [ ] `coverage` combines results from both `test/` and `features/` runs before reporting.
-- [ ] `make cucumber-test`, `make mutation-test`, and `make result-page` exist at the repository root and support the toggles defined by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract).
+- [ ] `make cucumber-test`, `make mutation-test`, and `make result-page` exist at the repository root and support the toggles defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
 - [ ] `tmp/result/*.json` and `tmp/report/<kind>/` follow that same contract's schema.

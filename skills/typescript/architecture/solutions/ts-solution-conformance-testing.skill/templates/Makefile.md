@@ -1,6 +1,6 @@
 # Makefile
 
-Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract).
+Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
 
 ```makefile
 .PHONY: install build test cucumber-test mutation-test result-page clean

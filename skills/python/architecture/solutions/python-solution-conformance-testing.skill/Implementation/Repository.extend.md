@@ -34,7 +34,7 @@ README.md
 | /scripts | cucumber-test.sh | Runs `behave`/`pytest` under `coverage`, normalizes results into `tmp/result/cucumber-test.json` (+ `coverage-test.json` when `WITH_CODE_COVERAGE=true`), keeps the native report under `tmp/report/tests` (+ `tmp/report/coverage`) |
 | /scripts | mutation-test.sh | Runs `mutmut run` (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
 | /scripts | result-page.sh | Assembles `public/` from `tmp/result/*.json` + `tmp/report/*` — no test/build tooling involved |
-| / | Makefile | Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) |
+| / | Makefile | Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) |
 
 ## Makefile
 See [templates/Makefile.md](../templates/Makefile.md) for the full content.
@@ -51,13 +51,13 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
 # Rules
 
 ## MUST
-- `cucumber-test`, `mutation-test`, and `result-page` targets must exist and behave exactly as documented in [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) — this `Makefile` is the Python implementation of that contract, not a variation of it.
+- `cucumber-test`, `mutation-test`, and `result-page` targets must exist and behave exactly as documented in [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) — this `Makefile` is the Python implementation of that contract, not a variation of it.
   - Violation: a CI workflow or a developer runs `mutmut`/`behave` directly instead of through `make mutation-test`/`make cucumber-test`.
   - Risk: the workflow now needs Python-specific knowledge, and switching or reconfiguring `mutmut` later becomes a breaking change for every CI file that calls it directly.
   - Fix: every caller (CI or a developer) goes through the `Makefile`; the CI workflow itself is defined once, stack-agnostically, in [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md).
 - `scripts/cucumber-test.sh` and `scripts/mutation-test.sh` must write their normalized JSON into `tmp/result/` and keep the native HTML report under `tmp/report/<kind>/`, per the same contract.
   - Risk: without the normalized JSON, `make result-page` and badge generation have nothing stack-independent to read.
-  - Fix: write both outputs exactly as [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) specifies.
+  - Fix: write both outputs exactly as [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) specifies.
 - Before relying on `scripts/mutation-test.sh`, replace its placeholder `KILLED`/`SURVIVED`/`TIMEDOUT`/`NO_COVERAGE` parsing with a real export from the `mutmut` version the project pins, and verify the delta-scoping flag/config key used in `ONLY_DELTA=true` mode — see the `VERIFY` comments inline.
   - Risk: `mutmut`'s CLI has moved between major versions, so unverified placeholder parsing can silently report wrong `KILLED`/`SURVIVED` counts, or crash, once a real run happens.
   - Fix: replace the placeholder parsing with a real export from the pinned `mutmut` version, and confirm the delta-scoping flag/config key before relying on `ONLY_DELTA=true`.
@@ -69,7 +69,7 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
   - Fix: pick and pin a behave HTML formatter (or convert the JSON output) and resolve the script's `TODO` before treating the solution as applied.
 - Never add stack-specific flags to the `make` targets themselves beyond `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` — a caller must not need to know this is a Python project.
   - Risk: every caller (CI workflow, developer, script) now needs Python-specific knowledge to invoke the targets correctly, defeating the point of the uniform contract this `Makefile` implements.
-  - Fix: keep the `make` interface limited to the toggles [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) defines; anything Python-specific stays inside the `Makefile`/scripts.
+  - Fix: keep the `make` interface limited to the toggles [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) defines; anything Python-specific stays inside the `Makefile`/scripts.
 
 # Unittest TestCases
 - [ ] WHEN `make cucumber-test` runs THEN `tmp/result/cucumber-test.json` and `tmp/report/tests/` exist.

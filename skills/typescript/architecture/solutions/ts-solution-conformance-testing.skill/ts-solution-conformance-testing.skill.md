@@ -23,14 +23,14 @@ extends:
   - "{Package}/package.json"
   - README.md
 depends_on:
-  - "[[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]]"
+  - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
   - "[[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]"
 adr:
   - "[[skills/typescript/architecture/solutions/ts-solution-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]"
 ---
 
 # Goal
-- Give a framework-agnostic TypeScript package the concrete tooling to run the three-layer gate defined by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md): Gherkin scenarios, code coverage, mutation testing.
+- Give a framework-agnostic TypeScript package the concrete tooling to run the three-layer gate defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md): Gherkin scenarios, code coverage, mutation testing.
 - Expose that tooling behind the `make cucumber-test`/`make mutation-test`/`make result-page` contract so [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md) can wire CI without knowing anything TypeScript-specific.
 - This solution targets plain, framework-agnostic TypeScript packages (a validation library consumed by any frontend). A UI framework's own component/e2e testing (e.g. Angular's Vitest/Playwright setup) is a separate concern — see that framework's own testing solution instead.
 
@@ -50,7 +50,7 @@ adr:
 
 # Requirements
 SOLUTION:
-- [[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]]
+- [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
   - Defines the `make` command contract and normalized report format this solution implements concretely for TypeScript.
 - [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]
   - Owns the actual CI workflows (PR-gate and master-push) that call this solution's `Makefile`; this solution does not define any `.github/workflows/*.yml` file itself.
@@ -85,7 +85,7 @@ PACKAGE:
 ## Surviving mutant found (failure path)
 1. `make mutation-test` reports a mutant that survived in changed code.
 2. The CI job calling it (per [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md)) fails.
-3. Reviewer either strengthens the assertion in the corresponding scenario/step definition, or the PR description explicitly justifies the survivor per [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#must).
+3. Reviewer either strengthens the assertion in the corresponding scenario/step definition, or the PR description explicitly justifies the survivor per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
 
 # Rules
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
@@ -98,5 +98,5 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 # Check list
 - [ ] `package.json` declares `test`, `coverage`, and `mutation` scripts backed by Vitest, Vitest coverage, and Stryker.
 - [ ] Every `.feature` scenario has a matching step definition that imports from `src/index.ts` and calls production code.
-- [ ] `make cucumber-test`, `make mutation-test`, and `make result-page` exist at the repository root and support the toggles defined by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract).
+- [ ] `make cucumber-test`, `make mutation-test`, and `make result-page` exist at the repository root and support the toggles defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
 - [ ] `tmp/result/*.json` and `tmp/report/<kind>/` follow that same contract's schema.

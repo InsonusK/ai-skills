@@ -38,7 +38,7 @@ README.md
 | /scripts | mutation-test.sh | Runs `stryker run` against a `stryker.conf.json`-derived config (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
 | /scripts | result-page.sh | Assembles `public/` from `tmp/result/*.json` + `tmp/report/*` — no test/build tooling involved |
 | / | stryker.conf.json | Base Stryker config; `mutation-test.sh` patches its `reporters`/`thresholds`/reporter file paths per run, never edits it in place |
-| / | Makefile | Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) |
+| / | Makefile | Exposes the `cucumber-test`/`mutation-test`/`result-page` targets required by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) |
 
 ## Makefile
 See [templates/Makefile.md](../templates/Makefile.md) for the full content.
@@ -55,13 +55,13 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
 # Rules
 
 ## MUST
-- `cucumber-test`, `mutation-test`, and `result-page` targets must exist and behave exactly as documented in [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) — this `Makefile` is the TypeScript implementation of that contract, not a variation of it.
+- `cucumber-test`, `mutation-test`, and `result-page` targets must exist and behave exactly as documented in [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) — this `Makefile` is the TypeScript implementation of that contract, not a variation of it.
   - Violation: a CI workflow or a developer runs `stryker run`/`vitest`/`cucumber-js` directly instead of through `make mutation-test`/`make cucumber-test`.
   - Risk: the workflow now needs TypeScript-specific knowledge, and switching or reconfiguring Stryker later becomes a breaking change for every CI file that calls it directly.
   - Fix: every caller (CI or a developer) goes through the `Makefile`; the CI workflow itself is defined once, stack-agnostically, in [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md).
 - `scripts/cucumber-test.sh` and `scripts/mutation-test.sh` must write their normalized JSON into `tmp/result/` and keep the native HTML report under `tmp/report/<kind>/`, per the same contract.
   - Risk: without the normalized JSON, `make result-page` and badge generation have nothing stack-independent to read.
-  - Fix: write both outputs exactly as [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) specifies.
+  - Fix: write both outputs exactly as [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) specifies.
 - `stryker.conf.json` must exist at the path `scripts/mutation-test.sh` reads (repository root for a single-package repository) — the script patches a copy of it per run, it never creates one from scratch.
   - Risk: without the base config file present, the script has nothing to patch and `make mutation-test` fails outright.
   - Fix: commit a base `stryker.conf.json` at the path the script expects.
@@ -70,7 +70,7 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
   - Fix: propagate `stryker run`'s exit code from the script after it finishes writing the normalized result.
 - Never add stack-specific flags to the `make` targets themselves beyond `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` — a caller must not need to know this is a TypeScript project.
   - Risk: every caller (CI workflow, developer, script) now needs TypeScript-specific knowledge to invoke the targets correctly, defeating the point of the uniform contract this `Makefile` implements.
-  - Fix: keep the `make` interface limited to the toggles [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) defines; anything TypeScript-specific stays inside the `Makefile`/scripts.
+  - Fix: keep the `make` interface limited to the toggles [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) defines; anything TypeScript-specific stays inside the `Makefile`/scripts.
 
 # Unittest TestCases
 - [ ] WHEN `make cucumber-test` runs THEN `tmp/result/cucumber-test.json` and `tmp/report/tests/` exist.

@@ -1,6 +1,6 @@
 # scripts/cucumber-test.sh
 
-Runs the Reqnroll scenarios (and, when `WITH_CODE_COVERAGE=true`, line coverage), then normalizes the result into `tmp/result/*.json`, per [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract).
+Runs the Reqnroll scenarios (and, when `WITH_CODE_COVERAGE=true`, line coverage), then normalizes the result into `tmp/result/*.json`, per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
 
 ```bash
 #!/usr/bin/env bash
