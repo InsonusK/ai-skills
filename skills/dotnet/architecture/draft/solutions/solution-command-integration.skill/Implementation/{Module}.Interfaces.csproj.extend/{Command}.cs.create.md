@@ -11,7 +11,7 @@ tags:
 
 # Goals
 - Express a named write intent as an immutable record that carries all input needed for the operation
-- Implement `ICommand<T>` (or `ICommand` when no payload is returned) so the MediatR pipeline routes it to the correct handler and activates write-side behaviors
+- Implement `ICommand<TResponse>` (`ICommand<Result>` when there is no payload beyond success/failure) so the MediatR pipeline routes it to the correct handler and activates every write-side behavior constrained on `ICommand<TResponse>`; reserve bare `ICommand` for commands with no persisted-entity effect at all
 
 # Core Principles
 - Declared as `record` — immutable, structural equality by default
@@ -35,7 +35,7 @@ tags:
 | Create entity | `Create{Entity}Command` | `CreateTaskCommand` | `{Command}.cs` | `CreateTaskCommand.cs` |
 | Update entity | `Update{Entity}Command` | `UpdateTaskCommand` | `{Command}.cs` | `UpdateTaskCommand.cs` |
 | Delete entity | `Delete{Entity}Command` | `DeleteTaskCommand` | `{Command}.cs` | `DeleteTaskCommand.cs` |
-| Domain action | `{Verb}{Entity}Command` | `AssignTaskCommand` | `{Command}.cs` | `AssignTaskCommand.cs` |
+| Domain action that stages a persisted-entity write | `{Verb}{Entity}Command` | `AssignTaskCommand` | `{Command}.cs` | `AssignTaskCommand.cs` |
 | Command result | `{CommandName}Result` | `CreateTaskResult` | same file as command | `CreateTaskCommand.cs` |
 
 # Implementation changes
@@ -45,7 +45,7 @@ Command and result declared together in one file:
 ```csharp
 // {Module}.Interfaces/Commands/CreateTaskCommand.cs
 using Ardalis.Result;
-using Shared.MediatR;
+using Shared;
 
 namespace {Module}.Interfaces.Commands;
 
@@ -60,19 +60,23 @@ public record CreateTaskResult(int Id);
 ```csharp
 // {Module}.Interfaces/Commands/AssignTaskCommand.cs
 using Ardalis.Result;
-using Shared.MediatR;
+using Shared;
 
 namespace {Module}.Interfaces.Commands;
 
 public record AssignTaskCommand(
     int TaskId,
     int AssigneeId
-) : ICommand;
+) : ICommand<Result>;
 ```
+
+`AssignTaskCommand` stages a persisted-entity write (it mutates a `Task`), so it needs `UnitOfWorkBehavior` (and any other `ICommand<TResponse>`-constrained pipeline behavior) to activate for it — see the MUST rule below. It implements `ICommand<Result>` rather than bare `ICommand`, even though it returns no payload beyond success/failure: `Result` is a legitimate, if minimal, `TResponse`.
+
 # Rule changes
 
 ## MUST
-- Implement `ICommand<Result<T>>` for a result payload of `T`, or `ICommand` when no payload is returned — never `IRequest<T>` directly
+- Implement `ICommand<Result<T>>` for a result payload of `T`, or `ICommand<Result>` when no payload beyond success/failure is returned — never `IRequest<T>` directly
+- Any command that stages a write to a persisted entity (and therefore needs `UnitOfWorkBehavior`, or any other behavior constrained on `ICommand<TResponse>`, to commit or guard it) must implement `ICommand<TResponse>` — using `ICommand<Result>` when there is no payload beyond success/failure. Bare, non-generic `ICommand` is reserved for commands with no persisted-entity effect at all (pure domain computation, an external call, orchestration that only dispatches further commands)
 - Result type declared in the same file as the command
 - Properties are primitives or simple types — no domain entity references
 - Commands declared as `record` in `/{Module}.Interfaces/Commands`

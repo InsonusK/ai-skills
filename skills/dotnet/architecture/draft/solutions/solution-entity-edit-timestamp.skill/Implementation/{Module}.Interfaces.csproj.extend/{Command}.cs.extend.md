@@ -40,7 +40,7 @@ Create command for a timestamped entity:
 ```csharp
 // {Module}.Interfaces/Commands/Create{Entity}Command.cs
 using Ardalis.Result;
-using Shared.MediatR;
+using Shared;
 using Shared.Timestamps;
 
 namespace {Module}.Interfaces.Commands;
@@ -58,7 +58,7 @@ Update command for a timestamped entity:
 ```csharp
 // {Module}.Interfaces/Commands/Update{Entity}Command.cs
 using Ardalis.Result;
-using Shared.MediatR;
+using Shared;
 using Shared.Timestamps;
 
 namespace {Module}.Interfaces.Commands;

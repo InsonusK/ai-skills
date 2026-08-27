@@ -1,6 +1,7 @@
 ---
 name: solution-external-created-entity
 description: Defines the full external-created entity stack — Guid property and unique index on entity, IHasGuid and IGuidResolver<TResponse> in Shared, ConflictResult<T> in Shared, GuidResolvingBehavior in BuildingBlocks that returns the resolver's ConflictResult<TResponse> on duplicate Guid, {Entity}ByGuidSpec in Application, GuidResolver implementation in Application
+whenToUse: when an entity is created by an external, client-generated Guid and creation must be idempotent — preventing duplicate creation via GuidResolvingBehavior and IHasGuid
 domain: skill
 type: architecture
 version: 20260615
@@ -21,14 +22,6 @@ tags:
   - concern/architecture
   - solution/external-created-entity
 
-triggers:
-  - external created entity
-  - client-generated guid
-  - idempotent create
-  - async creation
-  - prevent duplicate creation
-  - GuidResolvingBehavior
-  - IHasGuid
 creates:
   - Shared.Results.ConflictResult.cs
   - Shared.Guid.IHasGuid.cs
@@ -46,9 +39,11 @@ extends:
   - "{Module}.Application.csproj"
   - "{Module}.Application.{Module}ApplicationRegistration.cs"
   - "{Module}.Api.csproj"
+  - App.Host.csproj
 depends_on:
   - "[[skills/dotnet/architecture/draft/solutions/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]]"
+  - "[[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]"
 built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-service-with-validated-module-interaction/plateau-service-with-validated-module-interaction.skill/plateau-service-with-validated-module-interaction.skill.md|plateau-service-with-validated-module-interaction]]"
 adr:
   - "[[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/adr/use-conflict-result-for-duplicate-guid|Use ConflictResult<T> for duplicate Guid handling]]"
@@ -129,6 +124,8 @@ PROJECT:
   - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend|{Command}.cs]] - extend - Create command implements IHasGuid and returns Result<Create{Entity}Result>
 - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend|{Module}.Api.csproj]] - extend - Add ConflictResult<T> mapping for idempotent create endpoints
   - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create|ConflictResultExtensions.cs]] - create - Maps ConflictResult<T> to HTTP 409 with existing entity result body
+- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register GuidResolvingBehavior in the centralized pipeline
+  - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend|PipelineRegistration.cs]] - extend - Insert `GuidResolvingBehavior` after `ConcurrencyBehavior`
 
 # Rules
 
@@ -150,6 +147,8 @@ PROJECT:
 	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend#MUST|{EntityName}Config.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Interfaces.csproj.extend#MUST|{Module}.Interfaces.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend#MUST|{Command}.cs]]
+- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST|PipelineRegistration.cs]]
 
 ## MUST NOT:
 - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend#MUST NOT|BuildingBlocks.csproj]]
@@ -160,6 +159,8 @@ PROJECT:
 	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/Shared.csproj.extend/IHasGuid.cs.create#MUST NOT|IHasGuid.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend#MUST NOT|{Module}.Api.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Api.csproj.extend/ConflictResultExtensions.cs.create#MUST NOT|ConflictResultExtensions.cs]]
+- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST NOT|PipelineRegistration.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend#MUST NOT|{Module}.Application.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create#MUST NOT|Create{Entity}GuidResolver.cs]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create#MUST NOT|{Entity}ByGuidSpec.cs]]
@@ -177,7 +178,7 @@ PROJECT:
 - `IGuidResolver` registered as open generic — breaks DI resolution per command result type
 - `Guid` used as foreign key in a relation — leaks external identity into domain relationships
 - `Guid` route parameter after creation — internal `Id` is the only identity in routes
-- `IHasGuid` or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are contracts that belong in Shared per solution-solution-structure.skill
+- `IHasGuid` or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are contracts that belong in Shared per solution-sln-structure.skill
 - Throwing `ConflictException` from `GuidResolvingBehavior` — breaks the no-exceptions-for-flow-control principle
 - `GuidResolvingBehavior` constructing response DTOs — belongs in the resolver/handler
 - Resolver returning a response type different from the command handler — breaks 201/409 symmetry

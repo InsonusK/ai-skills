@@ -1,6 +1,7 @@
 ---
 name: solution-grpc-integration
 description: Defines the gRPC publication layer — one {Entity}GrpcService per entity implementing a generated .proto server base class as a thin MediatR adapter, Result-to-RpcException status mapping, and App.Host wiring. Optional and independent of solution-http-api-publication — a module can publish over gRPC without REST, over REST without gRPC, or both.
+whenToUse: when publishing a module's commands/queries as a gRPC service — designing a .proto contract, a gRPC endpoint, or mapping a Result to an RPC status
 domain: skill
 type: architecture
 version: 20260825
@@ -14,12 +15,6 @@ tags:
   - framework/mediatr
   - concern/architecture
   - solution/grpc-integration
-triggers:
-  - design grpc service
-  - add proto contract
-  - publish grpc api
-  - map result to rpc status
-  - define grpc endpoint
 creates:
   - "{Module}.Api.Protos.{Entity}.proto"
   - "{Module}.Api.Grpc.{Entity}GrpcService.cs"

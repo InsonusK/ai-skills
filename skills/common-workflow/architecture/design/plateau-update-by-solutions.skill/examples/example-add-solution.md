@@ -56,7 +56,7 @@ A worked, fully illustrative example — `plateau-example` and `solution-example
 - Update `description` to mention "entity edit timestamps"
 - Add a new `Core Principles` bullet about `ActionTimeStamp`, user timestamps, and server timestamps assigned by `AppDbContext`
 - Add a new `Capabilities` section **Entity edit timestamps**
-- Add `solution-example-timestamps` to every relevant `__Applied solutions__` list
+- Add `solution-example-timestamps` to every relevant `__Applied solutions:__` list
 - Bump `version`
 
 ## Updates to repository skill (`sln-example.skill.md`)
@@ -66,7 +66,7 @@ A worked, fully illustrative example — `plateau-example` and `solution-example
 - Add `entity-edit-timestamp` column to the `Entity Type Matrix`
 - Add a `solution-example-timestamps.skill` block under `Requirements` describing which entity types get which timestamp contracts
 - Update `Rules`, `Anti-patterns`, `Check list`, and `Unittest TestCases` with timestamp-related items
-- Add `solution-example-timestamps` to all `__Applied solutions__` lists
+- Add `solution-example-timestamps` to all `__Applied solutions:__` lists
 - Bump `version`
 
 ## Updates to a project skill (`csproj-shared.skill.md`)
@@ -77,7 +77,7 @@ A worked, fully illustrative example — `plateau-example` and `solution-example
 - Add `/Timestamps` folder and interface links to `Project Structure`
 - Add `/Timestamps` entries to `Directory and class skills`
 - Add `ICommandWithTimestamp` rules to `Rules`
-- Add `__Applied solutions__` bullet linking to `Shared.csproj.extend.md`
+- Add `__Applied solutions:__` bullet linking to `Shared.csproj.extend.md`
 - Bump `version`
 
 ## New class skills created

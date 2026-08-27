@@ -1,6 +1,7 @@
 ---
 name: solution-sln-structure
 description: Defines the full solution architecture including module boundaries, all non-module layers, their responsibilities, folder placement, and the complete dependency rules between all layers
+whenToUse: when creating a new module, deciding a bounded-context boundary, or deciding which project a new file belongs in
 domain: skill
 type: architecture
 version: 20260819
@@ -15,14 +16,6 @@ tags:
   - layers
   - solution/sln-structure
 
-triggers:
-  - create new module
-  - design module boundary
-  - define bounded context structure
-  - initialize solution
-  - add new layer
-  - decide file placement
-  - define project dependencies
 creates:
   - "{Module}.Domain.csproj"
   - "{Module}.Interfaces.csproj"

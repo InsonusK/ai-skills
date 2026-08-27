@@ -33,7 +33,7 @@ Single entity query:
 ```csharp
 // {Module}.Interfaces/Queries/GetTaskQuery.cs
 using Ardalis.Result;
-using Shared.MediatR;
+using Shared;
 
 namespace {Module}.Interfaces.Queries;
 
@@ -45,7 +45,7 @@ Collection query:
 ```csharp
 // {Module}.Interfaces/Queries/GetTasksQuery.cs
 using Ardalis.Result;
-using Shared.MediatR;
+using Shared;
 
 namespace {Module}.Interfaces.Queries;
 
@@ -57,7 +57,7 @@ Cross-module query:
 ```csharp
 // {Module}.Interfaces/Queries/GetTaskWithUserDetailsQuery.cs
 using Ardalis.Result;
-using Shared.MediatR;
+using Shared;
 
 namespace {Module}.Interfaces.Queries;
 

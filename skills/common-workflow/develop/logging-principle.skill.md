@@ -26,20 +26,14 @@ tags:
   - **Warning**: errors that do not stop execution but deserve attention.
   - **Error**: business errors that are expected to interrupt program execution (e.g., "could not find files in the provided directory", "system X did not respond to the request", "system X rejected our request", "system X responded with a status code != 2xx").
   - **Critical**: exceptions that were caught.
+- Include specific, concrete information in log messages, not abstract text.
+  - Violation: `print("scan completed")` | `Console.WriteLine("record created")` with abstract text like `task completed` or `record created`.
+  - Risk: the log message does not clarify what actually happened.
+  - Fix: include information that makes the context clear (e.g., `task 'clear db' completed` | `record 1234 created`).
 
-## SHOULD NOT
-- Use `print`, `write`, or similar plain output mechanisms instead of a proper logging framework.
-
-# Anti-patterns
-- **Using `print`, `write`, etc.**
-  - Example: `print("scan completed")` | `Console.WriteLine("record created")`
-  - Consequence: limited logging capabilities, and if a log aggregation system is added later, all logging code will have to be rewritten.
-  - Instead: prefer the logging mechanisms provided by the language or framework (e.g., `logging`, `loguru`, `NLog`, `Serilog`, etc.).
-
-- **Using abstract text in log messages**
-  - Example: `task completed` | `record created`
-  - Consequence: the log message does not clarify what actually happened.
-  - Instead: include information that makes the context clear (e.g., `task 'clear db' completed` | `record 1234 created`).
+## SHOULD
+- Use the logging mechanisms provided by the language or framework (e.g., `logging`, `loguru`, `NLog`, `Serilog`, etc.) instead of `print`, `write`, or similar plain output mechanisms.
+  - Risk: plain output mechanisms offer limited logging capabilities, and if a log aggregation system is added later, all logging code will have to be rewritten.
 
 # Check list
 - [ ] Logging is added for all meaningful operations.

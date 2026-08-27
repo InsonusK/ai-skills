@@ -1,6 +1,7 @@
 ---
 name: solution-validation-behavior
 description: Defines the cross-cutting validation pipeline behavior — ValidationBehavior in BuildingBlocks intercepts any MediatR IRequest<TResponse>, collects all validation errors from registered FluentValidation validators, and short-circuits with Result.Invalid before the handler runs
+whenToUse: when adding cross-cutting transport validation to the MediatR pipeline — rejecting an invalid command or query with Result.Invalid before its handler runs
 domain: skill
 type: architecture
 version: 20260611
@@ -15,19 +16,13 @@ tags:
   - concern/architecture
   - solution/validation-behavior
 
-triggers:
-  - add validation pipeline
-  - implement validation behavior
-  - transport validation
-  - fluent validation pipeline
-  - validate request input
-  - define validator
-  - validate mediatr request
 creates:
   - BuildingBlocks.MediatR.ValidationBehavior.cs
 extends:
   - BuildingBlocks.csproj
+  - App.Host.csproj
 depends_on:
+  - "[[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]"
 built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md|plateau-stateless-non-interactive-service]]"
 ---
 
@@ -68,16 +63,22 @@ NUGET:
 PROJECT:
 - [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - extend - Add FluentValidation, MediatR, and Ardalis.Result packages for the ValidationBehavior
   - [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create|ValidationBehavior.cs]] - create - Pipeline behavior that validates any `IRequest<TResponse>`
+- [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register `ValidationBehavior` in the centralized pipeline
+  - [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend|PipelineRegistration.cs]] - extend - Insert `ValidationBehavior` right after `ExceptionHandlingBehavior`
 
 # Rules
 
 ## MUST:
 - [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend#MUST|BuildingBlocks.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create#MUST|ValidationBehavior.cs]]
+- [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST|PipelineRegistration.cs]]
 
 ## MUST NOT:
 - [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend#MUST NOT|BuildingBlocks.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create#MUST NOT|ValidationBehavior.cs]]
+- [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST NOT|PipelineRegistration.cs]]
 
 # Anti-patterns
 - Implementing per-request validation logic inside `ValidationBehavior`

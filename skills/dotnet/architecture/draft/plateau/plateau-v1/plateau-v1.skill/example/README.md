@@ -2,7 +2,7 @@
 
 A runnable example of the `v1` plateau — the deployable baseline that unions `statefull-service`, `shared-rules`, and `service-with-api`.
 
-This example builds on top of the [`shared-rules`](../../plateau-shared-rules/plateau-shared-rules.skill/plateau-shared-rules.skill.md) example. It keeps real persistence, the centralized rule mechanism, shared Gherkin sources, Cecil structural checks, and adds a real external surface: HTTP REST controllers and a gRPC service.
+This example builds on top of the [`shared-rules`](../../../plateau-shared-rules/plateau-shared-rules.skill/plateau-shared-rules.skill.md) example. It keeps real persistence, the centralized rule mechanism, shared Gherkin sources, Cecil structural checks, and adds a real external surface: HTTP REST controllers and a gRPC service.
 
 ## What the example demonstrates
 

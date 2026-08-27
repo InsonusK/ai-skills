@@ -1,6 +1,7 @@
 ---
 name: solution-http-api-publication
 description: Defines the HTTP API publication layer — entity-centric Controllers as thin MediatR adapters, Minimal API for system operations, controller naming and folder conventions, Result-to-HTTP mapping with ProblemDetails, and App.Host wiring for the API layer. Requires at least one of query-integration or command-integration to provide MediatR handler targets.
+whenToUse: when publishing a module's commands/queries as an HTTP API — adding a controller, defining a route, or mapping a Result to an HTTP response
 domain: skill
 type: architecture
 version: 20260611
@@ -16,14 +17,6 @@ tags:
   - concern/architecture
   - solution/http-api-publication
 
-triggers:
-  - design api endpoint
-  - add controller
-  - create api layer
-  - map result to http response
-  - define route
-  - thin adapter
-  - publish http api
 creates:
   - "{Module}.Api.Controllers.{Entity}Controller.cs"
   - "{Module}.Api.Controllers.Single{Entity}Controller.cs"

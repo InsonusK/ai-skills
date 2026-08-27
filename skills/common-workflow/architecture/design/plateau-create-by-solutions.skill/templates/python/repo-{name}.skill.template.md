@@ -34,7 +34,7 @@ MUST:
 - For repository structure block:
   - use link to files which define package
 - For Applied solutions block:
-	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 ```
 ```example
 - /src
@@ -53,7 +53,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only repository-level content here. Show only package directory, package template file and link to it
 ```
 ```example
@@ -77,7 +77,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only repository-level content here. Do not include Rules that belong to a specific package or class/module.
 ```
 ```example

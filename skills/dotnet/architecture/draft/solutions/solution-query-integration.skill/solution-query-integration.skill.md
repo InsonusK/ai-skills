@@ -1,6 +1,7 @@
 ---
 name: solution-query-integration
 description: Defines IQuery<TResponse> in Shared as the read-only operation marker, query records and DTOs in {Module}.Interfaces, single-module query handlers in {Module}.Application using IReadRepository and named specs, cross-module query handlers in App.Queries using DbContext directly with AsNoTracking, and App.Queries DI registration in App.Host
+whenToUse: when implementing a new read operation — declaring a query record and its handler, including a cross-module projection or list query
 domain: skill
 type: architecture
 version: 20260611
@@ -19,18 +20,8 @@ tags:
   - concern/architecture
   - solution/query-integration
 
-triggers:
-  - implement query handler
-  - create query
-  - write query handler
-  - handle read operation
-  - get entity
-  - list entities
-  - cross-module read
-  - projection query
-  - read-only operation
 creates:
-  - Shared.MediatR.IQuery.cs
+  - Shared.IQuery.cs
   - "{Module}.Interfaces.Queries.{Query}.cs"
   - "{Module}.Interfaces.DTOs.{Dto}.cs"
   - "{Module}.Application.Queries.{FeatureName}.{FeatureName}.Handler.cs"

@@ -1,6 +1,7 @@
 ---
 name: solution-repository-integration
 description: Merges the Ardalis Specification pattern with repository abstractions — defines IReadRepository<T> and IRepository<T> as thin wrappers around Ardalis base interfaces in Shared, provides a generic Repository<T> implementation in App.Infrastructure inheriting Ardalis.RepositoryBase<T>, and governs specification placement across Application and App.Queries
+whenToUse: when a handler needs to load, filter, or project a persisted entity — defining IRepository/IReadRepository usage or writing an Ardalis specification
 domain: skill
 type: architecture
 version: 20260824
@@ -18,17 +19,6 @@ tags:
   - concern/architecture
   - solution/repository-integration
 
-triggers:
-  - define repository
-  - add data access abstraction
-  - IRepository usage
-  - IReadRepository usage
-  - load entity in handler
-  - write a specification
-  - query entity by criteria
-  - filter entities
-  - project entity to DTO
-  - ardalis spec
 creates:
   - Shared.Repositories.IReadRepository.cs
   - Shared.Repositories.IRepository.cs

@@ -70,9 +70,7 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 - Have `test-report` assemble `public/` per [## Public site output](#public-site-output): per-kind report copies, `*-badge.json` files, and `index.html` copied verbatim from `report-template/index.html`.
   - Risk: without a uniform `public/` shape, every CI publishing step needs stack-specific knowledge of where reports and badges live.
   - Fix: build `public/` exactly as documented, so a publishing step only ever needs to upload `public/` as-is.
-
-## MUST NOT
-- Add a caller-facing flag beyond `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE`.
+- Keep the caller-facing interface to `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` only — never add another caller-facing flag.
   - Risk: every caller now needs stack-specific knowledge to invoke the targets correctly, defeating the point of a uniform contract.
   - Fix: keep anything stack-specific inside the `Makefile` itself, never in the caller-facing interface.
 

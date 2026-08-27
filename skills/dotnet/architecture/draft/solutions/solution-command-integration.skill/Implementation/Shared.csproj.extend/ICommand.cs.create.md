@@ -43,7 +43,7 @@ Both variants defined in one file:
 using Ardalis.Result;
 using MediatR;
 
-namespace Shared.MediatR;
+namespace Shared;
 
 public interface ICommand : IRequest<Result> { }
 

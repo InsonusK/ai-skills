@@ -28,7 +28,7 @@ tags:
 ```csharp
 // BuildingBlocks/MediatR/UnitOfWorkBehavior.cs
 using MediatR;
-using Shared.MediatR;
+using Shared;
 using Shared.UnitOfWork;
 
 namespace BuildingBlocks.MediatR;

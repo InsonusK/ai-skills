@@ -55,24 +55,17 @@ class PaymentsClient:
 
 ## MUST
 - Every Client method must return an application model, never an Integration response type
-- Client must call Integration for every piece of external data it needs — it must never call the raw HTTP/API client itself
+  - Violation: Client returning the Integration response type unchanged.
+  - Risk: the application ends up coupled to the API's shape anyway, defeating the point of the split — a contract change still ripples into application code.
+  - Fix: always map into an application model, even when it currently looks identical to the Integration response.
+- Client must call Integration for every piece of external data it needs — it must never call the raw HTTP/API client itself, and it must never parse raw API responses itself; response parsing and contract validation belong to Integration
 - A Client method may call 1..n Integration methods to assemble one application model
+- Route every external-data need through Client — application/business code must never call Integration or the raw API client directly, bypassing Client
+  - Risk: application code becomes coupled to the API's contract in multiple places; tests for that code can no longer mock a single stable boundary.
+  - Fix: route every external-data need through Client.
 
 ## SHOULD
 - Client methods should be named after the application's use case (e.g. `getChargeWithRefunds`), not after the underlying API operation
-
-## MUST NOT
-- Client must not parse raw API responses itself — response parsing and contract validation belong to Integration
-- Client must not be bypassed — application/business code must not call Integration or the raw API client directly
-
-# Anti-patterns
-- **Client returning the Integration response type unchanged**
-  - Consequence: the application ends up coupled to the API's shape anyway, defeating the point of the split — a contract change still ripples into application code
-  - Instead: always map into an application model, even when it currently looks identical to the Integration response
-
-- **Application/business code calling Integration or the raw API client directly, bypassing Client**
-  - Consequence: application code becomes coupled to the API's contract in multiple places; tests for that code can no longer mock a single stable boundary
-  - Instead: route every external-data need through Client
 
 # Check list
 - [ ] Every Client method returns an application model, not an Integration response type

@@ -1,6 +1,7 @@
 ---
 name: solution-domain-configuration
 description: Defines the EF Core entity type configuration pattern — one configuration class per entity that owns all persistence concerns, keeping domain entities free of infrastructure attributes
+whenToUse: when creating or changing an EF Core entity type configuration — mapping a table, an index, or a relation
 domain: skill
 type: architecture
 version: 20260611
@@ -15,12 +16,6 @@ tags:
   - concern/architecture
   - solution/domain-configuration
 
-triggers:
-  - create ef configuration
-  - configure entity mapping
-  - define database schema
-  - configure index
-  - configure relation
 creates:
   - "{Module}.Domain.Configurations.{Entity}Config.cs"
   - App.Infrastructure.Persistence.Configurations.{Module1}To{Module2}Config.cs

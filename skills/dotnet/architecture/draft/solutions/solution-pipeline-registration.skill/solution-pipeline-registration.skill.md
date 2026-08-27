@@ -1,6 +1,7 @@
 ---
 name: solution-pipeline-registration
 description: Defines the centralized MediatR pipeline registration in App.Host — the single AddPipeline extension method where all cross-cutting pipeline behaviors are registered in execution order
+whenToUse: when registering a new MediatR pipeline behavior, or deciding where cross-cutting pipeline behaviors are centrally wired in App.Host
 domain: skill
 type: architecture
 version: 20260612
@@ -13,11 +14,6 @@ tags:
   - concern/architecture
   - solution/pipeline-registration
 
-triggers:
-  - register pipeline behaviors
-  - add pipeline registration
-  - mediatr pipeline
-  - pipeline registration
 creates:
   - App.Host.DependencyInjection.PipelineRegistration.cs
 extends:

@@ -12,6 +12,9 @@ var host = builder.Build();
 
 var mediator = host.Services.GetRequiredService<IMediator>();
 
+var greeting = await mediator.Send(new GreetCommand("World"));
+Console.WriteLine(greeting.Value);
+
 var result = await mediator.Send(new CreateTaskCommand(
     "Review plateau example",
     1,

@@ -28,7 +28,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details.
 
 RECOMMENDATION:
@@ -50,7 +50,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principles conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details.
 
 RECOMMENDATION:
@@ -85,7 +85,7 @@ MUST:
 - For project structure block:
   - use link to files which define the class/artifact
 - For Applied solutions block:
-	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 ```
 ```example
 /libs/orders-feature
@@ -108,7 +108,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Directory and class skills conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details. Do not list nested files inside a class/artifact skill.
 
 RECOMMENDATION:
@@ -137,7 +137,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details.
 
 RECOMMENDATION:
@@ -164,7 +164,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details.
 
 RECOMMENDATION:
@@ -186,7 +186,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details.
 
 RECOMMENDATION:
@@ -199,18 +199,18 @@ RECOMMENDATION:
 __Applied solutions:__
 - [[Solution link]] - [[implementation file link]]
 ```
-MUST NOT:
-- extended_by solution modify Allowed Dependencies without explicit user confirmation
+MUST:
+- Never let an `extended_by` solution modify Allowed Dependencies without explicit user confirmation
 
 # Rules
 ```hint
-Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules. Summarize all Rules from all finded project-level implementation files.
+Define MUST, SHOULD, MAY rules only — never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)). Summarize all Rules/Anti-patterns from all finded project-level implementation files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `## MUST`/`## SHOULD` at whichever strength it carries — fold an anti-pattern's worked "wrong way" example and its consequence into the same bullet instead of keeping a separate section.
 
 At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details.
 - Only add a subblock for categories where at least one solution introduces a rule. If a category has no rules, skip it — do not write an empty subblock.
 
@@ -222,6 +222,7 @@ RECOMMENDATION:
 ## MUST
 ```example
 - ...
+- Never import another feature lib's internal component directly, bypassing its index.ts — this breaks encapsulation, defeats affected-based builds, and creates hidden coupling; only import through the public API barrel
 
 __Applied solutions:__
 - [[Solution link]] - [[implementation file link]]
@@ -230,45 +231,12 @@ __Applied solutions:__
 ## SHOULD
 ```example
 - ...
+- Never ... (a softer prohibition, phrased positively inside SHOULD)
 ```
 
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Define what it means that this skill was applied wrong. Summarize all "Anti-patterns" from all finded project-level implementation files.
-
-At the end of block writes list to all used templates to build block.
-
-MUST:
-- If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
-- Keep only project-level content here. Do not include repository-level or class/artifact-level details.
-
-RECOMMENDATION:
-- Prefer bullet list
-- Prefer pure copy with out changing
-```
-```example
-- **Import another feature lib's internal component directly, bypassing its index.ts**
-  - Consequence: breaks encapsulation, defeats affected-based builds, creates hidden coupling
-  - Instead: only import through the public API barrel
-
-__Applied solutions:__
-- [[Solution link]] - [[implementation file link]]
 ```
 
 # Check list
@@ -279,7 +247,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only project-level content here. Do not include repository-level or class/artifact-level details.
 
 RECOMMENDATION:
