@@ -46,16 +46,17 @@ tags:
 ## MUST
 - `UnitOfWorkContext` and `UnitOfWorkBehavior` defined in BuildingBlocks
 - Both reference `ICommand` and `IUnitOfWork` from Shared
-- `UnitOfWorkBehavior` constrained on `where TRequest : ICommand`
+- `UnitOfWorkBehavior` constrained on `where TRequest : ICommand<TResponse>`
 
 ## MUST NOT
 - Add EF Core dependency to BuildingBlocks
 
 # Anti-patterns
-- `UnitOfWorkBehavior` constrained on `IRequest<T>` instead of `ICommand` — would commit on queries
+- `UnitOfWorkBehavior` constrained on `IRequest<T>` instead of `ICommand<TResponse>` — would commit on queries
+- `UnitOfWorkBehavior` constrained on bare `ICommand` — the non-generic marker no payload-bearing command implements, so the behavior would never activate on any real command
 
 # Check list
 - [ ] `UnitOfWorkContext` defined in `BuildingBlocks/MediatR/UnitOfWorkContext.cs`
 - [ ] `UnitOfWorkBehavior` defined in `BuildingBlocks/MediatR/UnitOfWorkBehavior.cs`
-- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
+- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand<TResponse>`
 - [ ] No EF Core reference in BuildingBlocks

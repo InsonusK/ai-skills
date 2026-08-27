@@ -18,7 +18,7 @@ created_by:
 
 # Core Principles
 - `UnitOfWorkContext` tracks nesting depth — only the outermost command (`Depth == 1`) commits
-- `UnitOfWorkBehavior` activates only on `ICommand` — queries never trigger a commit
+- `UnitOfWorkBehavior` activates only on `ICommand<TResponse>` (the standard command shape every command in this plateau implements) — queries never trigger a commit
 - No explicit rollback: if the handler throws, `SaveChangesAsync` is never called, and EF's implicit transaction discards staged changes when the `DbContext` is disposed at request scope end
 
 # Implementation
@@ -36,7 +36,7 @@ public sealed class UnitOfWorkContext
 
 public class UnitOfWorkBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICommand
+    where TRequest : ICommand<TResponse>
 {
     private readonly UnitOfWorkContext _context;
     private readonly IUnitOfWork _unitOfWork;

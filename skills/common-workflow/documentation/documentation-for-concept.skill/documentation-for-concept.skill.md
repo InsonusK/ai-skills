@@ -60,61 +60,37 @@ File naming (inside whichever glossary root applies):
 # Rule
 
 ## MUST
-- Determine the correct glossary root (the owning solution skill's `glossary/` folder vs. the project's `docs/glossary/`) before creating the file — see [# Where the page lives](#where-the-page-lives).
-- Create at most one page per concept; update the existing page instead of duplicating it.
+- Determine the correct glossary root (the owning solution skill's `glossary/` folder vs. the project's `docs/glossary/`) before creating the file — see [# Where the page lives](#where-the-page-lives). Never put a solution skill's glossary entries anywhere other than `solution-{Name}.skill/glossary/` (for example, in the repo's or a project's `docs/glossary/`) — the skill must stay self-contained.
+  - Violation: a term used only inside `solution-offline-sync.skill/` gets documented at the repo-root `docs/glossary/mutation-queue.md`.
+  - Risk: the solution skill is no longer self-contained — copying it into another project silently drops the explanation the skill depends on.
+  - Fix: put it at `solution-offline-sync.skill/glossary/mutation-queue.md`, per [# Where the page lives](#where-the-page-lives).
+- Create at most one page per concept; update the existing page instead of duplicating it. Never mix several unrelated terms into a single page.
+  - Violation: writing `docs/glossary/cqrs-pattern.md` when `docs/glossary/cqrs.md` already exists; or a single `glossary/misc-terms.md` covering "CQRS", "webhook", and "idempotency key".
+  - Risk: duplicate pages drift out of sync and different links point to different explanations of the same thing; a page mixing unrelated terms means readers cannot link to, search for, or bookmark a single concept, and the page grows unbounded.
+  - Fix: search the glossary root (including likely synonyms) before writing and update the existing page; keep one file per concept, indexed from the glossary root's `README.md`.
 - Cover, at minimum: what it is, why it exists / what problem it solves, how it works, how it is structured.
 - Use [templates/concept.template.md](./templates/concept.template.md) as the starting structure.
 - Add a diagram (mermaid, per [mermaid-diagram.skill.md](skills/common-workflow/mermaid-diagram.skill.md)) whenever a structure or flow is hard to describe in prose alone.
 - Update `{glossary-root}/README.md` with the new or changed entry.
-- After the page exists, find every other place using the term and add a link to it, per [# Linking existing mentions](#linking-existing-mentions).
+- After the page exists, find every other place using the term and add a link to it, per [# Linking existing mentions](#linking-existing-mentions). Never leave the term's other mentions unlinked after the page is created.
+  - Violation: creating `solution-http-api-publication.skill/glossary/idempotency-key.md` but leaving the rest of that solution skill still saying "pass an idempotency key" with no link.
+  - Risk: the next reader who does not know the term still has no way to find the explanation that was just written for them.
+  - Fix: search for every mention and link the first substantive occurrence in each file, per [# Linking existing mentions](#linking-existing-mentions).
 - Cite the source(s) used for an external library/technology/pattern (official docs URL, RFC, code file) so the page can be verified or refreshed later.
+- Verify facts about a library, technology, or pattern against its code, official docs, or a reliable source before writing them; never state an unverified fact.
+  - Violation: describing a caching library's eviction policy from memory without checking its docs or source.
+  - Risk: the page teaches something wrong, and readers who trust it make bad decisions.
+  - Fix: check the library's own docs, README, or source before writing; cite the source used.
 
 ## SHOULD
-- Keep each page short enough to read in under ~3 minutes; link to official docs instead of reproducing them in full.
+- Keep each page short enough to read in under ~3 minutes; link to official docs instead of reproducing them in full. Never reproduce a third-party library's full API reference.
+  - Violation: pasting the full official RabbitMQ documentation into a `glossary/rabbitmq.md` page.
+  - Risk: the page becomes a stale, unmaintained fork of documentation that already exists and is maintained elsewhere.
+  - Fix: explain what/why/how at a level that orients the reader, then link to the official docs for depth.
 - Use a concrete example from the project's own code when one exists, instead of a generic made-up snippet.
 - Cross-link related concept pages to each other under "Related concepts".
 - Ask the user to confirm scope before writing when the term is ambiguous or the project-specific meaning could differ from the generic one.
-
-## SHOULD NOT
-- Reproduce a third-party library's full API reference — link to it instead of copying it.
-- Re-explain a design decision that already has its own solution/architecture skill or ADR — link to it instead.
-
-## MUST NOT
-- Create a second page for a term that already has an entry in its glossary root.
-- Put a solution skill's glossary entries anywhere other than `solution-{Name}.skill/glossary/` (for example, in the repo's or a project's `docs/glossary/`) — the skill must stay self-contained.
-- Leave the term's other mentions unlinked after the page is created.
-- State facts about a library, technology, or pattern that were not verified against its code, official docs, or a reliable source.
-
-# Anti-patterns
-- **Writing the page but never linking back to it**
-  - Example: creating `solution-http-api-publication.skill/glossary/idempotency-key.md` but leaving the rest of that solution skill still saying "pass an idempotency key" with no link.
-  - Consequence: the next reader who does not know the term still has no way to find the explanation that was just written for them.
-  - Instead: search for every mention and link the first substantive occurrence in each file, per [# Linking existing mentions](#linking-existing-mentions).
-
-- **Putting a solution skill's glossary outside the skill's own directory**
-  - Example: a term used only inside `solution-offline-sync.skill/` gets documented at the repo-root `docs/glossary/mutation-queue.md`.
-  - Consequence: the solution skill is no longer self-contained — copying it into another project silently drops the explanation the skill depends on.
-  - Instead: put it at `solution-offline-sync.skill/glossary/mutation-queue.md`, per [# Where the page lives](#where-the-page-lives).
-
-- **Duplicating an existing entry under a new name**
-  - Example: writing `docs/glossary/cqrs-pattern.md` when `docs/glossary/cqrs.md` already exists.
-  - Consequence: two pages drift out of sync and different links point to different explanations of the same thing.
-  - Instead: search the glossary root (including likely synonyms) before writing; update the existing page.
-
-- **Copying the library's entire manual into the glossary page**
-  - Example: pasting the full official RabbitMQ documentation into a `glossary/rabbitmq.md` page.
-  - Consequence: the page becomes a stale, unmaintained fork of documentation that already exists and is maintained elsewhere.
-  - Instead: explain what/why/how at a level that orients the reader, then link to the official docs for depth.
-
-- **Guessing at how something works instead of verifying**
-  - Example: describing a caching library's eviction policy from memory without checking its docs or source.
-  - Consequence: the page teaches something wrong, and readers who trust it make bad decisions.
-  - Instead: check the library's own docs, README, or source before writing; cite the source used.
-
-- **One page mixing several unrelated terms**
-  - Example: a single `glossary/misc-terms.md` covering "CQRS", "webhook", and "idempotency key".
-  - Consequence: readers cannot link to, search for, or bookmark a single concept; the page grows unbounded.
-  - Instead: one file per concept, indexed from the glossary root's `README.md`.
+- Link to a design decision's own solution/architecture skill or ADR instead of re-explaining a decision it already covers.
 
 # Check list
 - [ ] The glossary root was decided using [# Where the page lives](#where-the-page-lives) (owning solution skill vs. project `docs/`), not guessed or defaulted.

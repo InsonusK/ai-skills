@@ -14,7 +14,7 @@ created_by:
 ---
 
 # Goal
-- Prove `ExceptionHandlingBehavior`'s technical contract: it catches an unhandled exception and returns a generic error without leaking details.
+- Prove each pipeline behavior's technical contract via its own `{Rule}Steps` class: `ExceptionHandlingBehaviorSteps` proves an unhandled exception is converted to a safe, generic error result; `ValidationBehaviorSteps` proves a failing validator short-circuits the pipeline with `ResultStatus.Invalid` while an empty validator set reaches the next behavior.
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]
@@ -30,6 +30,7 @@ __Applied solutions:__
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------ | ---------- | ----------------- | --------- |
 | Step definitions for one behavior | {Rule}Steps | ExceptionHandlingBehaviorSteps | {Rule}Steps.cs | ExceptionHandlingBehaviorSteps.cs |
+| Step definitions for one behavior | {Rule}Steps | ValidationBehaviorSteps | {Rule}Steps.cs | ValidationBehaviorSteps.cs |
 
 # Implementation
 ```csharp
@@ -40,31 +41,30 @@ __Applied solutions:__
 [Binding]
 public sealed class {Rule}Steps
 {
-    private readonly ExceptionHandlingBehavior<TestRequest, Result> _behavior =
-        new(NullLogger<ExceptionHandlingBehavior<TestRequest, Result>>.Instance);
-    private Result _result = null!;
+    private {Rule}Behavior<{Command}, Result<string>>? _behavior;
+    private Result<string>? _result;
 
-    [Given(@"the inner handler throws an exception")]
-    public void GivenInnerHandlerThrows()
+    [Given("a MediatR pipeline with {Rule}Behavior")]
+    public void GivenAPipeline()
     {
-        // captured by the When step's delegate below
+        // arrange the behavior under test; no inner-handler call yet
     }
 
-    [When(@"the behavior handles the request")]
-    public async Task WhenBehaviorHandles() =>
-        _result = await _behavior.Handle(
-            new TestRequest(),
-            () => throw new InvalidOperationException("boom"),
+    [When("<the condition this behavior reacts to>")]
+    public async Task WhenCondition() =>
+        _result = await _behavior!.Handle(
+            new {Command}(),
+            () => Task.FromResult(Result.Success("ok")),
             CancellationToken.None);
 
-    [Then(@"the result is a generic error")]
-    public void ThenGenericError() => Assert.False(_result.IsSuccess);
+    [Then("<the behavior's observable contract>")]
+    public void ThenContract() => Assert.False(_result!.IsSuccess);
 
-    [Then(@"no exception details leak into the result")]
-    public void ThenNoDetailsLeak() =>
-        Assert.DoesNotContain("InvalidOperationException", _result.Errors.First());
+    private record {Command} : ICommand<Result<string>>;
 }
 ```
+
+Two concrete instances of this pattern exist in this plateau: `ExceptionHandlingBehaviorSteps` (drives a real `ExceptionHandlingBehavior<GreetCommand, Result<string>>`, its own private `GreetCommand`, asserting the caught exception becomes `Result<string>` failure with the generic "An unexpected error occurred..." message) and `ValidationBehaviorSteps` (drives a real `ValidationBehavior<DummyCommand, Result<string>>` with either a failing `FluentValidation` validator or none registered, its own private `DummyCommand`/`FailingValidator`, asserting `ResultStatus.Invalid` short-circuits the pipeline versus an empty validator set reaching `next()`).
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs.create]]

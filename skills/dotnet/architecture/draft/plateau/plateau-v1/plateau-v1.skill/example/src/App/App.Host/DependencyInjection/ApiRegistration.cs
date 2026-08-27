@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Sample.Api;
+using Sample.Api.MinimalApi;
 
 namespace App.Host.DependencyInjection;
 
@@ -32,6 +33,7 @@ public static class ApiRegistration
     {
         app.UseExceptionHandler();
         app.MapControllers();
+        app.MapSampleSystemEndpoints();
 
         app.UseSwagger();
         app.UseSwaggerUI(options =>

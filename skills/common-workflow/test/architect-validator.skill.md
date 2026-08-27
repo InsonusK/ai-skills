@@ -37,10 +37,8 @@ MUST:
 - get ALL plateau, solutions. templates which have effect on file
 - left comment with `BUG:`
 - comment contain link to skill file
-
-# Anti-patterns
-- don't left comment with error
-- skip plateau, solutions. templates which have effect on file
+- never skip plateau, solutions. templates which have effect on file
+- never leave a found error without a `BUG:` comment
 
 # Check list
 - [ ] Every file has been checked

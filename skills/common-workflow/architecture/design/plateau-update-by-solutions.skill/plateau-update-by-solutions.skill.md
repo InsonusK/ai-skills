@@ -41,7 +41,7 @@ Be aware of [[skills/common-workflow/architecture/design/plateau-component-creat
 # How to identify affected structural skills
 
 1. Open the plateau root skill: `{output}/plateau-{plateau-name}.skill.md`
-2. Scan `{output}/structure/` for existing skills that already reference {solution} in `created_by` or `__Applied solutions__`
+2. Scan `{output}/structure/` for existing skills that already reference {solution} in `created_by` or `__Applied solutions:__`
 3. Scan `Implementation/` folder inside {solution} to discover all files:
    - `Repository.create.md` / `Repository.extend.md`
    - .NET: `{Project}.csproj.create.md` / `.extend.md` and nested `{Class}.cs.create.md` / `.extend.md`
@@ -58,11 +58,11 @@ Be aware of [[skills/common-workflow/architecture/design/plateau-component-creat
 
 MUST:
 - Confirm {solution} is actually a Solution and not a Plateau Component before running this workflow — see [Prerequisites](#prerequisites).
-- Update the plateau root skill: `description`, `created_by`, `Core Principles`, `Capabilities`, `Use cases`, `__Applied solutions__`
+- Update the plateau root skill: `description`, `created_by`, `Core Principles`, `Capabilities`, `Use cases`, `__Applied solutions:__`
 - Create any structural skill that does not yet exist but is required by the new solution's `.create.md` files
 - Update any existing structural skill that is targeted by the new solution's `.extend.md` files
 - Add the solution to `created_by` of every affected skill
-- Add/update `__Applied solutions__` links in every affected skill
+- Add/update `__Applied solutions:__` links in every affected skill
 - Bump `version` of every changed structural skill
 - Bump `version` of the plateau root skill
 - If merging the new solution required resolving a conflict (see [.create vs .extend during update](#create-vs-extend-during-update)), record the resolution as a plateau-level ADR in the plateau's own `adr/` folder, following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]
@@ -70,10 +70,10 @@ MUST:
 ## Updating an existing solution
 
 MUST:
-- Find every structural skill that references the solution in `created_by` or `__Applied solutions__`
+- Find every structural skill that references the solution in `created_by` or `__Applied solutions:__`
 - Re-scan the solution's `Implementation/` folder for changes
 - Update affected structural skills to reflect the new implementation state
-- Update `__Applied solutions__` links if implementation file names changed
+- Update `__Applied solutions:__` links if implementation file names changed
 - Bump `version` of every changed structural skill
 - Bump `version` of the plateau root skill
 
@@ -117,7 +117,7 @@ MUST NOT:
 If a solution is removed from the plateau:
 
 - Remove the solution from `created_by` of the plateau root skill
-- Remove the solution's `__Applied solutions__` bullets from the plateau root skill
+- Remove the solution's `__Applied solutions:__` bullets from the plateau root skill
 - For each affected structural skill:
   - Remove content that came only from that solution
   - Remove the solution from `created_by`
@@ -133,7 +133,7 @@ If a solution is removed from the plateau:
 4. For each affected structural skill:
    - Apply the correct `.create` / `.extend` action
    - Add/update goals, core principles, rules, anti-patterns, check lists, and applied solutions
-   - Update `created_by` and `__Applied solutions__`
+   - Update `created_by` and `__Applied solutions:__`
    - Bump `version`
 5. Update the plateau root skill:
    - `description`
@@ -141,7 +141,7 @@ If a solution is removed from the plateau:
    - `Core Principles`
    - `Capabilities`
    - `Use cases`
-   - `__Applied solutions__`
+   - `__Applied solutions:__`
 6. Bump the plateau root skill `version`
 7. Search for plateaus whose `parent_plateaus` list contains {plateau-name}; for each one found, repeat steps 1-6 against that child (see [Propagating through child plateaus](#propagating-through-child-plateaus)), recursing into grandchildren the same way
 8. Verify that no `hint`, `example`, or `# How Apply this template` blocks remain in updated skills
@@ -160,8 +160,8 @@ If a solution is removed from the plateau:
 - [ ] `plateau-create-by-solutions.skill` mapping rules were applied for the plateau's {stack}
 - [ ] Plateau root skill references the new/updated solution in `created_by`
 - [ ] Plateau root skill describes the solution in `Core Principles` or `Capabilities`
-- [ ] Plateau root skill includes the solution in the correct `__Applied solutions__` list
-- [ ] Every structural skill affected by the solution has been identified using `created_by`, `__Applied solutions__`, and the solution's `Implementation/` folder
+- [ ] Plateau root skill includes the solution in the correct `__Applied solutions:__` list
+- [ ] Every structural skill affected by the solution has been identified using `created_by`, `__Applied solutions:__`, and the solution's `Implementation/` folder
 - [ ] New skills were created for `.create.md` files that had no matching skill
 - [ ] Existing skills were updated for `.extend.md` files
 - [ ] `created_by` of every affected skill is up to date and has no duplicates

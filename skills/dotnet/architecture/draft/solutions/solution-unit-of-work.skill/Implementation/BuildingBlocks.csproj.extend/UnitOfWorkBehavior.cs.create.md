@@ -28,14 +28,14 @@ tags:
 ```csharp
 // BuildingBlocks/MediatR/UnitOfWorkBehavior.cs
 using MediatR;
-using Shared.MediatR;
+using Shared;
 using Shared.UnitOfWork;
 
 namespace BuildingBlocks.MediatR;
 
 public class UnitOfWorkBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICommand
+    where TRequest : ICommand<TResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UnitOfWorkContext _context;
@@ -101,7 +101,7 @@ DbContext disposed at request scope end → all pending changes abandoned automa
 # Rule changes
 
 ## MUST
-- Constrained to `where TRequest : ICommand` — never activates on queries
+- Constrained to `where TRequest : ICommand<TResponse>` — never activates on queries
 - Use `try/finally` to guarantee depth counter is always restored
 - Call `SaveChangesAsync` only when `Depth == 1`
 - Call `_context.Enter()` before `next()` — call `_context.Leave()` in `finally`
@@ -118,7 +118,7 @@ DbContext disposed at request scope end → all pending changes abandoned automa
 - Catching exceptions to swallow them — breaks error propagation
 
 # Check list
-- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
+- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand<TResponse>`
 - [ ] `try/finally` wraps the entire handler invocation
 - [ ] `SaveChangesAsync` called only when `_context.Depth == 1`
 - [ ] `_context.Enter()` called before `next()` and `_context.Leave()` called in `finally`
@@ -132,8 +132,8 @@ DbContext disposed at request scope end → all pending changes abandoned automa
 - [ ] WHEN applied THEN Sub-commands reach this behavior with Depth > 1 — they stage changes but do not commit
 - [ ] WHEN applied THEN **No catch/rollback block** — EF Core uses implicit transactions. When SaveChangesAsync is not called (because handler threw), the DbContext is disposed at end of request scope and all pending changes are silently abandoned. No explicit rollback is necessary. If explicit transactions are introduced in the future, a catch/rollback block must be added at that point
 - [ ] WHEN applied THEN try/finally ensures depth counter is always restored — no leaked depth on exception
-- [ ] WHEN applied THEN Constrained to where TRequest : ICommand — never activates for query requests
-- [ ] WHEN verified THEN UnitOfWorkBehavior constrained to where TRequest : ICommand
+- [ ] WHEN applied THEN Constrained to where TRequest : ICommand<TResponse> — never activates for query requests
+- [ ] WHEN verified THEN UnitOfWorkBehavior constrained to where TRequest : ICommand<TResponse>
 - [ ] WHEN verified THEN try/finally wraps the entire handler invocation
 - [ ] WHEN verified THEN SaveChangesAsync called only when _context.Depth == 1
 - [ ] WHEN verified THEN _context.Enter() called before next() and _context.Leave() called in finally

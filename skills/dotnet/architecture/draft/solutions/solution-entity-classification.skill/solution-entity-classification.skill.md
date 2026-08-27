@@ -18,16 +18,6 @@ tags:
   - concern/architecture
   - solution/entity-classification
 
-triggers:
-  - classify entity
-  - entity type
-  - internal entity
-  - external entity
-  - immutable entity
-  - mutable entity
-  - entity ownership
-  - entity mutability
-  - which entity solutions to apply
 creates:
 extends:
   - "{Module}.Domain.Entities.{EntityName}.cs"

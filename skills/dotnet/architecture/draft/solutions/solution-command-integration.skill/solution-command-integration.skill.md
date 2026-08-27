@@ -1,6 +1,7 @@
 ---
 name: solution-command-integration
 description: Defines the integrated command pipeline — ICommand marker in Shared, command records in {Module}.Interfaces, handler and validator co-location in {Module}.Application/Features, module DI self-registration, and App.Host composition-root wiring
+whenToUse: when implementing a new write operation — declaring a command record, writing its handler and validator, or wiring a module's command-handling chain into DI
 domain: skill
 type: architecture
 version: 20260611
@@ -16,14 +17,8 @@ tags:
   - concern/architecture
   - solution/command-integration
 
-triggers:
-  - implement command handler
-  - create command
-  - write command handler
-  - handle write operation
-  - add feature to module
 creates:
-  - Shared.MediatR.ICommand.cs
+  - Shared.ICommand.cs
   - "{Module}.Interfaces.Commands.{Command}.cs"
   - "{Module}.Application.Features.{FeatureName}.{FeatureName}.Handler.cs"
   - "{Module}.Application.Features.{FeatureName}.{FeatureName}.Validator.cs"
@@ -149,9 +144,9 @@ PROJECT:
 - Duplicating Soft{ValueObject} validation rules in a command validator instead of using `IValidator<Soft{ValueObject}>`
 
 # Check list
-- [ ] `ICommand : IRequest<Result>` and `ICommand<TResponse> : IRequest<Result<TResponse>>` defined in `Shared/MediatR/ICommand.cs`
+- [ ] `ICommand : IRequest<Result>` and `ICommand<TResponse> : IRequest<TResponse>` defined in `Shared/MediatR/ICommand.cs`
 - [ ] All commands declared as `record` in `/{Module}.Interfaces/Commands`
-- [ ] All commands implement `ICommand<T>` for a result payload of `T`, or `ICommand` when no payload is returned
+- [ ] All commands implement `ICommand<Result<T>>` for a result payload of `T`, or `ICommand<Result>` when there is no payload beyond success/failure; bare `ICommand` is reserved for commands with no persisted-entity effect at all
 - [ ] Result records co-located with their command in the same file
 - [ ] Each feature has its own folder under `/{Module}.Application/Features`
 - [ ] Handler file named `{FeatureName}.Handler.cs`

@@ -1,6 +1,7 @@
 ---
 name: solution-unit-of-work
 description: Defines IUnitOfWork, UnitOfWorkContext, and UnitOfWorkBehavior — the pipeline mechanism that commits all staged entity changes atomically after the top-level command handler completes, ensuring sub-commands never commit prematurely
+whenToUse: when a command's persisted changes must commit atomically after the top-level handler completes, including safely across nested sub-command dispatch
 domain: skill
 type: architecture
 version: 20260629
@@ -16,13 +17,6 @@ tags:
   - concern/architecture
   - solution/unit-of-work
 
-triggers:
-  - define unit of work
-  - commit changes after handler
-  - atomic command transaction
-  - UnitOfWorkBehavior
-  - SaveChanges pattern
-  - nested command dispatch
 creates:
   - Shared.UnitOfWork.IUnitOfWork.cs
   - BuildingBlocks.MediatR.UnitOfWorkContext.cs
@@ -36,6 +30,7 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]"
+  - "[[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]"
 built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-service-with-validated-module-interaction/plateau-service-with-validated-module-interaction.skill/plateau-service-with-validated-module-interaction.skill.md|plateau-service-with-validated-module-interaction]]"
 ---
 
@@ -88,14 +83,16 @@ PROJECT:
   - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create|UnitOfWorkBehavior.cs]] - create - Pipeline behavior that commits at depth 1 after handler completes
 - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend|App.Infrastructure.csproj]] - extend - Add UnitOfWork EF Core implementation
   - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create|UnitOfWork.cs]] - create - IUnitOfWork implementation delegating to AppDbContext
-- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register IUnitOfWork and UnitOfWorkContext with scoped lifetimes
+- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register IUnitOfWork/UnitOfWorkContext with scoped lifetimes, and UnitOfWorkBehavior last in the pipeline
   - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend|RepositoryRegistration.cs]] - extend - Add IUnitOfWork and UnitOfWorkContext scoped registrations
+  - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend|PipelineRegistration.cs]] - extend - Insert `UnitOfWorkBehavior` last, after every other applied pipeline behavior
 
 # Rules
 
 ## MUST:
 - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend#MUST|RepositoryRegistration.cs]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST|PipelineRegistration.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend#MUST|App.Infrastructure.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create#MUST|UnitOfWork.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend#MUST|BuildingBlocks.csproj]]
@@ -107,6 +104,7 @@ PROJECT:
 ## MUST NOT:
 - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend#MUST NOT|RepositoryRegistration.cs]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST NOT|PipelineRegistration.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend#MUST NOT|App.Infrastructure.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create#MUST NOT|UnitOfWork.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend#MUST NOT|BuildingBlocks.csproj]]
@@ -127,7 +125,7 @@ PROJECT:
 - [ ] `IUnitOfWork` defined in `Shared/UnitOfWork/IUnitOfWork.cs` with single `SaveChangesAsync` method
 - [ ] `UnitOfWorkContext` defined in `BuildingBlocks/MediatR/UnitOfWorkContext.cs`
 - [ ] `UnitOfWorkBehavior` defined in `BuildingBlocks/MediatR/UnitOfWorkBehavior.cs`
-- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand`
+- [ ] `UnitOfWorkBehavior` constrained to `where TRequest : ICommand<TResponse>`
 - [ ] `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` for depth decrement
 - [ ] `UnitOfWorkBehavior` calls `SaveChangesAsync` only when `_context.Depth == 1`
 - [ ] `UnitOfWork` implemented in `App.Infrastructure/UnitOfWork/UnitOfWork.cs`

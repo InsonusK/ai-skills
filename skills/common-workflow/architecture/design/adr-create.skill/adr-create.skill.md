@@ -32,42 +32,29 @@ See a complete filled example: [examples/example.adr.md](./examples/example.adr.
 
 # Rule
 ## MUST
-- Store ADR files in an `adr/` folder inside the skill folder that owns the decision.
-- List the selected variant in `# Searched variants` together with the rejected variants and clearly mark it as selected (for example by adding "(selected)" to its heading).
+- Store ADR files in an `adr/` folder inside the skill folder that owns the decision, and create the ADR as soon as the decision is made rather than only describing it in the skill body.
+  - Violation: the skill body states "we use X" without a corresponding ADR file under `adr/`.
+  - Risk: the rejected alternatives and their trade-offs are lost, and the decision cannot be revisited later.
+  - Fix: create an ADR file from [adr.template.md](./templates/adr.template.md) and link it from the skill body.
+- List the selected variant in `# Searched variants` together with the rejected variants and clearly mark it as selected (for example by adding "(selected)" to its heading) — never record only the chosen variant without the rejected alternatives.
+  - Violation: `# Selected variant` names "Handle conflicts in HTTP middleware", but `# Searched variants` lists only the rejected options.
+  - Risk: the reader cannot compare the chosen variant against the alternatives on equal terms.
+  - Fix: list the selected variant with the same `Description`/`Benefits`/`Costs` structure and mark it as selected.
 - Explicitly name and link the selected variant from `# Selected variant` to its entry in `# Searched variants`.
 - Describe every variant with `Description`, `Benefits` and `Costs` subsections.
-- List every created ADR in the `adr:` property of the owning skill's YAML header and link it from the skill body.
+- List every created ADR in the `adr:` property of the owning skill's YAML header and link it from the skill body — an ADR registered in neither place is considered missing.
+  - Violation: `adr/mutation-tool-choice.md` exists but is absent from the `adr:` YAML property and no body section links to it.
+  - Risk: the decision is invisible to an agent reading the skill.
+  - Fix: register every ADR in the `adr:` property and link it from the skill body.
 - Include a `tags` list in the ADR's YAML header with the mandatory tag `concern/documentation/adr`, so ADR files are discoverable by tag-based views and queries. Keep the other tags the template carries (for example the bare `stack` tag for stack-agnostic decisions).
 - Remove all `hint`, `example` and `code example` blocks from the final ADR file.
+  - Violation: keeping `hint` and `example` blocks after filling the template.
+  - Risk: the final ADR is noisy and harder to follow.
+  - Fix: remove all `hint`, `example`, and `code example` blocks from the final ADR file.
 
 ## SHOULD
 - Prefer bullet lists for `Benefits` and `Costs`.
 - Write one ADR per decision instead of mixing several decisions into one file.
-
-## MUST NOT
-- Leave an ADR unlinked: an ADR that is neither registered in the `adr:` YAML property nor linked from the skill body is considered missing.
-- Record only the chosen variant without the rejected alternatives.
-
-# Anti-patterns
-- **Selected variant missing from `# Searched variants`**
-  - Example: `# Selected variant` names "Handle conflicts in HTTP middleware", but `# Searched variants` lists only the rejected options.
-  - Consequence: The reader cannot compare the chosen variant against the alternatives on equal terms.
-  - Instead: List the selected variant with the same `Description`/`Benefits`/`Costs` structure and mark it as selected.
-
-- **Decision recorded only in the skill body**
-  - Example: The skill body states "we use X" without an ADR file.
-  - Consequence: The rejected alternatives and their trade-offs are lost, and the decision cannot be revisited later.
-  - Instead: Create an ADR file and link it from the skill body.
-
-- **Orphan ADR file**
-  - Example: `adr/mutation-tool-choice.md` exists but is absent from the `adr:` YAML property and no body section links to it.
-  - Consequence: The decision is invisible to an agent reading the skill.
-  - Instead: Register every ADR in the `adr:` property and link it from the skill body.
-
-- **Leaving template hints in the final ADR**
-  - Example: Keeping `hint` and `example` blocks after filling the template.
-  - Consequence: The final ADR is noisy and harder to follow.
-  - Instead: Remove all `hint`, `example`, and `code example` blocks from the final ADR file.
 
 # Check list
 - [ ] ADR file is created from [adr.template.md](./templates/adr.template.md) inside the owning skill's `adr/` folder

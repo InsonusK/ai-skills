@@ -115,7 +115,8 @@ type: template
 version: 20250101120000
 tags:
   - skill/template/plateau
-parent_plateau:
+parent_plateaus:
+standalone: true
 created_by:
   - [[skills/dotnet/architecture/draft/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
   - [[skills/dotnet/architecture/draft/solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]]

@@ -1,7 +1,9 @@
+using Ardalis.Result;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sample.Application.Resolvers;
+using Sample.Application.Validators.Async;
 using Sample.Interfaces.Commands;
 using Shared.Guid;
 
@@ -19,6 +21,7 @@ public static class SampleApplicationRegistration
         services.AddValidatorsFromAssembly(typeof(SampleApplicationRegistration).Assembly);
 
         services.AddScoped<IGuidResolver<Result<CreateAttachmentResult>>, CreateAttachmentGuidResolver>();
+        services.AddScoped<AttachmentTaskExistsCheck>();
 
         return services;
     }

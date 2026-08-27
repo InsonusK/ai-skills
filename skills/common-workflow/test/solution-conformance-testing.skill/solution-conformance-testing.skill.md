@@ -84,20 +84,14 @@ REPOSITORY:
 - Keep a technical or architectural concern in its own `.feature` file, separate from business scenarios.
   - Risk: mixing the two makes the report unreadable as "which business functions are covered" — the thing this approach exists to make visible.
   - Fix: one `.feature` file per business capability, a separate one per technical/architectural concern.
-
-## MUST NOT
-- Make code coverage optional or skip it on any run of `unit-test`.
+- Always collect coverage as part of `unit-test` — never make it optional or skip it on any run.
   - Risk: a run without coverage gives mutation testing nothing to scope against and leaves "was this even executed" unanswered.
-  - Fix: always collect coverage as part of `unit-test`.
-- Let `test-report` (or anything downstream of it) parse a tool's native report format directly.
+- Have `test-report` (or anything downstream of it) read only the normalized `tmp/result/*.json` files defined in [# Report contract](#report-contract) — never parse a tool's native report format directly.
   - Risk: switching the underlying tool later breaks every consumer that learned to parse its specific native format.
-  - Fix: read only the normalized `tmp/result/*.json` files defined in [# Report contract](#report-contract).
-- Let a `mutation-test` run swallow the underlying mutation tool's own failure exit code while normalizing its result.
+- Propagate the underlying mutation tool's own exit code after writing `tmp/result/mutation-test.json` — never let a `mutation-test` run swallow it while normalizing its result.
   - Risk: a real mutation-testing failure gets hidden, and CI reports success on a run that actually found unkilled mutants.
-  - Fix: propagate the underlying tool's exit code after writing `tmp/result/mutation-test.json`.
-- Let `report-template/index.html` live under `.github/`.
+- Keep `report-template/index.html` at that path, copied by `test-report` — never generated, never placed under `.github/`.
   - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern.
-  - Fix: keep it at `report-template/index.html`, copied by `test-report` — never generated, never placed under `.github/`.
 
 # Check list
 - [ ] Every business scenario is structured as input/expected-result pairs.

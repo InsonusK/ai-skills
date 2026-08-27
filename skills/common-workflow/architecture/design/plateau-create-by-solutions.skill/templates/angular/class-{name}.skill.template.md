@@ -28,7 +28,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class/artifact-level content here. Do not include repository-level or project-level details.
 
 RECOMMENDATION:
@@ -52,7 +52,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principles conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class/artifact-level content here. Do not include repository-level or project-level details.
 - Add Core principle `Apply ONE plateau template per class/artifact`
 
@@ -99,7 +99,7 @@ MUST:
   - version
 
 - If Implementation changes conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class/artifact-level content here. Do not include repository-level or project-level details.
 
 RECOMMENDATION:
@@ -123,13 +123,13 @@ __Applied solutions:__
 
 # Rules
 ```hint
-Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules of the class/artifact. Summarize all "Rule changes" from all finded artifact-level implementation files.
+Define MUST, SHOULD, MAY rules of the class/artifact only — never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)). Summarize all "Rule changes"/"Anti-patterns" from all finded artifact-level implementation files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `## MUST`/`## SHOULD` at whichever strength it carries — fold an anti-pattern's worked "wrong way" example and its consequence into the same bullet instead of keeping a separate section. Always include a bullet against applying several plateau templates per class/artifact.
 
 At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class/artifact-level content here. Do not include repository-level or project-level details.
 - Only add a subblock for categories where at least one solution introduces a rule. If a category has no rules, skip it — do not write an empty subblock.
 
@@ -141,6 +141,8 @@ RECOMMENDATION:
 ## MUST
 ```example
 - Store must expose state as readonly signals, never as a mutable public field
+- Never apply several plateau templates per class/artifact
+- Never inject HttpClient directly into a component — business logic and transport concerns leak into presentation; go through a facade/store that owns the HTTP call instead
 
 __Applied solutions:__
 - [[Solution link]] - [[implementation file link]]
@@ -149,47 +151,12 @@ __Applied solutions:__
 ## SHOULD
 ```example
 - ...
+- Never ... (a softer prohibition, phrased positively inside SHOULD)
 ```
 
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Define what it means that this skill was applied wrong. Summarize all "Anti-patterns" from all finded artifact-level implementation files.
-
-At the end of block writes list to all used templates to build block.
-
-MUST:
-- If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
-- Keep only class/artifact-level content here. Do not include repository-level or project-level details.
-- Add antipattern `Apply SEVERAL plateau templates per class/artifact`
-
-RECOMMENDATION:
-- Prefer bullet list
-- Prefer pure copy with out changing
-```
-```example
-- Apply SEVERAL plateau templates per class/artifact
-- Inject HttpClient directly into a component
-  - Consequence: business logic and transport concerns leak into presentation
-  - Instead: go through a facade/store that owns the HTTP call
-
-__Applied solutions:__
-- [[Solution link]] - [[implementation file link]]
 ```
 
 # Check list
@@ -200,7 +167,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class/artifact-level content here. Do not include repository-level or project-level details.
 
 RECOMMENDATION:
@@ -222,7 +189,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If entries conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class/artifact-level content here. Do not include repository-level or project-level details.
 
 RECOMMENDATION:

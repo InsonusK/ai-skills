@@ -60,14 +60,15 @@ __Applied solutions:__
 Same as `{Module}.Domain.Tests`: `Reqnroll.xUnit`, `coverlet.collector`, `Microsoft.NET.Test.Sdk`. Plus `Moq` — needed to mock a `@domain`-tagged scenario's loading step (e.g. `IReadRepository<T>`) without a real persistence implementation.
 
 ## Allowed Dependencies
-- `{Module}.Application`, `{Module}.Domain` — the same two projects `{Module}.Application.csproj` itself is allowed to reference.
+- `{Module}.Application` — the project under test.
+- `{Module}.Domain.Rules`, once `solution-domain-rules` is applied — needed to link `{Module}.Domain.Rules.Spec`'s `@semantic`/`@domain`-tagged scenarios in. `{Module}.Domain` itself is not referenced directly; its types are reached transitively through `{Module}.Application`.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] - [[../../../../solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md|{Module}.Application.Tests.csproj.create]]
 
 # Rules
 MUST:
-- Reference `{Module}.Application` and `{Module}.Domain` only — no other module's project
+- Reference `{Module}.Application` (and `{Module}.Domain.Rules`, once `solution-domain-rules` is applied) only — no other module's project, and no direct reference to `{Module}.Domain`
 - Step definitions call `{Module}.Application`'s real handlers/validators, never `{Module}.Domain`'s types directly
 - Every `@semantic`/`@domain`-tagged scenario in a linked `{Module}.Domain.Rules.Spec` file has a matching step class proving the DtoValidator/`{Feature}Check` adapter
 - A `@domain` scenario's mock cover only the loading step — the comparison itself still runs for real, inside the rule

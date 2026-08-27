@@ -22,7 +22,7 @@ __Applied solutions:__
 
 # Core Principles
 - Declared as `record` — immutable, structural equality by default
-- Implements `ICommand<{CommandName}Result>` — the marker interface wraps the response in `Result<T>` automatically
+- Implements `ICommand<Result<{CommandName}Result>>` — `Result<T>` is written explicitly in the type argument, not auto-wrapped by the marker interface
 - Properties are primitives, Value Objects (`Soft{ValueObject}`), or DTOs — no domain entity references
 - Result record declared in the same file, named `{CommandName}Result`
 - One command per write intent
@@ -47,7 +47,7 @@ __Applied solutions:__
 public record CreateTaskCommand(
     string Title,
     int AssigneeId
-) : ICommand<CreateTaskResult>;
+) : ICommand<Result<CreateTaskResult>>;
 
 public record CreateTaskResult(int Id);
 ```
@@ -57,7 +57,7 @@ __Applied solutions:__
 
 # Rules
 MUST:
-- Implement `ICommand<T>` or `ICommand` — never `IRequest<T>` directly
+- Implement `ICommand<Result<T>>` or `ICommand` — never `IRequest<T>` directly
 - Result type declared in the same file as the command
 - Properties are primitives, Value Objects, or DTOs — no domain entity references
 - Commands declared as `record` in `/{Module}.Interfaces/Commands`
@@ -71,7 +71,7 @@ __Applied solutions:__
 - [[../../../../../solutions/solution-command-integration.skill/solution-command-integration.skill.md|solution-command-integration]] - [[../../../../../solutions/solution-command-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs.create]]
 
 # Check list
-- [ ] Command is a `record` in `/{Module}.Interfaces/Commands`, implements `ICommand<T>` (or `ICommand` when no payload is returned)
+- [ ] Command is a `record` in `/{Module}.Interfaces/Commands`, implements `ICommand<Result<T>>` (or `ICommand` when no payload is returned)
 - [ ] Result record co-located in the same file
 - [ ] No domain entity types among the command's properties
 

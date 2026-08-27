@@ -39,11 +39,12 @@ Both variants defined in one file:
 
 ```csharp
 // Shared/MediatR/ICommand.cs
+using Ardalis.Result;
 using MediatR;
 
 namespace Shared.MediatR;
 
-public interface ICommand : IRequest { }
+public interface ICommand : IRequest<Result> { }
 
 public interface ICommand<TResponse> : IRequest<TResponse> { }
 ```
@@ -51,7 +52,7 @@ public interface ICommand<TResponse> : IRequest<TResponse> { }
 
 ## MUST
 - All command records implement `ICommand<Result<T>>` — not `IRequest<T>` directly
-- `ICommand` used only when the command truly produces no return value
+- `ICommand` used only when the command truly produces no return value — it still returns `Result` (success/failure), never bare `Unit`
 - `ICommand` and `ICommand<TResponse>` defined in Shared — not BuildingBlocks, not any module
 
 ## MUST NOT

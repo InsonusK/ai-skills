@@ -1,3 +1,4 @@
+using Ardalis.Result;
 using Reqnroll;
 using Shared;
 
@@ -7,7 +8,7 @@ namespace Shared.Tests.StepDefinitions;
 public sealed class CommandShapeSteps
 {
     private string _name = string.Empty;
-    private ICommand<string>? _command;
+    private ICommand<Result<string>>? _command;
 
     [Given("a command name \"([^\"]*)\")]
     public void GivenName(string name) => _name = name;
@@ -16,7 +17,7 @@ public sealed class CommandShapeSteps
     public void WhenCreated() => _command = new SampleCommand(_name);
 
     [Then("it implements ICommand of string")]
-    public void ThenImplements() => Assert.IsAssignableFrom<ICommand<string>>(_command);
+    public void ThenImplements() => Assert.IsAssignableFrom<ICommand<Result<string>>>(_command);
 
-    private record SampleCommand(string Name) : ICommand<string>;
+    private record SampleCommand(string Name) : ICommand<Result<string>>;
 }

@@ -62,49 +62,31 @@ This skill governs the process of decomposing and confirming design, independent
 # Rule
 
 ## MUST
-- Produce and confirm the decomposition list with the user before writing implementation code for new business logic.
-- Give every unit exactly one responsibility sentence with no "and".
+- Produce and confirm the decomposition list with the user before writing implementation code for new business logic, even for small features.
+  - Violation: generating code straight from the task description without first producing and confirming the decomposition list, or skipping confirmation "to save time" because a feature seems small.
+  - Risk: the agent produces a large, tangled implementation before the user had a chance to react, and control is lost until after the fact — skipping confirmation removes exactly the checkpoint that keeps the user in control.
+  - Fix: always produce and confirm the decomposition list first (step 3 of the [workflow](#workflow)), regardless of feature size.
+- Give every unit exactly one responsibility sentence with no "and"; never merge two responsibilities into one unit to reduce file count.
+  - Violation: a `ReportService` that fetches data, formats it, and emails it.
+  - Risk: nobody can tell what the service does or which cases it must handle; changes to email logic risk breaking data fetching.
+  - Fix: split into `ReportDataFetcher`, `ReportFormatter`, `ReportMailer` (Functions or Services depending on state), orchestrated by a `Command`.
 - Express `depends_on` as roles/abstractions the unit needs, not concrete classes it constructs itself.
 - Attach a test case list (via [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md)) to every confirmed unit before or immediately after generating its code.
-- Keep the orchestrator/entry point free of business logic; it only calls units in sequence.
+  - Risk: without test cases attached at design time, nobody knows whether current behavior is correct or which cases are missing, and regressions go unnoticed.
+  - Fix: attach a usecases_list.md-formatted list to every unit at design time.
+- Keep the orchestrator/entry point free of business logic; it only calls units in sequence and never branches on business rules that belong to a unit.
 - Create or update `docs/features/{feature}.md` for every feature that added or changed units.
+  - Risk: without it, nobody can see what a feature is built from without re-reading all the code.
+  - Fix: maintain `docs/features/{feature}.md` with links to units and their test cases, and an auto-rendered diagram via `diagram-renderer`.
 - Render feature diagrams with `diagram-renderer`; never hand-draw them as mermaid/ASCII in the index document.
+  - Risk: a hand-drawn diagram silently drifts from the real code and nobody notices.
+  - Fix: derive the diagram from `depends_on` frontmatter links via `diagram-renderer`.
 - Run [architect-validator](skills/common-workflow/test/architect-validator.skill.md) after generating or changing units belonging to a plateau.
 
 ## SHOULD
 - Reuse an existing unit instead of creating a near-duplicate when one already covers the responsibility.
 - Keep `docs/features/{feature}.md` short: links and one-line summaries, not copies of code or full test bodies.
 - Split a unit further if its `usage_scenario` requires describing more than one caller-facing outcome.
-
-## SHOULD NOT
-- Skip the confirmation step for small features "to save time" — this is exactly the step that keeps the user in control.
-
-## MUST NOT
-- Write implementation code before the decomposition list is confirmed.
-- Merge two responsibilities into one unit to reduce file count.
-- Let the orchestrator branch on business rules that belong to a unit.
-
-# Anti-patterns
-- **One service does several things**
-  - Example: a `ReportService` that fetches data, formats it, and emails it.
-  - Consequence: nobody can tell what the service does or which cases it must handle; changes to email logic risk breaking data fetching.
-  - Instead: split into `ReportDataFetcher`, `ReportFormatter`, `ReportMailer` (Functions or Services depending on state), orchestrated by a `Command`.
-
-- **No clear test cases per unit**
-  - Consequence: nobody knows whether current behavior is correct or which cases are missing; regressions go unnoticed.
-  - Instead: attach a [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md)-formatted list to every unit at design time.
-
-- **No documentation of how a complex process decomposes**
-  - Consequence: nobody can see what a feature is built from without re-reading all the code.
-  - Instead: maintain `docs/features/{feature}.md` with links to units and their test cases, and an auto-rendered diagram via `diagram-renderer`.
-
-- **Generating code straight from the task description**
-  - Consequence: the agent produces a large, tangled implementation before the user had a chance to react; control is lost until after the fact.
-  - Instead: always produce and confirm the decomposition list first (step 3 of the [workflow](#workflow)).
-
-- **Hand-drawn diagrams in the index document**
-  - Consequence: the diagram silently drifts from the real code and nobody notices.
-  - Instead: derive the diagram from `depends_on` frontmatter links via `diagram-renderer`.
 
 # Check list
 - [ ] The decomposition list was shown to and confirmed by the user before code was written.

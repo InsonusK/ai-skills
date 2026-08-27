@@ -51,7 +51,8 @@ type: template
 version: 20250101120000
 tags:
   - skill/template/plateau
-parent_plateau:
+parent_plateaus:
+standalone: true
 created_by:
   - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
 ---

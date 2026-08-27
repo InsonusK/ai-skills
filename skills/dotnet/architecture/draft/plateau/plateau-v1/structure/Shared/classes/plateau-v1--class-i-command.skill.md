@@ -40,7 +40,7 @@ __Applied solutions:__
 //Plateau: v1
 //Version: 20260825140000
 
-public interface ICommand : IRequest { }
+public interface ICommand : IRequest<Result> { }
 
 public interface ICommand<TResponse> : IRequest<TResponse> { }
 ```

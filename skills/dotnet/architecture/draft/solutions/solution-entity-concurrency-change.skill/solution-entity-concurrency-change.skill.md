@@ -1,6 +1,7 @@
 ---
 name: solution-entity-concurrency-change
 description: Defines the optimistic concurrency control stack for mutable entities — Version/xmin concurrency token on every mutable entity, IVersioned marker on entities, IHasVersions interface on update commands, ETagEncoder for HTTP transport, IEntityVersionResolverFactory/IEntityVersionResolver in Shared with App.Infrastructure factory and module Application resolvers, ConcurrencyBehavior pipeline guard, ETag on GET responses, and 412 Precondition Failed on missing or malformed If-Match
+whenToUse: when a mutable entity needs optimistic concurrency control — preventing lost updates via a version/xmin token, IHasVersions, ConcurrencyBehavior, or ETag/If-Match on HTTP
 domain: skill
 type: architecture
 version: 20260622
@@ -18,15 +19,6 @@ tags:
   - concern/architecture
   - solution/entity-concurrency-change
 
-triggers:
-  - implement concurrency control
-  - optimistic concurrency
-  - prevent lost updates
-  - version check
-  - etag if-match
-  - mutable entity
-  - IVersioned
-  - IHasVersions
 creates:
   - Shared.Concurrency.IVersioned.cs
   - Shared.Concurrency.IHasVersions.cs
@@ -51,6 +43,7 @@ depends_on:
   - "[[skills/dotnet/architecture/draft/solutions/solution-domain-configuration.skill/solution-domain-configuration.skill|solution-domain-configuration]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]]"
   - "[[skills/dotnet/architecture/draft/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]"
+  - "[[skills/dotnet/architecture/draft/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]"
 built_on_plateau: "[[skills/dotnet/architecture/draft/plateau/plateau-service-with-validated-module-interaction/plateau-service-with-validated-module-interaction.skill/plateau-service-with-validated-module-interaction.skill.md|plateau-service-with-validated-module-interaction]]"
 ---
 
@@ -161,14 +154,16 @@ PROJECT:
   - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend|{Command}.cs]] - extend - Update/patch command implements IHasVersions
 - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Api.csproj.extend|{Module}.Api.csproj]] - extend - Add ETag header to GET responses and If-Match guard to PUT/PATCH
   - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.extend|Single{Entity}Controller.cs]] - extend - Add ETag encoding on GET and If-Match decoding on PUT/PATCH
-- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register IEntityVersionResolverFactory and module resolvers
+- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register IEntityVersionResolverFactory/module resolvers, and ConcurrencyBehavior in the pipeline
   - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create|EntityVersionResolverRegistration.cs]] - create - Register factory as Scoped with module Domain and Application assemblies
+  - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend|PipelineRegistration.cs]] - extend - Insert `ConcurrencyBehavior` after `ValidationBehavior`
 
 # Rules
 
 ## MUST
 - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create#MUST|EntityVersionResolverRegistration.cs]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST|PipelineRegistration.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend#MUST|App.Infrastructure.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create#MUST|EntityVersionResolverFactory.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend#MUST|BuildingBlocks.csproj]]
@@ -191,6 +186,7 @@ PROJECT:
 ## MUST NOT:
 - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/EntityVersionResolverRegistration.cs.create#MUST NOT|EntityVersionResolverRegistration.cs]]
+	- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST NOT|PipelineRegistration.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend#MUST NOT|App.Infrastructure.csproj]]
 	- [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/App.Infrastructure.csproj.extend/EntityVersionResolverFactory.cs.create#MUST NOT|EntityVersionResolverFactory.cs]]
 - [[skills/dotnet/architecture/draft/solutions/solution-entity-concurrency-change.skill/Implementation/BuildingBlocks.csproj.extend#MUST NOT|BuildingBlocks.csproj]]

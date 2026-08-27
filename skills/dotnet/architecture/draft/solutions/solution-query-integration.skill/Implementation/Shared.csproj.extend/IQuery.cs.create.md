@@ -29,7 +29,7 @@ tags:
 // Shared/MediatR/IQuery.cs
 using MediatR;
 
-namespace Shared.MediatR;
+namespace Shared;
 
 public interface IQuery<TResponse> : IRequest<TResponse> { }
 ```

@@ -1,5 +1,5 @@
 ---
-name: solution-component-conformance-testing
+name: solution-shared-conformance-testing
 description: Defines how a group of Cucumber test cases that must hold identically across multiple components/implementations of the same system is extracted into its own shared spec project, reused by every component instead of re-authored per component
 whenToUse: when the same functional guarantee must be proven identically by two or more components/implementations of a system, or when deciding whether a group of Cucumber scenarios should move out of one project into a shared, reusable spec project
 domain: skill
@@ -55,11 +55,8 @@ REPOSITORY:
 - Give every component consuming the shared spec its own step definitions bound to its own real implementation.
   - Risk: a shared step-definition implementation would prove only one component's code, defeating the reason the spec is shared in the first place.
   - Fix: keep step definitions local to each component; only the `.feature` files themselves are shared.
-
-## MUST NOT
-- Place step definitions or production code inside the shared spec project.
+- Keep the shared spec project to `.feature` files only — never place step definitions or production code inside it.
   - Risk: the shared project stops being a pure, language/implementation-agnostic spec and becomes coupled to one component's tooling.
-  - Fix: keep the shared project to `.feature` files only.
 
 # Check list
 - [ ] Every scenario in the shared spec project is consumed by two or more components.

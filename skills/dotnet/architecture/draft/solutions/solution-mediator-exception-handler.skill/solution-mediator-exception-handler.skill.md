@@ -1,6 +1,7 @@
 ---
 name: solution-mediator-exception-handler
 description: Defines the global MediatR exception-handling pipeline behavior — ExceptionHandlingBehavior in BuildingBlocks catches all unhandled exceptions before they reach the API, logs them as critical, and returns a generic Ardalis Result error
+whenToUse: when adding a global, catch-all exception handler to the MediatR pipeline so an unhandled exception never reaches the API as a raw 500 with leaked details
 domain: skill
 type: architecture
 version: 20260704
@@ -16,13 +17,6 @@ tags:
   - concern/architecture
   - solution/mediator-exception-handler
 
-triggers:
-  - global exception handler
-  - unhandled exception pipeline
-  - exception handling behavior
-  - catch all exceptions mediatr
-  - prevent exceptions in api
-  - critical error logging
 creates:
   - BuildingBlocks.MediatR.ExceptionHandlingBehavior.cs
 extends:

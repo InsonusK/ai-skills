@@ -69,3 +69,11 @@ Give a module a real external surface, over HTTP and/or gRPC, without mandating 
 1. Confirm the module has `solution-command-integration` composed (inherited from the parent plateau).
 2. Add the `POST`/`PUT`/`DELETE` actions (or RPC methods) the command needs — no `GET`/list/read RPC exists yet, since `solution-query-integration` isn't composed at this plateau's own level.
 3. This is a complete, valid application — not a lesser one; read endpoints arrive once persistence and query-integration are composed too (typically at `plateau-v1`).
+
+# Example
+A runnable example lives in [`./example`](./example). It is built on top of the [`plateau-service-with-validated-module-interaction`](../../plateau-service-with-validated-module-interaction/plateau-service-with-validated-module-interaction.skill/plateau-service-with-validated-module-interaction.skill.md) example and extends it with:
+- `App.Host` upgraded from a plain console host to an ASP.NET Core web host (`WebApplication.CreateBuilder`);
+- `Sample.Api` publishing `CreateTaskCommand` over both HTTP (`TasksController`, `ResultExtensions`) and gRPC (`Task.proto` + `TaskGrpcService`, `RpcExceptionExtensions`), each independently wired via its own `Add*Api()`/`Use*Api()` pair in `App.Host`;
+- a per-module Swagger document (`SampleApiSwaggerRegistration`).
+
+See `example/README.md` for how to run it, and its "Known gap" section for why only `Create` is published (no query-integration composed yet at this plateau).

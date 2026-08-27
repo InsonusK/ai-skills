@@ -1,6 +1,7 @@
 ---
 name: solution-entity-edit-timestamp
 description: Adds server/user creation and update timestamp fields to user-initiated entities. Commands carry ActionTimeStamp, validators reject timestamps in the future, handlers assign user timestamps, and AppDbContext assigns server timestamps before SaveChanges.
+whenToUse: when an entity needs creation/update timestamp fields — the user-supplied ActionTimeStamp on a command versus the server-authoritative created/updated time recorded on commit
 domain: skill
 type: architecture
 version: 20260629
@@ -17,14 +18,6 @@ tags:
   - concern/architecture
   - solution/entity-edit-timestamp
 
-triggers:
-  - add creation timestamp
-  - add update timestamp
-  - entity audit fields
-  - ActionTimeStamp
-  - ICommandWithTimestamp
-  - server created time
-  - user created time
 creates:
   - Shared.Timestamps.ICreationInfoModelReadOnly.cs
   - Shared.Timestamps.ICreationInfoModel.cs

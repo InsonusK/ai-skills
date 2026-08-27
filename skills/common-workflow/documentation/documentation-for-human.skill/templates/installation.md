@@ -15,14 +15,12 @@ Write installation and setup instructions that a human reader can follow without
   - CLI: download link, unzip command, and how to add to `PATH`.
 - List required environment variables, credentials, or configuration files.
 - Provide a verification step so the reader can confirm the installation succeeded.
+- Never assume the reader knows the project's ecosystem.
+- Never provide only a link to an external install guide without a summary.
 
 ## SHOULD
 - Include troubleshooting for the most common install failures.
 - Mention optional dependencies and what they enable.
-
-## MUST NOT
-- Assume the reader knows the project's ecosystem.
-- Provide only a link to an external install guide without a summary.
 
 ## Example
 

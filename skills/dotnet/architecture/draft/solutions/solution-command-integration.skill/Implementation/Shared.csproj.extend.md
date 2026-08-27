@@ -14,7 +14,7 @@ tags:
 
 # Core Principles
 - Shared defines only interfaces and markers — no implementations
-- `ICommand<TResponse>` extends MediatR `IRequest<Result<TResponse>>` so MediatR can route commands automatically and every command returns `Result<T>`
+- `ICommand<TResponse>` extends MediatR `IRequest<TResponse>` as a raw pass-through — a command writes `Result<T>` explicitly as its own type argument (`ICommand<Result<T>>`), the marker does not auto-wrap it
 
 # Implementation changes
 
@@ -46,7 +46,7 @@ No NuGet packages; no project references.
 ```
 /Shared
   /MediatR
-    ICommand.cs   (defines ICommand : IRequest<Result>, ICommand<TResponse> : IRequest<Result<TResponse>>)
+    ICommand.cs   (defines ICommand : IRequest<Result>, ICommand<TResponse> : IRequest<TResponse>)
     IQuery.cs     (still a placeholder — a future solution-query-integration fills it in)
   ...(unchanged otherwise)
 ```
@@ -82,7 +82,7 @@ NuGet: adds `MediatR` and `Ardalis.Result`. Project references: unchanged (none)
 - `MediatR` package referenced in `Shared.csproj`
 - `Ardalis.Result` package referenced in `Shared.csproj`
 - `ICommand` and `ICommand<TResponse>` placed in `/Shared/MediatR`
-- `ICommand` extends `IRequest<Result>` and `ICommand<TResponse>` extends `IRequest<Result<TResponse>>`
+- `ICommand` extends `IRequest<Result>` and `ICommand<TResponse>` extends `IRequest<TResponse>`
 - Handlers inject `IRepository<T>` from Shared — never `DbContext`
 
 ## MUST NOT
@@ -99,4 +99,4 @@ NuGet: adds `MediatR` and `Ardalis.Result`. Project references: unchanged (none)
 - [ ] `Ardalis.Result` referenced in `Shared.csproj`
 - [ ] `/Shared/MediatR/ICommand.cs` exists
 - [ ] `ICommand` extends `IRequest<Result>`
-- [ ] `ICommand<TResponse>` extends `IRequest<Result<TResponse>>`
+- [ ] `ICommand<TResponse>` extends `IRequest<TResponse>`
