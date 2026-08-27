@@ -15,10 +15,12 @@ CONDITION
 
 MUST:
 - Diagramm must me written in sepparate `*.mmd` file and store in sub folder `diagrams` near the file
-- File must has link in markdown format 
+- File must be embedded in markdown via `@import` directive with `as="mermaid"` option
 ```example
-![diagram-name](./diagrams/diagram-name.mmd)
+@import "./diagrams/diagram-name.mmd" {as="mermaid"}
 ```
+- For correct rendering in VS Code the `shd101wyy.markdown-preview-enhanced` extension (Markdown Preview Enhanced) must be installed
+- Preview must be opened via the Markdown Preview Enhanced command (`Markdown Preview Enhanced: Open Preview to the Side`), not the built-in Markdown Preview
 
 ## For Sequence diagram
 MUST:
