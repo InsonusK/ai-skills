@@ -1,6 +1,6 @@
 # v3: solutions/plateaus with an explicit Variability Map
 
-Same layout as [[skills/dotnet/architecture/draft/README.md|draft]] — a flat `solutions/` catalog plus a `plateau/{name}/` per plateau, linked via `created_by`/`parent_plateaus` — plus one addition: [[skills/dotnet/architecture/v3/variability-map.md|variability-map.md]], built per [[skills/common-workflow/architecture/design/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]], and a `registry/` folder inside any plateau where two or more solutions were found to intersect on the same element, classified per [[skills/common-workflow/architecture/design/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]].
+Same layout as [[skills/dotnet/architecture/draft/README.md|draft]] — a flat `solutions/` catalog plus a `plateau/{name}/` per plateau, linked via `created_by`/`parent_plateaus` — plus one addition: [[skills/dotnet/architecture/v3/variability-map.md|variability-map.md]], built per [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create]], and a `registry/` folder inside any plateau where two or more solutions were found to intersect on the same element, classified per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill|delta-conflict-detection]].
 
 ```
 v3/

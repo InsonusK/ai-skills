@@ -84,7 +84,7 @@ Give a module a single, reusable home for a business predicate once it turns out
 3. Adding coverage for a new multi-field rule is one registry line in `GuardedPropertyRuleCoverageTests`, never a new bespoke test class.
 
 # Registry
-Per [[skills/common-workflow/architecture/design/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]], every solution-pair intersection realized within this plateau is classified in `registry/`:
+Per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill|delta-conflict-detection]], every solution-pair intersection realized within this plateau is classified in `registry/`:
 - [[skills/dotnet/architecture/v3/plateau/plateau-shared-rules/registry/valueobject-cs.md|`{ValueObject}.cs`]] — `solution-domain-rules` redirects `solution-value-objects`' local condition; canonical, ordered by `built_on_plateau`.
 - [[skills/dotnet/architecture/v3/plateau/plateau-shared-rules/registry/dto-validator-cs.md|`{ValueObject}PropertyValidator.cs` / `{Dto}.Validator.cs`]] — same redirect shape against `solution-dto-property-validators`; canonical.
 - [[skills/dotnet/architecture/v3/plateau/plateau-shared-rules/registry/feature-check-cs.md|`{Feature}Check.cs`]] — `solution-domain-rules` and `solution-repository-integration` each extend a different method of the same class (`CheckAsync` vs. `Load`); canonical, independent (`FMN`), with a noted (non-binding) sensible application order.

@@ -12,7 +12,7 @@ tags:
 ---
 
 # Problem
-Building `skills/dotnet/architecture/v3`'s Variability Map ([[skills/common-workflow/architecture/design/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]]) requires deriving every VP's Constraint column from real, checkable evidence — a `depends_on`/`built_on_plateau` edge, or a solution's own stated prose requirement. `solution-http-api-publication`'s `description` states "Requires at least one of query-integration or command-integration to provide MediatR handler targets," and this plateau's own Core Principles restate the same rule — but the solution's `depends_on` field was empty. Recording the Constraint in the Variability Map without also fixing the underlying solution would leave the map and the actual catalog silently out of sync the moment someone reads only the solution file.
+Building `skills/dotnet/architecture/v3`'s Variability Map ([[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create]]) requires deriving every VP's Constraint column from real, checkable evidence — a `depends_on`/`built_on_plateau` edge, or a solution's own stated prose requirement. `solution-http-api-publication`'s `description` states "Requires at least one of query-integration or command-integration to provide MediatR handler targets," and this plateau's own Core Principles restate the same rule — but the solution's `depends_on` field was empty. Recording the Constraint in the Variability Map without also fixing the underlying solution would leave the map and the actual catalog silently out of sync the moment someone reads only the solution file.
 
 # Selected variant
 [[#Add both as depends_on entries (selected)]]

@@ -89,5 +89,5 @@ Give a module real, durable persistence and reads, on top of everything the vali
 3. `AppQueriesRegistration` is registered last, in `ModuleRegistration.AddModules()`, after every module's own registration.
 
 # Registry
-Per [[skills/common-workflow/architecture/design/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]], every solution-pair intersection realized within this plateau is classified in `registry/`:
+Per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill|delta-conflict-detection]], every solution-pair intersection realized within this plateau is classified in `registry/`:
 - [[skills/dotnet/architecture/v3/plateau/plateau-statefull-service/registry/command-cs.md|`{Command}.cs`]] — `solution-external-created-entity` and `solution-entity-edit-timestamp` both require their own property to be first on a Create command (`FMC`), a real, currently-unresolved conflict for an External entity that also adopts edit-timestamp — see [Create an externally-created entity idempotently](#create-an-externally-created-entity-idempotently), which already carries both `Guid` and `ActionTimeStamp` on the same command without stating their order.
