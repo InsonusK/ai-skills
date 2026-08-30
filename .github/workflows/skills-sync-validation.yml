@@ -42,6 +42,7 @@ jobs:
     steps:
       - name: Enable Git long paths
         run: git config --global core.longpaths true
+        working-directory: .
 
       - name: Checkout repository
         uses: actions/checkout@v4
