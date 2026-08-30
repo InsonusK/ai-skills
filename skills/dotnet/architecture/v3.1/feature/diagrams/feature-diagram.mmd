@@ -1,0 +1,59 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph CommonRow1[" "]
+            direction LR
+            Module["Module<br/>(root of the family)"]
+        end
+        subgraph CommonRow2[" "]
+            direction LR
+            SVO["SoftValueObjects"]
+            VP["ValidationPipeline"]
+            CMV["CrossModuleValidation"]
+        end
+        subgraph CommonRow3[" "]
+            direction LR
+            EHP["ExceptionHandlingPipeline"]
+            MMI["MediatorModuleIntegration"]
+            LOG["AppLogging"]
+        end
+        subgraph TC["TestConformance"]
+            direction LR
+            CUC["Cucumber Test"]
+            COV["Code Coverage Test"]
+            MUT["Mutation Test"]
+            REP["Test Reports"]
+        end
+    end
+    style CommonRow1 fill:none,stroke:none
+    style CommonRow2 fill:none,stroke:none
+    style CommonRow3 fill:none,stroke:none
+
+    Common -->|Optional| DL["DomainLogic"]
+    Common -->|Optional| VO["ValueObjects"]
+    Common -->|Optional| PST["Persistence"]
+    Common -->|Optional| CR["CentralizedRules"]
+
+    PST -->|Optional| ECC["EntityConcurrencyControl<br/>(per entity)"]
+    PST -->|Optional| EI["ExternalIdentity<br/>(per entity)"]
+    PST -->|Optional| AT["AuditTimestamps<br/>(per entity)"]
+
+    VO -. "Requires" .-> DL
+    VO -. "Requires" .-> PST
+
+    Common -->|Optional| SIA["SyncInboundApi"]
+    SIA -->|"Optional (at least one)"| HAC["HttpApiController"]
+    SIA -->|"Optional (at least one)"| GAC["GrpcApiController"]
+
+    Common -->|Optional| SOA["SyncOutboundApi"]
+    SOA -->|"Optional (at least one)"| HACL["HttpApiClient"]
+    SOA -->|"Optional (at least one)"| GACL["GrpcApiClient"]
+
+    Common -->|Optional| AIA["AsyncInboundApi"]
+    AIA -->|Mandatory| KC["KafkaConsumer"]
+
+    Common -->|Optional| AOA["AsyncOutboundApi"]
+    AOA -->|Mandatory| KP["KafkaProducer"]
+    AOA -->|Optional| OP["OutboxPattern"]
+
+    OP -. "Requires" .-> PST
