@@ -7,6 +7,9 @@ version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/async-monolith
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"

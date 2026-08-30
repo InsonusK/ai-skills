@@ -1,5 +1,5 @@
 ---
-name: class-name
+name: plateau-{plateau-name}--class-{name}
 description: Describe which class skill define
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: creating or editing this exact class, or creating a new class that plays the same role. MUST NOT be vague ("when relevant").
@@ -26,7 +26,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -51,7 +51,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principles conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 - Add Core principle `Apply ONE plateau template per class`
 
@@ -99,7 +99,7 @@ MUST:
   - version
 
 - If Implementation changes conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -122,13 +122,13 @@ __Applied solutions:__
 
 # Rules
 ```hint
-Define Rules of class. Summarize all "Rule changes" from all finded Class.template.md.
+Define MUST, SHOULD, MAY rules only — never `## MUST NOT`/`## SHOULD NOT` headings and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)). Summarize all "Rule changes"/"Anti-patterns" from all finded Class.template.md, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `MUST`/`SHOULD` at whichever strength it carries, and folding any anti-pattern's worked "wrong way" example into the same bullet instead of keeping a separate section. Always include a bullet against applying several plateau templates per class.
 
 At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -138,38 +138,12 @@ RECOMENDATION:
 ```example
 MUST:
 	- ...
+	- Never apply several plateau templates per class
+	- Never ... (a prohibition, phrased positively as "never X", not as a separate MUST NOT heading)
 SHOULD:
 	- ...
-SHOULD NOT:
-	- ...
-MUST NOT:
-	- ...
+	- Never ... (a softer prohibition, phrased positively inside SHOULD)
 	  
-__Applied solutions:__
-- [[Solution link]] - [[Class.template.md link]]
-```
-
-# Anti-patterns
-```hint
-Define What mean that skill applyed wrong. Summarize all "Anti-patterns" from all finded Class.template.md.
-
-At the end of block writes list to all used templates to build block. 
-
-MUST:
-- If "Anti-patterns" conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
-- Keep only class-level content here. Do not include repository-level or project-level details.
-- Add antipattern `Apply SEVERAL plateau template per class`
-
-RECOMENDATION:
-- Prefer bullet list
-- Prefer pure copy with out changing
-```
-```example
-- Apply SEVERAL plateau template per class
-- Domain service takes `IRepository` parameter — application layer loads, domain decides
-- Domain service duplicates invariant already enforced in entity setter or method
-
 __Applied solutions:__
 - [[Solution link]] - [[Class.template.md link]]
 ```
@@ -182,7 +156,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Check list" conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:
@@ -205,7 +179,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Check list conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <Class.template.md link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only class-level content here. Do not include repository-level or project-level details.
 
 RECOMENDATION:

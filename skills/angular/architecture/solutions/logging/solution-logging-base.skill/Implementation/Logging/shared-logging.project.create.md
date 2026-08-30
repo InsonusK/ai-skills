@@ -4,6 +4,9 @@ name: shared-logging
 project_kind: library
 element_kind: project
 change_kind: create
+tags:
+  - solution/logging-base
+  - element/shared-logging-project
 ---
 
 # Goals

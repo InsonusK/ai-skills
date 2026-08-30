@@ -4,6 +4,9 @@ project_name: "{any}"
 name: "{component-name}"
 element_kind: component
 change_kind: extend
+tags:
+  - solution/state-management
+  - element/component-name-component-ts
 ---
 
 # How this generic file is used

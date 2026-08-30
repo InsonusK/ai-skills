@@ -3,6 +3,10 @@ name: nx-vs-angular-cli-workspace
 description: Choice of tooling for the base Angular workspace layout
 problem: Whether to use a plain Angular CLI multi-project workspace or Nx as the workspace tool for the base repository structure
 decision: Use Nx as the workspace tool
+tags:
+  - solution/repository-structure
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

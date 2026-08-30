@@ -3,6 +3,10 @@ name: connectivity-detection
 description: How the application determines whether it is currently online, for UI purposes (offline banners, disabling actions) and as the future basis for triggering sync
 problem: navigator.onLine only reflects whether a network interface is active, not whether the backend is actually reachable, which can misrepresent the application's real connectivity state
 decision: Combine navigator.onLine events with a periodic lightweight health-check request, exposed as a global connectivity slice in shared-state
+tags:
+  - solution/offline-first
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

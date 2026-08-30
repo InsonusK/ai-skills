@@ -9,6 +9,9 @@ tags:
   - integration
   - api-consumption
   - decoupling
+  - stack
+  - concern/architecture
+
 triggers:
   - integrate a new external API
   - add a method that calls an external API
@@ -95,28 +98,17 @@ See [happy-path](./diagrams/happy-path.mmd).
 ## MUST
 - [[./Implementation/{Api}Integration.create.md#MUST|{Api}Integration.create]]
 - [[./Implementation/{Api}Client.create.md#MUST|{Api}Client.create]]
-- Every external API must be wrapped by exactly one Integration unit and exactly one Client unit.
+- Every external API must be wrapped by exactly one Integration unit and exactly one Client unit; never merge Integration and Client into a single unit.
+  - Risk: merging them means a contract change or API replacement now touches the same code the application depends on, increasing the chance of breaking unrelated logic; the merged unit has two reasons to change instead of one.
+  - Fix: keep the call+parsing responsibility (Integration) and the application-mapping responsibility (Client) in separate units, per [[./adr/integration-client-split.md|Integration/Client split]].
 - Application/business code must depend only on Client; it must never call Integration or the raw API/HTTP client directly.
+- Tests for application/business code must mock Client, not the raw HTTP/API client or Integration.
+  - Risk: mocking the raw client or Integration in application-level tests means every contract change forces updating mocks in tests that have nothing to do with the API itself, even though the application's behavior didn't change.
+  - Fix: mock Client in application-level tests; only Client's own tests should mock Integration, and only Integration's own tests should exercise raw response parsing.
 
 ## SHOULD
 - [[./Implementation/{Api}Integration.create.md#SHOULD|{Api}Integration.create]]
 - [[./Implementation/{Api}Client.create.md#SHOULD|{Api}Client.create]]
-
-## MUST NOT
-- [[./Implementation/{Api}Integration.create.md#MUST NOT|{Api}Integration.create]]
-- [[./Implementation/{Api}Client.create.md#MUST NOT|{Api}Client.create]]
-
-# Anti-patterns
-- [[./Implementation/{Api}Integration.create.md#Anti-patterns|{Api}Integration.create]]
-- [[./Implementation/{Api}Client.create.md#Anti-patterns|{Api}Client.create]]
-
-- **Merging Integration and Client into a single unit**
-  - Consequence: a contract change or API replacement now touches the same code the application depends on, increasing the chance of breaking unrelated logic; the unit has two reasons to change instead of one.
-  - Instead: keep the call+parsing responsibility (Integration) and the application-mapping responsibility (Client) in separate units, per [[./adr/integration-client-split.md|Integration/Client split]].
-
-- **Mocking the raw HTTP/API client (or Integration) in application-level tests**
-  - Consequence: every contract change forces updating mocks in tests that have nothing to do with the API itself, even though the application's behavior didn't change.
-  - Instead: mock Client in application-level tests; only Client's own tests should mock Integration, and only Integration's own tests should exercise raw response parsing.
 
 # Check list
 - [ ] Every external API has exactly one Integration unit and exactly one Client unit.

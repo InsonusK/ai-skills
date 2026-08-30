@@ -6,8 +6,12 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - routing
+  - framework/angular
+  - concern/architecture
+  - solution/app-routing
+
 triggers:
   - Adding routing to a new feature
   - Mounting a new embeddable module or feature into the shell

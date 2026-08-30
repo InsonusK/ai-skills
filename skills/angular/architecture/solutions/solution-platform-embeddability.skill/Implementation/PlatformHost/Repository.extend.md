@@ -2,6 +2,9 @@
 description: Extend the base workspace so apps/platform-shell becomes a Native Federation dynamic host, and add the tags/dependency needed for embeddable apps
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/platform-embeddability
+  - element/repository
 ---
 
 # Structure

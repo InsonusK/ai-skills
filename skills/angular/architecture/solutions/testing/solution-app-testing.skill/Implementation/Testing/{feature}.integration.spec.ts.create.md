@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}.integration"
 element_kind: component
 change_kind: create
+tags:
+  - solution/app-testing
+  - element/feature-integration-spec-ts
 ---
 
 # How this generic file is used

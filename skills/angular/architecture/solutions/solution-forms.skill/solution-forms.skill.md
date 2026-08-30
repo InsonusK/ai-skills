@@ -6,9 +6,13 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - forms
   - signal-forms
+  - framework/angular
+  - concern/architecture
+  - solution/forms
+
 triggers:
   - Building a new form in any feature
   - Reviewing whether a form should use Signal Forms or Reactive Forms

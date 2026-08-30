@@ -3,6 +3,10 @@ name: authorization-model
 description: How the UI models what a user is allowed to see and do
 problem: Should UI-level authorization be modeled as coarse-grained roles or granular permissions
 decision: Use granular permissions (e.g. "orders.edit"), with roles, if they exist at all, treated as a backend-side grouping mechanism that resolves to a permission set delivered to the client
+tags:
+  - solution/authentication
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

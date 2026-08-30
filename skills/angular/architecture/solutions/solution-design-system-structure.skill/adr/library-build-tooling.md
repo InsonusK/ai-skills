@@ -3,6 +3,10 @@ name: library-build-tooling
 description: What tool packages the design system's Angular library for npm publishing
 problem: An Angular library needs to be compiled and packaged according to the Angular Package Format, with Ivy partial compilation, for safe consumption by both the platform monorepo and any embeddable app's own repository
 decision: Use ng-packagr
+tags:
+  - solution/design-system-structure
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

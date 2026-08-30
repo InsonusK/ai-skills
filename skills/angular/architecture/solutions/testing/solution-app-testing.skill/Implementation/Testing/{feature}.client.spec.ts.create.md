@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}.client"
 element_kind: service
 change_kind: create
+tags:
+  - solution/app-testing
+  - element/feature-client-spec-ts
 ---
 
 # How this generic file is used

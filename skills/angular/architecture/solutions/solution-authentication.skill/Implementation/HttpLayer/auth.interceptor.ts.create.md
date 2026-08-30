@@ -4,6 +4,9 @@ project_name: shared-state
 name: auth
 element_kind: interceptor
 change_kind: create
+tags:
+  - solution/authentication
+  - element/auth-interceptor-ts
 ---
 
 # Goals

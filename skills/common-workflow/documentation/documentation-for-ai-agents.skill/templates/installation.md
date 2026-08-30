@@ -16,14 +16,12 @@ Document how an AI agent obtains and accesses the library, CLI, or API.
   - required credentials or tokens,
   - network access,
   - required environment variables.
+- Never assume the agent already knows how to install or import the tool.
+- Never leave installation steps as links to external pages without copying the essential commands.
 
 ## SHOULD
 - Include a minimal verification snippet that confirms the installation works.
 - Mention optional dependencies and when they are needed.
-
-## MUST NOT
-- Assume the agent already knows how to install or import the tool.
-- Leave installation steps as links to external pages without copying the essential commands.
 
 ## Example
 

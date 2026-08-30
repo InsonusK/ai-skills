@@ -6,7 +6,10 @@ type: architecture
 version: 
 tags:
   - skill/architecture/solution
-  # any other tags
+  - solution/{solution-name}
+  # solution/{solution-name}: the solution name without the `solution-` prefix, kebab-case
+  # (e.g. folder solution-sln-structure.skill -> solution/sln-structure).
+  # Plus facet tags required by skill-design.skill.md: at least one concern/* and one stack/<value>.
 triggers:
   # What kind of task should agent do to use this solution
   # - when skill should called
@@ -82,13 +85,7 @@ RECOMMENDATION:
 # Adr
 ```hint
 Use this section only if an architecture decision was made while building or editing the solution.
-1. Create an `adr/` folder inside the solution skill folder.
-2. Add an ADR record using [[./adr/adr.template.md|adr.template.md]].
-3. List created ADRs in the `adr:` property of the YAML header.
-4. In the skill body, briefly summarize the decision and link to the ADR.
-5. The ADR itself must contain `# Selected variant` and `# Searched variants` sections. The selected variant must be clearly marked and linked from `# Searched variants`.
-
-See also a complete example: [[./adr/example.adr.md|example.adr.md]].
+Record every such decision as an ADR following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md|adr-create]]: create ADR files from its template in an `adr/` folder inside the solution skill folder, list them in the `adr:` property of the YAML header, and briefly summarize each decision in the skill body with a link to its ADR.
 RECOMMENDATION:
 - Prefer bullet list
 ```
@@ -204,10 +201,15 @@ sequenceDiagram
 
 # Rules
 ```hint
-Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Show links to same subblock in implementation files.
-Only add a subblock for categories that contain at least one implementation-file link or rule.
-If a category has no links and no rules, skip it — do not write an empty subblock.
+Define MUST, SHOULD, MAY rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never keep a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet that states a rule carries a nested `Risk:` and `Fix:` (`Violation:` is optional); pure link bullets that aggregate implementation-file rules carry none.
+- ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Show links to the same subblock in implementation files.
+- Only add a subblock for categories that contain at least one implementation-file link or rule.
+- If a category has no links and no rules, skip it — do not write an empty subblock.
 
 MUST:
 - Contain link to same subblock in implementation template
@@ -222,6 +224,9 @@ SHOULD:
 - [[./Implementation/Repository.create.md#MUST|Repository.create]]
 - [[./Implementation/libs-shared-ui.project.create.md#MUST|libs-shared-ui.project.create]]
   - [[./Implementation/libs-shared-ui.project.create/button.component.ts.create.md#MUST|button.component.ts.create]]
+- Never import a feature lib directly from another feature lib.
+  - Risk: hidden coupling between features, breaks affected-based builds and defeats module boundaries.
+  - Fix: share code through a `shared`/`util` lib or communicate through routing/events.
 ```
 
 ## SHOULD
@@ -232,36 +237,6 @@ SHOULD:
 ## MAY
 ```example
 - [[./Implementation/Repository.create.md#MAY|Repository.create]]
-```
-
-## SHOULD NOT
-```example
-- [[./Implementation/Repository.create.md#SHOULD NOT|Repository.create]]
-```
-
-## MUST NOT
-```example
-- [[./Implementation/Repository.create.md#MUST NOT|Repository.create]]
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the solution and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-
-RECOMMENDATION:
-- Prefer bullet list
-- Be specific to the solution context
-```
-```example
-- **Import a feature lib directly from another feature lib**
-  - Consequence: hidden coupling between features, breaks affected-based builds and defeats module boundaries
-  - Instead: share code through a `shared`/`util` lib or communicate through routing/events
 ```
 
 # Check list

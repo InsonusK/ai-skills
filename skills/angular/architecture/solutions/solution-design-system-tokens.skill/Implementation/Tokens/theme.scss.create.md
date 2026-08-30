@@ -4,6 +4,9 @@ project_name: design-system
 name: theme
 element_kind: stylesheet
 change_kind: create
+tags:
+  - solution/design-system-tokens
+  - element/theme-scss
 ---
 
 # Goals

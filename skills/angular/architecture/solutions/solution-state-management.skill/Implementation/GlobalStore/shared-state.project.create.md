@@ -4,6 +4,9 @@ name: shared-state
 project_kind: library
 element_kind: project
 change_kind: create
+tags:
+  - solution/state-management
+  - element/shared-state-project
 ---
 
 # Goals

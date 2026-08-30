@@ -3,6 +3,10 @@ name: embedding-mechanism
 description: Choice of the runtime mechanism by which independently built and deployed applications are embedded into the platform shell
 problem: How should independently deployed applications be loaded into and integrated with the platform at runtime, given the need for independent deploy/versioning per team and shared state/event exchange with the host
 decision: Use Native Federation with Dynamic Federation
+tags:
+  - solution/platform-embeddability
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

@@ -5,6 +5,9 @@ whenToUse: when an agent needs to log in to myapi, refresh a token, or log out
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal
@@ -73,6 +76,4 @@ new_session = client.auth.refresh(token=session["token"])
 ## MUST
 - Refresh the token before `expires_at`.
 - Reuse the same token across calls in one session.
-
-## MUST NOT
-- Document installation or base URL here — link to the root skill instead.
+- Never document installation or base URL here — link to the root skill instead.

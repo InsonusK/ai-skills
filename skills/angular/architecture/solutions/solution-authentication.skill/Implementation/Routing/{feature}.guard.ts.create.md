@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: guard
 change_kind: create
+tags:
+  - solution/authentication
+  - element/feature-guard-ts
 ---
 
 # How this generic file is used

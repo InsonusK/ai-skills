@@ -5,6 +5,9 @@ whenToUse: when an agent needs to create a charge, issue a refund, or list invoi
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal
@@ -84,6 +87,4 @@ invoices = client.billing.list_invoices(
 ## MUST
 - Ensure the customer exists before creating a charge.
 - Use the currency unit consistent with myapi's convention (cents for USD).
-
-## MUST NOT
-- Document installation or authentication here — link to the root skill instead.
+- Never document installation or authentication here — link to the root skill instead.

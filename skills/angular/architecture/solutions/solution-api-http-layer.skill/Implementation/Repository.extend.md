@@ -2,6 +2,9 @@
 description: Add libs/shared/http-core (base HTTP service with common concerns) and formalize the Facade/Client/Mapper structure inside every feature's data-access lib
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/api-http-layer
+  - element/repository
 ---
 
 # Structure

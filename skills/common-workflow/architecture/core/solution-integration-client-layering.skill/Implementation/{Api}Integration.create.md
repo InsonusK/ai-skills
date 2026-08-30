@@ -57,24 +57,18 @@ class PaymentsIntegration:
 
 ## MUST
 - Every Integration method must return a typed object; it must never return a raw string, untyped dictionary, or unparsed response
-- Every Integration method must validate the response shape and raise a typed contract error (naming the endpoint and the mismatch) when the shape doesn't match what's expected
+  - Violation: returning the raw parsed JSON/dict instead of a typed object.
+  - Risk: every caller has to know the API's field names and types; a contract change breaks every call site silently (wrong type, missing field) instead of failing at one boundary.
+  - Fix: always map into a typed object with a fixed set of named fields, validated at parse time.
+- Every Integration method must validate the response shape and raise a typed contract error (naming the endpoint and the mismatch) when the shape doesn't match what's expected, instead of swallowing parse/validation failures and returning a partially-filled object
+  - Risk: swallowing parse/validation failures lets malformed data flow into the application and fail far away from its real cause, making the contract change hard to diagnose.
+  - Fix: raise a typed contract error immediately, naming the endpoint and what was unexpected.
 - Integration must not transform its typed response into the application's model — that belongs to Client
+- Integration must contain only request construction, response parsing, and contract validation — never application-specific business rules or decisions
+- Only Client may call Integration; Integration must never be called directly from application/business code
 
 ## SHOULD
 - Integration methods should be named after the API operation they wrap (e.g. `getCharge`, `listCharges`), not after the application's use case
-
-## MUST NOT
-- Integration must not contain application-specific business rules or decisions — only request construction, response parsing, and contract validation belong here
-- Integration must not be called directly from application/business code — only Client may call Integration
-
-# Anti-patterns
-- **Returning the raw parsed JSON/dict instead of a typed object**
-  - Consequence: every caller has to know the API's field names and types; a contract change breaks every call site silently (wrong type, missing field) instead of failing at one boundary
-  - Instead: always map into a typed object with a fixed set of named fields, validated at parse time
-
-- **Swallowing parse/validation failures and returning a partially-filled object**
-  - Consequence: malformed data flows into the application and fails far away from its real cause, making the contract change hard to diagnose
-  - Instead: raise a typed contract error immediately, naming the endpoint and what was unexpected
 
 # Check list
 - [ ] Every Integration method returns a typed object on success

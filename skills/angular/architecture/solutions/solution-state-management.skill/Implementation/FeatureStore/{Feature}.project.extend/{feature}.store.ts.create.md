@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: store
 change_kind: create
+tags:
+  - solution/state-management
+  - element/feature-store-ts
 ---
 
 # How this generic file is used

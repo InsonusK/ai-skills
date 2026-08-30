@@ -6,10 +6,14 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - ngrx
   - signals
   - state-management
+  - framework/angular
+  - concern/architecture
+  - solution/state-management
+
 triggers:
   - Deciding where a new piece of state should live
   - Adding state to a new or existing feature

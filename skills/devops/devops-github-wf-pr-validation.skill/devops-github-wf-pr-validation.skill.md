@@ -3,11 +3,12 @@ name: devops-github-wf-pr-validation
 description: Basic GitHub Actions workflow for PR validation — running unit tests and checking that the application version is bumped when code changes.
 whenToUse: when you need to create or update `.github/workflows/pr.yml` (or a similar file) to validate pull requests into develop/master with unit tests and a version-bump check.
 tags:
-  - devops
+  - concern/ci
   - github-actions
-  - ci
   - pr-validation
-  - testing
+  - concern/testing
+  - stack
+
 ---
 
 # Goal
@@ -21,7 +22,7 @@ tags:
 - The AI agent **never** pushes directly to `master` or `develop`. Always create a separate branch and open a PR.
 - If it is impossible to create a separate branch, the changes must not be pushed at all.
 - If the project is a console application that can run on different operating systems, the workflow must test it on multiple OSs.
-- A project following [[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]] needs its Cucumber/mutation/report jobs added to this workflow set — see [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]] for that CI wiring; this skill only defines the base `test`/`version-check` jobs.
+- A project following [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] needs its Cucumber/mutation/report jobs added to this workflow set — see [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]] for that CI wiring; this skill only defines the base `test`/`version-check` jobs.
 
 # Rule
 
@@ -35,7 +36,7 @@ tags:
 - Add a final aggregate `test:` job that wraps the (possibly conditional) test job(s), with `needs: [..., test-matrix]` and `if: always()` that inspects `needs.test-matrix.result`, failing only on an actual `failure` and treating `skipped`/`success` as passing. Set this aggregate job — not the underlying matrix job — as the required status check in branch protection.
   - Violation: branch protection requires the matrix/test job directly (e.g. `test-matrix`) instead of the aggregate.
   - Risk: when that job is skipped by a path filter (no `src`/`tests` changes on this PR), GitHub's required status check for it never reports success — the check stays pending or is reported as failing, blocking the PR merge even though nothing needed to be tested.
-  - Fix: add the aggregate `test:` job (see [Python PR workflow example](./templates/python-pr.example.md)) and require that job in branch protection. [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]'s PR-gate `cucumber-test`/`mutation-test` jobs feed this same aggregate pattern.
+  - Fix: add the aggregate `test:` job (see [Python PR workflow example](./templates/python-pr.example.md)) and require that job in branch protection. [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]'s PR-gate `unit-test`/`mutation-test` jobs feed this same aggregate pattern.
 - Provide a `version-check` job that runs only when `github.base_ref == 'master'` (or `main`) and source code (`src/**`, `*.py`, `*.cs`, etc.) or the workflow file (`.github/workflows/pr.yml`) has changed — no broader, no narrower.
   - Violation: either the job is missing or skipped for a qualifying PR (e.g. a CI change lands without `.github/workflows/pr.yml` in its changed-file conditions), or it is widened to also require a bump for PRs that only touch documentation, tests, or non-publishable configuration.
   - Risk: skipping it lets releases ship with duplicate or stale versions, or lets new CI behavior ship untraceable to a version, since reproducing an old release may behave differently once the workflow changed silently; widening it produces unnecessary version bumps, noisy history, and slower development.
@@ -83,7 +84,7 @@ tags:
 
 See [Python PR workflow example](./templates/python-pr.example.md) for a Python project using `pyproject.toml`.
 
-For a project following [[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]], see [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]] for the PR-gate Cucumber/mutation jobs and the master-push report/Pages/badges workflow that build on top of this one.
+For a project following [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]], see [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]] for the PR-gate Cucumber/mutation jobs and the master-push report/Pages/badges workflow that build on top of this one.
 
 # Check list
 - [ ] Workflow triggers on PR to `develop` and `master` (or `main`).
@@ -95,4 +96,4 @@ For a project following [[skills/common-workflow/test/bdd-coverage-mutation-test
 - [ ] The workflow contains no secrets, tokens, or deployment steps.
 - [ ] For non-Python stacks, the version file and reading method are adapted accordingly.
 - [ ] Windows jobs that clone Git repositories or install packages from Git URLs enable `core.longpaths`.
-- [ ] For projects following bdd-coverage-mutation-testing, see [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]'s check list for the PR-gate/master-push CI wiring.
+- [ ] For projects following solution-conformance-testing, see [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]'s check list for the PR-gate/master-push CI wiring.

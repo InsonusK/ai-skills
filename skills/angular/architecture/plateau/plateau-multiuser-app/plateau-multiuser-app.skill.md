@@ -7,6 +7,9 @@ version: 20260723041000
 tags:
   - skill/template/plateau
   - plateau/multiuser-app
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 parent_plateau: "[[skills/angular/architecture/plateau/plateau-monitored-app/plateau-monitored-app.skill.md|monitored-app]]"

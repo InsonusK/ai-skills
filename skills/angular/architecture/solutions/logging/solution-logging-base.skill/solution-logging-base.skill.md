@@ -6,8 +6,12 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
+  - stack/typescript
   - logging
+  - framework/angular
+  - concern/architecture
+  - solution/logging-base
+
 triggers:
   - Adding a log statement anywhere in the application
   - Reviewing whether a log call leaks sensitive data

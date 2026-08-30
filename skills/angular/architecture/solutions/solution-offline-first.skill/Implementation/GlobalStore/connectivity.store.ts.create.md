@@ -4,6 +4,9 @@ project_name: shared-state
 name: connectivity
 element_kind: store
 change_kind: create
+tags:
+  - solution/offline-first
+  - element/connectivity-store-ts
 ---
 
 # Goals

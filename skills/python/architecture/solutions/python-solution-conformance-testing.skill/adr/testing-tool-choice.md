@@ -1,12 +1,12 @@
 ---
 name: testing tool choice
 description: Which Gherkin runner, coverage tool, and mutation-testing tool the Python conformance-testing solution uses
-problem: Pick one Gherkin/BDD runner, one coverage tool, and one mutation-testing tool for Python projects that must satisfy the bdd-coverage-mutation-testing gate
+problem: Pick one Gherkin/BDD runner, one coverage tool, and one mutation-testing tool for Python projects that must satisfy the solution-conformance-testing gate
 decision: behave + coverage.py + mutmut
 ---
 
 # Problem
-[bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md) requires a Gherkin runner, a coverage tool, and a mutation-testing tool, but leaves the concrete choice to each stack. Python needs one specific, documented choice so every package applying this solution uses the same tools.
+[solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md) requires a Gherkin runner, a coverage tool, and a mutation-testing tool, but leaves the concrete choice to each stack. Python needs one specific, documented choice so every package applying this solution uses the same tools.
 
 # Selected variant
 **Selected variant:** [[#behave coverage.py mutmut]]

@@ -4,6 +4,9 @@ project_name: shared-ui
 name: offline-banner
 element_kind: component
 change_kind: create
+tags:
+  - solution/offline-first
+  - element/offline-banner-component-ts
 ---
 
 # Goals

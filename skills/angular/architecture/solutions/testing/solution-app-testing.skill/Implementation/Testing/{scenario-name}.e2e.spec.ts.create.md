@@ -4,6 +4,9 @@ project_name: platform-shell-e2e
 name: "{scenario-name}"
 element_kind: component
 change_kind: create
+tags:
+  - solution/app-testing
+  - element/scenario-name-e2e-spec-ts
 ---
 
 # How this generic file is used

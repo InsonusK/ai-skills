@@ -9,6 +9,9 @@ version: 20260711220000
 tags:
   - skill/template/project
   - plateau/monitored-app
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-lazy-loading-routing.skill/solution-lazy-loading-routing.skill.md|solution-lazy-loading-routing]]"
 ---

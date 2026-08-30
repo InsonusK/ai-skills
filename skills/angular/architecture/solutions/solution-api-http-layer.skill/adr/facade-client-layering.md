@@ -3,6 +3,10 @@ name: facade-client-layering
 description: How feature-level data operations are structured inside data-access libs, and whether classical NgRx (action/reducer/effect) is still used at the feature level
 problem: The originally used flow (Facade dispatches an Action, an Effect calls a Client that does HTTP+DTO mapping) duplicates orchestration already provided by the NgRx Signal Store adopted for feature-level state in the "State management" solution
 decision: Collapse Action/Reducer/Effect for feature-level operations; the feature's Signal Store method calls a Facade directly, which calls an internal Client
+tags:
+  - solution/api-http-layer
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

@@ -3,10 +3,11 @@ name: no-test-theater-python
 description: pytest-specific rules for assertion strength — naming, parametrize vs. copy-paste, specific exception assertions, mock call assertions, branch coverage, mutation testing, and CLI bad-input coverage.
 whenToUse: When writing or reviewing pytest tests in a Python project.
 tags:
-  - python
+  - stack/python
   - pytest
-  - unit-testing
-  - workflow/test
+  - concern/testing/unit
+  - concern/testing
+
 ---
 
 # Goal

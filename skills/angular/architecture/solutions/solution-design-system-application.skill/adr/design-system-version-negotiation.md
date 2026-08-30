@@ -3,6 +3,10 @@ name: design-system-version-negotiation
 description: How the platform and independently deployed embeddable apps coordinate which version of the design system they run at runtime
 problem: A strict singleton (one shared version, error on mismatch) forces every embeddable-app team to upgrade in lockstep with the platform, which conflicts with their independent deploy cadence (per the "Встраиваемость платформы" solution); no sharing at all loses the benefit of a consistent, deduplicated design system instance when versions do happen to align
 decision: Share the design system as a federation singleton with version negotiation — singleton: true, strictVersion: false, each consumer declaring its own requiredVersion. When a consumer's required range is satisfied by the already-loaded version, it shares that singleton instance; when it isn't, that consumer falls back to loading its own separately-bundled copy, in isolation, without blocking the platform or any other team
+tags:
+  - solution/design-system-application
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

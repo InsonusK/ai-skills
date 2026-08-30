@@ -1,6 +1,6 @@
 # Report-publishing workflow example
 
-Project: any stack that implements the [[skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md|bdd-coverage-mutation-testing]] `make` contract (`make cucumber-test`, `make mutation-test`, `make result-page`). Only the `Set up {stack}` step below changes between stacks — everything else is identical because the workflow only ever calls `make` targets.
+Project: any stack that implements the [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] `make` contract (`make unit-test`, `make mutation-test`, `make test-report`). Only the `Set up {stack}` step below changes between stacks — everything else is identical because the workflow only ever calls `make` targets.
 
 ```yaml
 name: Publish reports
@@ -48,7 +48,7 @@ jobs:
               - 'Makefile'
               - 'scripts/**'
 
-  cucumber-test:
+  unit-test:
     needs: changes
     if: needs.changes.outputs.relevant == 'true'
     runs-on: ubuntu-latest
@@ -60,12 +60,12 @@ jobs:
       # - name: Set up {stack}
       #   uses: actions/setup-{stack}@v...
 
-      - name: Run Cucumber tests with coverage
-        run: make cucumber-test WITH_CODE_COVERAGE=true
+      - name: Run tests with coverage
+        run: make unit-test WITH_CODE_COVERAGE=true
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cucumber-test-report
+          name: unit-test-report
           path: |
             tmp/result
             tmp/report/tests
@@ -99,17 +99,17 @@ jobs:
             tmp/report/mutation
           if-no-files-found: error
 
-  # result-page and deploy have no `if:` of their own - when cucumber-test/mutation-test
+  # test-report and deploy have no `if:` of their own - when unit-test/mutation-test
   # are skipped by the path filter, `needs` makes these cascade-skip automatically.
-  result-page:
-    needs: [cucumber-test, mutation-test]
+  test-report:
+    needs: [unit-test, mutation-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       # upload-artifact uses the least common ancestor of each job's upload paths (tmp/...)
       # as the artifact root, so it strips the "tmp/" prefix - download back into "tmp" to
-      # restore it, matching what `make result-page` expects (tmp/result, tmp/report).
+      # restore it, matching what `make test-report` expects (tmp/result, tmp/report).
       - uses: actions/download-artifact@v4
         with:
           pattern: "*-test-report"
@@ -117,7 +117,7 @@ jobs:
           path: tmp
 
       - name: Assemble GitHub Pages site
-        run: make result-page
+        run: make test-report
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -125,7 +125,7 @@ jobs:
           path: public
 
   deploy:
-    needs: result-page
+    needs: test-report
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -145,4 +145,4 @@ jobs:
 [![Mutation score](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/mutation-badge.json)](https://{org}.github.io/{repo}/mutation/reports/mutation-report.html)
 ```
 
-The four badges are independent: the first is GitHub's native workflow-status badge for the PR-gate workflow; the other three are shields.io [endpoint badges](https://shields.io/badges/endpoint-badge) reading `<label>-badge.json` files that `make result-page` writes into `public/` on every run of this workflow — never hand-edited.
+The four badges are independent: the first is GitHub's native workflow-status badge for the PR-gate workflow; the other three are shields.io [endpoint badges](https://shields.io/badges/endpoint-badge) reading `<label>-badge.json` files that `make test-report` writes into `public/` on every run of this workflow — never hand-edited.

@@ -2,6 +2,9 @@
 description: Add Vitest as the workspace test runner, a Playwright e2e project, enforced coverage thresholds in CI, and the file-naming/placement conventions for each test layer
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/app-testing
+  - element/repository
 ---
 
 # Structure

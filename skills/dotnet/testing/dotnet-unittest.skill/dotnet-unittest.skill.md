@@ -3,11 +3,13 @@ name: dotnet-unittest
 description: Guidelines for writing .NET unit tests with mock separation and folder mirroring. Enforces 80% coverage and structured test class organization.
 whenToUse: write dotnet unit tests
 tags:
-- dotnet
-- unit-testing
+- stack/dotnet
+- concern/testing/unit
 - xunit
 - mocks
 - coverage
+- concern/testing
+
 ---
 
 # Goal 

@@ -4,6 +4,9 @@ project_name: platform-shell
 name: service-worker
 element_kind: script
 change_kind: extend
+tags:
+  - solution/platform-embeddability
+  - element/service-worker-ts
 ---
 
 # How this file is used

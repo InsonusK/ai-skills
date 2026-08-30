@@ -1,0 +1,56 @@
+---
+description: Defines the full solution folder structure including modules, app layers, shared, and building blocks
+element_kind: repository
+change_kind: create
+tags:
+  - solution/sln-structure
+  - element/repository
+---
+
+# Structure
+
+## Project Structure
+```
+/src
+  /Modules
+    /{ModuleName}
+      /{ModuleName}.Api
+      /{ModuleName}.Application
+      /{ModuleName}.Domain
+      /{ModuleName}.Interfaces
+  /App
+    /App.Host
+  /Shared
+  /BuildingBlocks
+```
+
+Test projects (one per production project — not shown here) are defined by whichever testing solution is applied, e.g. `solution-dotnet-conformance-testing`; this solution only lays out the production projects.
+
+## Directory and class skills
+| `Directory\|file`                      | Description                                                    |
+| -------------------------------------- | -------------------------------------------------------------- |
+| /src/Modules                           | All bounded context modules                                    |
+| /{ModuleName}                          | One folder per module                                          |
+| /{ModuleName}.Api                      | HTTP endpoints, MediatR dispatch                               |
+| /{ModuleName}.Application              | Orchestration — handlers, validators, specs                    |
+| /{ModuleName}.Domain                   | Business logic — entities, VOs, rules, events                  |
+| /{ModuleName}.Interfaces               | Public contracts — commands, queries, DTOs, events             |
+| /src/App                               | Composition and infrastructure layer                           |
+| /src/App/App.Host                      | Composition root — DI, pipeline, module wiring                 |
+| /src/Shared                            | Cross-cutting primitives — Result, Exceptions, base interfaces |
+| /src/BuildingBlocks                    | Reusable framework patterns — pipeline behaviors, base specs   |
+
+# Rules
+
+## MUST
+- Every module lives under `/src/Modules/{ModuleName}`
+- Every module has at least the base set of four projects: Api, Application, Domain, Interfaces
+- Tests live alongside module projects — not in a global `/tests` folder
+
+## MAY
+- A specific pattern solution add an additional project to a module when it needs project-level isolation
+
+## MUST NOT
+- Module projects exist outside `/src/Modules`
+- Module have fewer than the base four projects
+- Module have an additional project that no specific pattern solution defines

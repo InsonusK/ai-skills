@@ -1,5 +1,5 @@
 ---
-name: repo-name
+name: plateau-{plateau-name}--repo-{name}
 description: Describe which plateau Nx workspace does skill describe
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: adding/removing a top-level app/lib, deciding where a new app/lib belongs, or reviewing the workspace-level layout of the `{plateau-name}` plateau. MUST NOT be vague ("when relevant").
@@ -33,7 +33,7 @@ MUST:
 - For workspace structure block:
   - use link to files which define the project
 - For Applied solutions block:
-	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 ```
 ```example
 /apps
@@ -54,7 +54,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only repository-level content here. Show only project directory, project template file and link to it. Do not list class/artifact skill files here.
 ```
 ```example
@@ -73,13 +73,13 @@ __Applied solutions:__
 
 # Rules
 ```hint
-Define all repository MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules. Summarize all Rules from all finded Repository.create.md/Repository.extend.md files.
+Define all repository MUST, SHOULD, MAY rules only — never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)). Summarize all Rules/Anti-patterns from all finded Repository.create.md/Repository.extend.md files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `## MUST`/`## SHOULD` at whichever strength it carries — fold an anti-pattern's worked "wrong way" example and its consequence into the same bullet instead of keeping a separate section.
 
 At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only repository-level content here. Do not include Rules that belong to a specific project or class/artifact.
 - Only add a subblock for categories where at least one solution introduces a rule. If a category has no rules, skip it — do not write an empty subblock.
 ```
@@ -87,6 +87,7 @@ MUST:
 ## MUST
 ```example
 - Every Nx project must declare tags matching the `type:*`/`scope:*` taxonomy
+- Never place a new feature directly under /apps instead of a routed lib under /libs — the feature can no longer be reused or lazy-loaded independently; scaffold it as a lib under /libs and route to it lazily instead
 
 __Applied solutions:__
 - [[Solution link]] - [[implementation file link]]
@@ -95,46 +96,12 @@ __Applied solutions:__
 ## SHOULD
 ```example
 - ...
+- Never ... (a softer prohibition, phrased positively inside SHOULD)
 ```
 
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the plateau at repository level and their consequences. Summarize all Anti-patterns from all finded Repository.create.md/Repository.extend.md files.
-
-At the end of block writes list to all used templates to build block.
-
-MUST:
-- If solution conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
-- Keep only repository-level content here.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-```
-```example
-- **Place a new feature directly under /apps instead of a routed lib under /libs**
-  - Consequence: feature can no longer be reused or lazy-loaded independently
-  - Instead: scaffold the feature as a lib under /libs and route to it lazily
-
-__Applied solutions:__
-- [[Solution link]] - [[implementation file link]]
 ```
 
 # Unittest TestCases
@@ -145,7 +112,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If solution conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only repository-level content here.
 
 RECOMMENDATION:

@@ -5,6 +5,12 @@ element_kind: # repository | package | class | module | index
 change_kind: # create | extend
 # - create if solution creates a new package template. Name of the package must be added into the `creates` property in the header of the solution.
 # - extend if solution extends an existing package template. Link to the package must be added into the `extends` property in the header of the solution.
+tags:
+  - solution/{solution-name}
+  - element/{element-name}
+  # solution/{solution-name}: the owning solution name without the `solution-` prefix, kebab-case.
+  # element/{element-name}: the package name in kebab-case, no braces or dots
+  # (e.g. {Package}/package.json -> element/package-package-json).
 ---
 
 # How Apply this template
@@ -105,9 +111,13 @@ ATTENTION:
 
 # Rules
 ```hint
-Define how solution EXTENDS package MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Only add a subblock for categories where this solution introduces new rules.
-If a category has no new rules, skip it — do not write an empty subblock.
+Define how solution EXTENDS package rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never add a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet carries a nested `Risk:` and `Fix:` (`Violation:` is optional); ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Only add a subblock for categories where this solution introduces new rules.
+- If a category has no new rules, skip it — do not write an empty subblock.
 
 MUST:
 - show all added Rules
@@ -115,7 +125,9 @@ MUST:
 
 ## MUST
 ```example
-- ...
+- Never import a sibling package's internal module path instead of its `index.ts`.
+  - Risk: couples this package to internal structure that is free to change.
+  - Fix: import only through the dependency's published `index.ts`.
 ```
 
 ## SHOULD
@@ -126,32 +138,6 @@ MUST:
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the solution to this package and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-```
-```example
-- **Import a sibling package's internal module path instead of its `index.ts`**
-  - Consequence: couples this package to internal structure that is free to change
-  - Instead: import only through the dependency's published `index.ts`
 ```
 
 # Check list

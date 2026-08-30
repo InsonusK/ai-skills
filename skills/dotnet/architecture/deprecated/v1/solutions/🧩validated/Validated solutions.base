@@ -1,0 +1,12 @@
+views:
+  - type: notion-table
+    name: Table
+    filters:
+      and:
+        - file.tags.contains("skill/architecture/solution")
+        - file.tags.contains("stack/dotnet")
+    order:
+      - depends_on
+    sort:
+      - property: depends_on
+        direction: ASC

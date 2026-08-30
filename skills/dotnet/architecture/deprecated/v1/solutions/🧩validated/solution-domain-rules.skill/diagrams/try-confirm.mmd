@@ -1,0 +1,38 @@
+sequenceDiagram
+    autonumber
+    actor Client
+    participant CTH as CreateTransactionHandler
+    participant Snap as AccountBalanceSnapshot
+    participant OB as Outbox
+    participant AC as RequestWithdrawalConfirmationConsumer
+    participant Acc as Account (owner aggregate)
+    participant TC as WithdrawalConfirmed/RejectedConsumer
+
+    Client->>CTH: POST create transaction
+    activate CTH
+    CTH->>Snap: read local (possibly stale) balance
+    Snap-->>CTH: balance
+    alt obviously insufficient by snapshot
+        CTH-->>Client: 400 Invalid (AccountWithdrawal.InsufficientBalance)
+    else proceeds
+        CTH->>CTH: Transaction.CreatePending(...)
+        CTH->>OB: publish RequestWithdrawalConfirmation
+        CTH-->>Client: 201 Created (Status = Pending)
+    end
+    deactivate CTH
+
+    OB->>AC: deliver RequestWithdrawalConfirmation
+    activate AC
+    AC->>Acc: Account.Withdraw(amount)
+    alt CanWithdraw
+        Acc-->>AC: Balance updated
+        AC->>OB: publish WithdrawalConfirmed
+    else DomainException
+        AC->>OB: publish WithdrawalRejected(code)
+    end
+    deactivate AC
+
+    OB->>TC: deliver WithdrawalConfirmed/Rejected
+    activate TC
+    TC->>TC: Transaction.Confirm() / Reject(code)
+    deactivate TC

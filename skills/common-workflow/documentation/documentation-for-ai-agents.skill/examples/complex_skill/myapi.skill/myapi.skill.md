@@ -5,6 +5,9 @@ whenToUse: when an agent needs to know how to install, authenticate against, or 
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal
@@ -29,9 +32,7 @@ See [installation.md](skills/common-workflow/documentation/documentation-for-ai-
 - Obtain a token through the auth domain before calling billing endpoints.
 - Pass the token in the `Authorization: Bearer <token>` header.
 - Refresh the token before it expires.
-
-## MUST NOT
-- Duplicate installation or authentication instructions in a domain skill.
+- Never duplicate installation or authentication instructions in a domain skill.
 
 # Check list
 - [ ] myapi base URL and credentials are configured.

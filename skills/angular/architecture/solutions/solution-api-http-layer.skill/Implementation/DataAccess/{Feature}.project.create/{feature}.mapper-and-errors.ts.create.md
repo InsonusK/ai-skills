@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: functions
 change_kind: create
+tags:
+  - solution/api-http-layer
+  - element/feature-mapper-and-errors-ts
 ---
 
 # How this generic file is used

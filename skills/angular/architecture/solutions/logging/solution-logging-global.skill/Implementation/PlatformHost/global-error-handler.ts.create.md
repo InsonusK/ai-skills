@@ -4,6 +4,9 @@ project_name: platform-shell
 name: global-error-handler
 element_kind: service
 change_kind: create
+tags:
+  - solution/logging-global
+  - element/global-error-handler-ts
 ---
 
 # Goals

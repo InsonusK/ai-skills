@@ -32,7 +32,7 @@ This example is based on the real change in commit `3b76d75bf299ce547c23a29821d6
 3. In each class skill:
    - Add new rules that appeared in the implementation file
    - Remove rules that were deleted from the implementation file (if they are not duplicated elsewhere)
-   - Update `__Applied solutions__` bullets if file names changed
+   - Update `__Applied solutions:__` bullets if file names changed
    - Bump `version`
 4. Check the plateau root skill and repository skill:
    - If the root solution skill no longer contains content that belongs to the plateau root, remove it

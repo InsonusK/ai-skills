@@ -8,6 +8,9 @@ version: 20260711200000
 tags:
   - skill/template/repo
   - plateau/offline-monolith
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 ---

@@ -2,6 +2,9 @@
 description: Extend the base workspace with bundle-size budgets enforced per project, and the route-data convention used by the custom preloading strategy
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/lazy-loading-routing
+  - element/repository
 ---
 
 # Structure

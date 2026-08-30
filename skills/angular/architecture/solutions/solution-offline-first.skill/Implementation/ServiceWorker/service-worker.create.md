@@ -4,6 +4,9 @@ project_name: platform-shell
 name: service-worker
 element_kind: script
 change_kind: create
+tags:
+  - solution/offline-first
+  - element/service-worker
 ---
 
 # Goals

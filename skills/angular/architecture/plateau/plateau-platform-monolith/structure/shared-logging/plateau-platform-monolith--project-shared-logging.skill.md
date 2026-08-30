@@ -9,6 +9,9 @@ version: 20260711210000
 tags:
   - skill/template/project
   - plateau/platform-monolith
+  - stack/typescript
+  - concern/architecture
+
 created_by:
   - "[[skills/angular/architecture/solutions/logging/solution-logging-base.skill/solution-logging-base.skill|solution-logging-base]]"
 ---

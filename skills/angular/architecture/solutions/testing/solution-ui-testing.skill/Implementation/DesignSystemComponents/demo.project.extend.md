@@ -4,6 +4,9 @@ project_name: demo
 project_kind: application
 element_kind: project
 change_kind: extend
+tags:
+  - solution/ui-testing
+  - element/demo-project
 ---
 
 # How this file is used

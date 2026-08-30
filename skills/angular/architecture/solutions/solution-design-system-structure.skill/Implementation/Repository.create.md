@@ -2,6 +2,9 @@
 description: Baseline structure for the design system's own repository — a plain Angular CLI multi-project workspace with the publishable library, a demo app, ng-packagr build, and Changesets-based releases
 element_kind: repository
 change_kind: create
+tags:
+  - solution/design-system-structure
+  - element/repository
 ---
 
 # Structure
@@ -34,22 +37,26 @@ change_kind: create
 
 ## MUST
 - The repository MUST be a plain Angular CLI multi-project workspace, not an Nx workspace, per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling]].
+  - Risk: Nx's benefits (affected builds, enforced boundaries, federation generators) do not meaningfully apply to a two-project repository, so adopting it imports tooling complexity disproportionate to the repository's actual size.
+  - Fix: create a plain Angular CLI multi-project workspace with `projects/design-system` (library) and `projects/demo` (application).
 - The library project MUST be built with ng-packagr, per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/library-build-tooling]] — no custom Vite/Rollup build is used.
+  - Risk: a custom Vite/Rollup build cannot guarantee Angular Package Format compliance and Ivy partial compilation, so consumers on a range of Angular versions may be unable to consume the library.
+  - Fix: build the library with ng-packagr, the Angular-team-maintained tool for producing Angular Package Format-compliant output.
 - Every pull request that changes the published library's public API or behavior MUST include a changeset file, per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy]].
-- The `demo` project MUST NOT be published to npm — only `design-system` is a publishable artifact.
+  - Risk: without a per-PR changeset, version bump classification becomes a release-time judgment call, so a breaking change can reach multiple independent consumer teams under a non-major version.
+  - Fix: add a changeset file describing the change and its intended bump to every PR touching the library's public surface, and let CI fail the PR when it is missing.
+- Never publish the `demo` project to npm — only `design-system` is a publishable artifact.
+  - Risk: an internal preview application becomes a published package, confusing consumers about which artifact is the library and shipping code that was never meant for reuse.
+  - Fix: publish only the `design-system` library; keep `demo` as a workspace-local, unpublished application.
+- Never publish changes to the library without a changeset.
+  - Risk: the release tooling has nothing to base the next version bump/changelog entry on, reintroducing the manual-discipline risk [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy]] was chosen to avoid.
+  - Fix: include a changeset file in every PR touching the library's public surface.
+- Never reach for Storybook again "just for this one component" after this decision.
+  - Risk: reintroduces the exact friction this repository's ADR already identified from direct prior experience, and fragments preview tooling across two different approaches.
+  - Fix: add the component's preview to the existing `demo` app, consistent with the rest of the library.
 
 ## SHOULD
 - Every new component added to the library SHOULD get a corresponding example page in `demo`, so visual review stays available for every shipped component.
-
-# Anti-patterns
-
-- **Publishing changes to the library without a changeset**
-  - Consequence: the release tooling has nothing to base the next version bump/changelog entry on, reintroducing the manual-discipline risk [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy]] was chosen to avoid
-  - Instead: every PR touching the library's public surface includes a changeset
-
-- **Reaching for Storybook again "just for this one component" after this decision**
-  - Consequence: reintroduces the exact friction this repository's ADR already identified from direct prior experience, and fragments preview tooling across two different approaches
-  - Instead: add the component's preview to the existing `demo` app, consistent with the rest of the library
 
 # Unittest TestCases
 

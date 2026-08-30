@@ -4,6 +4,9 @@ project_name: platform-shell
 name: remote-registry
 element_kind: service
 change_kind: create
+tags:
+  - solution/platform-embeddability
+  - element/remote-registry-service-ts
 ---
 
 # Goals

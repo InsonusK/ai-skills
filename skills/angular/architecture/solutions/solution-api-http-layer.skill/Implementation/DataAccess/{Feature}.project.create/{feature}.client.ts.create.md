@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: service
 change_kind: create
+tags:
+  - solution/api-http-layer
+  - element/feature-client-ts
 ---
 
 # How this generic file is used

@@ -4,6 +4,9 @@ project_name: shared-offline-sync
 name: replay-orchestrator
 element_kind: service
 change_kind: create
+tags:
+  - solution/offline-sync
+  - element/replay-orchestrator-ts
 ---
 
 # Goals

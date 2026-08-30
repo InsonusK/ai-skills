@@ -2,6 +2,9 @@
 name: mermaid-diagram
 description: How to draw mermaid diagramm
 whenToUse: draw mermaid diagramm
+tags:
+  - stack
+  - concern/documentation
 ---
 
 # Goal

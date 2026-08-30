@@ -6,9 +6,10 @@ type: architecture
 version: 
 tags:
   - skill/architecture/solution
-  - python
-  - testing
-  - architecture
+  - stack/python
+  - concern/testing
+  - concern/architecture
+
 triggers:
   - Set up tests for a new Python project
   - Add tests for a new or existing Python module

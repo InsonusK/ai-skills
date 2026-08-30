@@ -4,6 +4,9 @@ project_name: shared-logging
 name: backend-log-sink
 element_kind: service
 change_kind: create
+tags:
+  - solution/logging-global
+  - element/backend-log-sink-ts
 ---
 
 # Goals

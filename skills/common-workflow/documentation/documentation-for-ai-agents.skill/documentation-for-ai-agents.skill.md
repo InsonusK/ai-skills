@@ -4,6 +4,9 @@ description: How to document a library, CLI tool, or API so another AI agent can
 whenToUse: when you need to create or update documentation for a library, CLI, or API that will be consumed by AI agents
 tags:
   - skill/documentation/for-ai
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal
@@ -103,58 +106,22 @@ This skill is split into focused sections. Read them in order when writing a new
   - At least one minimal working example for every entry point.
 - In a skill group, document installation/access once in the root skill's attached `installation.md` and link to it from every child skill instead of duplicating it.
 - Keep installation/access as a file attached to the root/library skill (`installation.md`). Never create a separate skill whose only purpose is installation instructions.
+- Write for an AI agent, not a human reader — never marketing language or deep conceptual explanations without instructions. "This library provides a powerful and flexible way to process data" leaves the agent unable to tell how to import the library or which function to call; write "To process data, import `process_data` from `mylib.core` and call it with `process_data(source: str, limit: int = 100)`" instead.
+- Save every skill under `docs/skills/` — never elsewhere (e.g. `doc/api-usage.md`), or a consumer won't know the document is meant for an agent and may not include it in the agent context.
+- Write `whenToUse` as concrete trigger conditions — never vague ("Use this for API documentation" leaves the agent unable to decide whether the skill applies); write "Use this skill when calling the X API to authenticate or fetch user data" instead.
+- Describe behavior with exact calls, never prose alone — "The function returns a list of records" forces the agent to guess the call signature and parameter order; include the exact signature, a runnable example, and a sample output.
+- Copy the minimal essential facts into the skill itself — never rely on "see the official docs for details" as the primary source, since the agent may not fetch or parse the external page correctly; link to official docs only for deeper reference.
+- Split a large, multi-domain API into a root/overview skill plus one child skill per domain (see [# One skill or a skill group?](#one-skill-or-a-skill-group)) — never one monolithic skill (e.g. a single `stripe.skill.md` inlining every endpoint of payments, customers, subscriptions, and webhooks under one generic `whenToUse`) that forces the agent to load or scan an oversized skill for a narrow task.
+- Group related methods into one domain skill with one method fragment per entry point (see [examples/complex_skill/](./examples/complex_skill/)) — never a separate skill per individual method (e.g. `mylib-process-data.skill.md`, `mylib-fetch-records.skill.md`), which makes skill discovery noisy with near-duplicate `whenToUse` entries and loses the shared context (installation, error conventions) tying the methods together.
+- Create documentation only in skill format — never any other format.
 
 ## SHOULD
 - Use [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md) for the root/overview skill and [templates/method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md) for each domain child skill; fall back to the generic [skill.template.md](skills/common-workflow/skill-design.skill/templates/skill.template.md) only if neither fits.
 - Keep one skill focused on one library, tool, or API — or, for a skill group, one skill focused on one domain within that library, tool, or API.
 - Add tags that help other agents discover the skill.
 - Link to official human-readable documentation only as supplementary context; do not rely on it as the primary instruction source.
-
-## SHOULD NOT
-- Place AI-agent documentation only in `.agents/skills/`, `.claude/skills/`, `README.md`, or wiki pages.
-- Write long prose that explains concepts without giving the agent concrete commands or code.
-
-## MUST NOT
-- Write documentation for a human reader using marketing language or deep conceptual explanations without instructions.
-- Create documentation that is not in skill format.
-- Create one skill per individual method when methods belong to the same domain; group them into one domain skill instead.
-
-# Anti-patterns
-
-- **Writing for a human reader instead of an AI agent**
-  - Example: "This library provides a powerful and flexible way to process data."
-  - Consequence: the agent does not know how to import the library or which function to call.
-  - Instead: write "To process data, import `process_data` from `mylib.core` and call it with `process_data(source: str, limit: int = 100)`.
-
-- **Saving documentation outside the `docs/skills/` directory**
-  - Example: creating `doc/api-usage.md`.
-  - Consequence: consumers do not know the document is meant for an agent and may not include it in the agent context.
-  - Instead: create `docs/skills/<domain>/<tool>.skill.md`.
-
-- **Vague `whenToUse`**
-  - Example: "Use this for API documentation."
-  - Consequence: the agent cannot decide whether the skill applies to the current task.
-  - Instead: "Use this skill when calling the X API to authenticate or fetch user data."
-
-- **Describing behavior without showing exact calls**
-  - Example: "The function returns a list of records."
-  - Consequence: the agent must guess the call signature and parameter order.
-  - Instead: include the exact signature, a runnable example, and a sample output.
-
-- **Relying on external documentation as the primary source**
-  - Example: "See the official docs for details."
-  - Consequence: the agent may not fetch or parse the external page correctly.
-  - Instead: copy the minimal essential facts into the skill and link to the official docs only for deeper reference.
-
-- **One monolithic skill for a large, multi-domain API**
-  - Example: a single `stripe.skill.md` that inlines every endpoint of payments, customers, subscriptions, and webhooks under one generic `whenToUse: "when using the Stripe API"`.
-  - Consequence: the agent must load or scan an oversized skill for a narrow task, and unrelated domains dilute `whenToUse` so the agent cannot tell if the skill matches the current task.
-  - Instead: split into a root/overview skill plus one child skill per domain, following [# One skill or a skill group?](#one-skill-or-a-skill-group).
-
-- **A separate skill per individual method**
-  - Example: `mylib-process-data.skill.md`, `mylib-fetch-records.skill.md`, one file per function of the same cohesive module.
-  - Consequence: skill discovery gets noisy with many near-duplicate `whenToUse` entries, and the agent loses the shared context (installation, error conventions) that ties the methods together.
-  - Instead: group related methods into one domain skill with one method fragment per entry point, as shown in [examples/complex_skill/](./examples/complex_skill/).
+- Never place AI-agent documentation only in `.agents/skills/`, `.claude/skills/`, `README.md`, or wiki pages.
+- Never write long prose that explains concepts without giving the agent concrete commands or code.
 
 # Check list
 - [ ] The documentation is saved as a skill in the `docs/skills/` directory.

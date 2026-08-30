@@ -1,0 +1,18 @@
+cache_dir: .cache/diagram-renderer
+
+tasks:
+  - id: dotnet-solutions-overview
+    source:
+      include:
+        - "skills/dotnet/architecture/solutions/🧩validated/**/solution-*.skill.md"
+    metadata:
+      subpath: "# Capabilities"
+    links:
+      - name: depends_on
+        type: frontmatter_field
+        field: depends_on
+        reverse: true
+        transitive_reduction: true
+    output:
+      format: obsidian_canvas
+      destination: "skills/dotnet/architecture/solutions/🧩validated/dotnet-solutions-overview.canvas"

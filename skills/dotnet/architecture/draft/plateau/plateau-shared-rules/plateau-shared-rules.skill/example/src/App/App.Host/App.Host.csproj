@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\App\App.Infrastructure\App.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\App\App.Queries\App.Queries.csproj" />
+    <ProjectReference Include="..\..\Modules\Sample\Sample.Application\Sample.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Sample\Sample.Interfaces\Sample.Interfaces.csproj" />
+  </ItemGroup>
+</Project>

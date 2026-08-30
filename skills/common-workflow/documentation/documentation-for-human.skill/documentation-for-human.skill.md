@@ -4,6 +4,9 @@ description: How to document a project for human readers using README.md and a d
 whenToUse: when you need to create or update human-readable documentation for a project, library, CLI, or API
 tags:
   - skill/documentation/for-human
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal
@@ -111,62 +114,41 @@ Keep human-oriented detailed documentation in the `docs/` directory. Organize it
 # Rule
 
 ## MUST
-- Write for a human reader: explain intent, context, and trade-offs.
+- Write for a human reader: explain intent, context, and trade-offs. Never write AI-agent-only instructions (exact signatures without context) as the primary content for humans, and never dump only generated API reference into `README.md` without explanation.
+  - Violation: "To process data, import `process_data` from `mylib.core` and call it with `process_data(source: str, limit: int = 100)`."
+  - Risk: the human reader does not understand the purpose or when to use the method.
+  - Fix: write "Use `process_data` when you need to transform raw input into cleaned records. Pass the input path and an optional limit."
 - Keep `README.md` focused on getting started; move detailed reference material to `docs/`.
+  - Violation: a 500-line `README.md` with full API reference.
+  - Risk: readers cannot find the quick-start information.
+  - Fix: keep quick-start in `README.md` and move API details to `docs/api/`.
 - Decide between a single reference page and a page group using [# One page or a page group?](#one-page-or-a-page-group) before writing any content.
+  - Violation: a single `docs/api/reference.md` that lists every endpoint of payments, customers, subscriptions, and webhooks in one long scroll for a large, multi-domain project.
+  - Risk: a reader looking for one capability has to scroll or search through unrelated domains to find it.
+  - Fix: split into `README.md` plus one `docs/api/<domain>.md` per domain, following [# One page or a page group?](#one-page-or-a-page-group).
 - Provide copy-pasteable installation commands in `README.md` or `docs/installation.md`.
+  - Violation: `README.md` says "just install it" without commands.
+  - Risk: readers abandon the project.
+  - Fix: provide exact commands for supported platforms.
 - Provide at least one complete, runnable usage example in `README.md`.
-- Document every public method, command, or endpoint that a human user is expected to call.
+- Document every public method, command, or endpoint that a human user is expected to call. Group related methods into one domain page in `docs/api/`; never create a separate page per individual method when the methods belong to the same domain.
+  - Violation: `docs/api/process-data.md`, `docs/api/fetch-records.md`, one file per function of the same cohesive module.
+  - Risk: the reader loses the shared context (setup, common errors) that ties the methods together, and the docs directory becomes hard to browse.
+  - Fix: group related methods into one domain page, as shown in [examples/complex_skill/](./examples/complex_skill/).
 - In a page group, document installation/setup once (in `README.md` or `docs/installation.md`) and link to it from every domain page instead of duplicating it.
 - When `README.md` or `docs/` uses a term, library, technology, or pattern a reader may not already know, either explain it inline or link it to a `docs/glossary/` page built with [documentation-for-concept.skill.md](skills/common-workflow/documentation/documentation-for-concept.skill/documentation-for-concept.skill.md).
+- Verify every documentation link resolves, and make every important piece of documentation reachable via a link from `README.md`; never place the only copy of important documentation somewhere human readers cannot find from `README.md`.
+  - Violation: `README.md` links to `docs/advanced.md` that does not exist.
+  - Risk: readers lose trust in the documentation, or never discover documentation that exists.
+  - Fix: verify every link after reorganization, and link every important document from `README.md`.
 
 ## SHOULD
 - Use [templates/readme.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/readme.template.md) for `README.md` and [templates/api-reference-group.template.md](skills/common-workflow/documentation/documentation-for-human.skill/templates/api-reference-group.template.md) for each domain reference page.
 - Add a table of contents in `README.md` if it is longer than one screen.
 - Use diagrams or screenshots when they clarify architecture or UI flows.
 - Cross-link between `README.md` and `docs/` files.
-
-## SHOULD NOT
-- Dump only generated API reference into `README.md` without explanation.
-- Write marketing text without practical instructions.
-- Leave `docs/` empty if the project has non-trivial usage.
-
-## MUST NOT
-- Write AI-agent-only instructions (exact signatures without context) as the primary content for humans.
-- Place the only copy of important documentation in a location that human readers cannot find from `README.md`.
-- Create a separate `docs/api/` page per individual method when the methods belong to the same domain; group them into one domain page instead.
-
-# Anti-patterns
-
-- **Writing for an AI agent instead of a human reader**
-  - Example: "To process data, import `process_data` from `mylib.core` and call it with `process_data(source: str, limit: int = 100)`."
-  - Consequence: the human reader does not understand the purpose or when to use the method.
-  - Instead: write "Use `process_data` when you need to transform raw input into cleaned records. Pass the input path and an optional limit."
-
-- **Putting everything in README.md**
-  - Example: a 500-line `README.md` with full API reference.
-  - Consequence: readers cannot find the quick-start information.
-  - Instead: keep quick-start in `README.md` and move API details to `docs/api/`.
-
-- **Skipping installation instructions**
-  - Example: `README.md` says "just install it" without commands.
-  - Consequence: readers abandon the project.
-  - Instead: provide exact commands for supported platforms.
-
-- **Dead or missing links**
-  - Example: `README.md` links to `docs/advanced.md` that does not exist.
-  - Consequence: readers lose trust in the documentation.
-  - Instead: verify every link after reorganization.
-
-- **One monolithic reference page for a large, multi-domain project**
-  - Example: a single `docs/api/reference.md` that lists every endpoint of payments, customers, subscriptions, and webhooks in one long scroll.
-  - Consequence: a reader looking for one capability has to scroll or search through unrelated domains to find it.
-  - Instead: split into `README.md` plus one `docs/api/<domain>.md` per domain, following [# One page or a page group?](#one-page-or-a-page-group).
-
-- **A separate page per individual method**
-  - Example: `docs/api/process-data.md`, `docs/api/fetch-records.md`, one file per function of the same cohesive module.
-  - Consequence: the reader loses the shared context (setup, common errors) that ties the methods together, and the docs directory becomes hard to browse.
-  - Instead: group related methods into one domain page, as shown in [examples/complex_skill/](./examples/complex_skill/).
+- Pair any marketing/pitch text with practical instructions, rather than writing marketing text alone.
+- Populate `docs/` with detailed documentation whenever the project has non-trivial usage, rather than leaving it empty.
 
 # Check list
 - [ ] `README.md` explains what the project does and how to install it.

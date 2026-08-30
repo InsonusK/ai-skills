@@ -6,10 +6,14 @@ type: architecture
 version: 1
 tags:
   - skill/architecture/solution
-  - angular
-  - testing
+  - stack/typescript
+  - concern/testing
   - vitest
   - playwright
+  - framework/angular
+  - concern/architecture
+  - solution/app-testing
+
 triggers:
   - Writing a new test for a Client, Facade, or Signal Store
   - Deciding which tool should mock an HTTP call in a given test

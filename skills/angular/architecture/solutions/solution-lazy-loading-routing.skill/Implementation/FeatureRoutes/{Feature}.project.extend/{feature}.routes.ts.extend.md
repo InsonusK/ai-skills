@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{feature}"
 element_kind: module
 change_kind: extend
+tags:
+  - solution/lazy-loading-routing
+  - element/feature-routes-ts
 ---
 
 # How this generic file is used
@@ -15,7 +18,6 @@ This extends the routes pattern from [[skills/angular/architecture/solutions/sol
 
 # Core Principles
 
-- The feature as a whole is already lazy (via `loadChildren` at the mounting point) — `loadComponent` is a second, finer-grained level of splitting *within* that already-lazy chunk, not a replacement for it
 - A sub-route is only split into its own `loadComponent` chunk when it is either rarely visited relative to the feature's main path, or heavy enough (large third-party dependency, big template/asset) to justify a separate network request
 
 # Implementation changes

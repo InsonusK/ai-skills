@@ -3,6 +3,10 @@ name: preloading-strategy
 description: Choice of preloading strategy for lazily-loaded routes (features and embeddable modules)
 problem: Once routes are lazy-loaded via loadChildren, should their chunks be preloaded in the background, and if so, which ones and when
 decision: Use a custom selective preloading strategy driven by a route-data flag, not Angular's built-in PreloadAllModules or NoPreloading
+tags:
+  - solution/lazy-loading-routing
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

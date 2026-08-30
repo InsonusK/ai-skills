@@ -5,6 +5,9 @@ whenToUse: when an agent needs to install, import, or call mylib's process_data 
 tags:
   - skill/documentation/for-ai
   - skill/example
+  - stack
+  - concern/documentation
+
 ---
 
 # Goal
@@ -27,9 +30,7 @@ See [installation.md](skills/common-workflow/documentation/documentation-for-ai-
 - Install mylib before calling any method.
 - Handle `FileNotFoundError` when the input path does not exist.
 - Validate that pagination parameters are non-negative.
-
-## MUST NOT
-- Call `fetch_records` before the record store has been populated (for example, by `process_data`).
+- Never call `fetch_records` before the record store has been populated (for example, by `process_data`).
 
 # Check list
 - [ ] mylib is installed and imported.
