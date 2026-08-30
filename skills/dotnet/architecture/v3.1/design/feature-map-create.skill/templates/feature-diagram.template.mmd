@@ -1,0 +1,21 @@
+%% How Apply this template
+%% 1. Replace every placeholder with real feature names.
+%% 2. Keep every edge labeled with its exact relation: Mandatory, Optional, "Optional (at least one)", "Alternative (group name)", or "Requires" (dotted).
+%% 3. Group the root and every Mandatory feature into one Common subgraph. If Common has more than ~4 members, split them into nested "direction LR" rows inside it (see feature-map-create.skill.md's "The diagram" section) and hide the row borders with `style rowId fill:none,stroke:none` — never hide the border of a real sub-feature group.
+%% 4. Connect every top-level variable feature from `Common` itself, never from the root node individually.
+%% 5. Delete this comment block before saving as diagrams/feature-diagram.mmd.
+
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        Root["{ProductName}<br/>(root of the family)"]
+        MF1["{MandatoryFeature1}"]
+        MF2["{MandatoryFeature2}"]
+    end
+
+    Common -->|Optional| VF1["{VariableFeature1}"]
+    Common -->|Optional| VF2["{VariableFeature2}"]
+
+    VF2 -->|"Optional (at least one)"| VF2A["{Variant A}"]
+    VF2 -->|"Optional (at least one)"| VF2B["{Variant B}"]
+
+    VF1 -. "Requires" .-> VF2
