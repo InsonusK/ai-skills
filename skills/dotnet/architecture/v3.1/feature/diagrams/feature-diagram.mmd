@@ -38,8 +38,8 @@ graph TD
     PST -->|Optional| EI["ExternalIdentity<br/>(per entity)"]
     PST -->|Optional| AT["AuditTimestamps<br/>(per entity)"]
 
+    PST -. "Requires" .-> DL
     VO -. "Requires" .-> DL
-    VO -. "Requires" .-> PST
 
     Common -->|Optional| SIA["SyncInboundApi"]
     SIA -->|"Optional (at least one)"| HAC["HttpApiController"]

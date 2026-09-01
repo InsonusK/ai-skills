@@ -24,7 +24,7 @@ No `{ModuleName}.Domain` project exists at this baseline — it only appears onc
 
 @import "./diagrams/feature-diagram.mmd" {as="mermaid"}
 
-The two `Requires` edges into `ValueObjects` are jointly an OR (either one alone already satisfies it) — the one thing the diagram's edge labels can't express on their own.
+Two cross-tree `Requires` edges, both single-source (no boolean logic to spell out): `ValueObjects` requires `DomainLogic` (the strict `{ValueObject}` type lives in `{Module}.Domain`), and `Persistence` requires `DomainLogic` (persisted entities live in `{Module}.Domain`, which only `DomainLogic` introduces). An earlier draft had `ValueObjects` requiring `DomainLogic` **or** `Persistence`; once `Persistence -> DomainLogic` was made explicit, the `ValueObjects -> Persistence` edge became redundant and was dropped — see the [v3.1 Variability Map](../variability-map.md#vp2s-constraint--persistence-requires-domainlogic).
 
 ## Features
 
@@ -42,8 +42,8 @@ The two `Requires` edges into `ValueObjects` are jointly an OR (either one alone
 | Mutation Test | The build runs mutation testing over the test suite, catching tests that pass without actually exercising the behavior they claim to cover | true |
 | Test Reports | Test/coverage/mutation results are published as a build artifact in a consistent report format | true |
 | DomainLogic | The module has a real Domain layer — entities whose state-transition methods guard themselves with a locally-owned invariant check before mutating | false |
-| ValueObjects | Domain invariants enforced through a fail-fast Value Object type embedded in an entity, not just at the boundary — requires `DomainLogic` or `Persistence` | false |
-| Persistence | The module durably stores and reloads entities (`DbContext`, generic `Repository<T>`, atomic commit via `UnitOfWork`) | false |
+| ValueObjects | Domain invariants enforced through a fail-fast Value Object type embedded in an entity, not just at the boundary — requires `DomainLogic` (directly, or transitively via `Persistence`) | false |
+| Persistence | The module durably stores and reloads entities (`DbContext`, generic `Repository<T>`, atomic commit via `UnitOfWork`) — requires `DomainLogic` (persisted entities live in `{Module}.Domain`, which only `DomainLogic` introduces) | false |
 | CentralizedRules | A validation condition duplicated across two or more consumers gets exactly one centralized declaration, reused everywhere | false |
 | EntityConcurrencyControl | A specific persisted entity uses optimistic concurrency (version-checked updates) — only meaningful once `Persistence` is selected, and only for a mutable entity | false |
 | ExternalIdentity | A specific persisted entity's identity is client-generated and its creation is idempotent — only meaningful once `Persistence` is selected, and only for an externally-created entity | false |
@@ -61,7 +61,7 @@ The two `Requires` edges into `ValueObjects` are jointly an OR (either one alone
 | OutboxPattern | Writes an outgoing message to a transactional outbox table in the same transaction as the business change, then relays it to Kafka — an `Optional` reliability upgrade over publishing directly | false |
 
 Two things this catalog contains are deliberately **not** rows above:
-- **Entity classification** (the four-way Internal/External × Immutable/Mutable decision) is not itself a feature — it is the selector that decides, per entity, which combination of `EntityConcurrencyControl`/`ExternalIdentity` applies. It has no independent Yes/No of its own.
+- **Entity classification** (the four-way Internal/External × Immutable/Mutable decision) is not itself a feature — it is the *consequence* of the `EntityConcurrencyControl` × `ExternalIdentity` combination per entity (Mutable = concurrency-control Yes, External = external-identity Yes → one of 4 named states). It has no independent Yes/No of its own; the `solution-entity-classification` skill is a combination-resolver that spells out what each pairing produces.
 - **Cecil architecture tests** (the structural build-time guarantees over the rule mechanism) is a mandatory companion of `CentralizedRules`, not an independently optional feature — nothing in the catalog applies one without the other.
 
 ## Out of scope
@@ -70,5 +70,5 @@ Limitations of this model, stated explicitly rather than left implicit:
 - **Fixed project infrastructure beyond what's listed as a feature is not modeled** — repository/solution scaffolding conventions and build/conformance test gates are treated the way FODA's Context Analysis treats external, non-varying infrastructure: always present, never a choice a team makes.
 - **Plateau Components are a different mechanism entirely** — an optional, cross-cutting capability like tracing or caching (see `plateau-component-create`) attaches at the composition root independently of this feature model and is intentionally excluded from it.
 - **This model targets the intended Program Family, not only today's catalog** — `AppLogging` and `ExceptionHandlingPipeline` (as an explicit feature) do not map to an existing solution yet; building them is future work implied by this model, not something already available to point `Realized by` at.
-- **Only one cross-tree constraint was identified** (`ValueObjects` requiring `DomainLogic` or `Persistence`) — the absence of others reflects what was checked in this pass, not a proof that no others exist.
+- **Two cross-tree constraints are identified** — `ValueObjects` requires `DomainLogic`, and `Persistence` requires `DomainLogic`. Both rest on Domain-project provenance (`{Module}.Domain` exists only with `DomainLogic`) plus v3's plateau staging, not on a `depends_on` edge yet — the v3 `solution-value-objects` has an empty `depends_on`. The absence of further constraints reflects what was checked in this pass, not a proof that no others exist.
 - **`IsCommon` for the six mandatory features is a judgment call, not a proven invariant**, arrived at through discussion, not derived mechanically from the old catalog (which, notably, did *not* treat `SoftValueObjects`/`MediatorModuleIntegration` as common — this model deliberately corrects that).
