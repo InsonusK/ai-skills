@@ -1,5 +1,5 @@
 ---
-description: Add MediatR package and the ICommand marker interfaces to Shared
+description: Add the MediatR package and the ICommand / IQuery / INotificationEvent markers to Shared
 name: Shared.csproj
 element_kind: project
 change_kind: extend
@@ -9,48 +9,27 @@ tags:
 ---
 
 # Goals
-- Make the `ICommand` marker available to every layer without coupling to BuildingBlocks
-- Enable MediatR routing and pipeline behavior constraints for write operations
+- Make `ICommand`, `IQuery`, and `INotificationEvent` available to every layer without coupling to `BuildingBlocks`.
+- Bring the `MediatR` package into `Shared`.
 
 # Core Principles
-- Shared defines only interfaces and markers — no implementations
-- `ICommand<TResponse>` extends MediatR `IRequest<TResponse>` as a raw pass-through — a command writes `Result<T>` explicitly as its own type argument (`ICommand<Result<T>>`), the marker does not auto-wrap it
+- `Shared` holds only markers and contracts — no implementations.
+- All three markers pass straight through to MediatR's `IRequest<T>` / `INotification`; a command declares its `Result<T>` explicitly as the type argument.
 
 # Implementation changes
 
-**AS IS** (from `plateau-stateless-non-interactive-service`, via `solution-sln-structure`) — the plateau's own structure already reserves `/MediatR/ICommand.cs` and `IQuery.cs` as placeholders in its folder map, but neither has real content yet, and no NuGet package backs them:
-```
-/Shared
-  /Events
-    IDomainEvent.cs
-  /MediatR
-    ICommand.cs   (placeholder — no content yet)
-    IQuery.cs     (placeholder — no content yet)
-  /Repositories
-    IRepository.cs
-    IReadRepository.cs
-  /Results
-  /UnitOfWork
-    IUnitOfWork.cs
-  /Outbox
-    IHasDomainEvents.cs
-  /Concurrency
-    IVersioned.cs
-    IHasVersions.cs
-    IEntityVersionResolver.cs
-  Shared.csproj
-```
-No NuGet packages; no project references.
+**AS IS** — the state after `solution-sln-structure`: `Shared` is an almost-empty leaf project referencing only `Ardalis.Result` (for the `Result` type). There is no `/MediatR` folder and no `MediatR` package.
 
-**TO BE** (after this solution) — this solution is what first gives `ICommand.cs` real content:
+**TO BE** — this solution adds:
 ```
 /Shared
   /MediatR
-    ICommand.cs   (defines ICommand : IRequest<Result>, ICommand<TResponse> : IRequest<TResponse>)
-    IQuery.cs     (still a placeholder — a future solution-query-integration fills it in)
-  ...(unchanged otherwise)
+    ICommand.cs            — ICommand : IRequest<Result>, ICommand<TResponse> : IRequest<TResponse>
+    IQuery.cs              — IQuery<TResponse> : IRequest<TResponse>
+    INotificationEvent.cs  — INotificationEvent : INotification
+  Shared.csproj            — + <PackageReference Include="MediatR" />
 ```
-NuGet: adds `MediatR` and `Ardalis.Result`. Project references: unchanged (none).
+No project references are added (`Shared` stays a leaf).
 
 # Structure
 
@@ -59,42 +38,44 @@ NuGet: adds `MediatR` and `Ardalis.Result`. Project references: unchanged (none)
 /Shared
   /MediatR
     ICommand.cs
+    IQuery.cs
+    INotificationEvent.cs
 ```
 
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
-| /MediatR | MediatR marker interfaces |
-| ICommand.cs | Write operation marker interfaces |
+| /MediatR | The three request-kind marker interfaces |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
-| --- | --- | --- |
-| `MediatR` | latest stable | Provides `IRequest<T>` that `ICommand<T>` extends |
-| `Ardalis.Result` | latest stable | Provides `Result`/`Result<T>` returned by every command |
+| ------- | ------------------ | ------- |
+| MediatR | central | `IRequest<T>` / `INotification` the markers extend |
+
+`Ardalis.Result` is already referenced by `Shared` (from `solution-sln-structure`). Versions live in `Directory.Packages.props`.
 
 # Allowed Dependencies
-- None — Shared has no project dependencies
+- No project references (`Shared` stays a leaf).
+- NuGet: `MediatR`, `Ardalis.Result`.
 
 # Rules
 
 ## MUST
-- `MediatR` package referenced in `Shared.csproj`
-- `Ardalis.Result` package referenced in `Shared.csproj`
-- `ICommand` and `ICommand<TResponse>` placed in `/Shared/MediatR`
-- `ICommand` extends `IRequest<Result>` and `ICommand<TResponse>` extends `IRequest<TResponse>`
-- Handlers inject `IRepository<T>` from Shared — never `DbContext`
-- Never add FluentValidation or EF Core packages to Shared
-- Never add implementation code to Shared
-- Never validator be shared across multiple commands
-
-## SHOULD
-- Avoid defining `ICommand` in BuildingBlocks — forces modules to reference BuildingBlocks for contracts
-- Avoid adding behavior logic to a marker interface
+- Reference `MediatR` in `Shared.csproj`, versionless.
+  - Risk: without it the marker interfaces do not compile.
+  - Fix: `<PackageReference Include="MediatR" />` + a `<PackageVersion>` in `Directory.Packages.props`.
+- Place all three markers in `/Shared/MediatR`; `namespace Shared.MediatR`.
+  - Risk: markers scattered elsewhere in `Shared` are hard to find and break the folder/namespace convention every solution assumes.
+  - Fix: one folder, one file per marker.
+- Never add FluentValidation, EF Core, or any implementation code to `Shared`.
+  - Risk: `Shared` is referenced by every layer — a framework or implementation here is inherited everywhere and cannot be swapped.
+  - Fix: markers and contracts only.
+- Never define a marker in `BuildingBlocks`.
+  - Risk: a module would have to reference the technical-pattern layer to declare a request.
+  - Fix: markers live in `Shared`.
 
 # Check list
-- [ ] `MediatR` referenced in `Shared.csproj`
-- [ ] `Ardalis.Result` referenced in `Shared.csproj`
-- [ ] `/Shared/MediatR/ICommand.cs` exists
-- [ ] `ICommand` extends `IRequest<Result>`
-- [ ] `ICommand<TResponse>` extends `IRequest<TResponse>`
+- [ ] `MediatR` referenced in `Shared.csproj` (versionless).
+- [ ] `/Shared/MediatR/{ICommand,IQuery,INotificationEvent}.cs` all exist, `namespace Shared.MediatR`.
+- [ ] `ICommand : IRequest<Result>`, `ICommand<TResponse> : IRequest<TResponse>`, `IQuery<TResponse> : IRequest<TResponse>`, `INotificationEvent : INotification`.
+- [ ] No FluentValidation/EF Core package and no implementation in `Shared`.

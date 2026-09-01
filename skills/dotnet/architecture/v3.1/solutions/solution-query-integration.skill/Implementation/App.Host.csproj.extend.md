@@ -1,0 +1,63 @@
+---
+description: Wire App.Queries registration into the composition root
+name: App.Host.csproj
+element_kind: project
+change_kind: extend
+tags:
+  - solution/query-integration
+  - element/app-host-csproj
+---
+
+# Goals
+- Add `RegisterAppQueries()` call to the composition root alongside module registrations
+- Ensure cross-module query handlers are discovered by MediatR
+
+# Core Principles
+- App.Host is the only composition root — all wiring happens here
+- `RegisterAppQueries()` called after all module registrations — App.Queries depends on module entity types being registered
+- Centralized in `ModuleRegistration.AddModules` or called directly from `Program.cs` if following the high-level extension pattern
+
+# Implementation changes
+
+**AS IS** (from `plateau-service-with-validated-module-interaction`, via `solution-sln-structure` + `solution-command-integration`):
+```csharp
+// App.Host/DependencyInjection/ModuleRegistration.cs
+public static IServiceCollection AddModules(this IServiceCollection services, IConfiguration configuration)
+{
+    services.Register{ModuleName}Module(configuration);
+    return services;
+}
+```
+
+**TO BE** (after this solution) — `RegisterAppQueries()` added last, after every module registration, since App.Queries depends on module entity types already being registered:
+```csharp
+// App.Host/DependencyInjection/ModuleRegistration.cs
+public static IServiceCollection AddModules(this IServiceCollection services, IConfiguration configuration)
+{
+    services.Register{ModuleName}Module(configuration);
+    // register additional modules here
+
+    services.RegisterAppQueries();  // cross-module query handlers, always last
+
+    return services;
+}
+```
+
+# Allowed Dependencies
+- App.Queries — for `RegisterAppQueries()` extension
+- All module Application projects — for `Register{ModuleName}Module()` extensions
+
+# Rules
+
+## MUST
+- Called after all module registrations — App.Queries depends on module entity types
+- App.Queries handlers registered via `RegisterAppQueries()` assembly scan in App.Host
+- Never call `RegisterAppQueries()` from inside any module registration method
+## SHOULD
+- Avoid calling `RegisterAppQueries()` before module registrations — module handlers and entity types may not be available
+- Avoid scattering App.Queries registration across multiple extension methods
+
+# Check list
+- [ ] `RegisterAppQueries()` called from App.Host
+- [ ] Called after all module registrations
+- [ ] Not called from within any module registration method

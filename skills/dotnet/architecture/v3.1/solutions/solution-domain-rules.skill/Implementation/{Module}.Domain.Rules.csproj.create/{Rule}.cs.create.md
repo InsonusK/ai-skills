@@ -232,7 +232,7 @@ public sealed class TransactionWithdrawalCheck(IReadRepository<Transaction> tran
 - **Try**: create the dependent Entity `Pending`, using a preliminary check against a possibly-stale local replica — fast, non-authoritative.
 - **Confirm**: the owning aggregate's existing, unmodified rule/method (`Account.Withdraw`, same `AccountWithdrawalRule.Check()`) runs authoritatively, asynchronously, publishing `Confirmed`/`Rejected`.
 
-The rule (`AccountWithdrawalRule`) does not change between the same-aggregate and Try/Confirm cases — only how and when it gets called changes. See [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill#boundaries|Boundaries]] for why the saga's Handler/Consumer wiring is not part of this solution.
+The rule (`AccountWithdrawalRule`) does not change between the same-aggregate and Try/Confirm cases — only how and when it gets called changes. See [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md#boundaries|Boundaries]] for why the saga's Handler/Consumer wiring is not part of this solution.
 
 # Rule changes
 

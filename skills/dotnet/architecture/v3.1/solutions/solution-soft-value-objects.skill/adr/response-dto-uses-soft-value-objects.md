@@ -15,7 +15,7 @@ tags:
 A DTO property that represents a value-object concept (e.g. `Email`, `Money`) needs a type. Two constraints collide:
 
 - [[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]] requires the domain `{ValueObject}` to live in `{Module}.Domain` and be the only layer that contains entity/value-object definitions.
-- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] requires `{Module}.Interfaces` to stay declarations-only, to depend on nothing but `Shared`, and forbids any other module from referencing `{Module}.Domain`.
+- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] requires `{Module}.Interfaces` to stay declarations-only, to depend on nothing but `Shared`, and forbids any other module from referencing `{Module}.Domain`.
 
 Typing a `ResponseDto` property as the domain `{ValueObject}` needs one of these to give way: either `{Module}.Interfaces` gains a dependency on `{Module}.Domain` (or a project reference exception is carved out for VO types), or the `{ValueObject}` class itself relocates from Domain into Interfaces.
 
@@ -47,7 +47,7 @@ Relocate the strict `{ValueObject}` class itself into `{Module}.Interfaces` so D
 - Breaks "`{Module}.Interfaces` contains only declarations" and "Domain is the only layer that contains entity definitions" — both explicit MUST rules
 - Forces every consumer of `{Module}.Interfaces` (other modules, other systems reusing the contract) to accept `DomainException` throw-on-construct semantics even when they only want to read a shape — exactly the coupling `Soft{ValueObject}` was introduced to avoid
 - Reintroduces EF Core materialization concerns (private parameterless constructor, `OwnsOne`) into a project that must stay free of persistence-shaped constraints
-- Collapses the two-type split (`Soft{ValueObject}` in Interfaces, strict `{ValueObject}` in Domain) that [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/adr/soft-and-strict-value-object-split|soft-and-strict-value-object-split]] deliberately kept, reopening a question that ADR already settled
+- Collapses the two-type split (`Soft{ValueObject}` in Interfaces, strict `{ValueObject}` in Domain) that [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/adr/soft-and-strict-value-object-split.md|soft-and-strict-value-object-split]] deliberately kept, reopening a question that ADR already settled
 
 ## Reference {Module}.Domain from {Module}.Interfaces for VO types only
 

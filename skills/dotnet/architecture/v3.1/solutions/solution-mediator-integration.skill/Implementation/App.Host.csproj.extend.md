@@ -17,7 +17,7 @@ tags:
 
 # Implementation changes
 
-**AS IS** (from `plateau-stateless-non-interactive-service`, via `solution-sln-structure`) — `ModuleRegistration.AddModules()` already exists as the centralized extension point and is already called once from `Program.cs`; it does not yet register this module:
+**AS IS** (the state after `solution-sln-structure`) — `ModuleRegistration.AddModules()` already exists as the centralized extension point and is already called once from `Program.cs`; it does not yet register this module:
 ```csharp
 // App.Host/Program.cs
 builder.Services

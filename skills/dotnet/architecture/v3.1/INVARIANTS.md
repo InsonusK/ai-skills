@@ -61,6 +61,7 @@ The anchor document for the v3.1 solution-catalog build (per [[skills/common-wor
 ## 4. Link & path conventions
 
 - Every internal link points inside `skills/dotnet/architecture/v3.1/` or `skills/common-workflow/` — **never** `architecture/v3/` or `architecture/draft/`.
+- **Carve-out:** `solution-dotnet-conformance-testing` legitimately `depends_on` two skills outside those trees — `skills/common-workflow/test/solution-conformance-testing.skill` (the stack-agnostic parent it implements) and `skills/devops/devops-github-wf-bdd-report-publish.skill` (the CI workflow that consumes its `make` targets). These are the only allowed external `depends_on` in the catalog.
 - Wikilink form: `[[skills/dotnet/architecture/v3.1/solutions/solution-x.skill/solution-x.skill.md|solution-x]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
 - Implementation-file links: `[[.../solution-x.skill/Implementation/{File}.{kind}.md#SECTION|label]]`.
 - A solution's folder name, its main file name, and its `name:` field are identical: `solution-{name}.skill` / `solution-{name}.skill.md` / `name: solution-{name}`.

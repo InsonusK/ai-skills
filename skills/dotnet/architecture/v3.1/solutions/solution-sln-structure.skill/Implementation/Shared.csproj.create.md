@@ -1,5 +1,5 @@
 ---
-description: Define common cross-cutting interfaces and primitives that every layer can safely depend on without creating coupling
+description: Create the Shared project — cross-cutting contracts and Result primitives every layer may depend on
 name: Shared.csproj
 element_kind: project
 change_kind: create
@@ -9,89 +9,62 @@ tags:
 ---
 
 # Goals
-- Define common cross-cutting interfaces that every layer can safely depend on without creating coupling
-- Provide base types and contracts used across module and infrastructure boundaries
+- Give every layer one project it may reference for cross-cutting contracts and the `Result` primitive, with no coupling.
+- Keep it a leaf: `Shared` references nothing else in the solution.
 
 # Core Principles
-- Shared defines common interfaces and primitives — it has no implementations beyond lightweight result/contract helpers
-- Shared has no dependencies on any other project in this solution
-- Any project at any layer may depend on Shared
+- `Shared` holds interfaces, marker types, and small value primitives — no implementations, no behaviors, no entities.
+- Any project at any layer may reference `Shared`; `Shared` references nothing.
+- Later solutions add their own folders here (`/MediatR` markers from `solution-mediator-integration`, `/Exceptions` from `solution-domain-behaviour`, concurrency/outbox contracts from VP2/VP14) — this solution creates the empty project and the `Result` reference only.
 
 # Structure
 
 ## Project Structure
 ```
-/Shared
-  /Events
-    IDomainEvent.cs
-  /Guid
-    IHasGuid.cs           ← solution-external-created-entity.skill
-    IGuidResolver.cs      ← solution-external-created-entity.skill
-  /MediatR
-    ICommand.cs
-    IQuery.cs
-  /Repositories
-    IRepository.cs
-    IReadRepository.cs
-  /Results
-    ConflictResult.cs     ← solution-external-created-entity.skill
-  /UnitOfWork
-    IUnitOfWork.cs
-  /Outbox
-    IHasDomainEvents.cs
-  /Concurrency
-    IVersioned.cs
-    IHasVersions.cs
-    IEntityVersionResolver.cs
+/src/Shared
   Shared.csproj
 ```
+At the v3.1 baseline `Shared` is an almost-empty project. Folders appear as their owning solution is applied:
+- `/MediatR` — `ICommand.cs`, `IQuery.cs`, `INotificationEvent.cs` (solution-mediator-integration)
+- `/Exceptions` — `DomainException.cs` (solution-domain-behaviour), `EntityNotLoadedException.cs` (solution-domain-rules)
+- `/Repositories`, `/UnitOfWork`, `/Concurrency`, `/Timestamps` (VP2 / VP5 / VP7 solutions)
 
 ## Directory and class skills
-| `Directory\|file` | Description                               |
-| ----------------- | ----------------------------------------- |
-| /Events           | Base event interfaces                     |
-| /Guid             | External-created entity marker and resolver contracts |
-| /MediatR          | Command and query marker interfaces       |
-| /Repositories     | Repository abstractions                   |
-| /Results          | Result primitives and helpers             |
-| /UnitOfWork       | Unit of work abstraction                  |
-| /Outbox           | Domain events marker interface            |
-| /Concurrency      | Version marker, version carrier, and entity resolver interfaces |
+| `Directory\|file` | Description |
+| ----------------- | ----------- |
+| Shared.csproj | Empty leaf project; contract folders added by later solutions |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
-| --- | --- | --- |
-| Ardalis.Result | {version} | Provides `Result<T>` base for `ConflictResult<T>` |
+| ------- | ------------------ | ------- |
+| Ardalis.Result | central | `Result` / `Result<T>` — the outcome type every handler returns |
+
+Version lives in `Directory.Packages.props` per [[skills/dotnet/architecture/v3.1/solutions/solution-central-package-management.skill/solution-central-package-management.skill.md|solution-central-package-management]].
 
 # What Does NOT Belong Here
-- Business logic — belongs to Domain
-- Pipeline behaviors — belongs to BuildingBlocks
-- Infrastructure implementations — belongs to App.Infrastructure or BuildingBlocks
-- Repository or unit-of-work implementations — belong to BuildingBlocks or App.Infrastructure
+- Business logic, domain rules, entities — `{Module}.Domain`.
+- Pipeline behaviors — `BuildingBlocks`.
+- Any implementation — `BuildingBlocks` or `App.Infrastructure`.
 
 # Allowed Dependencies
-- `Ardalis.Result` — required by `ConflictResult<T>` from solution-external-created-entity.skill
-- None — Shared has no project references
+- `Ardalis.Result` (NuGet).
+- No project references.
 
 # Rules
 
 ## MUST
-- Shared has zero project references
-- All types in Shared are purely cross-cutting primitives
-- `Shared.csproj` references `Ardalis.Result` when `ConflictResult<T>` is used
-- Shared has no project dependencies
-- Never shared reference any module, BuildingBlocks, or infrastructure project
-- Never shared contain business logic or domain rules
-- Never shared contain implementations — only interfaces and primitives
-
-## SHOULD
-- Avoid placing domain entities in Shared — they belong in module Domain
-- Avoid placing pipeline behaviors in Shared — they belong in BuildingBlocks
-- Avoid adding project references to Shared.csproj
-- Avoid placing implementations in Shared — they belong in BuildingBlocks or App.Infrastructure
+- Keep `Shared` with zero project references.
+  - Risk: one project reference from `Shared` makes it non-leaf, and every consumer transitively inherits that dependency.
+  - Fix: `Shared` depends only on the BCL and `Ardalis.Result`.
+- Put only interfaces, marker types, and small value primitives in `Shared` — never an implementation or a behavior.
+  - Risk: an implementation in `Shared` is referenced by every layer and cannot be swapped or tested in isolation.
+  - Fix: contracts here; implementations in `BuildingBlocks` / `App.Infrastructure`.
+- Never reference a module, `BuildingBlocks`, or an infrastructure project from `Shared`.
+  - Risk: a cycle, or an inverted dependency direction.
+  - Fix: dependencies flow toward `Shared`, never out of it.
 
 # Check list
-- [ ] Shared.csproj has no project references
-- [ ] Shared.csproj contains only interfaces and primitives
-- [ ] No business logic in any Shared class
-- [ ] Shared.csproj references `Ardalis.Result` when solution-external-created-entity.skill is used
+- [ ] `Shared.csproj` has no project references.
+- [ ] `Shared.csproj` references only `Ardalis.Result` (versionless).
+- [ ] No implementation, behavior, or entity in any `Shared` type.
+- [ ] Contract folders (`/MediatR`, `/Exceptions`, …) exist only if the solution that owns them has been applied.

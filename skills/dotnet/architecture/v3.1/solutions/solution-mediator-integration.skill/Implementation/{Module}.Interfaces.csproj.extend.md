@@ -19,7 +19,7 @@ tags:
 
 # Implementation changes
 
-**AS IS** (from `plateau-stateless-non-interactive-service`, via `solution-sln-structure`) — `/Commands` already exists as an empty folder:
+**AS IS** (the state after `solution-sln-structure`) — `/Commands` already exists as an empty folder:
 ```
 /{Module}.Interfaces
   /Commands

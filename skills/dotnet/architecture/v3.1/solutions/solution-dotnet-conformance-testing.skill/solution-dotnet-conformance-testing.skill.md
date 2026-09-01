@@ -7,7 +7,7 @@ type: architecture
 version: 20260901000000
 tags:
   - skill/architecture/solution
-  - solution/conformance-testing
+  - solution/dotnet-conformance-testing
   - stack/dotnet
   - concern/testing
   - concern/testing/bdd
@@ -31,12 +31,12 @@ depends_on:
   - "[[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]"
 built_on_plateau:
 adr:
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]"
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|One test project per production project, not per module]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/testing-tool-choice.md|Testing tool choice]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project.md|One test project per production project, not per module]]"
 ---
 
 # Goal
-- Give every testable .NET production project — `{Module}.Domain`, `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks` — its own test project, so a reader can always answer "what does this test project reference and prove" by looking at exactly one production project.
+- Give every testable .NET production project that exists — `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`, plus `{Module}.Domain` once VP1 is applied — its own test project, so a reader can always answer "what does this test project reference and prove" by looking at exactly one production project.
 - Give each of those Gherkin scenarios proven against real production code (Reqnroll), coverage measurement, and mutation testing, exposed behind a uniform `make unit-test`/`make mutation-test`/`make test-report`/`make test-and-report` contract — so CI can drive it without knowing anything .NET-specific.
 
 # Capabilities
@@ -46,22 +46,22 @@ adr:
 - `make unit-test WITH_CODE_COVERAGE=true` and `make test-report` give `master` one aggregated coverage/mutation-score report across every test project, and the data the README badges are generated from.
 
 # Core Principles
-- One test project per production project, never one combined project per module: `{Module}.Domain.Tests`, `{Module}.Application.Tests`, and `{Module}.Interfaces.Tests` for the module layer; `Shared.Tests` and `BuildingBlocks.Tests` for the cross-cutting layer. `{Module}.Api` has no dedicated test project here — it is a thin MediatR adapter with no business logic of its own to prove (see [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|ADR]]).
+- One test project per production project **that exists**, never one combined project per module. At the v3.1 baseline that is `{Module}.Application.Tests`, `{Module}.Interfaces.Tests`, `Shared.Tests`, `BuildingBlocks.Tests`. `{Module}.Domain.Tests` appears only when the module has a domain layer (`solution-domain-behaviour`, VP1); `{Module}.Domain.Rules.Tests` only with VP4. `{Module}.Api` has no dedicated test project — it is a thin MediatR adapter with no business logic of its own to prove (see [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project.md|ADR]]).
 - Each test project's Allowed Dependencies mirror its production counterpart's exactly: `{Module}.Application.Tests` may reference `{Module}.Application` and `{Module}.Domain` (the same two `{Module}.Application.csproj` itself is allowed to reference), `BuildingBlocks.Tests` may reference `BuildingBlocks` and `Shared`, and so on. A test project never reaches further than the production project it tests is itself allowed to reach.
 - Every test project contains unit tests, Reqnroll feature files, and their step definitions together — never a separate project split out just for Gherkin scenarios.
 - Step definitions call the tested project's real public API; they never re-implement the rule under test.
 - `make unit-test` runs every test project in one invocation and reports one aggregated result — a caller never invokes an individual test project directly.
 
 # Adr
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/testing-tool-choice.md|Testing tool choice]]
   - Selected variant: Reqnroll (Gherkin runner) + coverlet/ReportGenerator (coverage) + Stryker.NET (mutation testing)
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|One test project per production project, not per module]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project.md|One test project per production project, not per module]]
   - Selected variant: one test project per production project, mirroring its Allowed Dependencies
 
 # Requirements
 SOLUTION:
 - [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
-  - This solution's `Makefile` and scripts implement its `make unit-test`/`mutation-test`/`test-report`/`test-and-report` target names and `tmp/result/*.json` schema exactly — aggregated across all five test projects.
+  - This solution's `Makefile` and scripts implement its `make unit-test`/`mutation-test`/`test-report`/`test-and-report` target names and `tmp/result/*.json` schema exactly — aggregated across whichever test projects exist.
 - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
   - Defines the production projects (`{Module}.Domain`, `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`) and their Allowed Dependencies, which each test project here mirrors.
 - [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]
@@ -79,19 +79,19 @@ NUGET:
 
 # Template Skill Mutations
 REPOSITORY:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile` and normalization scripts implementing the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract across all five test projects
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend.md|Repository]] - extend - add the `Makefile` and normalization scripts implementing the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract across every test project present
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create|{Module}.Domain.Tests.csproj]] - create - tests `{Module}.Domain` only
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - validator-shaped step definitions: input → valid/invalid + error code
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create|{Module}.Application.Tests.csproj]] - create - tests `{Module}.Application` (and, transitively, `{Module}.Domain`)
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - command-shaped step definitions: command → handler → `Result`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create|{Module}.Interfaces.Tests.csproj]] - create - tests `{Module}.Interfaces` only
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - shape-shaped step definitions: equality/serialization round-trip
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create|Shared.Tests.csproj]] - create - tests `Shared` only
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - value-shaped step definitions: primitive comparison/combination
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create|BuildingBlocks.Tests.csproj]] - create - tests `BuildingBlocks` (and, transitively, `Shared`)
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - technical-contract-shaped step definitions: pipeline behavior's observable contract
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj]] - create - tests `{Module}.Domain` only
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs]] - create - validator-shaped step definitions: input → valid/invalid + error code
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md|{Module}.Application.Tests.csproj]] - create - tests `{Module}.Application` (and, transitively, `{Module}.Domain`)
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs]] - create - command-shaped step definitions: command → handler → `Result`
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md|{Module}.Interfaces.Tests.csproj]] - create - tests `{Module}.Interfaces` only
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs]] - create - shape-shaped step definitions: equality/serialization round-trip
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md|Shared.Tests.csproj]] - create - tests `Shared` only
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs]] - create - value-shaped step definitions: primitive comparison/combination
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md|BuildingBlocks.Tests.csproj]] - create - tests `BuildingBlocks` (and, transitively, `Shared`)
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create.md|{Rule}Steps.cs]] - create - technical-contract-shaped step definitions: pipeline behavior's observable contract
 
 # Workflow
 ## Add conformance coverage for a new validation rule (happy path)
@@ -112,26 +112,26 @@ PROJECT:
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
 
 ## MUST
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create#MUST|{Module}.Domain.Tests.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create#MUST|{Rule}Steps.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create#MUST|{Module}.Application.Tests.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create#MUST|{Rule}Steps.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create#MUST|{Module}.Interfaces.Tests.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create#MUST|{Rule}Steps.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create#MUST|Shared.Tests.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create#MUST|{Rule}Steps.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create#MUST|BuildingBlocks.Tests.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create#MUST|{Rule}Steps.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md#MUST|{Module}.Domain.Tests.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create.md#MUST|{Rule}Steps.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md#MUST|{Module}.Application.Tests.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create.md#MUST|{Rule}Steps.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create.md#MUST|{Module}.Interfaces.Tests.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create.md#MUST|{Rule}Steps.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create.md#MUST|Shared.Tests.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create/{Rule}Steps.cs.create.md#MUST|{Rule}Steps.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create.md#MUST|BuildingBlocks.Tests.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create.md#MUST|{Rule}Steps.cs]]
 - Give every test project exactly the same Allowed Dependencies as the one production project it tests — never wider.
   - Risk: a test project that references more than its production counterpart is allowed to (e.g. `{Module}.Domain.Tests` referencing `{Module}.Application`) can pass by exercising code its own production project could never legally reach, hiding a real dependency violation.
   - Fix: mirror each production project's own Allowed Dependencies list exactly when scoping its test project.
 
 # Check list
-- [ ] Every production project (`{Module}.Domain`, `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`) has exactly one test project.
+- [ ] Every production project that exists has exactly one test project (`{Module}.Domain.Tests` only with VP1).
 - [ ] Each test project's references match its production counterpart's Allowed Dependencies exactly — no wider, no narrower.
 - [ ] `{Module}.Api` has no dedicated test project.
 - [ ] Every `.feature` scenario has a matching step definition, in the same test project as the code it proves, that calls production code.
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` exist at the repository root, run across every test project, and support the toggles defined by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
-- [ ] `tmp/result/*.json` and `tmp/report/<kind>/` aggregate all five test projects and follow that same contract's schema.
+- [ ] `tmp/result/*.json` and `tmp/report/<kind>/` aggregate every test project present and follow that same contract's schema.
 - [ ] `public/` follows [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#public-site-output|solution-conformance-testing's Public site output]] contract, and `report-template/index.html` exists at the repository root (not under `.github/`).

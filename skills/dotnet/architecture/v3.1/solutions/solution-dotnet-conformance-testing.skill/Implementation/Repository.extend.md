@@ -1,7 +1,11 @@
 ---
-description: Add the Makefile and normalization scripts implementing the make unit-test/mutation-test/test-report/test-and-report contract, aggregated across all five test projects
+description: Add the Makefile and normalization scripts implementing the make unit-test/mutation-test/test-report/test-and-report contract, aggregated across whichever test projects exist
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/dotnet-conformance-testing
+  - element/repository-extend
+
 ---
 
 # Structure
@@ -68,7 +72,7 @@ Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodi
   - Violation: a CI workflow or a developer runs `dotnet-stryker`/`dotnet test` directly instead of through `make mutation-test`/`make unit-test`.
   - Risk: the workflow now needs .NET-specific knowledge, and switching or reconfiguring Stryker.NET later becomes a breaking change for every CI file that calls it directly.
   - Fix: every caller (CI or a developer) goes through the `Makefile`; the CI workflow itself is defined once, stack-agnostically, in [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md).
-- `scripts/unit-test.sh` must aggregate all five test projects' TRX counters and coverage files into one `tmp/result/unit-test.json`/`tmp/result/coverage-test.json` pair, not one per project.
+- `scripts/unit-test.sh` must aggregate every test project present' TRX counters and coverage files into one `tmp/result/unit-test.json`/`tmp/result/coverage-test.json` pair, not one per project.
   - Risk: without aggregation, `make unit-test` reports only one project's numbers (whichever ran last), silently hiding the other four.
   - Fix: sum counters across every `*.trx` file `dotnet test` produced, and let ReportGenerator's glob pick up every project's `coverage.cobertura.xml`.
 - `scripts/unit-test.sh` and `scripts/mutation-test.sh` must write their normalized JSON into `tmp/result/` and keep the native HTML report under `tmp/report/<kind>/`, per the same contract.

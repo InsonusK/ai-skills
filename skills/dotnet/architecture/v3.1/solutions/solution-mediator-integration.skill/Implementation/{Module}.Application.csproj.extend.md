@@ -22,7 +22,7 @@ tags:
 
 # Implementation changes
 
-**AS IS** (from `plateau-stateless-non-interactive-service`, via `solution-sln-structure`):
+**AS IS** (the state after `solution-sln-structure`):
 ```
 /{Module}.Application
   /Handlers
@@ -105,8 +105,5 @@ Allowed Dependencies: `{Module}.Interfaces`, `{Module}.Domain`, `{OtherModule}.I
 
 # Check list
 - [ ] `/Features/{FeatureName}` folder exists for each command
-- [ ] Handler file named `{FeatureName}.Handler.cs`
-- [ ] Validator file named `{FeatureName}.Validator.cs`
 - [ ] `{Module}ApplicationRegistration.cs` exists
 - [ ] Handlers registered via `AddMediatR` scan
-- [ ] Validators registered via `AddValidatorsFromAssembly` scan

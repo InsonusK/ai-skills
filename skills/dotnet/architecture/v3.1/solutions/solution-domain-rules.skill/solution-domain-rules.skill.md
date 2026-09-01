@@ -65,7 +65,7 @@ adr:
 - `ErrorCode`, default `Message`, and `State` are declared exactly once, inside the `IRuleBuilder` extension method; every other adapter calls it or forwards its `ValidationResult`, never re-declares `Must`/`WithErrorCode`/`WithMessage`
 - A blocking check reads `result.Errors.Any(e => e.Severity == Severity.Error)` (or `FirstOrDefault` for the exception to throw), never bare `ValidationResult.IsValid`
 - A Domain rule that needs data from another aggregate or another service is not "just read it" — same-aggregate Domain rules stay synchronous; cross-aggregate/cross-service Domain rules become Try/Confirm (see Workflow)
-- `{Module}.Domain.Rules.Spec` holds `.feature` files only, never a `.cs` file — it is a shared Gherkin source, not a project, and is not itself compiled or referenced by anything; every test project that proves a scenario from it links the physical `.feature` file in via its own `.csproj` and generates its own Reqnroll fixture bound to its own step definitions (see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create|{Module}.Domain.Rules.Spec]])
+- `{Module}.Domain.Rules.Spec` holds `.feature` files only, never a `.cs` file — it is a shared Gherkin source, not a project, and is not itself compiled or referenced by anything; every test project that proves a scenario from it links the physical `.feature` file in via its own `.csproj` and generates its own Reqnroll fixture bound to its own step definitions (see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create.md|{Module}.Domain.Rules.Spec]])
 - `{Module}.Domain.Rules.Tests` proves the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension directly — it takes scenarios both from its own project (`{Module}.Domain.Rules.Tests/Rules/*.feature`, for rule-only edge cases no other layer needs) and, linked in, from `{Module}.Domain.Rules.Spec` (the scenarios shared with `{Module}.Domain.Tests`/`{Module}.Application.Tests`)
 
 # Boundaries
@@ -84,16 +84,16 @@ adr:
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
   - Registers `{Module}.Domain.Rules.csproj` as an additional project for the module, per the base-set-plus-extension rule established there
 - [[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create|{ValueObject}.cs]] - already validates via a local predicate; this solution redirects it to `Check()`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]] - already validates via a local `Must(...)`; this solution redirects it to the same `IRuleBuilder` extension `{ValueObject}.cs` calls
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create|{Dto}.Validator.cs]] - already checks a cross-field condition locally; this solution redirects it to a Semantic-classified extension
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create|{Feature}Check.cs]] - already loads data and checks it locally; this solution redirects the check to a Domain-classified `Check()`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]] - already validates via a local condition inside behavior methods; this solution redirects it to `Check()`
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs]] - already validates via a local `Must(...)`; this solution redirects it to the same `IRuleBuilder` extension `{ValueObject}.cs` calls
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs]] - already checks a cross-field condition locally; this solution redirects it to a Semantic-classified extension
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs]] - already loads data and checks it locally; this solution redirects the check to a Domain-classified `Check()`
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{EntityName}.cs]] - already validates via a local condition inside behavior methods; this solution redirects it to `Check()`
 - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj]] - gains a rule-focused step-definition class bound to `{Module}.Domain.Rules.Spec` scenarios, proving the VO/Entity fail-fast adapter
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md|{Module}.Application.Tests.csproj]] - gains a rule-focused step-definition class bound to the same scenarios, proving the DtoValidator collect-all adapter
@@ -107,26 +107,26 @@ NUGET:
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create|{Module}.Domain.Rules.csproj]] - create - Dedicated project holding every centralized business predicate for the module
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/Common.ModuleInfo.cs.create|Common/ModuleInfo.cs]] - create - Module name constant, source of every rejection code's prefix
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create|{Rule}.cs]] - create - `IsValid()` + `IRuleBuilder` extension + `Check()`, for a Format, Semantic, or Domain-classified condition
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend|Shared.csproj]] - extend - Add `EntityNotLoadedException`
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create|EntityNotLoadedException.cs]] - create - Thrown when an Entity method needs a navigation the Handler did not load
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend|{Module}.Domain.csproj]] - extend - Redirect already-existing local conditions to the centralized `Check()`
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend|{ValueObject}.cs]] - extend - Replace `solution-value-objects`'s local predicate with `this.Check()`
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend|{EntityName}.cs]] - extend - Replace `solution-domain-behaviour`'s local condition with `Check()`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - extend - Redirect already-existing local conditions to the centralized `IRuleBuilder` extension
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend|{ValueObject}PropertyValidator.cs]] - extend - Replace the local `Must(...)` with the shared `IRuleBuilder` extension
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.extend|{Dto}.Validator.cs]] - extend - Replace the local cross-field `Must(...)` with a Semantic-classified extension
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend|{Feature}Check.cs]] - extend - Forward an existing `Check()`'s `ValidationResult` instead of comparing locally
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create|{Module}.Domain.Rules.Spec]] - create - Directory of `.feature` files describing each rule, shared across every layer's step definitions — not a project, nothing compiled
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create/{Rule}.feature.create|{Rule}.feature]] - create - Gherkin scenarios for one rule, tagged by classification (`@format`/`@semantic`/`@domain`)
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create|{Module}.Domain.Rules.Tests.csproj]] - create - Dedicated test project for `{Module}.Domain.Rules`, isolating its mutation-testing surface
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create|{Rule}RuleSteps.cs]] - create - Step definitions proving the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend|{Module}.Domain.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios in, add a step-definition class proving the VO/Entity fail-fast adapter
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - Step definitions calling the VO constructor / Entity method, asserting `DomainException`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend|{Module}.Application.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec`'s `@semantic`/`@domain`-tagged scenarios in, add a step-definition class proving the DtoValidator collect-all adapter
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - Step definitions calling the `{ValueObject}PropertyValidator`/`{Dto}Validator`/`{Feature}Check`, asserting `ValidationResult`
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md|{Module}.Domain.Rules.csproj]] - create - Dedicated project holding every centralized business predicate for the module
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/Common.ModuleInfo.cs.create.md|Common/ModuleInfo.cs]] - create - Module name constant, source of every rejection code's prefix
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md|{Rule}.cs]] - create - `IsValid()` + `IRuleBuilder` extension + `Check()`, for a Format, Semantic, or Domain-classified condition
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add `EntityNotLoadedException`
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md|EntityNotLoadedException.cs]] - create - Thrown when an Entity method needs a navigation the Handler did not load
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Redirect already-existing local conditions to the centralized `Check()`
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md|{ValueObject}.cs]] - extend - Replace `solution-value-objects`'s local predicate with `this.Check()`
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Replace `solution-domain-behaviour`'s local condition with `Check()`
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Redirect already-existing local conditions to the centralized `IRuleBuilder` extension
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md|{ValueObject}PropertyValidator.cs]] - extend - Replace the local `Must(...)` with the shared `IRuleBuilder` extension
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.extend.md|{Dto}.Validator.cs]] - extend - Replace the local cross-field `Must(...)` with a Semantic-classified extension
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md|{Feature}Check.cs]] - extend - Forward an existing `Check()`'s `ValidationResult` instead of comparing locally
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create.md|{Module}.Domain.Rules.Spec]] - create - Directory of `.feature` files describing each rule, shared across every layer's step definitions — not a project, nothing compiled
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create/{Rule}.feature.create.md|{Rule}.feature]] - create - Gherkin scenarios for one rule, tagged by classification (`@format`/`@semantic`/`@domain`)
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create.md|{Module}.Domain.Rules.Tests.csproj]] - create - Dedicated test project for `{Module}.Domain.Rules`, isolating its mutation-testing surface
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md|{Rule}RuleSteps.cs]] - create - Step definitions proving the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios in, add a step-definition class proving the VO/Entity fail-fast adapter
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Rule}Steps.cs.create.md|{Rule}Steps.cs]] - create - Step definitions calling the VO constructor / Entity method, asserting `DomainException`
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend.md|{Module}.Application.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec`'s `@semantic`/`@domain`-tagged scenarios in, add a step-definition class proving the DtoValidator collect-all adapter
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend/{Rule}Steps.cs.create.md|{Rule}Steps.cs]] - create - Step definitions calling the `{ValueObject}PropertyValidator`/`{Dto}Validator`/`{Feature}Check`, asserting `ValidationResult`
 
 # Workflow
 
@@ -181,23 +181,23 @@ flowchart LR
 # Rules
 
 ## MUST
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create#MUST|{Module}.Domain.Rules.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create#MUST|{Rule}.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend#MUST|Shared.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create#MUST|EntityNotLoadedException.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend#MUST|{ValueObject}.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend#MUST|{EntityName}.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend#MUST|{ValueObject}PropertyValidator.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.extend#MUST|{Dto}.Validator.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend#MUST|{Feature}Check.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create#MUST|{Module}.Domain.Rules.Spec]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create#MUST|{Module}.Domain.Rules.Tests.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create#MUST|{Rule}RuleSteps.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend#MUST|{Module}.Domain.Tests.csproj]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend#MUST|{Module}.Application.Tests.csproj]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md#MUST|{Module}.Domain.Rules.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md#MUST|{Rule}.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md#MUST|EntityNotLoadedException.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#MUST|{ValueObject}.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md#MUST|{ValueObject}PropertyValidator.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.extend.md#MUST|{Dto}.Validator.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md#MUST|{Feature}Check.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create.md#MUST|{Module}.Domain.Rules.Spec]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create.md#MUST|{Module}.Domain.Rules.Tests.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md#MUST|{Rule}RuleSteps.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md#MUST|{Module}.Domain.Tests.csproj]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend.md#MUST|{Module}.Application.Tests.csproj]]
 
 ## SHOULD
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create#SHOULD|{Rule}.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md#SHOULD|{Rule}.cs]]
 
 # Check list
 - [ ] `{Module}.Domain.Rules.csproj` exists, references FluentValidation and `{Module}.Interfaces` (for `Soft{ValueObject}` types), nothing else

@@ -3,6 +3,10 @@ description: Create the test project for {Module}.Application — unit tests, Re
 name: "{Module}.Application.Tests"
 element_kind: project
 change_kind: create
+tags:
+  - solution/dotnet-conformance-testing
+  - element/module-application-tests
+
 ---
 
 # Goals

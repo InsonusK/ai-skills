@@ -155,7 +155,7 @@ PROJECT:
 - [ ] Handler never injects `DbContext`, never inline LINQ, never `SaveChangesAsync`, never exceptions for flow control.
 - [ ] Cross-module: `ISender.Send` for Command/Query, `IPublisher.Publish` for events — never a direct call.
 - [ ] Module has one `Register{ModuleName}Module()` extension; handlers via `AddMediatR` scan, validators via `AddValidatorsFromAssembly` scan.
-- [ ] One validator per Command/Query, co-located; `AbstractValidator<TRequest>`; transport correctness only.
+- [ ] One validator per **Command**, co-located; `AbstractValidator<TCommand>`; transport correctness only. A Query gets a validator only when it carries non-trivial input to shape-check (paging, filters); a Query keyed only by an id has none — a missing target is `Result.NotFound()` from the handler, not a validation error.
 - [ ] No validator for a notification; no query handler mutates state.
 - [ ] No validator exists for any query handler
 - [ ] Command validator uses `IValidator<Soft{ValueObject}>` for cross-module Soft VO properties via `SetValidator`

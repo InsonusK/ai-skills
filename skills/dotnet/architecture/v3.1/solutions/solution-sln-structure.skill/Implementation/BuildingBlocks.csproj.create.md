@@ -1,5 +1,5 @@
 ---
-description: Implement reusable framework-level patterns consumed by App.Host and infrastructure across all modules
+description: Create the BuildingBlocks project — the home for reusable technical patterns (MediatR behaviors), consuming contracts from Shared
 name: BuildingBlocks.csproj
 element_kind: project
 change_kind: create
@@ -9,68 +9,58 @@ tags:
 ---
 
 # Goals
-- Implement application technical patterns used by App.Host and infrastructure across all modules
-- Provide pipeline behaviors, repository implementations, and cross-cutting utilities
+- Give the family one project for reusable technical-pattern implementations (MediatR pipeline behaviors first; persistence/outbox/concurrency helpers later, from their own solutions).
+- Keep it referencing only `Shared`.
 
 # Core Principles
-- BuildingBlocks depends only on Shared
-- BuildingBlocks does NOT define common interfaces — it consumes interfaces from Shared
-- All pipeline behavior implementations live here — registered once in App.Host, used by all modules
+- `BuildingBlocks` implements patterns; it never *defines* a cross-cutting contract — those live in `Shared`.
+- `BuildingBlocks` references only `Shared`.
+- At the v3.1 baseline it is an almost-empty project with a `/MediatR` folder; `ValidationBehavior` and `ExceptionHandlingBehavior` are added by their own solutions, not here.
 
 # Structure
 
 ## Project Structure
 ```
-/BuildingBlocks
-  /MediatR
-    UnitOfWorkContext.cs
-    UnitOfWorkBehavior.cs
-    ValidationBehavior.cs
-  /Outbox
-    OutboxMessage.cs
-    OutboxDispatcher.cs
-  /Concurrency
-    ETagEncoder.cs
-    EntityVersionResolver.cs
+/src/BuildingBlocks
+  /MediatR            — pipeline behavior implementations (added by their solutions)
   BuildingBlocks.csproj
 ```
+Later solutions add: `ValidationBehavior.cs` (solution-validation-behavior), `ExceptionHandlingBehavior.cs` (solution-mediator-exception-handler), `UnitOfWorkBehavior.cs` (VP2), `ConcurrencyBehavior.cs` (VP5), `GuidResolvingBehavior.cs` (VP6), `/Outbox` (VP14).
 
 ## Directory and class skills
-| `Directory\|file` | Description                                    |
-| ----------------- | ---------------------------------------------- |
-| /MediatR          | Pipeline behavior implementations and context  |
-| /Outbox           | OutboxMessage model and dispatcher             |
-| /Concurrency      | ETag encoder and entity version resolver       |
+| `Directory\|file` | Description |
+| ----------------- | ----------- |
+| /MediatR | Pipeline behavior implementations, added by their owning solutions |
+| BuildingBlocks.csproj | Leaf technical-patterns project, references only `Shared` |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |
-| --- | --- | --- |
+| ------- | ------------------ | ------- |
+| MediatR | central | `IPipelineBehavior<,>` base for behaviors added later |
 
 # What Does NOT Belong Here
-- Business logic — belongs to Domain
-- Module-specific handlers or validators — belong to module Application
-- Common interface definitions — belong to Shared
+- Business logic, entities — `{Module}.Domain`.
+- Module-specific handlers/validators — `{Module}.Application`.
+- Contract definitions — `Shared`.
 
 # Allowed Dependencies
-- Shared
+- `Shared`
+- `MediatR` (NuGet)
 
 # Rules
 
 ## MUST
-- All pipeline behavior implementations defined here
-- BuildingBlocks depends only on Shared
-- BuildingBlocks does not define common interfaces — only implements patterns using interfaces from Shared
-- Never buildingBlocks reference any module project
-- Never buildingBlocks reference App.Infrastructure or App.Queries
-- Never buildingBlocks contain business logic
-- Never buildingBlocks define common interfaces — only Shared defines interfaces
-
-## SHOULD
-- Avoid placing domain entities in BuildingBlocks — they belong in module Domain
-- Avoid adding module-specific handlers or validators in BuildingBlocks
-- Avoid defining common interfaces in BuildingBlocks — they belong in Shared
+- Reference only `Shared`.
+  - Risk: a reference to a module or infrastructure project inverts the dependency direction and couples the pattern layer to a concrete consumer.
+  - Fix: `BuildingBlocks -> Shared` only.
+- Implement patterns here; never define a cross-cutting interface here.
+  - Risk: an interface defined in `BuildingBlocks` forces every consumer to reference the pattern layer to see a contract.
+  - Fix: contracts in `Shared`, implementations here.
+- Never put business logic or a module-specific handler/validator in `BuildingBlocks`.
+  - Risk: logic that belongs to one module leaks into a layer shared by all.
+  - Fix: module logic stays in `{Module}.Application` / `{Module}.Domain`.
 
 # Check list
-- [ ] BuildingBlocks.csproj references only Shared
-- [ ] BuildingBlocks.csproj contains only pattern implementations
-- [ ] No common interface definitions in BuildingBlocks
+- [ ] `BuildingBlocks.csproj` references only `Shared` (+ `MediatR` NuGet, versionless).
+- [ ] No contract definitions in `BuildingBlocks`.
+- [ ] `/MediatR` behaviors present only if their owning solution has been applied.

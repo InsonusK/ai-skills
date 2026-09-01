@@ -61,7 +61,7 @@ SOLUTION:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - the markers an RPC method dispatches
 - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] (VP2, for read RPCs — not required; write-only service without it)
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] (for read RPCs — not yet composed at this solution's own `built_on_plateau`, see Boundaries)
+- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] (for read RPCs — not yet composed at this solution's own `built_on_plateau`, see Boundaries)
   - `Shared.csproj` - provides `IQuery<T>` marker for read operations
 
 NUGET:
@@ -73,27 +73,27 @@ NUGET:
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend|{Module}.Api.csproj]] - extend - Add `/Protos`, `/Grpc`, and the `RpcException` extension
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}.proto.create|{Entity}.proto]] - create - The wire contract for one entity's gRPC service
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create|{Entity}GrpcService.cs]] - create - Thin adapter implementing the generated service base class
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create|RpcExceptionExtensions.cs]] - create - `ToRpcException()` helper for `Result` error mapping
-- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Wire gRPC registration into the composition root
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcRegistration.cs.create|GrpcRegistration.cs]] - create - gRPC service and Kestrel HTTP/2 registration
+- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - extend - Add `/Protos`, `/Grpc`, and the `RpcException` extension
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}.proto.create.md|{Entity}.proto]] - create - The wire contract for one entity's gRPC service
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create.md|{Entity}GrpcService.cs]] - create - Thin adapter implementing the generated service base class
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create.md|RpcExceptionExtensions.cs]] - create - `ToRpcException()` helper for `Result` error mapping
+- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire gRPC registration into the composition root
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcRegistration.cs.create.md|GrpcRegistration.cs]] - create - gRPC service and Kestrel HTTP/2 registration
 
 # Rules
 
 ## MUST
-- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend#MUST|{Module}.Api.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}.proto.create#MUST|{Entity}.proto]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create#MUST|{Entity}GrpcService.cs]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create#MUST|RpcExceptionExtensions.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcRegistration.cs.create#MUST|GrpcRegistration.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}.proto.create.md#MUST|{Entity}.proto]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create.md#MUST|{Entity}GrpcService.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create.md#MUST|RpcExceptionExtensions.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcRegistration.cs.create.md#MUST|GrpcRegistration.cs]]
 - gRPC layer is a thin adapter — map input, dispatch once, map output
 - Every failed `Result` becomes a thrown `RpcException` via `ToRpcException()`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend#MUST|{Module}.Api.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create#MUST|{Entity}GrpcService.cs]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create#MUST|RpcExceptionExtensions.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create.md#MUST|{Entity}GrpcService.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create.md#MUST|RpcExceptionExtensions.cs]]
 - Never redeclare a command/query already defined for `solution-http-api-publication` — both adapters dispatch the same `{Module}.Interfaces` contracts
 - Never hand-edit generated `{Entity}GrpcServiceBase` code
 

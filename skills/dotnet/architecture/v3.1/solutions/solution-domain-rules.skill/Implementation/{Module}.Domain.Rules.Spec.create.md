@@ -18,7 +18,7 @@ tags:
 - It contains only `.feature` files — no `.cs`, no step definitions, no `csproj`. Step definitions live in whichever test project proves a given scenario, never here
 - One `.feature` file per rule class, named after the rule (`{Rule}.feature` for `{Rule}Rules`/`{Rule}Rule`)
 - Every scenario carries exactly one classification tag: `@format`, `@semantic`, or `@domain` — the same classification the rule itself already has in `{Module}.Domain.Rules`. A rule reused at more than one layer gets one scenario per layer, not one scenario claimed to cover both
-- A consuming test project links the physical file in via its own `.csproj` (`<None Include="..\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="..." />`), filtered to the tags that project proves — see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create|{Module}.Domain.Rules.Tests.csproj]], [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend|{Module}.Domain.Tests.csproj]], [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend|{Module}.Application.Tests.csproj]]
+- A consuming test project links the physical file in via its own `.csproj` (`<None Include="..\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="..." />`), filtered to the tags that project proves — see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create.md|{Module}.Domain.Rules.Tests.csproj]], [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj]], [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend.md|{Module}.Application.Tests.csproj]]
 
 # Implementation changes
 
@@ -30,7 +30,7 @@ tags:
   /{ModuleName}.Domain.Rules.Tests
 ```
 
-See [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create/{Rule}.feature.create|{Rule}.feature]] for worked `.feature` examples.
+See [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create/{Rule}.feature.create.md|{Rule}.feature]] for worked `.feature` examples.
 
 # Rule changes
 

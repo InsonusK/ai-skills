@@ -14,7 +14,7 @@ tags:
 
 # Implementation changes
 
-**AS IS** (from `plateau-stateless-non-interactive-service`, via `solution-sln-structure`):
+**AS IS** (the state after `solution-sln-structure`):
 ```
 /{Module}.Application
   /Handlers
@@ -40,7 +40,7 @@ Allowed Dependencies: `{Module}.Interfaces`, `{Module}.Domain`, `{OtherModule}.I
 ```
 Allowed Dependencies: unchanged. NuGet: adds `FluentValidation`, with `AddValidatorsFromAssembly` called for this assembly.
 
-`/Validators/Property` and `/Validators/Model` hold the reusable, cross-module-resolvable field/DTO validators this solution owns — distinct from the per-command validator a later `solution-command-integration` places under `/Features/{FeatureName}`, which composes these via `SetValidator` rather than duplicating them.
+`/Validators/Property` and `/Validators/Model` hold the reusable, cross-module-resolvable field/DTO validators this solution owns — distinct from the per-command validator a later `solution-mediator-integration` places under `/Features/{FeatureName}`, which composes these via `SetValidator` rather than duplicating them.
 
 # Rule changes
 

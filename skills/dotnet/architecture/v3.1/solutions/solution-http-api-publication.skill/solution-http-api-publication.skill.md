@@ -108,44 +108,44 @@ SWAGGER:
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend|{Module}.Api.csproj]] - extend - Add controllers, extensions, and minimal API endpoints
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create|ResultExtensions.cs]] - create - ToProblemDetails helper for Result error mapping
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create|{Entity}Controller.cs]] - create - Collection root controller
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create|Single{Entity}Controller.cs]] - create - Single entity lifecycle controller
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create|Single{Entity}{Property}Controller.cs]] - create - Addressable property controller
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create|{Entity}{Related}Controller.cs]] - create - Sub-collection controller
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create|Single{Entity}{Related}Controller.cs]] - create - Relationship instance controller
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create|{System}Endpoints.cs]] - create - System, webhook, batch, cross-aggregate endpoints
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Module}ApiSwaggerRegistration.cs.create|{Module}ApiSwaggerRegistration.cs]] - create - Per-module Swagger document metadata and route-matching predicate
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Wire API registration into the composition root
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create|ApiRegistration.cs]] - create - Controller and middleware registration
+- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend.md|{Module}.Api.csproj]] - extend - Add controllers, extensions, and minimal API endpoints
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md|ResultExtensions.cs]] - create - ToProblemDetails helper for Result error mapping
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md|{Entity}Controller.cs]] - create - Collection root controller
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md|Single{Entity}Controller.cs]] - create - Single entity lifecycle controller
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md|Single{Entity}{Property}Controller.cs]] - create - Addressable property controller
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md|{Entity}{Related}Controller.cs]] - create - Sub-collection controller
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md|Single{Entity}{Related}Controller.cs]] - create - Relationship instance controller
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md|{System}Endpoints.cs]] - create - System, webhook, batch, cross-aggregate endpoints
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Module}ApiSwaggerRegistration.cs.create.md|{Module}ApiSwaggerRegistration.cs]] - create - Per-module Swagger document metadata and route-matching predicate
+- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire API registration into the composition root
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md|ApiRegistration.cs]] - create - Controller and middleware registration
 
 # Rules
 
 ## MUST:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create#MUST|ApiRegistration.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend#MUST|{Module}.Api.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create#MUST|ResultExtensions.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create#MUST|Single{Entity}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create#MUST|Single{Entity}{Property}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create#MUST|Single{Entity}{Related}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create#MUST|{Entity}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create#MUST|{Entity}{Related}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create#MUST|{System}Endpoints.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Module}ApiSwaggerRegistration.cs.create#MUST|{Module}ApiSwaggerRegistration.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md#MUST|ApiRegistration.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md#MUST|ResultExtensions.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md#MUST|Single{Entity}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md#MUST|Single{Entity}{Property}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md#MUST|Single{Entity}{Related}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md#MUST|{Entity}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md#MUST|{Entity}{Related}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md#MUST|{System}Endpoints.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Module}ApiSwaggerRegistration.cs.create.md#MUST|{Module}ApiSwaggerRegistration.cs]]
 - API layer is a thin HTTP adapter — map input, dispatch once, map output
 - All error responses use `ProblemDetails`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create#MUST|ApiRegistration.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend#MUST|{Module}.Api.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create#MUST|ResultExtensions.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create#MUST|Single{Entity}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create#MUST|Single{Entity}{Property}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create#MUST|Single{Entity}{Related}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create#MUST|{Entity}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create#MUST|{Entity}{Related}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create#MUST|{System}Endpoints.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md#MUST|ApiRegistration.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md#MUST|ResultExtensions.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md#MUST|Single{Entity}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md#MUST|Single{Entity}{Property}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md#MUST|Single{Entity}{Related}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md#MUST|{Entity}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md#MUST|{Entity}{Related}Controller.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md#MUST|{System}Endpoints.cs]]
 - Never undocumented HTTP responses returned — every response shape declared in `ProducesResponseType`
 - Never include routes from one module in another module's Swagger definition
 

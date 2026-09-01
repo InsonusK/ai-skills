@@ -3,6 +3,10 @@ description: Create the test project for {Module}.Domain — unit tests, Reqnrol
 name: "{Module}.Domain.Tests"
 element_kind: project
 change_kind: create
+tags:
+  - solution/dotnet-conformance-testing
+  - element/module-domain-tests
+
 ---
 
 # Goals

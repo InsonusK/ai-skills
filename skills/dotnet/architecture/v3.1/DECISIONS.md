@@ -32,9 +32,24 @@ One line per non-mechanical choice made while building the v3.1 catalog. `⚠️
 - **`solution-cecil-architecture-tests` (VP4 companion)** — mandatory with VP4; 2 of 4 checks (exception-scoping, guarded-property-coverage) are dormant no-ops until VP1. `depends_on` domain-rules + dotnet-conformance-testing. ADR: `checks-degrade-without-domain-layer.md`. v3 ADR `fix-cecil-built-on-plateau-floor` dropped.
 - Known debt (carried from Wave 0 pattern): transformed Implementation files terse / missing `Risk:`/`Fix:`; some `.extend.md` AS-IS prose still names v3 plateaus; domain-rules/cecil bodies still have v3-era prose about `built_on_plateau` and worked examples.
 
-## Wave 1 — dependent VPs
+## Wave 0 audit — fixes applied (fresh-eyes audit, 2026-09-01)
 
-_(pending — VP2/VP3/VP5-7: infrastructure-project, domain-configuration, repository-integration, unit-of-work, query-integration, value-objects, entity-concurrency-change, external-created-entity, entity-edit-timestamp, entity-classification)_
+BLOCKERS fixed:
+- B1 `solution-sln-structure` `Shared`/`BuildingBlocks` create files stripped to the v3.1 baseline (were still shipping v3's Repositories/UnitOfWork/Outbox/Concurrency/ConflictResult).
+- B2 `solution-dto-property-validators` `depends_on` → `solution-soft-value-objects` (was pointing at VP3 `solution-value-objects`); Requirements + Boundaries links repointed.
+- B3 `solution-mediator-integration/Shared.csproj.extend.md` rewritten — adds all three markers (`ICommand`/`IQuery`/`INotificationEvent`) + `MediatR`; dropped the v3 `/Shared` AS-IS tree and the `IRepository` MUST.
+- B4 `solution-mediator-integration/{FeatureName}.Handler.cs.create.md` rewritten to lead with the no-persistence / no-domain handler; repository/spec/UoW steps are now explicitly VP2-conditional.
+- B5 Russian comment in `solution-soft-value-objects` Soft VO example translated; real-module namespace genericised.
+
+SHOULD-FIX applied: S3 (AS-IS "from plateau-stateless…" → "after solution-sln-structure"), S5 (command-integration→mediator-integration prose), S6 (conformance-testing Implementation files tagged; `solution/conformance-testing`→`solution/dotnet-conformance-testing`), S7 (conformance-testing test-project set now mirrors whichever production projects exist; `{Module}.Domain.Tests` only with VP1), S8 (`.md` suffix on ~24 wikilinks via script), S9 (mediator checklist: validator per Command; a Query keyed by id gets none), S11 (INVARIANTS §4 carve-out for the two external conformance deps), S2 (partial — dedup script removed the clear SHOULD-echoes-MUST cases).
+
+Still open (tracked): S1 (many transformed Implementation-file `## MUST` bullets lack `Risk:`/`Fix:`), S10 (exception-handler: honour `LogEvents.UnhandledException` in its code sample, add `# Boundaries`, trim the v3 behavior list in `PipelineRegistration.cs.extend.md`), S4 (`defer-feature-check-loading` ADR still in v3-plateau terms), NICE-TO-HAVE grammar debris from the `## MUST NOT`→"Never" script.
+
+## Wave 2 — dependent VPs (check.sh PASS; mechanical pass only unless noted)
+
+- All 10 copied: links → v3.1, version bumped, `built_on_plateau` cleared, `## MUST NOT`/`# Anti-patterns` converted.
+- **`solution-value-objects` (VP3)** — authored fresh as the strict half of the split: `{ValueObject} : Soft{ValueObject}` in `{Module}.Domain`, `depends_on solution-domain-behaviour` + `solution-soft-value-objects`. Requires VP1 (matches Variability Map).
+- **NOT yet deeply adapted** (mechanical pass only, need a content pass): `solution-domain-configuration` (add `depends_on solution-domain-behaviour`; EF Core arrives here), `solution-query-integration` (slim to repo-backed reads; `depends_on solution-mediator-integration` for markers), `solution-entity-classification` (reframe as VP5×VP6 combination-resolver per feature-model), and the remaining `infrastructure-project` / `repository-integration` / `unit-of-work` / `entity-concurrency-change` / `external-created-entity` / `entity-edit-timestamp` bodies still carry v3-plateau prose.
 
 ## Wave 2
 

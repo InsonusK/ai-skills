@@ -47,14 +47,14 @@ public record SoftMoney(decimal Amount, string Currency)
 }
 ```
 
-Worked example from a real module (`TaskModule`), single-property, no multi-property fields:
+Single-property example:
 
 ```csharp
-namespace TaskUnderControl.Srv.TaskModule.Interfaces.ValueObjects;
+namespace {Module}.Interfaces.ValueObjects;
 
-// "Soft" значит: может держать невалидное значение. Это осознанно — DTO с плохими
-// данными от клиента должен долететь досюда, чтобы его смогли провалидировать,
-// а не упасть на этапе десериализации без внятной ошибки.
+// "Soft" means: may hold an invalid value. This is deliberate — a DTO carrying bad
+// client data must reach the layer that validates it, rather than failing at
+// deserialization with an opaque error.
 public record SoftComplexity(int Value);
 ```
 

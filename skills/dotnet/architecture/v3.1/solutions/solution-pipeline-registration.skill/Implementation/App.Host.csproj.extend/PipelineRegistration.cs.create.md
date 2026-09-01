@@ -72,7 +72,6 @@ public static class PipelineRegistration
 # Check list
 - [ ] `PipelineRegistration.cs` exists under `App.Host/DependencyInjection`
 - [ ] `AddPipeline()` extension method on `IServiceCollection`
-- [ ] `AddPipeline()` returns `IServiceCollection`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN `PipelineRegistration` class exists in `App.Host/DependencyInjection`

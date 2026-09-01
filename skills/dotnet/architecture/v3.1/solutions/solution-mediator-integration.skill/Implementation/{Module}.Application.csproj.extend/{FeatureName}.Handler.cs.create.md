@@ -1,5 +1,5 @@
 ---
-description: Command handler implementation
+description: Command or query handler — fixed shape, persistence steps added only when stored state is involved
 project_name: "{Module}.Application"
 name: "{FeatureName}.Handler.cs"
 element_kind: class
@@ -10,135 +10,119 @@ tags:
 ---
 
 # Goals
-- Orchestrate one write operation: load required data via specs, guard against business failures, delegate to domain, stage changes, return a typed result
-- Never contain business rules — always delegate decisions to the domain layer
+- Handle one Command (a write) or one Query (a read): guard, do the work, return `Result<T>`.
+- Contain no business rules — a Command with a domain layer delegates every decision to the entity / domain service; a Command without one only shapes data and dispatches.
 
 # Core Principles
-- Implements `IRequestHandler<TCommand, Result<T>>`
-- Injects `IRepository<T>` for entity loading and staging — never `DbContext`
-- All entity loading uses named specs — no inline LINQ
+- Implements `IRequestHandler<TRequest, Result<T>>`.
+- **Fixed shape:** `guard → (domain call | read) → return Result<T>`.
+- **Persistence steps are conditional.** `load`/`stage` through `IRepository<T>`/`IReadRepository<T>` are added *only* when the request touches stored state — i.e. once `solution-repository-integration` (VP2) is applied. A handler with no persistence and no domain layer skips them entirely and is still a complete, valid handler.
+- Never `DbContext`, never inline LINQ, never `SaveChangesAsync` (commit is the unit-of-work behavior's job, once persistence exists).
 
 # Naming convention
-| use case | class name pattern | class name | file name pattern | file name |
-| --- | --- | --- | --- | --- |
-| Command handler | `{FeatureName}Handler` | `CreateTaskHandler` | `{FeatureName}.Handler.cs` | `CreateTask.Handler.cs` |
+| use case | class name | file name |
+| --- | --- | --- |
+| Command / Query handler | `{FeatureName}Handler` (e.g. `CreateTaskHandler`, `GetTaskByIdHandler`) | `{FeatureName}.Handler.cs` |
 
 # Implementation changes
 
-Handler follows the load → guard → domain call → stage → return structure:
+## Baseline handler — no persistence, no domain layer
+
+Shapes input, dispatches, returns a result. This is the shape every module has from `solution-mediator-integration` alone.
 
 ```csharp
-// {Module}.Application/Features/CreateTask/CreateTask.Handler.cs
+// {Module}.Application/Features/SubmitReport/SubmitReport.Handler.cs
 using Ardalis.Result;
 using MediatR;
-using Shared.Repositories;
 
-namespace {Module}.Application.Features.CreateTask;
+namespace {Module}.Application.Features.SubmitReport;
 
-public class CreateTaskHandler
-    : IRequestHandler<CreateTaskCommand, Result<CreateTaskResult>>
+public class SubmitReportHandler(ISender sender) : IRequestHandler<SubmitReport, Result<SubmitReportResult>>
 {
-    private readonly IRepository<TodoTask> _repository;
-
-    public CreateTaskHandler(IRepository<TodoTask> repository)
-        => _repository = repository;
-
-    public async Task<Result<CreateTaskResult>> Handle(
-        CreateTaskCommand command, CancellationToken ct)
+    public async Task<Result<SubmitReportResult>> Handle(SubmitReport request, CancellationToken ct)
     {
-        var assignee = await _repository.FirstOrDefaultAsync(
-            new UserByIdSpec(command.AssigneeId), ct);
+        // guard: transport-shape already checked by the validator; guard here on cross-request facts only
+        var ack = await sender.Send(new NotifyReviewers(request.ReportId), ct);
+        if (!ack.IsSuccess)
+            return Result.Error("Reviewers could not be notified.");
 
-        if (assignee is null)
-            return Result.NotFound();
-
-        var task = TodoTask.Create(command.Title, command.AssigneeId);
-
-        await _repository.AddAsync(task, ct);
-
-        return Result.Created(new CreateTaskResult(task.Id));
+        return Result.Success(new SubmitReportResult(request.ReportId, DateTimeOffset.UtcNow));
     }
 }
 ```
 
-Handler that dispatches a cross-module sub-command:
+## Query handler — no persistence
+
+Answers from another module (or, later, from a repository).
 
 ```csharp
-// {Module}.Application/Features/CreateOrder/CreateOrder.Handler.cs
+public class GetReviewStatusHandler(ISender sender) : IRequestHandler<GetReviewStatus, Result<ReviewStatusDto>>
+{
+    public async Task<Result<ReviewStatusDto>> Handle(GetReviewStatus q, CancellationToken ct)
+        => await sender.Send(new FetchStatusFrom(q.ReportId), ct);
+}
+```
+
+## Command handler — with domain layer (VP1) and persistence (VP2)
+
+Once `solution-domain-behaviour` and `solution-repository-integration` are applied, `load` / `stage` steps wrap the domain call:
+
+```csharp
 using Ardalis.Result;
 using MediatR;
 using Shared.Repositories;
 
-namespace {Module}.Application.Features.CreateOrder;
-
-public class CreateOrderHandler
-    : IRequestHandler<CreateOrderCommand, Result<CreateOrderResult>>
+public class CloseTaskHandler(IRepository<TodoTask> repository) : IRequestHandler<CloseTask, Result>
 {
-    private readonly IRepository<Order> _repository;
-    private readonly IMediator _mediator;
-
-    public CreateOrderHandler(IRepository<Order> repository, IMediator mediator)
+    public async Task<Result> Handle(CloseTask cmd, CancellationToken ct)
     {
-        _repository = repository;
-        _mediator = mediator;
-    }
+        var task = await repository.FirstOrDefaultAsync(new TaskByIdSpec(cmd.TaskId), ct);
+        if (task is null)
+            return Result.NotFound();
 
-    public async Task<Result<CreateOrderResult>> Handle(
-        CreateOrderCommand command, CancellationToken ct)
-    {
-        var bookResult = await _mediator.Send(
-            new BookItemCommand(command.ProductId, command.Quantity), ct);
+        task.Close(cmd.Reason);            // domain method guards the invariant and throws DomainException on violation
+        await repository.UpdateAsync(task, ct);   // stage; commit is UnitOfWorkBehavior's job
 
-        if (!bookResult.IsSuccess)
-            return Result.Error("Failed to book supply.");
-
-        var order = Order.Create(command.ProductId, command.Quantity);
-        await _repository.AddAsync(order, ct);
-
-        return Result.Created(new CreateOrderResult(order.Id));
+        return Result.Success();
     }
 }
 ```
 
 ## Result status conventions
-
-| Result | Meaning | Typical use |
-| --- | --- | --- |
-| `Result.Created(value)` | Entity created successfully | After `AddAsync` on new entity |
-| `Result.Success()` / `Result.Success(value)` | Operation succeeded | After updating existing entity |
-| `Result.NoContent()` | Success with no return body | After delete |
-| `Result.NotFound()` | Required entity does not exist | Guard after load returns null |
-| `Result.Conflict(msg)` | Business state prevents the operation | Guard for business rule violation |
-| `Result.Error(msg)` | Unexpected failure | Sub-command failure, unrecoverable state |
+| Result | Use |
+| --- | --- |
+| `Result.Created(value)` | new entity created |
+| `Result.Success()` / `Result.Success(value)` | updated / read succeeded |
+| `Result.NotFound()` | required entity absent (guard after load) |
+| `Result.Conflict(msg)` | a cross-request precondition fails (not an entity invariant — that throws) |
+| `Result.Error(msg)` | a dispatched sub-request failed, or unrecoverable state |
 
 # Rule changes
 
 ## MUST
-- Implement `IRequestHandler<TCommand, Result<T>>`
-- Inject `IRepository<T>` — never `DbContext`
-- Load entities via named specs — never inline LINQ
-- Follow load → guard → domain call → stage → return structure
-- Return `Result<T>` for all outcomes — never throw for flow control
-- Dispatch cross-module writes via `_mediator.Send()` — never direct method calls
-- Handlers and validators registered via assembly scan — never manually
-- No validator for query handlers
-- Never contain business logic or domain rules — delegate to entity or domain service
-- Never reference another module's Domain or Application projects directly
-- Never use inline LINQ — all queries go through named specs
-- Never handler call `SaveChangesAsync` — Unit of Work owns commit
+- Implement `IRequestHandler<TRequest, Result<T>>` and follow `guard → (domain call | read) → return`.
+  - Risk: an ad-hoc handler shape makes every handler read differently and hides where the decision is made.
+  - Fix: the fixed sequence; the middle step is a domain call for a Command with a domain layer, a repository/dispatch read for a Query.
+- Add `load`/`stage` (via `IRepository<T>`/`IReadRepository<T>`, named specs) **only** when the request touches stored state.
+  - Risk: mandating a repository makes the solution unusable for a module with no persistence — the very case v3.1 makes common.
+  - Fix: the baseline handler has no repository; VP2 adds those steps.
+- Never inject `DbContext`, never write inline LINQ, never call `SaveChangesAsync`.
+  - Risk: persistence details and premature commits leak into orchestration and break atomicity.
+  - Fix: `DbContext`/commit are infrastructure concerns; queries go through named specs once VP2 exists.
+- Never contain a business rule — delegate to the entity / domain service (when a domain layer exists) or model it as a guard on cross-request facts.
+  - Risk: logic in the handler cannot be found by a reader of the entity and is not covered by the domain tests.
+  - Fix: `entity.DoThing()`; the entity throws `DomainException` on violation.
+- Dispatch cross-module interaction via `ISender.Send` / `IPublisher.Publish` — never a direct call, never another module's `Domain`/`Application` type.
+  - Risk: a direct reference couples the modules and bypasses the pipeline.
+  - Fix: send a request defined in the target module's `Interfaces`.
 
 ## SHOULD
-- Handler follow the exact load → guard → domain call → stage → return sequence
-- Use the transport validation boundary table to decide what belongs in validator vs handler vs domain
-- Guard checks return early before domain call — fail fast pattern
+- Guard checks return early, before the domain call / read — fail fast.
+- Use the transport-validation boundary to decide validator vs handler vs domain.
 
-# Unittest TestCases
-- [ ] WHEN applied THEN Orchestrate one write operation: load required data via specs, guard against business failures, delegate to domain, stage changes, return a typed result
-- [ ] WHEN applied THEN Never contain business rules — always delegate decisions to the domain layer
-- [ ] WHEN applied THEN Implements IRequestHandler<TCommand, Result<T>>
-- [ ] WHEN applied THEN Injects IRepository<T> for entity loading and staging — never DbContext
-- [ ] WHEN applied THEN Follows fixed structure: load → guard → domain call → stage → return result
-- [ ] WHEN applied THEN All entity loading uses named specs — no inline LINQ
-- [ ] WHEN applied THEN Returns Ardalis.Result<T> for all outcomes — no exceptions for flow control
-- [ ] WHEN applied THEN Cross-module writes dispatched via _mediator.Send(new OtherModuleCommand(...)) — never direct calls
-- [ ] WHEN naming 'Command handler' THEN pattern matches convention
+# Check list
+- [ ] `{FeatureName}Handler : IRequestHandler<{Request}, Result<T>>` in `Features/{FeatureName}/`.
+- [ ] Shape is `guard → (domain call | read) → return Result<T>`.
+- [ ] No repository / `IRepository<T>` unless the request touches stored state (VP2).
+- [ ] No `DbContext`, no inline LINQ, no `SaveChangesAsync`.
+- [ ] No business rule in the handler; cross-module via `ISender`/`IPublisher` only.

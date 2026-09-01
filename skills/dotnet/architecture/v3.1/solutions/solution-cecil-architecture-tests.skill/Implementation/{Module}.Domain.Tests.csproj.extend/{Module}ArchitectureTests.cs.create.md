@@ -13,7 +13,7 @@ tags:
 - Prove, over compiled IL rather than by executing it, that every `Check()` in `Domain.Rules` is actually called, `DomainException` is only ever thrown from `ValueObjects`/`Entities`, and every generated rejection code is unique and well-formed
 
 # Core Principles
-- Single-pass checks (scan every method once, flag) share this one class — the call-graph/registry-driven check does not belong here, see [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/GuardedPropertyRuleCoverageTests.cs.create|GuardedPropertyRuleCoverageTests.cs]]
+- Single-pass checks (scan every method once, flag) share this one class — the call-graph/registry-driven check does not belong here, see [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/GuardedPropertyRuleCoverageTests.cs.create.md|GuardedPropertyRuleCoverageTests.cs]]
 - Load every assembly via `typeof(KnownType).Assembly.Location`, never a hardcoded path
 
 # Implementation changes

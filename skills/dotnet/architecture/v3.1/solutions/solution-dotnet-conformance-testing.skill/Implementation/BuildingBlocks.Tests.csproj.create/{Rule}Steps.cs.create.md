@@ -4,6 +4,10 @@ project_name: "BuildingBlocks.Tests"
 name: "{Rule}Steps"
 element_kind: class
 change_kind: create
+tags:
+  - solution/dotnet-conformance-testing
+  - element/rulesteps
+
 ---
 
 # Goals

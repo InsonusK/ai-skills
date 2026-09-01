@@ -3,6 +3,10 @@ description: Create the test project for Shared — unit tests, Reqnroll feature
 name: "Shared.Tests"
 element_kind: project
 change_kind: create
+tags:
+  - solution/dotnet-conformance-testing
+  - element/shared-tests
+
 ---
 
 # Goals

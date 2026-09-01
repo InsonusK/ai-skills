@@ -7,13 +7,13 @@ type: architecture
 version: 20260901000000
 tags:
   - skill/architecture/solution
-  - stack/dotnet
+  - concern/architecture
   - validation
-  - fluent-validation
+  - framework/fluent-validation
   - dto
   - cross-module
-  - concern/architecture
   - solution/dto-property-validators
+  - stack/dotnet
 creates:
   - "{Module}.Application.Validators.Property.{ValueObject}PropertyValidator.cs"
   - "{Module}.Application.Validators.Model.{Dto}Validator.cs"
@@ -21,13 +21,13 @@ creates:
 extends:
   - "{Module}.Application.csproj"
 depends_on:
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]]"
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/solution-soft-value-objects.skill.md|solution-soft-value-objects]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]"
 built_on_plateau:
 adr:
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]"
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/dto-validators-only-for-request-dtos|DTO validators only for RequestDto by default]]"
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects.md|Use AbstractValidator for Soft{ValueObject} validators]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/dto-validators-only-for-request-dtos.md|DTO validators only for RequestDto by default]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution.md|Defer {Feature}Check's Load to the persistence-introducing solution]]"
 ---
 
 # Goal
@@ -47,42 +47,41 @@ adr:
 - `{ValueObject}PropertyValidator` exists even though it could look like a one-line pass-through: it gives other modules DI decoupling (they depend on `IValidator<Soft{ValueObject}>`, never on this module's `Application` internals), and gives one field its own isolated conformance surface
 - Every validator is registered via `AddValidatorsFromAssembly` — never manually
 - ResponseDto does not get a validator by default; only when a concrete requirement (external contract check, untrusted response source) explicitly demands one
-- A condition that needs preloaded data becomes a small, DI-injected async wrapper class (`{Feature}Check`) that loads the data and checks it locally, via `CustomAsync` — this solution defines the *pattern* only; it does not create a repository or any other data-loading abstraction, and `{Feature}Check`'s `Load` step is deliberately left unimplemented until the solution that introduces one supplies the concrete body via its own `.extend.md` on this same class (see Boundaries and [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]])
+- A condition that needs preloaded data becomes a small, DI-injected async wrapper class (`{Feature}Check`) that loads the data and checks it locally, via `CustomAsync` — this solution defines the *pattern* only; it does not create a repository or any other data-loading abstraction, and `{Feature}Check`'s `Load` step is deliberately left unimplemented until the solution that introduces one supplies the concrete body via its own `.extend.md` on this same class (see Boundaries and [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution.md|Defer {Feature}Check's Load to the persistence-introducing solution]])
 - This solution does not require a shared rules abstraction to exist — a later, optional `solution-domain-behaviour`/`solution-domain-rules` may keep validator-side and Entity-side conditions in sync some other way, but every validator here already works standalone
 
 # Boundaries
-- Which `Soft{ValueObject}`/DTO exists to validate is not decided by this solution — that's `solution-value-objects`
-- Whether a validator's condition agrees with the same concept's Entity-side enforcement (`solution-domain-behaviour`) is not guaranteed or checked by this solution — the two are written independently today
-- Loading data for an async cross-aggregate check (repository calls) is this solution's job for the *validator* path only — the same load also has to happen again, independently, on the Handler's side before the Entity method runs
-- `built_on_plateau` for this solution is `plateau-stateless-non-interactive-service`, which has no repository or any other data-loading abstraction. `{Feature}Check`'s `Load` method is therefore deliberately left unimplemented by this solution — it stays a documented shape, not a usable capability, until a solution that introduces persistence (e.g. `solution-repository-integration`, composed in `plateau-statefull-service`) supplies the concrete `Load` body via its own `{Feature}Check.cs.extend.md` on this same class. See [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]]
+- Which `Soft{ValueObject}`/DTO exists to validate is decided by [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/solution-soft-value-objects.skill.md|solution-soft-value-objects]] (Soft VOs, common) and, for the strict Domain-side type, `solution-value-objects` (VP3) — not by this solution.
+- Whether a validator's condition agrees with the same concept's Entity-side enforcement (`solution-domain-behaviour`, VP1) is not guaranteed or checked here — the two are written independently, and `solution-domain-rules` (VP4) is the mechanism for keeping a duplicated condition in one place. This solution does **not** `depends_on` either.
+- The baseline (after `solution-sln-structure` + `solution-mediator-integration`) has no repository or other data-loading abstraction. `{Feature}Check`'s `Load` method is therefore left unimplemented here — a documented shape, not a usable capability — until `solution-repository-integration` (VP2) supplies the concrete `Load` body via its own `{Feature}Check.cs.extend.md` on this same class. See [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution.md|Defer {Feature}Check's Load to the persistence-introducing solution]].
 
 # Adr
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects|Use AbstractValidator for Soft{ValueObject} validators]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/use-abstract-validator-for-soft-value-objects.md|Use AbstractValidator for Soft{ValueObject} validators]]
   - Selected variant: `AbstractValidator<Soft{ValueObject}>`, not `PropertyValidator<T,TProperty>` — the latter cannot be resolved generically as `IValidator<Soft{ValueObject}>` by another module through DI
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/dto-validators-only-for-request-dtos|DTO validators only for RequestDto by default]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/dto-validators-only-for-request-dtos.md|DTO validators only for RequestDto by default]]
   - Selected variant: validators created by default only for RequestDto; ResponseDto validators only when explicitly required
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution|Defer {Feature}Check's Load to the persistence-introducing solution]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/adr/defer-feature-check-loading-to-persistence-solution.md|Defer {Feature}Check's Load to the persistence-introducing solution]]
   - Selected variant: `{Feature}Check.cs.create.md` leaves `Load` unimplemented; `solution-repository-integration` supplies the concrete body via a `{Feature}Check.cs.extend.md` targeting the same class
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]] - hosts every validator this solution creates
-- [[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create|Soft{ValueObject}.cs]] - the type every `{ValueObject}PropertyValidator` validates
-- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - the `ValidationBehavior` pipeline that runs every validator this solution creates before the Handler
+- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts every validator this solution creates
+- [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/solution-soft-value-objects.skill.md|solution-soft-value-objects]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/Implementation/{Module}.Interfaces.csproj.extend/Soft{ValueObject}.cs.create.md|Soft{ValueObject}.cs]] - the type every `{ValueObject}PropertyValidator` validates
+- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs]] - runs every validator this solution creates before the handler
 
 NUGET:
-- `FluentValidation` {version} - `AbstractValidator<T>`, `IValidator<T>`, `CustomAsync`
+- `FluentValidation` {version} - `AbstractValidator<T>`, `IValidator<T>`, `CustomAsync` (version in `Directory.Packages.props`)
 
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - extend - Add `/Validators/Property`, `/Validators/Model`, `/Validators/Async` folders, ensure `AddValidatorsFromAssembly` is called
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create|{ValueObject}PropertyValidator.cs]] - create - `AbstractValidator<Soft{ValueObject}>` with its own local condition
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create|{Dto}.Validator.cs]] - create - `AbstractValidator<{Dto}>` composing property validators and local cross-field conditions
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create|{Feature}Check.cs]] - create - DI-injected async wrapper that preloads data and checks a locally-owned cross-aggregate condition
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add `/Validators/Property`, `/Validators/Model`, `/Validators/Async` folders, ensure `AddValidatorsFromAssembly` is called
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs]] - create - `AbstractValidator<Soft{ValueObject}>` with its own local condition
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs]] - create - `AbstractValidator<{Dto}>` composing property validators and local cross-field conditions
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs]] - create - DI-injected async wrapper that preloads data and checks a locally-owned cross-aggregate condition
 
 # Workflow
 
@@ -110,10 +109,10 @@ sequenceDiagram
 # Rules
 
 ## MUST
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend#MUST|{Module}.Application.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create#MUST|{ValueObject}PropertyValidator.cs]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create#MUST|{Dto}.Validator.cs]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create#MUST|{Feature}Check.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md#MUST|{ValueObject}PropertyValidator.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md#MUST|{Dto}.Validator.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md#MUST|{Feature}Check.cs]]
 
 - Never validate a value-concept property inline in a `{Dto}Validator` — compose `SetValidator(IValidator<Soft{ValueObject}>)` instead.
   - Risk: the same condition is then written in two places (the property validator and every DTO validator that touches it) and they drift.

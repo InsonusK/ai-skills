@@ -3,6 +3,10 @@ description: Create the test project for {Module}.Interfaces — unit tests, Req
 name: "{Module}.Interfaces.Tests"
 element_kind: project
 change_kind: create
+tags:
+  - solution/dotnet-conformance-testing
+  - element/module-interfaces-tests
+
 ---
 
 # Goals

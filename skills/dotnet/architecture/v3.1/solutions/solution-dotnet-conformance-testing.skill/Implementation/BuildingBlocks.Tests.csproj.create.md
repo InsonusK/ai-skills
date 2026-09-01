@@ -3,6 +3,10 @@ description: Create the test project for BuildingBlocks — unit tests, Reqnroll
 name: "BuildingBlocks.Tests"
 element_kind: project
 change_kind: create
+tags:
+  - solution/dotnet-conformance-testing
+  - element/buildingblocks-tests
+
 ---
 
 # Goals

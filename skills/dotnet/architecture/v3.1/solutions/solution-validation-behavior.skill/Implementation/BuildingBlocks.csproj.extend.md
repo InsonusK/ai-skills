@@ -18,7 +18,7 @@ tags:
 
 # Implementation changes
 
-**AS IS** (from `plateau-stateless-non-interactive-service`, via `solution-sln-structure` + `solution-mediator-exception-handler`):
+**AS IS** (the state after `solution-sln-structure`):
 ```
 /BuildingBlocks
   /MediatR
