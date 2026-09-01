@@ -4,9 +4,10 @@ description: Where to place a domain concept's permissive and strict Value Objec
 problem: Other modules and DTOs need to hold a value-object-shaped value without depending on {Module}.Domain or accepting throw-on-construct semantics, while {Module}.Domain still needs a self-validating, invariant-enforcing type for its own use.
 decision: Place Soft{ValueObject} declarations in {Module}.Interfaces (permissive, no validation), and {ValueObject} in {Module}.Domain (strict, inherits from Soft{ValueObject}, validates via Check()).
 tags:
-  - solution/value-objects
+  - solution/soft-value-objects
   - concern/documentation
   - concern/documentation/adr
+  - stack/dotnet
 ---
 
 # Problem

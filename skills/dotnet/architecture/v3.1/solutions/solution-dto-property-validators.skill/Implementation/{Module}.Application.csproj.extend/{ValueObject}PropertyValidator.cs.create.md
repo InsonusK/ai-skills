@@ -74,10 +74,8 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 - Be named `{ValueObject}PropertyValidator`
 - Live in `/{Module}.Application/Validators/Property`
 - Own its own condition — declared and checkable in this file alone
-
-## MUST NOT
-- Inject repositories or services
-- Throw exceptions
+- Never inject repositories or services
+- Never throw exceptions
 
 # Check list
 - [ ] Extends `AbstractValidator<Soft{ValueObject}>`

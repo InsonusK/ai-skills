@@ -5,7 +5,7 @@ name: "{Command}.cs"
 element_kind: class
 change_kind: create
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/command-cs
 ---
 
@@ -85,14 +85,12 @@ public record AssignTaskCommand(
 - Validator extends `AbstractValidator<TCommand>`
 - When a command property is a `Soft{ValueObject}` from another module, inject `IValidator<Soft{ValueObject}>` and use `SetValidator`
 - When a command property is a DTO from another module, inject `IValidator<{Dto}>` and use `SetValidator`
+- Never command contain methods or logic
+- Never command reference domain entity types as properties
+- Never command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-dto-property-validators.skill`
 
 ## SHOULD
 - Validator rules cover all command properties that carry input constraints
-
-## MUST NOT
-- Command contain methods or logic
-- Command reference domain entity types as properties
-- Command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-dto-property-validators.skill`
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Express a named write intent as an immutable record that carries all input needed for the operation

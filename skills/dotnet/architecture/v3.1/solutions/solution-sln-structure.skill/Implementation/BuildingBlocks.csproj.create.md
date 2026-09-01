@@ -60,17 +60,15 @@ tags:
 - All pipeline behavior implementations defined here
 - BuildingBlocks depends only on Shared
 - BuildingBlocks does not define common interfaces — only implements patterns using interfaces from Shared
+- Never buildingBlocks reference any module project
+- Never buildingBlocks reference App.Infrastructure or App.Queries
+- Never buildingBlocks contain business logic
+- Never buildingBlocks define common interfaces — only Shared defines interfaces
 
-## MUST NOT
-- BuildingBlocks reference any module project
-- BuildingBlocks reference App.Infrastructure or App.Queries
-- BuildingBlocks contain business logic
-- BuildingBlocks define common interfaces — only Shared defines interfaces
-
-# Anti-patterns
-- Placing domain entities in BuildingBlocks — they belong in module Domain
-- Adding module-specific handlers or validators in BuildingBlocks
-- Defining common interfaces in BuildingBlocks — they belong in Shared
+## SHOULD
+- Avoid placing domain entities in BuildingBlocks — they belong in module Domain
+- Avoid adding module-specific handlers or validators in BuildingBlocks
+- Avoid defining common interfaces in BuildingBlocks — they belong in Shared
 
 # Check list
 - [ ] BuildingBlocks.csproj references only Shared

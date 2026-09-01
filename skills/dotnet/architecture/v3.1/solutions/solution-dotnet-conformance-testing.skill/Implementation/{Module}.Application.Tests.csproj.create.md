@@ -38,9 +38,7 @@ Same as [[./{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqn
 - Step definitions must call `{Module}.Application`'s real handlers/validators — never `{Module}.Domain`'s types directly, and never duplicate the logic they prove.
   - Risk: calling `{Module}.Domain` directly bypasses the orchestration `{Module}.Application` is responsible for, proving the wrong layer.
   - Fix: call the handler/validator under test the same way a real caller would.
-
-## MUST NOT
-- Add a second, separate test project just for `{Module}.Application`'s Gherkin scenarios.
+- Never add a second, separate test project just for `{Module}.Application`'s Gherkin scenarios.
   - Risk: coverage and mutation-testing reports get computed against only part of `{Module}.Application`'s test suite.
   - Fix: keep unit tests and scenarios together in this one project.
 

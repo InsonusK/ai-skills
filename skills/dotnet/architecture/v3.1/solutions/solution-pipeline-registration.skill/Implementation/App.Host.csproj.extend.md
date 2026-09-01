@@ -50,14 +50,12 @@ builder.Services
 - `AddPipeline()` called in `Program.cs`
 - `AddPipeline()` called exactly once
 - Pipeline behaviors registered in App.Host — never inside a module's registration method
+- Never register `IPipelineBehavior<,>` directly in `Program.cs`
+- Never call `AddPipeline()` more than once
 
-## MUST NOT
-- Register `IPipelineBehavior<,>` directly in `Program.cs`
-- Call `AddPipeline()` more than once
-
-# Anti-patterns
-- Registering behaviors directly in `Program.cs`
-- Calling `AddPipeline()` multiple times
+## SHOULD
+- Avoid registering behaviors directly in `Program.cs`
+- Avoid calling `AddPipeline()` multiple times
 
 # Check list
 - [ ] `AddPipeline()` called from `Program.cs`

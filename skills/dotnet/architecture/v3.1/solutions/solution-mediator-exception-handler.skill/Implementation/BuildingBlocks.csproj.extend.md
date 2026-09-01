@@ -46,14 +46,12 @@ tags:
 - `MediatR`, `Ardalis.Result`, and `Microsoft.Extensions.Logging.Abstractions` packages referenced in `BuildingBlocks.csproj`
 - `ExceptionHandlingBehavior` placed in `/BuildingBlocks/MediatR`
 - `ExceptionHandlingBehavior` constrained to `IRequest<TResponse>` from MediatR and `IResult` from Ardalis.Result
+- Never add business logic or request-specific conditions to `ExceptionHandlingBehavior`
+- Never expose original exception messages or stack traces in the returned `Result`
 
-## MUST NOT
-- Add business logic or request-specific conditions to `ExceptionHandlingBehavior`
-- Expose original exception messages or stack traces in the returned `Result`
-
-# Anti-patterns
-- Implementing per-request exception handling inside `ExceptionHandlingBehavior`
-- Returning exception details instead of a generic `Result.Error`
+## SHOULD
+- Avoid implementing per-request exception handling inside `ExceptionHandlingBehavior`
+- Avoid returning exception details instead of a generic `Result.Error`
 
 # Check list
 - [ ] `MediatR` referenced in `BuildingBlocks.csproj`

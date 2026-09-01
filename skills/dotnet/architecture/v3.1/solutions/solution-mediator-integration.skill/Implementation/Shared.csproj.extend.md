@@ -4,7 +4,7 @@ name: Shared.csproj
 element_kind: project
 change_kind: extend
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/shared-csproj
 ---
 
@@ -84,15 +84,13 @@ NuGet: adds `MediatR` and `Ardalis.Result`. Project references: unchanged (none)
 - `ICommand` and `ICommand<TResponse>` placed in `/Shared/MediatR`
 - `ICommand` extends `IRequest<Result>` and `ICommand<TResponse>` extends `IRequest<TResponse>`
 - Handlers inject `IRepository<T>` from Shared — never `DbContext`
+- Never add FluentValidation or EF Core packages to Shared
+- Never add implementation code to Shared
+- Never validator be shared across multiple commands
 
-## MUST NOT
-- Add FluentValidation or EF Core packages to Shared
-- Add implementation code to Shared
-- Validator be shared across multiple commands
-
-# Anti-patterns
-- Defining `ICommand` in BuildingBlocks — forces modules to reference BuildingBlocks for contracts
-- Adding behavior logic to a marker interface
+## SHOULD
+- Avoid defining `ICommand` in BuildingBlocks — forces modules to reference BuildingBlocks for contracts
+- Avoid adding behavior logic to a marker interface
 
 # Check list
 - [ ] `MediatR` referenced in `Shared.csproj`

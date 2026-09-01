@@ -115,13 +115,15 @@ sequenceDiagram
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create#MUST|{Dto}.Validator.cs]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create#MUST|{Feature}Check.cs]]
 
-## SHOULD
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create#SHOULD|{Feature}Check.cs]]
+- Never validate a value-concept property inline in a `{Dto}Validator` — compose `SetValidator(IValidator<Soft{ValueObject}>)` instead.
+  - Risk: the same condition is then written in two places (the property validator and every DTO validator that touches it) and they drift.
+  - Fix: `{ValueObject}PropertyValidator` owns the condition; every `{Dto}Validator` composes it via `SetValidator`.
+- Never let another module reach these validators by referencing this module's `Application` types.
+  - Risk: a compile-time reference into `{Module}.Application` breaks the bounded-context boundary.
+  - Fix: cross-module code resolves `IValidator<Soft{ValueObject}>` / `IValidator<{Dto}>` from DI.
 
-## MUST NOT
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend#MUST NOT|{Module}.Application.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create#MUST NOT|{ValueObject}PropertyValidator.cs]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create#MUST NOT|{Dto}.Validator.cs]]
+## SHOULD
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md#SHOULD|{Feature}Check.cs]]
 
 # Check list
 - [ ] Every `{ValueObject}PropertyValidator` extends `AbstractValidator<Soft{ValueObject}>` and owns a fully local condition

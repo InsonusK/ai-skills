@@ -50,9 +50,7 @@ public sealed class {Rule}Steps
 - Assert against the real `Shared` type — never a hand-written stand-in.
   - Risk: the scenario can stay green after the real primitive's comparison/combination logic breaks.
   - Fix: construct and assert on the real declared type from `Shared`.
-
-## MUST NOT
-- Introduce a module-specific concept into a `Shared.Tests` scenario.
+- Never introduce a module-specific concept into a `Shared.Tests` scenario.
   - Risk: a module-specific scenario here would only be discoverable by someone browsing `Shared`, not the module it actually concerns.
   - Fix: keep `Shared.Tests` scenarios scoped to genuinely cross-cutting primitives.
 

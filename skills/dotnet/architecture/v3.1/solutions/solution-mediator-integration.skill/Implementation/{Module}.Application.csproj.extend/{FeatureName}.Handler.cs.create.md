@@ -5,7 +5,7 @@ name: "{FeatureName}.Handler.cs"
 element_kind: class
 change_kind: create
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/featurename-handler-cs
 ---
 
@@ -122,12 +122,11 @@ public class CreateOrderHandler
 - Dispatch cross-module writes via `_mediator.Send()` — never direct method calls
 - Handlers and validators registered via assembly scan — never manually
 - No validator for query handlers
+- Never contain business logic or domain rules — delegate to entity or domain service
+- Never reference another module's Domain or Application projects directly
+- Never use inline LINQ — all queries go through named specs
+- Never handler call `SaveChangesAsync` — Unit of Work owns commit
 
-## MUST NOT
-- Contain business logic or domain rules — delegate to entity or domain service
-- Reference another module's Domain or Application projects directly
-- Use inline LINQ — all queries go through named specs
-- Handler call `SaveChangesAsync` — Unit of Work owns commit
 ## SHOULD
 - Handler follow the exact load → guard → domain call → stage → return sequence
 - Use the transport validation boundary table to decide what belongs in validator vs handler vs domain

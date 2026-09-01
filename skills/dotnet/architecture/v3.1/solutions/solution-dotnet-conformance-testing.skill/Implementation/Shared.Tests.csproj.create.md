@@ -35,9 +35,7 @@ Same as [[./{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqn
 - Reference `Shared` and nothing else.
   - Risk: referencing any other project here contradicts `Shared`'s own MUST rule of zero project references, and a test could pass by relying on something `Shared` itself is never allowed to depend on.
   - Fix: keep this project scoped to `Shared` only.
-
-## MUST NOT
-- Add a second, separate test project just for `Shared`'s Gherkin scenarios.
+- Never add a second, separate test project just for `Shared`'s Gherkin scenarios.
   - Risk: coverage and mutation-testing reports get computed against only part of `Shared`'s test suite.
   - Fix: keep unit tests and scenarios together in this one project.
 

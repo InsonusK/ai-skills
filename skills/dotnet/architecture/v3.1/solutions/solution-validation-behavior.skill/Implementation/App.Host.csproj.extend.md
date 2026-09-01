@@ -43,10 +43,8 @@ tags:
 ## MUST
 - `ValidationBehavior` registered in `PipelineRegistration.AddPipeline()`
 - `ValidationBehavior` registered after `ExceptionHandlingBehavior` (when applied) and before `ConcurrencyBehavior`/`GuidResolvingBehavior`/`UnitOfWorkBehavior` (whichever are applied)
-
-## MUST NOT
-- Register `ValidationBehavior` inside a module-specific registration method
-- Register `ValidationBehavior` after a behavior that assumes a validated request
+- Never register `ValidationBehavior` inside a module-specific registration method
+- Never register `ValidationBehavior` after a behavior that assumes a validated request
 
 # Check list
 - [ ] `PipelineRegistration.cs` exists under `App.Host/DependencyInjection`

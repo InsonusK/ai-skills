@@ -80,17 +80,15 @@ tags:
 - All types in Shared are purely cross-cutting primitives
 - `Shared.csproj` references `Ardalis.Result` when `ConflictResult<T>` is used
 - Shared has no project dependencies
+- Never shared reference any module, BuildingBlocks, or infrastructure project
+- Never shared contain business logic or domain rules
+- Never shared contain implementations — only interfaces and primitives
 
-## MUST NOT
-- Shared reference any module, BuildingBlocks, or infrastructure project
-- Shared contain business logic or domain rules
-- Shared contain implementations — only interfaces and primitives
-
-# Anti-patterns
-- Placing domain entities in Shared — they belong in module Domain
-- Placing pipeline behaviors in Shared — they belong in BuildingBlocks
-- Adding project references to Shared.csproj
-- Placing implementations in Shared — they belong in BuildingBlocks or App.Infrastructure
+## SHOULD
+- Avoid placing domain entities in Shared — they belong in module Domain
+- Avoid placing pipeline behaviors in Shared — they belong in BuildingBlocks
+- Avoid adding project references to Shared.csproj
+- Avoid placing implementations in Shared — they belong in BuildingBlocks or App.Infrastructure
 
 # Check list
 - [ ] Shared.csproj has no project references

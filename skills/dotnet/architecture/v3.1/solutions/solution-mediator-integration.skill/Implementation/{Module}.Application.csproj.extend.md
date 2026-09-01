@@ -4,7 +4,7 @@ name: "{Module}.Application.csproj"
 element_kind: project
 change_kind: extend
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/module-application-csproj
 ---
 
@@ -90,20 +90,18 @@ Allowed Dependencies: `{Module}.Interfaces`, `{Module}.Domain`, `{OtherModule}.I
 - Module exposes `Register{ModuleName}Module(IServiceCollection, IConfiguration)` extension method
 - Handlers registered via `AddMediatR` assembly scan
 - Validators registered via `AddValidatorsFromAssembly`
+- Never pipeline behaviors registered inside module registration
+- Never handler contain business logic — delegate to domain entities and services
+- Never handler call `SaveChangesAsync`
+- Never handler reference `DbContext` directly — use `IRepository<T>` from Shared
+- Never validator inject repositories or services — purely declarative
+- Never validator contain business rules
 
-## MUST NOT
-- Pipeline behaviors registered inside module registration
-- Handler contain business logic — delegate to domain entities and services
-- Handler call `SaveChangesAsync`
-- Handler reference `DbContext` directly — use `IRepository<T>` from Shared
-- Validator inject repositories or services — purely declarative
-- Validator contain business rules
-
-# Anti-patterns
-- `CreateTaskCommandHandler.cs` as file name — use `CreateTask.Handler.cs`
-- Manual handler registration: `services.AddTransient<CreateTaskHandler>()` — use assembly scan
-- Business rule in handler or validator
-- Validator placed outside its feature folder
+## SHOULD
+- Avoid `CreateTaskCommandHandler.cs` as file name — use `CreateTask.Handler.cs`
+- Avoid manual handler registration: `services.AddTransient<CreateTaskHandler>()` — use assembly scan
+- Avoid business rule in handler or validator
+- Avoid validator placed outside its feature folder
 
 # Check list
 - [ ] `/Features/{FeatureName}` folder exists for each command

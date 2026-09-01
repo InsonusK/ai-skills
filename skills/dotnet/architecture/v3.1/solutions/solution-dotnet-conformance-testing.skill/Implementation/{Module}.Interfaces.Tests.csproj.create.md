@@ -35,9 +35,7 @@ Same as [[./{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqn
 - Reference `{Module}.Interfaces` and nothing else.
   - Risk: referencing `{Module}.Application` or `{Module}.Domain` here would let a contract test depend on implementation details it is meant to be isolated from.
   - Fix: keep this project scoped to `{Module}.Interfaces`'s own declarations.
-
-## MUST NOT
-- Add a second, separate test project just for `{Module}.Interfaces`'s Gherkin scenarios.
+- Never add a second, separate test project just for `{Module}.Interfaces`'s Gherkin scenarios.
   - Risk: coverage and mutation-testing reports get computed against only part of `{Module}.Interfaces`'s test suite.
   - Fix: keep unit tests and scenarios together in this one project.
 

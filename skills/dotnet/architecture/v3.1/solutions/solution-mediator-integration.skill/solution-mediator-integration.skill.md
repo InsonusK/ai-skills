@@ -39,139 +39,124 @@ depends_on:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]"
 built_on_plateau:
+adr:
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/adr/mediator-pattern-is-one-common-solution.md|The MediatR pattern is one common solution, not per-request-kind, and does not depend on the domain layer]]"
 ---
 
 # Goal
-- Define `ICommand` (no payload) and `ICommand<TResponse>` in Shared as the marker interfaces that identify write operations and activate pipeline behaviors
-- Define where and how commands are declared — as immutable records in `/{Module}.Interfaces/Commands`
-- Define how handlers are structured — guard, domain call, return `Result<T>`; load/stage a persisted entity through `IRepository<T>`/`IReadRepository<T>` only when the command actually needs one
-- Define how validators are structured — transport correctness only, co-located with the handler in the feature folder
-- Define module DI registration — each module self-registers via one extension method, handlers and validators auto-scanned
-- Define App.Host module wiring — centralized module registrations assembled in the composition root
-- Establish that handlers never contain business logic, never call `SaveChanges`, and never reference `DbContext`
+- Define the MediatR integration pattern for the whole family: `ICommand`/`ICommand<TResponse>`, `IQuery<TResponse>`, and `INotificationEvent` markers in `Shared`, and the request/handler/validator conventions every module follows.
+- Define where requests are declared — immutable records in `/{Module}.Interfaces/{Commands|Queries|Events}`.
+- Define how a handler is structured — guard → (domain call | read) → return `Result<T>` — with the persisted-entity load/stage steps added only when the request actually touches stored state.
+- Define module DI self-registration (one extension method, handlers/validators assembly-scanned) and App.Host module wiring.
+- Establish that a handler never contains business rules, never calls `SaveChanges`, and never references `DbContext`.
 
 # Capabilities
-- Standardized command/handler/validator structure across all modules
-- Clear separation between transport validation and domain logic
-- Cross-module write operations via MediatR without direct coupling
-- Automatic handler and validator discovery through assembly scanning
-- Consistent `Result<T>`-based response contract for all write operations
+- One standardized request/handler/validator structure across every module, for writes (Command), reads (Query), and pub/sub (Notification).
+- Cross-module interaction via MediatR with no direct type coupling.
+- Automatic handler and validator discovery through assembly scanning.
+- A consistent `Result<T>`-based contract for Commands and Queries.
 
-# Core Principles
-- Handler orchestrates — it never contains business rules
-- Domain layer decides — a handler that touches a persisted entity delegates all decisions to that entity's own methods and domain services (see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]])
-- Handler follows a fixed structure: guard → domain call → return result. A command that reads or mutates a persisted entity adds load/stage steps around the domain call, through `IRepository<T>`/`IReadRepository<T>` — a command with no persisted state (pure computation, an external call, orchestration only) skips load/stage entirely; it is still a command, not a lesser or different kind of write operation
-- Handler returns `Ardalis.Result<T>` — all outcomes expressed as typed results, no exceptions for flow control
-- `ICommand<TResponse>` lives in Shared — every layer can reference it without coupling to BuildingBlocks
-- One command, one handler — no shared handlers, no handler dispatching multiple top-level commands
-- Cross-module writes go through `_mediator.Send()` — never via direct method calls on another module's classes
-- Handler never calls `SaveChangesAsync` — committing is the Unit of Work's responsibility
-- Handlers and validators are registered via assembly scan — never manually one by one
-- Validator enforces transport correctness only — presence, length, format, range
-- Business invariants belong in domain entities and domain services — never in validators
-- One validator per command — co-located with the handler in the same feature folder
-- Command validators use `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-dto-property-validators.skill` instead of duplicating cross-module validation rules
+# Core Principle
+- **Three request kinds, one mechanism** - `ICommand`/`ICommand<T>` = a write (request/response, may mutate state); `IQuery<T>` = a read (request/response, no mutation, no side effect); `INotificationEvent` = a fact already true, published for zero-or-more handlers (pub/sub, no response). The dispatch, handler location, validation, and DI are identical for all three — only the semantics differ.
+- **Handler orchestrates, never decides** - A handler that touches a persisted entity delegates every business decision to that entity's own methods and domain services (see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] when a domain layer exists); a handler with no domain layer only shapes data and dispatches further requests.
+- **Fixed handler shape** - guard → (domain call for a Command / repository read for a Query) → return `Result<T>`. Load/stage steps are added around the middle only when stored state is involved; a pure-computation or orchestration-only handler skips them and is still a complete Command/Query.
+- **Markers live in `Shared`** - every layer references `Shared` freely; putting a marker in `BuildingBlocks` would force modules to reference a technical-pattern layer.
+- One request, one handler. Cross-module calls go through `ISender.Send()` / `IPublisher.Publish()`, never a direct method call.
+- A handler never calls `SaveChangesAsync` — committing is the unit-of-work behavior's job (once persistence exists).
+- Handlers and validators are registered by assembly scan, never one by one.
+- A validator enforces transport correctness only (presence, length, format, range); business invariants belong in the entity. Command/Query validators reuse `IValidator<Soft{ValueObject}>` / `IValidator<{Dto}>` from [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]] instead of re-declaring cross-module rules.
+- A Query with no persistence yet answers from in-memory/pass-through data or delegates to another module; its repository-backed form arrives with [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] (VP2).
 
 # Boundaries
-- Persisted-entity access (`IRepository<T>`/`IReadRepository<T>`) is not provided by this solution — that is `solution-repository-integration`'s job, applied separately once a command needs it (not yet migrated to draft as of this plateau). This solution does not require persistence to exist: `ICommand`, handler/validator structure, and DI/composition-root wiring are all usable by a command that never touches a stored aggregate.
-- Whether a given command needs load/stage at all is a per-command decision, not something this solution mandates — a command whose entire effect is a domain-service computation, an external call, or dispatching further commands has no `IRepository<T>` dependency and is not thereby a lesser or incomplete application of this solution.
+- The domain layer a Command handler delegates to (`{Module}.Domain` entity methods, domain services) is **not** created by this solution — it is [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]] (VP1). A module with no domain layer still uses this solution fully: its handlers orchestrate and shape data. This solution does **not** `depends_on solution-domain-behaviour`.
+- Persisted-entity access (`IRepository<T>`/`IReadRepository<T>`) and repository-backed query handlers are `solution-repository-integration` / `solution-query-integration` (VP2), applied separately. `ICommand`/`IQuery`/`INotificationEvent`, the handler/validator structure, and DI wiring are all usable with no persistence.
+- The pipeline behaviors that the markers activate (`ValidationBehavior`, `ExceptionHandlingBehavior`) are owned by their own solutions; this solution only ensures a request implements a marker `IRequest<T>`/`INotification`.
 
 # Requirements
 SOLUTION:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]] - hosts the `ICommand<T>` marker interface project
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/{Module}.Interfaces.csproj.create|{Module}.Interfaces.csproj]] - hosts command and result records
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create|{Module}.Application.csproj]] - hosts handlers, validators, and module registration
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create|App.Host.csproj]] - hosts composition-root wiring
-- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - provides `ValidationBehavior` pipeline behavior
-    - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create|ValidationBehavior.cs]] - intercepts and validates commands before handlers run
-- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - provides `{ValueObject}PropertyValidator` and `{Dto}Validator` that command validators reuse through `IValidator<T>`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.extend|{Module}.Domain.csproj]] - provides the entity behavior methods and domain services a handler's domain call delegates to
+- [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/Shared.csproj.create.md|Shared.csproj]] - hosts the `ICommand`/`IQuery`/`INotificationEvent` markers
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/{Module}.Interfaces.csproj.create.md|{Module}.Interfaces.csproj]] - hosts request and result records
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create.md|{Module}.Application.csproj]] - hosts handlers, validators, module registration
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts composition-root wiring
+- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md|ValidationBehavior.cs]] - validates a request before its handler runs
+- [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.create.md|{ValueObject}PropertyValidator.cs]] - validators a request validator reuses through `IValidator<T>`
 
 NUGET:
-- `Ardalis.Result` {version} - provides `Result<T>`, `Result.Created`, `Result.NotFound`, `Result.Conflict`, `Result.Error`, `Result.Invalid`
-- `MediatR` {version} - provides `IRequest<T>`, `IRequestHandler<TRequest, TResponse>`, `ISender`, `IMediator`
-- `FluentValidation` {version} - provides `AbstractValidator<T>`, `RuleFor`, validation rule DSL
-- `FluentValidation.DependencyInjectionExtensions` {version} - provides `AddValidatorsFromAssembly`
+- `Ardalis.Result` {version} - `Result<T>` and its statuses
+- `MediatR` {version} - `IRequest<T>`, `INotification`, `IRequestHandler<,>`, `INotificationHandler<>`, `ISender`, `IPublisher`
+- `FluentValidation` + `FluentValidation.DependencyInjectionExtensions` {version} - `AbstractValidator<T>`, `AddValidatorsFromAssembly`
+- (versions in `Directory.Packages.props` per [[skills/dotnet/architecture/v3.1/solutions/solution-central-package-management.skill/solution-central-package-management.skill.md|solution-central-package-management]])
 
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]] - extend - Add MediatR package and the `ICommand` marker interfaces
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create|ICommand.cs]] - create - Write operation marker interfaces
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend|{Module}.Interfaces.csproj]] - extend - Add command record conventions in `/Commands`
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create|{Command}.cs]] - create - Command and result record declaration
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - extend - Add feature folder layout, handlers, validators, and module registration
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create|{FeatureName}.Handler.cs]] - create - Command handler implementation
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create|{FeatureName}.Validator.cs]] - create - Transport correctness validator
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create|{Module}ApplicationRegistration.cs]] - create - Module DI self-registration extension
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Wire module registrations in the composition root
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - MediatR package + the marker interfaces
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - create - `ICommand` / `ICommand<TResponse>` write markers
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs]] - create - `IQuery<TResponse>` read marker
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/INotificationEvent.cs.create.md|INotificationEvent.cs]] - create - `INotificationEvent` pub/sub marker
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - `/Commands`, `/Queries`, `/Events` record conventions
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md|{Command}.cs]] - create - command + result record
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs]] - create - query + response record
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Event}.cs.create.md|{Event}.cs]] - create - notification record
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - feature-folder layout, handlers, validators, registration
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs]] - create - command **or** query handler
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs]] - create - transport validator
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{EventName}.EventHandler.cs.create.md|{EventName}.EventHandler.cs]] - create - notification handler
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md|{Module}ApplicationRegistration.cs]] - create - module DI self-registration
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - wire module registrations
 
-# Rules
+# Rule
 
-## MUST:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend#MUST|Shared.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create#MUST|ICommand.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend#MUST|{Module}.Application.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create#MUST|{FeatureName}.Handler.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create#MUST|{FeatureName}.Validator.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create#MUST|{Module}ApplicationRegistration.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend#MUST|{Module}.Interfaces.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create#MUST|{Command}.cs]]
+## MUST
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md#MUST|ICommand.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/INotificationEvent.cs.create.md#MUST|INotificationEvent.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md#MUST|{FeatureName}.Handler.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md#MUST|{FeatureName}.Validator.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{EventName}.EventHandler.cs.create.md#MUST|{EventName}.EventHandler.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create.md#MUST|{Module}ApplicationRegistration.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create.md#MUST|{Command}.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md#MUST|{Query}.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Event}.cs.create.md#MUST|{Event}.cs]]
 
-## MUST NOT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend#MUST NOT|Shared.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create#MUST NOT|ICommand.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend#MUST NOT|{Module}.Application.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create#MUST NOT|{FeatureName}.Handler.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create#MUST NOT|{FeatureName}.Validator.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.create#MUST NOT|{Module}ApplicationRegistration.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend#MUST NOT|{Module}.Interfaces.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.create#MUST NOT|{Command}.cs]]
-
-# Anti-patterns
-- Business rule in handler: `if (task.Status == TaskStatus.Closed) return Result.Conflict(...)` — belongs in entity
-- Inline LINQ in handler: `_repository.FirstOrDefaultAsync(x => x.Id == id, ct)` — use named spec
-- Manual handler registration in module: `services.AddTransient<CreateTaskHandler>()` — use assembly scan
-- `SaveChangesAsync` in handler — Unit of Work commits after handler returns
-- Direct call to another module: `_taskService.Create(...)` — use `_mediator.Send(new CreateTaskCommand(...))`
-- `CreateTaskCommandHandler.cs` as file name — use `CreateTask.Handler.cs`
-- Multiple top-level commands dispatched sequentially from one handler — design as a single orchestrating command
-- `ICommand` defined in BuildingBlocks — modules would need a BuildingBlocks reference, violating layer rules
-- `RuleFor(x => x.AssigneeId).MustAsync(async (id, ct) => await _repo.AnyAsync(...))` — entity existence is a handler guard, not transport validation
-- Validator placed outside its feature folder — always co-located with handler
-- Shared validator used for multiple commands: `public class EntityIdValidator : AbstractValidator<IHasId>` — one validator per command
-- Business invariant in validator: `RuleFor(x => x.Status).Must(s => s != TaskStatus.Closed)` — belongs in domain entity
-- Duplicating Soft{ValueObject} validation rules in a command validator instead of using `IValidator<Soft{ValueObject}>`
+- Never define `ICommand`/`IQuery`/`INotificationEvent` in `BuildingBlocks` — they live in `Shared`.
+  - Risk: a module would need a `BuildingBlocks` reference to declare a request, inverting the layer rule (`BuildingBlocks` is a technical-pattern layer, not a contract layer).
+  - Fix: the markers live in `Shared/MediatR`, which every layer may reference.
+- Never register a handler or validator by hand (`services.AddTransient<CreateTaskHandler>()`).
+  - Risk: a new feature silently has no handler until someone remembers the registration line.
+  - Fix: `AddMediatR` and `AddValidatorsFromAssembly` assembly scan on the module assembly.
+- Never call another module directly (`_taskService.Create(...)`); dispatch a request defined in the target module's `Interfaces`.
+  - Risk: a direct call couples the modules and bypasses the pipeline.
+  - Fix: `_sender.Send(new CreateTaskCommand(...))` / publish a notification.
+- Never put a business rule, inline LINQ, or `SaveChangesAsync` in a handler.
+  - Risk: domain logic leaks out of the entity, queries bypass named specs, and premature commits break atomicity — all invisible to a reader of the entity.
+  - Fix: guard → domain call → return; load via named specs (once persistence exists); commit is the unit-of-work behavior's job.
+- Never dispatch several top-level commands sequentially from one handler.
+  - Risk: partial-failure states with no transaction boundary spanning them.
+  - Fix: model the operation as one orchestrating command.
+- Name a handler file `{FeatureName}.Handler.cs` / class `{FeatureName}Handler`, co-located with its validator under `Features/{FeatureName}` — never `{FeatureName}CommandHandler.cs`, never a shared validator across commands.
+  - Risk: inconsistent names defeat convention-based navigation and assembly scanning assumptions.
+  - Fix: one folder per feature, the fixed file/class names, one validator per request.
 
 # Check list
-- [ ] `ICommand : IRequest<Result>` and `ICommand<TResponse> : IRequest<TResponse>` defined in `Shared/MediatR/ICommand.cs`
-- [ ] All commands declared as `record` in `/{Module}.Interfaces/Commands`
-- [ ] All commands implement `ICommand<Result<T>>` for a result payload of `T`, or `ICommand<Result>` when there is no payload beyond success/failure; bare `ICommand` is reserved for commands with no persisted-entity effect at all
-- [ ] Result records co-located with their command in the same file
-- [ ] Each feature has its own folder under `/{Module}.Application/Features`
-- [ ] Handler file named `{FeatureName}.Handler.cs`
-- [ ] Handler class named `{FeatureName}Handler`
-- [ ] Handler implements `IRequestHandler<TCommand, Result<T>>`
-- [ ] Handler never injects `DbContext` directly — a command that touches a persisted entity injects `IRepository<T>`/`IReadRepository<T>` instead
-- [ ] Handler loads entities via named specs — no inline LINQ
-- [ ] Handler follows guard → domain call → return structure, with load/stage added around the domain call only when the command touches a persisted entity
-- [ ] Handler returns `Result<T>` for all outcomes — no exceptions for flow control
-- [ ] Handler never calls `SaveChangesAsync`
-- [ ] Cross-module writes dispatched via `_mediator.Send()`
-- [ ] Module has `Register{ModuleName}Module()` extension method
-- [ ] Handlers registered via `AddMediatR` assembly scan
-- [ ] Validators registered via `AddValidatorsFromAssembly` assembly scan
-- [ ] One validator per command in `/{Module}.Application/Features/{FeatureName}`
-- [ ] Validator file named `{FeatureName}.Validator.cs`
-- [ ] Validator class named `{FeatureName}Validator`
-- [ ] Validator extends `AbstractValidator<TCommand>`
-- [ ] Validator rules cover transport correctness only — no business rules, no DB access
+- [ ] `ICommand`/`ICommand<TResponse>`, `IQuery<TResponse>`, `INotificationEvent` all defined in `Shared/MediatR`, members-free.
+- [ ] Commands are `record`s in `/{Module}.Interfaces/Commands` implementing `ICommand<Result<T>>` (or `ICommand`); queries in `/Queries` implementing `IQuery<...>`; events past-tense in `/Events` implementing `INotificationEvent`.
+- [ ] Response/result records co-located with their request.
+- [ ] Each feature has its own folder under `/{Module}.Application/Features`; event handlers under `/Events/{EventName}`.
+- [ ] Handler file `{FeatureName}.Handler.cs` / class `{FeatureName}Handler`; event handler `{EventName}.EventHandler.cs` / `{EventName}EventHandler`.
+- [ ] Handler follows guard → (domain call | read) → return `Result<T>`; load/stage only when stored state is involved.
+- [ ] Handler never injects `DbContext`, never inline LINQ, never `SaveChangesAsync`, never exceptions for flow control.
+- [ ] Cross-module: `ISender.Send` for Command/Query, `IPublisher.Publish` for events — never a direct call.
+- [ ] Module has one `Register{ModuleName}Module()` extension; handlers via `AddMediatR` scan, validators via `AddValidatorsFromAssembly` scan.
+- [ ] One validator per Command/Query, co-located; `AbstractValidator<TRequest>`; transport correctness only.
+- [ ] No validator for a notification; no query handler mutates state.
 - [ ] No validator exists for any query handler
 - [ ] Command validator uses `IValidator<Soft{ValueObject}>` for cross-module Soft VO properties via `SetValidator`
 - [ ] Command validator uses `IValidator<{Dto}>` for cross-module DTO properties via `SetValidator`

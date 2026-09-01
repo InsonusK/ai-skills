@@ -43,14 +43,12 @@ tags:
 ## MUST
 - `ExceptionHandlingBehavior` registered in `PipelineRegistration.AddPipeline()`
 - `ExceptionHandlingBehavior` registered before all other pipeline behaviors
+- Never register `ExceptionHandlingBehavior` inside a module-specific registration method
+- Never register `ExceptionHandlingBehavior` after other pipeline behaviors
 
-## MUST NOT
-- Register `ExceptionHandlingBehavior` inside a module-specific registration method
-- Register `ExceptionHandlingBehavior` after other pipeline behaviors
-
-# Anti-patterns
-- Registering the exception handler in a module instead of App.Host
-- Changing the pipeline order in multiple files
+## SHOULD
+- Avoid registering the exception handler in a module instead of App.Host
+- Avoid changing the pipeline order in multiple files
 
 # Check list
 - [ ] `PipelineRegistration.cs` exists under `App.Host/DependencyInjection`

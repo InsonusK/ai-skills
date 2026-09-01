@@ -4,16 +4,17 @@ description: Whether a ResponseDto property may be typed as the domain {ValueObj
 problem: A ResponseDto in {Module}.Interfaces needs to expose a value that the domain models as a Value Object. Typing the DTO property as the domain {ValueObject} directly would require {Module}.Interfaces to reference {Module}.Domain, or the {ValueObject} class itself to move into {Module}.Interfaces.
 decision: All {ValueObject} stays sealed in {Module}.Domain. ResponseDto (and RequestDto) properties use Soft{ValueObject} — or the underlying primitive when no Soft{ValueObject} exists — declared in {Module}.Interfaces. The Application layer maps {ValueObject} to Soft{ValueObject}/primitive when producing a DTO.
 tags:
-  - solution/value-objects
+  - solution/soft-value-objects
   - concern/documentation
   - concern/documentation/adr
+  - stack/dotnet
 ---
 
 # Problem
 
 A DTO property that represents a value-object concept (e.g. `Email`, `Money`) needs a type. Two constraints collide:
 
-- [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/solution-value-objects.skill|solution-value-objects]] requires the domain `{ValueObject}` to live in `{Module}.Domain` and be the only layer that contains entity/value-object definitions.
+- [[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]] requires the domain `{ValueObject}` to live in `{Module}.Domain` and be the only layer that contains entity/value-object definitions.
 - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] requires `{Module}.Interfaces` to stay declarations-only, to depend on nothing but `Shared`, and forbids any other module from referencing `{Module}.Domain`.
 
 Typing a `ResponseDto` property as the domain `{ValueObject}` needs one of these to give way: either `{Module}.Interfaces` gains a dependency on `{Module}.Domain` (or a project reference exception is carved out for VO types), or the `{ValueObject}` class itself relocates from Domain into Interfaces.
@@ -24,7 +25,7 @@ Decide where a DTO-exposed value-object-shaped property gets its type from, with
 
 **Selected variant:** [[#ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}]]
 
-`{ValueObject}` stays sealed in `{Module}.Domain` and keeps throwing `DomainException` on invalid construction, per [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/solution-value-objects.skill|solution-value-objects]]. `{Module}.Interfaces` exposes only `Soft{ValueObject}`, or a plain primitive when no `Soft{ValueObject}` exists for the concept. `{Module}.Application` maps `{ValueObject}` to `Soft{ValueObject}`/primitive when assembling a `ResponseDto`; for single-property VOs this is typically the existing implicit conversion operator.
+`{ValueObject}` stays sealed in `{Module}.Domain` and keeps throwing `DomainException` on invalid construction, per [[skills/dotnet/architecture/v3.1/solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]]. `{Module}.Interfaces` exposes only `Soft{ValueObject}`, or a plain primitive when no `Soft{ValueObject}` exists for the concept. `{Module}.Application` maps `{ValueObject}` to `Soft{ValueObject}`/primitive when assembling a `ResponseDto`; for single-property VOs this is typically the existing implicit conversion operator.
 
 This keeps the dependency direction intact: `{Module}.Interfaces` depends on nothing, `{Module}.Domain` is referenced by nobody outside the module, and consumers keep validating received shapes through `Soft{ValueObject}` without inheriting the producer's throw-on-construct semantics.
 

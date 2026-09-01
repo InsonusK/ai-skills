@@ -53,15 +53,13 @@ tags:
 
 ## MUST
 - Application references only own Interfaces, own Domain
+- Never application reference another module's Domain
+- Never application reference another module's Application
+- Never application contain business logic — delegate to Domain
 
-## MUST NOT
-- Application reference another module's Domain
-- Application reference another module's Application
-- Application contain business logic — delegate to Domain
-
-# Anti-patterns
-- Calling another module's Application method directly — use MediatR dispatch through Interfaces
-- Writing business rules in a handler — delegate to entity or domain service
+## SHOULD
+- Avoid calling another module's Application method directly — use MediatR dispatch through Interfaces
+- Avoid writing business rules in a handler — delegate to entity or domain service
 
 # Check list
 - [ ] Application.csproj does not reference another module's Domain or Application

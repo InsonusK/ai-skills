@@ -5,7 +5,7 @@ name: ICommand.cs
 element_kind: class
 change_kind: create
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/icommand-cs
 ---
 
@@ -55,10 +55,8 @@ public interface ICommand<TResponse> : IRequest<TResponse> { }
 - All command records implement `ICommand<Result<T>>` — not `IRequest<T>` directly
 - `ICommand` used only when the command truly produces no return payload
 - `ICommand` and `ICommand<TResponse>` defined in Shared — not BuildingBlocks, not any module
-
-## MUST NOT
-- Add methods or properties to the marker interfaces
-- `ICommand` defined in BuildingBlocks — belongs in Shared
+- Never add methods or properties to the marker interfaces
+- Never `ICommand` defined in BuildingBlocks — belongs in Shared
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Mark a MediatR request as a write operation so pipeline behaviors can activate selectively on commands only

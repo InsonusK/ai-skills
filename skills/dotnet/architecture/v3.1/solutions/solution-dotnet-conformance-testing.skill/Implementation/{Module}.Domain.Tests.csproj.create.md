@@ -58,9 +58,7 @@ change_kind: create
 - Configure `dotnet test` to run both `[Fact]`/`[Theory]` unit tests and Reqnroll-generated scenario tests in the same run.
   - Risk: if only one kind of test runs per invocation, `make unit-test` reports an incomplete result and CI/local runs can diverge on what "green" means.
   - Fix: configure the test project so a single `dotnet test` invocation executes both.
-
-## MUST NOT
-- Add a second, separate test project just for `{Module}.Domain`'s Gherkin scenarios — unit tests and scenarios stay in this one project.
+- Never add a second, separate test project just for `{Module}.Domain`'s Gherkin scenarios — unit tests and scenarios stay in this one project.
   - Risk: coverage and mutation-testing reports get computed against only part of `{Module}.Domain`'s test suite, understating both.
   - Fix: keep both in `{Module}.Domain.Tests` so every gate sees the full picture for this project.
 

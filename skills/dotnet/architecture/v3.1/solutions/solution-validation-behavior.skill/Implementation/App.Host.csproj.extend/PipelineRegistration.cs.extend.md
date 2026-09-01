@@ -57,9 +57,7 @@ public static class PipelineRegistration
 ## MUST
 - Register `ValidationBehavior` after `ExceptionHandlingBehavior` (when applied) and before `ConcurrencyBehavior`, `GuidResolvingBehavior`, and `UnitOfWorkBehavior` (whichever are applied)
 - Keep the registration inside the existing `PipelineRegistration.cs` — never a second registration file
-
-## MUST NOT
-- Register `ValidationBehavior` after any behavior that assumes a validated request (`ConcurrencyBehavior`, `GuidResolvingBehavior`, `UnitOfWorkBehavior`)
+- Never register `ValidationBehavior` after any behavior that assumes a validated request (`ConcurrencyBehavior`, `GuidResolvingBehavior`, `UnitOfWorkBehavior`)
 
 # Check list
 - [ ] `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));` present in `AddPipeline()`

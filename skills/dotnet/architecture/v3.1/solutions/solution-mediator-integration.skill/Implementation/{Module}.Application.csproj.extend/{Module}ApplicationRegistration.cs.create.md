@@ -5,7 +5,7 @@ name: "{Module}ApplicationRegistration.cs"
 element_kind: class
 change_kind: create
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/module-applicationregistration-cs
 ---
 
@@ -68,11 +68,9 @@ public static class {Module}ApplicationRegistration
 - Accept `IServiceCollection` and `IConfiguration`
 - Register handlers via `AddMediatR` assembly scan
 - Register validators via `AddValidatorsFromAssembly` — this also registers `{ValueObject}PropertyValidator` and `{Dto}Validator` from `solution-dto-property-validators.skill`
-
-## MUST NOT
-- Register pipeline behaviors — belongs in App.Host
-- Register `DbContext` or infrastructure services — belongs in App.Infrastructure registration
-- Reference another module's Application assembly
+- Never register pipeline behaviors — belongs in App.Host
+- Never register `DbContext` or infrastructure services — belongs in App.Infrastructure registration
+- Never reference another module's Application assembly
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Self-register all handlers and validators in this module's assembly via scan

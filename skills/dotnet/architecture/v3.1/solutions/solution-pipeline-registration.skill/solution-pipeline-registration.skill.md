@@ -55,22 +55,20 @@ PROJECT:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Wire centralized pipeline registration in the composition root
   - [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create|PipelineRegistration.cs]] - create - Centralized pipeline behavior registration extension
 
-# Rules
+# Rule
 
-## MUST:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create#MUST|PipelineRegistration.cs]]
-- `AddPipeline()` called once from `Program.cs`
-
-## MUST NOT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create#MUST NOT|PipelineRegistration.cs]]
-- Change pipeline order in multiple files
-
-# Anti-patterns
-- Pipeline order scattered across multiple files
-- `AddPipeline()` duplicated or replaced by module-specific registration methods
-- Registering behaviors directly in `Program.cs` instead of inside `PipelineRegistration`
+## MUST
+- [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.create.md#MUST|PipelineRegistration.cs]]
+- Call `AddPipeline()` exactly once, from `Program.cs`.
+  - Risk: a second call re-registers every behavior, so each runs twice per request.
+  - Fix: one call in the composition root; module registrations never touch the pipeline.
+- Declare the behavior execution order only inside `PipelineRegistration.AddPipeline()`, in one place.
+  - Risk: order split across files (or across `Program.cs` and a module) makes the effective pipeline impossible to read and easy to break silently.
+  - Fix: the single ordered list of `AddBehavior<...>()` calls lives in `AddPipeline()`.
+- Never register an `IPipelineBehavior<,>` directly in `Program.cs` or inside a module's registration.
+  - Risk: a behavior registered outside `AddPipeline()` runs at an undefined position relative to the ordered ones.
+  - Fix: every behavior is added inside `AddPipeline()` at its explicit position.
 
 # Check list
 - [ ] `PipelineRegistration.cs` exists under `App.Host/DependencyInjection`

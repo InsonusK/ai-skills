@@ -38,9 +38,7 @@ Same as [[./{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests]]: Reqn
 - Give a technical/architectural behavior (e.g. a pipeline behavior's ordering or error-handling contract) its own `.feature` file, the same way a business rule would get one.
   - Risk: leaving technical behavior to bare `[Fact]` tests only makes it invisible in the readable report [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] exists to produce.
   - Fix: write a `.feature` file describing the technical contract, with step definitions calling the real `BuildingBlocks` class.
-
-## MUST NOT
-- Add a second, separate test project just for `BuildingBlocks`'s Gherkin scenarios.
+- Never add a second, separate test project just for `BuildingBlocks`'s Gherkin scenarios.
   - Risk: coverage and mutation-testing reports get computed against only part of `BuildingBlocks`'s test suite.
   - Fix: keep unit tests and scenarios together in this one project.
 

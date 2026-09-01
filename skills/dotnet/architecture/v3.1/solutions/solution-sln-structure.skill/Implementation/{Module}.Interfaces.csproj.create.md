@@ -53,15 +53,13 @@ tags:
 - All commands declared here
 - All queries declared here
 - All integration events declared here
+- Never interfaces reference Domain, Application, or any infrastructure project
+- Never interfaces contain any implementation code
 
-## MUST NOT
-- Interfaces reference Domain, Application, or any infrastructure project
-- Interfaces contain any implementation code
-
-# Anti-patterns
-- Placing command handlers in Interfaces — handlers belong in Application
-- Placing domain entities in Interfaces — use DTOs for cross-module data shapes
-- Referencing another module's Domain from Interfaces
+## SHOULD
+- Avoid placing command handlers in Interfaces — handlers belong in Application
+- Avoid placing domain entities in Interfaces — use DTOs for cross-module data shapes
+- Avoid referencing another module's Domain from Interfaces
 
 # Check list
 - [ ] /Commands folder exists

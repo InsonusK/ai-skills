@@ -82,24 +82,19 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>
 - Return `(TResponse)Result.Error(...)` with a fixed, non-detailed message
 - Define the behavior in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
 - Constrain the behavior to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+- Never re-throw the exception or throw a new exception from the catch block
+- Never return `Result.Error` with the original `ex.Message` or `ex.StackTrace`
+- Never catch only specific exception types
 
 ## SHOULD
 - Include the request type name in the log message for correlation
 - Keep the user-facing error message in a constant if it is reused elsewhere
-
-## MUST NOT
-- Re-throw the exception or throw a new exception from the catch block
-- Return `Result.Error` with the original `ex.Message` or `ex.StackTrace`
-- Catch only specific exception types
-
-# Anti-patterns
-- **Logging at Warning or Error level for unhandled exceptions**
-  - Consequence: unhandled exceptions are not escalated appropriately and may be missed in alerting
-  - Instead: always log at `LogLevel.Critical`
-
-- **Returning `Result.CriticalError` without project convention**
-  - Consequence: the API may map `CriticalError` to an unexpected status code or handling path
-  - Instead: use `Result.Error` as the default; use `Result.CriticalError` only when the project explicitly defines it
+- Avoid logging at Warning or Error level for unhandled exceptions
+  - Risk: unhandled exceptions are not escalated appropriately and may be missed in alerting
+  - Fix: always log at `LogLevel.Critical`
+- Avoid returning `Result.CriticalError` without project convention
+  - Risk: the API may map `CriticalError` to an unexpected status code or handling path
+  - Fix: use `Result.Error` as the default; use `Result.CriticalError` only when the project explicitly defines it
 
 # Check list
 - [ ] `ExceptionHandlingBehavior` defined in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`

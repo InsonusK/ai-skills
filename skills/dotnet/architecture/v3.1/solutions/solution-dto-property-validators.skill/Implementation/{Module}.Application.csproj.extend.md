@@ -47,6 +47,5 @@ Allowed Dependencies: unchanged. NuGet: adds `FluentValidation`, with `AddValida
 ## MUST
 - Add `/Validators/Property`, `/Validators/Model`, `/Validators/Async` folders to `{Module}.Application`
 - Call `AddValidatorsFromAssembly` for `{Module}.Application`'s own assembly
+- Never register a validator manually instead of via assembly scan
 
-## MUST NOT
-- Register a validator manually instead of via assembly scan

@@ -68,14 +68,12 @@ NuGet: adds `FluentValidation`. Allowed Dependencies: `Shared` (unchanged).
 - `FluentValidation`, `MediatR`, and `Ardalis.Result` packages referenced in `BuildingBlocks.csproj`
 - `ValidationBehavior` placed in `/BuildingBlocks/MediatR`
 - `ValidationBehavior` constrained to `IRequest<TResponse>` from MediatR
+- Never add business logic or request-specific conditions to `ValidationBehavior`
+- Never throw exceptions for validation failures — always return `Result.Invalid`
 
-## MUST NOT
-- Add business logic or request-specific conditions to `ValidationBehavior`
-- Throw exceptions for validation failures — always return `Result.Invalid`
-
-# Anti-patterns
-- Implementing per-request validation logic inside `ValidationBehavior`
-- Returning exceptions instead of `Result.Invalid`
+## SHOULD
+- Avoid implementing per-request validation logic inside `ValidationBehavior`
+- Avoid returning exceptions instead of `Result.Invalid`
 
 # Check list
 - [ ] `FluentValidation` referenced in `BuildingBlocks.csproj`

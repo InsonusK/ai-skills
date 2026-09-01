@@ -66,25 +66,22 @@ PROJECT:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend|App.Host.csproj]] - extend - Register `ValidationBehavior` in the centralized pipeline
   - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend|PipelineRegistration.cs]] - extend - Insert `ValidationBehavior` right after `ExceptionHandlingBehavior`
 
-# Rules
+# Rule
 
-## MUST:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend#MUST|BuildingBlocks.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create#MUST|ValidationBehavior.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST|PipelineRegistration.cs]]
-
-## MUST NOT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend#MUST NOT|BuildingBlocks.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create#MUST NOT|ValidationBehavior.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend#MUST NOT|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST NOT|PipelineRegistration.cs]]
-
-# Anti-patterns
-- Implementing per-request validation logic inside `ValidationBehavior`
-- Returning exceptions instead of `Result.Invalid`
-- Business invariant in validator: `RuleFor(x => x.Status).Must(s => s != TaskStatus.Closed)` — belongs in domain entity
-- `RuleFor(x => x.AssigneeId).MustAsync(async (id, ct) => await _repo.AnyAsync(...))` — entity existence is a handler guard, not transport validation
+## MUST
+- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create.md#MUST|ValidationBehavior.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-validation-behavior.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md#MUST|PipelineRegistration.cs]]
+- Keep `ValidationBehavior` a generic dispatcher only — it runs registered validators and never contains a per-request condition.
+  - Risk: a condition inlined into the behavior applies to every request type and cannot be found by anyone reading a specific command's validator.
+  - Fix: the behavior resolves `IEnumerable<IValidator<TRequest>>` and runs them; conditions live in per-request `AbstractValidator<T>` classes.
+- Short-circuit with `Result.Invalid(errors)`, never a thrown exception.
+  - Risk: a thrown validation exception turns a 400-shaped outcome into a 500 and bypasses the `Result` contract every handler returns.
+  - Fix: collect failures and return `Result.Invalid`.
+- Never put a business invariant or an entity-existence check in a validator run by this behavior.
+  - Risk: `RuleFor(x => x.Status).Must(...)` or `MustAsync(... _repo.AnyAsync ...)` mixes domain rules and DB access into transport validation, so the rule runs before the handler's own guards and duplicates domain logic.
+  - Fix: transport shape only in validators; invariants in the entity, existence checks in the handler.
 
 # Check list
 - [ ] `ValidationBehavior` defined in `BuildingBlocks/MediatR/ValidationBehavior.cs`

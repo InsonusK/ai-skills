@@ -5,7 +5,7 @@ name: "Soft{ValueObject}.cs"
 element_kind: class
 change_kind: create
 tags:
-  - solution/value-objects
+  - solution/soft-value-objects
   - element/soft-valueobject-cs
 ---
 
@@ -61,18 +61,21 @@ public record SoftComplexity(int Value);
 # Rule changes
 
 ## MUST
-- Be declared as `record`
-- Not validate values in constructor or properties
-- Allow invalid values
-- Provide a `protected` parameterless constructor for multi-property types when EF Core materialization is needed
+- Declare `Soft{ValueObject}` as a `record`.
+  - Risk: a `class` loses free structural equality, so two instances with the same value compare unequal and dictionary/set semantics break.
+  - Fix: `public record Soft{ValueObject}(...)`.
+- Never validate, throw, or run business logic in the constructor or properties — allow invalid values.
+  - Risk: a throwing boundary type makes a bad-data DTO undeserializable, so the collect-all validator never sees it.
+  - Fix: keep it a plain data record; validation belongs to `solution-dto-property-validators`.
+- Never reference `{Module}.Domain` or `{Module}.Domain.Rules`.
+  - Risk: `{Module}.Domain.Rules` itself references `{Module}.Interfaces`, so a reference back creates a project cycle; a reference to `{Module}.Domain` leaks internals through the public contract.
+  - Fix: `Soft{ValueObject}` depends on nothing but the BCL.
+- Give a multi-property `Soft{ValueObject}` a `protected` parameterless constructor when a strict `{ValueObject}` over it will be EF-persisted.
+  - Risk: EF Core cannot materialize an owned type with no parameterless constructor.
+  - Fix: `protected Soft{ValueObject}() : this(default, ...) { }`.
 
 ## SHOULD
-- Name file and class `Soft{ValueObject}`
-
-## MUST NOT
-- Throw exceptions for invalid values
-- Contain business logic
-- Reference `{Module}.Domain` or `Domain.Rules`
+- Name the file and the type `Soft{ValueObject}`.
 
 # Check list
 - [ ] `Soft{ValueObject}` is a `record`

@@ -80,11 +80,9 @@ public class ValidationBehavior<TRequest, TResponse>
 - `ValidationBehavior` defined in `BuildingBlocks/MediatR/ValidationBehavior.cs`
 - `ValidationBehavior` constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
 - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
-## MUST NOT
-- Contain any request-specific conditions
-- Throw `ValidationException` — always return typed `Result.Invalid`
-- Register behaviors inside module registration methods
-
+- Never contain any request-specific conditions
+- Never throw `ValidationException` — always return typed `Result.Invalid`
+- Never register behaviors inside module registration methods
 ## SHOULD
 - `Transient` lifetime — new behavior instance per pipeline invocation
 

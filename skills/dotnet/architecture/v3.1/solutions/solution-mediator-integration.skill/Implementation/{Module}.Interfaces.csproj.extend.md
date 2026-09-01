@@ -4,7 +4,7 @@ name: "{Module}.Interfaces.csproj"
 element_kind: project
 change_kind: extend
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/module-interfaces-csproj
 ---
 
@@ -72,15 +72,13 @@ Allowed Dependencies: unchanged. NuGet: adds `MediatR`, `Ardalis.Result`.
 - All commands for this module declared in `/{Module}.Interfaces/Commands`
 - Each command file contains the command record and its result record
 - Commands implement `ICommand<T>` (or `ICommand` when no payload is returned) from Shared
+- Never commands contain any logic or methods
+- Never commands reference Domain entity types — input properties are primitives or shared value types only
+- Never interfaces project reference Domain, Application, or infrastructure projects
 
-## MUST NOT
-- Commands contain any logic or methods
-- Commands reference Domain entity types — input properties are primitives or shared value types only
-- Interfaces project reference Domain, Application, or infrastructure projects
-
-# Anti-patterns
-- Declaring command handlers or validators in Interfaces
-- Referencing another module's Domain from Interfaces
+## SHOULD
+- Avoid declaring command handlers or validators in Interfaces
+- Avoid referencing another module's Domain from Interfaces
 
 # Check list
 - [ ] `/Commands` folder exists

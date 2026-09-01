@@ -65,16 +65,14 @@ public static class PipelineRegistration
 ## MUST
 - Prepend `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));` at the beginning of `AddPipeline()`
 - Keep all behavior registrations inside `PipelineRegistration.cs`
+- Never register `ExceptionHandlingBehavior` after other behaviors
+- Never register `ExceptionHandlingBehavior` directly in `Program.cs`
+- Never register `ExceptionHandlingBehavior` inside a module registration method
 
-## MUST NOT
-- Register `ExceptionHandlingBehavior` after other behaviors
-- Register `ExceptionHandlingBehavior` directly in `Program.cs`
-- Register `ExceptionHandlingBehavior` inside a module registration method
-
-# Anti-patterns
-- **Registering the exception handler last in the pipeline**
-  - Consequence: exceptions thrown by outer behaviors (for example, during `UnitOfWorkBehavior` commit) are not caught
-  - Instead: register `ExceptionHandlingBehavior` first in `AddPipeline()`
+## SHOULD
+- Avoid registering the exception handler last in the pipeline
+  - Risk: exceptions thrown by outer behaviors (for example, during `UnitOfWorkBehavior` commit) are not caught
+  - Fix: register `ExceptionHandlingBehavior` first in `AddPipeline()`
 
 # Check list
 - [ ] `AddPipeline()` exists in `App.Host/DependencyInjection/PipelineRegistration.cs`

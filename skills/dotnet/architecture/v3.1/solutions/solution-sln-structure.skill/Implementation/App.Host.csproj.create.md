@@ -58,15 +58,13 @@ tags:
 - App.Host is the only project referencing all modules simultaneously
 - App.Host is the only composition root
 - App.Host references BuildingBlocks; modules and other layers reference Shared directly to implement or consume interfaces
+- Never app.Host contain business logic
+- Never app.Host contain handler implementations
 
-## MUST NOT
-- App.Host contain business logic
-- App.Host contain handler implementations
-
-# Anti-patterns
-- Putting business logic in App.Host — wiring only
-- Putting handler implementations in App.Host — belong in module Application
-- Registering pipeline behaviors inside module registration — register once in App.Host
+## SHOULD
+- Avoid putting business logic in App.Host — wiring only
+- Avoid putting handler implementations in App.Host — belong in module Application
+- Avoid registering pipeline behaviors inside module registration — register once in App.Host
 
 # Check list
 - [ ] All module registration methods called

@@ -96,10 +96,8 @@ public class SomeHandler
 - Use `SetValidator(IValidator<Soft{ValueObject}>)` for every value-concept property
 - Assemble a cross-field condition only from the DTO's own already-available fields — never perform I/O
 - ResponseDto validators are created only when explicitly required — see the `dto-validators-only-for-request-dtos` ADR
-
-## MUST NOT
-- Validate a value-concept property inline instead of composing its `PropertyValidator`
-- Inject a repository, `DbContext`, or any service — a validator that needs preloaded data is a `{Feature}Check`, not a `{Dto}Validator`
+- Never validate a value-concept property inline instead of composing its `PropertyValidator`
+- Never inject a repository, `DbContext`, or any service — a validator that needs preloaded data is a `{Feature}Check`, not a `{Dto}Validator`
 
 ## SHOULD
 - Name the DTO validator `{Dto}Validator`

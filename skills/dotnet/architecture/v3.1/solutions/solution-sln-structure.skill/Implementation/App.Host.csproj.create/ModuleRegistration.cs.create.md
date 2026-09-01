@@ -63,10 +63,8 @@ public static class ModuleRegistration
 - Accept `IServiceCollection` and `IConfiguration`
 - Live under `/App.Host/DependencyInjection`
 - Call every registered module's registration extension
-
-## MUST NOT
-- Register pipeline behaviors — belongs in App.Host pipeline registration
-- Register infrastructure services — belongs in App.Infrastructure registration
+- Never register pipeline behaviors — belongs in App.Host pipeline registration
+- Never register infrastructure services — belongs in App.Infrastructure registration
 
 # Unittest TestCases
 - [ ] WHEN component is requested THEN it provide a single extension method where every module is registered

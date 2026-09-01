@@ -121,37 +121,23 @@ sequenceDiagram
   - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-exception-handler.skill/Implementation/BuildingBlocks.csproj.extend/ExceptionHandlingBehavior.cs.create#MUST|ExceptionHandlingBehavior.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-exception-handler.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend#MUST|PipelineRegistration.cs]]
-- Catch `Exception` — do not catch only specific exception types
-- Log the caught exception at `LogLevel.Critical`
-- Return a generic `Result.Error` message without exception details
-- Register `ExceptionHandlingBehavior` before all other pipeline behaviors in `PipelineRegistration.AddPipeline()`
+- Catch `Exception`, not only specific types.
+  - Risk: a narrow `catch` lets an unanticipated exception reach the API as a raw 500 with a leaked stack trace.
+  - Fix: `try { await next(); } catch (Exception ex) { ... }` around the whole downstream pipeline.
+- Log the caught exception at `LogLevel.Critical` (through `ILogger<T>` per [[skills/dotnet/architecture/v3.1/solutions/solution-app-logging.skill/solution-app-logging.skill.md|solution-app-logging]], event `LogEvents.UnhandledException`) and return a generic `Result.Error` with no exception details.
+  - Risk: returning the exception message or stack trace to the caller discloses implementation internals; not logging it loses the only record.
+  - Fix: full detail to the log, a fixed generic message to the caller.
+- Register `ExceptionHandlingBehavior` first in `PipelineRegistration.AddPipeline()`, before every other behavior.
+  - Risk: registered after validation/concurrency/unit-of-work, it does not catch exceptions those outer behaviors throw (e.g. a commit failure in `UnitOfWorkBehavior`).
+  - Fix: first position, so it wraps all other behaviors and the handler.
+- Never throw from inside `ExceptionHandlingBehavior`, and never use it for expected business failures.
+  - Risk: a throw here escapes entirely unhandled; routing an expected failure through it turns a domain outcome into a generic error and loses the specific `Result` status.
+  - Fix: the behavior only maps unexpected exceptions; handlers return specific `Result` statuses for expected failures.
 
 ## SHOULD
-- Include the request type name in the log scope or message for easier correlation
-- Keep the user-facing message in a constant or configuration value
-
-## MUST NOT
-- Return the original exception message or stack trace to the API consumer
-- Register `ExceptionHandlingBehavior` after validation, concurrency, or unit-of-work behaviors
-- Throw a new exception from inside `ExceptionHandlingBehavior`
-- Use `ExceptionHandlingBehavior` for expected business failures — those must return specific `Result` statuses from handlers
-
-# Anti-patterns
-- **Catching exceptions inside individual handlers**
-  - Consequence: duplicates exception-handling logic, makes behavior inconsistent, and allows some exceptions to leak
-  - Instead: let unhandled exceptions propagate to `ExceptionHandlingBehavior`
-
-- **Returning exception details in the API response**
-  - Consequence: leaks sensitive implementation details and aids attackers
-  - Instead: log full details internally and return a fixed generic message
-
-- **Registering the exception handler last in the pipeline**
-  - Consequence: exceptions thrown by outer behaviors (for example, during `UnitOfWorkBehavior` commit) are not caught
-  - Instead: register `ExceptionHandlingBehavior` first so it wraps all other behaviors and the handler
-
-- **Using `Result.CriticalError` for every unhandled exception without project convention**
-  - Consequence: `CriticalError` may map to a different HTTP status or have special handling in the project
-  - Instead: use `Result.Error` as the default; switch to `Result.CriticalError` only when the project convention explicitly requires it
+- Include the request type name in the log scope or message for correlation.
+- Keep the user-facing message in a constant or configuration value.
+- Use `Result.Error` as the default mapping; switch to `Result.CriticalError` only when a project convention explicitly requires it (it may map to a different HTTP status).
 
 # Check list
 - [ ] `ExceptionHandlingBehavior` defined in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`

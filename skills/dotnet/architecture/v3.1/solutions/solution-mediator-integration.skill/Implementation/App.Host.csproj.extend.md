@@ -4,7 +4,7 @@ name: App.Host.csproj
 element_kind: project
 change_kind: extend
 tags:
-  - solution/command-integration
+  - solution/mediator-integration
   - element/app-host-csproj
 ---
 
@@ -44,15 +44,13 @@ public static IServiceCollection AddModules(this IServiceCollection services, IC
 ## MUST
 - `AddModules()` called in `Program.cs`
 - All module `Register{ModuleName}Module()` calls made inside `ModuleRegistration.AddModules`
+- Never call individual `Register{ModuleName}Module()` methods directly from `Program.cs`
+- Never module registration methods called from within another module
+- Never add module registration calls outside `ModuleRegistration.AddModules`
 
-## MUST NOT
-- Call individual `Register{ModuleName}Module()` methods directly from `Program.cs`
-- Module registration methods called from within another module
-- Add module registration calls outside `ModuleRegistration.AddModules`
-
-# Anti-patterns
-- `Program.cs` listing every module explicitly — centralize module calls in `ModuleRegistration`
-- Scattering module registration across multiple extension methods called from `Program.cs`
+## SHOULD
+- Avoid `Program.cs` listing every module explicitly — centralize module calls in `ModuleRegistration`
+- Avoid scattering module registration across multiple extension methods called from `Program.cs`
 
 # Check list
 - [ ] `AddModules(builder.Configuration)` called in `Program.cs`
