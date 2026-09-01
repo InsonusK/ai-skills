@@ -9,15 +9,15 @@ tags:
 ---
 
 # Goal
-- Turn a fuzzy, ad-hoc sense of "what varies" into an explicit, reviewable artifact: a concrete baseline project structure, a diagram where every relation is typed per FODA, and a table with one row per feature stating whether it is common.
-- Make the common/variable split defensible against a concrete, written-out baseline — never against "no existing plateau currently skips it," which proves nothing about whether skipping it is legitimate.
-- Hand off a clean input to the next step in the pipeline: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]] consumes this model's non-common features to build Variation Points and, from there, plateaus.
+- **From vibes to reviewable artifact** - Turn a fuzzy, ad-hoc sense of "what varies" into an explicit, reviewable artifact: a concrete baseline project structure, a diagram where every relation is typed per FODA, and a table with one row per feature stating whether it is common.
+- **Baseline beats precedent** - Make the common/variable split defensible against a concrete, written-out baseline — never against "no existing plateau currently skips it," which proves nothing about whether skipping it is legitimate.
+- **Feed variability-map-create** - Hand off a clean input to the next step in the pipeline: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]] consumes this model's non-common features to build Variation Points and, from there, plateaus.
 
 # Core Principle
-- A feature earns a row only once tested against a concrete baseline structure written out in `feature-model.md` itself (real folder/project names) — not against vibes, and not against what an existing catalog's plateaus currently happen to share.
-- The diagram and the table are two views of one model, kept in sync: every node in the diagram (except the root) has exactly one row in the table, and every table row appears somewhere in the diagram.
-- Build this in small, reviewed increments with whoever owns the Program Family — a single unreviewed pass gets judgment calls wrong that only surface once someone looks closely (this skill exists because that happened, repeatedly, while working it out live).
-- This skill's scope ends at the common/variable split and the diagram/table that express it. Grouping the variable features into Variation Points, mapping `Realized by`, and resolving conflicts are out of scope — see [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]] and [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]].
+- **Test candidates against real names** - A feature earns a row only once tested against a concrete baseline structure written out in `feature-model.md` itself (real folder/project names) — not against vibes, and not against what an existing catalog's plateaus currently happen to share.
+- **Node and row correspond exactly** - The diagram and the table are two views of one model, kept in sync: every node in the diagram (except the root) has exactly one row in the table, and every table row appears somewhere in the diagram.
+- **No single unreviewed pass** - Build this in small, reviewed increments with whoever owns the Program Family — a single unreviewed pass gets judgment calls wrong that only surface once someone looks closely (this skill exists because that happened, repeatedly, while working it out live).
+- **Variation Points are downstream** - This skill's scope ends at the common/variable split and the diagram/table that express it. Grouping the variable features into Variation Points, mapping `Realized by`, and resolving conflicts are out of scope — see [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]] and [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]].
 
 # Where the model lives
 `{output}/feature/` — a sibling of the catalog's `plateau/`/`solutions/` folders (e.g. `skills/dotnet/architecture/v3.1/feature/`):
@@ -55,55 +55,55 @@ Follow [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]]: a di
 # Rule
 
 ## MUST
-- Write out the concrete baseline project/folder structure in `feature-model.md` before assigning `IsCommon` to any candidate feature.
+- **Baseline before commonality verdicts** - Write out the concrete baseline project/folder structure in `feature-model.md` before assigning `IsCommon` to any candidate feature.
   - Risk: without a literal baseline, commonality gets guessed from an existing catalog's current shape — "no plateau currently skips it" — which proves only that no one has needed to yet, not that the baseline requires it. (This is exactly how `EntityBehaviour` was wrongly marked common in this skill's own first pass, before the baseline showed the common layout has no Domain project at all.)
   - Fix: write the baseline first, in real project/folder names; test every candidate against it.
-- Name the diagram's root explicitly as the family's product, exclude it from the Features table, and group it inside the same `Common` block as the mandatory features.
+- **The root is product, not feature** - Name the diagram's root explicitly as the family's product, exclude it from the Features table, and group it inside the same `Common` block as the mandatory features.
   - Risk: an implicit or ungrouped root leaves every other node's parent ambiguous and forces a disruptive re-layout once the diagram grows (as happened here).
   - Fix: name it in prose, place it inside `Common`.
-- Connect every top-level variable feature to the `Common` block as a whole, never to the root individually.
+- **One source for variable edges** - Connect every top-level variable feature to the `Common` block as a whole, never to the root individually.
   - Risk: one hub node fanning into many individual edges obscures the tree structure it's meant to show.
   - Fix: draw edges from the block's own subgraph id.
-- Arrange more than ~4 members of one block as a row matrix (nested `direction LR` rows in a `direction TB` block, row borders hidden) instead of a vertical list.
+- **Avoid long vertical stacks** - Arrange more than ~4 members of one block as a row matrix (nested `direction LR` rows in a `direction TB` block, row borders hidden) instead of a vertical list.
   - Risk: a long vertical stack of boxes reads as sprawl even after grouping.
   - Fix: nest rows, hide cosmetic row borders, keep a visible border only for a real sub-feature group.
-- Label every edge with its exact relation type — `Mandatory`, `Optional`, `Optional (at least one)`, `Alternative (group name)`, or `Requires` — directly on the edge.
+- **No unlabeled edges** - Label every edge with its exact relation type — `Mandatory`, `Optional`, `Optional (at least one)`, `Alternative (group name)`, or `Requires` — directly on the edge.
   - Risk: a relation implied only by a node's own text is easy to miss and cannot be checked mechanically later.
   - Fix: use mermaid's edge-label syntax on every single edge, no exceptions.
-- State explicitly, in prose, the boolean relationship (AND/OR) whenever two or more `Requires` edges point at the same target.
+- **Spell out parallel-Requires logic** - State explicitly, in prose, the boolean relationship (AND/OR) whenever two or more `Requires` edges point at the same target.
   - Risk: two parallel dotted edges look identical whether the real rule is AND or OR; nothing in the diagram itself disambiguates.
   - Fix: add one sentence naming the exact logic.
-- Verify two candidate features are not the same technical mechanism under different names before modeling them separately.
+- **One mechanism, one feature** - Verify two candidate features are not the same technical mechanism under different names before modeling them separately.
   - Risk: modeling "Command" and "Query" as separate features when both are the same request-dispatch mechanism invents variability that isn't real, and has to be un-modeled later once discovered.
   - Fix: check the actual mechanism each candidate would use, not only its business-facing name.
-- Ask the family's owner before excluding a fixed-seeming capability (exception handling, logging, build/test gates) from the model as "just infrastructure."
+- **Infrastructure is the owner's call** - Ask the family's owner before excluding a fixed-seeming capability (exception handling, logging, build/test gates) from the model as "just infrastructure."
   - Risk: silently excluding a real, trackable capability hides something the owner may want to grow later (this model's own `AppLogging`, `ExceptionHandlingPipeline`, and `TestConformance` were all excluded this way at first, then added back in as explicit common features once asked).
   - Fix: ask; do not default to exclusion.
-- Flag a cross-tree constraint as unconfirmed whenever it is architectural reasoning with no existing solution/pattern to check it against, and get it confirmed before treating it as settled.
+- **Reasoning-only constraints stay provisional** - Flag a cross-tree constraint as unconfirmed whenever it is architectural reasoning with no existing solution/pattern to check it against, and get it confirmed before treating it as settled.
   - Risk: an unverified constraint presented with the same confidence as a verified one can silently block a legitimate combination or hide a missing one.
   - Fix: mark it distinctly in prose (e.g. "flagged, not yet confirmed") until the owner confirms it.
-- Nest a feature's children inside the same diagram block as their parent when they are unconditionally present together with it; draw them outside, connected by a labeled edge, when they are independently, separately selectable.
+- **Bundled children nest, optional children don't** - Nest a feature's children inside the same diagram block as their parent when they are unconditionally present together with it; draw them outside, connected by a labeled edge, when they are independently, separately selectable.
   - Risk: flattening a decomposing feature into one leaf row loses real structure — which sub-parts exist, and whether they are bundled or independently optional.
   - Fix: model `TestConformance`-shaped groups (bundled, nested inside their already-common parent's block) differently from `Persistence`-shaped groups (independently optional, drawn outside with `Optional` edges).
-- Exclude a pure selector (something that maps combinations of other features but has no independent Yes/No of its own) and a mandatory companion (something always applied together with another feature, never independently) from the Features table, and explain the exclusion in a short prose note instead of a row.
+- **Selectors and companions get prose, not rows** - Exclude a pure selector (something that maps combinations of other features but has no independent Yes/No of its own) and a mandatory companion (something always applied together with another feature, never independently) from the Features table, and explain the exclusion in a short prose note instead of a row.
   - Risk: giving a selector or a mandatory companion its own row implies it is an independent choice, which it never is.
   - Fix: name it explicitly in prose under the table, next to the feature(s) it belongs to.
-- Store the diagram as `diagrams/feature-diagram.mmd` and embed it via `@import`, per [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]], once it exceeds ~5 elements.
+- **Follow the repo diagram convention** - Store the diagram as `diagrams/feature-diagram.mmd` and embed it via `@import`, per [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]], once it exceeds ~5 elements.
   - Risk: a plain fenced code block at this size violates the repository's own diagram convention and won't render in the required preview tooling.
   - Fix: follow `mermaid-diagram.skill.md` exactly — separate file, `diagrams/` subfolder, `@import` directive.
-- Write an `Out of scope` section covering: what is excluded as fixed infrastructure and why, how Plateau Components differ and are excluded, whether the model targets an existing catalog only or the full intended Program Family, which constraints are unverified, and that `IsCommon` verdicts are judgment calls, not proofs.
+- **Out of scope covers every limitation** - Write an `Out of scope` section covering: what is excluded as fixed infrastructure and why, how Plateau Components differ and are excluded, whether the model targets an existing catalog only or the full intended Program Family, which constraints are unverified, and that `IsCommon` verdicts are judgment calls, not proofs.
   - Risk: without this, a reader cannot tell a deliberate limitation from an oversight.
   - Fix: fill the section with real content every time; never leave it as a placeholder.
-- Confirm each materially new or changed part of the model with the family's owner before building further on top of it.
+- **One change at a time** - Confirm each materially new or changed part of the model with the family's owner before building further on top of it.
   - Risk: a wrong assumption compounds silently across several additions before anyone notices.
   - Fix: present one change at a time and get confirmation before the next.
 
 ## SHOULD
-- Rename or merge features once a deeper technical read reveals they are the same mechanism, rather than keeping both for historical reasons.
-- Reuse vocabulary the family's owner has already stated a preference for (e.g. `Optional (at least one)`) instead of a self-invented synonym for the same relation.
+- **Drop duplicates kept for history** - Rename or merge features once a deeper technical read reveals they are the same mechanism, rather than keeping both for historical reasons.
+- **No self-invented synonyms** - Reuse vocabulary the family's owner has already stated a preference for (e.g. `Optional (at least one)`) instead of a self-invented synonym for the same relation.
 
 ## MAY
-- Leave a reserved relation type (`Alternative (group name)`) unused in the diagram when no feature set in the current model actually needs exactly-one-of-N cardinality.
+- **Exactly-one-of-N may not apply yet** - Leave a reserved relation type (`Alternative (group name)`) unused in the diagram when no feature set in the current model actually needs exactly-one-of-N cardinality.
 
 # Check list
 - [ ] The baseline project/folder structure is written out in `feature-model.md`, in real names, before any `IsCommon` verdict.
