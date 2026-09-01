@@ -17,12 +17,16 @@ tags:
 
 # Goal
 ```hint
-List of goals that are pursued by the creation of this skill.
+List of goals that are pursued by the creation of this skill. Prefix a bullet with
+`**{Name}** - ` (short English noun phrase, not a restatement of the description's
+opening words) only when the bullet's own text exceeds ~20 words; otherwise leave
+it unnamed.
 ```
 
 # Core Principle
 ```hint
-Core principles the agent should follow when applying this skill.
+Core principles the agent should follow when applying this skill. Same ~20-word
+naming threshold as # Goal applies here.
 ```
 
 # Rule
@@ -45,6 +49,11 @@ rule's own polarity):
 Every MUST bullet requires Risk and Fix (Violation stays optional). SHOULD bullets
 carry the elaboration only when the rule is non-obvious. MAY bullets never carry
 it — permission has nothing to violate.
+
+Prefix a bullet with `**{Name}** - ` when its own text (excluding Violation/Risk/Fix)
+exceeds ~20 words, or whenever it carries a nested Violation/Risk/Fix at all,
+regardless of the bullet's own length. {Name} is a short English noun phrase,
+distinct in wording from the description's opening — not a restatement of it.
 ```
 
 ## MUST
@@ -63,4 +72,5 @@ it — permission has nothing to violate.
 - [ ] All rules are actionable for an AI agent.
 - [ ] All links use relative or repository-root-relative markdown/wikilink syntax.
 - [ ] Every `## MUST` bullet carries a nested `Risk` and `Fix` (`Violation` optional); there is no separate `# Anti-patterns` section and no `## MUST NOT`/`## SHOULD NOT` heading.
+- [ ] Any `# Goal`/`# Core Principle`/`# Rule` bullet over ~20 words, or any `# Rule` bullet with a nested `Violation`/`Risk`/`Fix`, starts with `**{Name}** - ` (name distinct from the description's opening words).
 - [ ] All template hints and example blocks are removed from the final skill.
