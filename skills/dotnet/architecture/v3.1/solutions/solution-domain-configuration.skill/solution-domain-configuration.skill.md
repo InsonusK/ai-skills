@@ -24,6 +24,7 @@ extends:
   - "{Module}.Domain.Entities.Entity.cs"
   - App.Infrastructure.csproj
 depends_on:
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill.md|solution-infrastructure-project]]"
 built_on_plateau:
 ---

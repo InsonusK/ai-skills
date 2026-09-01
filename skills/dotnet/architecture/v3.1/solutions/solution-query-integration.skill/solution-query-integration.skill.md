@@ -1,7 +1,7 @@
 ---
 name: solution-query-integration
-description: Defines IQuery<TResponse> in Shared as the read-only operation marker, query records and DTOs in {Module}.Interfaces, single-module query handlers in {Module}.Application using IReadRepository and named specs, cross-module query handlers in App.Queries using DbContext directly with AsNoTracking, and App.Queries DI registration in App.Host
-whenToUse: when implementing a new read operation — declaring a query record and its handler, including a cross-module projection or list query
+description: The repository-backed read side of MediatR (part of Persistence, VP2) — single-module query handlers in {Module}.Application using IReadRepository and named specs, cross-module query handlers in App.Queries using DbContext with AsNoTracking, and App.Queries DI. The IQuery<TResponse> marker and dispatch are common (solution-mediator-integration); this solution only adds handlers that read from a store.
+whenToUse: when implementing a read operation that loads from the database — a single-module query handler over IReadRepository, or a cross-module projection/list query in App.Queries
 domain: skill
 type: architecture
 version: 20260901000000
@@ -21,7 +21,6 @@ tags:
   - solution/query-integration
 
 creates:
-  - Shared.IQuery.cs
   - "{Module}.Interfaces.Queries.{Query}.cs"
   - "{Module}.Interfaces.DTOs.{Dto}.cs"
   - "{Module}.Application.Queries.{FeatureName}.{FeatureName}.Handler.cs"
@@ -35,9 +34,12 @@ extends:
   - App.Queries.csproj
   - App.Host.csproj
 depends_on:
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
 built_on_plateau:
 ---
+
+> The `IQuery<TResponse>` marker and dispatch are **common** (`solution-mediator-integration`). This solution is VP2 — it adds the *repository-backed* query handlers, `App.Queries` cross-module read models, and `AppDbContext` reads. A module without persistence still has queries (answered in-memory or by dispatch); it just has no handlers from this solution.
 
 # Goal
 - Create `App.Queries` — the cross-module query project, referenced by App.Host and no one else — since nothing composed before this solution creates it

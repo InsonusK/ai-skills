@@ -1,6 +1,6 @@
 ---
 name: solution-entity-classification
-description: Defines the four-type entity classification taxonomy for the domain model — Internal Immutable, External Immutable, Internal Mutable, and External Mutable — and maps each type to the exact combination of solution-entity-concurrency-change.skill and solution-external-created-entity.skill that must be applied.
+description: The combination-resolver for the per-entity VP5 (EntityConcurrencyControl) x VP6 (ExternalIdentity) choice — spells out which of solution-entity-concurrency-change / solution-external-created-entity applies for each of the four Internal/External x Immutable/Mutable states. Not itself a feature; it exists only because those two VPs interact.
 whenToUse: when classifying a domain entity by ownership and mutability, or deciding which entity infrastructure solutions (concurrency-change, external-created-entity) to apply to it
 domain: skill
 type: architecture
@@ -24,12 +24,13 @@ extends:
   - "{Module}.Domain.Configurations.{EntityName}Config.cs"
   - "{Module}.Interfaces.csproj"
   - "{Module}.Application.csproj"
-  - "{Module}.Api.csproj"
 depends_on:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
 built_on_plateau:
 ---
+
+> **Combination-resolver, not a feature.** Per [[skills/dotnet/architecture/v3.1/feature/feature-model.md|feature-model.md]], the Internal/External x Immutable/Mutable classification is the *consequence* of the VP5 x VP6 combination per entity, not an input. This solution documents what each pairing produces. The owner flags a combination-resolver solution as a coupling smell between VPs that should be independent — tolerated here as the only instance.
 
 # Goal
 
