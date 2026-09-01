@@ -4,6 +4,7 @@ Derived from the existing `skills/dotnet/architecture/v3`/`draft` catalog (22 so
 
 The common baseline this model assumes (concretely, not just conceptually):
 ```
+Directory.Packages.props        (Central Package Management — every version pinned centrally)
 App/
   App.Host (csproj)
 Modules/
@@ -16,9 +17,9 @@ BuildingBlocks (csproj)
     ExceptionHandlingBehaviour.cs
     ValidationBehavior.cs
 ```
-No `{ModuleName}.Domain` project exists at this baseline — it only appears once `DomainLogic` is selected, which is exactly why entity-level features cannot be common.
+No `{ModuleName}.Domain` project exists at this baseline — it only appears once `DomainLogic` is selected, which is exactly why entity-level features cannot be common. No `{ModuleName}.Api` project exists either — it is introduced by an inbound-sync API feature.
 
-**`Module`, the family's product itself, is grouped inside the `Common` box together with the six mandatory features** — not because it is one of them (it is still not a row in the [Features](#features) table below, and never a variability question), but because every optional feature in the diagram hangs off the `Common` block as a whole rather than off `Module` individually, which is what actually reduced the clutter of one node fanning out into fourteen separate arrows.
+**`Module`, the family's product itself, is grouped inside the `Common` box together with the mandatory features** — not because it is one of them (it is still not a row in the [Features](#features) table below, and never a variability question), but because every optional feature in the diagram hangs off the `Common` block as a whole rather than off `Module` individually, which is what actually reduced the clutter of one node fanning out into a dozen-plus separate arrows.
 
 ## Feature diagram
 
@@ -30,11 +31,12 @@ Two cross-tree `Requires` edges, both single-source (no boolean logic to spell o
 
 | Name | Description | IsCommon |
 | --- | --- | --- |
+| CentralPackageManagement | Every NuGet package version is pinned once in a repo-root `Directory.Packages.props`; project files carry versionless `<PackageReference>` only | true |
 | SoftValueObjects | Boundary-level invariants (on a DTO/Command) enforced through a lenient, collect-all validator instead of bare primitives | true |
 | ValidationPipeline | Every request passes a MediatR pipeline behavior that validates it before its handler runs | true |
 | ExceptionHandlingPipeline | Every unhandled exception is caught by a MediatR pipeline behavior and mapped to a consistent result shape | true |
 | CrossModuleValidation | A Soft Value Object or DTO crossing into another module is validated there too, via shared validators | true |
-| MediatorModuleIntegration | Modules and `App.Host` never call each other directly — every interaction is a MediatR Command (request/response) or Notification (pub/sub) dispatch | true |
+| MediatorModuleIntegration | Modules and `App.Host` never call each other directly — every interaction goes through the MediatR mechanism: a Command/Query (request/response) or a Notification (pub/sub) dispatch, with handler/validator co-location and DI self-registration. The common part is the dispatch mechanism only; a Query *handler* backed by a repository, and loading an entity to call its guarded method, belong to `Persistence` and `DomainLogic` respectively. A module with neither still dispatches commands, notifications, and pass-through queries. | true |
 | AppLogging | Basic structured logging to the console, meant to be easily extended to file persistence later (reading logs back from a file is out of scope of this Program Family) | true |
 | TestConformance | The module's build is gated by a fixed set of conformance checks — not itself a check, the parent of the four `Mandatory` ones below | true |
 | Cucumber Test | Every `.feature` scenario has a real, executing step-definition binding — no undefined/skipped step reaches the build gate | true |
