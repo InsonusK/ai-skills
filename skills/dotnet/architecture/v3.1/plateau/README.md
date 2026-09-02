@@ -14,6 +14,9 @@ VP definitions are in [`../variability-map.md`](../variability-map.md). VPs **no
 VP9 (gRPC inbound), VP10 (HTTP outbound), VP12–VP14 (async messaging / outbox) — their solutions exist
 as skeletons (`> Draft contract` marker), ready to compose into a future plateau.
 
+The build scaffolding (anchor contract, mechanical check, decisions log) lives in
+[`../agent/`](../agent/) — run `bash skills/dotnet/architecture/v3.1/agent/check.sh` after any change.
+
 ## What each plateau folder holds
 
 ```

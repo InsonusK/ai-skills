@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# v3.1 catalog mechanical checks — see INVARIANTS.md.
-# Usage: bash check.sh   (exits non-zero on any hard failure; coverage gaps are warnings)
+# v3.1 catalog mechanical checks — see agent/INVARIANTS.md.
+# Usage: bash agent/check.sh   (exits non-zero on any hard failure; coverage gaps are warnings)
 set -uo pipefail
 
-REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../../.." && pwd)"
 V31="$REPO/skills/dotnet/architecture/v3.1"
 SOL="$V31/solutions"
 fail=0
