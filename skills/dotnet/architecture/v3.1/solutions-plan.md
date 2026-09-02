@@ -1,7 +1,11 @@
 # v3.1 solution catalog — migration plan
 
-**STATUS (2026-09-02): catalog build complete (32 solutions) + delta-conflict-detection done + `plateau-core` done. `check.sh` PASS.**
-Waves 0–3 + both fresh-eyes audits + delta-conflict-detection applied. `plateau-create-by-solutions` in progress: **`plateau-core` complete** (root skill + 34 structure skills + Reqnroll example, `dotnet build` + `make unit-test` green). Next: `plateau-domain-service`, then `plateau-offline-sync-service`. Open per-file debt tracked in `DECISIONS.md` ("Still open" / "plateau-create").
+**STATUS (2026-09-02): FULL CYCLE COMPLETE. 32 solutions + delta-conflict-detection + all 3 plateaus. `check.sh` PASS.**
+Waves 0–3 + both fresh-eyes audits + delta-conflict-detection + `plateau-create-by-solutions` for all three plateaus:
+- **plateau-core** — 34 structure skills, `standalone: false`, Reqnroll example (build + 7 tests green).
+- **plateau-domain-service** — 65 structure skills, `parent [plateau-core]`, example (build + 10 tests green).
+- **plateau-offline-sync-service** — 76 structure skills + `registry/`, `parent [plateau-domain-service]`, example (build + 13 tests green).
+All three example apps `dotnet build` + `make unit-test` green (the ground-truth gate). Open per-file debt tracked in `DECISIONS.md` ("Still open" — S1/S4/S7/S10/N3-N7 from the solution catalog; the plateau structure skills are new and clean).
 
 ---
 
