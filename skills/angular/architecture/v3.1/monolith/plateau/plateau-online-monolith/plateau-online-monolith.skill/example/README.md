@@ -32,6 +32,13 @@ fork workers there; chromium.launch() itself worked). Run them in a normal CI/de
 
 ## Fed back into the catalog
 
-solution-api-http-layer's rule "retry applies to idempotent (GET) requests only" is real: an early
-draft of base-http.service.ts that retried POST doubled a 409'd write. base-http.service.spec.ts pins
-GET-only retry.
+- solution-api-http-layer's rule "retry applies to idempotent (GET) requests only" is real: an early
+  draft of base-http.service.ts that retried POST doubled a 409'd write. base-http.service.spec.ts pins
+  GET-only retry.
+- solution-repository-structure's `@nx/enforce-module-boundaries` allow-list needs real content — the
+  Nx generator ships scaffold `depConstraints` (`scope:shop`/`scope:api`/`type:data`) that match none
+  of this taxonomy's tags, so every cross-lib import errored. `eslint.config.mjs` now encodes the
+  type/scope allow-list from the repo skill, plus two gaps it did not state: `data-access → data-access`
+  (a feature Client imports `libs/shared/http-core`) and `preview → data-access` (a preview provides a
+  stubbed Facade). `no-console` is enabled as an error (solution-logging-base), exempting only
+  `src/main.ts` bootstrap and ConsoleLogSink.

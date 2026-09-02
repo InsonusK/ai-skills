@@ -4,9 +4,9 @@ import { LogEntry, LogSink } from './log-sink';
 @Injectable({ providedIn: 'root' })
 export class ConsoleLogSink implements LogSink {
   write(entry: LogEntry): void {
-    // structured: one call, level-mapped
-    const fn = entry.level === 'debug' ? 'debug' : entry.level;
+    // The single sanctioned console call in the whole workspace — every other
+    // part of the app logs through LoggerService, which forwards here.
     // eslint-disable-next-line no-console
-    (console as unknown as Record<string, (...a: unknown[]) => void>)[fn](entry.message, entry.context);
+    console[entry.level](entry.message, entry.context);
   }
 }
