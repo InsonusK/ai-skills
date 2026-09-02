@@ -1,6 +1,6 @@
 # v3.1 delta-conflict analysis
 
-Produced per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]], run across the **whole catalog** (every solution active = the maximal plateau). Intersections were found by grouping every `Implementation/` file on its `element/{element-name}` tag. Per-plateau `registry/` entries are created during `plateau-create-by-solutions`, placed at the shallowest plateau where all intersecting solutions are simultaneously in `created_by`.
+Produced per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] (**re-run 2026-09-02** after `solution-grpc-client` VP11 was promoted from skeleton to full — 5 new single-solution elements, joins 3 canonical `.csproj` buckets, **no new conflicts, no new design errors, group count unchanged at 23**), run across the **whole catalog** (every solution active = the maximal plateau). Intersections were found by grouping every `Implementation/` file on its `element/{element-name}` tag. Per-plateau `registry/` entries are created during `plateau-create-by-solutions`, placed at the shallowest plateau where all intersecting solutions are simultaneously in `created_by`.
 
 ## Classifier (fixed — from the skill, not re-derived)
 
