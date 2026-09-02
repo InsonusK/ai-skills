@@ -49,7 +49,7 @@ test.describe('DsButtonComponent — visual', () => {
 - Every meaningfully distinct state the component's demo/preview page exposes (default, disabled, error, loading, etc.) MUST have its own baseline screenshot.
 - A baseline screenshot MUST only be updated (`--update-snapshots`) as a deliberate, reviewed part of a PR that intentionally changes the component's appearance — never to silence an unexplained CI failure.
 
-- Never a visual spec MUST NOT assert against a page that also renders unrelated, unrelated-to-the-test dynamic content (e.g. a live clock, randomly-ordered data) that would make the screenshot inherently flaky.
+- a visual spec must never assert against a page that also renders unrelated, unrelated-to-the-test dynamic content (e.g. a live clock, randomly-ordered data) that would make the screenshot inherently flaky.
 ## SHOULD
 - **Updating a baseline screenshot without understanding why it changed** — Consequence: silently accepts a real visual regression as the new "correct" baseline — Instead: investigate the diff first; update the baseline only once the change is confirmed intentional
 - **Screenshotting a page with non-deterministic content (timestamps, random ordering, animation mid-flight)** — Consequence: flaky CI failures unrelated to any real regression, eroding trust in the whole suite — Instead: use fixed example data in the demo/preview page, and disable/complete animations before capturing (Playwright's `toHaveScreenshot` has built-in animation-handling options)

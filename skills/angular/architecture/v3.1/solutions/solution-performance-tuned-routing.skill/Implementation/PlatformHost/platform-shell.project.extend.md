@@ -5,7 +5,7 @@ project_kind: application
 element_kind: project
 change_kind: extend
 tags:
-  - solution/lazy-loading-routing
+  - solution/performance-tuned-routing
   - element/platform-shell-project
 ---
 
@@ -59,7 +59,7 @@ provideRouter(routes, withPreloading(SelectivePreloadingStrategy));
 
 ## MUST
 - The router MUST be configured with `withPreloading(SelectivePreloadingStrategy)`, not `withPreloading(PreloadAllModules)` and not left with the default `NoPreloading`.
-- Marking a top-level segment with `data: { preload: true }` MUST happen in `app.routes.ts`, at the mounting point — never inside the mounted feature's or module's own routes (see [[skills/angular/architecture/v3.1/solutions/solution-lazy-loading-routing.skill/Implementation/Repository.extend#MUST|Repository]]).
+- Marking a top-level segment with `data: { preload: true }` MUST happen in `app.routes.ts`, at the mounting point — never inside the mounted feature's or module's own routes (see [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#MUST|Repository]]).
 
 ## SHOULD
 - **Marking every top-level segment `preload: true` "to be safe"** — Consequence: degenerates into the equivalent of `PreloadAllModules`, including unconditionally prefetching federated embeddable modules' remote chunks — the exact outcome this ADR chose selective preloading to avoid — Instead: mark only the small number of genuinely high-traffic segments; leave the rest on-demand

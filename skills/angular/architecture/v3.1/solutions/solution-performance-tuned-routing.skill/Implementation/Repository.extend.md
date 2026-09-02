@@ -3,7 +3,7 @@ description: Extend the base workspace with bundle-size budgets enforced per pro
 element_kind: repository
 change_kind: extend
 tags:
-  - solution/lazy-loading-routing
+  - solution/performance-tuned-routing
   - element/repository
 ---
 
@@ -20,7 +20,7 @@ No new directories. This extension adds two conventions on top of [[skills/angul
 - Every routable `type:feature` project MUST declare a per-chunk budget for its own lazy chunk.
 - The `data: { preload: true }` flag MUST be set only at the mounting point (the shell's `app.routes.ts` for top-level segments, or a module's own routes for the features it contains) — never inside the feature's/module's own exported routes.
 
-- Never a feature or embeddable module MUST NOT set `preload: true` on its own routes to opt itself into preloading — that decision belongs to whoever mounts it (see `solution-app-routing`'s hierarchical ownership principle).
+- a feature or embeddable module must never set `preload: true` on its own routes to opt itself into preloading — that decision belongs to whoever mounts it (see `solution-app-routing`'s hierarchical ownership principle).
 ## SHOULD
 - Bundle budget thresholds SHOULD be reviewed and adjusted deliberately when a feature's legitimate size grows, rather than silenced by raising the threshold reflexively.
 

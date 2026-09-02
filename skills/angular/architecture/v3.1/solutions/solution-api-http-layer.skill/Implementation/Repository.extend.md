@@ -74,7 +74,7 @@ No new tag values are introduced; `libs/shared/http-core` uses the existing `typ
 - A Client MUST catch every `HttpErrorResponse` it can produce and rethrow a typed domain error from that feature's `{feature}.errors.ts`, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]] — a raw `HttpErrorResponse` MUST NOT escape the Client.
 - For feature-scoped operations, the calling Signal Store method MUST call the Facade directly — no Action/Reducer/Effect is introduced for feature-level data operations, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]]. This does not apply to global/cross-cutting state, which keeps its existing classical NgRx chain (Effect → Facade → Client) from the "State management" and `solution-authentication`s.
 
-- Never a component or Signal Store method MUST NOT import a feature's Client directly, bypassing the Facade — business validation would be skipped.
+- a component or Signal Store method must never import a feature's Client directly, bypassing the Facade — business validation would be skipped.
 # Unittest TestCases
 
 - [ ] WHEN a feature's `index.ts` is inspected THEN

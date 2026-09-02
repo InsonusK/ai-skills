@@ -4,7 +4,7 @@ description: Choice of state management approach across the Angular application
 problem: Where should different kinds of application state live — a single uniform tool for everything, or different tools for different scopes of state
 decision: Use a three-tier policy — Angular Signals for component-local state, NgRx Signal Store for feature-level state, classical NgRx Store for global/cross-cutting state
 tags:
-  - solution/state-management
+  - solution/state-tiering
   - concern/documentation
   - concern/documentation/adr
 ---

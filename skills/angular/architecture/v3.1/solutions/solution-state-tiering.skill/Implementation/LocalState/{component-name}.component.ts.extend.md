@@ -5,7 +5,7 @@ name: "{component-name}"
 element_kind: component
 change_kind: extend
 tags:
-  - solution/state-management
+  - solution/state-tiering
   - element/component-name-component-ts
 ---
 

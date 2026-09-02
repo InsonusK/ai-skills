@@ -21,7 +21,7 @@ extends:
   - "@platform/contracts (from `solution-platform-embeddability`)"
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
 adr:
@@ -61,8 +61,8 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create|libs/shared/state auth slice]] - extended by this solution with the in-memory access token, permission list, and silent-refresh handling
+- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
+  - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|libs/shared/state auth slice]] - extended by this solution with the in-memory access token, permission list, and silent-refresh handling
 - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
   - Formally implements the auth guards that solution deliberately deferred (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create]])
 - [[skills/angular/architecture/v3.1/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]
@@ -77,7 +77,7 @@ PROJECT:
 - No new Nx project beyond `libs/shared/auth-ui`; all other changes extend existing projects (shared-state, individual feature projects)
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.extend|auth.store.ts (extend)]] - extend - in-memory access token, permissions, silent-refresh handling
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts (create)]] - extend - in-memory access token, permissions, silent-refresh handling
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create|auth.interceptor.ts]] - create - attaches access token to outgoing requests, triggers silent refresh on 401
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create|{feature}.guard.ts (generic pattern)]] - create - functional guard restricting navigation into one of a feature's own routes
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|has-permission.directive.ts]] - create - structural directive controlling UI visibility by permission
@@ -122,7 +122,7 @@ Artifact-level:
 
 ## MUST
 - [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[./Implementation/GlobalStore/auth.store.ts.extend.md#MUST|auth.store.ts.extend]]
+- [[./Implementation/GlobalStore/auth.store.ts.create.md#MUST|auth.store.ts]]
 - [[./Implementation/HttpLayer/auth.interceptor.ts.create.md#MUST|auth.interceptor.ts.create]]
 - [[./Implementation/Routing/{feature}.guard.ts.create.md#MUST|{feature}.guard.ts.create]]
 - [[./Implementation/UI/has-permission.directive.ts.create.md#MUST|has-permission.directive.ts.create]]
@@ -130,7 +130,7 @@ Artifact-level:
 
 ## SHOULD
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend|See Repository.extend.md]] — checking a role name (`currentUser.role === 'admin'`) instead of a permission string.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.extend|See auth.store.ts.extend.md]] — persisting `accessToken` to storage "to survive reloads more simply".
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|See auth.store.ts.create.md]] — persisting `accessToken` to storage "to survive reloads more simply".
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create|See auth.interceptor.ts.create.md]] — retrying the original request indefinitely on repeated 401s.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create|See {feature}.guard.ts.create.md]] — centralizing all permission guards in the shell's root routes "for visibility".
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|See has-permission.directive.ts.create.md]] — relying on `*hasPermission` alone to protect a destructive action, with no server-side check.

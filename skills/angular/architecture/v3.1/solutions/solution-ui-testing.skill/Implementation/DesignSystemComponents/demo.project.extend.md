@@ -33,7 +33,7 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 - The demo app's routes/sections used as screenshot targets MUST be stable, deep-linkable URLs, so a Playwright spec can navigate directly to a specific component/state without simulating UI interaction first.
 - Every component's preview component MUST live in `projects/design-system/src/lib/{component-name}/spec/preview/` and be imported by `projects/demo`, rather than being authored directly inside `projects/demo`.
 
-- Never the demo app MUST NOT duplicate preview markup that already exists in the component library's `spec/preview/` directory.
+- the demo app must never duplicate preview markup that already exists in the component library's `spec/preview/` directory.
 ## SHOULD
 - **Adding a new example only to the demo page's visual markup without a corresponding route/anchor a Playwright spec can navigate to directly** — Consequence: the visual/a11y spec can't reliably target just that state, and ends up screenshotting the whole page or skipping the new state entirely — Instead: give every meaningfully distinct state its own stable, directly navigable route in the demo app, backed by the component's `spec/preview/` file
 - **Authoring the preview component inside `projects/demo` instead of `projects/design-system/src/lib/{component-name}/spec/preview/`** — Consequence: the preview file drifts away from the component and its tests, and the design-system library no longer ships with its own test harness — Instead: keep the preview file in the component's `spec/preview/` directory and import it into the demo app

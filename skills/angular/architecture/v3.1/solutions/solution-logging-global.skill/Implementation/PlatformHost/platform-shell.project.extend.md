@@ -50,7 +50,7 @@ export const appConfig: ApplicationConfig = {
 ## MUST
 - `app.config.ts` MUST provide `GlobalErrorHandler` under the `ErrorHandler` token — no other error handler may silently swallow uncaught exceptions.
 
-- Never `GlobalErrorHandler` MUST NOT be registered only in a module or component-level provider — it must be at the application root.
+- `GlobalErrorHandler` must never be registered only in a module or component-level provider — it must be at the application root.
 ## SHOULD
 - **Catching exceptions in the handler without sending them to the backend** — Consequence: production errors disappear, making incidents impossible to diagnose — Instead: always route through `LoggerService.error` so `BackendLogSink` receives them
 

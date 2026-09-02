@@ -20,7 +20,7 @@ extends:
   - Repository (formalizes Facade/Client/Mapper structure inside feature data-access libs)
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|Facade Client Layering ADR]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|Error Handling Strategy ADR]]"
@@ -75,7 +75,7 @@ adr:
 SOLUTION:
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
   - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create|libs/{feature}/data-access]] - internal structure formalized by this solution
-- [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]
+- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]
   - Feature-level Signal Store methods call the Facade/Client exactly as already established there; global/cross-cutting effects keep calling into the same Facade/Client layering
 
 NPM:

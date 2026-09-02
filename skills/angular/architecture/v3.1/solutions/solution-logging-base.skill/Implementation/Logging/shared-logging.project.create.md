@@ -49,7 +49,7 @@ None beyond Angular's own DI/core APIs.
 - `MIN_LOG_LEVEL` MUST default to filtering out `debug`/`info` in production builds, keeping `warn`/`error` always enabled.
 - `LogEntry`'s `context` MUST be a plain, structured object — never a pre-formatted string standing in for context.
 
-- Never `LoggerService`/`ConsoleLogSink` MUST NOT ever be given a token, password, or PII value to log, regardless of level (see [[skills/angular/architecture/v3.1/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend#MUST]]).
+- `LoggerService`/`ConsoleLogSink` must never ever be given a token, password, or PII value to log, regardless of level (see [[skills/angular/architecture/v3.1/solutions/logging/solution-logging-base.skill/Implementation/Repository.extend#MUST]]).
 ## SHOULD
 - **A feature registering its own ad hoc `console.log` wrapper instead of using `LoggerService.forFeature(...)`** — Consequence: recreates, inconsistently, exactly what `LoggerService` already provides, and is invisible to the future backend sink — Instead: call `inject(LoggerService).forFeature('orders')` once per feature and use the returned logger
 

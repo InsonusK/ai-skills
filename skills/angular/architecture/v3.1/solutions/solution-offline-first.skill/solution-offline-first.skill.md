@@ -26,7 +26,7 @@ extends:
   - libs/{feature}/data-access (Client offline-error distinction)
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/service-worker-mechanism.md|Service Worker Mechanism ADR]]"
@@ -66,7 +66,7 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]
+- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
   - New `connectivity` slice added to `libs/shared/state`, following the same classical-NgRx pattern as the existing `auth` slice
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]
   - Every feature's `{feature}.client.ts` extended to throw `OfflineTransportError` on network-level failures

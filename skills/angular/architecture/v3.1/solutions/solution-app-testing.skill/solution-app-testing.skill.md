@@ -23,7 +23,7 @@ extends:
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/testing/solution-app-testing.skill/adr/test-runner-choice.md|Test runner choice ADR]]"
   - "[[skills/angular/architecture/v3.1/solutions/testing/solution-app-testing.skill/adr/e2e-framework-choice.md|E2E framework choice ADR]]"
@@ -94,7 +94,7 @@ The integration spec sits under the feature library because it exercises the who
 SOLUTION:
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]
   - Test patterns here directly test the Facade/Client structure that solution establishes
-- [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]
+- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]
   - Signal Store test pattern here directly tests the store methods that solution establishes
 
 NPM:

@@ -5,7 +5,7 @@ project_kind: library
 element_kind: project
 change_kind: extend
 tags:
-  - solution/state-management
+  - solution/state-tiering
   - element/feature-project
 ---
 
@@ -31,7 +31,7 @@ tags:
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| `{feature}.store.ts` | Feature-level NgRx Signal Store, created by [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create]]. Owns all state and derived data specific to this feature. |
+| `{feature}.store.ts` | Feature-level NgRx Signal Store, created by [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create]]. Owns all state and derived data specific to this feature. |
 
 # Rule changes
 

@@ -47,7 +47,7 @@ test.describe('DsButtonComponent — accessibility', () => {
 - Tests in an a11y spec MUST be grouped under a `test.describe('<component-name> — accessibility', () => { ... })` block.
 - Any explicit, individually justified exception to a specific axe rule MUST be scoped to that one rule and documented inline with the reason — never a blanket disable of the whole scan.
 
-- Never an a11y spec MUST NOT be treated as a complete accessibility audit — it catches the mechanically-checkable subset of WCAG rules only; issues requiring human judgment (meaningful alt text, sensible focus order) still need occasional manual review.
+- an a11y spec must never be treated as a complete accessibility audit — it catches the mechanically-checkable subset of WCAG rules only; issues requiring human judgment (meaningful alt text, sensible focus order) still need occasional manual review.
 ## SHOULD
 - **Disabling axe-core entirely for a component because one rule produces a false positive** — Consequence: loses coverage for every other rule the scan would have caught, for the sake of silencing one — Instead: scope the exception to the specific rule ID, with a documented reason
 - **Treating a passing a11y spec as proof the component is fully accessible** — Consequence: real, non-mechanically-detectable issues (misleading alt text, confusing focus order) go unnoticed because the automated check passed — Instead: treat this as a regression net for the mechanically-checkable subset, not a substitute for occasional manual/expert review

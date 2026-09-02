@@ -18,7 +18,7 @@ No new directories are introduced. This extension adds a convention on top of th
 - A project at any level (shell, embeddable module, feature) MUST NOT define a route path that reaches outside the root segment it owns.
 - The project that mounts a child (shell mounting a module or feature; a module mounting its features) MUST assign the root segment (e.g. `feature1/`) at the mounting point — the child itself never declares its own mount prefix.
 
-- Never a `type:app` project (the shell) MUST NOT reference a path that exists two or more levels below its own mount point (e.g. the shell must not hardcode `module1/feature1/page` — it only knows about `module1/`).
+- a `type:app` project (the shell) must never reference a path that exists two or more levels below its own mount point (e.g. the shell must not hardcode `module1/feature1/page` — it only knows about `module1/`).
 # Unittest TestCases
 
 - [ ] WHEN a feature's exported `Routes` array is inspected THEN

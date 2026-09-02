@@ -19,7 +19,7 @@ extends:
   - libs/{feature}/feature (form components)
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/solution-forms.skill/adr/forms-approach.md|Forms Approach ADR]]"
 ---
@@ -54,7 +54,7 @@ adr:
 SOLUTION:
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
   - Form components live inside their owning feature's `libs/{feature}/feature` project, per that solution's structure
-- [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]
+- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]
   - A form's underlying data Signal follows the same component-local/feature-level tiering already established there, per that solution's rules
 
 NPM:

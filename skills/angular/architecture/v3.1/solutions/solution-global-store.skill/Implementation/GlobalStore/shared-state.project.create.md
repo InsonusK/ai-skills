@@ -5,19 +5,20 @@ project_kind: library
 element_kind: project
 change_kind: create
 tags:
-  - solution/state-management
+  - solution/global-store
   - element/shared-state-project
 ---
 
 # Goals
 
-- Host global/cross-cutting state (auth session, notifications, offline-sync queue) as classical NgRx slices, each auditable via the action log and testable in isolation
-- Give features one place to read/dispatch against global state without depending on each other
+- Host cross-cutting state (state read or dispatched by more than one unrelated feature) as classical NgRx slices, each auditable via the action log and testable in isolation.
+- Give features one place to read/dispatch against cross-cutting state without depending on each other.
 
 # Core Principles
 
-- One slice per cross-cutting concern; a slice never contains feature-specific data
-- Effects own all side effects (HTTP calls, retries, timers) — components and feature stores only dispatch actions and read selectors
+- One slice per cross-cutting concern; a slice never contains feature-specific data.
+- Effects own all side effects (HTTP calls, retries, timers) — components and feature stores only dispatch actions and read selectors.
+- This solution creates the **project and the registration seam** only. Concrete slices are added by the feature that needs them: `auth` by `solution-authentication`, `connectivity` by `solution-offline-first`, `notifications` by `solution-offline-sync`.
 
 # Structure
 
@@ -27,32 +28,18 @@ tags:
 /libs/shared/state
   /src
     /lib
-      /auth
-        auth.actions.ts
-        auth.reducer.ts
-        auth.effects.ts
-        auth.selectors.ts
-      /notifications
-        notifications.actions.ts
-        notifications.reducer.ts
-        notifications.effects.ts
-        notifications.selectors.ts
-      /offline-sync
-        offline-sync.actions.ts
-        offline-sync.reducer.ts
-        offline-sync.effects.ts
-        offline-sync.selectors.ts
-    index.ts
+      store.config.ts          (root StoreModule.forRoot / provideStore wiring, extended per slice)
+      (each cross-cutting feature adds its own /{slice} folder here)
+    index.ts                   (re-exports every slice's public actions + selectors)
 ```
 
 ## Directory and file skills
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| /auth | Auth session slice: current user, token lifecycle events, session expiry. Actions/effects here are the only place session state changes. |
-| /notifications | Global notification/toast queue, consumed by any feature that needs to surface a message |
-| /offline-sync | Offline-sync queue state (see the future `solution-offline-sync`) — pending mutations, retry/conflict status |
-| index.ts | Public API: exported actions and selectors per slice only; reducers/effects are registration-only and not meant to be imported directly by consumers |
+| store.config.ts | The single place the root store is provided; each slice-adding solution registers its reducer + effects here. |
+| index.ts | Public API: exported actions and selectors per slice only; reducers/effects are registration-only and not imported directly by consumers. |
+| /{slice} | Added by the owning solution — `auth` (`solution-authentication`), `connectivity` (`solution-offline-first`), `notifications` (`solution-offline-sync`). Each: `{slice}.actions.ts` / `.reducer.ts` / `.effects.ts` / `.selectors.ts`. |
 
 # NPM Packages
 

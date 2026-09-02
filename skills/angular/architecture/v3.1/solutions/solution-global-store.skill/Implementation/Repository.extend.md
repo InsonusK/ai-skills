@@ -3,7 +3,7 @@ description: Extend the base workspace with a shared/state lib for global, cross
 element_kind: repository
 change_kind: extend
 tags:
-  - solution/state-management
+  - solution/global-store
   - element/repository
 ---
 
@@ -49,7 +49,7 @@ tags:
 - Every slice inside `libs/shared/state` MUST correspond to genuinely global/cross-cutting state (read or dispatched by more than one unrelated feature) — feature-scoped state MUST NOT be added here (see solution's Core Principles for the tiering rule).
 - `libs/shared/state` MUST NOT depend on any `type:feature` or `type:data-access` project.
 
-- Never a `type:feature` project MUST NOT reach into another feature's Signal Store directly to read cross-cutting data — if the data is genuinely needed by multiple features, it belongs in `libs/shared/state`, not in one feature's own store.
+- a `type:feature` project must never reach into another feature's Signal Store directly to read cross-cutting data — if the data is genuinely needed by multiple features, it belongs in `libs/shared/state`, not in one feature's own store.
 # Unittest TestCases
 
 - [ ] WHEN a feature attempts to import another feature's Signal Store directly THEN

@@ -22,7 +22,7 @@ extends:
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism.md|Queue Storage Mechanism ADR]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|Queue Partitioning And Ordering ADR]]"
@@ -69,7 +69,7 @@ SOLUTION:
   - `OfflineTransportError` (Client-level network-failure distinction) and the `connectivity` slice's `isOnline` signal are both consumed directly by this solution
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]
   - The replay orchestrator calls existing Facade methods directly; no new HTTP transport path is introduced
-- [[skills/angular/architecture/v3.1/solutions/solution-state-management.skill/solution-state-management.skill.md|solution-state-management]]
+- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
   - Conflict notifications are surfaced via the `notifications` global-state slice, alongside the existing `auth`/`connectivity`
 
 NPM:

@@ -61,7 +61,7 @@ export const stateConfig = {
 - The connectivity slice MUST be registered in the same global store configuration as the existing `auth` slice.
 - `selectIsOnline` MUST be the only public selector consumed by feature code.
 
-- Never feature code MUST NOT read `navigator.onLine` directly — it must use `selectIsOnline`.
+- feature code must never read `navigator.onLine` directly — it must use `selectIsOnline`.
 ## SHOULD
 - **Duplicating the connectivity logic inside a feature store** — Consequence: multiple sources of truth for online status — Instead: rely on `libs/shared/state` connectivity slice
 
