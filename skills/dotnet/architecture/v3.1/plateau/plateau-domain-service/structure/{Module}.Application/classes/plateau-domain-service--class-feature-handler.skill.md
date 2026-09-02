@@ -11,11 +11,13 @@ tags:
   - plateau/domain-service
 created_by:
   - "[[../../../../../solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]"
+  - "[[../../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
+  - "[[../../../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
 ---
 
 # Goal
 - Handle one command (a write) or one query (a read): guard, do the work (dispatch / shape data), return `Result<T>`.
-- Contain no business rules — at plateau-core there is no domain layer, so a handler only shapes data and dispatches; cross-request facts are checked as guards.
+- Contain no business rules — delegate every decision to the entity's guarded method (which throws `DomainException` on an invariant violation); the handler only loads, calls, stages, and shapes the result.
 
 __Applied solutions:__
 - [[../../../../../solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]] - [[../../../../../solutions/solution-mediator-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs.create]]
@@ -23,7 +25,7 @@ __Applied solutions:__
 # Core Principles
 - Apply ONE plateau template per class.
 - Implements `IRequestHandler<TRequest, Result<T>>`.
-- Fixed shape: `guard → (dispatch | read | shape) → return Result<T>`. `load`/`stage` via `IRepository<T>` appear only once VP2 is applied.
+- Fixed shape for a persisted command: `guard → load (named spec + IRepository<T>) → domain call (entity's guarded method) → stage (Add/UpdateAsync) → return Result<T>`. A command with no persisted-entity effect keeps the shorter `guard → dispatch → return` shape.
 - Never `DbContext`, never inline LINQ, never `SaveChangesAsync`.
 - Cross-module interaction is `ISender.Send` / `IPublisher.Publish` against another module's `Interfaces` — never a direct call.
 - Result status: `Created` for a new entity, `Success` for update/read, `NotFound` after a failed load-guard, `Conflict` for a failed cross-request precondition, `Error` for a failed sub-request.
@@ -43,19 +45,23 @@ using MediatR;
 
 namespace {Module}.Application.Features.SubmitReport;
 
-public sealed class SubmitReportHandler(ISender sender, IPublisher publisher)
-    : IRequestHandler<SubmitReportCommand, Result<SubmitReportResult>>
+public sealed class Rename{Entity}Handler(IRepository<{Entity}> repository)
+    : IRequestHandler<Rename{Entity}Command, Result>
 {
-    public async Task<Result<SubmitReportResult>> Handle(SubmitReportCommand request, CancellationToken ct)
+    public async Task<Result> Handle(Rename{Entity}Command request, CancellationToken ct)
     {
-        var ack = await sender.Send(new NotifyReviewersCommand(request.ReportId), ct);
-        if (!ack.IsSuccess)
-            return Result.Error("Reviewers could not be notified.");
+        var entity = await repository.FirstOrDefaultAsync(new {Entity}ByIdSpec(request.Id), ct);
+        if (entity is null)
+            return Result.NotFound();                        // guard after load
 
-        await publisher.Publish(new ReportSubmitted(request.ReportId, DateTimeOffset.UtcNow), ct);
-        return Result.Success(new SubmitReportResult(request.ReportId));
+        entity.Rename(new {ValueObject}(request.NewTitle.Value)); // domain guard: throws DomainException on violation
+        entity.RecordUpdatedByUser(request.ActionTimeStamp);      // VP7: copy the user timestamp
+        await repository.UpdateAsync(entity, ct);                 // stage; UnitOfWorkBehavior commits
+
+        return Result.Success();
     }
 }
+// Concurrency was already checked by ConcurrencyBehavior before this handler ran.
 ```
 Query handler (no persistence):
 ```csharp
@@ -73,7 +79,7 @@ __Applied solutions:__
 # Rules
 MUST:
 - Implement `IRequestHandler<TRequest, Result<T>>`; follow `guard → (dispatch | read | shape) → return`.
-- Add `load`/`stage` (via `IRepository<T>`/`IReadRepository<T>` + named specs) only when the request touches stored state (VP2).
+- For a persisted command: load via a named spec + `IRepository<T>`, guard the null, call the entity's guarded method, copy the VP7 `ActionTimeStamp` to the entity, stage via `Add/UpdateAsync` — never inline LINQ, never `SaveChangesAsync`.
 - Never inject `DbContext`, never write inline LINQ, never call `SaveChangesAsync`.
 - Never contain a business rule; dispatch cross-module only via `ISender`/`IPublisher`.
 - Live in `/Features/{FeatureName}/{FeatureName}.Handler.cs`, class `{FeatureName}Handler`.

@@ -13,6 +13,12 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]"
   - "[[../../../../solutions/solution-app-logging.skill/solution-app-logging.skill.md|solution-app-logging]]"
+  - "[[../../../../solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]"
+  - "[[../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
+  - "[[../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
+  - "[[../../../../solutions/solution-grpc-client.skill/solution-grpc-client.skill.md|solution-grpc-client]]"
 ---
 
 # Goal
@@ -30,7 +36,7 @@ __Applied solutions:__
 - Any project at any layer may reference `Shared`; `Shared` references nothing.
 - The three request markers pass straight through to MediatR's `IRequest<T>` / `INotification`; a command declares its `Result<T>` explicitly as the type argument.
 - `LogEvents` is a `static class` of `EventId` constants only — no logging logic; the `ILogger<T>` call stays at the call site.
-- Later features add their own folders here (`/Exceptions` from VP1, `/Repositories` + `/UnitOfWork` from VP2, `/Concurrency` from VP5, `/Timestamps` from VP7) — none exist at plateau-core.
+- These folders (`/Exceptions`, `/Repositories`, `/UnitOfWork`, `/Concurrency`, `/Timestamps`, `/Clients`) are the domain-service additions; `Shared` stays a leaf — every one of them holds only contracts.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
@@ -51,6 +57,18 @@ __Applied solutions:__
     - [INotificationEvent.cs](./classes/plateau-domain-service--class-i-notification-event.skill.md) — `INotificationEvent : INotification`
   - /Logging
     - [LogEvents.cs](./classes/plateau-domain-service--class-log-events.skill.md) — stable `EventId` constants
+  - /Exceptions
+    - [DomainException.cs](./classes/plateau-domain-service--class-domain-exception.skill.md) — the single invariant-violation exception (VP1)
+  - /Repositories
+    - [IReadRepository.cs / IRepository.cs](./classes/plateau-domain-service--class-repository-contracts.skill.md) — data-access contracts (VP2)
+  - /UnitOfWork
+    - [IUnitOfWork.cs](./classes/plateau-domain-service--class-i-unit-of-work.skill.md) — the commit contract (VP2)
+  - /Concurrency
+    - [IVersioned / IHasVersions / IEntityVersionResolver(Factory).cs](./classes/plateau-domain-service--class-concurrency-contracts.skill.md) — optimistic-concurrency contracts (VP5)
+  - /Timestamps
+    - [ICreationInfoModel / IUpdateInfoModel / ICommandWithTimestamp.cs](./classes/plateau-domain-service--class-timestamp-contracts.skill.md) — creation/update timestamp contracts (VP7)
+  - /Clients
+    - [I{Dependency}Client.cs](./classes/plateau-domain-service--class-i-dependency-client.skill.md) — outbound service contracts returning `Result<T>` (VP11)
   - Shared.csproj
 
 __Applied solutions:__
@@ -64,6 +82,12 @@ __Applied solutions:__
 | /MediatR/IQuery.cs | `IQuery<TResponse>` request marker | [[./classes/plateau-domain-service--class-i-query.skill.md\|class-i-query]] |
 | /MediatR/INotificationEvent.cs | `INotificationEvent` notification marker | [[./classes/plateau-domain-service--class-i-notification-event.skill.md\|class-i-notification-event]] |
 | /Logging/LogEvents.cs | `EventId` catalogue for searched-for log lines | [[./classes/plateau-domain-service--class-log-events.skill.md\|class-log-events]] |
+| /Exceptions/DomainException.cs | Single invariant-violation exception | [[./classes/plateau-domain-service--class-domain-exception.skill.md\|class-domain-exception]] |
+| /Repositories/*.cs | `IRepository<T>` / `IReadRepository<T>` | [[./classes/plateau-domain-service--class-repository-contracts.skill.md\|class-repository-contracts]] |
+| /UnitOfWork/IUnitOfWork.cs | The commit contract | [[./classes/plateau-domain-service--class-i-unit-of-work.skill.md\|class-i-unit-of-work]] |
+| /Concurrency/*.cs | `IVersioned` / `IHasVersions` / resolver contracts | [[./classes/plateau-domain-service--class-concurrency-contracts.skill.md\|class-concurrency-contracts]] |
+| /Timestamps/*.cs | Creation/update timestamp contracts | [[./classes/plateau-domain-service--class-timestamp-contracts.skill.md\|class-timestamp-contracts]] |
+| /Clients/I{Dependency}Client.cs | Outbound service contract returning `Result<T>` | [[./classes/plateau-domain-service--class-i-dependency-client.skill.md\|class-i-dependency-client]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -80,7 +104,7 @@ __Applied solutions:__
 
 ## Allowed Dependencies
 - No project references — `Shared` is a leaf.
-- NuGet: `Ardalis.Result`, `MediatR`, `Microsoft.Extensions.Logging.Abstractions`.
+- NuGet: `Ardalis.Result`, `MediatR`, `Microsoft.Extensions.Logging.Abstractions`, plus `Ardalis.Specification` (the repository contracts inherit its base interfaces).
 
 __Applied solutions:__
 - [[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../../solutions/solution-sln-structure.skill/Implementation/Shared.csproj.create.md|Shared.csproj.create]]
@@ -103,5 +127,5 @@ __Applied solutions:__
 - [ ] `Shared.csproj` has no project references; references only `Ardalis.Result`, `MediatR`, `Microsoft.Extensions.Logging.Abstractions` (all versionless).
 - [ ] `/Shared/MediatR/{ICommand,IQuery,INotificationEvent}.cs` exist, `namespace Shared.MediatR`.
 - [ ] `/Shared/Logging/LogEvents.cs` exists, only `static readonly EventId` fields.
-- [ ] No `/Exceptions`, `/Repositories`, `/Concurrency`, `/Timestamps` folder (those arrive with later features).
+- [ ] `/Exceptions`, `/Repositories`, `/UnitOfWork`, `/Concurrency`, `/Timestamps`, `/Clients` each hold only contracts — no implementation.
 - [ ] No implementation, behavior, or entity in any `Shared` type.

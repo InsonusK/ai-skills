@@ -13,6 +13,8 @@ created_by:
   - "[[../../../../../solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]]"
   - "[[../../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
   - "[[../../../../../solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]"
+  - "[[../../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
 ---
 
 # Goal
@@ -25,8 +27,8 @@ __Applied solutions:__
 - Apply ONE plateau template per class.
 - `static class`, one public `AddPipeline(this IServiceCollection) : IServiceCollection` — chainable in `Program.cs`.
 - Each behavior is registered as an open generic: `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(XBehavior<,>))`, in execution order (first registered runs first).
-- Order at plateau-core: `ExceptionHandlingBehavior` (first, wraps everything) → `ValidationBehavior` (before any behavior that assumes a validated request).
-- Later features insert `ConcurrencyBehavior` / `GuidResolvingBehavior` after validation and `UnitOfWorkBehavior` last.
+- Order at plateau-domain-service: `ExceptionHandlingBehavior` (first) → `ValidationBehavior` → `ConcurrencyBehavior` (VP5, guards stale writes before work) → `UnitOfWorkBehavior` (VP2, **last** — commits what a fully-validated, non-stale handler staged).
+- `GuidResolvingBehavior` (VP6) inserts between validation and concurrency at plateau-offline-sync-service.
 - Behavior order lives **only** here — never in `Program.cs`, never in a module, never split across files.
 
 # Naming convention
@@ -52,11 +54,14 @@ public static class PipelineRegistration
         // 1. Global exception handler — first, so it wraps every other behavior and the handler.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
 
-        // 2. Transport validation — before any behavior that assumes a validated request.
+        // 2. Transport validation.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-        // Later features insert ConcurrencyBehavior / GuidResolvingBehavior here, and
-        // UnitOfWorkBehavior last.
+        // 3. Optimistic-concurrency guard (VP5) — only IHasVersions commands.
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
+
+        // 4. Unit of work (VP2) — LAST, so it commits only a fully-guarded handler's staged changes.
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         return services;
     }
@@ -71,7 +76,7 @@ __Applied solutions:__
 MUST:
 - Define `PipelineRegistration` as a `static class` in `App.Host/DependencyInjection/PipelineRegistration.cs`; `AddPipeline()` extends and returns `IServiceCollection`.
 - Register every behavior as an open generic inside `AddPipeline()`, in execution order.
-- Keep `ExceptionHandlingBehavior` first and `ValidationBehavior` immediately after it.
+- Keep the order `ExceptionHandlingBehavior` → `ValidationBehavior` → `ConcurrencyBehavior` → `UnitOfWorkBehavior`; `UnitOfWorkBehavior` is always last.
 - Never register a behavior in `Program.cs` or a module; never define pipeline order in more than one place; never create a second registration method.
 - Never apply several plateau templates per class.
 

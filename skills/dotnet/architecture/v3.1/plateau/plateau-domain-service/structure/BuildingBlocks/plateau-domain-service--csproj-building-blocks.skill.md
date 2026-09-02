@@ -13,6 +13,8 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-validation-behavior.skill/solution-validation-behavior.skill.md|solution-validation-behavior]]"
   - "[[../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
+  - "[[../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
 ---
 
 # Goal
@@ -36,15 +38,21 @@ created_by:
   - /MediatR
     - [ValidationBehavior.cs](./classes/plateau-domain-service--class-validation-behavior.skill.md) — collect-all FluentValidation, short-circuit with `Result.Invalid`
     - [ExceptionHandlingBehavior.cs](./classes/plateau-domain-service--class-exception-handling-behavior.skill.md) — catch `Exception`, log `Critical` with `LogEvents.UnhandledException`, return `Result.Error`
+    - [ConcurrencyBehavior.cs](./classes/plateau-domain-service--class-concurrency-behavior.skill.md) — guard `IHasVersions` commands against stale writes (VP5)
+    - [UnitOfWorkContext.cs](./classes/plateau-domain-service--class-unit-of-work-context.skill.md) — scoped nesting-depth counter (VP2)
+    - [UnitOfWorkBehavior.cs](./classes/plateau-domain-service--class-unit-of-work-behavior.skill.md) — commit once, last, after the outermost command (VP2)
   - BuildingBlocks.csproj
 
-Later features add `UnitOfWorkBehavior.cs` + `UnitOfWorkContext.cs` (VP2), `ConcurrencyBehavior.cs` (VP5), `GuidResolvingBehavior.cs` (VP6) — none at plateau-core.
+`GuidResolvingBehavior.cs` (VP6) arrives with plateau-offline-sync-service.
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /MediatR/ValidationBehavior.cs | Runs every `IValidator<TRequest>` before the handler; short-circuits invalid requests | [[./classes/plateau-domain-service--class-validation-behavior.skill.md\|class-validation-behavior]] |
 | /MediatR/ExceptionHandlingBehavior.cs | Catch-all that turns an unhandled exception into a generic `Result.Error` | [[./classes/plateau-domain-service--class-exception-handling-behavior.skill.md\|class-exception-handling-behavior]] |
+| /MediatR/ConcurrencyBehavior.cs | Version guard for `IHasVersions` commands | [[./classes/plateau-domain-service--class-concurrency-behavior.skill.md\|class-concurrency-behavior]] |
+| /MediatR/UnitOfWorkContext.cs | Scoped nesting-depth counter | [[./classes/plateau-domain-service--class-unit-of-work-context.skill.md\|class-unit-of-work-context]] |
+| /MediatR/UnitOfWorkBehavior.cs | Atomic commit after the outermost command | [[./classes/plateau-domain-service--class-unit-of-work-behavior.skill.md\|class-unit-of-work-behavior]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |

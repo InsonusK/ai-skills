@@ -13,6 +13,8 @@ created_by:
   - "[[../../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[../../../../solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]"
   - "[[../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]"
+  - "[[../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
 ---
 
 # Goal
@@ -26,7 +28,7 @@ __Applied solutions:__
 
 # Core Principles
 - One feature folder per operation under `/Features/{FeatureName}` — the handler (`{FeatureName}.Handler.cs`) and its per-feature validator (`{FeatureName}.Validator.cs`) co-located.
-- Handler shape is fixed: `guard → (dispatch | read) → return Result<T>`. `load`/`stage` steps appear only once persistence (VP2) is applied.
+- Handler shape at this plateau: `guard → load → domain call → stage → return Result<T>` — a persisted command loads via a named spec + `IRepository<T>`, calls the entity's guarded method, and stages with `UpdateAsync`/`AddAsync`. It never calls `SaveChangesAsync` (that is `UnitOfWorkBehavior`'s job).
 - Per-feature validators enforce transport correctness only and compose the reusable property/DTO validators via `SetValidator` — they never re-state a condition.
 - Reusable validators live under `/Validators`: `Property/{ValueObject}PropertyValidator` (`AbstractValidator<Soft{ValueObject}>`), `Model/{Dto}Validator`, `Async/{Feature}Check` (its `Load` is an unimplemented seam until VP2).
 - Handlers and validators self-register by assembly scan in `{Module}ApplicationRegistration.Register{ModuleName}Module()` — `AddMediatR` + `AddValidatorsFromAssembly`. Pipeline behaviors are **not** registered here.
@@ -54,7 +56,10 @@ __Applied solutions:__
     - /Property/[{ValueObject}PropertyValidator.cs](./classes/plateau-domain-service--class-value-object-property-validator.skill.md)
     - /Model/[{Dto}.Validator.cs](./classes/plateau-domain-service--class-dto-validator.skill.md)
     - /Async/[{Feature}Check.cs](./classes/plateau-domain-service--class-feature-check.skill.md) — `Load` throws until VP2
-  - /Specifications — empty until VP2
+  - /Specifications
+    - [{Entity}ByIdSpec.cs](./classes/plateau-domain-service--class-entity-byidspec.skill.md) — named load-by-Id spec (VP2)
+  - /Concurrency
+    - [{Entity}VersionResolver.cs](./classes/plateau-domain-service--class-entity-version-resolver.skill.md) — per-entity `IEntityVersionResolver` (VP5)
   - [{ModuleName}ApplicationRegistration.cs](./classes/plateau-domain-service--class-module-application-registration.skill.md)
   - {ModuleName}.Application.csproj
 
@@ -67,13 +72,16 @@ __Applied solutions:__
 | /Validators/Property/{ValueObject}PropertyValidator.cs | Reusable `Soft{ValueObject}` validator | [[./classes/plateau-domain-service--class-value-object-property-validator.skill.md\|class-value-object-property-validator]] |
 | /Validators/Model/{Dto}.Validator.cs | Reusable RequestDto validator | [[./classes/plateau-domain-service--class-dto-validator.skill.md\|class-dto-validator]] |
 | /Validators/Async/{Feature}Check.cs | Async cross-aggregate check seam | [[./classes/plateau-domain-service--class-feature-check.skill.md\|class-feature-check]] |
-| {ModuleName}ApplicationRegistration.cs | Module DI self-registration | [[./classes/plateau-domain-service--class-module-application-registration.skill.md\|class-module-application-registration]] |
+| {ModuleName}ApplicationRegistration.cs | Module DI self-registration (+ `AddScoped<{Entity}VersionResolver>()`) | [[./classes/plateau-domain-service--class-module-application-registration.skill.md\|class-module-application-registration]] |
+| /Specifications/{Entity}ByIdSpec.cs | Named load-by-Id specification | [[./classes/plateau-domain-service--class-entity-byidspec.skill.md\|class-entity-byidspec]] |
+| /Concurrency/{Entity}VersionResolver.cs | Reads one entity's current version | [[./classes/plateau-domain-service--class-entity-version-resolver.skill.md\|class-entity-version-resolver]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
 | --- | --- | --- |
 | MediatR | central | `IRequestHandler<,>`, `INotificationHandler<>`, `ISender`/`IPublisher` |
 | Ardalis.Result | central | `Result<T>` return type |
+| Ardalis.Specification | central | `Specification<T>` for named specs |
 | FluentValidation | central | `AbstractValidator<T>` |
 | FluentValidation.DependencyInjectionExtensions | central | `AddValidatorsFromAssembly` |
 
@@ -84,7 +92,7 @@ __Applied solutions:__
 - Cross-module JOIN specs — belong to `App.Queries` (does not exist at plateau-core).
 
 ## Allowed Dependencies
-- `Shared`, `{Module}.Interfaces`, `{Module}.Domain` (own module — Domain absent at plateau-core), `{OtherModule}.Interfaces`
+- `Shared`, `{Module}.Interfaces`, `{Module}.Domain` (own module), `{OtherModule}.Interfaces` — never `App.Infrastructure`, never `DbContext`
 - NuGet: `MediatR`, `Ardalis.Result`, `FluentValidation`, `FluentValidation.DependencyInjectionExtensions`
 
 # Rules

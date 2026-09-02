@@ -16,6 +16,11 @@ created_by:
   - "[[../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
   - "[[../../../../solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]"
   - "[[../../../../solutions/solution-app-logging.skill/solution-app-logging.skill.md|solution-app-logging]]"
+  - "[[../../../../solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill.md|solution-infrastructure-project]]"
+  - "[[../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
+  - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-api-project.skill/solution-api-project.skill.md|solution-api-project]]"
+  - "[[../../../../solutions/solution-grpc-client.skill/solution-grpc-client.skill.md|solution-grpc-client]]"
 ---
 
 # Goal
@@ -50,11 +55,13 @@ __Applied solutions:__
     - [ModuleRegistration.cs](./classes/plateau-domain-service--class-module-registration.skill.md) — `AddModules()`
     - [PipelineRegistration.cs](./classes/plateau-domain-service--class-pipeline-registration.skill.md) — `AddPipeline()`, behavior order
     - [LoggingRegistration.cs](./classes/plateau-domain-service--class-logging-registration.skill.md) — `AddAppLogging()`
-  - Program.cs — `Host.CreateApplicationBuilder`, the three calls
+    - [InfrastructureRegistration.cs](./classes/plateau-domain-service--class-infrastructure-registration.skill.md) — `AddInfrastructure()` — DbContext, repositories, unit of work, version-resolver factory, gRPC clients (VP2/VP5/VP11)
+    - [ApiRegistration.cs](./classes/plateau-domain-service--class-api-registration.skill.md) — `AddModuleApi()` / `UseModuleApi()` with transport hooks (VP8/VP9)
+  - Program.cs — `Host.CreateApplicationBuilder`, then `AddAppLogging()`, `AddModules()`, `AddPipeline()`, `AddInfrastructure()`, `AddModuleApi()` / `UseModuleApi()`
   - appsettings.json / appsettings.Development.json — `Logging` section
   - App.Host.csproj
 
-`InfrastructureRegistration.cs` (`AddInfrastructure()`) arrives with VP2.
+`AddInfrastructure()` is called once from `Program.cs`, alongside `AddModules()` / `AddPipeline()`. The API pair is called only when a module has an API.
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
@@ -62,6 +69,8 @@ __Applied solutions:__
 | /DependencyInjection/ModuleRegistration.cs | `AddModules()` — every module's registration | [[./classes/plateau-domain-service--class-module-registration.skill.md\|class-module-registration]] |
 | /DependencyInjection/PipelineRegistration.cs | `AddPipeline()` — pipeline behavior order | [[./classes/plateau-domain-service--class-pipeline-registration.skill.md\|class-pipeline-registration]] |
 | /DependencyInjection/LoggingRegistration.cs | `AddAppLogging()` — provider + levels | [[./classes/plateau-domain-service--class-logging-registration.skill.md\|class-logging-registration]] |
+| /DependencyInjection/InfrastructureRegistration.cs | `AddInfrastructure()` — persistence, concurrency, gRPC clients | [[./classes/plateau-domain-service--class-infrastructure-registration.skill.md\|class-infrastructure-registration]] |
+| /DependencyInjection/ApiRegistration.cs | `AddModuleApi()` / `UseModuleApi()` transport hooks | [[./classes/plateau-domain-service--class-api-registration.skill.md\|class-api-registration]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -76,8 +85,8 @@ __Applied solutions:__
 - Log call sites — in the class that logs; the `LogEvents` catalogue is in `Shared`.
 
 ## Allowed Dependencies
-- `BuildingBlocks`, every `{Module}.Application`
-- NuGet: `Microsoft.Extensions.Hosting`, `Microsoft.Extensions.Logging.Console`, `MediatR`
+- `BuildingBlocks`, `App.Infrastructure`, every `{Module}.Application`, every `{Module}.Api`
+- NuGet: `Microsoft.Extensions.Hosting`, `Microsoft.Extensions.Logging.Console`, `MediatR`, `Microsoft.EntityFrameworkCore` provider (the DbContext provider is chosen here)
 
 # Rules
 MUST:
@@ -99,4 +108,4 @@ __Applied solutions:__
 - [ ] `AddPipeline()` registers `ExceptionHandlingBehavior` then `ValidationBehavior`, both as open generics, in that order.
 - [ ] Every module is registered inside `ModuleRegistration.AddModules`.
 - [ ] `LoggingRegistration` clears providers, binds the `Logging` config section, adds the console provider; no other file names a provider.
-- [ ] No `InfrastructureRegistration.cs` (arrives with VP2).
+- [ ] `InfrastructureRegistration.AddInfrastructure()` called once from `Program.cs`; `ApiRegistration` pair called for API-bearing modules.
