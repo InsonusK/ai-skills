@@ -1,5 +1,5 @@
 ---
-description: The three single-pass Cecil checks — dead-rule detection, exception-type scoping, generated-constant uniqueness/format — one class, three [Fact]s
+description: The exception-type-scoping Cecil check — DomainException / EntityNotLoadedException are only constructed from the namespace meant to throw them — one [Fact], VP1-gated
 project_name: "{Module}.Domain.Tests"
 name: "{Module}ArchitectureTests.cs"
 element_kind: class
@@ -10,28 +10,27 @@ tags:
 ---
 
 # Goals
-- Prove, over compiled IL rather than by executing it, that every `Check()` in `Domain.Rules` is actually called, `DomainException` is only ever thrown from `ValueObjects`/`Entities`, and every generated rejection code is unique and well-formed
+- Prove, over compiled IL rather than by executing it, that `DomainException` is constructed only from `{Module}.Domain.ValueObjects` / `{Module}.Domain.Entities`, and `EntityNotLoadedException` only from `{Module}.Domain` — never leaked into `{Module}.Application`, `{Module}.Api`, or a handler.
 
 # Core Principles
-- Single-pass checks (scan every method once, flag) share this one class — the call-graph/registry-driven check does not belong here, see [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/GuardedPropertyRuleCoverageTests.cs.create.md|GuardedPropertyRuleCoverageTests.cs]]
-- Load every assembly via `typeof(KnownType).Assembly.Location`, never a hardcoded path
+- Single-pass check (scan every method body once for `Code.Newobj`, flag). Lives in this one class with the `LoadDomainAssembly()` helper.
+- Load every assembly via `typeof(KnownType).Assembly.Location`, never a hardcoded path.
+- VP1-gated — needs `{Module}.Domain` and `DomainException` to exist. The dead-rule and code-uniqueness checks (which need only `{Module}.Domain.Rules`) live separately in `{Module}RuleArchitectureTests` in `{Module}.Domain.Rules.Tests`.
 
 # Implementation changes
 
-Full worked implementation (`TaskModule`) and the "why" behind each of `Code.Call`/`Code.Callvirt` matching, `Code.Newobj` scoping, and `f.HasConstant` field reading:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/examples/dead-rule-detection.md|dead-rule-detection.md]] — `EveryDomainRuleCheck_IsCalledByProductionCodeOutsideRules`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/examples/exception-scoping.md|exception-scoping.md]] — `DomainException_IsThrownOnlyFromValueObjectsOrEntities`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/examples/code-uniqueness-format.md|code-uniqueness-format.md]] — `RejectionCodes_AreUniqueAndFollowModuleDotClassDotReasonFormat`
+One `[Fact]` in `{Module}ArchitectureTests` in `{Module}.Domain.Tests/Architecture/{Module}ArchitectureTests.cs`:
 
-All three `[Fact]`s live in one `{Module}ArchitectureTests` class in `/Architecture/{Module}ArchitectureTests.cs`, sharing the `LoadDomainAssembly()`/`LoadDomainRulesAssembly()` helpers shown in the linked examples.
+- `DomainException_IsThrownOnlyFromValueObjectsOrEntities` — for each exception type and its allowed namespace set, walk every method body outside the allowed namespaces for a `Code.Newobj` whose `DeclaringType.FullName` matches the exception type; fail on any match. Full worked implementation and rationale: [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/examples/exception-scoping.md|exception-scoping.md]].
 
 # Rule changes
 
 ## MUST
-- Contain exactly these three `[Fact]`s, no more, no fewer, per module
-- Load assemblies via `typeof(KnownType).Assembly.Location`
-- Never contain the registry-driven call-graph check — that is a separate class, see `GuardedPropertyRuleCoverageTests.cs`
+- Contain exactly this one `[Fact]`, per module.
+- Load assemblies via `typeof(KnownType).Assembly.Location`.
+- Never contain the dead-rule or code-uniqueness checks — those scan `{Module}.Domain.Rules` and live in `{Module}RuleArchitectureTests` in `{Module}.Domain.Rules.Tests`.
+- Never contain the registry-driven call-graph check — that is `GuardedPropertyRuleCoverageTests`.
 
 # Check list
-- [ ] All three checks present, each loading its target assembly correctly
-- [ ] No hardcoded assembly path anywhere in this file
+- [ ] Exactly the one `[Fact]` (`DomainException_IsThrownOnlyFromValueObjectsOrEntities`), covering both `DomainException` and `EntityNotLoadedException`.
+- [ ] Assembly loaded via `typeof(...).Assembly.Location`; no hardcoded path.

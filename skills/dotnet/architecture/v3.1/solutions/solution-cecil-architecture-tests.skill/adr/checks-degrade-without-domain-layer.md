@@ -2,7 +2,7 @@
 name: checks-degrade-without-domain-layer
 description: What the mandatory Cecil companion does for a module that applies VP4 but has no domain layer
 problem: solution-cecil-architecture-tests is the mandatory companion of solution-domain-rules (VP4). Two of its four checks scan {Module}.Domain entities and DomainException, which only exist with DomainLogic (VP1). VP4 is not gated on VP1, so a rules-only module can apply VP4 with no entities.
-decision: The companion is still applied. Dead-rule detection and code-uniqueness/format run always (they scan {Module}.Domain.Rules). Exception-scoping and guarded-property-coverage are no-ops (pass trivially, an empty scan) when {Module}.Domain has no entities; they become real once VP1 is added.
+decision: The companion is still applied, split by which test project can host each check. Dead-rule detection and code-uniqueness/format live in {Module}.Domain.Rules.Tests (always present with VP4) as {Module}RuleArchitectureTests. Exception-scoping and guarded-property-coverage live in {Module}.Domain.Tests as {Module}ArchitectureTests + GuardedPropertyRuleCoverageTests — which, like {Module}.Domain itself, only exist once VP1 is added; for a rules-only module they are simply absent, not empty no-ops.
 tags:
   - solution/cecil-architecture-tests
   - stack/dotnet
@@ -25,7 +25,7 @@ The four checks:
 
 # Selected variant
 
-**Selected variant:** [[#Apply all four; the domain-dependent two are empty no-ops until VP1]]
+**Selected variant:** [[#Apply all four; split by host project — the domain-dependent two are absent until VP1]]
 
 # Searched variants
 
@@ -52,16 +52,15 @@ Two solutions: one with the two rules checks (companion of VP4), one with the tw
 - Four checks, built on one Cecil harness, sharing helpers and a registry — splitting duplicates the harness.
 - `guarded-property-coverage` needs the rule registry that the rules side owns — the split cuts across a real dependency.
 
-## Apply all four; the domain-dependent two are empty no-ops until VP1 (selected)
+## Apply all four; split by host project — the domain-dependent two are absent until VP1 (selected)
 
 ### Description
-`solution-cecil-architecture-tests` stays one solution, mandatory with VP4. `{Module}RuleArchitectureTests` (dead-rule, code-uniqueness) runs against `{Module}.Domain.Rules`. `{Module}ArchitectureTests` (exception-scoping) and `GuardedPropertyRuleCoverageTests` load `{Module}.Domain`; with no entity types their scans are empty and the `[Fact]`s pass trivially. When VP1 is later added, the same tests start finding real members to check — no new test, no re-application of this solution.
+`solution-cecil-architecture-tests` stays one solution, mandatory with VP4, but its `extends` targets two test projects. `{Module}RuleArchitectureTests` (dead-rule, code-uniqueness) goes in `{Module}.Domain.Rules.Tests`, which always exists with VP4. `{Module}ArchitectureTests` (exception-scoping) and `GuardedPropertyRuleCoverageTests` go in `{Module}.Domain.Tests`, which — like `{Module}.Domain` itself — only exists with VP1; for a rules-only module those two `.cs` files are simply not created. When VP1 is later added, `{Module}.Domain.Tests` appears and this solution's `{Module}.Domain.Tests.csproj.extend` files apply then.
 
 ### Benefits
-- One solution, one harness, one registry.
-- Adding VP1 to a module needs no change to its architecture-test setup.
-- Honest: the checks are present and green, and become load-bearing exactly when their target exists.
+- One solution, one harness, one registry — the split is only across `extends` targets, not across solutions.
+- Each check lives in a project that can actually compile it — no near-empty `{Module}.Domain.Tests` referencing a non-existent `{Module}.Domain`.
+- Honest: a rules-only module has exactly the two checks that mean something for it, and no dormant green `[Fact]`s pretending to prove more.
 
 ### Costs
-- A green `guarded-property-coverage` on a rules-only module proves nothing — a reader must know it is dormant until VP1. Stated in the skill's top note and here.
-- `{Module}.Domain.Tests` must exist even for a module whose `{Module}.Domain` has no entities yet — a near-empty test project. Acceptable: `solution-dotnet-conformance-testing` creates one test project per production project anyway.
+- The solution's `{Module}.Domain.Tests.csproj.extend` mutations are conditional on VP1 — one more "applies only when X" note to carry. Acceptable: every per-entity solution already carries the same conditionality.

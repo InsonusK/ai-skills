@@ -1,5 +1,5 @@
 ---
-description: Add the Architecture/ folder holding all four Mono.Cecil structural checks to {Module}.Domain.Tests
+description: Add the Architecture/ folder holding the two VP1-gated Mono.Cecil checks (exception-scoping, guarded-property-coverage) to {Module}.Domain.Tests
 project_name: "{Module}.Domain.Tests"
 name: "{Module}.Domain.Tests.csproj"
 element_kind: project
@@ -10,12 +10,13 @@ tags:
 ---
 
 # Goals
-- Give `{Module}.Domain.Tests` a build-time guarantee, over compiled IL, that plain unit/BDD tests cannot give by construction
+- Give `{Module}.Domain.Tests` a build-time guarantee, over compiled IL, that `DomainException`/`EntityNotLoadedException` never leak their layer and that every guarded property's write is paired with its rule — facts plain unit/BDD tests cannot give by construction. These need `{Module}.Domain` entities, so they live here; the two rules-only checks live in `{Module}.Domain.Rules.Tests`.
 
 # Rule changes
 
 ## MUST
-- Add `/Architecture` under `{Module}.Domain.Tests`, holding the two test classes and their companion `.feature` files
-- Reference `Mono.Cecil`
-- Never load any assembly other than the module's own `{Module}.Domain`/`{Module}.Domain.Rules` from these tests
+- Add `/Architecture` under `{Module}.Domain.Tests`, holding `{Module}ArchitectureTests.cs` (exception-scoping), `GuardedPropertyRuleCoverageTests.cs`, and their companion `.feature` files.
+- Reference `Mono.Cecil`.
+- Load only the module's own `{Module}.Domain` (and, for the coverage registry's rule references, `{Module}.Domain.Rules`) via `typeof(KnownType).Assembly.Location`.
+- Never put the dead-rule or code-uniqueness checks here — they scan `{Module}.Domain.Rules` and belong in `{Module}.Domain.Rules.Tests`.
 

@@ -13,7 +13,7 @@ tags:
 - Prove that every public/internal Entity method/setter/constructor that writes a rule-guarded property also calls that rule — the one fact a `.feature` scenario proving the rule's own correctness cannot prove by construction
 
 # Core Principles
-- Kept in its own class, separate from the three single-pass checks in `{Module}ArchitectureTests.cs` — the recursive call-graph walk is materially more complex and a broken registry entry shouldn't bury a broken simple check's own failure
+- Kept in its own class, separate from the single-pass checks (`{Module}ArchitectureTests` here, `{Module}RuleArchitectureTests` in `{Module}.Domain.Rules.Tests`) — the recursive call-graph walk is materially more complex and a broken registry entry shouldn't bury a broken simple check's own failure
 - The coverage registry (`Dictionary<(Entity, Property), Rule[]>`) lives in this test class, never in `Domain`/`Domain.Rules` production code
 - A new guarded rule adds one registry line — never a new bespoke test class
 

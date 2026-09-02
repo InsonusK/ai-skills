@@ -1,6 +1,6 @@
 ---
-description: A documentary .feature file per Cecil check — describes intent in plain language, with no real step-definition binding; the [Fact] next to it is the actual proof
-project_name: "{Module}.Domain.Tests"
+description: A documentary .feature file per Cecil check — describes intent in plain language, with no real step-definition binding; the [Fact] next to it is the actual proof. Lives in whichever Architecture/ folder its [Fact] does — {Module}.Domain.Rules.Tests for dead-rule/code-uniqueness, {Module}.Domain.Tests for exception-scoping/guarded-property-coverage.
+project_name: "{Module}.Domain.Rules.Tests | {Module}.Domain.Tests"
 name: "{Check}.feature"
 element_kind: feature
 change_kind: create

@@ -17,7 +17,11 @@ creates:
   - "{Module}.Domain.Rules.Tests.Architecture.{Module}RuleArchitectureTests.cs"
   - "{Module}.Domain.Tests.Architecture.{Module}ArchitectureTests.cs"
   - "{Module}.Domain.Tests.Architecture.GuardedPropertyRuleCoverageTests.cs"
+  - "{Module}.Domain.Rules.Tests.Architecture.{Check}.feature"
   - "{Module}.Domain.Tests.Architecture.{Check}.feature"
+extends:
+  - "{Module}.Domain.Rules.Tests.csproj"
+  - "{Module}.Domain.Tests.csproj"
 depends_on:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
@@ -28,7 +32,7 @@ adr:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/adr/checks-degrade-without-domain-layer.md|The four checks degrade to an applicable subset when VP1/VP3 are absent]]"
 ---
 
-> Mandatory companion of `solution-domain-rules` (VP4). Which of the four checks apply depends on which features are present: **dead-rule** and **code-uniqueness** always run (they scan `{Module}.Domain.Rules`); **exception-scoping** and **guarded-property-coverage** need `{Module}.Domain` entities and `DomainException` (VP1) — they are no-ops for a rules-only module. See the ADR.
+> Mandatory companion of `solution-domain-rules` (VP4). The four checks split across two test projects by what each can load: **dead-rule** and **code-uniqueness** scan only `{Module}.Domain.Rules`, so they live in `{Module}.Domain.Rules.Tests` (which always exists with VP4) as `{Module}RuleArchitectureTests`; **exception-scoping** and **guarded-property-coverage** need `{Module}.Domain` entities and `DomainException` (VP1), so they live in `{Module}.Domain.Tests` as `{Module}ArchitectureTests` + `GuardedPropertyRuleCoverageTests`, and are simply absent for a rules-only module. See the ADR.
 
 # Goal
 
@@ -79,10 +83,12 @@ NUGET:
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj]] - extend - Add the `Architecture/` folder holding all four checks
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Module}ArchitectureTests.cs.create.md|{Module}ArchitectureTests.cs]] - create - The three single-pass checks (dead-rule detection, exception scoping, code-uniqueness/format), one class, three `[Fact]`s — see [[./examples/dead-rule-detection.md|dead-rule-detection.md]], [[./examples/exception-scoping.md|exception-scoping.md]], [[./examples/code-uniqueness-format.md|code-uniqueness-format.md]] for the full worked implementation and rationale
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/GuardedPropertyRuleCoverageTests.cs.create.md|GuardedPropertyRuleCoverageTests.cs]] - create - The registry-driven call-graph check, its own class — see [[./examples/guarded-property-coverage.md|guarded-property-coverage.md]] for the full worked implementation and rationale
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Check}.feature.create.md|{Check}.feature]] - create - Documentary `.feature` file per check, scenario titles mirroring `[Fact]` method names
+- [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.extend.md|{Module}.Domain.Rules.Tests.csproj]] - extend - Add the `Architecture/` folder for the two checks that scan `{Module}.Domain.Rules` only (always run with VP4)
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.extend/{Module}RuleArchitectureTests.cs.create.md|{Module}RuleArchitectureTests.cs]] - create - dead-rule detection + code-uniqueness/format, one class, two `[Fact]`s — see [[./examples/dead-rule-detection.md|dead-rule-detection.md]], [[./examples/code-uniqueness-format.md|code-uniqueness-format.md]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend.md|{Module}.Domain.Tests.csproj]] - extend - Add the `Architecture/` folder for the two checks that need `{Module}.Domain` entities + `DomainException` (VP1-gated)
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Module}ArchitectureTests.cs.create.md|{Module}ArchitectureTests.cs]] - create - exception-type scoping, one class, one `[Fact]` — see [[./examples/exception-scoping.md|exception-scoping.md]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/GuardedPropertyRuleCoverageTests.cs.create.md|GuardedPropertyRuleCoverageTests.cs]] - create - The registry-driven call-graph check, its own class — see [[./examples/guarded-property-coverage.md|guarded-property-coverage.md]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Check}.feature.create.md|{Check}.feature]] - create - Documentary `.feature` file per check (in whichever `Architecture/` folder its `[Fact]` lives), scenario titles mirroring `[Fact]` method names
 
 # Workflow
 
@@ -150,6 +156,8 @@ PROJECT:
 
 # Check list
 
+- [ ] `{Module}RuleArchitectureTests` (dead-rule + code-uniqueness) lives in `{Module}.Domain.Rules.Tests/Architecture`, referencing `{Module}.Domain.Rules` only.
+- [ ] `{Module}ArchitectureTests` (exception-scoping) + `GuardedPropertyRuleCoverageTests` live in `{Module}.Domain.Tests/Architecture`; absent entirely for a rules-only module (no VP1).
 - [ ] Every architecture test loads its target assembly via `typeof(KnownType).Assembly.Location`.
 - [ ] Any coverage registry lives in the test project, not in `Domain`/`Domain.Rules` production code.
 - [ ] Every recursive call-graph walk carries a `visited` guard.
@@ -157,5 +165,5 @@ PROJECT:
 - [ ] No rule-check logic lives inside an individual property setter for a rule spanning more than one property.
 - [ ] Call-graph/registry-driven checks live in their own test class, separate from single-pass checks.
 - [ ] A guarded property's setter is narrowed to `private` wherever the write pattern allows it, not left `internal`/`public` "because the test will catch misuse anyway."
-- [ ] Each of the four checks has a companion documentary `.feature` file, scenario titles matching `[Fact]` method names, with no fabricated step-definition binding
-- [ ] `GuardedPropertyRuleCoverageTests` scans `{Module}.Domain` only — no other module's assembly
+- [ ] Each of the four checks has a companion documentary `.feature` file (in the same `Architecture/` folder as its `[Fact]`), scenario titles matching `[Fact]` method names, with no fabricated step-definition binding.
+- [ ] `GuardedPropertyRuleCoverageTests` scans `{Module}.Domain` only — no other module's assembly.

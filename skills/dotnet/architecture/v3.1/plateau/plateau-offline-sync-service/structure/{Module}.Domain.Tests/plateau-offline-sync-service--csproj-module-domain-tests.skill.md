@@ -38,7 +38,7 @@ __Applied solutions:__
 - /{Module}.Domain.Tests
   - /Rules/{Rule}.feature
   - /StepDefinitions/[{Rule}Steps.cs](./classes/plateau-offline-sync-service--class-module-domain-rule-steps.skill.md)
-  - /Architecture/[{Module}ArchitectureTests.cs / GuardedPropertyRuleCoverageTests.cs](./classes/plateau-offline-sync-service--class-architecture-tests.skill.md) — Mono.Cecil `[Fact]`s (VP4 companion)
+  - /Architecture/[{Module}ArchitectureTests.cs / GuardedPropertyRuleCoverageTests.cs](./classes/plateau-offline-sync-service--class-architecture-tests.skill.md) — Cecil exception-scoping + guarded-property-coverage `[Fact]`s (VP4 companion, VP1-gated; the dead-rule / code-uniqueness checks live in `{Module}.Domain.Rules.Tests`)
   - reqnroll.json
   - {Module}.Domain.Tests.csproj
 
@@ -46,7 +46,7 @@ __Applied solutions:__
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /StepDefinitions/{Rule}Steps.cs | Bindings asserting entity/VO behavior against the real types (+ `@format` rule scenarios via VP4) | [[./classes/plateau-offline-sync-service--class-module-domain-rule-steps.skill.md\|class-module-domain-rule-steps]] |
-| /Architecture/*.cs | Cecil structural `[Fact]`s over compiled IL | [[./classes/plateau-offline-sync-service--class-architecture-tests.skill.md\|class-architecture-tests]] |
+| /Architecture/*.cs | Cecil: exception-scoping + guarded-property-coverage `[Fact]`s (VP1-gated) | [[./classes/plateau-offline-sync-service--class-architecture-tests.skill.md\|class-architecture-tests]] |
 
 ## NuGet Packages
 | Package | Purpose |
