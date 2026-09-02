@@ -94,5 +94,48 @@ for s in central-package-management soft-value-objects validation-behavior media
 done
 if [ -s /tmp/v31_cov.txt ]; then cat /tmp/v31_cov.txt; else note "ok — all non-aspirational solutions present"; fi
 
+section "8. Plateau skills — relative links resolve, forbidden headings, name triple"
+PLA="$V31/plateau"
+if [ -d "$PLA" ]; then
+  # 8a. forbidden ## MUST NOT / ## SHOULD NOT / # Anti-patterns in plateau skill files (HARD)
+  if grep -rn -E '^#+[[:space:]]*(MUST NOT|SHOULD NOT)([[:space:]]|:|$)|^#[[:space:]]*Anti-patterns' \
+       "$PLA"/*/structure "$PLA"/*/*.skill/*.skill.md 2>/dev/null > /tmp/v31_pla_forbidden.txt; then
+    fail=1; note "forbidden headings in plateau skill files:"; sed 's/^/    /' /tmp/v31_pla_forbidden.txt
+  else note "8a forbidden headings: ok"; fi
+
+  # 8b. every markdown link target (relative) inside a plateau skill file resolves
+  : > /tmp/v31_pla_links.txt
+  while IFS= read -r f; do
+    d="$(dirname "$f")"
+    grep -oE '\]\(\.\.?[^)]*\)' "$f" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' | while read -r rel; do
+      [ -z "$rel" ] && continue
+      case "$rel" in http*) continue;; esac
+      [ -e "$d/$rel" ] || echo "    MISSING: $f -> $rel" >> /tmp/v31_pla_links.txt
+    done
+    # wikilinks with an explicit path segment
+    grep -oE '\[\[[^]|]+' "$f" 2>/dev/null | sed 's/^\[\[//; s/#.*$//; s/\\$//' | while read -r wl; do
+      case "$wl" in
+        skills/*) resolve "$wl" || { sn="$(printf '%s' "$wl" | grep -oE 'solution-[a-z0-9-]+' | head -1)"; \
+                   { [ -n "$sn" ] && is_planned "$sn"; } || echo "    MISSING(abs): $f -> $wl" >> /tmp/v31_pla_links.txt; } ;;
+        ../*|./*) [ -e "$d/$wl" ] || [ -e "$d/$wl.md" ] || echo "    MISSING(rel): $f -> $wl" >> /tmp/v31_pla_links.txt ;;
+      esac
+    done
+  done < <(find "$PLA" -name '*.skill.md')
+  if [ -s /tmp/v31_pla_links.txt ]; then fail=1; note "unresolved plateau links (HARD):"; sort -u /tmp/v31_pla_links.txt
+  else note "8b plateau links: ok"; fi
+
+  # 8c. plateau element skill: file basename == name: frontmatter, and starts with plateau-<plateau>--
+  pmiss=0
+  while IFS= read -r f; do
+    b="$(basename "$f" .skill.md)"
+    case "$b" in plateau-*--*) ;; *) continue;; esac
+    nm="$(grep -m1 '^name:' "$f" | sed 's/^name:[[:space:]]*//' | tr -d '"'"'"'')"
+    [ "$nm" = "$b" ] || { fail=1; pmiss=1; note "plateau name mismatch: $b (name: $nm)"; }
+  done < <(find "$PLA" -name 'plateau-*--*.skill.md')
+  [ "$pmiss" -eq 0 ] && note "8c plateau name triple: ok"
+else
+  note "no plateau/ folder yet"
+fi
+
 section "RESULT"
 if [ "$fail" -eq 0 ]; then echo "PASS"; exit 0; else echo "FAIL"; exit 1; fi
