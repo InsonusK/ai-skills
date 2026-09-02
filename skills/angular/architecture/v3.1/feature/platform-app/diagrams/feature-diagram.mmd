@@ -1,0 +1,40 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph Row1[" "]
+            direction LR
+            APP["PlatformApp<br/>(root of the family)"]
+        end
+        subgraph Row2[" "]
+            direction LR
+            NX["NxWorkspaceStructure"]
+            STATE["TieredStateManagement"]
+            ROUTE["HierarchicalRouting"]
+            FORMS["SignalForms"]
+        end
+        subgraph Row3[" "]
+            direction LR
+            DATA["FacadeClientDataAccess"]
+            LOG["ConsoleLogging"]
+        end
+        subgraph Testing["Testing"]
+            direction LR
+            BLT["BusinessLayerTesting"]
+            CT["ComponentTesting"]
+        end
+    end
+    style Row1 fill:none,stroke:none
+    style Row2 fill:none,stroke:none
+    style Row3 fill:none,stroke:none
+
+    Common -->|Optional| PTR["PerformanceTunedRouting"]
+    Common -->|Optional| ORR["OfflineReadResilience"]
+    Common -->|Optional| FED["FederationHost"]
+    Common -->|Optional| BLD["BackendLogDelivery"]
+    Common -->|Optional| AUTH["Authentication"]
+
+    ORR -->|"Optional (per feature)"| OWQ["OfflineWriteQueue"]
+    FED -->|Optional| DSC["DesignSystemConsumption"]
+
+    BLD -. "Requires" .-> LOG
+    AUTH -. "Requires (flagged — see model)" .-> FED

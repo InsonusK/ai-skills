@@ -1,0 +1,25 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph Row1[" "]
+            direction LR
+            DS["DesignSystem<br/>(root of the family)"]
+        end
+        subgraph Row2[" "]
+            direction LR
+            WS["DesignSystemWorkspace"]
+            TOK["HybridDesignTokens"]
+        end
+        subgraph Row3[" "]
+            direction LR
+            COMP["EncapsulatedComponentLayer"]
+            CT["ComponentTesting"]
+        end
+    end
+    style Row1 fill:none,stroke:none
+    style Row2 fill:none,stroke:none
+    style Row3 fill:none,stroke:none
+
+    Common -->|Optional| MTT["MultiTenantTheming<br/>(aspirational)"]
+
+    MTT -. "Requires" .-> TOK
