@@ -80,6 +80,6 @@ Still open (tracked): S4 (`external-created-entity` needs a `# Boundaries` secti
 
 ## Open forks
 
-- ⚠️ **`entity-cs` infrastructure accretion (from delta-conflict-detection).** `{Entity}.cs` is extended by 8 solutions; VP5/VP6/VP7 each "add a property + a marker interface". Proposal **A** (recommended): move `Version` (VP5) and the server timestamps (VP7 server half) to **EF shadow properties** in `{Entity}Config.cs` + `AppDbContext.OnBeforeSaving`, so those two stop touching the entity class. This changes `solution-entity-concurrency-change` and `solution-entity-edit-timestamp` materially. NOT applied — needs owner sign-off. See `delta-conflict-analysis.md#entity-cs`.
+- ✅ **`entity-cs` N≥3 — RESOLVED as canonical (owner call, 2026-09-02).** The classifier's granularity is the method: two solutions touching *different* members of a class is `FMN`, not a signal. The N≥3 architectural-signal note applies (per the skill) only to `TMC`/`FMC`/`FDC` groups — `entity-cs` is `FMN`, so it does not apply. VP5/VP6/VP7 each contribute a *disjoint declared interface + its members* **by design**; VP1→VP3→VP4 form a coordinated single-direction pipeline. No shadow properties, no rethink. Each of `solution-entity-concurrency-change` / `solution-external-created-entity` / `solution-entity-edit-timestamp` now states its bounded 'Entity contribution' in `# Boundaries`.
 
 - _(none currently — VP4↔VP1 and the two feature-model edge changes were resolved in the design conversation)_

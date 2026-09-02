@@ -77,6 +77,11 @@ Decided per entity by whoever applies VP7 — independent of the entity's VP5/VP
 | User creates, never edits | `ICreationInfoModel` |
 | User creates and edits | `ICreationInfoModel`, `IUpdateInfoModel` |
 
+# Boundaries
+- **Entity contribution (bounded contract).** This solution's footprint on `{Entity}.cs` is: implement `Shared.Timestamps.ICreationInfoModel` (and `IUpdateInfoModel` when the user edits the entity), add the creation/update timestamp properties, and add a `SetTimestamps(...)` method this solution owns. It touches no method that `solution-domain-behaviour` or any other solution defines. VP7 is one of the disjoint per-entity interface contributions the [delta-conflict analysis](skills/dotnet/architecture/v3.1/delta-conflict-analysis.md#entity-cs) records as canonical.
+- Server timestamps (`ServerCreatedDateTime`/`ServerUpdatedDateTime`) are assigned in `AppDbContext.OnBeforeSaving`, not by any handler. The user-supplied `ActionTimeStamp` lives on the command, not the entity — the entity only stores what the handler copies onto it.
+- Inbound API (VP8/VP9) is not required; a module reached only over messaging still timestamps its user-initiated entities.
+
 # Adr
 
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/adr/timestamp-handling.md|Timestamp handling ADR]]
