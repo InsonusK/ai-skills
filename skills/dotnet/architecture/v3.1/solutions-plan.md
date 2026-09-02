@@ -1,5 +1,11 @@
 # v3.1 solution catalog — migration plan
 
+**STATUS (2026-09-02): catalog build complete — 32 solutions, `check.sh` PASS, 8 commits on `plateau-map-v3`.**
+Waves 0–3 done + both fresh-eyes audits applied. Remaining: `delta-conflict-detection` → `plateau-create-by-solutions` + a buildable example (the ground-truth check). Open per-file debt tracked in `DECISIONS.md` ("Still open").
+
+---
+
+
 Working document. Produced from step 1 of the full cycle (verify no-dependency VPs). Once agreed, execute wave by wave, then run delta-conflict-detection, then plateau-create-by-solutions.
 
 ## Root cause of most corrections
