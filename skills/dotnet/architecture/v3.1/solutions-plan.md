@@ -1,7 +1,7 @@
 # v3.1 solution catalog — migration plan
 
-**STATUS (2026-09-02): catalog build complete — 32 solutions, `check.sh` PASS, 8 commits on `plateau-map-v3`.**
-Waves 0–3 done + both fresh-eyes audits applied. Remaining: `delta-conflict-detection` → `plateau-create-by-solutions` + a buildable example (the ground-truth check). Open per-file debt tracked in `DECISIONS.md` ("Still open").
+**STATUS (2026-09-02): catalog build complete (32 solutions) + delta-conflict-detection done + `plateau-core` done. `check.sh` PASS.**
+Waves 0–3 + both fresh-eyes audits + delta-conflict-detection applied. `plateau-create-by-solutions` in progress: **`plateau-core` complete** (root skill + 34 structure skills + Reqnroll example, `dotnet build` + `make unit-test` green). Next: `plateau-domain-service`, then `plateau-offline-sync-service`. Open per-file debt tracked in `DECISIONS.md` ("Still open" / "plateau-create").
 
 ---
 
