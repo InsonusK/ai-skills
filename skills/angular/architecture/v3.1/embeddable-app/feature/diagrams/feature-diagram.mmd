@@ -1,0 +1,22 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph Row1[" "]
+            direction LR
+            EA["EmbeddableApp<br/>(root of the family)"]
+        end
+        subgraph Row2[" "]
+            direction LR
+            FRC["FederationRemoteContract"]
+        end
+    end
+    style Row1 fill:none,stroke:none
+    style Row2 fill:none,stroke:none
+
+    Common -->|Optional| RSC["RemoteSessionConsumption"]
+    Common -->|Optional| RDSC["RemoteDesignSystemConsumption"]
+    Common -->|Optional| RIA["RemoteInternalArchitecture<br/>(aspirational)"]
+
+    RSC -. "meaningful only if platform-host:SessionSharing" .-> H1["(platform-host catalog)"]
+    RDSC -. "shares with platform-host:HostDesignSystemConsumption" .-> H1
+    style H1 fill:none,stroke-dasharray: 3 3

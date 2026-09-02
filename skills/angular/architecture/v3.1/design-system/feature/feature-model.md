@@ -1,6 +1,6 @@
 # Feature Model — design-system
 
-An independently versioned Angular component library, published as an npm package and consumed by both the [[skills/angular/architecture/v3.1/monolith/feature/feature-model.md|`monolith/`]] catalog (as a plain npm dependency) and the [[skills/angular/architecture/v3.1/platform/feature/feature-model.md|`platform/`]] catalog (as a version-negotiated federation singleton). It lives in its own repository with its own release cadence. Derived from the V1 `plateau-design-system` (4 solutions).
+An independently versioned Angular component library, published as an npm package and consumed as a plain npm dependency by [[skills/angular/architecture/v3.1/monolith/feature/feature-model.md|`monolith/`]] and as a version-negotiated federation singleton by [[skills/angular/architecture/v3.1/platform-host/feature/feature-model.md|`platform-host/`]] and [[skills/angular/architecture/v3.1/embeddable-app/feature/feature-model.md|`embeddable-app/`]]. It lives in its own repository with its own release cadence. Derived from the V1 `plateau-design-system` (4 solutions).
 
 The **root product is `DesignSystem`** — you build one per design-system repository. Every V1 solution in this family sits in the single `plateau-design-system`, so the family currently has **no Variation Points** — every path through it is identical. The model still exists so a future optional capability has somewhere to attach and so the two consuming catalogs have a defined thing to point at.
 
@@ -21,7 +21,7 @@ projects/
   demo/                                        (preview app — imports design-system by its published path, never published)
 ```
 
-`projects/demo` is the only non-library project. There is no Nx, no `apps/`/`libs/`, no federation config in the design-system repo itself — federation is a *consumer* concern (`platform/`'s `HostDesignSystemConsumption` / `RemoteDesignSystemConsumption`).
+`projects/demo` is the only non-library project. There is no Nx, no `apps/`/`libs/`, no federation config in the design-system repo itself — federation is a *consumer* concern (`platform-host/`'s `HostDesignSystemConsumption`, `embeddable-app/`'s `RemoteDesignSystemConsumption`).
 
 ## Feature diagram
 
@@ -60,5 +60,5 @@ The `monolith/` aspirational candidates (SSR, i18n, telemetry, feature-flags, ru
 ## Out of scope
 
 - **This family has no Variation Points today.** The [[skills/angular/architecture/v3.1/design-system/variability-map.md|design-system Variability Map]] will say so and list `MultiTenantTheming` as the single aspirational row.
-- **Consumption is not modeled here** — how `monolith/` / `platform/` pull in the package belongs to those catalogs.
+- **Consumption is not modeled here** — how `monolith/` / `platform-host/` / `embeddable-app/` pull in the package belongs to those catalogs.
 - **`IsCommon` is a judgment call** — all four features are common because the single V1 plateau composes all four and the written baseline needs all four to produce a usable, releasable, tested library.

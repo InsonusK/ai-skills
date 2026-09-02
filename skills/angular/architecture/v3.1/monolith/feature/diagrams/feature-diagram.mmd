@@ -28,7 +28,10 @@ graph TD
     style Testing fill:none,stroke:none
 
     Common -->|Optional| PTR["PerformanceTunedRouting"]
+    Common -->|Optional| GS["GlobalStore"]
     Common -->|Optional| BDA["BackendDataAccess"]
+
+    GS -. "Optional" .-> PST["PersistedState<br/>(aspirational)"]
 
     BDA -->|Optional| ORR["OfflineReadResilience"]
     BDA -->|Optional| BLD["BackendLogDelivery"]
@@ -36,4 +39,6 @@ graph TD
 
     ORR -->|"Optional (per feature)"| OWQ["OfflineWriteQueue"]
 
+    ORR -. "Requires" .-> GS
+    AUTH -. "Requires" .-> GS
     BLD -. "Requires" .-> LOG

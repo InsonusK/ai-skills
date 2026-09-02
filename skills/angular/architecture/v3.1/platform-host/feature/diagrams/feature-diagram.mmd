@@ -1,0 +1,26 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph Row1[" "]
+            direction LR
+            HOST["PlatformHost<br/>(root of the family)"]
+            MONO["+ composes a monolith<br/>(parent_plateaus)"]
+        end
+        subgraph Row2[" "]
+            direction LR
+            RRF["RuntimeRemoteFederation"]
+            PC["PlatformContracts"]
+        end
+    end
+    style Row1 fill:none,stroke:none
+    style Row2 fill:none,stroke:none
+    style MONO fill:none,stroke-dasharray: 3 3
+
+    Common -->|Optional| HDSC["HostDesignSystemConsumption"]
+    Common -->|Optional| SS["SessionSharing"]
+    Common -->|Optional| FRR["FederatedReadResilience"]
+    Common -->|Optional| EB["ContractEventBus<br/>(aspirational)"]
+
+    SS -. "Requires monolith:Authentication" .-> M1["(monolith catalog)"]
+    FRR -. "Requires monolith:OfflineReadResilience" .-> M1
+    style M1 fill:none,stroke-dasharray: 3 3
