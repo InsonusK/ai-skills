@@ -80,4 +80,6 @@ Still open (tracked): S4 (`external-created-entity` needs a `# Boundaries` secti
 
 ## Open forks
 
+- ⚠️ **`entity-cs` infrastructure accretion (from delta-conflict-detection).** `{Entity}.cs` is extended by 8 solutions; VP5/VP6/VP7 each "add a property + a marker interface". Proposal **A** (recommended): move `Version` (VP5) and the server timestamps (VP7 server half) to **EF shadow properties** in `{Entity}Config.cs` + `AppDbContext.OnBeforeSaving`, so those two stop touching the entity class. This changes `solution-entity-concurrency-change` and `solution-entity-edit-timestamp` materially. NOT applied — needs owner sign-off. See `delta-conflict-analysis.md#entity-cs`.
+
 - _(none currently — VP4↔VP1 and the two feature-model edge changes were resolved in the design conversation)_

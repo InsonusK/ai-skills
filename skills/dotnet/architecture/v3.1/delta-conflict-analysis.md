@@ -22,8 +22,8 @@ Produced per [[skills/common-workflow/architecture/design/plateau-map/delta-conf
 | --- | --- | --- | --- | --- |
 | **`command-cs`** | 4 | mediator-integration `.create`; entity-concurrency-change, entity-edit-timestamp, external-created-entity `.extend` | **`FMC`** (VP6 × VP7, no constraint, both add a field claiming "first") | **Resolved by convention** — see [command-cs](#command-cs). No resolver solution. |
 | **`pipelineregistration-cs`** | 6 | pipeline-registration `.create`; validation-behavior, mediator-exception-handler, unit-of-work, entity-concurrency-change, external-created-entity `.extend` | `FMN` + **ordering-only** | Canonical — each `.extend` declares its position relative to named anchors, conditionally (`after ConcurrencyBehavior if present, else after ValidationBehavior`). Plateau `PipelineRegistration` structure owns the assembled order. See [pipelineregistration-cs](#pipelineregistration-cs). |
-| `entity-cs` | 8 | domain-behaviour `.create`; domain-configuration, domain-rules, entity-classification, entity-concurrency-change, entity-edit-timestamp, external-created-entity, value-objects `.extend` | `FMN`/`TMN` | Canonical — no two touch the same method/property (VOs change types, domain-rules redirects method bodies, the entity-* solutions each add a distinct property/interface). **N≥3 architectural-signal note (real).** |
-| `module-domain-csproj` | 8 | domain-behaviour `.create`; +7 `.extend` (folders/refs) | `FMN`/`TMN` | Canonical. **N≥3 note (real — same hotspot as `entity-cs`).** |
+| `entity-cs` | 8 | domain-behaviour `.create`; domain-configuration, domain-rules, entity-classification, entity-concurrency-change, entity-edit-timestamp, external-created-entity, value-objects `.extend` | `FMN`/`TMN` | Canonical — no two touch the same method/property (VOs change types, domain-rules redirects method bodies, the entity-* solutions each add a distinct property/interface). **N≥3 architectural-signal note — the one real signal in the catalog.** See [entity-cs](#entity-cs). |
+| `module-domain-csproj` | 8 | domain-behaviour `.create`; +7 `.extend` | `FMN`/`TMN` | Canonical, **benign** — same as the other `.csproj` groups: 3 solutions add a `/folder` or a `<ProjectReference>`/`<PackageReference>`, the other 4 `.extend` files are near-empty (they touch the *classes*, not the project file). The high N here is a shadow of `entity-cs`, not an independent concern. |
 | `entity-config-cs` | 5 | domain-configuration `.create`; entity-classification, entity-concurrency-change, entity-edit-timestamp, external-created-entity `.extend` | `TMN` | Canonical — each adds a distinct column mapping. N≥3 note. |
 | `module-api-csproj` | 5 | api-project `.create`; entity-concurrency-change, external-created-entity, grpc-integration, http-api-publication `.extend` | `FMN`/`TMN` | Canonical + **conditional-applicability**: VP5/VP6 `.extend` this only when the module also has VP8/VP9. Their skills now say so. |
 | `single-entity-controller-cs` | 2 | http-api-publication `.create`; entity-concurrency-change `.extend` (ETag/If-Match) | `FMN` | Canonical + conditional — already guarded ("only once an HTTP API layer exists"). |
@@ -65,8 +65,38 @@ Six solutions edit `AddPipeline()`. Each inserts one `AddBehavior<X>()` at a pos
 
 Registry entry: `Ordering source: ordering-only` for the `ConcurrencyBehavior → GuidResolvingBehavior` sub-order.
 
-## Architectural-signal notes (N≥3)
+## entity-cs — the one real N≥3 signal
 
-- **`entity-cs` (8), `module-domain-csproj` (8)** — *real* signal. The domain entity and its project are the widest intersection surface in the catalog: VP1 creates them, then VP3/VP4/VP5/VP6/VP7 + classification + persistence config all reach in. Candidate rethink: model the per-entity infrastructure concerns (version token, client Guid, audit timestamps) as mix-in marker interfaces + EF shadow properties / value-converter configuration rather than entity-class field additions, so the entity class stays close to its VP1 shape. Not blocking — recorded for a future revision.
-- **`command-cs` (4)** — see above.
-- **Composition / bucket files** (`app-host-csproj` 16, `app-infrastructure-csproj` 11, `shared-csproj` 10, `module-application-csproj` 9, `module-interfaces-csproj` 6, `buildingblocks-csproj` 6, `pipelineregistration-cs` 6, `entity-config-cs` 5) — benign. These files exist to be extended by many features; a high N is expected, not a decomposition problem.
+`{Entity}.cs` is the widest intersection surface in the catalog. Exactly **who touches what**:
+
+| Solution | VP | Touches `{Entity}.cs` how |
+| --- | --- | --- |
+| `solution-domain-behaviour` | VP1 | **creates** — `int Id`, guarded behavior methods (`UpdateComment(...)`), `private static` invariant helpers |
+| `solution-value-objects` | VP3 | **re-types** properties primitive/`Soft{VO}` → strict `{ValueObject}` (`decimal Total` → `Money Total`); the inline check moves into the VO ctor |
+| `solution-domain-rules` | VP4 | **rewrites method bodies** to call `(...).Check()`; deletes the local `private static` helper |
+| `solution-entity-concurrency-change` | VP5 | **adds** `public uint Version` + `: IVersioned` |
+| `solution-external-created-entity` | VP6 | **adds** `public Guid Guid` + a `Create(Guid guid, …)` factory param |
+| `solution-entity-edit-timestamp` | VP7 | **adds** `ServerCreatedDateTime`/`UserCreatedDateTime` (+ update pair) + `: ICreationInfoModel` (+ `IUpdateInfoModel`) + explicit interface impls |
+| `solution-entity-classification` | VP5×VP6 | **no code** — narrates which of VP5/VP6 apply per Internal/External × Immutable/Mutable state |
+| `solution-domain-configuration` | VP2 | near-nothing on the class — a `private` parameterless ctor for EF, if needed |
+
+**Still `FMN`/`TMN` canonical:** no two touch the same member. VP3 re-types, VP4 edits bodies, VP5/6/7 each add their own distinct property + marker interface.
+
+**Why it is a signal:** a fully-decorated External-Mutable user-initiated entity carries `Id` + domain props + `Version` + `Guid` + 4 timestamp props + 3 marker interfaces — infrastructure state with no domain meaning, in the class a reader consults for domain intent. Three of the eight (VP5/VP6/VP7) are the same shape: "add a property + implement a marker + wire explicit members".
+
+**Proposals** (a design fork — `DECISIONS.md` ⚠️):
+- **A (recommended, VP5 + server half of VP7):** move pure-infrastructure state to **EF shadow properties**. `Version` → `builder.Property<uint>("Version").IsRowVersion()` in `{Entity}Config.cs` (which already holds `VersionedEntityName`); `ServerCreated/UpdatedDateTime` → shadow properties assigned in `AppDbContext.OnBeforeSaving`. `{Entity}.cs` then stops being touched by VP5 and by the server half of VP7. Cost: those values are read via `EF.Property<T>(...)` / a projection, not a class member.
+- **B (rejected):** a `VersionedEntity`/`AuditedEntity` base class — C# single inheritance ⇒ you cannot stack the concerns, so you would need a base per combination = the `solution-entity-classification` combination-resolver smell one level down.
+- **C (keep as-is):** accept the accretion — it is canonical, mechanical, matches v3.
+
+With **A**, `{Entity}.cs` is touched by VP1 (create), VP3 (re-type), VP4 (redirect bodies), VP6 (`Guid` — genuinely part of the identity story), and the *user*-supplied timestamp stays on the command — down from 8 to 4, all domain-relevant.
+
+## Other N≥3 groups — benign
+
+`app-host-csproj` (16), `app-infrastructure-csproj` (11), `shared-csproj` (10), `module-application-csproj` (9), **`module-domain-csproj` (8)**, `module-interfaces-csproj` (6), `buildingblocks-csproj` (6) are **project files or contract buckets** — each solution adds a `<ProjectReference>`, a `<PackageReference>`, a `/folder`, or a distinct contract type. Adding one more entry is never a conflict; a high N is the design working. `module-domain-csproj`'s N=8 is a *shadow* of `entity-cs` (the same solutions add a folder to the project as they touch the class) — not an independent concern.
+
+Two borderline non-csproj groups, still canonical:
+- **`pipelineregistration-cs` (6)** — a real class + ordered method, but every `.extend` declares its position relative to named anchors *conditionally* (`solution-external-created-entity` already: "after `ConcurrencyBehavior` if present, else after `ValidationBehavior`"). `FMN` + an ordering-only note; the plateau's `PipelineRegistration` structure records the assembled order.
+- **`entity-config-cs` (5)** — a real EF config class, but each solution adds an *isolated* mapping call (`.Property(x => x.Version).IsRowVersion()`, `.HasIndex(x => x.Guid).IsUnique()`, timestamp columns) — no shared line. `TMN` canonical. Under proposal **A** this group grows slightly (the shadow-property config lands here instead of on the entity) — which is the point: config is the right home for infrastructure mapping.
+
+## command-cs — see the section above.
