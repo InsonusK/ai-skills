@@ -47,8 +47,8 @@ public interface ICreationInfoModel : ICreationInfoModelReadOnly
 Entities implement the setter explicitly to keep class-level setters internal:
 
 ```csharp
-// {Module}.Domain/Entities/{EntityName}.cs
-public class {EntityName} : ICreationInfoModel
+// {Module}.Domain/Entities/{Entity}.cs
+public class {Entity} : ICreationInfoModel
 {
     public int Id { get; internal set; }
 

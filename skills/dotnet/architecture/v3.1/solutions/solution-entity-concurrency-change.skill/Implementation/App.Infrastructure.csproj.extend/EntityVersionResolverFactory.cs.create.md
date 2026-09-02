@@ -184,7 +184,7 @@ public class EntityVersionResolverFactory : IEntityVersionResolverFactory
 - Never create resolvers without using the DI container
 
 ## SHOULD
-- Avoid `nameof({EntityName})` or `type.Name` as dictionary key — fragile, breaks on class rename
+- Avoid `nameof({Entity})` or `type.Name` as dictionary key — fragile, breaks on class rename
 - Avoid manually listing every resolver in a hardcoded dictionary — duplicates the entity list and is easy to forget
 - Avoid pulling in all loaded assemblies via `AppDomain.CurrentDomain.GetAssemblies()` — can include unrelated assemblies and dynamic types; explicit assembly list from the composition root is safer
 

@@ -22,16 +22,16 @@ tags:
 ```
 /{Module}.Domain
   /Entities
-    {EntityName}.cs          ← extended with Version property
+    {Entity}.cs          ← extended with Version property
   /Configurations
-    {EntityName}Config.cs    ← extended with Version mapping
+    {Entity}Config.cs    ← extended with Version mapping
 ```
 
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
-| /Entities/{EntityName}.cs | Mutable entity with uint Version property implementing IVersioned |
-| /Configurations/{EntityName}Config.cs | EF configuration mapping Version to xmin and declaring VersionedEntityName |
+| /Entities/{Entity}.cs | Mutable entity with uint Version property implementing IVersioned |
+| /Configurations/{Entity}Config.cs | EF configuration mapping Version to xmin and declaring VersionedEntityName |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |

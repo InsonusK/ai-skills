@@ -1,10 +1,10 @@
 ---
 tags:
   - solution/entity-classification
-  - element/entityname-cs
+  - element/entity-cs
 ---
 
-# {EntityName}.cs - extend
+# {Entity}.cs - extend
 
 Extend the entity class to match the selected classification. Only the parts required by the classification are added.
 
@@ -15,7 +15,7 @@ No changes beyond the base entity. The entity has only the internal `int Id` ide
 **Dependencies**: do not implement `solution-entity-concurrency-change.skill` or `solution-external-created-entity.skill`.
 
 ```csharp
-public class {EntityName}
+public class {Entity}
 {
     public int Id { get; private set; }
 
@@ -30,14 +30,14 @@ Add the `Guid` property and set it exactly once in the factory method. The entit
 **Dependencies**: implement `solution-external-created-entity.skill`; do not implement `solution-entity-concurrency-change.skill`.
 
 ```csharp
-public class {EntityName}
+public class {Entity}
 {
     public int Id { get; private set; }
     public Guid Guid { get; internal set; }
 
-    public static {EntityName} Create(Guid guid, /* other params */)
+    public static {Entity} Create(Guid guid, /* other params */)
     {
-        return new {EntityName}
+        return new {Entity}
         {
             Guid = guid,
             // other initializers
@@ -53,7 +53,7 @@ Add the `Version` property and implement `IVersioned`. The entity has no `Guid` 
 **Dependencies**: implement `solution-entity-concurrency-change.skill`; do not implement `solution-external-created-entity.skill`.
 
 ```csharp
-public class {EntityName} : IVersioned
+public class {Entity} : IVersioned
 {
     public int Id { get; private set; }
     public uint Version { get; internal set; }
@@ -69,15 +69,15 @@ Add both `Guid` and `Version`, implement `IVersioned`, and set the `Guid` once i
 **Dependencies**: implement both `solution-entity-concurrency-change.skill` and `solution-external-created-entity.skill`.
 
 ```csharp
-public class {EntityName} : IVersioned
+public class {Entity} : IVersioned
 {
     public int Id { get; private set; }
     public Guid Guid { get; internal set; }
     public uint Version { get; internal set; }
 
-    public static {EntityName} Create(Guid guid, /* other params */)
+    public static {Entity} Create(Guid guid, /* other params */)
     {
-        return new {EntityName}
+        return new {Entity}
         {
             Guid = guid,
             // other initializers

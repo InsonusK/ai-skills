@@ -23,16 +23,16 @@ tags:
 ```
 /{Module}.Domain
   /Entities
-    {EntityName}.cs
+    {Entity}.cs
   /Configurations
-    {EntityName}Config.cs
+    {Entity}Config.cs
 ```
 
 ## Directory and class skills
 | Directory \| file | Description |
 | ----------------- | ----------- |
-| /Entities/{EntityName}.cs | External-created entity with Guid property |
-| /Configurations/{EntityName}Config.cs | Unique index on Guid configuration |
+| /Entities/{Entity}.cs | External-created entity with Guid property |
+| /Configurations/{Entity}Config.cs | Unique index on Guid configuration |
 
 # Allowed Dependencies
 - Shared

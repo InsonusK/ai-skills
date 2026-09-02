@@ -1,12 +1,12 @@
 ---
 description: Add uint Version property with internal set and implement IVersioned
 project_name: "{Module}.Domain"
-name: "{EntityName}.cs"
+name: "{Entity}.cs"
 element_kind: class
 change_kind: extend
 tags:
   - solution/entity-concurrency-change
-  - element/entityname-cs
+  - element/entity-cs
 ---
 
 # Goals
@@ -29,10 +29,10 @@ tags:
 Mutable entity must declare `Version` and implement `IVersioned`:
 
 ```csharp
-// {Module}.Domain/Entities/{EntityName}.cs
+// {Module}.Domain/Entities/{Entity}.cs
 using Shared.Concurrency;
 
-public class {EntityName} : IVersioned
+public class {Entity} : IVersioned
 {
     public int Id { get; internal set; }
     // ... other properties
@@ -42,7 +42,7 @@ public class {EntityName} : IVersioned
 }
 ```
 
-> **Note:** The stable business name used by `EntityVersionResolverFactory`, `IHasVersions`, and `ETagEncoder` lives in `{EntityName}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
+> **Note:** The stable business name used by `EntityVersionResolverFactory`, `IHasVersions`, and `ETagEncoder` lives in `{Entity}Config.VersionedEntityName` — not on the entity class. This keeps entity metadata centralized in the EF configuration.
 # Rule changes
 
 ## MUST

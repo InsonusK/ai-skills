@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goals
-- Prove that once `{ValueObject}`/`{EntityName}` was redirected to `{Rule}.Check()`, it still rejects/accepts exactly what the shared `.feature` scenario says — the redirection changed where the condition lives, not what it does
+- Prove that once `{ValueObject}`/`{Entity}` was redirected to `{Rule}.Check()`, it still rejects/accepts exactly what the shared `.feature` scenario says — the redirection changed where the condition lives, not what it does
 
 # Implementation changes
 

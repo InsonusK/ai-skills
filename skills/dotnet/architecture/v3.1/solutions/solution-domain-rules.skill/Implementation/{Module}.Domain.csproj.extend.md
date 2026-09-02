@@ -1,5 +1,5 @@
 ---
-description: Add a project reference to {Module}.Domain.Rules and redirect already-existing local conditions in {ValueObject}.cs/{EntityName}.cs to it
+description: Add a project reference to {Module}.Domain.Rules and redirect already-existing local conditions in {ValueObject}.cs/{Entity}.cs to it
 project_name: "{Module}.Domain"
 name: "{Module}.Domain.csproj"
 element_kind: project

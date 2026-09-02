@@ -30,8 +30,8 @@ creates:
   - App.Infrastructure.Concurrency.EntityVersionResolverFactory.cs
 extends:
   - "{Module}.Domain.csproj"
-  - "{Module}.Domain.Entities.{EntityName}.cs"
-  - "{Module}.Domain.Configurations.{EntityName}Config.cs"
+  - "{Module}.Domain.Entities.{Entity}.cs"
+  - "{Module}.Domain.Configurations.{Entity}Config.cs"
   - Shared.csproj
   - BuildingBlocks.csproj
   - App.Infrastructure.csproj
@@ -136,8 +136,8 @@ NUGET:
 
 PROJECT:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Version concurrency token to every mutable entity and implement IVersioned
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add uint Version property with internal set and implement IVersioned
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Map Version to xmin with IsConcurrencyToken and ValueGeneratedOnAddOrUpdate
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]] - extend - Add uint Version property with internal set and implement IVersioned
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md|{Entity}Config.cs]] - extend - Map Version to xmin with IsConcurrencyToken and ValueGeneratedOnAddOrUpdate
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add IVersioned, IHasVersions, IEntityVersionResolverFactory, and IEntityVersionResolver
   - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IVersioned.cs.create.md|IVersioned.cs]] - create - Marker interface for versioned domain entities
   - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/Shared.csproj.extend/IHasVersions.cs.create.md|IHasVersions.cs]] - create - Interface for update commands carrying client-supplied version information
@@ -179,8 +179,8 @@ PROJECT:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Application.csproj.extend/{Entity}VersionResolver.cs.create.md#MUST|{Entity}VersionResolver.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST|{Entity}.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md#MUST|{Entity}Config.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-concurrency-change.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
@@ -188,7 +188,7 @@ PROJECT:
 - Avoid `Version` as plain `uint` on command property instead of `IHasVersions` — does not scale to multi-entity updates
 - Avoid handler catches `DbUpdateConcurrencyException` and returns conflict — `ConcurrencyBehavior` should catch this earlier at the application level
 - Avoid ETag encoding only primary entity version — misses secondary entity conflicts when command touches multiple entities
-- Avoid `EntityVersionResolverFactory` key using `nameof({EntityName})` or `type.Name` — fragile, breaks on class rename; use the stable `VersionedEntityName` constant
+- Avoid `EntityVersionResolverFactory` key using `nameof({Entity})` or `type.Name` — fragile, breaks on class rename; use the stable `VersionedEntityName` constant
 - Avoid hardcoded entity dictionary in `EntityVersionResolverFactory` — duplicates the entity list and is easy to forget; scan config and resolver classes instead
 - Avoid defining `IHasVersions`, `IEntityVersionResolverFactory`, or `IEntityVersionResolver` in BuildingBlocks — violates the rule that common contracts live in Shared
 - Avoid duplicating `{Entity}ByIdSpec` query logic inside a resolver — reuse the module's spec

@@ -1,10 +1,10 @@
 ---
 tags:
   - solution/entity-classification
-  - element/entityname-config-cs
+  - element/entity-config-cs
 ---
 
-# {EntityName}Config.cs - extend
+# {Entity}Config.cs - extend
 
 Extend the entity configuration to match the selected classification. Only the mappings required by the classification are added.
 
@@ -15,9 +15,9 @@ No changes beyond the standard Id mapping.
 **Dependencies**: do not implement `solution-entity-concurrency-change.skill` or `solution-external-created-entity.skill`.
 
 ```csharp
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -33,11 +33,11 @@ Add the `Guid` mapping with a unique index. There is no `Version` concurrency to
 **Dependencies**: implement `solution-external-created-entity.skill`; do not implement `solution-entity-concurrency-change.skill`.
 
 ```csharp
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public const string UX_Guid = "UX_{EntityName}_Guid";
+    public const string UX_Guid = "UX_{Entity}_Guid";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -58,11 +58,11 @@ Add the `Version` concurrency token mapped to PostgreSQL `xmin`. There is no `Gu
 **Dependencies**: implement `solution-entity-concurrency-change.skill`; do not implement `solution-external-created-entity.skill`.
 
 ```csharp
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public const string VersionedEntityName = "{EntityName}";
+    public const string VersionedEntityName = "{Entity}";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -85,12 +85,12 @@ Add both the unique `Guid` index and the `Version` concurrency token mapped to `
 **Dependencies**: implement both `solution-entity-concurrency-change.skill` and `solution-external-created-entity.skill`.
 
 ```csharp
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public const string UX_Guid = "UX_{EntityName}_Guid";
-    public const string VersionedEntityName = "{EntityName}";
+    public const string UX_Guid = "UX_{Entity}_Guid";
+    public const string VersionedEntityName = "{Entity}";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         builder.HasKey(x => x.Id);
 

@@ -65,6 +65,15 @@ SHOULD-FIX applied: S1 (deduped the duplicated `## MUST` Implementation-link lis
 
 Still open (tracked): S4 (`external-created-entity` needs a `# Boundaries` section — assumes HTTP API + concurrency without depending on either), S7 (`cecil-architecture-tests` Implementation incomplete — Rules.Tests file missing, always-run checks in a VP1-gated project), S10 (API-registration file-name mismatches between `creates:` and Implementation/body across http/grpc), N2 (some ADRs missing `stack/dotnet` or a `tags:` block), N3-N7, S1-from-Wave0 (Risk/Fix on transformed Implementation MUST bullets). EF-Core-config-in-Domain still wants a dedicated ADR (currently only in domain-behaviour prose + here).
 
+## delta-conflict-detection — DONE (2026-09-02)
+
+- Ran across the whole catalog (grouped every Implementation/ file by `element/*` tag). Full analysis: `delta-conflict-analysis.md`.
+- **Pre-fixes applied**: unified `{EntityName}`/`{Entity}` naming + tags; `module-domain-tests` tag mismatch; project-qualified `{Rule}Steps.cs` tags; **fixed the one design error** (http-api + grpc both `.create`d `ApiRegistration.cs` → now `HttpApiRegistration.cs`/`GrpcApiRegistration.cs` implementing `partial void` hooks on `solution-api-project`'s `ApiRegistration`); retagged query-integration handler/validator.
+- **23 intersecting groups**. No `TMC`, no `FDC`. **One `FMC` (`command-cs`)** — VP6 (`Guid` first) vs VP7 (`ActionTimeStamp` first). **Resolved by convention** (fixed command property order in `solution-mediator-integration`; both solutions append at their slot), not a resolver solution. All other groups canonical (`FMN`/`TMN`).
+- Ordering-only registry note for `pipelineregistration-cs` (concurrency→guid sub-order; already handled conditionally).
+- N≥3 architectural-signal: `entity-cs`/`module-domain-csproj` (8 each) — real (entity is the widest intersection surface; candidate rethink noted). Rest benign (composition/bucket files).
+- No resolver solutions built → no fixed-point iteration. Registry entries created during plateau-create.
+
 ## Wave 3
 
 **DONE** — 6 skeletons authored: `solution-messaging-infrastructure`, `solution-kafka-consumer` (VP12), `solution-kafka-producer` (VP13), `solution-transactional-outbox` (VP14), `solution-http-api-client` (VP10), `solution-grpc-client` (VP11). Each has the full main skill file, one shape-only Implementation file, and a `> Draft contract — no consumer yet` marker. Variability Map VP10–VP14 Realized-by cells updated to `skeleton →`.

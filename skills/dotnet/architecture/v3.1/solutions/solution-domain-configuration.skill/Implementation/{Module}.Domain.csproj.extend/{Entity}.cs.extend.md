@@ -18,7 +18,7 @@ tags:
 
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------ | ---------- | ----------------- | --------- |
-| Entity   | {EntityName}       | Order      | {EntityName}.cs   | Order.cs  |
+| Entity   | {Entity}       | Order      | {Entity}.cs   | Order.cs  |
 
 # Implementation changes
 

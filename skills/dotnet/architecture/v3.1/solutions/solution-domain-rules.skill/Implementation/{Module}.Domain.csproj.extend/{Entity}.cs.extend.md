@@ -1,12 +1,12 @@
 ---
 description: Replace solution-domain-behaviour's local condition inside a behavior method with a call to the centralized Check()
 project_name: "{Module}.Domain"
-name: "{EntityName}"
+name: "{Entity}"
 element_kind: class
 change_kind: extend
 tags:
   - solution/domain-rules
-  - element/entityname-cs
+  - element/entity-cs
 ---
 
 # Goals

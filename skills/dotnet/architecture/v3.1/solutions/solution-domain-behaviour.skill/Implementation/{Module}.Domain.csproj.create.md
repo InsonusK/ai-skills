@@ -23,7 +23,7 @@ tags:
 /src/Modules/{ModuleName}
   /{ModuleName}.Domain
     /Entities
-      {EntityName}.cs
+      {Entity}.cs
     /Services
       {Behavior}Service.cs
     {ModuleName}.Domain.csproj

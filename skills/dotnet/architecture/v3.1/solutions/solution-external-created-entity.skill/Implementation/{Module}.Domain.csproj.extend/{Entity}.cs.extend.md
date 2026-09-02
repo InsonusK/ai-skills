@@ -1,12 +1,12 @@
 ---
 description: Add Guid property with internal set
 project_name: "{Module}.Domain"
-name: "{EntityName}.cs"
+name: "{Entity}.cs"
 element_kind: class
 change_kind: extend
 tags:
   - solution/external-created-entity
-  - element/entityname-cs
+  - element/entity-cs
 ---
 
 # Goals
@@ -27,8 +27,8 @@ tags:
 External-created entity must declare `Guid` with `internal set`:
 
 ```csharp
-// {Module}.Domain/Entities/{EntityName}.cs
-public class {EntityName}
+// {Module}.Domain/Entities/{Entity}.cs
+public class {Entity}
 {
     public int Id { get; internal set; }
     public Guid Guid { get; internal set; }    // ← added by this solution
@@ -36,7 +36,7 @@ public class {EntityName}
     public uint Version { get; internal set; }  // ← solution-entity-concurrency-change.skill (if mutable)
 
     // factory method receives client-generated Guid
-    public static {EntityName} Create(Guid guid, /* ... */)
+    public static {Entity} Create(Guid guid, /* ... */)
         => new()
         {
             Guid = guid,

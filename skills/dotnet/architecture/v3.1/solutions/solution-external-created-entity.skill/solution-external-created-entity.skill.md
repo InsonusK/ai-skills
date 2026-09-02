@@ -33,8 +33,8 @@ extends:
   - Shared.csproj
   - BuildingBlocks.csproj
   - "{Module}.Domain.csproj"
-  - "{Module}.Domain.Entities.{EntityName}.cs"
-  - "{Module}.Domain.Configurations.{EntityName}Config.cs"
+  - "{Module}.Domain.Entities.{Entity}.cs"
+  - "{Module}.Domain.Configurations.{Entity}Config.cs"
   - "{Module}.Interfaces.csproj"
   - "{Module}.Application.csproj"
   - "{Module}.Application.{Module}ApplicationRegistration.cs"
@@ -80,6 +80,11 @@ adr:
 - `Create{Entity}Result` for external-created entities contains only the entity Id — the resolver and handler both construct the same minimal record
 - The unique database index on `Guid` is the last line of defence — it catches duplicate Guids that bypass the pipeline (e.g. concurrent requests that both pass the pipeline check simultaneously)
 
+# Boundaries
+- **Inbound API (VP8/VP9) not required.** The `{Module}.Api.csproj` extend and `ConflictResultExtensions.cs` (409 mapping) apply **only when the module also exposes an HTTP or gRPC API**. `GuidResolvingBehavior` returns a `ConflictResult<T>` regardless; without an API layer nothing maps it to a 409, and that is a valid application of this solution (a module reached only via async messaging returns the `ConflictResult` to its caller). This solution does **not** `depends_on` `solution-http-api-publication` / `solution-grpc-integration`.
+- **Pipeline position relative to `ConcurrencyBehavior` (VP5) is ordering-only.** `GuidResolvingBehavior` is registered after `ConcurrencyBehavior` *when VP5 is applied*, else after `ValidationBehavior` — VP6 does not require VP5. The ordering exists so a duplicate-Guid short-circuit precedes any commit; it is not a Feature-Model constraint. See the [delta-conflict analysis](skills/dotnet/architecture/v3.1/delta-conflict-analysis.md#pipelineregistration-cs).
+- The command `Guid` property's position is the fixed order from `solution-mediator-integration` — this solution appends at its slot, it does not claim "first".
+
 # Adr
 
 - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/adr/use-conflict-result-for-duplicate-guid.md|Use ConflictResult<T> for duplicate Guid handling]]
@@ -114,8 +119,8 @@ PROJECT:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend.md|BuildingBlocks.csproj]] - extend - Add `GuidResolvingBehavior`
   - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/BuildingBlocks.csproj.extend/GuidResolvingBehavior.cs.create.md|GuidResolvingBehavior.cs]] - create - Pipeline behavior that short-circuits on duplicate Guid
 - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add Guid property and unique index to externally-created entities
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Add Guid property with internal set
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Configure unique index on Guid with named constant
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]] - extend - Add Guid property with internal set
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md|{Entity}Config.cs]] - extend - Configure unique index on Guid with named constant
 - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add {Entity}ByGuidSpec and Create{Entity}GuidResolver
   - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md|{Entity}ByGuidSpec.cs]] - create - Specification for looking up entity by Guid
   - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/Create{Entity}GuidResolver.cs.create.md|Create{Entity}GuidResolver.cs]] - create - Per-entity IGuidResolver implementation returning conflict result
@@ -143,8 +148,8 @@ PROJECT:
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByGuidSpec.cs.create.md#MUST|{Entity}ByGuidSpec.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Application.csproj.extend/{Module}ApplicationRegistration.cs.extend.md#MUST|{Module}ApplicationRegistration.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST|{Entity}.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md#MUST|{Entity}Config.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]

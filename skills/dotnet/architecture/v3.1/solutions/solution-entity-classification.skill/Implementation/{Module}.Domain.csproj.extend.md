@@ -6,17 +6,17 @@ tags:
 
 # {Module}.Domain.csproj - extend
 
-Apply entity classification at the domain layer by choosing the correct entity class and configuration variant for each `{EntityName}`.
+Apply entity classification at the domain layer by choosing the correct entity class and configuration variant for each `{Entity}`.
 
 ## Changes
 
-- Extend `{EntityName}.cs` with the properties and marker interfaces required by the selected classification.
-- Extend `{EntityName}Config.cs` with the EF Core mappings required by the selected classification.
+- Extend `{Entity}.cs` with the properties and marker interfaces required by the selected classification.
+- Extend `{Entity}Config.cs` with the EF Core mappings required by the selected classification.
 - Do not add `Version`, `Guid`, or their configurations unless the classification explicitly requires them.
 
 ## Classification variants
 
-| Classification | `{EntityName}.cs` changes | `{EntityName}Config.cs` changes |
+| Classification | `{Entity}.cs` changes | `{Entity}Config.cs` changes |
 |---|---|---|
 | **Internal Immutable** | Only `int Id` | Standard Id mapping |
 | **External Immutable** | Add `Guid Guid { get; internal set; }` | Add unique index on `Guid` |
@@ -25,5 +25,5 @@ Apply entity classification at the domain layer by choosing the correct entity c
 
 ## See also
 
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md|{Entity}Config.cs]]

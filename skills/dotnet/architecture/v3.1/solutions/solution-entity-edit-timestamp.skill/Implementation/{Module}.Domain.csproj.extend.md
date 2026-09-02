@@ -24,16 +24,16 @@ tags:
 ```
 /{Module}.Domain
   /Entities
-    {EntityName}.cs
+    {Entity}.cs
   /Configurations
-    {EntityName}Config.cs
+    {Entity}Config.cs
 ```
 
 ## Directory and class skills
 | Directory \ file | Description |
 | ----------------- | ----------- |
-| /Entities/{EntityName}.cs | Entity class implementing timestamp interfaces according to classification |
-| /Configurations/{EntityName}Config.cs | EF configuration mapping timestamp columns |
+| /Entities/{Entity}.cs | Entity class implementing timestamp interfaces according to classification |
+| /Configurations/{Entity}Config.cs | EF configuration mapping timestamp columns |
 
 # NuGet Packages
 | Package | Version constraint | Purpose |

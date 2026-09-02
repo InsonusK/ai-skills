@@ -5,7 +5,7 @@ element_kind: project
 change_kind: create
 tags:
   - solution/dotnet-conformance-testing
-  - element/module-domain-tests
+  - element/module-domain-tests-csproj
 
 ---
 

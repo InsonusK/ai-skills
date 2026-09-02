@@ -22,7 +22,7 @@ tags:
 
 | use case | class name pattern | class name | file name pattern | file name |
 | -------- | ------------------ | ---------- | ----------------- | --------- |
-| Entity class | {EntityName} | Order | {EntityName}.cs | Order.cs |
+| Entity class | {Entity} | Order | {Entity}.cs | Order.cs |
 
 # Implementation changes
 

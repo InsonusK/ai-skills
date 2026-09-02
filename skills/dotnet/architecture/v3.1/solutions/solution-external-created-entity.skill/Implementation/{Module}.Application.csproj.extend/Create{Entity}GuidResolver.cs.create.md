@@ -38,9 +38,9 @@ using Shared.Results;
 public class Create{Entity}GuidResolver
     : IGuidResolver<Result<Create{Entity}Result>>
 {
-    private readonly IReadRepository<{EntityName}> _repository;
+    private readonly IReadRepository<{Entity}> _repository;
 
-    public Create{Entity}GuidResolver(IReadRepository<{EntityName}> repository)
+    public Create{Entity}GuidResolver(IReadRepository<{Entity}> repository)
         => _repository = repository;
 
     public async Task<Result<Create{Entity}Result>?> ResolveAsync(

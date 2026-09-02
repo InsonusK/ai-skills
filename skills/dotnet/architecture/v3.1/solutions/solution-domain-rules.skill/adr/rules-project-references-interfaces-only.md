@@ -37,7 +37,7 @@ The v3.1 Variability Map's VP4 (CentralizedRules) row carries no `Constraint`. B
 ## Domain.Rules references Interfaces + FluentValidation only; VP4 not gated on VP1 (selected)
 
 ### Description
-`{Module}.Domain.Rules.csproj` references `{Module}.Interfaces` (Soft VO types) + FluentValidation, nothing else. `solution-domain-rules` `depends_on` = `solution-sln-structure`, `solution-dto-property-validators`, `solution-dotnet-conformance-testing`. The `extends` entries for `{Module}.Domain.ValueObjects.{ValueObject}.cs` and `{Module}.Domain.Entities.{EntityName}.cs` are conditional: they are applied only for a module that also has VP3 / VP1. The Variability Map keeps VP4 with no constraint.
+`{Module}.Domain.Rules.csproj` references `{Module}.Interfaces` (Soft VO types) + FluentValidation, nothing else. `solution-domain-rules` `depends_on` = `solution-sln-structure`, `solution-dto-property-validators`, `solution-dotnet-conformance-testing`. The `extends` entries for `{Module}.Domain.ValueObjects.{ValueObject}.cs` and `{Module}.Domain.Entities.{Entity}.cs` are conditional: they are applied only for a module that also has VP3 / VP1. The Variability Map keeps VP4 with no constraint.
 
 ### Benefits
 - Matches the actual project reference graph (already true in v3).
@@ -45,5 +45,5 @@ The v3.1 Variability Map's VP4 (CentralizedRules) row carries no `Constraint`. B
 - The Variability Map stays correct.
 
 ### Costs
-- The `extends` list mixes always-applicable (`{Dto}Validator`) and conditional (`{EntityName}.cs`) entries — the skill body has to say which is which.
+- The `extends` list mixes always-applicable (`{Dto}Validator`) and conditional (`{Entity}.cs`) entries — the skill body has to say which is which.
 - The mandatory Cecil companion's four checks degrade to an applicable subset when there is no domain layer (dead-rule + code-uniqueness still work; exception-scoping + guarded-property-coverage need entities) — documented in `solution-cecil-architecture-tests`.

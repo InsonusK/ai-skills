@@ -76,7 +76,7 @@ PROJECT:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create.md|{Entity}GrpcService.cs]] - create - Thin adapter implementing the generated service base class
   - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create.md|RpcExceptionExtensions.cs]] - create - `ToRpcException()` helper for `Result` error mapping
 - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire gRPC registration into the composition root
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcRegistration.cs.create.md|GrpcRegistration.cs]] - create - gRPC service and Kestrel HTTP/2 registration
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcApiRegistration.cs.create.md|GrpcApiRegistration.cs]] - create - gRPC service and Kestrel HTTP/2 registration
 
 # Rules
 
@@ -86,7 +86,7 @@ PROJECT:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create.md#MUST|{Entity}GrpcService.cs]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create.md#MUST|RpcExceptionExtensions.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcRegistration.cs.create.md#MUST|GrpcRegistration.cs]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcApiRegistration.cs.create.md#MUST|GrpcApiRegistration.cs]]
 - gRPC layer is a thin adapter — map input, dispatch once, map output
 - Every failed `Result` becomes a thrown `RpcException` via `ToRpcException()`
 - Never redeclare a command/query already defined for `solution-http-api-publication` — both adapters dispatch the same `{Module}.Interfaces` contracts

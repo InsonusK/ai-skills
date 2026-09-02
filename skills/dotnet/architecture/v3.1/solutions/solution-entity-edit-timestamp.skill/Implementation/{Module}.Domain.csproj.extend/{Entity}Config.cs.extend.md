@@ -1,12 +1,12 @@
 ---
 description: Configure timestamp columns for entities based on classification
 project_name: "{Module}.Domain"
-name: "{EntityName}Config.cs"
+name: "{Entity}Config.cs"
 element_kind: class
 change_kind: extend
 tags:
   - solution/entity-edit-timestamp
-  - element/entityname-config-cs
+  - element/entity-config-cs
 ---
 
 # Goals
@@ -24,26 +24,26 @@ tags:
 ```
 /{Module}.Domain
   /Configurations
-    {EntityName}Config.cs
+    {Entity}Config.cs
 ```
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
-| EF entity configuration | `{EntityName}Config` | `{EntityName}Config` | `{EntityName}Config.cs` | `{EntityName}Config.cs` |
+| EF entity configuration | `{Entity}Config` | `{Entity}Config` | `{Entity}Config.cs` | `{Entity}Config.cs` |
 
 # Implementation changes
 
 ## External Immutable
 
 ```csharp
-// {Module}.Domain/Configurations/{EntityName}Config.cs
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+// {Module}.Domain/Configurations/{Entity}Config.cs
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public const string TableName = nameof({EntityName});
+    public const string TableName = nameof({Entity});
     public const string UX_Guid = $"UX_{TableName}_Guid";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -61,13 +61,13 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 ## Internal Mutable
 
 ```csharp
-// {Module}.Domain/Configurations/{EntityName}Config.cs
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+// {Module}.Domain/Configurations/{Entity}Config.cs
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public const string TableName = nameof({EntityName});
+    public const string TableName = nameof({Entity});
     public const string VersionedEntityName = "{Entity}";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -87,14 +87,14 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 ## External Mutable
 
 ```csharp
-// {Module}.Domain/Configurations/{EntityName}Config.cs
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+// {Module}.Domain/Configurations/{Entity}Config.cs
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public const string TableName = nameof({EntityName});
+    public const string TableName = nameof({Entity});
     public const string UX_Guid = $"UX_{TableName}_Guid";
     public const string VersionedEntityName = "{Entity}";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         builder.HasKey(x => x.Id);
 

@@ -6,7 +6,7 @@ element_kind: class
 change_kind: create
 tags:
   - solution/dotnet-conformance-testing
-  - element/rulesteps
+  - element/module-domain-tests-rulesteps
 
 ---
 

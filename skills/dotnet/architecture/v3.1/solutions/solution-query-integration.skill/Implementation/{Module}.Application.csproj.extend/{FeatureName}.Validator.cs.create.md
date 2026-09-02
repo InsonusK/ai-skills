@@ -6,7 +6,7 @@ element_kind: class
 change_kind: create
 tags:
   - solution/query-integration
-  - element/featurename-validator-cs
+  - element/query-validator-cs
 ---
 
 # Goals

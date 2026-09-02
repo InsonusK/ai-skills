@@ -27,8 +27,8 @@ creates:
 extends:
   - Shared.csproj
   - "{Module}.Domain.csproj"
-  - "{Module}.Domain.Entities.{EntityName}.cs"
-  - "{Module}.Domain.Configurations.{EntityName}Config.cs"
+  - "{Module}.Domain.Entities.{Entity}.cs"
+  - "{Module}.Domain.Configurations.{Entity}Config.cs"
   - "{Module}.Interfaces.csproj"
   - "{Module}.Application.csproj"
   - App.Infrastructure.csproj
@@ -111,8 +111,8 @@ PROJECT:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend/IUpdateInfoModel.cs.create.md|IUpdateInfoModel.cs]] - create - Mutable update timestamp contract implemented by entities.
   - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend/ICommandWithTimestamp.cs.create.md|ICommandWithTimestamp.cs]] - create - Command marker that carries `ActionTimeStamp`.
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Add timestamp properties to classified entities and map them in EF configuration
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Implement `ICreationInfoModel` (and `IUpdateInfoModel` for mutable entities).
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - Configure `DateTimeOffset` timestamp columns as required.
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]] - extend - Implement `ICreationInfoModel` (and `IUpdateInfoModel` for mutable entities).
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md|{Entity}Config.cs]] - extend - Configure `DateTimeOffset` timestamp columns as required.
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Commands for timestamped entities implement `ICommandWithTimestamp`
   - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md|{Command}.cs]] - extend - Add `ActionTimeStamp` property and `ICommandWithTimestamp` implementation.
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Handlers assign user timestamps; validators reject invalid `ActionTimeStamp`
@@ -170,8 +170,8 @@ sequenceDiagram
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md#MUST|{FeatureName}.Handler.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.extend.md#MUST|{FeatureName}.Validator.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST|{Entity}.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md#MUST|{Entity}Config.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs]]
 

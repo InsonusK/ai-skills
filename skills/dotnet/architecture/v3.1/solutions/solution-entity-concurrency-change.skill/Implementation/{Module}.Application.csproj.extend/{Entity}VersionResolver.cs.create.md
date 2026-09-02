@@ -51,7 +51,7 @@ public class {Entity}VersionResolver : IEntityVersionResolver
         _repository = repository;
     }
 
-    public const string VersionedEntityName = "{EntityName}";
+    public const string VersionedEntityName = "{Entity}";
 
     public async Task<int> GetCurrentVersionForAsync(int id, CancellationToken cancellationToken = default)
     {
@@ -67,7 +67,7 @@ public class {Entity}VersionResolver : IEntityVersionResolver
 }
 ```
 
-> **Note:** `{EntityName}` is the same stable business string declared in `{Entity}Config.VersionedEntityName`. It is used by `EntityVersionResolverFactory` in App.Infrastructure to route requests to this resolver.
+> **Note:** `{Entity}` is the same stable business string declared in `{Entity}Config.VersionedEntityName`. It is used by `EntityVersionResolverFactory` in App.Infrastructure to route requests to this resolver.
 
 # Rule changes
 

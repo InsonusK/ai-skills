@@ -20,8 +20,8 @@ tags:
 
 creates:
 extends:
-  - "{Module}.Domain.Entities.{EntityName}.cs"
-  - "{Module}.Domain.Configurations.{EntityName}Config.cs"
+  - "{Module}.Domain.Entities.{Entity}.cs"
+  - "{Module}.Domain.Configurations.{Entity}Config.cs"
   - "{Module}.Interfaces.csproj"
   - "{Module}.Application.csproj"
 depends_on:
@@ -93,8 +93,8 @@ This solution classifies each entity and provides the concrete entity class and 
 
 PROJECT:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - apply the correct entity class and configuration variant for the selected classification
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - add `Guid`, `Version`, `IVersioned`, or none based on classification
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md|{EntityName}Config.cs]] - extend - add unique `Guid` index, `xmin` concurrency token, or none based on classification
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]] - extend - add `Guid`, `Version`, `IVersioned`, or none based on classification
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.extend.md|{Entity}Config.cs]] - extend - add unique `Guid` index, `xmin` concurrency token, or none based on classification
 
 Apply mutations from dependency solutions for the selected classification:
 - `solution-entity-concurrency-change.skill` for **Internal Mutable** and **External Mutable** entities.

@@ -1,12 +1,12 @@
 ---
 description: Configure unique index on Guid with named constant
 project_name: "{Module}.Domain"
-name: "{EntityName}Config.cs"
+name: "{Entity}Config.cs"
 element_kind: class
 change_kind: extend
 tags:
   - solution/external-created-entity
-  - element/entityname-config-cs
+  - element/entity-config-cs
 ---
 
 # Goals
@@ -25,13 +25,13 @@ tags:
 # Implementation changes
 
 ```csharp
-// {Module}.Domain/Configurations/{EntityName}Config.cs
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+// {Module}.Domain/Configurations/{Entity}Config.cs
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public static string TableName = nameof({EntityName});
+    public static string TableName = nameof({Entity});
     public static string UX_Guid = $"UX_{TableName}_Guid";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         // unique index — DB-level idempotency guard
         builder

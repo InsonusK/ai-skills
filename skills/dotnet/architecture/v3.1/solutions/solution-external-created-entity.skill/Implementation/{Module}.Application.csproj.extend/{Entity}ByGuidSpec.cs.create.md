@@ -27,7 +27,7 @@ tags:
 
 ```csharp
 // {Module}.Application/Specifications/{Entity}ByGuidSpec.cs
-public class {Entity}ByGuidSpec : Specification<{EntityName}>
+public class {Entity}ByGuidSpec : Specification<{Entity}>
 {
     public {Entity}ByGuidSpec(Guid guid)
     {

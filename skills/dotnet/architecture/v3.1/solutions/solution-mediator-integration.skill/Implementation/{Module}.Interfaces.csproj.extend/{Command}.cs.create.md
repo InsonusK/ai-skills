@@ -72,10 +72,24 @@ public record AssignTaskCommand(
 
 `AssignTaskCommand` stages a persisted-entity write (it mutates a `Task`), so it needs `UnitOfWorkBehavior` (and any other `ICommand<TResponse>`-constrained pipeline behavior) to activate for it — see the MUST rule below. It implements `ICommand<Result>` rather than bare `ICommand`, even though it returns no payload beyond success/failure: `Result` is a legitimate, if minimal, `TResponse`.
 
+## Command property order (the fixed convention)
+
+Later per-entity solutions (`solution-external-created-entity` VP6, `solution-entity-edit-timestamp` VP7, `solution-entity-concurrency-change` VP5) each add a field to some commands. To keep the record deterministic no matter which combination applies, the order is **fixed here**, and no such solution claims "first":
+
+1. **Business fields** — the command's own meaningful inputs.
+2. `Guid` — client-generated id (VP6), present only for a Create command of an external-created entity.
+3. `ActionTimeStamp` — user action time (VP7), present only for a command of a user-initiated entity.
+4. Version / concurrency token (VP5) — present only on an update command of a concurrency-controlled entity.
+
+Each of steps 2–4 appears only when its VP applies; the relative order is what is fixed. See the [delta-conflict analysis](skills/dotnet/architecture/v3.1/delta-conflict-analysis.md#command-cs) for why (`FMC` between VP6 and VP7, resolved by convention).
+
 # Rule changes
 
 ## MUST
 - Implement `ICommand<Result<T>>` for a result payload of `T`, or `ICommand<Result>` when no payload beyond success/failure is returned — never `IRequest<T>` directly
+- Follow the fixed command property order above: business fields, then `Guid` (VP6), then `ActionTimeStamp` (VP7), then a version token (VP5) — each only if its solution is applied. No later solution reorders an earlier one's field or claims a fixed absolute position.
+  - Risk: two per-entity solutions each requiring "first property" conflict directly (this is the v3 `command-cs` registry entry).
+  - Fix: the sub-order is defined here once; each solution appends at its slot.
 - Any command that stages a write to a persisted entity (and therefore needs `UnitOfWorkBehavior`, or any other behavior constrained on `ICommand<TResponse>`, to commit or guard it) must implement `ICommand<TResponse>` — using `ICommand<Result>` when there is no payload beyond success/failure. Bare, non-generic `ICommand` is reserved for commands with no persisted-entity effect at all (pure domain computation, an external call, orchestration that only dispatches further commands)
 - Result type declared in the same file as the command
 - Properties are primitives or simple types — no domain entity references

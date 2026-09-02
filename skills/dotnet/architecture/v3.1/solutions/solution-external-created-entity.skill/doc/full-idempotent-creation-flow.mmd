@@ -105,7 +105,7 @@ sequenceDiagram
     deactivate DB
     UWB->>DB: SaveChangesAsync (second)
     activate DB
-    DB--xUWB: PostgresException 23505<br/>unique index UX_{EntityName}_Guid
+    DB--xUWB: PostgresException 23505<br/>unique index UX_{Entity}_Guid
     deactivate DB
     UWB--xCtrl: exception
     deactivate UWB

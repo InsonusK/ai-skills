@@ -50,15 +50,15 @@ namespace {Module}.Application.Features.Create{Entity};
 public class Create{Entity}Handler
     : IRequestHandler<Create{Entity}Command, Result<Create{Entity}Result>>
 {
-    private readonly IRepository<{EntityName}> _repository;
+    private readonly IRepository<{Entity}> _repository;
 
-    public Create{Entity}Handler(IRepository<{EntityName}> repository)
+    public Create{Entity}Handler(IRepository<{Entity}> repository)
         => _repository = repository;
 
     public async Task<Result<Create{Entity}Result>> Handle(
         Create{Entity}Command command, CancellationToken ct)
     {
-        var entity = {EntityName}.Create(/* ... */);
+        var entity = {Entity}.Create(/* ... */);
 
         var timestamped = (ICreationInfoModel)entity;
         timestamped.UserCreatedDateTime = command.ActionTimeStamp;
@@ -87,15 +87,15 @@ namespace {Module}.Application.Features.Create{Entity};
 public class Create{Entity}Handler
     : IRequestHandler<Create{Entity}Command, Result<Create{Entity}Result>>
 {
-    private readonly IRepository<{EntityName}> _repository;
+    private readonly IRepository<{Entity}> _repository;
 
-    public Create{Entity}Handler(IRepository<{EntityName}> repository)
+    public Create{Entity}Handler(IRepository<{Entity}> repository)
         => _repository = repository;
 
     public async Task<Result<Create{Entity}Result>> Handle(
         Create{Entity}Command command, CancellationToken ct)
     {
-        var entity = {EntityName}.Create(command.Guid /*, ... */);
+        var entity = {Entity}.Create(command.Guid /*, ... */);
 
         ((ICreationInfoModel)entity).UserCreatedDateTime = command.ActionTimeStamp;
 
@@ -123,16 +123,16 @@ namespace {Module}.Application.Features.Update{Entity};
 public class Update{Entity}Handler
     : IRequestHandler<Update{Entity}Command, Result>
 {
-    private readonly IRepository<{EntityName}> _repository;
+    private readonly IRepository<{Entity}> _repository;
 
-    public Update{Entity}Handler(IRepository<{EntityName}> repository)
+    public Update{Entity}Handler(IRepository<{Entity}> repository)
         => _repository = repository;
 
     public async Task<Result> Handle(
         Update{Entity}Command command, CancellationToken ct)
     {
         var entity = await _repository.FirstOrDefaultAsync(
-            new {EntityName}ByIdSpec(command.{EntityName}Id), ct);
+            new {Entity}ByIdSpec(command.{Entity}Id), ct);
 
         if (entity is null)
             return Result.NotFound();

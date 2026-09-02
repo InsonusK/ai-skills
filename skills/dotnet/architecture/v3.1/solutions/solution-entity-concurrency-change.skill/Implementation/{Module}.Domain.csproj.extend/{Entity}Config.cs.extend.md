@@ -1,12 +1,12 @@
 ---
 description: Map Version to xmin with IsConcurrencyToken and ValueGeneratedOnAddOrUpdate, and add VersionedEntityName constant
 project_name: "{Module}.Domain"
-name: "{EntityName}Config.cs"
+name: "{Entity}Config.cs"
 element_kind: class
 change_kind: extend
 tags:
   - solution/entity-concurrency-change
-  - element/entityname-config-cs
+  - element/entity-config-cs
 ---
 
 # Goals
@@ -22,20 +22,20 @@ tags:
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
-| EF entity configuration | `{EntityName}Config` | `{EntityName}Config` | `{EntityName}Config.cs` | `{EntityName}Config.cs` |
+| EF entity configuration | `{Entity}Config` | `{Entity}Config` | `{Entity}Config.cs` | `{Entity}Config.cs` |
 
 # Implementation changes
 
 Every mutable entity configuration must include the `Version` mapping and the `VersionedEntityName` constant:
 
 ```csharp
-// {Module}.Domain/Configurations/{EntityName}Config.cs
-public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
+// {Module}.Domain/Configurations/{Entity}Config.cs
+public class {Entity}Config : IEntityTypeConfiguration<{Entity}>
 {
-    public const string TableName = nameof({EntityName});
+    public const string TableName = nameof({Entity});
     public const string VersionedEntityName = "{Entity}";
 
-    public void Configure(EntityTypeBuilder<{EntityName}> builder)
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
     {
         // ... other configuration (indexes, relations)
 
@@ -55,7 +55,7 @@ public class {EntityName}Config : IEntityTypeConfiguration<{EntityName}>
 - Every mutable entity configuration declares `public const string VersionedEntityName` with the stable business name
 - `TableName` is `public const string`
 - Never `HasDefaultValue` or `HasComputedColumnSql` used on `Version` — `xmin` is managed entirely by PostgreSQL
-- Never `VersionedEntityName` be derived from `TableName` or `nameof({EntityName})` — it is an explicit business contract
+- Never `VersionedEntityName` be derived from `TableName` or `nameof({Entity})` — it is an explicit business contract
 
 ## SHOULD
 - Avoid `Version` mapped to a regular column without `IsConcurrencyToken()` — loses database-level protection

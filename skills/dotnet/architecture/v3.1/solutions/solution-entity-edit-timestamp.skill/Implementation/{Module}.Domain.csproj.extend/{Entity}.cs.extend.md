@@ -1,12 +1,12 @@
 ---
 description: Implement timestamp interfaces based on entity classification
 project_name: "{Module}.Domain"
-name: "{EntityName}.cs"
+name: "{Entity}.cs"
 element_kind: class
 change_kind: extend
 tags:
   - solution/entity-edit-timestamp
-  - element/entityname-cs
+  - element/entity-cs
 ---
 
 # Goals
@@ -24,13 +24,13 @@ tags:
 ```
 /{Module}.Domain
   /Entities
-    {EntityName}.cs
+    {Entity}.cs
 ```
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
-| Entity class | `{EntityName}` | `{EntityName}` | `{EntityName}.cs` | `{EntityName}.cs` |
+| Entity class | `{Entity}` | `{Entity}` | `{Entity}.cs` | `{Entity}.cs` |
 
 # Implementation changes
 
@@ -39,8 +39,8 @@ tags:
 No timestamp fields are added.
 
 ```csharp
-// {Module}.Domain/Entities/{EntityName}.cs
-public class {EntityName}
+// {Module}.Domain/Entities/{Entity}.cs
+public class {Entity}
 {
     public int Id { get; internal set; }
     // domain properties only
@@ -52,10 +52,10 @@ public class {EntityName}
 Implements `ICreationInfoModel` only.
 
 ```csharp
-// {Module}.Domain/Entities/{EntityName}.cs
+// {Module}.Domain/Entities/{Entity}.cs
 using Shared.Timestamps;
 
-public class {EntityName} : ICreationInfoModel
+public class {Entity} : ICreationInfoModel
 {
     public int Id { get; internal set; }
     public Guid Guid { get; internal set; }
@@ -75,7 +75,7 @@ public class {EntityName} : ICreationInfoModel
         set => UserCreatedDateTime = value;
     }
 
-    public static {EntityName} Create(Guid guid /*, ... */)
+    public static {Entity} Create(Guid guid /*, ... */)
         => new()
         {
             Guid = guid,
@@ -89,10 +89,10 @@ public class {EntityName} : ICreationInfoModel
 Implements `ICreationInfoModel` and `IUpdateInfoModel`; no `Guid`.
 
 ```csharp
-// {Module}.Domain/Entities/{EntityName}.cs
+// {Module}.Domain/Entities/{Entity}.cs
 using Shared.Timestamps;
 
-public class {EntityName} : ICreationInfoModel, IUpdateInfoModel
+public class {Entity} : ICreationInfoModel, IUpdateInfoModel
 {
     public int Id { get; internal set; }
     public uint Version { get; internal set; }
@@ -134,10 +134,10 @@ public class {EntityName} : ICreationInfoModel, IUpdateInfoModel
 Implements `ICreationInfoModel` and `IUpdateInfoModel`; has both `Guid` and `Version`.
 
 ```csharp
-// {Module}.Domain/Entities/{EntityName}.cs
+// {Module}.Domain/Entities/{Entity}.cs
 using Shared.Timestamps;
 
-public class {EntityName} : ICreationInfoModel, IUpdateInfoModel
+public class {Entity} : ICreationInfoModel, IUpdateInfoModel
 {
     public int Id { get; internal set; }
     public Guid Guid { get; internal set; }
@@ -173,7 +173,7 @@ public class {EntityName} : ICreationInfoModel, IUpdateInfoModel
         set => UserUpdatedDateTime = value;
     }
 
-    public static {EntityName} Create(Guid guid /*, ... */)
+    public static {Entity} Create(Guid guid /*, ... */)
         => new()
         {
             Guid = guid,

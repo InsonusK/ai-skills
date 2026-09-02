@@ -6,7 +6,7 @@ element_kind: class
 change_kind: create
 tags:
   - solution/query-integration
-  - element/featurename-handler-cs
+  - element/query-handler-cs
 ---
 
 # Goals

@@ -14,7 +14,7 @@ tags:
 - Mark these commands so validators and handlers can rely on `ICommandWithTimestamp`.
 
 # Core Principles
-- `ActionTimeStamp` is the first property — it signals that the command records an action in time.
+- `ActionTimeStamp` follows the business fields and `Guid` (if present), before any version token — per `solution-mediator-integration`'s fixed command property order.
 - Commands implement both `ICommand<Result<T>>` and `ICommandWithTimestamp`.
 - Result records remain unchanged.
 
@@ -72,7 +72,7 @@ public record Update{Entity}Command(
 # Rule changes
 
 ## MUST
-- `ActionTimeStamp` is the first property.
+- `ActionTimeStamp` follows business fields and `Guid` (if present), per the fixed command property order.
 - Command implements both `ICommand<Result<T>>` and `ICommandWithTimestamp`.
 - `ActionTimeStamp` is typed as `DateTimeOffset`.
 - Command validators check that `ActionTimeStamp` is not `default(DateTimeOffset)` and is not greater than `DateTimeOffset.UtcNow`.
@@ -82,7 +82,7 @@ public record Update{Entity}Command(
 ## SHOULD
 - Keep timestamp interfaces and the command marker free of behavior logic.
 - Name the command timestamp property `ActionTimeStamp` consistently.
-- Avoid `ActionTimeStamp` not as the first property.
+
 - Avoid adding `ActionTimeStamp` to commands that do not affect timestamped entities.
 
 # Check list

@@ -118,13 +118,13 @@ PROJECT:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md|{System}Endpoints.cs]] - create - System, webhook, batch, cross-aggregate endpoints
   - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Module}ApiSwaggerRegistration.cs.create.md|{Module}ApiSwaggerRegistration.cs]] - create - Per-module Swagger document metadata and route-matching predicate
 - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - extend - Wire API registration into the composition root
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md|ApiRegistration.cs]] - create - Controller and middleware registration
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/HttpApiRegistration.cs.create.md|HttpApiRegistration.cs]] - create - `partial class ApiRegistration` — `AddHttpApi()`/`UseHttpApi()` with controllers, ProblemDetails, Swagger
 
 # Rules
 
 ## MUST
 - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md#MUST|ApiRegistration.cs]]
+	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/HttpApiRegistration.cs.create.md#MUST|HttpApiRegistration.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md#MUST|ResultExtensions.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md#MUST|Single{Entity}Controller.cs]]

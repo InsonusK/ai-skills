@@ -27,7 +27,7 @@ extends:
   - "{Module}.Application.Validators.Model.{Dto}Validator.cs"
   - "{Module}.Application.Validators.Async.{Feature}Check.cs"
   - "{Module}.Domain.ValueObjects.{ValueObject}.cs"
-  - "{Module}.Domain.Entities.{EntityName}.cs"
+  - "{Module}.Domain.Entities.{Entity}.cs"
   - Shared.csproj
   - "{Module}.Application.Tests.csproj"
   - "{Module}.Domain.Tests.csproj"
@@ -93,7 +93,7 @@ SOLUTION:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.create.md|{Dto}.Validator.cs]] - already checks a cross-field condition locally; this solution redirects it to a Semantic-classified extension
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create.md|{Feature}Check.cs]] - already loads data and checks it locally; this solution redirects the check to a Domain-classified `Check()`
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{EntityName}.cs]] - already validates via a local condition inside behavior methods; this solution redirects it to `Check()`
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md|{Entity}.cs]] - already validates via a local condition inside behavior methods; this solution redirects it to `Check()`
 - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj]] - gains a rule-focused step-definition class bound to `{Module}.Domain.Rules.Spec` scenarios, proving the VO/Entity fail-fast adapter
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create.md|{Module}.Application.Tests.csproj]] - gains a rule-focused step-definition class bound to the same scenarios, proving the DtoValidator collect-all adapter
@@ -114,7 +114,7 @@ PROJECT:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md|EntityNotLoadedException.cs]] - create - Thrown when an Entity method needs a navigation the Handler did not load
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - extend - Redirect already-existing local conditions to the centralized `Check()`
   - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md|{ValueObject}.cs]] - extend - Replace `solution-value-objects`'s local predicate with `this.Check()`
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md|{EntityName}.cs]] - extend - Replace `solution-domain-behaviour`'s local condition with `Check()`
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md|{Entity}.cs]] - extend - Replace `solution-domain-behaviour`'s local condition with `Check()`
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Redirect already-existing local conditions to the centralized `IRuleBuilder` extension
   - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md|{ValueObject}PropertyValidator.cs]] - extend - Replace the local `Must(...)` with the shared `IRuleBuilder` extension
   - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.extend.md|{Dto}.Validator.cs]] - extend - Replace the local cross-field `Must(...)` with a Semantic-classified extension
@@ -132,7 +132,7 @@ PROJECT:
 
 ## Centralize a condition duplicated across two or more consumers (happy path)
 
-1. Notice the same condition written independently in two or more of: `{ValueObject}.cs` (`solution-value-objects`), `{EntityName}.cs` (`solution-domain-behaviour`), `{ValueObject}PropertyValidator.cs`/`{Dto}.Validator.cs` (`solution-dto-property-validators`).
+1. Notice the same condition written independently in two or more of: `{ValueObject}.cs` (`solution-value-objects`), `{Entity}.cs` (`solution-domain-behaviour`), `{ValueObject}PropertyValidator.cs`/`{Dto}.Validator.cs` (`solution-dto-property-validators`).
 2. Write `IsValid()` + the `IRuleBuilder` extension (`ErrorCode`/`Message`/`State`) + `Check()` once, in `{Module}.Domain.Rules`.
 3. Apply this solution's `.extend` files to redirect every duplicate to the new centralized `Check()`/extension — delete the local copies, don't leave both.
 4. Every consumer keeps behaving exactly as before; the only change is where the condition is declared.
@@ -186,7 +186,7 @@ flowchart LR
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md#MUST|EntityNotLoadedException.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.extend.md#MUST|{ValueObject}.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs]]
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST|{Entity}.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{ValueObject}PropertyValidator.cs.extend.md#MUST|{ValueObject}PropertyValidator.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Dto}.Validator.cs.extend.md#MUST|{Dto}.Validator.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md#MUST|{Feature}Check.cs]]
@@ -204,7 +204,7 @@ flowchart LR
 - [ ] Every centralized condition was previously duplicated in at least two consumers — this solution was not applied speculatively
 - [ ] Every rejection code is `public const string` next to the rule that produces it, format `{ModuleName}.{Class}.{Reason}`
 - [ ] Every rule has exactly one `IRuleBuilder` extension declaring `Must`/`WithErrorCode`/`WithMessage`/`WithState`; no other file re-declares any of the four
-- [ ] Every redirected consumer (`{ValueObject}.cs`, `{EntityName}.cs`, `{ValueObject}PropertyValidator.cs`, `{Dto}.Validator.cs`, `{Feature}Check.cs`) no longer contains its own local copy of the condition
+- [ ] Every redirected consumer (`{ValueObject}.cs`, `{Entity}.cs`, `{ValueObject}PropertyValidator.cs`, `{Dto}.Validator.cs`, `{Feature}Check.cs`) no longer contains its own local copy of the condition
 - [ ] Every Domain-classified rule receives already-loaded raw values, never a pre-computed verdict; `Domain.Rules` has no repository/`DbContext` reference anywhere
 - [ ] `EntityNotLoadedException` is used for every "required navigation not loaded" case, mapped to 500, never confused with `DomainException`
 - [ ] A cross-aggregate/cross-service Domain rule is implemented as Try/Confirm, with the Confirm step reusing the same-aggregate rule/method unmodified
