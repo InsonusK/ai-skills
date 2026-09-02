@@ -47,10 +47,10 @@ public static class {Module}ApplicationRegistration
 - One registration per external-created entity type
 - `TResponse` matches the command handler response type exactly
 - Never `IGuidResolver` registrations omitted — `GuidResolvingBehavior` will throw at runtime if resolver not found
-- Never `IGuidResolver` registered as open generic — breaks DI resolution per command result type
+- Never register `IGuidResolver` as an open generic — breaks DI resolution per command result type
 
 ## SHOULD
-- Avoid resolver registered with mismatched `TResponse` — handler and resolver return different types
+- Avoid registering the resolver with a mismatched `TResponse` — handler and resolver would return different types
 
 # Check list
 - [ ] `IGuidResolver<Result<Create{Entity}Result>>` registered as `Scoped`

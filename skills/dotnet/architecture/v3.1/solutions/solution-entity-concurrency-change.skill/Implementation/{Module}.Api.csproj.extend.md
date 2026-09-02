@@ -45,7 +45,7 @@ tags:
 
 ## SHOULD
 - Avoid ETag encoding only primary entity version — misses secondary entity conflicts
-- Avoid controller returns 400 for missing `If-Match` — 412 Precondition Failed is correct
+- Avoid returning 400 for a missing `If-Match` — 412 Precondition Failed is correct
 
 # Check list
 - [ ] GET sets `Response.Headers.ETag`

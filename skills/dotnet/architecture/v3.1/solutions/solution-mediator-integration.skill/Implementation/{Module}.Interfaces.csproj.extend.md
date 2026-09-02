@@ -72,9 +72,9 @@ Allowed Dependencies: unchanged. NuGet: adds `MediatR`, `Ardalis.Result`.
 - All commands for this module declared in `/{Module}.Interfaces/Commands`
 - Each command file contains the command record and its result record
 - Commands implement `ICommand<T>` (or `ICommand` when no payload is returned) from Shared
-- Never commands contain any logic or methods
-- Never commands reference Domain entity types — input properties are primitives or shared value types only
-- Never interfaces project reference Domain, Application, or infrastructure projects
+- Never put logic or methods on a command
+- Never reference a `Domain` entity type from a command — input properties are primitives or shared value types only
+- Never reference `Domain`, `Application`, or an infrastructure project from `{Module}.Interfaces`
 
 ## SHOULD
 - Avoid declaring command handlers or validators in Interfaces

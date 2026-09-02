@@ -47,12 +47,12 @@ tags:
 - One `GuidResolver` per external-created entity type in `/{Module}.Application/Resolvers`
 - Each resolver registered in module DI registration
 - All specs live in `/{Module}.Application/Specifications`
-- Never resolver implemented in Domain — resolver uses `IReadRepository<T>`, which belongs in Application
-- Never specs placed in Domain
+- Never implement the resolver in `Domain` — it uses `IReadRepository<T>`, which belongs in `Application`
+- Never place a spec in `Domain`
 
 ## SHOULD
 - Return `Result<Create{Entity}Result>.Created(new Create{Entity}Result(id))` from the handler on successful creation
-- Avoid `IGuidResolver` implemented in Domain — resolver uses `IReadRepository<T>`, belongs in Application
+- Avoid implementing `IGuidResolver` in `Domain` — the resolver uses `IReadRepository<T>`, which belongs in `Application`
 
 # Check list
 - [ ] `Create{Entity}GuidResolver` in `/{Module}.Application/Resolvers`

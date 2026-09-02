@@ -85,11 +85,11 @@ public static class EntityVersionResolverRegistration
 - `EntityVersionResolverFactory` receives Domain assemblies and Application assemblies
 - Register every concrete `IEntityVersionResolver` implementation from Application assemblies as `Scoped`
 - Live under `/App.Host/DependencyInjection`
-- Never `IEntityVersionResolverFactory` registered as `Singleton` — would create captive dependencies on `Scoped` repositories
+- Never register `IEntityVersionResolverFactory` as `Singleton` — it would create captive dependencies on `Scoped` repositories
 - Never modify the signature of `RepositoryRegistration.AddRepositories`
 
 ## SHOULD
-- Avoid `IEntityVersionResolverFactory` registered as `Singleton` — resolver instances depend on `Scoped` repositories
+- Avoid registering `IEntityVersionResolverFactory` as `Singleton` — resolver instances depend on `Scoped` repositories
 - Avoid passing Infrastructure or Api assemblies instead of Application assemblies — would scan unrelated types
 
 # Check list

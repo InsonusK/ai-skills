@@ -48,7 +48,7 @@ tags:
 - Every mutable entity implements `IVersioned`
 - Every mutable entity config class declares `VersionedEntityName`
 - `Version` configured as `IsConcurrencyToken()` mapping to `xmin` in EF configuration
-- Never application code set or read `Version` for any purpose other than concurrency checking — it is a database concern
+- Never set or read `Version` from application code for anything but the concurrency check — it is a database concern
 
 ## SHOULD
 - Avoid `HasDefaultValue` or `HasComputedColumnSql` used on `Version` — `xmin` is managed entirely by PostgreSQL

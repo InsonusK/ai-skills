@@ -63,12 +63,12 @@ tags:
 - Handler file named `{FeatureName}.Handler.cs`, class named `{FeatureName}Handler`
 - Query handlers registered via `AddMediatR` assembly scan in module registration — same scan as command handlers
 - Query handlers inject `IReadRepository<T>` — never `IRepository<T>` or DbContext
-- Never query validators contain business rules — transport correctness only
+- Never put business rules in a query validator — transport correctness only
 - Never cross-module JOIN handlers live here — belongs in App.Queries
 - Never reference `DbContext` directly
 
 ## SHOULD
-- Avoid query handler placed outside `/Queries` — keep query handlers under `/Queries`
+- Avoid placing a query handler outside `/Queries` — keep query handlers under `/Queries`
 - Avoid `.Validator.cs` next to query handler — queries are read-only, no validation needed
 
 # Check list

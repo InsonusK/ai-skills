@@ -41,11 +41,11 @@ tags:
 - `GuidResolvingBehavior` consumes `IHasGuid` and `IGuidResolver<TResponse>` from Shared
 - `GuidResolvingBehavior` returns the resolver's conflict result — never throws an exception
 - Never `IHasGuid` or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are contracts that belong in Shared
-- Never `GuidResolvingBehavior` registered as open generic — DI resolves `IGuidResolver<TResponse>` per concrete command result type
+- Never register `GuidResolvingBehavior` as an open generic — DI resolves `IGuidResolver<TResponse>` per concrete command result type
 - Never define HTTP middleware for conflict handling — conflicts are expressed as `Result<T>` and mapped by the API layer
 
 ## SHOULD
-- Avoid `GuidResolvingBehavior` registered as open generic — breaks DI resolution per command result type
+- Avoid registering `GuidResolvingBehavior` as an open generic — breaks DI resolution per command result type
 - Avoid defining `IHasGuid` or `IGuidResolver<TResponse>` in BuildingBlocks — violates the rule that BuildingBlocks consumes interfaces from Shared
 - Avoid throwing exceptions from `GuidResolvingBehavior` — breaks the command-integration principle of no exceptions for flow control
 

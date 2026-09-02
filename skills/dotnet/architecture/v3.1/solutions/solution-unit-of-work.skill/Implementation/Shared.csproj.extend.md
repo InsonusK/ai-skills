@@ -17,7 +17,7 @@ tags:
 
 # Implementation changes
 
-**AS IS** (from `plateau-service-with-validated-module-interaction`, via `solution-command-integration`):
+**AS IS** (after `solution-mediator-integration` + `solution-repository-integration`):
 ```
 /Shared
   /MediatR
@@ -46,7 +46,7 @@ tags:
 
 ## MUST
 - `IUnitOfWork` defined in Shared — not BuildingBlocks, not App.Infrastructure
-- Never shared reference EF Core
+- Never reference EF Core from `Shared`
 
 ## SHOULD
 - Avoid `IUnitOfWork` defined in BuildingBlocks — creates unnecessary coupling

@@ -47,7 +47,7 @@ public record Create{Entity}Result(int Id);
 - 409 response body contains the existing entity result — which is `{ id: ... }` because the result contains only Id
 - `Create{Entity}Result` contains only the entity Id
 - Never update, delete, or internal-create commands implement `IHasGuid`
-- Never resolver return a different response type than the command handler
+- Never let the resolver return a different response type than the command handler
 - Never `Create{Entity}Result` carry fields beyond the entity Id for external-created entities
 
 ## SHOULD

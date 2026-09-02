@@ -63,8 +63,8 @@ tags:
 - Every entity loadable by `Id` has a `{Entity}ByIdSpec`
 - Idempotency specs for event handlers live in `/Specifications` — not inside `/Features`
 - Never any Application class reference `AppDbContext`
-- Never query handlers inject `IRepository<T>`
-- Never specs placed in `{Module}.Domain` — Application is the single spec location
+- Never inject `IRepository<T>` into a query handler
+- Never place a spec in `{Module}.Domain` — `Application` is the single spec location
 
 ## SHOULD
 - Avoid `private readonly AppDbContext _dbContext` in a handler

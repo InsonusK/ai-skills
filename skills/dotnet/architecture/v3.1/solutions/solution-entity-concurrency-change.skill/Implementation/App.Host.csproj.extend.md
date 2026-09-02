@@ -53,7 +53,7 @@ tags:
 - Register every module `IEntityVersionResolver` implementation as `Scoped`
 - `ConcurrencyBehavior` registered in `PipelineRegistration.AddPipeline()`
 - `ConcurrencyBehavior` registered after `ValidationBehavior` (when applied) and before `GuidResolvingBehavior`/`UnitOfWorkBehavior` (whichever are applied)
-- Never `IEntityVersionResolverFactory` registered as `Singleton`
+- Never register `IEntityVersionResolverFactory` as `Singleton`
 - Never change the signature of `RepositoryRegistration.AddRepositories`
 - Never register `ConcurrencyBehavior` inside a module-specific registration method
 - Never register `ConcurrencyBehavior` after `UnitOfWorkBehavior`

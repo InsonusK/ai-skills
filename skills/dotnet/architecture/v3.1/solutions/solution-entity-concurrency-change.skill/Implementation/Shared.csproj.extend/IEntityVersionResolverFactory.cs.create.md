@@ -43,7 +43,7 @@ public interface IEntityVersionResolverFactory
 - Never contain implementation or DI-registered services
 
 ## SHOULD
-- Avoid factory returns non-nullable `IEntityVersionResolver` — forces callers to suppress warnings or throw for unknown names
+- Avoid having the factory return a non-nullable `IEntityVersionResolver` — it forces callers to suppress warnings or throw for unknown names
 
 # Check list
 - [ ] `IEntityVersionResolverFactory` defined in `Shared/Concurrency/IEntityVersionResolverFactory.cs`

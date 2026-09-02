@@ -19,7 +19,7 @@ tags:
 
 # Implementation changes
 
-**AS IS** (from `plateau-service-with-validated-module-interaction`, via `solution-sln-structure` + `solution-command-integration`):
+**AS IS** (after `solution-sln-structure` + `solution-mediator-integration`):
 ```csharp
 // App.Host/DependencyInjection/ModuleRegistration.cs
 public static IServiceCollection AddModules(this IServiceCollection services, IConfiguration configuration)

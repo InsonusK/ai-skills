@@ -43,7 +43,7 @@ public interface IHasVersions
 - Used only on update and patch commands — never on create or delete commands
 - All update and patch commands implement `IHasVersions`
 - Never use C# `Type` as the dictionary key — breaks when entities are renamed
-- Never create or delete commands implement `IHasVersions`
+- Never implement `IHasVersions` on a create or delete command
 
 ## SHOULD
 - Avoid `Versions` as a flat dictionary without entity name grouping — does not support multi-entity updates

@@ -76,8 +76,8 @@ public record Update{Entity}Command(
 - Command implements both `ICommand<Result<T>>` and `ICommandWithTimestamp`.
 - `ActionTimeStamp` is typed as `DateTimeOffset`.
 - Command validators check that `ActionTimeStamp` is not `default(DateTimeOffset)` and is not greater than `DateTimeOffset.UtcNow`.
-- Never delete commands implement `ICommandWithTimestamp`.
-- Never commands targeting `Internal Immutable` entities implement `ICommandWithTimestamp`.
+- Never implement `ICommandWithTimestamp` on a delete command.
+- Never implement `ICommandWithTimestamp` on a command targeting an `Internal Immutable` entity.
 
 ## SHOULD
 - Keep timestamp interfaces and the command marker free of behavior logic.

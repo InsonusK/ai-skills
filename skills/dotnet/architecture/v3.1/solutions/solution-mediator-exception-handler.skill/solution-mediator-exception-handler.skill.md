@@ -52,6 +52,12 @@ built_on_plateau:
 - Registered as the first pipeline behavior so it wraps all subsequent behaviors and the handler
 - API layer never sees raw exceptions — only `Result` objects
 
+# Boundaries
+- Assumes the common baseline: `Shared` + `BuildingBlocks` + `App.Host` with a centralized `PipelineRegistration.AddPipeline()` (`solution-sln-structure` + `solution-pipeline-registration`), the MediatR dispatch pipeline (`solution-mediator-integration`), and structured logging with a `LogEvents` catalog (`solution-app-logging`). This is `plateau-core` and every plateau built on it.
+- Owns exactly one pipeline behavior (`ExceptionHandlingBehavior`) and one registration line, prepended before all other behaviors. It does not order, know about, or depend on any other behavior — validation, concurrency, GUID resolution, and unit-of-work are added by their own solutions at their own slots.
+- Maps only *unexpected* exceptions. Expected domain outcomes travel as specific `Ardalis.Result` statuses returned by handlers; this behavior never produces `Invalid`/`Conflict`/`NotFound`.
+- Transport-agnostic: it returns a `Result`, never an HTTP artifact. Whichever API solution (`solution-http-api-publication`, `solution-grpc-integration`) maps that `Result` to a status code.
+
 # Requirements
 SOLUTION:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]

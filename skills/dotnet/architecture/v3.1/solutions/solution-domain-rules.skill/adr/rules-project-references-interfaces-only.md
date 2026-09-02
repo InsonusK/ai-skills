@@ -1,7 +1,7 @@
 ---
 name: rules-project-references-interfaces-only
 description: Whether CentralizedRules (VP4) requires DomainLogic (VP1)
-problem: v3's solution-domain-rules assumed a domain layer — its Requirements listed solution-domain-behaviour and the strict value-objects solution, and it built_on_plateau plateau-service-with-validated-module-interaction. The v3.1 Variability Map records VP4 with no constraint. Does the mechanism actually need entities?
+problem: v3's solution-domain-rules assumed a domain layer — its Requirements listed solution-domain-behaviour and the strict value-objects solution, and it assumed a persistence-bearing plateau baseline. The v3.1 Variability Map records VP4 with no constraint. Does the mechanism actually need entities?
 decision: {Module}.Domain.Rules.csproj references only {Module}.Interfaces (for Soft{ValueObject} types) and FluentValidation — never {Module}.Domain. VP4 is not gated on VP1. Entity / strict-VO redirects apply only when those features are present; the always-common Application-side consumers (PropertyValidator, DtoValidator) are enough on their own.
 tags:
   - solution/domain-rules

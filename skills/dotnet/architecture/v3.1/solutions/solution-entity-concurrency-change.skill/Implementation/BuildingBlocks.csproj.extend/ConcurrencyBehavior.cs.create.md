@@ -95,12 +95,12 @@ public sealed class ConcurrencyBehavior<TRequest, TResponse>(IEntityVersionResol
 - Never activate on commands without `IHasVersions`
 - Never reference EF Core, repositories, or specifications directly
 - Never modify any entity state during version check
-- Never handler check versions manually — `ConcurrencyBehavior` owns this
-- Never `ConcurrencyBehavior` call `SaveChangesAsync`
-- Never `ConcurrencyBehavior` load entities directly — it delegates to `IEntityVersionResolver`
-- Never entity name keys use C# type names — breaks on entity rename
+- Never check versions manually in a handler — `ConcurrencyBehavior` owns this
+- Never call `SaveChangesAsync` from `ConcurrencyBehavior`
+- Never load entities directly in `ConcurrencyBehavior` — it delegates to `IEntityVersionResolver`
+- Never use a C# type name as an entity-name key — it breaks on rename
 ## SHOULD
-- Avoid handler catches `DbUpdateConcurrencyException` instead of relying on `ConcurrencyBehavior`
+- Avoid catching `DbUpdateConcurrencyException` in a handler instead of relying on `ConcurrencyBehavior`
 - Avoid loading entities inside the behavior instead of delegating to `IEntityVersionResolver`
 
 # Check list

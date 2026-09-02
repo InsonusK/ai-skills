@@ -53,8 +53,8 @@ tags:
 - All commands declared here
 - All queries declared here
 - All integration events declared here
-- Never interfaces reference Domain, Application, or any infrastructure project
-- Never interfaces contain any implementation code
+- Never reference `Domain`, `Application`, or any infrastructure project from `{Module}.Interfaces`
+- Never put implementation code in `{Module}.Interfaces`
 
 ## SHOULD
 - Avoid placing command handlers in Interfaces — handlers belong in Application

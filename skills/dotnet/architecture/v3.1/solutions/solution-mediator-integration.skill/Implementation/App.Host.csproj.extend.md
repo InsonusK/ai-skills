@@ -45,7 +45,7 @@ public static IServiceCollection AddModules(this IServiceCollection services, IC
 - `AddModules()` called in `Program.cs`
 - All module `Register{ModuleName}Module()` calls made inside `ModuleRegistration.AddModules`
 - Never call individual `Register{ModuleName}Module()` methods directly from `Program.cs`
-- Never module registration methods called from within another module
+- Never call one module's registration method from inside another module
 - Never add module registration calls outside `ModuleRegistration.AddModules`
 
 ## SHOULD

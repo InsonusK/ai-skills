@@ -46,7 +46,7 @@ tags:
 - Create and update commands for timestamped entities implement `ICommandWithTimestamp`.
 - `ActionTimeStamp` is the first property on the command record.
 - Commands remain records with no methods.
-- Never delete commands or commands targeting `Internal Immutable` entities implement `ICommandWithTimestamp`.
+- Never implement `ICommandWithTimestamp` on a delete command or a command targeting an `Internal Immutable` entity.
 - Never add timestamp logic to command records.
 
 ## SHOULD

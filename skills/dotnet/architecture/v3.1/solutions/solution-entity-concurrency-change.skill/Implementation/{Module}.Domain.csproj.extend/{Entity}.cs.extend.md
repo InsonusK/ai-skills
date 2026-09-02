@@ -50,8 +50,8 @@ public class {Entity} : IVersioned
 - All mutable entities implement `IVersioned`
 - Every mutable entity config class declares a public `const string VersionedEntityName` with the stable business name
 - Each `{Entity}VersionResolver` declares `public const string VersionedEntityName` matching `{Entity}Config.VersionedEntityName`
-- Never immutable entities have `Version` — they are never updated
-- Never application code assign `Version` — it is controlled exclusively by the database
+- Never give an immutable entity a `Version` — immutable entities are never updated
+- Never assign `Version` from application code — it is controlled exclusively by the database
 
 ## SHOULD
 - Avoid `Version` with `public set` — application code must never modify it

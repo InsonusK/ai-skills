@@ -32,8 +32,8 @@ tags:
 
 ## MUST
 - All update and patch commands implement `IHasVersions`
-- Never create commands implement `IHasVersions` — new entities have no version
-- Never delete commands implement `IHasVersions` — deletion does not require version check in this architecture
+- Never implement `IHasVersions` on a create command — new entities have no version
+- Never implement `IHasVersions` on a delete command — deletion does not require a version check in this architecture
 
 ## SHOULD
 - Avoid `Versions` constructed in application code instead of passed from controller

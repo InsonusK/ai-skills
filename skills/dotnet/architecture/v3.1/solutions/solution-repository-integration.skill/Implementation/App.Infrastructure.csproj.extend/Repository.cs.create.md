@@ -58,7 +58,7 @@ public class Repository<T> : RepositoryBase<T>, IRepository<T>
 - Query handlers inject `IReadRepository<T>`
 - Never contain inline LINQ predicates
 - Never create per-entity subclasses
-- Never `Repository<T>` call `SaveChangesAsync`
+- Never call `SaveChangesAsync` from `Repository<T>`
 
 # Check list
 - [ ] Inherits `RepositoryBase<T>`

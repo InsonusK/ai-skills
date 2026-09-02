@@ -68,7 +68,7 @@ public class GuidResolvingBehavior<TRequest, TResponse>
 - Never be registered as open generic — DI resolves per concrete `TRequest`/`TResponse` pair
 - Never call `SaveChangesAsync`
 - Never construct response DTOs or shape the API response
-- Never `GuidResolvingBehavior` throw exceptions for duplicate Guid detection
+- Never throw from `GuidResolvingBehavior` for duplicate-Guid detection
 ## SHOULD
 - Avoid `GuidResolvingBehavior` constrained on `IRequest<T>` instead of `IHasGuid` — would check all commands including queries
 - Avoid throwing `ConflictException` from the behavior — breaks the command-integration principle of no exceptions for flow control

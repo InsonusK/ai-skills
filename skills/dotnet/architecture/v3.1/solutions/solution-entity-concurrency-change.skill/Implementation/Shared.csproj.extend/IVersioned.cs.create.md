@@ -42,7 +42,7 @@ public interface IVersioned
 - Defined in `Shared/Concurrency/IVersioned.cs`
 - Never add methods or setters to the interface
 - Never be implemented by immutable entities or value objects
-- Never immutable entities have `Version` property or implement `IVersioned`
+- Never give an immutable entity a `Version` property or make it implement `IVersioned`
 
 ## SHOULD
 - Avoid using reflection on `Version` property instead of casting to `IVersioned`

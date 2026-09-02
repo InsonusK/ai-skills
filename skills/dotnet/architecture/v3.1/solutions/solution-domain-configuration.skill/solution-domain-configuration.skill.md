@@ -26,6 +26,8 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill.md|solution-infrastructure-project]]"
+adr:
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/adr/entity-configuration-lives-in-domain.md|entity-configuration-lives-in-domain]]"
 built_on_plateau:
 ---
 
@@ -51,6 +53,9 @@ built_on_plateau:
 - Configuration is the only place that knows about column names, table names, and constraints
 - All configurations registered via `ApplyConfigurationsFromAssembly` — never manually
 - Cross-module foreign key configurations live in App.Infrastructure — not in Domain config
+
+# Adr
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/adr/entity-configuration-lives-in-domain.md|entity-configuration-lives-in-domain]] — the config classes live in `{Module}.Domain/Configurations`, so `{Module}.Domain` takes a `Microsoft.EntityFrameworkCore` reference for the `IEntityTypeConfiguration<T>` abstractions only (no provider, no `DbContext`). This narrows `solution-domain-behaviour`'s "no EF Core in Domain" rule. Rejected: configs in `App.Infrastructure` (splits the entity from its mapping) and a dedicated `{Module}.Infrastructure` project per module (against the 4→2 base-project-set direction).
 
 # Requirements
 SOLUTION:

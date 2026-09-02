@@ -53,8 +53,8 @@ public record Patch{Entity}Command(
 ## MUST
 - All update and patch commands implement both `ICommand<Result>` and `IHasVersions`
 - `Versions` populated from decoded `If-Match` header in controller — never constructed in application code
-- Never create commands implement `IHasVersions` — new entities have no version
-- Never delete commands implement `IHasVersions` — deletion does not require version check in this architecture
+- Never implement `IHasVersions` on a create command — new entities have no version
+- Never implement `IHasVersions` on a delete command — deletion does not require a version check in this architecture
 
 ## SHOULD
 - Avoid `Versions` hardcoded in command constructor call in handler or service

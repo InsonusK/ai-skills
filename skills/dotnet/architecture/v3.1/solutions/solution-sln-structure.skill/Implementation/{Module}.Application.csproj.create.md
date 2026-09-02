@@ -53,9 +53,9 @@ tags:
 
 ## MUST
 - Application references only own Interfaces, own Domain
-- Never application reference another module's Domain
-- Never application reference another module's Application
-- Never application contain business logic — delegate to Domain
+- Never reference another module's `Domain` from `{Module}.Application`
+- Never reference another module's `Application` from `{Module}.Application`
+- Never put business logic in `{Module}.Application` — delegate to `Domain`
 
 ## SHOULD
 - Avoid calling another module's Application method directly — use MediatR dispatch through Interfaces

@@ -59,7 +59,7 @@ tags:
 ## MUST
 - `UnitOfWork` registered as `Scoped` — must share the same `DbContext` instance as `Repository<T>`
 - Never `UnitOfWork` expose any method beyond `SaveChangesAsync`
-- Never `UnitOfWork` contain transaction management logic — EF manages transactions implicitly
+- Never put transaction-management logic in `UnitOfWork` — EF manages transactions implicitly
 
 ## SHOULD
 - Avoid `UnitOfWork` containing retry logic — belongs in a decorator or policy, not the UoW

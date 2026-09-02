@@ -55,11 +55,11 @@ public class UnitOfWork : IUnitOfWork
 - `UnitOfWorkBehavior` uses `try/finally` with `_context.Leave()` — depth always restored on exception
 - `UnitOfWorkBehavior` commits only when `_context.Depth == 1`
 - Never be called from anywhere except `UnitOfWorkBehavior`
-- Never any handler call `SaveChangesAsync` or inject `IUnitOfWork`
-- Never `UnitOfWorkBehavior` activate on queries — constrained to `ICommand`
-- Never `UnitOfWorkContext` registered as `Singleton` or `Transient`
-- Never `UnitOfWork` contain logic beyond `DbContext.SaveChangesAsync` delegation
-- Never `UnitOfWorkBehavior` contain a catch/rollback block — EF implicit transactions do not require it
+- Never call `SaveChangesAsync` or inject `IUnitOfWork` from any handler
+- Never let `UnitOfWorkBehavior` activate on queries — it is constrained to `ICommand`
+- Never register `UnitOfWorkContext` as `Singleton` or `Transient`
+- Never put logic in `UnitOfWork` beyond delegating to `DbContext.SaveChangesAsync`
+- Never put a catch/rollback block in `UnitOfWorkBehavior` — EF implicit transactions do not require it
 - Never `IUnitOfWork` defined in BuildingBlocks — belongs in Shared
 
 ## SHOULD

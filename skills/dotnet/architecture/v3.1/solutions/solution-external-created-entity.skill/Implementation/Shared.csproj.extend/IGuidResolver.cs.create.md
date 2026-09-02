@@ -48,7 +48,7 @@ public interface IGuidResolver<TResponse>
 - Never throw exceptions — null is the only "not found" signal
 - Never return a different response type than the command handler — breaks API contract symmetry
 - Never be defined in BuildingBlocks — it is a contract consumed by multiple layers
-- Never `IGuidResolver` registered as open generic — each entity type registers its own concrete resolver
+- Never register `IGuidResolver` as an open generic — each entity type registers its own concrete resolver
 
 ## SHOULD
 - Avoid `IGuidResolver` without generic parameter — would require casting and lose type safety

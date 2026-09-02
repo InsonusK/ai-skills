@@ -90,18 +90,18 @@ Allowed Dependencies: `{Module}.Interfaces`, `{Module}.Domain`, `{OtherModule}.I
 - Module exposes `Register{ModuleName}Module(IServiceCollection, IConfiguration)` extension method
 - Handlers registered via `AddMediatR` assembly scan
 - Validators registered via `AddValidatorsFromAssembly`
-- Never pipeline behaviors registered inside module registration
-- Never handler contain business logic — delegate to domain entities and services
-- Never handler call `SaveChangesAsync`
-- Never handler reference `DbContext` directly — use `IRepository<T>` from Shared
-- Never validator inject repositories or services — purely declarative
-- Never validator contain business rules
+- Never register a pipeline behavior inside module registration
+- Never put business logic in a handler — delegate to domain entities and services
+- Never call `SaveChangesAsync` from a handler
+- Never reference `DbContext` directly from a handler — use `IRepository<T>` from `Shared`
+- Never inject a repository or service into a validator — it stays purely declarative
+- Never put a business rule in a validator
 
 ## SHOULD
 - Avoid `CreateTaskCommandHandler.cs` as file name — use `CreateTask.Handler.cs`
 - Avoid manual handler registration: `services.AddTransient<CreateTaskHandler>()` — use assembly scan
 - Avoid business rule in handler or validator
-- Avoid validator placed outside its feature folder
+- Avoid placing a validator outside its feature folder
 
 # Check list
 - [ ] `/Features/{FeatureName}` folder exists for each command

@@ -53,10 +53,10 @@ public class {Entity}ByIdSpec : Specification<{Entity}>
 - Every entity loaded by Id has a `{Entity}ByIdSpec` in Application
 - Projection specs use `Specification<T, TResult>` — entity filter specs use `Specification<T>`
 - Spec name reflects query intent — not field names or implementation detail
-- Never spec call the database or reference DbContext
-- Never spec contain business logic — filtering, ordering, and projection only
-- Never handler contain inline `Where(...)` LINQ — always delegate to a named spec
-- Never specs placed in `{Module}.Domain` — all specs belong in Application
+- Never call the database or reference `DbContext` from a spec
+- Never put business logic in a spec — filtering, ordering, and projection only
+- Never write inline `Where(...)` LINQ in a handler — always delegate to a named spec
+- Never place a spec in `{Module}.Domain` — all specs belong in `Application`
 - Never generic spec names used across multiple entities (`GetByIdSpec`) — name per entity
 - Never single-module specs live in App.Queries — they belong in the module's Application
 # Check list

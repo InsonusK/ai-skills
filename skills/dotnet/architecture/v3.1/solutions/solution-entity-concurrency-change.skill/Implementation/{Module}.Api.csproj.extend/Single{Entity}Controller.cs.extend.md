@@ -153,11 +153,11 @@ public async Task<IActionResult> Update(
 - DTO returned by GET for mutable entity includes `Version` field
 - Never GET for immutable entity set ETag header — immutable entities have no version
 - Never `Versions` hardcoded or constructed in controller — always from decoded `If-Match`
-- Never controller return 400 for missing `If-Match` — 412 Precondition Failed is correct
+- Never return 400 for a missing `If-Match` — 412 Precondition Failed is correct
 
 ## SHOULD
 - Avoid ETag encoding only primary entity version — misses secondary entity conflicts when command touches multiple entities
-- Avoid controller returns 400 for missing `If-Match` — 412 Precondition Failed is correct
+- Avoid returning 400 for a missing `If-Match` — 412 Precondition Failed is correct
 
 # Check list
 - [ ] GET sets `Response.Headers.ETag`

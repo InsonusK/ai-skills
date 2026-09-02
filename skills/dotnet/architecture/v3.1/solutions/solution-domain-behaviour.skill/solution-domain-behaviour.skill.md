@@ -82,7 +82,7 @@ PROJECT:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/Implementation/Shared.csproj.extend/DomainException.cs.create.md#MUST|DomainException.cs]]
 - Keep `{Module}.Domain` free of `DbContext`, repositories, and any infrastructure reference; this solution adds no NuGet package.
   - Risk: a `DbContext`/repository reference here makes every domain-bearing module carry persistence, contradicting VP1↔VP2 independence.
-  - Fix: `solution-domain-configuration` (VP2) is the only solution that may add an EF Core reference to `{Module}.Domain`, and only `IEntityTypeConfiguration`.
+  - Fix: `solution-domain-configuration` (VP2) is the only solution that may add an EF Core reference to `{Module}.Domain`, and only `IEntityTypeConfiguration` — rationale in [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/adr/entity-configuration-lives-in-domain.md|entity-configuration-lives-in-domain]].
 
 ## SHOULD
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create.md#SHOULD|{Entity}.cs]]

@@ -72,7 +72,7 @@ public class Create{Entity}GuidResolver
 - Never throw exceptions — null signals not found, non-null signals exists
 - Never return a different response type than the command handler
 - Never return `Result.NotFound()` — null is the "not found" signal in this contract
-- Never resolver throw exceptions — null means not found, non-null means exists
+- Never throw from the resolver — `null` means not found, non-null means exists
 
 ## SHOULD
 - Avoid inline LINQ in resolver instead of named spec

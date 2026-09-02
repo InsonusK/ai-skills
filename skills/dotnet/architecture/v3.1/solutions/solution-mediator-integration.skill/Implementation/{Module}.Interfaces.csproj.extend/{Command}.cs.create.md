@@ -99,9 +99,9 @@ Each of steps 2–4 appears only when its VP applies; the relative order is what
 - Validator extends `AbstractValidator<TCommand>`
 - When a command property is a `Soft{ValueObject}` from another module, inject `IValidator<Soft{ValueObject}>` and use `SetValidator`
 - When a command property is a DTO from another module, inject `IValidator<{Dto}>` and use `SetValidator`
-- Never command contain methods or logic
-- Never command reference domain entity types as properties
-- Never command validator duplicates rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` from `solution-dto-property-validators.skill`
+- Never put methods or logic on a command
+- Never reference a domain entity type as a command property
+- Never duplicate, in a command validator, a rule already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator` (`solution-dto-property-validators`)
 
 ## SHOULD
 - Validator rules cover all command properties that carry input constraints

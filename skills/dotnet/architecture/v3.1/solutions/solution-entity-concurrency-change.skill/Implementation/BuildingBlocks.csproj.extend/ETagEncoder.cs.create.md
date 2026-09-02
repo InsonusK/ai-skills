@@ -61,7 +61,7 @@ public static class ETagEncoder
 - `Encode` produces a string usable directly as an `ETag` header value (without surrounding quotes — controller adds quotes)
 
 ## SHOULD
-- Avoid `Decode` throws on malformed input — forces callers to catch exceptions
+- Avoid having `Decode` throw on malformed input — forces callers to catch exceptions
 
 # Check list
 - [ ] `ETagEncoder` defined in `BuildingBlocks/Concurrency/ETagEncoder.cs`

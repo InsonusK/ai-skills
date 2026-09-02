@@ -49,11 +49,11 @@ public static class PipelineRegistration
         // Global exception handler must be registered first so it wraps all other behaviors.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
 
-        // Behaviors registered by other solution skills:
+        // Behaviors registered by other solution skills follow, in their own order —
+        // e.g. ValidationBehavior (solution-mediator-integration), then any persistence /
+        // concurrency / unit-of-work behaviors added by later solutions. This solution only
+        // owns the first line above.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(GuidResolvingBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         return services;
     }

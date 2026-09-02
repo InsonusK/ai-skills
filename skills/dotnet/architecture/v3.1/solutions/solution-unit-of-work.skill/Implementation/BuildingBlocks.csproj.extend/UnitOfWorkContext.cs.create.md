@@ -50,9 +50,9 @@ public class UnitOfWorkContext
 - Never be used to share state between handlers beyond depth tracking
 
 ## SHOULD
-- Avoid `UnitOfWorkContext` registered as `Singleton` — depth leaks across HTTP requests
-- Avoid `UnitOfWorkContext` registered as `Transient` — nested commands get separate instances, depth never exceeds 1
-- Avoid handler directly references `UnitOfWorkContext` — breaks separation of concerns
+- Avoid registering `UnitOfWorkContext` as `Singleton` — depth leaks across HTTP requests
+- Avoid registering `UnitOfWorkContext` as `Transient` — nested commands get separate instances and depth never exceeds 1
+- Avoid referencing `UnitOfWorkContext` directly from a handler — breaks separation of concerns
 
 # Check list
 - [ ] `UnitOfWorkContext` is a plain class with `Enter()`, `Leave()`, and read-only `Depth`

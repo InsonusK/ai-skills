@@ -48,7 +48,7 @@ public class TodoTask
 ## MUST
 - One `IEntityTypeConfiguration<T>` per entity
 - Domain entities have zero EF attributes
-- Never entity have any EF attributes (`[Table]`, `[Column]`, `[Key]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]`)
+- Never put an EF attribute on an entity (`[Table]`, `[Column]`, `[Key]`, `[Index]`, `[ForeignKey]`, `[ConcurrencyCheck]`)
 
 ## SHOULD
 - Avoid `[Column("task_title")]` on entity property — column mapping belongs in config class

@@ -50,7 +50,7 @@ tags:
 - `IGuidResolver<TResponse>` returns `Task<TResponse?>` — null means not found, non-null means conflict
 - `TResponse` of `IGuidResolver` matches the command handler response type exactly
 - Never `ConflictResult<T>`, `IHasGuid`, or `IGuidResolver<TResponse>` defined in BuildingBlocks — they are consumed by multiple layers
-- Never shared reference any other project
+- Never let `Shared` take a project reference
 
 ## SHOULD
 - Avoid guid contracts defined in BuildingBlocks — forces `{Module}.Interfaces` and `{Module}.Application` to reference BuildingBlocks for contracts
