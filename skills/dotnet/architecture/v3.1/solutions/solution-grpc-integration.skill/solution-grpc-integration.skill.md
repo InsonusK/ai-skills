@@ -61,8 +61,6 @@ SOLUTION:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create.md|ICommand.cs]] - the markers an RPC method dispatches
 - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] (VP2, for read RPCs — not required; write-only service without it)
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]] (for read RPCs — not yet composed at this solution's own `built_on_plateau`, see Boundaries)
-  - `Shared.csproj` - provides `IQuery<T>` marker for read operations
 
 NUGET:
 - `Grpc.AspNetCore` {version} - provides `Grpc.Core.Server`-generated service base classes, `MapGrpcService<T>()`, `AddGrpc()`
@@ -91,9 +89,6 @@ PROJECT:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/App.Host.csproj.extend/GrpcRegistration.cs.create.md#MUST|GrpcRegistration.cs]]
 - gRPC layer is a thin adapter — map input, dispatch once, map output
 - Every failed `Result` becomes a thrown `RpcException` via `ToRpcException()`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/{Entity}GrpcService.cs.create.md#MUST|{Entity}GrpcService.cs]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-grpc-integration.skill/Implementation/{Module}.Api.csproj.extend/RpcExceptionExtensions.cs.create.md#MUST|RpcExceptionExtensions.cs]]
 - Never redeclare a command/query already defined for `solution-http-api-publication` — both adapters dispatch the same `{Module}.Interfaces` contracts
 - Never hand-edit generated `{Entity}GrpcServiceBase` code
 

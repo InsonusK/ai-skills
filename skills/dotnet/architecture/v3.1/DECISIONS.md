@@ -55,9 +55,19 @@ Still open (tracked): S1 (many transformed Implementation-file `## MUST` bullets
 
 _(pending)_
 
+## Wave 1+2 audit — fixes applied (fresh-eyes audit, 2026-09-02)
+
+BLOCKERS fixed:
+- B1 `solution-query-integration` no longer creates/owns the `IQuery` marker or the `{Module}.Interfaces` query/DTO records — those are `solution-mediator-integration`'s. Deleted its `Shared.csproj.extend` + `{Module}.Interfaces.csproj.extend` Implementation trees; scoped it to the repository-backed read side (`{Module}.Application` query handlers, `App.Queries`, `AppDbContext` reads).
+- B2 `solution-entity-edit-timestamp` (VP7) decoupled from VP5+VP6 — dropped `depends_on solution-entity-classification`; "user-initiated" is now an independent per-entity decision; timestamp matrix reduced to created-only / created+updated.
+
+SHOULD-FIX applied: S1 (deduped the duplicated `## MUST` Implementation-link lists in 10 files — migration-script artifact), S2 (grpc: removed duplicate `solution-query-integration` Requirements entry, `command-integration`→`mediator-integration` in the proto file), S3 (translated Russian comment in domain-rules `EntityNotLoadedException`), S5 (`repository-integration` `depends_on solution-domain-behaviour` added), S6 (domain-behaviour's "no EF Core ever" rule scoped to "`solution-domain-configuration` may add an `IEntityTypeConfiguration`-only reference"), S8 (`infrastructure-project` `depends_on solution-sln-structure` added), S9 (http-api-publication stale `TaskUnderControl.Srv.*` namespaces genericised), N1 (`## MUST:`/`## SHOULD:` heading colons removed).
+
+Still open (tracked): S4 (`external-created-entity` needs a `# Boundaries` section — assumes HTTP API + concurrency without depending on either), S7 (`cecil-architecture-tests` Implementation incomplete — Rules.Tests file missing, always-run checks in a VP1-gated project), S10 (API-registration file-name mismatches between `creates:` and Implementation/body across http/grpc), N2 (some ADRs missing `stack/dotnet` or a `tags:` block), N3-N7, S1-from-Wave0 (Risk/Fix on transformed Implementation MUST bullets). EF-Core-config-in-Domain still wants a dedicated ADR (currently only in domain-behaviour prose + here).
+
 ## Wave 3
 
-_(pending)_
+_(pending — aspirational skeletons: solution-http-api-client, solution-grpc-client, solution-messaging-infrastructure, solution-kafka-consumer, solution-kafka-producer, solution-transactional-outbox)_
 
 ## Open forks
 

@@ -51,7 +51,7 @@ message TaskReply {
 }
 ```
 
-Only `GetTask`/`CreateTask` are declared here because that's what this module's commands/queries currently support — a module with only `solution-command-integration` composed (no query-integration yet) would declare `CreateTask` alone, with `GetTask` added once a query exists to back it.
+Only `GetTask`/`CreateTask` are declared here because that's what this module's commands/queries currently support — a module with only `solution-mediator-integration` composed (no query-integration yet) would declare `CreateTask` alone, with `GetTask` added once a query exists to back it.
 
 # Rule changes
 

@@ -89,17 +89,7 @@ PROJECT:
 
 # Rules
 
-## MUST:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend.md#MUST|RepositoryRegistration.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md#MUST|PipelineRegistration.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md#MUST|UnitOfWork.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend.md#MUST|BuildingBlocks.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkBehavior.cs.create.md#MUST|UnitOfWorkBehavior.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/BuildingBlocks.csproj.extend/UnitOfWorkContext.cs.create.md#MUST|UnitOfWorkContext.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/Shared.csproj.extend/IUnitOfWork.cs.create.md#MUST|IUnitOfWork.cs]]
+## MUST
 - [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.extend.md#MUST|RepositoryRegistration.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Host.csproj.extend/PipelineRegistration.cs.extend.md#MUST|PipelineRegistration.cs]]

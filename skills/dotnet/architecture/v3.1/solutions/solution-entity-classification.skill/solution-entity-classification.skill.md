@@ -132,7 +132,7 @@ Apply mutations from dependency solutions for the selected classification:
 - Never use `Version` / `IVersioned` for entities that never change after creation.
 - Never leave an entity unclassified or classify it at aggregate/module level instead of entity level.
 - Never change classification without updating the implemented infrastructure accordingly.
-## SHOULD:
+## SHOULD
 - Review classifications during domain model refactoring or story planning.
 - Treat external `Guid` as a correlation handle and internal `Id` as the domain identity, even when both are present.
 - Avoid adding `Version` to an entity that is never updated — adds complexity and false concurrency semantics.

@@ -71,16 +71,12 @@ PROJECT:
 
 # Rules
 
-## MUST:
+## MUST
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md#MUST|{Module1}To{Module2}Config.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md#MUST|{Entity}Config.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/App.Infrastructure.csproj.extend/{Module1}To{Module2}Config.cs.create.md#MUST|{Module1}To{Module2}Config.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}.cs.extend.md#MUST|{Entity}.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/Implementation/{Module}.Domain.csproj.extend/{Entity}Config.cs.create.md#MUST|{Entity}Config.cs]]
 
 ## SHOULD
 - Avoid mapping multi-property VO without `OwnsOne` — EF will fail to map or create a shadow table

@@ -100,9 +100,9 @@ SWAGGER:
 - `App.Host/Program.cs` registers one `SwaggerEndpoint` per module in `UseSwaggerUI` so that each module appears as a separate definition in the Swagger UI dropdown.
 - Each Swagger definition contains only the routes that belong to that module; the default single-document `v1` convention is not used.
 - Example reference implementations:
-  - `src/Modules/TagModule/TaskUnderControl.Srv.TagModule.Api/TagModuleApiSwaggerRegistration.cs`
-  - `src/Modules/TaskModule/TaskUnderControl.Srv.TaskModule.Api/TaskModuleApiSwaggerRegistration.cs`
-  - `src/Modules/TimeLogModule/TaskUnderControl.Srv.TimeLogModule.Api/TimeLogModuleApiSwaggerRegistration.cs`
+  - `src/Modules/{Module}/{Module}.Api/{Module}ApiSwaggerRegistration.cs`
+  - `src/Modules/{Module}/{Module}.Api/{Module}ApiSwaggerRegistration.cs`
+  - `src/Modules/{Module}/{Module}.Api/{Module}ApiSwaggerRegistration.cs`
   - `src/App/App.Host/Program.cs`
 
 # Template Skill Mutations
@@ -122,7 +122,7 @@ PROJECT:
 
 # Rules
 
-## MUST:
+## MUST
 - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md#MUST|ApiRegistration.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
@@ -136,16 +136,6 @@ PROJECT:
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Module}ApiSwaggerRegistration.cs.create.md#MUST|{Module}ApiSwaggerRegistration.cs]]
 - API layer is a thin HTTP adapter — map input, dispatch once, map output
 - All error responses use `ProblemDetails`
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md#MUST|ApiRegistration.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend.md#MUST|{Module}.Api.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/ResultExtensions.cs.create.md#MUST|ResultExtensions.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}Controller.cs.create.md#MUST|Single{Entity}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Property}Controller.cs.create.md#MUST|Single{Entity}{Property}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/Single{Entity}{Related}Controller.cs.create.md#MUST|Single{Entity}{Related}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}Controller.cs.create.md#MUST|{Entity}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{Entity}{Related}Controller.cs.create.md#MUST|{Entity}{Related}Controller.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/{Module}.Api.csproj.extend/{System}Endpoints.cs.create.md#MUST|{System}Endpoints.cs]]
 - Never undocumented HTTP responses returned — every response shape declared in `ProducesResponseType`
 - Never include routes from one module in another module's Swagger definition
 

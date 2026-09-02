@@ -21,15 +21,11 @@ tags:
   - solution/query-integration
 
 creates:
-  - "{Module}.Interfaces.Queries.{Query}.cs"
-  - "{Module}.Interfaces.DTOs.{Dto}.cs"
   - "{Module}.Application.Queries.{FeatureName}.{FeatureName}.Handler.cs"
   - App.Queries.csproj
   - App.Queries.AppQueriesRegistration.cs
   - App.Queries.Queries.{ModuleName}.{CrossModuleQueryHandler}.cs
 extends:
-  - Shared.csproj
-  - "{Module}.Interfaces.csproj"
   - "{Module}.Application.csproj"
   - App.Queries.csproj
   - App.Host.csproj
@@ -42,22 +38,20 @@ built_on_plateau:
 > The `IQuery<TResponse>` marker and dispatch are **common** (`solution-mediator-integration`). This solution is VP2 — it adds the *repository-backed* query handlers, `App.Queries` cross-module read models, and `AppDbContext` reads. A module without persistence still has queries (answered in-memory or by dispatch); it just has no handlers from this solution.
 
 # Goal
-- Create `App.Queries` — the cross-module query project, referenced by App.Host and no one else — since nothing composed before this solution creates it
-- Define `IQuery<TResponse>` in Shared as the marker that identifies read-only operations and keeps them distinct from write-side markers
-- Define where Queries and DTOs are declared — as records in `/{Module}.Interfaces/Queries` and `/{Module}.Interfaces/DTOs`
-- Define two handler locations: single-module handlers in `/{Module}.Application/Queries` using `IReadRepository<T>` and specs, cross-module handlers in `App.Queries` using DbContext directly
-- Define when to use projection spec vs in-handler mapping — projection spec for flat DTOs, in-handler mapping for computed or conditional DTOs
-- Register App.Queries handlers via assembly scan in App.Host
+- Add the **repository-backed** read side, once a module has persistence (VP2): single-module query handlers over `IReadRepository<T>` + named specs, and cross-module read models in `App.Queries` over `AppDbContext`.
+- Create `App.Queries` — the cross-module query project, referenced by `App.Host` and no one else.
+- Define when to use a projection spec vs in-handler mapping — projection spec for flat DTOs, in-handler mapping for computed/conditional DTOs.
+- Register `App.Queries` handlers via assembly scan in `App.Host`.
+
+The `IQuery<TResponse>` marker, the query/DTO record conventions in `{Module}.Interfaces`, and MediatR dispatch are **not** defined here — they are common, from [[skills/dotnet/architecture/v3.1/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]. This solution only adds the handlers that read from a store.
 
 # Capabilities
-- Clear distinction between read and write operations via `IQuery` marker
 - Standardized query/DTO/handler placement
 - Cross-module read support without breaking module boundaries
 - Read-only enforcement via `IReadRepository<T>`
 - Consistent `Result<T>`-based response contract for all read operations
 
 # Core Principles
-- `IQuery<TResponse>` lives in Shared — consistent placement of all `MediatR` markers
 - Query handlers are strictly read-only — no entity mutation, no `SaveChangesAsync`, no `IRepository<T>`
 - `ValidationBehavior` activates for queries — transport correctness is validated before the handler runs because queries implement `IRequest<TResponse>`
 - Single-module handlers use `IReadRepository<T>` from Shared — never `DbContext`, never `IRepository<T>`
@@ -84,11 +78,6 @@ NUGET:
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - extend - Add the `IQuery<TResponse>` marker interface
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md|IQuery.cs]] - create - Read-only operation marker interface
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend.md|{Module}.Interfaces.csproj]] - extend - Add query record conventions in `/Queries` and DTO shapes in `/DTOs`
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md|{Query}.cs]] - create - Query record declaration
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md|{Dto}.cs]] - create - DTO response shape declaration
 - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend.md|{Module}.Application.csproj]] - extend - Add single-module query handler and optional transport validator in feature folder
   - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md|{FeatureName}.Handler.cs]] - create - Single-module query handler implementation
   - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md|{FeatureName}.Validator.cs]] - create - Optional transport validator for query input
@@ -99,31 +88,14 @@ PROJECT:
 
 # Rules
 
-## MUST:
+## MUST
 - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend.md#MUST|App.Queries.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md#MUST|AppQueriesRegistration.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md#MUST|CrossModuleQueryHandler.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md#MUST|{FeatureName}.Handler.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md#MUST|{FeatureName}.Validator.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md#MUST|{Query}.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend.md#MUST|App.Queries.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create.md#MUST|AppQueriesRegistration.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/CrossModuleQueryHandler.cs.create.md#MUST|CrossModuleQueryHandler.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create.md#MUST|{FeatureName}.Handler.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create.md#MUST|{FeatureName}.Validator.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-query-integration.skill/Implementation/{Module}.Interfaces.csproj.extend/{Query}.cs.create.md#MUST|{Query}.cs]]
 
 ## SHOULD
 - Avoid `IRepository<T>` injected into query handler — use `IReadRepository<T>`
@@ -135,8 +107,6 @@ PROJECT:
 - Avoid duplicating Soft{ValueObject} or DTO validation rules in a query validator instead of using `IValidator<T>`
 
 # Check list
-- [ ] `IQuery<TResponse>` defined in `Shared/MediatR/IQuery.cs`
-- [ ] `IQuery` does not extend `ICommand` — queries remain distinct from write-side markers
 - [ ] All queries declared as `record` implementing `IQuery<Result<T>>`
 - [ ] All queries in `/{Module}.Interfaces/Queries`
 - [ ] All DTOs declared as `record` in `/{Module}.Interfaces/DTOs`

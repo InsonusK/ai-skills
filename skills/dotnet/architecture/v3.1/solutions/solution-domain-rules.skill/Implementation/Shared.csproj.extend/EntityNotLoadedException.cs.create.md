@@ -31,8 +31,8 @@ Usage — an Entity method that needs a preloaded navigation:
 ```csharp
 public void UpdateAmount(decimal newAmount)
 {
-    // Не DomainException: сам Transaction валиден, сам запрос мог быть валиден —
-    // это вызывающий код не прогрузил то, что было нужно для операции.
+    // Not a DomainException: the Transaction itself is valid and the request may be valid —
+    // it is the calling code that failed to load what the operation needed.
     if (Account is null)
         throw new EntityNotLoadedException(nameof(Transaction), nameof(Account));
 

@@ -35,7 +35,6 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
 built_on_plateau:
 adr:
@@ -47,7 +46,6 @@ adr:
 - Add `DateTimeOffset` timestamp fields to every entity that is created and/or updated by a user.
 - Distinguish between the **user timestamp** (the moment the user invoked the command) and the **server timestamp** (the moment the persistence layer commits the change).
 - Keep timestamp contracts in `Shared` so Domain, Application, Interfaces, and Infrastructure can reference them without coupling to BuildingBlocks.
-- Extend the entity classification matrix with a third axis: **timestamp applicability**.
 - Ensure that user timestamps are validated early, assigned in handlers, and never mixed with server-assigned timestamps.
 
 # Capabilities
@@ -60,10 +58,8 @@ adr:
 
 # Core Principles
 
-- User-initiated entities are those that have a `Guid` and/or `Version` according to `solution-entity-classification.skill`.
-- `Internal Immutable` entities are never user-initiated in this sense and do not receive timestamp fields.
-- `External Immutable` entities receive creation timestamps only — they are never updated.
-- `Internal Mutable` and `External Mutable` entities receive both creation and update timestamps.
+- **VP7 is an independent per-entity axis.** "User-initiated" is decided per entity by whoever applies this solution — an entity whose lifecycle is driven by a user action (create, edit) — **regardless of its VP5/VP6 classification**. This solution does not depend on `solution-entity-classification` and does not require optimistic concurrency (VP5) or client-generated identity (VP6).
+- An entity that a user only ever creates (never edits) receives a creation timestamp only; one the user also edits receives both.
 - The user may only supply `ActionTimeStamp`; the server alone decides `ServerCreatedDateTime` and `ServerUpdatedDateTime`.
 - Timestamp contracts live in `Shared.Timestamps`.
 - `ActionTimeStamp` validation is transport correctness and belongs in the command validator.
@@ -73,18 +69,19 @@ adr:
 
 # Timestamp Matrix
 
-| Entity Type | Ownership | Mutability | Timestamp Interfaces |
-| --- | --- | --- | --- |
-| **Internal Immutable** | Internal | Immutable | None |
-| **External Immutable** | External | Immutable | `ICreationInfoModel` |
-| **Internal Mutable** | Internal | Mutable | `ICreationInfoModel`, `IUpdateInfoModel` |
-| **External Mutable** | External | Mutable | `ICreationInfoModel`, `IUpdateInfoModel` |
+Decided per entity by whoever applies VP7 — independent of the entity's VP5/VP6 classification:
+
+| Entity's user lifecycle | Timestamp Interfaces |
+| --- | --- |
+| Not user-initiated (system/import-only) | None — VP7 not applied |
+| User creates, never edits | `ICreationInfoModel` |
+| User creates and edits | `ICreationInfoModel`, `IUpdateInfoModel` |
 
 # Adr
 
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/adr/timestamp-handling.md|Timestamp handling ADR]]
   - Validator checks `ActionTimeStamp`; handler assigns user timestamps; `AppDbContext` assigns server timestamps.
-  - Mutable entities implement both creation and update interfaces; external immutable entities implement creation only; internal immutable entities implement neither.
+  - A user-created entity implements `ICreationInfoModel`; one the user also edits also implements `IUpdateInfoModel` — the choice is per entity, not derived from VP5/VP6.
   - Timestamp command marker lives in `Shared.Timestamps` as `ICommandWithTimestamp`.
 
 # Requirements
@@ -95,8 +92,6 @@ SOLUTION:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/Shared.csproj.extend.md|Shared.csproj]] - provides `IRepository<T>` and `IReadRepository<T>` used by handlers.
   - [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend/AppDbContext.cs.create.md|AppDbContext.cs]] - hosts `AppDbContext`, extended here to assign server timestamps before saving.
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/Implementation/{Module}.Domain.csproj.extend.md|{Module}.Domain.csproj]] - determines whether an entity receives creation-only or creation+update timestamps.
 - [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-unit-of-work.skill/Implementation/App.Infrastructure.csproj.extend/UnitOfWork.cs.create.md|UnitOfWork.cs]] - delegates to `AppDbContext.SaveChangesAsync`, which triggers `OnBeforeSaving`.
 
@@ -162,23 +157,7 @@ sequenceDiagram
 
 # Rules
 
-## MUST:
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend/AppDbContext.cs.extend.md#MUST|AppDbContext.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend/ICommandWithTimestamp.cs.create.md#MUST|ICommandWithTimestamp.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend/ICreationInfoModel.cs.create.md#MUST|ICreationInfoModel.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend/ICreationInfoModelReadOnly.cs.create.md#MUST|ICreationInfoModelReadOnly.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend/IUpdateInfoModel.cs.create.md#MUST|IUpdateInfoModel.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend/IUpdateInfoModelReadOnly.cs.create.md#MUST|IUpdateInfoModelReadOnly.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.extend.md#MUST|{FeatureName}.Handler.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.extend.md#MUST|{FeatureName}.Validator.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend.md#MUST|{Module}.Domain.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}.cs.extend.md#MUST|{EntityName}.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Domain.csproj.extend/{EntityName}Config.cs.extend.md#MUST|{EntityName}Config.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Interfaces.csproj.extend.md#MUST|{Module}.Interfaces.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/{Module}.Interfaces.csproj.extend/{Command}.cs.extend.md#MUST|{Command}.cs]]
+## MUST
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/App.Infrastructure.csproj.extend/AppDbContext.cs.extend.md#MUST|AppDbContext.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-entity-edit-timestamp.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]

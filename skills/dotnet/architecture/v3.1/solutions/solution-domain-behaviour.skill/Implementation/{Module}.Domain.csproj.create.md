@@ -14,7 +14,7 @@ tags:
 
 # Core Principles
 - All entities live in `/{Module}.Domain/Entities`; domain services in `/Services`.
-- Domain references only `Shared` and `{Module}.Interfaces` — nothing else, no infrastructure, no EF Core.
+- Domain references only `Shared` and `{Module}.Interfaces` from this solution — no `DbContext`, no repositories. (`solution-domain-configuration` later adds an `IEntityTypeConfiguration`-only EF Core reference.)
 
 # Structure
 
@@ -66,5 +66,5 @@ tags:
 # Check list
 - [ ] `{Module}.Domain.csproj` references only `Shared` and `{Module}.Interfaces`.
 - [ ] `/Entities` and `/Services` folders exist.
-- [ ] No `DbContext` / EF Core reference anywhere in the project.
+- [ ] No `DbContext`/repository reference; no NuGet package added by this solution.
 - [ ] No cross-module `Domain`/`Application` reference.

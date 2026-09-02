@@ -19,6 +19,7 @@ creates:
 extends:
   - App.Host.csproj
 depends_on:
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
 built_on_plateau:
 ---
 
@@ -56,8 +57,6 @@ PROJECT:
 # Rules
 
 ## MUST
-- [[skills/dotnet/architecture/v3.1/solutions/solution-infrastructure-project.skill/Implementation/App.Infrastructure.csproj.create.md#MUST|App.Infrastructure.csproj]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-infrastructure-project.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-infrastructure-project.skill/Implementation/App.Infrastructure.csproj.create.md#MUST|App.Infrastructure.csproj]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-infrastructure-project.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
 - Never A solution that needs `App.Infrastructure` create the project itself instead of depending on this solution.

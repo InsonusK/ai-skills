@@ -35,6 +35,7 @@ extends:
   - "{Module}.Domain.csproj"
   - "{Module}.Application.Validators.Async.{Feature}Check.cs"
 depends_on:
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill.md|solution-infrastructure-project]]"
 built_on_plateau:
 ---
@@ -100,7 +101,7 @@ PROJECT:
 
 # Rules
 
-## MUST:
+## MUST
 - [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md#MUST|RepositoryRegistration.cs]]
 - [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj]]
@@ -113,17 +114,6 @@ PROJECT:
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md#MUST|{Entity}ByIdSpec.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md#MUST|{Entity}SummarySpec.cs]]
 	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.extend.md#MUST|{Feature}Check.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Host.csproj.extend/RepositoryRegistration.cs.create.md#MUST|RepositoryRegistration.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend.md#MUST|App.Infrastructure.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend/AppDbContext.cs.create.md#MUST|AppDbContext.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/App.Infrastructure.csproj.extend/Repository.cs.create.md#MUST|Repository.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/Shared.csproj.extend.md#MUST|Shared.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IReadRepository.cs.create.md#MUST|IReadRepository.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/Shared.csproj.extend/IRepository.cs.create.md#MUST|IRepository.cs]]
-- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend.md#MUST|{Module}.Application.csproj]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}ByIdSpec.cs.create.md#MUST|{Entity}ByIdSpec.cs]]
-	- [[skills/dotnet/architecture/v3.1/solutions/solution-repository-integration.skill/Implementation/{Module}.Application.csproj.extend/{Entity}SummarySpec.cs.create.md#MUST|{Entity}SummarySpec.cs]]
 - Never application layer reference DbContext directly
 
 ## SHOULD
