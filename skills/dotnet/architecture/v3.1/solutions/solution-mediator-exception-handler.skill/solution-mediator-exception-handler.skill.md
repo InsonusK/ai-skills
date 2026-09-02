@@ -48,7 +48,7 @@ built_on_plateau:
 - Catches any `Exception` thrown by the handler or any inner pipeline behavior
 - Logs the full exception at `LogLevel.Critical` before producing the API response
 - Returns `Result.Error` with a fixed, user-friendly message — never the original exception message or stack trace
-- Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+- Constrained to `where TRequest : notnull` and `where TResponse : IResult` (matching MediatR's own `IPipelineBehavior` constraint)
 - Registered as the first pipeline behavior so it wraps all subsequent behaviors and the handler
 - API layer never sees raw exceptions — only `Result` objects
 
@@ -144,7 +144,7 @@ sequenceDiagram
 
 # Check list
 - [ ] `ExceptionHandlingBehavior` defined in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
-- [ ] `ExceptionHandlingBehavior` constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+- [ ] `ExceptionHandlingBehavior` constrained to `where TRequest : notnull` and `where TResponse : IResult`
 - [ ] `ExceptionHandlingBehavior` catches `Exception` in a `try/catch` around `await next()`
 - [ ] Caught exceptions are logged at `LogLevel.Critical`
 - [ ] API response returns `Result.Error` with a generic message

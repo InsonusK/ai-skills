@@ -44,16 +44,12 @@ using Shared.Logging;
 
 namespace BuildingBlocks.MediatR;
 
-public class ExceptionHandlingBehavior<TRequest, TResponse>
+public sealed class ExceptionHandlingBehavior<TRequest, TResponse>(
+    ILogger<ExceptionHandlingBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+    where TRequest : notnull
     where TResponse : IResult
 {
-    private readonly ILogger<ExceptionHandlingBehavior<TRequest, TResponse>> _logger;
-
-    public ExceptionHandlingBehavior(ILogger<ExceptionHandlingBehavior<TRequest, TResponse>> logger)
-        => _logger = logger;
-
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
@@ -65,14 +61,17 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>
         }
         catch (Exception ex)
         {
-            _logger.Log(
+            logger.Log(
                 LogLevel.Critical,
                 LogEvents.UnhandledException,
                 ex,
                 "Unhandled exception while handling request {RequestType}. Correlation details will be available in the logs.",
                 typeof(TRequest).Name);
 
-            return (TResponse)Result.Error("An unexpected error occurred. Please try again later.");
+            // TResponse is Result or Result<T>; invoke the closed type's own static Error(string).
+            // A plain (TResponse)Result.Error(...) cast throws at runtime for Result<T>.
+            var error = typeof(TResponse).GetMethod("Error", [typeof(string)])!;
+            return (TResponse)error.Invoke(null, ["An unexpected error occurred. Please try again later."])!;
         }
     }
 }
@@ -85,9 +84,9 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>
 ## MUST
 - Wrap `await next()` in a `try/catch (Exception ex)` block
 - Log the caught exception at `LogLevel.Critical` with the `LogEvents.UnhandledException` event id
-- Return `(TResponse)Result.Error(...)` with a fixed, non-detailed message
+- Return a fixed, non-detailed message by invoking the closed response type's own static `Error(string)` (reflection), never `(TResponse)Result.Error(...)` — a generic-parameter cast throws for `Result<T>`
 - Define the behavior in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
-- Constrain the behavior to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+- Constrain the behavior to `where TRequest : notnull` and `where TResponse : IResult`
 - Never re-throw the exception or throw a new exception from the catch block
 - Never return `Result.Error` with the original `ex.Message` or `ex.StackTrace`
 - Never catch only specific exception types
@@ -104,7 +103,7 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>
 
 # Check list
 - [ ] `ExceptionHandlingBehavior` defined in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
-- [ ] `ExceptionHandlingBehavior` constrained to `IRequest<TResponse>` and `IResult`
+- [ ] `ExceptionHandlingBehavior` constrained to `notnull` and `IResult`
 - [ ] `try/catch (Exception ex)` wraps `await next()`
 - [ ] Exception is logged at `LogLevel.Critical`
 - [ ] `Result.Error` with a generic message is returned

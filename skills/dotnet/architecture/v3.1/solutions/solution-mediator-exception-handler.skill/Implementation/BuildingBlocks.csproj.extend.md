@@ -45,7 +45,7 @@ tags:
 ## MUST
 - `MediatR`, `Ardalis.Result`, and `Microsoft.Extensions.Logging.Abstractions` packages referenced in `BuildingBlocks.csproj`
 - `ExceptionHandlingBehavior` placed in `/BuildingBlocks/MediatR`
-- `ExceptionHandlingBehavior` constrained to `IRequest<TResponse>` from MediatR and `IResult` from Ardalis.Result
+- `ExceptionHandlingBehavior` constrained to `notnull` and `IResult` from Ardalis.Result
 - Never add business logic or request-specific conditions to `ExceptionHandlingBehavior`
 - Never expose original exception messages or stack traces in the returned `Result`
 

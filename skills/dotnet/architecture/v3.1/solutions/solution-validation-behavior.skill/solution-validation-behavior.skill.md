@@ -42,7 +42,7 @@ built_on_plateau:
 - Receives `IEnumerable<IValidator<TRequest>>` via DI — zero, one, or multiple validators supported
 - Runs all validators and collects all errors before short-circuiting — full error list, not fail-fast per field
 - Maps FluentValidation `ValidationFailure` to `Ardalis.Result` `ValidationError`
-- Constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult` — activates on any MediatR request that returns a Result, including commands and queries
+- Constrained to `where TRequest : notnull` and `where TResponse : IResult` — activates on any MediatR request that returns a Result, including commands and queries
 - Returns `Result.Invalid(errors)` on failure — not an exception; requires `TResponse` to implement `IResult`
 - Passes through when no validators registered — missing validator is not a fault
 
@@ -85,7 +85,7 @@ PROJECT:
 
 # Check list
 - [ ] `ValidationBehavior` defined in `BuildingBlocks/MediatR/ValidationBehavior.cs`
-- [ ] `ValidationBehavior` constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+- [ ] `ValidationBehavior` constrained to `where TRequest : notnull` and `where TResponse : IResult`
 - [ ] `ValidationBehavior` collects all errors — not fail-fast on first error
 - [ ] `ValidationBehavior` returns `Result.Invalid(errors)` — not exception
 - [ ] `ValidationBehavior` passes through when no validators registered

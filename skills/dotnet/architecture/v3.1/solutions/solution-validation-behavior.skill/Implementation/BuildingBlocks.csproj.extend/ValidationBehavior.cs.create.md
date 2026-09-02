@@ -39,35 +39,43 @@ using MediatR;
 
 namespace BuildingBlocks.MediatR;
 
-public class ValidationBehavior<TRequest, TResponse>
+public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+    where TRequest : notnull
     where TResponse : IResult
 {
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
-        => _validators = validators;
-
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken ct)
     {
-        if (!_validators.Any())
-            return await next();
+        if (validators.Any())
+        {
+            var context = new ValidationContext<TRequest>(request);
+            var failures = (await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, ct))))
+                .SelectMany(r => r.Errors)
+                .Where(f => f is not null)
+                .ToList();
 
-        var errors = _validators
-            .Select(v => v.Validate(request))
-            .SelectMany(r => r.Errors)
-            .Where(e => e is not null)
-            .Select(e => new ValidationError(e.PropertyName, e.ErrorMessage))
-            .ToList();
-
-        if (errors.Count > 0)
-            return (TResponse)Result.Invalid(errors);
+            if (failures.Count != 0)
+            {
+                var errors = failures.Select(f =>
+                    new ValidationError(f.PropertyName, f.ErrorMessage, f.ErrorCode, ValidationSeverity.Error));
+                return (TResponse)MakeInvalid(typeof(TResponse), errors);
+            }
+        }
 
         return await next();
+    }
+
+    // TResponse is Result or Result<T>; both expose a static Invalid(IEnumerable<ValidationError>)
+    // that returns the right closed type. A plain (TResponse)Result.Invalid(...) cast throws at
+    // runtime for Result<T>, because a generic-parameter cast never runs Ardalis.Result's
+    // implicit Result -> Result<T> conversion.
+    private static object MakeInvalid(Type responseType, IEnumerable<ValidationError> errors)
+    {
+        var invalid = responseType.GetMethod("Invalid", [typeof(IEnumerable<ValidationError>)])!;
+        return invalid.Invoke(null, [errors])!;
     }
 }
 ```
@@ -78,7 +86,8 @@ public class ValidationBehavior<TRequest, TResponse>
 - Return `Result.Invalid(errors)` on failure — not throw an exception
 - Pass through when no validators registered — missing validator is not a fault
 - `ValidationBehavior` defined in `BuildingBlocks/MediatR/ValidationBehavior.cs`
-- `ValidationBehavior` constrained to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`
+- `ValidationBehavior` constrained to `where TRequest : notnull` and `where TResponse : IResult` — activates on any MediatR request that returns a `Result` (command or query)
+- Produce the short-circuit result by invoking the closed response type's own static `Invalid(IEnumerable<ValidationError>)` (reflection), never `(TResponse)Result.Invalid(...)` — a generic-parameter cast throws for `Result<T>`
 - Pipeline behaviors registered via centralized `PipelineRegistration` in App.Host
 - Never contain any request-specific conditions
 - Never throw `ValidationException` — always return typed `Result.Invalid`
@@ -93,6 +102,7 @@ public class ValidationBehavior<TRequest, TResponse>
 - [ ] WHEN applied THEN Pass through to the handler if no validators are registered or all validators pass
 - [ ] WHEN applied THEN Receives IEnumerable<IValidator<TRequest>> via DI — zero, one, or multiple validators supported
 - [ ] WHEN applied THEN Runs all validators and collects all errors before short-circuiting — full error list, not fail-fast per field
-- [ ] WHEN applied THEN Maps FluentValidation ValidationFailure to Ardalis.Result ValidationError
-- [ ] WHEN applied THEN Constrained to where TRequest : IRequest<TResponse> and where TResponse : IResult — activates on any MediatR request that returns a Result, including commands and queries
+- [ ] WHEN applied THEN Maps FluentValidation ValidationFailure to Ardalis.Result ValidationError (property name, message, error code)
+- [ ] WHEN applied THEN Constrained to where TRequest : notnull and where TResponse : IResult — activates on any MediatR request that returns a Result, including commands and queries
+- [ ] WHEN a Result<T> request is invalid THEN the short-circuit value is a Result<T> (not a bare Result) — no InvalidCastException
 - [ ] WHEN naming 'Validation pipeline behavior' THEN pattern matches convention
