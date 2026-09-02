@@ -57,7 +57,7 @@ __Applied solutions:__
 
 | Package | Version constraint | Purpose |
 | ------- | ------------------- | ------- |
-| design-system | latest compatible, per [[skills/angular/architecture/v3.1/monolith/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] | The [[skills/angular/architecture/v3.1/monolith/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] plateau's published component library. `theme.scss` is applied once at the application root. |
+| design-system | latest compatible, per [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] | The [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] plateau's published component library. `theme.scss` is applied once at the application root. |
 
 __Applied solutions:__
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]

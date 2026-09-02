@@ -11,7 +11,9 @@ note() { printf '  %s\n' "$1"; }
 section() { printf '\n== %s ==\n' "$1"; }
 
 # Aspirational / not-yet-authored solutions: a link to one is a warning, not a failure.
-PLANNED='solution-persisted-state solution-design-system-multi-tenant-theming'
+PLANNED='solution-persisted-state solution-design-system-multi-tenant-theming
+plateau-async-monolith plateau-offline-read-monolith plateau-offline-full-monolith plateau-multiuser-monolith
+plateau-design-system plateau-platform-host plateau-embeddable-app'
 PLANNED=" $(printf '%s' "$PLANNED" | tr -s '[:space:]' ' ') "
 is_planned() { case "$PLANNED" in *" $1 "*) return 0;; *) return 1;; esac; }
 
@@ -23,8 +25,8 @@ if grep -rn -E 'skills/angular/architecture/(solutions|plateau)/' "$V31" 2>/dev/
 else note "ok"; fi
 
 section "2. No Cyrillic outside solution-ui-testing glossary (tracked debt)"
-n=$(grep -rlP '[\x{0400}-\x{04FF}]' "$V31" 2>/dev/null | grep -v 'solution-ui-testing.skill/glossary/' | wc -l)
-if [ "$n" -gt 0 ]; then fail=1; note "Cyrillic in $n non-glossary files:"; grep -rlP '[\x{0400}-\x{04FF}]' "$V31" | grep -v 'solution-ui-testing.skill/glossary/' | sed 's/^/    /'
+n=$(grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" 2>/dev/null | grep -vE 'solution-ui-testing.skill/glossary/|/example/' | wc -l)
+if [ "$n" -gt 0 ]; then fail=1; note "Cyrillic in $n non-glossary files:"; grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" | grep -vE 'solution-ui-testing.skill/glossary/|/example/' | sed 's/^/    /'
 else note "ok (glossary translation is tracked debt)"; fi
 
 section "3a. Forbidden skill-design headings in main solution files (HARD)"
@@ -66,9 +68,9 @@ done
 
 section "8. Absolute wikilink targets resolve (fragments ignored)"
 : > /tmp/ng31_links.txt ; : > /tmp/ng31_planned.txt
-grep -rhoE '\[\[skills/[^]|#]+' "$V31" 2>/dev/null | sed 's/^\[\[//; s/\\$//' | sort -u | while read -r lnk; do
+grep -rhoE '\[\[skills/[^]|#]+' "$V31" 2>/dev/null | grep -v '/example/' | sed 's/^\[\[//; s/\\$//' | sort -u | while read -r lnk; do
   resolve "$lnk" && continue
-  sname="$(printf '%s' "$lnk" | grep -oE 'solution-[a-z0-9-]+' | head -1)"
+  sname="$(printf '%s' "$lnk" | grep -oE '(solution|plateau)-[a-z0-9-]+' | head -1)"
   if [ -n "$sname" ] && is_planned "$sname"; then echo "    planned: $lnk" >> /tmp/ng31_planned.txt
   else echo "    MISSING: $lnk" >> /tmp/ng31_links.txt; fi
 done

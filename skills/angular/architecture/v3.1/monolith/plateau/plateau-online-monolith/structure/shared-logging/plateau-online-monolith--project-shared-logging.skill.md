@@ -15,7 +15,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
 
-> No backend log delivery yet — `BackendLogSink` and its retry queue arrive with [[skills/angular/architecture/v3.1/monolith/plateau/plateau-monitored-app/plateau-monitored-app.skill.md|monitored-app]].
+> No backend log delivery yet — `BackendLogSink` and its retry queue arrive with [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|multiuser-monolith]].
 
 # Goal
 

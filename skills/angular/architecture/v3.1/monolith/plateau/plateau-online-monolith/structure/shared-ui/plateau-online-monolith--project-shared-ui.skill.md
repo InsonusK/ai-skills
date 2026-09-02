@@ -19,7 +19,7 @@ created_by:
 
 # Goal
 
-- Host reusable, app-specific UI composed out of [[skills/angular/architecture/v3.1/monolith/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] primitives — not the design system itself, and not feature-specific business logic
+- Host reusable, app-specific UI composed out of [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] primitives — not the design system itself, and not feature-specific business logic
 
 __Applied solutions:__
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]

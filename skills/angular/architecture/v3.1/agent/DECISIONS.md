@@ -138,9 +138,17 @@ Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `v
 - The example **evolves down the chain** (`plateau-create-by-solutions` step 5): child seeds from parent's `example/`, then extends. One Nx workspace, grown plateau by plateau.
 - `plateau-create-by-solutions` was **extended to document the Angular / TypeScript stack** (commit `0e2be8cd`) — file-pattern table, project/class name normalization, Angular branches in the build steps.
 
+### Environment (this session)
+
+The container has **no Node**. Installed manually from nodejs.org (npm registry reachable): Node v24.20.0, npm 11.19.0. Angular **22.1.4** is `latest` (Signal Forms available), Nx **23.2.0**, NgRx **22.0.0**. Playwright chromium installed. **The `@playwright/test` runner cannot fork workers in this Bash sandbox** (`chromium.launch()` API works; the test-runner hangs) — so Playwright suites are written + configured but not executed here; Vitest (jsdom) is the runnable gate. Repro steps: `agent/example-setup.md`.
+
 ### Status
 
-- `plateau-online-monolith`: folder + root skill (v3.1 format) + structure skills (seeded from V1, repointed, `created_by` fixed, auth removed, MUST-NOT converted) — **~70%**. TODO: missing structure skills (`component-preview` project, ui-testing/app-testing spec classes), `# Boundaries` notes, the `example/` app.
-- Plateaus 2–8: not started.
+- **`plateau-online-monolith` — DONE** (commits `37a774b5`, `a52d01b8`, `2fb2e52a`):
+  - Root skill (v3.1 format, `standalone: true`, `parent_plateaus: []`, 9-solution `created_by`, VP2=Yes VP3=Yes).
+  - `structure/` — 27 skills (1 repo + 11 project + 15 class), seeded from V1, repointed to v3.1/solutions, `created_by` fixed per element, auth removed (VP7), `## MUST NOT`/`# Anti-patterns` converted, 9 missing skills generated from their solution Implementation files.
+  - `example/` — runnable Nx 23 / Angular 22.1.4 / NgRx 22 workspace. `orders` feature end to end (Signal Forms form, `OrdersStore` → Facade direct, Facade/Client/Mapper/typed-errors, http-core, LoggerService+ConsoleLogSink). **`npm test` (Vitest, 9 projects) + `npm run lint` GREEN.** Playwright e2e + visual/style-snapshot/a11y specs written & configured (container-safe args, API mocked), documented to run elsewhere.
+  - **Catalog feedback**: confirmed `solution-api-http-layer`'s "retry GET only" rule — an early `base-http.service.ts` that retried POST doubled a 409'd write.
+- **Plateaus 2–8: not started.** The example evolves down the monolith chain from this base.
 
-**This is a multi-session effort** (dotnet's Stage 4 was 3 plateaus over multiple sessions; this is 8 + examples).
+**Multi-session effort** (dotnet's Stage 4 was 3 plateaus over several sessions; this is 8 + evolving examples).
