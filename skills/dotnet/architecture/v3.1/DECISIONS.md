@@ -67,7 +67,7 @@ Still open (tracked): S4 (`external-created-entity` needs a `# Boundaries` secti
 
 ## Wave 3
 
-_(pending — aspirational skeletons: solution-http-api-client, solution-grpc-client, solution-messaging-infrastructure, solution-kafka-consumer, solution-kafka-producer, solution-transactional-outbox)_
+**DONE** — 6 skeletons authored: `solution-messaging-infrastructure`, `solution-kafka-consumer` (VP12), `solution-kafka-producer` (VP13), `solution-transactional-outbox` (VP14), `solution-http-api-client` (VP10), `solution-grpc-client` (VP11). Each has the full main skill file, one shape-only Implementation file, and a `> Draft contract — no consumer yet` marker. Variability Map VP10–VP14 Realized-by cells updated to `skeleton →`.
 
 ## Open forks
 
