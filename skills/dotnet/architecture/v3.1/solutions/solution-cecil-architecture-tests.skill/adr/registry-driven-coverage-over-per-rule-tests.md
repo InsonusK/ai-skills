@@ -3,6 +3,11 @@ name: registry-driven-coverage-over-per-rule-tests
 description: How to guarantee that every Entity method writing a property guarded by a multi-field rule actually calls that rule — for the current rule and every future one.
 problem: A rule author can add a Semantic/Domain rule and wire it into one Entity method while forgetting another (present or future) — no .feature scenario or unit test catches a call site that was never written.
 decision: One generic, registry-driven Cecil test — a rule author adds one (Entity, Property) -> Rule line, not a new test.
+tags:
+  - solution/cecil-architecture-tests
+  - stack/dotnet
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

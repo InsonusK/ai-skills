@@ -7,6 +7,7 @@ tags:
   - solution/external-created-entity
   - concern/documentation
   - concern/documentation/adr
+  - stack/dotnet
 ---
 
 # Problem

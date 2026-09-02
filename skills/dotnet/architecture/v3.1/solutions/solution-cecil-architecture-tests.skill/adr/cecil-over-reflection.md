@@ -3,6 +3,11 @@ name: cecil-over-reflection
 description: Whether .NET architecture tests that need to inspect method bodies (not just signatures) should use Mono.Cecil, System.Reflection, or a Roslyn analyzer.
 problem: An architecture test needs to answer "what does this method's body actually call/construct" — not "what does its signature declare" — and System.Reflection does not expose that.
 decision: Read the compiled assembly's IL with Mono.Cecil, as a plain xUnit [Fact], alongside the rest of the module's conformance suite.
+tags:
+  - solution/cecil-architecture-tests
+  - stack/dotnet
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

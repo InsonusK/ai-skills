@@ -7,6 +7,7 @@ tags:
   - solution/dto-property-validators
   - concern/documentation
   - concern/documentation/adr
+  - stack/dotnet
 ---
 
 # Problem

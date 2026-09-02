@@ -3,6 +3,11 @@ name: testing tool choice
 description: Which Gherkin runner, coverage tool, and mutation-testing tool the .NET conformance-testing solution uses
 problem: Pick one Gherkin/BDD runner and one coverage tool for .NET projects that must satisfy the solution-conformance-testing gate; confirm the mutation-testing tool already settled at the base-solution level.
 decision: Reqnroll + coverlet/ReportGenerator + Stryker.NET
+tags:
+  - solution/dotnet-conformance-testing
+  - stack/dotnet
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

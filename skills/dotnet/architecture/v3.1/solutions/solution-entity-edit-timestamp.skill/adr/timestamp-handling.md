@@ -7,6 +7,7 @@ tags:
   - solution/entity-edit-timestamp
   - concern/documentation
   - concern/documentation/adr
+  - stack/dotnet
 ---
 
 # Problem
