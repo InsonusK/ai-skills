@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-End-to-end tests need to drive a real browser against the running application (including, eventually, the platform shell with embeddable apps mounted via federation, per `solution-platform-embeddability`). We need a framework that handles asynchronous UI reliably, supports multiple browser engines, and fits a workspace that will grow to include federated, independently-deployed pieces.
+End-to-end tests need to drive a real browser against the running application (including, eventually, the platform shell with embeddable apps mounted via federation, per `solution-federation-host`). We need a framework that handles asynchronous UI reliably, supports multiple browser engines, and fits a workspace that will grow to include federated, independently-deployed pieces.
 
 # Selected variant
 

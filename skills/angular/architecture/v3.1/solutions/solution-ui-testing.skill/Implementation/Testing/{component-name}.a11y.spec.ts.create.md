@@ -10,7 +10,7 @@ tags:
 ---
 
 # How this generic file is used
-Created at `spec/{component-name}.a11y.spec.ts` next to the component implementation. Applies identically to both plateaus this solution covers, reusing the same demo/preview page a visual spec already navigates to for [accessibility testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/accessibility-testing.md) (see [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]). Per [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]].
+Created at `spec/{component-name}.a11y.spec.ts` next to the component implementation. Applies identically to both plateaus this solution covers, reusing the same demo/preview page a visual spec already navigates to for [accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) (see [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]]). Per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]].
 
 # Goals
 

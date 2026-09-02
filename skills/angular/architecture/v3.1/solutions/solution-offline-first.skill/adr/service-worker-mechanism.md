@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-The application needs a service worker to make the app shell load offline and to apply different caching strategies to different kinds of requests (app shell, static assets, API reads, federated remote chunks, and auth/mutation endpoints that must never be cached). Angular ships its own `@angular/service-worker` (ngsw), but Angular's own documentation now describes it as a basic utility with a limited feature set for simple offline support, explicitly stating that only security fixes will be accepted going forward and recommending native browser APIs for more advanced caching and offline capabilities. Given this workspace's needs — multiple distinct caching strategies, and runtime caching of remote chunks whose URLs are only known at runtime (per `solution-platform-embeddability`'s Dynamic Federation) — we need to decide what replaces or supplements ngsw.
+The application needs a service worker to make the app shell load offline and to apply different caching strategies to different kinds of requests (app shell, static assets, API reads, federated remote chunks, and auth/mutation endpoints that must never be cached). Angular ships its own `@angular/service-worker` (ngsw), but Angular's own documentation now describes it as a basic utility with a limited feature set for simple offline support, explicitly stating that only security fixes will be accepted going forward and recommending native browser APIs for more advanced caching and offline capabilities. Given this workspace's needs — multiple distinct caching strategies, and runtime caching of remote chunks whose URLs are only known at runtime (per `solution-federation-host`'s Dynamic Federation) — we need to decide what replaces or supplements ngsw.
 
 # Selected variant
 

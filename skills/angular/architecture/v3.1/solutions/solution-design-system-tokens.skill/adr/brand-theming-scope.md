@@ -1,7 +1,7 @@
 ---
 name: brand-theming-scope
 description: Whether the design system supports one fixed brand palette or multiple swappable brand palettes
-problem: The platform hosts embeddable apps from separate teams (per `solution-platform-embeddability`); a multi-brand/per-tenant theming capability could be built now, or deferred until an actual need for it appears
+problem: The platform hosts embeddable apps from separate teams (per `solution-federation-host`); a multi-brand/per-tenant theming capability could be built now, or deferred until an actual need for it appears
 decision: Ship a single, fixed brand palette for now; explicitly defer multi-brand/per-tenant palette-swapping to a future ADR, revisited if and when it's actually needed
 tags:
   - solution/design-system-tokens

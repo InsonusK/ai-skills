@@ -41,7 +41,7 @@ adr:
 
 # Core Principles
 
-- The design system's repository is separate from the platform monorepo, matching the pattern already used for `@platform/contracts` (see `solution-platform-embeddability`) — consumed as an external, independently versioned dependency, not a workspace-internal lib
+- The design system's repository is separate from the platform monorepo, matching the pattern already used for `@platform/contracts` (see `solution-federation-host`) — consumed as an external, independently versioned dependency, not a workspace-internal lib
 - Workspace tooling is chosen for this repository's actual scale (two projects), not for consistency with the platform monorepo's Nx setup — Nx's benefits require a scale this repository doesn't have
 - The library is built with ng-packagr, the Angular-team-maintained tool for producing Angular Package Format-compliant output
 - Every change to the library's public surface is accompanied by a changeset, making version bump classification a deliberate, per-PR decision rather than a release-time judgment call

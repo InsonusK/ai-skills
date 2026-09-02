@@ -33,7 +33,7 @@ tags:
 
 | Directory | Description |
 | ---------- | ----------- |
-| /apps/platform-shell | The only deployable unit at this stage (see `solution-platform-embeddability` for how this splits into a host + embeddable apps). Composition root: bootstraps the app, owns top-level routing, registers root providers. Contains no business logic of its own. |
+| /apps/platform-shell | The only deployable unit at this stage (see `solution-federation-host` for how this splits into a host + embeddable apps). Composition root: bootstraps the app, owns top-level routing, registers root providers. Contains no business logic of its own. |
 | /libs/shared/ui | Reusable, app-specific UI composed from design-system primitives. No feature-specific business logic. |
 | /libs/shared/util | Framework-agnostic pure helpers shared across features. No Angular DI, no HTTP calls, no state. |
 | /libs/{feature}/feature | Routed, presentational + container components for one feature, its feature-level Signal Store, and feature-local routing. Public API exposed only via `index.ts`. |
@@ -76,7 +76,7 @@ Everything not explicitly listed here is denied by the lint rule.
 - Cross-feature communication SHOULD go through routing (navigation) or through a `scope:platform` orchestrating layer, not through direct imports between features.
 
 - **Two features importing each other's internal components directly** — Consequence: hidden coupling, `@nx/enforce-module-boundaries` becomes ineffective if features are allowed to bypass it, and `nx affected` starts marking unrelated features as impacted — Instead: extract the shared piece into `libs/shared/ui` or `libs/shared/util`, or communicate through routing
-- **Growing `apps/platform-shell` with feature-specific logic "just for now"** — Consequence: the shell stops being a thin composition root, affected-based builds treat the shell as touched by almost every change, and the future platform/embedded-app split (see `solution-platform-embeddability`) becomes harder to carve out — Instead: scaffold a `libs/{feature}` pair even for small features and route to it from the shell
+- **Growing `apps/platform-shell` with feature-specific logic "just for now"** — Consequence: the shell stops being a thin composition root, affected-based builds treat the shell as touched by almost every change, and the future platform/embedded-app split (see `solution-federation-host`) becomes harder to carve out — Instead: scaffold a `libs/{feature}` pair even for small features and route to it from the shell
 - **Single flat lib per feature instead of `feature` + `data-access` split** — Consequence: UI and HTTP/data concerns become entangled, harder to test in isolation, and the future API/HTTP-layer solution has no clean seam to attach to — Instead: always split into at least `feature` and `data-access` from the start
 # Check list
 

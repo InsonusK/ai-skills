@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-The routing tree spans three levels that were established by earlier solutions: the platform shell (`apps/platform-shell`), an optional embeddable module mounted via Native Federation (see `solution-platform-embeddability`), and individual features (`libs/{feature}/feature`, see `solution-repository-structure`). We need to decide where the routes for a feature are defined — centrally in the shell, or inside the feature itself — and, given the multi-level structure, how routing responsibility is split across all three levels without letting a lower level reach outside its own boundary or a higher level reach into a lower level's internals.
+The routing tree spans three levels that were established by earlier solutions: the platform shell (`apps/platform-shell`), an optional embeddable module mounted via Native Federation (see `solution-federation-host`), and individual features (`libs/{feature}/feature`, see `solution-repository-structure`). We need to decide where the routes for a feature are defined — centrally in the shell, or inside the feature itself — and, given the multi-level structure, how routing responsibility is split across all three levels without letting a lower level reach outside its own boundary or a higher level reach into a lower level's internals.
 
 # Selected variant
 

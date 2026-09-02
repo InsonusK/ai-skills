@@ -11,13 +11,13 @@ tags:
 
 # Problem
 
-Testing Library-based [behavioral component tests](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/behavioral-component-testing.md) (see [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create]]) do encourage accessible queries (`getByRole`, `getByLabelText`), which catches the *absence* of an accessible name/role a test author chose to query for — but that is incidental, not exhaustive: it only catches what the test happens to assert, not the rules a component actually needs to satisfy (contrast ratio, redundant/conflicting ARIA attributes, focus order, landmark structure). A dedicated [automated accessibility check](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/accessibility-testing.md), run against the same rendered output already used for [visual regression testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/visual-regression-testing.md), closes this gap without requiring a human to manually run a screen reader or contrast checker on every change.
+Testing Library-based [behavioral component tests](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) (see [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create]]) do encourage accessible queries (`getByRole`, `getByLabelText`), which catches the *absence* of an accessible name/role a test author chose to query for — but that is incidental, not exhaustive: it only catches what the test happens to assert, not the rules a component actually needs to satisfy (contrast ratio, redundant/conflicting ARIA attributes, focus order, landmark structure). A dedicated [automated accessibility check](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md), run against the same rendered output already used for [visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md), closes this gap without requiring a human to manually run a screen reader or contrast checker on every change.
 
 # Selected variant
 
 **Selected variant:** [[#@axe-core/playwright against demo/preview pages]]
 
-Every component/state covered by a visual regression spec (see [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) also gets a `spec/{component-name}.a11y.spec.ts` scan against the same demo/preview page, asserting zero violations. This reuses the same Playwright + demo/preview-page infrastructure the visual regression decision already established — no separate harness.
+Every component/state covered by a visual regression spec (see [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) also gets a `spec/{component-name}.a11y.spec.ts` scan against the same demo/preview page, asserting zero violations. This reuses the same Playwright + demo/preview-page infrastructure the visual regression decision already established — no separate harness.
 
 # Searched variants
 
@@ -68,4 +68,4 @@ Adopt a paid, cloud-hosted accessibility-scanning service with its own dashboard
 ### Costs
 
 - New vendor relationship and billing, for a capability the free, self-hosted `@axe-core/playwright` package already provides for the specific need here (per-component/per-PR regression catching)
-- Same category of objection already raised against Chromatic in [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] — introduces an external dependency for a check that can be run entirely in-house with tooling already adopted
+- Same category of objection already raised against Chromatic in [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] — introduces an external dependency for a check that can be run entirely in-house with tooling already adopted

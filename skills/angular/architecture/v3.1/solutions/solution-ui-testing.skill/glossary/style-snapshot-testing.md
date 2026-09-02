@@ -95,15 +95,15 @@ test.describe('DsButtonComponent — style snapshot', () => {
 
 ## Related concepts
 
-- [Visual regression testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/visual-regression-testing.md) — фиксирует пиксельную картинку, с которой работает style-snapshot.
-- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — DOM-тест, не затрагивающий стили.
-- [Accessibility testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/accessibility-testing.md) — проверяет доступность, а не стилевые значения.
+- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — фиксирует пиксельную картинку, с которой работает style-snapshot.
+- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — DOM-тест, не затрагивающий стили.
+- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — проверяет доступность, а не стилевые значения.
 
 ## Sources
 
 - [MDN — getComputedStyle](https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle)
 - [Playwright — Test Snapshots](https://playwright.dev/docs/test-snapshots)
-- [ADR: style-snapshot-approach](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/style-snapshot-approach.md)
-- [Generic pattern для style-snapshot спеков](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md)
-- [Хелпер readVisualStyleProperties](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md)
-- [solution-ui-testing.skill.md — раздел про style-snapshot](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill.md)
+- [ADR: style-snapshot-approach](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md)
+- [Generic pattern для style-snapshot спеков](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md)
+- [Хелпер readVisualStyleProperties](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md)
+- [solution-ui-testing.skill.md — раздел про style-snapshot](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)

@@ -74,7 +74,7 @@ export class OrderFormComponent {
 ## MUST
 - A form's submission MUST go through `submitForm()`, not a manually wired `(ngSubmit)` handler that bypasses the form's own validation/state.
 - Any HTTP call triggered by form submission MUST go through the owning feature's `data-access` facade (see the future `solution-api-http-layer`), never call `HttpClient` directly from the form component.
-- A custom, design-system-provided form control used inside a Signal Form MUST implement `ControlValueAccessor` so it is compatible with `formField` binding (see `solution-design-system-application` for where this contract is defined).
+- A custom, design-system-provided form control used inside a Signal Form MUST implement `ControlValueAccessor` so it is compatible with `formField` binding (see `solution-host-design-system-consumption` for where this contract is defined).
 
 ## SHOULD
 - Field schema/validators SHOULD stay inline in the component for simple forms (a handful of fields, no cross-field logic), and SHOULD be extracted into a `{form-name}.form.ts` file once cross-field validation (`when`) or the number of validators makes the component harder to read.

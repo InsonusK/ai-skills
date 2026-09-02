@@ -97,15 +97,15 @@ test.describe('DsButtonComponent — accessibility', () => {
 
 ## Related concepts
 
-- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — использует доступные роли/метки, но не исчерпывает WCAG.
-- [Visual regression testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/visual-regression-testing.md) — проверяет внешний вид, но не контраст и ARIA.
-- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — фиксирует вычисленные стили, но не правила доступности.
+- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — использует доступные роли/метки, но не исчерпывает WCAG.
+- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — проверяет внешний вид, но не контраст и ARIA.
+- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — фиксирует вычисленные стили, но не правила доступности.
 
 ## Sources
 
 - [axe-core for Playwright — npm](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright)
 - [Playwright — Accessibility Testing](https://playwright.dev/docs/accessibility-testing)
 - [Deque — axe-core rules](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md)
-- [ADR: accessibility-testing-approach](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/accessibility-testing-approach.md)
-- [Generic pattern для a11y спеков](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md)
-- [solution-ui-testing.skill.md — раздел про accessibility](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill.md)
+- [ADR: accessibility-testing-approach](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md)
+- [Generic pattern для a11y спеков](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md)
+- [solution-ui-testing.skill.md — раздел про accessibility](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)

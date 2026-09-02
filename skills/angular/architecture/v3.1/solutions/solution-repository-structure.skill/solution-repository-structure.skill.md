@@ -36,7 +36,7 @@ adr:
 - `nx affected` runs CI tasks only for projects impacted by a change, instead of the whole workspace
 - A single, greppable place to look for "where does X live" for both humans and AI agents
 - A dependency graph (`nx graph`) that reflects the real architecture, not just folder conventions
-- A structure that `solution-platform-embeddability` and "Offline-first" solutions can extend without reshaping the base
+- A structure that `solution-federation-host` and "Offline-first" solutions can extend without reshaping the base
 
 # Core Principles
 

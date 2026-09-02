@@ -1,6 +1,6 @@
 ---
 name: solution-authentication
-description: Token storage strategy, silent refresh, granular permission-based authorization, route guards, and session sharing with embeddable apps
+description: In-memory access token with silent refresh, granular permission-based authorization, functional route guards attached at each feature's own route, and a *hasPermission structural directive — the monolith's authentication feature
 domain: skill
 type: architecture
 version: 20260902000000
@@ -16,131 +16,121 @@ tags:
 whenToUse: when adding a login/session flow, restricting a route or UI element to specific permissions, or reviewing how the in-memory token and silent refresh work
 creates:
   - libs/shared/auth-ui
+  - libs/shared/state/src/lib/auth (the auth slice)
 extends:
-  - libs/shared/state (auth slice, created by the State management solution)
-  - "@platform/contracts (from `solution-platform-embeddability`)"
+  - apps/platform-shell (HTTP interceptor registration, bootstrap silent refresh)
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|Token Storage Strategy ADR]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|Authorization Model ADR]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]]"
 ---
 
 # Goal
-
-- Store auth tokens in a way that minimizes XSS exposure, given that federated third-party code shares the same JS runtime (per `solution-platform-embeddability`)
-- Give the UI a single, granular permission model shared by route guards, UI visibility checks, and embeddable apps
-- Formally define the auth guards that `solution-app-routing` deliberately deferred to this solution
-- Let embeddable apps read the platform's session without implementing their own authentication
+- Store the access token so XSS exposure is minimized — in memory only, with the refresh token in an `HttpOnly` cookie the client never reads.
+- Give the UI one granular permission model shared by route guards and a structural visibility directive.
+- Formally implement the auth guards `solution-app-routing` deliberately deferred.
 
 # Capabilities
+- No token value ever persists in `localStorage`/`sessionStorage` — the most common token-theft vector is closed off.
+- One permission model reused by a route guard and a `*hasPermission` directive — no parallel authorization logic.
+- Silent, transparent session recovery after a page reload or a transient 401.
 
-- No token value ever persists in `localStorage`/`sessionStorage`, closing off the most common XSS-driven token theft vector
-- A single permission model reused by route guards, a structural UI directive, and embeddable apps — no parallel authorization logic to keep in sync
-- Silent, transparent session recovery after a page reload or a transient 401, without forcing the user to re-authenticate
-- Embeddable apps built by separate teams get a working session for free, with no login screen of their own to build or maintain
+# Core Principle
+- The access token lives only in memory, in `libs/shared/state`'s `auth` slice; the refresh token lives only in an `HttpOnly`/`Secure`/`SameSite` cookie the client never reads.
+- Every authorization check — guard or directive — is a permission **string**, never a role name.
+- Route guards live inside the feature whose route they protect (a `requirePermission` factory attached at that route), consistent with `solution-app-routing`'s hierarchical ownership — never centralized in the shell.
+- Hiding UI with a permission check is a convenience, not a security boundary — the backend remains the authorization boundary.
+- The HTTP interceptor (attach token, trigger silent refresh on 401) is a fixed contract point every later HTTP concern respects.
 
-# Core Principles
-
-- The access token lives only in memory, inside `shared-state`'s auth slice; the refresh token lives only in an `HttpOnly`/`Secure`/`SameSite` cookie the client never reads
-- Every authorization check — guards, directives, embeddable apps — is expressed as a permission string, never a role name
-- Route guards live inside the feature whose route they protect, consistent with the hierarchical route ownership from `solution-app-routing` — never centralized in the shell
-- Hiding UI with a permission check is a convenience, not a security boundary; the backend remains the actual authorization boundary
-- Embeddable apps are session consumers only — they read `SessionContract` from `@platform/contracts` and never implement their own login flow
+# Boundaries
+- Assumes a `monolith` baseline with `solution-global-store` (for the `auth` slice), `solution-app-routing` (for guards), and `solution-api-http-layer` (the interceptor, silent-refresh call, and login all go through `libs/shared/http-core`). It is monolith VP7 and **requires** VP2 (GlobalStore) + VP3 (BackendDataAccess).
+- **Does not publish `SessionContract` to embeddable apps** — that is [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] in the `platform-host` catalog, which `depends_on` this solution. A non-federated authenticated monolith needs neither `@platform/contracts` nor federation.
 
 # Adr
-
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|In-memory access token + HttpOnly refresh cookie instead of localStorage or fully cookie-based auth]]
-  - Selected variant: in-memory access token + HttpOnly refresh cookie — chosen to minimize XSS exposure given federated third-party code shares the same JS runtime
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|Granular permissions instead of coarse roles]]
-  - Selected variant: granular permissions — chosen for scalability and to decouple embeddable apps from the platform's own role taxonomy
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]] — in-memory access token + `HttpOnly` refresh cookie, over `localStorage` or fully cookie-based auth. Rejected: `localStorage` (XSS), full cookie auth (CSRF surface, no fine control).
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]] — granular permission strings, over coarse roles. Rejected: role names (do not scale; couple consumers to one taxonomy).
 
 # Requirements
 
 SOLUTION:
 - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|libs/shared/state auth slice]] - extended by this solution with the in-memory access token, permission list, and silent-refresh handling
+  - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|libs/shared/state auth slice]] - this solution adds the `auth` slice to the store
 - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
-  - Formally implements the auth guards that solution deliberately deferred (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create]])
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-embeddability.skill/solution-platform-embeddability.skill.md|solution-platform-embeddability]]
-  - Extends the shared [[skills/angular/architecture/v3.1/solutions/solution-platform-embeddability.skill/adr/embedding-mechanism.md|@platform/contracts]] package with `SessionContract`, so embeddable apps can read the platform's session
+  - implements the auth guards that solution deferred (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|{feature}.guard.ts.create]])
+- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]
+  - the interceptor, silent-refresh call, and login round trips go through `libs/shared/http-core`
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend|Repository]] - extend - add `libs/shared/auth-ui`, and the conventions for guard/interceptor/directive placement
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/auth-ui`, and guard/interceptor/directive placement conventions
 
 PROJECT:
-- No new Nx project beyond `libs/shared/auth-ui`; all other changes extend existing projects (shared-state, individual feature projects)
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|libs/shared/auth-ui]] - create - login form + forbidden page, the only auth UI shared across features
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts (create)]] - extend - in-memory access token, permissions, silent-refresh handling
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create|auth.interceptor.ts]] - create - attaches access token to outgoing requests, triggers silent refresh on 401
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create|{feature}.guard.ts (generic pattern)]] - create - functional guard restricting navigation into one of a feature's own routes
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|has-permission.directive.ts]] - create - structural directive controlling UI visibility by permission
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|@platform/contracts (extend)]] - extend - adds `SessionContract`; the token-attaching and silent-refresh-triggering behavior defined in `auth.interceptor.ts` does not change — the future `solution-api-http-layer` must respect this interceptor as a fixed contract point.
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts (create)]] - create - the `auth` slice: session lifecycle, in-memory token, permissions, silent refresh
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|auth.interceptor.ts]] - create - attaches the access token, triggers silent refresh on 401
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|{feature}.guard.ts (generic pattern)]] - create - functional guard restricting navigation into one of a feature's own routes
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md|has-permission.directive.ts]] - create - structural directive controlling UI visibility by permission
 
 # Workflow
 
 ## App bootstrap (happy path)
 
-1. On application start, `Silent Refresh Requested` is dispatched before any authenticated request is made.
-2. The browser sends the `HttpOnly` refresh cookie automatically to the refresh endpoint.
-3. On success, `Silent Refresh Succeeded` populates the in-memory `accessToken` and `permissions`.
-4. The app proceeds as an authenticated session, with `authInterceptor` attaching the access token to subsequent requests.
+1. On start, `Silent Refresh Requested` is dispatched before any authenticated request.
+2. The browser sends the `HttpOnly` refresh cookie automatically.
+3. `Silent Refresh Succeeded` populates the in-memory `accessToken` and `permissions`.
+4. `authInterceptor` attaches the access token to subsequent requests.
 
 ## Transparent recovery from an expired access token (happy path)
 
-1. A request fails with a 401 (access token expired, but the refresh cookie is still valid).
-2. `authInterceptor` dispatches `Silent Refresh Requested` instead of surfacing the error immediately.
-3. On success, the app has a fresh `accessToken`; the originating request can be retried by the caller (full retry orchestration is finalized in the future `solution-api-http-layer`).
-4. The user experiences no visible interruption.
+1. A request fails with 401 (token expired, refresh cookie still valid).
+2. `authInterceptor` dispatches `Silent Refresh Requested` instead of surfacing the error.
+3. On success the caller retries the originating request; the user sees no interruption.
 
 ![Transparent recovery from an expired access token (happy path)](./diagrams/transparent-recovery-from-an-expired-access-token-happy-path.mmd)
 
 ## Guarding a feature's own route (happy path)
 
-1. A feature attaches `requirePermission('orders.delete')` to one of its own routes, at the point that route is defined inside the feature — not in the shell.
-2. A user without that permission is redirected to a forbidden route on navigation attempt; a user with it proceeds.
+1. A feature attaches `requirePermission('orders.delete')` at the route's own definition inside the feature — not in the shell.
+2. A user without the permission is redirected to the forbidden route; a user with it proceeds.
 
-## Embeddable app reads the platform session (happy path)
+## Session expiry (failure path)
 
-1. An embeddable app (per the platform-embeddability solution) is loaded into the shell.
-2. It reads `SessionContract.currentUser`/`permissions`/`isAuthenticated` from `@platform/contracts` — the same singleton instance the platform itself reads from.
-3. It never presents its own login screen; if `isAuthenticated` is false, it renders a "not authenticated" state and defers to the platform.
-
-## Session expiry (cross-cutting failure path)
-
-1. The refresh cookie itself expires or is revoked; a silent refresh fails.
-2. `Session Expired` (from the base auth slice) is dispatched; `accessToken` and `permissions` are cleared.
-3. Every consumer — the platform's own UI and every embeddable app reading `SessionContract` — reflects the logged-out state simultaneously, without needing to poll or be told individually.
+1. The refresh cookie expires or is revoked; silent refresh fails.
+2. `Session Expired` is dispatched; `accessToken`, `currentUser`, `permissions` are cleared.
+3. Every consumer reading the `auth` selectors reflects the logged-out state at once.
 
 # Rules
 
 ## MUST
-- [[./Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[./Implementation/GlobalStore/auth.store.ts.create.md#MUST|auth.store.ts]]
-- [[./Implementation/HttpLayer/auth.interceptor.ts.create.md#MUST|auth.interceptor.ts.create]]
-- [[./Implementation/Routing/{feature}.guard.ts.create.md#MUST|{feature}.guard.ts.create]]
-- [[./Implementation/UI/has-permission.directive.ts.create.md#MUST|has-permission.directive.ts.create]]
-- [[./Implementation/EmbeddableApp/platform-contracts.extend.md#MUST|platform-contracts.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md#MUST|auth.store.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md#MUST|auth.interceptor.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md#MUST|{feature}.guard.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md#MUST|has-permission.directive.ts]]
+- `authInterceptor` is excluded from the silent-refresh request itself.
+  - Risk: an infinite loop — the refresh request 401s, triggers a refresh, which 401s…
+  - Fix: skip the interceptor for the refresh endpoint.
+- Never check a role name (`currentUser.role === 'admin'`) instead of a permission string.
+  - Risk: parallel authorization models that drift; consumers coupled to the role taxonomy.
+  - Fix: every check is `hasPermission('...')`.
+- Never centralize permission guards in the shell's root routes.
+  - Risk: the shell must know every feature's authorization rules — the coupling `solution-app-routing` exists to prevent.
+  - Fix: attach `requirePermission(...)` at the feature's own route.
 
 ## SHOULD
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend|See Repository.extend.md]] — checking a role name (`currentUser.role === 'admin'`) instead of a permission string.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|See auth.store.ts.create.md]] — persisting `accessToken` to storage "to survive reloads more simply".
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create|See auth.interceptor.ts.create.md]] — retrying the original request indefinitely on repeated 401s.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create|See {feature}.guard.ts.create.md]] — centralizing all permission guards in the shell's root routes "for visibility".
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create|See has-permission.directive.ts.create.md]] — relying on `*hasPermission` alone to protect a destructive action, with no server-side check.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/EmbeddableApp/platform-contracts.extend|See platform-contracts.extend.md]] — an embeddable app implementing its own login screen "just in case" the platform session is missing.
+- Avoid retrying the original request indefinitely on repeated 401s — cap at one silent-refresh attempt, then treat as logged out.
+- Avoid relying on `*hasPermission` alone to protect a destructive action with no server-side check.
 
 # Check list
-
-- [ ] The access token is never written to `localStorage`/`sessionStorage`
-- [ ] Every authorization check (guard, directive, embeddable app) is expressed as a permission string, never a role name
-- [ ] Every permission guard lives inside the feature it protects, not centralized in the shell
-- [ ] `authInterceptor` is excluded from the silent-refresh request itself
-- [ ] Every embeddable app reads session state only through `SessionContract`, never implementing its own login flow
-- [ ] Application bootstrap triggers exactly one silent-refresh attempt before treating the user as logged out
+- [ ] The access token is never written to `localStorage`/`sessionStorage`.
+- [ ] Every authorization check is a permission string, never a role name.
+- [ ] Every permission guard lives inside the feature it protects.
+- [ ] `authInterceptor` is excluded from the silent-refresh request.
+- [ ] Bootstrap triggers exactly one silent-refresh attempt before treating the user as logged out.

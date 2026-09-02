@@ -29,7 +29,7 @@ export class LoggerService {
 # Rule changes
 
 ## MUST
-- `report()` entries MUST always reach `BackendLogSink` (per [[skills/angular/architecture/v3.1/solutions/logging/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]]), regardless of `MIN_LOG_LEVEL` — the level filtering that suppresses `debug`/`info` in production does not apply to `report()`.
+- `report()` entries MUST always reach `BackendLogSink` (per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]]), regardless of `MIN_LOG_LEVEL` — the level filtering that suppresses `debug`/`info` in production does not apply to `report()`.
 - `report()` MUST still be subject to the never-log-sensitive-data rule from the base logging solution — the same PII/token restrictions apply.
 
 ## SHOULD

@@ -15,7 +15,7 @@ Create one shared helper per plateau, not per component. Example locations:
 - Platform plateau: `libs/{feature}/feature/testing/read-visual-style-properties.ts` (or `libs/shared/testing/read-visual-style-properties.ts` if shared across libraries)
 - Design-system plateau: `projects/design-system/testing/read-visual-style-properties.ts`
 
-It is imported by every `spec/{component-name}.style-snapshot.spec.ts` ([style-snapshot testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/style-snapshot-testing.md)) in both plateaus. Centralizing the property list here is what keeps the snapshot readable — per [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/style-snapshot-approach.md|style-snapshot-approach]], a full computed-style dump is noisy; a shared, curated list is not.
+It is imported by every `spec/{component-name}.style-snapshot.spec.ts` ([style-snapshot testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md)) in both plateaus. Centralizing the property list here is what keeps the snapshot readable — per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md|style-snapshot-approach]], a full computed-style dump is noisy; a shared, curated list is not.
 
 # Goals
 

@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-The repository will host, from the start, more than one deployable unit (platform shell + embeddable applications, see `solution-platform-embeddability`) and a growing number of shared/feature libraries. We need to pick the workspace tooling that will host `apps/` and `libs/` before any project-level or file-level conventions can be defined, since it determines what a "project" even is (`angular.json` entry vs `project.json` + Nx graph node) and what tooling is available for enforcing boundaries and scaling CI.
+The repository will host, from the start, more than one deployable unit (platform shell + embeddable applications, see `solution-federation-host`) and a growing number of shared/feature libraries. We need to pick the workspace tooling that will host `apps/` and `libs/` before any project-level or file-level conventions can be defined, since it determines what a "project" even is (`angular.json` entry vs `project.json` + Nx graph node) and what tooling is available for enforcing boundaries and scaling CI.
 
 # Selected variant
 

@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-Not every request the application makes has the same tolerance for staleness or the same need for offline availability. The app shell must always load, even offline. Static assets rarely change and are safe to serve straight from cache. API reads benefit from instant display of last-known data while quietly refreshing. Auth and mutation requests must never be served from a cache — a cached login response or a cached mutation result would be actively wrong. Federated remote chunks (per `solution-platform-embeddability`'s Dynamic Federation) are only resolved at runtime, ruling out a build-time precache manifest for them. A single uniform strategy cannot satisfy all of these at once.
+Not every request the application makes has the same tolerance for staleness or the same need for offline availability. The app shell must always load, even offline. Static assets rarely change and are safe to serve straight from cache. API reads benefit from instant display of last-known data while quietly refreshing. Auth and mutation requests must never be served from a cache — a cached login response or a cached mutation result would be actively wrong. Federated remote chunks (per `solution-federation-host`'s Dynamic Federation) are only resolved at runtime, ruling out a build-time precache manifest for them. A single uniform strategy cannot satisfy all of these at once.
 
 # Selected variant
 

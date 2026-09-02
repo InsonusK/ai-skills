@@ -76,13 +76,13 @@ describe('DsButtonComponent', () => {
 
 ## Related concepts
 
-- [Visual regression testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/visual-regression-testing.md) — ловит сломанную вёрстку и тёмную тему, которые DOM-тесты не видят.
-- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — объясняет, почему визуальный тест сломался.
-- [Accessibility testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/accessibility-testing.md) — проверяет WCAG-нарушения, которые Testing Library не исчерпывает.
+- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — ловит сломанную вёрстку и тёмную тему, которые DOM-тесты не видят.
+- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — объясняет, почему визуальный тест сломался.
+- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — проверяет WCAG-нарушения, которые Testing Library не исчерпывает.
 
 ## Sources
 
 - [Angular Testing Library — официальная документация](https://testing-library.com/docs/angular-testing-library/intro/)
 - [Which query should I use? — Testing Library](https://testing-library.com/docs/queries/about/#priority)
-- [Generic pattern для компонентных тестов в решении](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md)
-- [solution-ui-testing.skill.md — общее описание слоёв тестирования](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill.md)
+- [Generic pattern для компонентных тестов в решении](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md)
+- [solution-ui-testing.skill.md — общее описание слоёв тестирования](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)

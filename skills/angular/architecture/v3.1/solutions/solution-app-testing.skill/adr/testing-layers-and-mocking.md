@@ -20,7 +20,7 @@ The `solution-api-http-layer` already establishes three internal layers per feat
 - **Non-DOM business-layer tests** (Client, Facade, Signal Store, any plain service): `TestBed` for DI wiring, asserting behavior via the class's public methods/signals directly.
 - **HTTP mocking**: `HttpTestingController` is used exclusively inside `spec/{feature}.client.spec.ts` — the unit test for a feature's own `{feature}.client.ts` — to assert the exact request shape and DTO mapping. Every layer above the Client (Facade, Signal Store) fakes the layer directly beneath it instead of mocking HTTP at all — a Facade test fakes its `Client`; a Signal Store test fakes its `Facade`. MSW is reserved for tests that deliberately span multiple layers together (e.g. a feature-level integration test exercising Signal Store → Facade → Client → an intercepted network boundary) or where mocks need to be shared with non-test tooling (local dev against a mocked backend).
 
-This ADR does not cover how a component itself is tested — a component's own behavior is tested independently of this business layer entirely; see [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]].
+This ADR does not cover how a component itself is tested — a component's own behavior is tested independently of this business layer entirely; see [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill|solution-ui-testing]].
 
 # Searched variants
 

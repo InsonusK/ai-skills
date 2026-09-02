@@ -52,7 +52,7 @@ export const OrdersStore = signalStore(
 - All HTTP/data access invoked from the store MUST go through that feature's own `data-access` lib (see the future `solution-api-http-layer`), never directly via `HttpClient` in the store.
 
 ## SHOULD
-- Genuinely global reads (e.g. current user) SHOULD come from `libs/shared/state` selectors, injected into the feature store, rather than being duplicated locally (see [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/GlobalStore/shared-state.project.create/auth.store.ts.create]]).
+- Genuinely global reads (e.g. current user) SHOULD come from `libs/shared/state` selectors, injected into the feature store, rather than being duplicated locally (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]).
 
 - **A feature Signal Store re-implementing auth/session state locally instead of reading `libs/shared/state`** — Consequence: duplicated, potentially stale source of truth for cross-cutting state — Instead: inject and select from the shared global store for anything cross-cutting; keep only feature-owned data in the feature store
 # Check list

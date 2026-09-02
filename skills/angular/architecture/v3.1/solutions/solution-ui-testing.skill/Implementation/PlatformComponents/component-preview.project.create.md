@@ -12,7 +12,7 @@ tags:
 # Goals
 
 - Give the platform plateau a place to render a component with representative inputs/states, independent of routing, a real backend, or a real Signal Store — the same practical role `projects/demo` plays for the design system
-- Be the target [visual regression](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/visual-regression-testing.md) Playwright screenshots and [accessibility](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/accessibility-testing.md) axe-core scans run against, per [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
+- Be the target [visual regression](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) Playwright screenshots and [accessibility](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) axe-core scans run against, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
 
 # Structure
 
@@ -48,7 +48,7 @@ No new packages — this is a plain Nx `type:app` project using the workspace's 
 ## MUST
 - `apps/component-preview` MUST be tagged `type:preview`, `scope:platform`.
 - A previewed component MUST be rendered with static, hardcoded example data — it MUST NOT call a real Facade, real HTTP endpoint, or real Signal Store wired to a backend.
-- Every component covered by a visual regression or accessibility spec (per [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) MUST have its `spec/preview/{component-name}.preview.ts` registered as a route in this app.
+- Every component covered by a visual regression or accessibility spec (per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) MUST have its `spec/preview/{component-name}.preview.ts` registered as a route in this app.
 - The preview app MUST import preview components from the component library's `spec/preview/` path; it MUST NOT duplicate preview markup inside the app.
 
 - Never be included in the production deployment of `apps/platform-shell` — it is a development/CI-only harness, built and served separately.

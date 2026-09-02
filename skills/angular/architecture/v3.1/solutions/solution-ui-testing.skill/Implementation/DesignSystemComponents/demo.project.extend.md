@@ -14,7 +14,7 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 
 # Goals
 
-- Reuse the demo app already built for manual visual review as the target for automated [visual regression](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/visual-regression-testing.md) and [accessibility](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/accessibility-testing.md) checks, per [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
+- Reuse the demo app already built for manual visual review as the target for automated [visual regression](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) and [accessibility](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) checks, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
 - Keep preview components in the component library's `spec/preview/` directory so they stay close to the component and its tests
 
 # Structure
@@ -47,4 +47,4 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 # Unittest TestCases
 
 - [ ] WHEN a new component/state is added to `projects/demo` THEN
-  - [ ] a corresponding visual and accessibility spec is added in the same change, per [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]] and [[skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create]]
+  - [ ] a corresponding visual and accessibility spec is added in the same change, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create]]

@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-Every release of the design system needs a correctly classified semver bump (patch/minor/major) and an accurate changelog entry. Because the package is consumed by several independently deployed codebases at once (the platform monorepo, and every embeddable app's own repository, per `solution-platform-embeddability`), a misclassified release — especially a breaking change shipped as a minor or patch — has a wide, simultaneous blast radius across teams that don't coordinate deploys with each other.
+Every release of the design system needs a correctly classified semver bump (patch/minor/major) and an accurate changelog entry. Because the package is consumed by several independently deployed codebases at once (the platform monorepo, and every embeddable app's own repository, per `solution-federation-host`), a misclassified release — especially a breaking change shipped as a minor or patch — has a wide, simultaneous blast radius across teams that don't coordinate deploys with each other.
 
 # Selected variant
 

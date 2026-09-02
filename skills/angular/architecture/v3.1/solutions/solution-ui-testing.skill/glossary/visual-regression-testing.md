@@ -63,14 +63,14 @@ test.describe('DsButtonComponent — visual', () => {
 
 ## Related concepts
 
-- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — проверяет поведение, но не видит картинку.
-- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — объясняет, какие именно CSS-свойства изменились, когда визуальный тест падает.
-- [Accessibility testing](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/glossary/accessibility-testing.md) — ловит WCAG-нарушения, которые скриншот не проверяет.
+- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — проверяет поведение, но не видит картинку.
+- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — объясняет, какие именно CSS-свойства изменились, когда визуальный тест падает.
+- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — ловит WCAG-нарушения, которые скриншот не проверяет.
 
 ## Sources
 
 - [Playwright — Test Snapshots](https://playwright.dev/docs/test-snapshots)
 - [Playwright — Screenshot Assertions](https://playwright.dev/docs/api/class-page#page-screenshot)
-- [ADR: visual-regression-approach](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/adr/visual-regression-approach.md)
-- [Generic pattern для визуальных спеков в решении](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md)
-- [solution-ui-testing.skill.md — описание визуального слоя](skills/angular/architecture/v3.1/solutions/testing/solution-ui-testing.skill/solution-ui-testing.skill.md)
+- [ADR: visual-regression-approach](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md)
+- [Generic pattern для визуальных спеков в решении](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md)
+- [solution-ui-testing.skill.md — описание визуального слоя](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)

@@ -59,7 +59,7 @@ describe('OrdersClient', () => {
 # Rule changes
 
 ## MUST
-- Every test in this file MUST use `HttpTestingController` to assert the exact request (method, URL, body), per [[skills/angular/architecture/v3.1/solutions/testing/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
+- Every test in this file MUST use `HttpTestingController` to assert the exact request (method, URL, body), per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
 - `httpTesting.verify()` MUST be called in `afterEach` to catch any unexpected or unmatched request.
 - At least one test MUST assert the typed domain error thrown on a transport failure, consistent with `solution-api-http-layer`'s error-handling rules.
 - Tests for each Client method MUST be grouped under a nested `describe('<methodName>', () => { ... })` block.

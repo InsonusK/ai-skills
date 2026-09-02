@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-The design system is published as an npm package, consumed by the platform monorepo and by every independently repositoried embeddable app (per `solution-platform-embeddability`). Consumers may be on different Angular versions within a supported range, so the package needs Ivy partial compilation (compiled at publish time, fully compiled by each consumer's own Angular version) rather than a fully pre-compiled build tied to one specific Angular version.
+The design system is published as an npm package, consumed by the platform monorepo and by every independently repositoried embeddable app (per `solution-federation-host`). Consumers may be on different Angular versions within a supported range, so the package needs Ivy partial compilation (compiled at publish time, fully compiled by each consumer's own Angular version) rather than a fully pre-compiled build tied to one specific Angular version.
 
 # Selected variant
 
