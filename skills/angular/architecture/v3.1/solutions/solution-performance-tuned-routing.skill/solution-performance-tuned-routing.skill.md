@@ -112,12 +112,10 @@ sequenceDiagram
 - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend#MUST|PlatformHost/platform-shell.project.extend]]
 - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend#MUST|{feature}.routes.ts]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#MUST|Repository]]
 ## SHOULD
 - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#SHOULD|Repository]]
 - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend#SHOULD|{feature}.routes.ts]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend#SHOULD|{feature}.routes.ts]]
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend|See Repository.extend.md]] — silencing a bundle budget failure by raising the threshold; a feature setting its own `preload` flag.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend|See platform-shell.project.extend.md]] — marking every top-level segment `preload: true`, degenerating into `PreloadAllModules`.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend|See {feature}.routes.ts.extend.md]] — splitting every sub-route via `loadComponent` regardless of actual size/usage, or leaving a genuinely heavy sub-page unsplit in the main chunk.

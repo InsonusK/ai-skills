@@ -19,7 +19,7 @@ Built per [[skills/common-workflow/architecture/design/plateau-map/variability-m
 ## Features that are not VPs
 
 - **`DesignSystemWorkspace`, `HybridDesignTokens`, `EncapsulatedComponentLayer`, `ComponentTesting`** — all common. `solution-design-system-components` `depends_on solution-design-system-tokens` is a real edge but both are always co-present — a build order, not a VP.
-- **`solution-ui-testing`** is shared with `monolith/` and its `depends_on` conflates the two sides. Stage 3 / delta-conflict splits it; this catalog's `ComponentTesting` realization gets deps `design-system-structure` + `design-system-components` + `app-testing` (tool ADRs).
+- **`solution-ui-testing` split — DONE (Stage 3d).** `solution-ui-testing` (monolith) + `solution-design-system-ui-testing` (this catalog; `depends_on` `solution-ui-testing` + `design-system-structure` + `design-system-components` + `app-testing`). The three ADRs and four spec patterns stay in `solution-ui-testing` and are reused verbatim.
 
 ## Plateau Map derivation
 

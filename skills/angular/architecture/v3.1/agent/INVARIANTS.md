@@ -43,7 +43,7 @@ libs/{feature}/feature          ← solution-repository-structure (feature lib; 
 | design-system | DesignSystemWorkspace | `solution-design-system-structure` |
 | design-system | HybridDesignTokens | `solution-design-system-tokens` |
 | design-system | EncapsulatedComponentLayer | `solution-design-system-components` |
-| design-system | ComponentTesting | `solution-ui-testing` *(design-system-side)* |
+| design-system | ComponentTesting | `solution-design-system-ui-testing` *(reuses `solution-ui-testing`'s ADRs + spec patterns)* |
 
 ## 3. Variation Points → realizing solution(s) (must be 1:1 covered)
 

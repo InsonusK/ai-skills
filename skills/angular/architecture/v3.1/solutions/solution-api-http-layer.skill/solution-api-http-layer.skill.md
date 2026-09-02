@@ -127,7 +127,6 @@ Artifact-level (generic pattern, applied by any solution that creates a `libs/{f
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create#MUST|{feature}.client.ts.create]]
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.mapper-and-errors.ts.create#MUST|{feature}.mapper-and-errors.ts.create]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend#MUST|Repository.extend]]
 ## SHOULD
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend|See Repository.extend.md]] — a Signal Store method calling a feature's Client directly, skipping the Facade; a Client letting a raw `HttpErrorResponse` escape.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create|See shared-http-core.project.create.md]] — adding feature-specific special cases into the shared base HTTP service.

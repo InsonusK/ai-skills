@@ -5,7 +5,7 @@ project_kind: application
 element_kind: project
 change_kind: extend
 tags:
-  - solution/ui-testing
+  - solution/design-system-ui-testing
   - element/design-system-repository
 ---
 

@@ -119,7 +119,6 @@ sequenceDiagram
 - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create#MUST|Tokens/theme.scss.create]]
 - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create#MUST|Tokens/custom-tokens.scss.create]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend#MUST|Repository]]
 ## SHOULD
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend|See Repository.extend.md]] — aliasing an already-semantic Material token; hand-setting `--mat-*` in raw CSS.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|See theme.scss.create.md]] — applying the theme below the root selector.

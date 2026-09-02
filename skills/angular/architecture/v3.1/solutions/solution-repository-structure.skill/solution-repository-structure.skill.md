@@ -116,7 +116,6 @@ sequenceDiagram
 ## MUST
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create#MUST|Repository]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create#MUST|Repository]]
 ## SHOULD
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create#SHOULD|Repository]]
 

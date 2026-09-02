@@ -137,7 +137,6 @@ sequenceDiagram
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend#MUST|DataAccess/{feature}.client.ts.extend]]
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create#MUST|UI/offline-banner.component.ts.create]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend#MUST|Repository]]
 ## SHOULD
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend|See Repository.extend.md]] — building even a minimal mutation queue as part of this solution; caching auth/mutation endpoints with anything other than network-only.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|See service-worker.create.md]] — registering routes in an order that lets a mutation be matched by the API-reads rule.

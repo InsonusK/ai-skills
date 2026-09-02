@@ -88,7 +88,6 @@ PROJECT:
 - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend#MUST|PlatformHost/platform-shell.project.extend]]
 - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create#MUST|{feature}.routes.ts]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend#MUST|Repository]]
 ## SHOULD
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend|See Repository.extend.md]] — a feature baking its own mount segment into its routes; the shell reaching into a feature's internal path structure.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend|See platform-shell.project.extend.md]] — the shell defining a nested path instead of mounting a single root segment.

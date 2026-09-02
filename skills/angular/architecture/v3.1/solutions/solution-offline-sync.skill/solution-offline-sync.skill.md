@@ -123,8 +123,6 @@ Artifact-level:
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend#MUST|DataAccess/{feature}.facade.ts.extend]]
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create#MUST|UI/pending-sync-indicator.component.ts.create]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create#MUST|OfflineSync/replay-orchestrator.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend#MUST|DataAccess/{feature}.facade.ts.extend]]
 ## SHOULD
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/Repository.extend|See Repository.extend.md]] — enqueueing every `OfflineTransportError` unconditionally; reusing idempotency keys incorrectly.
 - Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create|See shared-offline-sync.project.create.md]] — querying the queue table without using the feature index.
