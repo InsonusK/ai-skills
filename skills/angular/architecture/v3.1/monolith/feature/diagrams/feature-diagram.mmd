@@ -3,21 +3,20 @@ graph TD
         direction TB
         subgraph Row1[" "]
             direction LR
-            APP["PlatformApp<br/>(root of the family)"]
+            APP["App<br/>(root of the family)"]
         end
         subgraph Row2[" "]
             direction LR
             NX["NxWorkspaceStructure"]
-            STATE["TieredStateManagement"]
             ROUTE["HierarchicalRouting"]
-            FORMS["SignalForms"]
+            TIER["StateTieringPolicy"]
         end
         subgraph Row3[" "]
             direction LR
-            DATA["FacadeClientDataAccess"]
+            FORMS["SignalForms"]
             LOG["ConsoleLogging"]
         end
-        subgraph Testing["Testing"]
+        subgraph Testing[" "]
             direction LR
             BLT["BusinessLayerTesting"]
             CT["ComponentTesting"]
@@ -26,15 +25,15 @@ graph TD
     style Row1 fill:none,stroke:none
     style Row2 fill:none,stroke:none
     style Row3 fill:none,stroke:none
+    style Testing fill:none,stroke:none
 
     Common -->|Optional| PTR["PerformanceTunedRouting"]
-    Common -->|Optional| ORR["OfflineReadResilience"]
-    Common -->|Optional| FED["FederationHost"]
-    Common -->|Optional| BLD["BackendLogDelivery"]
-    Common -->|Optional| AUTH["Authentication"]
+    Common -->|Optional| BDA["BackendDataAccess"]
+
+    BDA -->|Optional| ORR["OfflineReadResilience"]
+    BDA -->|Optional| BLD["BackendLogDelivery"]
+    BDA -->|Optional| AUTH["Authentication"]
 
     ORR -->|"Optional (per feature)"| OWQ["OfflineWriteQueue"]
-    FED -->|Optional| DSC["DesignSystemConsumption"]
 
     BLD -. "Requires" .-> LOG
-    AUTH -. "Requires (flagged — see model)" .-> FED

@@ -2,48 +2,43 @@
 
 One line per non-mechanical choice made while building the Angular v3.1 catalog. `⚠️` marks a fork that needs the owner's sign-off; everything else is execution against [[INVARIANTS.md]].
 
-The pipeline: `feature-map-create` → `variability-map-create` → (copy + migrate V1 solutions) → `delta-conflict-detection` → `plateau-create-by-solutions`. Output root: `skills/angular/architecture/v3.1/`. V1 input (read-only reference): `skills/angular/architecture/solutions/` + `skills/angular/architecture/plateau/`.
+Pipeline: `feature-map-create` → `variability-map-create` → (copy + migrate V1 solutions) → `delta-conflict-detection` → `plateau-create-by-solutions`. Output root: `skills/angular/architecture/v3.1/`. V1 input (read-only): `skills/angular/architecture/solutions/` + `skills/angular/architecture/plateau/`.
 
 ## Settled before the build (owner, this session)
 
-- **Output layout** = full parallel catalog under `v3.1/`: `v3.1/feature/`, `v3.1/variability-map.md`, `v3.1/delta-conflict-analysis.md`, `v3.1/solutions/` (copied + migrated), `v3.1/plateau/` (built later), `v3.1/agent/`. V1 dirs untouched.
-- **Phasing** = stages 1–3 now (feature-map, variability-map, delta-conflict + solution migration); stage-4 (`plateau-create`) depth decided after stage 3, once the real plateau count is known.
-- **Plateau set** = derived fresh from the Variability Map; the existing 8 V1 plateaus become a reference mapping (old plateau → v3.1 VP answers), names kept where they still map cleanly.
-- **Solution migration** = full format migration (whenToUse, `## MUST NOT` → negative `## MUST` bullets, de-Russify, version bump, re-verify `depends_on`/`creates`/`extends`) + a fresh-eyes audit per family, mirroring dotnet v3.1's wave audits.
-- **Family scope** = **three feature models** — `platform-app`, `design-system`, `embeddable-app` — each with its own baseline + feature diagram. One Variability Map with three VP blocks. One delta-conflict analysis.
+- **Output layout** = full parallel catalog under `v3.1/`. V1 dirs untouched.
+- **Phasing** = stages 1–3 now; stage-4 depth decided after stage 3.
+- **Plateau set** = derived fresh from the Variability Maps; existing 8 V1 plateaus become a reference mapping.
+- **Solution migration** = full format migration + fresh-eyes audit, mirroring dotnet v3.1's wave audits.
 - **Aspirational** = V1 solutions + owner-reviewed aspirational candidates (flagged, no `Realized by`).
-- **V1 doubts** = recorded in each family model's `Open questions on V1`, carried forward with a working hypothesis, reviewed as a batch.
+- **V1 doubts** = recorded per model in `Open questions on V1`, carried forward with a working hypothesis, batch-reviewed.
+
+### ⚠️ Structural decisions (owner, this session — round 2)
+
+- **Three catalogs, not one**: `monolith/`, `platform/`, `design-system/` — each with its own `feature/`, `variability-map.md`, `plateau/`. Reason: monolith→platform is a topology change (adds a 3rd repo `@platform/contracts`, 1 deployable → N runtime-discovered remotes) heavy enough that one shared variability space would force every reader to filter half the rows.
+- **`platform/` composes `monolith/`**: its plateaus set `parent_plateaus` to the corresponding monolith plateaus (a platform host **is** a monolith + federation). `platform/`'s own variability space is only the federation delta. The V1 standalone "embeddable-app" is absorbed as the **remote role** inside `platform/`.
+- **One shared solution pool** `v3.1/solutions/` for all three catalogs (avoids duplicating `solution-app-testing` etc.); two-sided V1 solutions are split during delta-conflict-detection.
+- **Baseline correction (monolith)**: `feature-map-create`'s "first principles, not what V1 plateaus include" applied strictly. `libs/shared/state` (global NgRx store) is **not baseline** — it is a shared on-demand artifact created by the first cross-cutting-state feature (like dotnet's `App.Infrastructure`). `BackendDataAccess` (Facade/Client/`http-core`) is a **VP**, not common — a no-backend app is legitimate; it gates `OfflineReadResilience`, `BackendLogDelivery`, `Authentication`.
+- **`SignalForms` + `ConsoleLogging` stay common** — zero-cost conventions ("when you build a form / when you log, do it this way"), like dotnet's `SoftValueObjects` / `AppLogging`.
 
 ## Stage 1 — feature-map-create — DRAFT for review (this session)
 
-Three models written to `v3.1/feature/`:
+Files under `v3.1/`:
 
-- **`feature/feature-model.md`** — umbrella: the three families, how they relate (design-system consumed by the other two; embeddable-app loaded by a FederationHost platform-app), shared conventions, cross-family shared solutions flagged for splitting.
-- **`feature/platform-app/feature-model.md`** (+ diagram) — root `PlatformApp`. 8 common features (NxWorkspaceStructure, TieredStateManagement, HierarchicalRouting, SignalForms, FacadeClientDataAccess, ConsoleLogging, BusinessLayerTesting, ComponentTesting[flagged]); 7 variable (PerformanceTunedRouting, OfflineReadResilience, OfflineWriteQueue[per-feature, child of ORR], FederationHost, DesignSystemConsumption[child of FED], BackendLogDelivery, Authentication). 7 open questions on V1. 5 aspirational candidates.
-- **`feature/design-system/feature-model.md`** (+ diagram) — root `DesignSystem`. 4 common (DesignSystemWorkspace, HybridDesignTokens, EncapsulatedComponentLayer, ComponentTesting); **0 variable**. 1 aspirational: MultiTenantTheming (explicitly deferred by `solution-design-system-tokens`).
-- **`feature/embeddable-app/feature-model.md`** (+ diagram) — root `EmbeddableApp`. 3 common (FederationRemoteContract, DesignSystemFederationConsumption, SessionConsumption); **0 variable** (pending open question 3). 1 aspirational: InternalArchitectureAdoption.
+- **`README.md`** — the three-catalog structure, how they relate, shared solution pool.
+- **`monolith/feature/feature-model.md`** (+ diagram) — root `App`. Common: NxWorkspaceStructure, HierarchicalRouting, StateTieringPolicy, SignalForms, ConsoleLogging, BusinessLayerTesting, ComponentTesting[flagged]. Variable: PerformanceTunedRouting, BackendDataAccess, and three children of BackendDataAccess (OfflineReadResilience → child OfflineWriteQueue[per-feature]; BackendLogDelivery; Authentication). 7 open questions. 5 aspirational candidates.
+- **`platform/feature/feature-model.md`** (+ diagram) — root `Platform`. Two roles (host = a composed monolith + delta; remote = contract-conformant). Common: RuntimeRemoteFederation, PlatformContracts, FederationRemoteContract. Variable host: HostDesignSystemConsumption, SessionSharing, FederatedReadResilience. Variable remote (per remote): RemoteSessionConsumption, RemoteDesignSystemConsumption, RemoteInternalArchitecture[aspirational]. Cross-catalog Requires into monolith: SessionSharing→Authentication, FederatedReadResilience→OfflineReadResilience. 5 open questions.
+- **`design-system/feature/feature-model.md`** (+ diagram) — root `DesignSystem`. Common: DesignSystemWorkspace, HybridDesignTokens, EncapsulatedComponentLayer, ComponentTesting. **0 variable.** 1 aspirational: MultiTenantTheming (explicitly deferred by `solution-design-system-tokens`). 2 open questions.
 
-### ⚠️ Open questions for the owner (batch review) — from the three models
+### ⚠️ Open questions for the owner (batch review)
 
-**platform-app:**
-1. `ComponentTesting` common or variable? (working: common, matches V1)
-2. `solution-ui-testing` `depends_on` conflates platform + design-system sides → split in delta-conflict (working: split)
-3. `Authentication` requires `FederationHost`? V1 says yes; only `SessionContract` publication actually needs it (working: **no hard requirement**, drop the edge)
-4. `FederationHost` requires `OfflineReadResilience`? V1 `depends_on` says yes; solution prose says "if also present" (working: **no**, over-strong V1 edge)
-5. `solution-lazy-loading-routing` → rename `PerformanceTunedRouting` (working: yes)
-6. `libs/shared/state` baseline is a skeleton; concrete slices belong to their features; move `auth.store.ts` example into `Authentication` (working: yes)
-7. `notifications` slice (needed by OfflineWriteQueue) is unowned → `OfflineWriteQueue` creates it or a small solution does (working: OfflineWriteQueue creates it)
+**monolith:** (1) modify `solution-repository-structure` — `data-access` split is conditional on `BackendDataAccess`; (2) `ComponentTesting` common vs variable (working: common); (3) `solution-ui-testing` splits monolith-side / design-system-side; (4) `libs/shared/state` is a shared on-demand artifact, not owned by one solution; (5) `notifications` slice owned by `OfflineWriteQueue`; (6) rename `solution-lazy-loading-routing` → `PerformanceTunedRouting`; (7) keep `apps/platform-shell` name.
 
-**design-system:**
-8. `HybridDesignTokens` common vs "single-tenant variant of a Theming VP" (working: common now)
+**platform:** (1) split `solution-platform-embeddability` → `solution-federation-host` + `solution-platform-contracts` + `solution-federation-remote`; split `solution-design-system-application` host/remote; split `solution-authentication` session parts → `solution-session-sharing` + `solution-session-consumption`; (2) `plateau-embeddable-app`'s `parent_plateau` is wrong — remote plateaus built from scratch; (3) `HostDesignSystemConsumption` variable, not a federation prerequisite; (4) V1 `platform-embeddability depends_on offline-first` is over-strong → only `FederatedReadResilience` needs it; (5) zero-remote platform is valid.
 
-**embeddable-app:**
-9. `solution-authentication` split → `solution-authentication` (platform) + `solution-session-consumption` (embeddable) (working: split)
-10. `solution-platform-embeddability` / `solution-design-system-application` are two-sided → split host vs remote halves (working: split)
-11. `SessionConsumption` / `DesignSystemFederationConsumption` truly mandatory, or "mandatory if user-scoped / uses DS"? (working: near-universal, technically optional — owner call decides if the family gets its first VPs)
-12. `plateau-embeddable-app`'s `parent_plateau: plateau-platform-monolith` is wrong for a separate-repo family → v3.1 embeddable plateau(s) built from scratch, relationship expressed as cross-family `Requires` (working: yes)
+**design-system:** (1) `HybridDesignTokens` common now, becomes a `Theming` VP variant if `MultiTenantTheming` built; (2) `solution-ui-testing` split (shared with monolith).
 
-## Stage 2 — variability-map-create — pending
+## Stage 2 — variability-map-create — pending (3 maps)
 
 ## Stage 3 — solution migration + delta-conflict-detection — pending
 
