@@ -1,0 +1,172 @@
+---
+name: plateau-online-monolith--repo-online-monolith
+description: Nx workspace layout for the online-monolith Angular application — apps/libs split with enforced module boundaries, three-tier state management, hierarchical routing, Signal Forms, a Facade/Client HTTP data-access layer, console-only logging, and Vitest/Playwright test coverage. No offline support, no Module Federation, no authentication yet.
+domain: skill
+type: template
+plateau: online-monolith
+version: 20260902000000
+tags:
+  - skill/template/repo
+  - plateau/online-monolith
+  - stack/typescript
+  - concern/architecture
+
+created_by:
+  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+
+> First plateau in the main application's chain (no parent) — the **"online-monolith" milestone**: a single deployable Nx application with structure, state, routing, forms, an HTTP data layer, console logging, and enforced test coverage. No lazy-loading yet (that's [[skills/angular/architecture/v3.1/monolith/plateau/plateau-perf-routing-monolith/plateau-async-monolith.skill.md|async-monolith]]), no offline support, no Module Federation, no backend log delivery, and no authentication (that's [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-app/plateau-multiuser-app.skill.md|multiuser-app]], the last plateau in the chain) — every user is implicitly trusted at this stage. The [[skills/angular/architecture/v3.1/monolith/plateau/plateau-design-system/plateau-design-system.skill.md|design-system]] npm package is already a real, plain dependency of `apps/platform-shell` (see `platform-shell`'s own project skill's NPM Packages table).
+
+# Structure
+
+## Workspace Structure
+
+```
+/apps
+  /[platform-shell](./platform-shell/plateau-online-monolith--project-platform-shell.skill.md)
+  /[platform-shell-e2e](./platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill.md)
+  /component-preview      <- new (solution-ui-testing), harness for behavioral/visual/a11y component specs
+
+/libs
+  /shared
+    /[ui](./shared-ui/plateau-online-monolith--project-shared-ui.skill.md)
+    /[util](./shared-util/plateau-online-monolith--project-shared-util.skill.md)
+    /[state](./shared-state/plateau-online-monolith--project-shared-state.skill.md)
+    /[http-core](./shared-http-core/plateau-online-monolith--project-shared-http-core.skill.md)
+    /[logging](./shared-logging/plateau-online-monolith--project-shared-logging.skill.md)
+  /{feature}
+    /[feature](./feature-feature/plateau-online-monolith--project-feature-feature.skill.md)
+    /[data-access](./feature-data-access/plateau-online-monolith--project-feature-data-access.skill.md)
+```
+
+- `apps/platform-shell-e2e` hosts Playwright scenario-level specs. Tagged `type:e2e`, `scope:platform`.
+- Every project's unit/component tests run via Vitest — Karma and Jest are not permitted as a project's test runner.
+
+## Directory and project skills
+
+| Directory | template link | Description |
+| ---------- | ------------- | ----------- |
+| /apps/platform-shell | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/platform-shell/plateau-online-monolith--project-platform-shell.skill\|project-platform-shell]] | The only deployable unit at this plateau. Composition root: bootstraps the app, owns top-level routing, registers root providers. |
+| /apps/platform-shell-e2e | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill\|project-platform-shell-e2e]] | Playwright end-to-end scenario specs against the real built application. |
+| /apps/component-preview | — | Minimal harness rendering components in isolation with static example data — the target for visual/a11y specs. Tagged `type:preview`, `scope:platform`. Excluded from production deploy. |
+| /libs/shared/ui | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/shared-ui/plateau-online-monolith--project-shared-ui.skill\|project-shared-ui]] | Reusable, app-specific UI composed from design-system primitives. |
+| /libs/shared/util | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/shared-util/plateau-online-monolith--project-shared-util.skill\|project-shared-util]] | Framework-agnostic pure helpers shared across features. |
+| /libs/shared/state | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/shared-state/plateau-online-monolith--project-shared-state.skill\|project-shared-state]] | Classical NgRx Store for global, cross-cutting state (e.g. auth session skeleton, notifications). |
+| /libs/shared/http-core | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/shared-http-core/plateau-online-monolith--project-shared-http-core.skill\|project-shared-http-core]] | Base HTTP service shared by every feature's Client. |
+| /libs/shared/logging | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/shared-logging/plateau-online-monolith--project-shared-logging.skill\|project-shared-logging]] | `LoggerService` with a `ConsoleLogSink` — console-only at this plateau. |
+| /libs/{feature}/feature | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/feature-feature/plateau-online-monolith--project-feature-feature.skill\|project-feature-feature]] | Generic template: routed, presentational + container components (including forms and their component tests), feature-level Signal Store, own root-relative routes. |
+| /libs/{feature}/data-access | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/feature-data-access/plateau-online-monolith--project-feature-data-access.skill\|project-feature-data-access]] | Generic template: this feature's Facade/Client/Mapper/Errors layering, each with its own unit-test pattern. |
+
+__Applied solutions:__
+- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/platform-shell-e2e.project.create.md|platform-shell-e2e.project.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md|PlatformComponents/component-preview.project.create]]
+
+## Nx Tag Taxonomy
+
+| Axis | Values | Meaning |
+| ----- | ------- | ------- |
+| `type` | `app`, `e2e`, `preview`, `feature`, `data-access`, `ui`, `util`, `store` | What role the project plays |
+| `scope` | `platform`, `shared`, `{feature-name}` (e.g. `orders`) | Which business area the project belongs to |
+
+`@nx/enforce-module-boundaries` allow-list:
+
+| type | may depend on |
+| ----- | -------------- |
+| `app` | any `type:feature` with matching or `scope:platform` |
+| `e2e` (scope:platform) | nothing |
+| `preview` (scope:platform) | any `type:feature`/`type:ui` with matching or `scope:platform`/`scope:shared` |
+| `feature` | `type:data-access` with the same `scope`, `type:ui`/`type:util`/`type:store` with `scope:shared` |
+| `data-access` | `type:util` with `scope:shared` |
+| `ui` (scope:shared) | `type:util` with `scope:shared` |
+| `util` (scope:shared) | nothing (leaf) |
+| `store` (scope:shared) | `type:util` with `scope:shared` |
+
+__Applied solutions:__
+- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md|PlatformComponents/component-preview.project.create]]
+
+## Cross-cutting conventions
+
+- **Three-tier state placement**: component Signal → feature Signal Store → global NgRx Store, promoted upward only when a second, unrelated consumer genuinely needs it.
+- **Hierarchical route ownership**: the shell only knows first-level root segments; a feature only knows paths relative to its own root; the parent assigns the mount segment.
+- **Facade/Client/Mapper layering**: every feature's `data-access` lib is Facade (public API, business validation) → Client (internal transport + DTO mapping) → shared `libs/shared/http-core`.
+- **Single logging seam**: everything logs through `LoggerService`, currently forwarding only to `ConsoleLogSink` — no direct `console.*` call anywhere else.
+- **Business-layer testing**: every Nx project runs unit tests via Vitest; end-to-end tests are Playwright specs in `apps/platform-shell-e2e`; `HttpTestingController` is used only inside a feature's own `{feature}.client.ts` spec — every other business layer fakes the layer directly beneath it; CI enforces a minimum coverage threshold as a hard error.
+- **UI-layer testing**: a component is tested independently of business logic, at three layers — behavioral (Testing Library), visual (Playwright screenshot against `apps/component-preview`), accessibility (`@axe-core/playwright`) — never with a faked Facade/Client, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
+
+__Applied solutions:__
+- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md|PlatformComponents/component-preview.project.create]]
+
+# Rules
+
+## MUST
+- Every Nx project must declare exactly one `type:*` tag and exactly one `scope:*` tag.
+- Every lib must expose its public API through a single `index.ts` barrel.
+- Business logic must never live in `apps/platform-shell`.
+- Every routable `type:feature` project must export its `Routes` array from `index.ts`.
+- New forms must use Signal Forms by default.
+- A Client must catch every `HttpErrorResponse` and rethrow a typed domain error.
+- Every part of the application must log through `LoggerService` — no direct `console.*` call outside `libs/shared/logging`'s own `ConsoleLogSink`.
+- Every Nx project must run its unit tests via Vitest — no project may configure Karma or Jest as its test runner.
+- End-to-end tests must be written with Playwright, in the dedicated `type:e2e` project.
+- `HttpTestingController` must be used only inside a feature's own `{feature}.client.ts` unit tests.
+- MSW must be used only for tests that deliberately span more than one architectural layer.
+- CI must enforce a minimum code-coverage threshold per project as a hard `error`.
+- Every UI component must have a behavioral (Testing Library), visual (Playwright screenshot), and accessibility (`@axe-core/playwright`) spec, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] — none of the three substitutes for another.
+- A component test must never fake a Facade/Client or use `HttpTestingController` — that concern belongs to `solution-app-testing`, not UI-level tests.
+
+## SHOULD
+- New business features should be scaffolded as a `{feature}/feature` + `{feature}/data-access` pair from the start.
+
+- Avoid existing Reactive Forms code should never be migrated to Signal Forms purely for consistency.
+- Avoid mUST NOT place a routed business feature directly under `/apps`.
+- Avoid a component or Signal Store method must never import a feature's Client directly, bypassing the Facade.
+- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- Avoid **Single flat lib per feature instead of `feature` + `data-access` split**
+- Avoid consequence: UI and HTTP/data concerns become entangled
+- Avoid instead: always split into at least `feature` and `data-access` from the start
+- Avoid **Calling `console.log`/`console.warn`/`console.error` directly from feature code**
+- Avoid consequence: bypasses `LoggerService`'s single seam for level filtering, and the future backend-sink extension won't see call sites that bypass it
+- Avoid instead: always call `LoggerService`
+- Avoid **Using `HttpTestingController` inside a Facade or Signal Store test "to save time faking the Client"**
+- Avoid consequence: the same HTTP call ends up asserted in two different, potentially inconsistent ways
+- Avoid instead: fake the Client directly in a Facade test; fake the Facade directly in a Signal Store test
+- Avoid **Lowering a coverage threshold to make a CI failure go away without investigating the cause**
+- Avoid consequence: a genuine drop in tested code goes unnoticed
+- Avoid instead: investigate why coverage dropped; only lower the threshold as a deliberate, reviewed decision
+- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+# Unittest TestCases
+
+- [ ] WHEN `nx run-many -t lint` is executed THEN
+  - [ ] `@nx/enforce-module-boundaries` reports no violations
+- [ ] WHEN the codebase is searched for direct `console.*` calls outside `libs/shared/logging` THEN
+  - [ ] none are found
+- [ ] WHEN a project's test configuration is inspected THEN
+  - [ ] it runs via Vitest, not Karma or Jest
+- [ ] WHEN the codebase is searched for `HttpTestingController` usage THEN
+  - [ ] every occurrence is inside a `{feature}.client.ts` spec file
+- [ ] WHEN CI runs on a PR that drops coverage below the configured threshold THEN
+  - [ ] the build fails, not just warns
+
+__Applied solutions:__
+- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
