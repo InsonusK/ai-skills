@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    actor Code as Feature code
+    participant Logger as LoggerService
+    participant Sinks as LOG_SINKS
+    participant Console as ConsoleLogSink
+    Code->>Logger: info('Order submitted', { orderId })
+    activate Logger
+    Logger->>Logger: check level against MIN_LOG_LEVEL
+    Logger->>Sinks: forward entry to every registered sink
+    activate Sinks
+    Sinks->>Console: write(entry)
+    deactivate Sinks
+    deactivate Logger
