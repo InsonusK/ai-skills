@@ -29,22 +29,17 @@ tags:
 
 ```csharp
 // BuildingBlocks/MediatR/ConcurrencyBehavior.cs
+using Ardalis.Result;
+using MediatR;
 using Shared.Concurrency;
 
 namespace BuildingBlocks.MediatR;
 
-public class ConcurrencyBehavior<TRequest, TResponse>
+public sealed class ConcurrencyBehavior<TRequest, TResponse>(IEntityVersionResolverFactory factory)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IHasVersions
     where TResponse : IResult
 {
-    private readonly IEntityVersionResolverFactory _factory;
-
-    public ConcurrencyBehavior(IEntityVersionResolverFactory factory)
-    {
-        _factory = factory;
-    }
-
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
@@ -52,19 +47,19 @@ public class ConcurrencyBehavior<TRequest, TResponse>
     {
         foreach (var (entityName, idVersions) in request.Versions)
         {
-            var resolver = _factory.GetFor(entityName);
+            var resolver = factory.GetFor(entityName);
             if (resolver is null)
-                return (TResponse)Result.Error($"Unknown entity: '{entityName}'.");
+                return Error($"Unknown entity: '{entityName}'.");
 
             foreach (var (id, expectedVersion) in idVersions)
             {
                 var actualVersion = await resolver.GetCurrentVersionForAsync(id, ct);
 
                 if (actualVersion == 0)
-                    return (TResponse)Result.NotFound();
+                    return NoArg(nameof(Result.NotFound));
 
                 if ((uint)actualVersion != expectedVersion)
-                    return (TResponse)Result.Conflict(
+                    return Params(nameof(Result.Conflict),
                         $"'{entityName}' with Id {id} was modified by another user. " +
                         $"Expected version {expectedVersion}, found {actualVersion}.");
             }
@@ -72,6 +67,18 @@ public class ConcurrencyBehavior<TRequest, TResponse>
 
         return await next();
     }
+
+    // TResponse is Result or Result<T>; invoke its own static factory. A plain
+    // (TResponse)Result.X(...) cast throws at runtime for Result<T> (a generic-parameter
+    // cast never runs Ardalis.Result's implicit Result -> Result<T> conversion).
+    private static TResponse Error(string message)
+        => (TResponse)typeof(TResponse).GetMethod(nameof(Result.Error), [typeof(string)])!.Invoke(null, [message])!;
+
+    private static TResponse NoArg(string method)
+        => (TResponse)typeof(TResponse).GetMethod(method, Type.EmptyTypes)!.Invoke(null, [])!;
+
+    private static TResponse Params(string method, string message)
+        => (TResponse)typeof(TResponse).GetMethod(method, [typeof(string[])])!.Invoke(null, [new[] { message }])!;
 }
 ```
 # Rule changes
@@ -79,6 +86,7 @@ public class ConcurrencyBehavior<TRequest, TResponse>
 ## MUST
 - Constrained to `where TRequest : IHasVersions` and `where TResponse : IResult`
 - Uses `IEntityVersionResolverFactory` from Shared
+- Build the short-circuit result via the closed `TResponse`'s own static `Error`/`NotFound`/`Conflict` (reflection), never `(TResponse)Result.X(...)` — a generic-parameter cast throws for `Result<T>`
 - Returns `Result.Conflict` on version mismatch — handler never runs
 - Never calls `SaveChangesAsync`
 - `ETagEncoder` and `ConcurrencyBehavior` live in BuildingBlocks
