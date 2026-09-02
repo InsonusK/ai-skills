@@ -29,9 +29,9 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 # Rules
 
 ## MUST
-- Every component's demo page MUST cover, at minimum, the states the visual regression suite screenshots — a component's demo page and its visual-spec coverage MUST NOT drift apart.
-- The demo app's routes/sections used as screenshot targets MUST be stable, deep-linkable URLs, so a Playwright spec can navigate directly to a specific component/state without simulating UI interaction first.
-- Every component's preview component MUST live in `projects/design-system/src/lib/{component-name}/spec/preview/` and be imported by `projects/demo`, rather than being authored directly inside `projects/demo`.
+- Every component's demo page must cover, at minimum, the states the visual regression suite screenshots — a component's demo page and its visual-spec coverage must never drift apart.
+- The demo app's routes/sections used as screenshot targets must be stable, deep-linkable URLs, so a Playwright spec can navigate directly to a specific component/state without simulating UI interaction first.
+- Every component's preview component must live in `projects/design-system/src/lib/{component-name}/spec/preview/` and be imported by `projects/demo`, rather than being authored directly inside `projects/demo`.
 
 - the demo app must never duplicate preview markup that already exists in the component library's `spec/preview/` directory.
 ## SHOULD

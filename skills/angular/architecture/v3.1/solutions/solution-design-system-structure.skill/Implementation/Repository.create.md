@@ -36,13 +36,13 @@ tags:
 # Rules
 
 ## MUST
-- The repository MUST be a plain Angular CLI multi-project workspace, not an Nx workspace, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling.md|design-system-workspace-tooling]].
+- The repository must be a plain Angular CLI multi-project workspace, not an Nx workspace, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling.md|design-system-workspace-tooling]].
   - Risk: Nx's benefits (affected builds, enforced boundaries, federation generators) do not meaningfully apply to a two-project repository, so adopting it imports tooling complexity disproportionate to the repository's actual size.
   - Fix: create a plain Angular CLI multi-project workspace with `projects/design-system` (library) and `projects/demo` (application).
-- The library project MUST be built with ng-packagr, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|library-build-tooling]] — no custom Vite/Rollup build is used.
+- The library project must be built with ng-packagr, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|library-build-tooling]] — no custom Vite/Rollup build is used.
   - Risk: a custom Vite/Rollup build cannot guarantee Angular Package Format compliance and Ivy partial compilation, so consumers on a range of Angular versions may be unable to consume the library.
   - Fix: build the library with ng-packagr, the Angular-team-maintained tool for producing Angular Package Format-compliant output.
-- Every pull request that changes the published library's public API or behavior MUST include a changeset file, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|release-versioning-strategy]].
+- Every pull request that changes the published library's public API or behavior must include a changeset file, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|release-versioning-strategy]].
   - Risk: without a per-PR changeset, version bump classification becomes a release-time judgment call, so a breaking change can reach multiple independent consumer teams under a non-major version.
   - Fix: add a changeset file describing the change and its intended bump to every PR touching the library's public surface, and let CI fail the PR when it is missing.
 - Never publish the `demo` project to npm — only `design-system` is a publishable artifact.
@@ -56,7 +56,7 @@ tags:
   - Fix: add the component's preview to the existing `demo` app, consistent with the rest of the library.
 
 ## SHOULD
-- Every new component added to the library SHOULD get a corresponding example page in `demo`, so visual review stays available for every shipped component.
+- Every new component added to the library should get a corresponding example page in `demo`, so visual review stays available for every shipped component.
 
 # Unittest TestCases
 

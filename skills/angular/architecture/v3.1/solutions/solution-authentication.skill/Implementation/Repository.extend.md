@@ -22,8 +22,8 @@ No new top-level directories. This extension adds artifact-placement conventions
 # Rules
 
 ## MUST
-- Any code that checks "is the user allowed to do X" MUST express the check in terms of a permission string (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]]), never a role name.
-- The access token MUST only ever be held in the `shared-state` auth slice's in-memory field — it MUST NOT be written to `localStorage`, `sessionStorage`, or any other persistent client storage (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]]).
+- Any code that checks "is the user allowed to do X" must express the check in terms of a permission string (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]]), never a role name.
+- The access token must only ever be held in the `shared-state` auth slice's in-memory field — it must never be written to `localStorage`, `sessionStorage`, or any other persistent client storage (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]]).
 
 # Unittest TestCases
 

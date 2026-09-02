@@ -89,9 +89,9 @@ export class MutationQueueService {
 # Rule changes
 
 ## MUST
-- `queuedMutations` MUST be indexed by `feature` and `enqueuedAt` to support efficient per-partition FIFO reads.
-- `touchedFields` MUST be stored per queued mutation at enqueue time — it is derived directly from the command's own payload, never a separately captured entity snapshot, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
-- `idempotencyKey` MUST be generated exactly once, at enqueue time, and reused unchanged across every replay attempt of that entry.
+- `queuedMutations` must be indexed by `feature` and `enqueuedAt` to support efficient per-partition FIFO reads.
+- `touchedFields` must be stored per queued mutation at enqueue time — it is derived directly from the command's own payload, never a separately captured entity snapshot, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+- `idempotencyKey` must be generated exactly once, at enqueue time, and reused unchanged across every replay attempt of that entry.
 
 ## SHOULD
 - **Querying the whole `queuedMutations` table and filtering by feature in application code instead of using the `feature` index** — Consequence: unnecessary full-table scans as the queue grows — Instead: always query through the `feature` index, as `pendingForFeature$` does

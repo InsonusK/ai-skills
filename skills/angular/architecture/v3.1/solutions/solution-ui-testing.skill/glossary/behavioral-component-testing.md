@@ -1,50 +1,50 @@
 # Behavioral component testing
 
-**Behavioral component testing** (поведенческое тестирование компонентов) — это тестирование UI-компонента через отрисованный DOM: вместо проверки внутренних сигналов, полей и `fixture.componentInstance` тест имитирует действия пользователя и проверяет, что на экране появился ожидаемый результат или событие.
+**Behavioral component testing** means testing a UI component through its rendered DOM: instead of checking internal signals, fields, or `fixture.componentInstance`, the test simulates user actions and asserts that the expected result or event appeared on screen.
 
 ## Why it exists
 
-Обычные юнит-тесты Angular часто завязываются на внутреннее устройство компонента — имена полей, сигналов, привязку шаблона. При рефакторинге, который сохраняет пользовательское поведение, такие тесты ломаются «вхолостую». Кроме того, DOM-уровень не требует настоящего бэкенда, роутинга и сложных бизнес-моков, поэтому тесты остаются быстрыми и стабильными. Этот подход также вынуждает авторов использовать доступные роли и метки, что само по себе подталкивает к лучшей доступности.
+Ordinary Angular unit tests often couple to a component's internals — field names, signal names, template bindings. A refactor that preserves user-visible behaviour then breaks such tests for no real reason. The DOM level also needs no real backend, routing, or complex business mocks, so the tests stay fast and stable. This approach also forces authors to use accessible roles and labels, which nudges the component toward better accessibility.
 
 ## How it works
 
-1. Компонент рендерится в изоляции через Angular Testing Library, с фиксированными входами `input()`/`output()`/`model()`.
-2. Если компонент напрямую внедряет одного ближайшего сотрудника (Signal Store / Facade), он заменяется простым фейком.
-3. Тест находит элементы через `screen.getByRole`, `getByLabelText`, `getByText` — то есть так, как это делал бы пользователь или вспомогательная технология.
-4. Взаимодействие происходит через `@testing-library/user-event` (`click`, `type` и т. д.).
-5. Проверяется результат: текст, состояние disabled, вызов события или вызов метода замоканного сотрудника.
+1. The component is rendered in isolation via Angular Testing Library, with fixed `input()`/`output()`/`model()` values.
+2. If the component directly injects one immediate collaborator (a Signal Store / Facade), it is replaced with a simple fake.
+3. The test finds elements via `screen.getByRole`, `getByLabelText`, `getByText` — the way a user or assistive technology would.
+4. Interaction happens through `@testing-library/user-event` (`click`, `type`, …).
+5. The result is asserted: text content, `disabled` state, an emitted output event, or a call on the faked collaborator.
 
 ```mermaid
 flowchart LR
-  A[Входы: input/output/model] --> B[render + Testing Library]
-  B --> C[Запросы DOM: getByRole]
+  A[Inputs: input/output/model] --> B[render + Testing Library]
+  B --> C[DOM queries: getByRole]
   C --> D[userEvent]
-  D --> E[Утверждения по DOM]
+  D --> E[DOM assertions]
 ```
 
-### Что делает `screen.getByRole('button', { name: /save/i })`
+### What `screen.getByRole('button', { name: /save/i })` does
 
-`getByRole` — это query Angular Testing Library, который ищет элемент по его ** accessibility-роли**. Роль — это семантическое назначение элемента: у обычного `<button>` роль `button`, у `<input type="text">` роль `textbox`, у `<nav>` роль `navigation` и т. д. Роль сообщает скринридерам, что это за элемент, поэтому тест, который использует `getByRole`, одновременно проверяет, что компонент правильно раскрывает семантику.
+`getByRole` is an Angular Testing Library query that finds an element by its **accessibility role**. A role is the element's semantic purpose: a plain `<button>` has role `button`, an `<input type="text">` has role `textbox`, a `<nav>` has role `navigation`, and so on. The role is what a screen reader announces, so a test that uses `getByRole` also verifies that the component exposes the right semantics.
 
-`{ name: /save/i }` — фильтр по **accessible name** (доступное имя). Accessible name — это текст, который вспомогательная технология читает пользователю. Для кнопки обычно это видимый текст внутри кнопки. Регулярное выражение `/save/i` ищет подстроку «save» без учёта регистра (`i`). Если в DOM есть только кнопка с текстом «Save changes», запрос найдёт её; если кнопки нет или у неё нет правильного имени, тест сразу падает с понятной ошибкой.
+`{ name: /save/i }` filters by the **accessible name** — the text assistive technology reads to the user. For a button that is usually the visible text inside it. The regex `/save/i` matches the substring "save" case-insensitively (`i`). If the DOM has only a button with the text "Save changes", the query finds it; if there is no such button or it has no proper name, the test fails immediately with a clear error.
 
-### Почему `userEvent.click`, а не `element.click()`
+### Why `userEvent.click`, not `element.click()`
 
-`userEvent.click` имитирует реальную цепочку событий указателя: `pointerdown`, `mousedown`, `pointerup`, `mouseup`, `click`. Это позволяет проверить обработку фокуса, `disabled`-состояние, двойные клики и другие поведенческие детали, которые простой `element.click()` может пропустить.
+`userEvent.click` simulates the real pointer event chain: `pointerdown`, `mousedown`, `pointerup`, `mouseup`, `click`. That lets the test exercise focus handling, `disabled` state, double clicks, and other behavioural details a bare `element.click()` can skip.
 
-### Почему `expect(pressed).toHaveBeenCalled()`
+### Why `expect(pressed).toHaveBeenCalled()`
 
-`pressed` — это шпион (mock-функция), подставленный вместо `(pressed)` output. Такое утверждение проверяет, что компонент действительно эмитнул выходное событие, а не просто изменил внутреннее поле.
+`pressed` is a spy (a mock function) supplied for the `(pressed)` output. This assertion checks that the component actually emitted the output event, not merely changed an internal field.
 
 ## How it is structured
 
 - **Spec file location** — the test file is created at `spec/{component-name}.component.spec.ts`, not next to the implementation.
-- **Inputs** — статические входные данные, передаваемые в компонент.
-- **Fake collaborator** — минимальный мок для единственного зависимого сервиса, который компонент внедряет напрямую; HTTP, Facade и бэкенд не мокаются.
-- **Rendering helper** — `render()` из Angular Testing Library.
-- **Queries** — доступные роли/метки, а не `testId` и не `fixture.debugElement`.
-- **Interactions** — `userEvent` для кликов, ввода, фокуса.
-- **Assertions** — проверка отрисованного DOM и выходных событий.
+- **Inputs** — the static input data passed to the component.
+- **Fake collaborator** — a minimal mock for the single dependency the component injects directly; HTTP, Facade, and backend are not mocked.
+- **Rendering helper** — `render()` from Angular Testing Library.
+- **Queries** — accessible roles/labels, not `testId` and not `fixture.debugElement`.
+- **Interactions** — `userEvent` for clicks, typing, focus.
+- **Assertions** — against the rendered DOM and emitted output events.
 
 ## Example
 
@@ -57,7 +57,7 @@ import { DsButtonComponent } from '../ds-button.component';
 describe('DsButtonComponent', () => {
   it('renders its label and reflects the disabled input', async () => {
     await render(DsButtonComponent, { inputs: { label: 'Save', disabled: true } });
-    // getByRole('button') ищет кнопку; { name: /save/i } — фильтр по её видимому тексту
+    // getByRole('button') finds the button; { name: /save/i } filters by its visible text
     expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
   });
 
@@ -76,13 +76,13 @@ describe('DsButtonComponent', () => {
 
 ## Related concepts
 
-- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — ловит сломанную вёрстку и тёмную тему, которые DOM-тесты не видят.
-- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — объясняет, почему визуальный тест сломался.
-- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — проверяет WCAG-нарушения, которые Testing Library не исчерпывает.
+- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — catches broken layout and dark-mode failures a DOM test cannot see.
+- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — explains *why* a visual test broke.
+- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — checks WCAG violations Testing Library does not exhaust.
 
 ## Sources
 
-- [Angular Testing Library — официальная документация](https://testing-library.com/docs/angular-testing-library/intro/)
+- [Angular Testing Library — official docs](https://testing-library.com/docs/angular-testing-library/intro/)
 - [Which query should I use? — Testing Library](https://testing-library.com/docs/queries/about/#priority)
-- [Generic pattern для компонентных тестов в решении](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md)
-- [solution-ui-testing.skill.md — общее описание слоёв тестирования](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)
+- [Generic pattern for component specs in this solution](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md)
+- [solution-ui-testing.skill.md — the overall testing-layer description](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)

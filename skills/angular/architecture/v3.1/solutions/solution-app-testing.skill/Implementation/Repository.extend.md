@@ -50,11 +50,11 @@ tags:
 # Rules
 
 ## MUST
-- Every Nx project MUST run its unit tests via Vitest — no project may configure Karma or Jest as its test runner, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]].
-- End-to-end tests MUST be written with Playwright, in a dedicated `type:e2e` project, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]].
-- `HttpTestingController` MUST be used only inside `spec/{feature}.client.spec.ts` — no other test may use it, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
-- MSW MUST be used only for tests that deliberately span more than one architectural layer (e.g. a feature-level integration test), never as a substitute for faking the layer directly below the unit under test.
-- CI MUST enforce a minimum code coverage threshold per project (`error`, not `warning`, consistent with the bundle-budget enforcement pattern from the "Lazy loading routing" solution); the exact percentage is a configurable, deployment-specific parameter.
+- Every Nx project must run its unit tests via Vitest — no project may configure Karma or Jest as its test runner, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]].
+- End-to-end tests must be written with Playwright, in a dedicated `type:e2e` project, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]].
+- `HttpTestingController` must be used only inside `spec/{feature}.client.spec.ts` — no other test may use it, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
+- MSW must be used only for tests that deliberately span more than one architectural layer (e.g. a feature-level integration test), never as a substitute for faking the layer directly below the unit under test.
+- CI must enforce a minimum code coverage threshold per project (`error`, not `warning`, consistent with the bundle-budget enforcement pattern from the "Lazy loading routing" solution); the exact percentage is a configurable, deployment-specific parameter.
 
 # Unittest TestCases
 

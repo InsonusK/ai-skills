@@ -62,6 +62,12 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|Server wins with field-scoped diff, extension point deferred, instead of full-snapshot diffing, client-wins, or mandatory manual resolution]]
   - Selected variant: server-wins + field-scoped diff — chosen to give the user real information about what conflicted without requiring full entity snapshots client-side
 
+# Boundaries
+- `monolith` catalog, `OfflineWriteQueue` (VP5, per feature). Requires `solution-offline-first` (VP4 — the `OfflineTransportError` hook + `isOnline` signal), transitively `solution-api-http-layer` + `solution-global-store`.
+- Queueing is **opt-in per operation** — a Facade explicitly marks an operation queueable; nothing is enqueued implicitly.
+- Dexie is a storage/reactivity layer only; replay calls this app's own Facade/Client methods, never a generic document-sync protocol. Conflict resolution is server-wins with field-scoped diffing — no full entity snapshot is ever stored.
+- Surfaces conflicts through a `notifications` global slice this solution adds to `libs/shared/state`.
+
 # Requirements
 
 SOLUTION:

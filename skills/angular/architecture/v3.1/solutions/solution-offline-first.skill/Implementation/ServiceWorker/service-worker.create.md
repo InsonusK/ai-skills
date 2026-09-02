@@ -59,7 +59,7 @@ registerRoute(
 # Rule changes
 
 ## MUST
-- Rule 4 (network-only for auth/mutations) MUST be registered so it takes precedence over rule 3 for any non-GET request, even one under `/api/` — route matching order matters.
+- Rule 4 (network-only for auth/mutations) must be registered so it takes precedence over rule 3 for any non-GET request, even one under `/api/` — route matching order matters.
 
 ## SHOULD
 - **Registering the API-reads (stale-while-revalidate) route before the auth/mutations (network-only) route** — Consequence: depending on Workbox's route-matching order, a mutation request could be incorrectly matched and cached — Instead: register the network-only rule first, or make its matcher function explicitly exclude what rule 3 should handle

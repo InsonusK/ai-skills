@@ -52,6 +52,12 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx monorepo instead of plain Angular CLI workspace]]
   - Selected variant: Nx monorepo — chosen for affected-based builds, enforced module boundaries, and readiness for the planned embeddability (Module Federation) and offline-first extensions
 
+# Boundaries
+- This is the base of the `monolith` catalog (`NxWorkspaceStructure`, common). It assumes nothing but an Nx workspace with the Angular preset.
+- A feature is a `feature` lib; the `feature` + `data-access` split is **conditional** — `data-access` is added by `solution-api-http-layer` (VP3 `BackendDataAccess`) only for features that talk to a backend (see the v3.1 change in the monolith variability-map).
+- Creates only `apps/platform-shell`, `apps/platform-shell-e2e` (by `solution-app-testing`), `libs/shared/ui`, `libs/shared/util`. Every other `libs/` project is introduced by the feature that needs it.
+- Not a build-tool guide for the `design-system` or `embeddable-app` catalogs — those have their own baselines.
+
 # Requirements
 
 SOLUTION:

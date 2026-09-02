@@ -58,6 +58,12 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|Self-built demo Angular app instead of Storybook]]
   - Selected variant: demo app — chosen based on direct prior experience with Storybook's friction for this exact use case
 
+# Boundaries
+- `design-system` catalog, `DesignSystemWorkspace` (common). This is the base of that catalog — assumes nothing but an Angular CLI environment.
+- A plain Angular CLI multi-project workspace (library + demo), **not Nx** — Nx's affected-builds / boundaries / federation generators do not apply at two-project scale.
+- Creates the repo structure, ng-packagr build, Changesets release setup, and `projects/demo`. Tokens (`solution-design-system-tokens`) and components (`solution-design-system-components`) are separate common solutions in this catalog.
+- Consumption by the monolith / platform-host / embeddable-app catalogs is not modeled here.
+
 # Requirements
 
 SOLUTION:

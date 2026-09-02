@@ -69,12 +69,12 @@ export class LogRetryQueue {
 # Rule changes
 
 ## MUST
-- The queue MUST be persisted in IndexedDB, not `localStorage` or in-memory only, so pending batches survive a page reload.
-- The queue MUST enforce all three limits (`maxEntryCount`, `maxAgeMs`, `maxTotalBytes`) independently — exceeding any one of them triggers eviction of the oldest entries until all three are satisfied.
-- `retryPending()` MUST stop retrying for the current cycle as soon as one send attempt fails, rather than immediately retrying the remaining queue — avoiding a burst of failing requests when the network is still down.
+- The queue must be persisted in IndexedDB, not `localStorage` or in-memory only, so pending batches survive a page reload.
+- The queue must enforce all three limits (`maxEntryCount`, `maxAgeMs`, `maxTotalBytes`) independently — exceeding any one of them triggers eviction of the oldest entries until all three are satisfied.
+- `retryPending()` must stop retrying for the current cycle as soon as one send attempt fails, rather than immediately retrying the remaining queue — avoiding a burst of failing requests when the network is still down.
 
 ## SHOULD
-- The three limit values SHOULD be configurable per deployment via `LOG_RETRY_QUEUE_LIMITS`, not hardcoded, since the right values depend on expected log volume and acceptable storage footprint.
+- The three limit values should be configurable per deployment via `LOG_RETRY_QUEUE_LIMITS`, not hardcoded, since the right values depend on expected log volume and acceptable storage footprint.
 
 - **Letting the queue grow without any of the three bounds enforced** — Consequence: an extended backend outage could let the queue consume unbounded IndexedDB storage — Instead: always check and evict against all three limits after every enqueue
 - **Retrying the entire pending queue in a tight loop even after the first failure in a cycle** — Consequence: floods the network with failing requests during an outage, worsening the situation instead of backing off — Instead: stop the current retry cycle on the first failure; the next scheduled flush will try again

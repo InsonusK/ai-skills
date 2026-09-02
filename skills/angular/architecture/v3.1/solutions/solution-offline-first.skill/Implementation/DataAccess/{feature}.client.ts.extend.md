@@ -39,8 +39,8 @@ try {
 # Rule changes
 
 ## MUST
-- Every Client method's error handling MUST check for a network-level failure (an `HttpErrorResponse` with `status === 0`, indicating no response was ever received) before checking for any specific server status code, and throw `OfflineTransportError` in that case instead of a feature-specific domain error.
-- `OfflineTransportError` MUST be a single, shared error type (defined once in `libs/shared/http-core`, not redefined per feature) so callers across every feature can catch it uniformly.
+- Every Client method's error handling must check for a network-level failure (an `HttpErrorResponse` with `status === 0`, indicating no response was ever received) before checking for any specific server status code, and throw `OfflineTransportError` in that case instead of a feature-specific domain error.
+- `OfflineTransportError` must be a single, shared error type (defined once in `libs/shared/http-core`, not redefined per feature) so callers across every feature can catch it uniformly.
 
 ## SHOULD
 - **Treating a `status === 0` failure the same as any other server error** — Consequence: the Facade (and the future sync-queue solution) has no reliable way to tell "we're offline, this is retryable later" apart from "the server actively rejected this," which is exactly the distinction this extension exists to provide — Instead: always check for the network-level failure first and throw the shared `OfflineTransportError`

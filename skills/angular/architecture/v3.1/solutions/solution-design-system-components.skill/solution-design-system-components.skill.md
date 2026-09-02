@@ -56,6 +56,12 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|Full API encapsulation with independently designed axes, internal implementation decided per component, instead of a thin passthrough wrapper or no wrapping at all]]
   - Selected variant: full encapsulation — chosen so application developers never need Material's own API, and so a Material version bump never forces a design-system API change
 
+# Boundaries
+- `design-system` catalog, `EncapsulatedComponentLayer` (common). Assumes `solution-design-system-structure` + `solution-design-system-tokens` (every component consumes tokens, never hardcoded style values).
+- Every component: signal-based API (`input()`/`output()`/`model()`), own `ds-*` selector, independently designed axes — no Angular Material type/selector/enum in the public surface.
+- Internal implementation (delegate to Material vs custom) is a per-component decision; the default is delegate.
+- Testing the `ds-*` components at three layers is `solution-design-system-ui-testing`, not here.
+
 # Requirements
 
 SOLUTION:

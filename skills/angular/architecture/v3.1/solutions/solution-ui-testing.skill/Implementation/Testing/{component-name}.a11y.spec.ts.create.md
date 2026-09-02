@@ -41,11 +41,11 @@ test.describe('DsButtonComponent — accessibility', () => {
 # Rule changes
 
 ## MUST
-- The file MUST be created at `spec/{component-name}.a11y.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
-- An a11y spec MUST navigate directly to the component's stable demo/preview URL, the same one used by its visual spec.
-- Every meaningfully distinct state the component's demo/preview page exposes MUST have its own axe-core scan, since a state change (e.g. `disabled`, an error message appearing) can introduce a violation absent from the default state.
-- Tests in an a11y spec MUST be grouped under a `test.describe('<component-name> — accessibility', () => { ... })` block.
-- Any explicit, individually justified exception to a specific axe rule MUST be scoped to that one rule and documented inline with the reason — never a blanket disable of the whole scan.
+- The file must be created at `spec/{component-name}.a11y.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
+- An a11y spec must navigate directly to the component's stable demo/preview URL, the same one used by its visual spec.
+- Every meaningfully distinct state the component's demo/preview page exposes must have its own axe-core scan, since a state change (e.g. `disabled`, an error message appearing) can introduce a violation absent from the default state.
+- Tests in an a11y spec must be grouped under a `test.describe('<component-name> — accessibility', () => { ... })` block.
+- Any explicit, individually justified exception to a specific axe rule must be scoped to that one rule and documented inline with the reason — never a blanket disable of the whole scan.
 
 - an a11y spec must never be treated as a complete accessibility audit — it catches the mechanically-checkable subset of WCAG rules only; issues requiring human judgment (meaningful alt text, sensible focus order) still need occasional manual review.
 ## SHOULD

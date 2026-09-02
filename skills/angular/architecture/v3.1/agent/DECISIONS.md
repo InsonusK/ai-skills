@@ -97,13 +97,22 @@ Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `v
 
 **3d — delta-conflict-detection** (this commit): `delta-conflict-analysis.md`. Pre-analysis: `element/repository` split per-catalog (was 3 `.create` on one element — a design error only because the tag conflated 3 different products), `ds-{component}.component.ts` retagged `element/ds-component-ts`, `demo.project.extend` retagged. **8 intersecting groups, ALL canonical — NO `TMC`/`FMC`/`FDC`, zero resolver solutions.** Findings: (1) split `solution-ui-testing` monolith-side / design-system-side (deferred — the one outstanding structural change); (4) `authentication` + `offline-sync` should carry an explicit `shared-state-project` `.extend` registering their slices (Stage-4 / solution-update).
 
-### Tracked debt (deferred)
+### Debt-closing pass — DONE (this session, commits `6c70acdc` + this one)
 
-- `solution-ui-testing` split (delta-conflict Finding 1).
-- 4 `solution-ui-testing/glossary/*.md` still in Russian — need translation (`documentation-for-concept`).
-- Per-solution `# Boundaries` sections: written for the split/new solutions; **not** yet for the ~14 straight-migrated ones.
-- Implementation-file skill-design polish: inline "MUST NOT" inside `## MUST` bullets (not headings — check.sh-clean), `Risk:`/`Fix:` on every rule bullet, dedup of the doubled `#MUST` link lists the mechanical conversion produced in some main files.
-- `depends_on solution-global-store` not yet added to `solution-offline-first` / `solution-offline-sync` frontmatter (the constraint is in the variability-map + INVARIANTS; the edge is a Stage-4 ADR).
-- 2 aspirational skeletons (`solution-persisted-state`, `solution-design-system-multi-tenant-theming`) have no Implementation.
+- ✅ **`solution-ui-testing` split** (delta-conflict Finding 1) — `solution-ui-testing` (monolith) + `solution-design-system-ui-testing` (design-system, reuses the 3 ADRs + 4 spec patterns). 27 solutions.
+- ✅ **Doubled `#MUST`/`#SHOULD` link lists** deduped in 9 main files.
+- ✅ **4 `solution-ui-testing/glossary/*.md` + README** translated to English. No Cyrillic anywhere in `v3.1/` (check.sh §2).
+- ✅ **`# Boundaries` sections** added to the 13 straight-migrated solutions — all 27 solutions now have one.
+- ✅ **`depends_on solution-global-store`** — already present on `offline-first` / `offline-sync` / `authentication` (added during the state-split repoint; the earlier note was stale).
+- ✅ **Variability-map Realized-by links** repointed from V1 paths into `v3.1/solutions/` (with renames); Status paragraphs updated.
+- ✅ **Inline `MUST`/`MUST NOT`/`SHOULD`/`MAY` in Implementation rule bullets** softened to lowercase / `must never` / `should never` (225 bullets, 72 files) — RFC-2119-shout removed; check.sh §3b heading count stays 0.
+
+### Tracked debt (still deferred — genuinely optional / Stage-4-adjacent)
+
+- `Risk:`/`Fix:` sub-bullets on every Implementation `## MUST` rule bullet (dotnet also deferred this through its wave audits; the negative bullets are correctly placed, just terse).
+- `solution-repository-structure` `solution-update` ADR recording the "data-access lib is conditional on VP3" change (currently only in prose + the variability-map).
+- The `shared-state-project` `.extend` on `authentication` / `offline-sync` to register their slices in `store.config.ts` (delta-conflict Finding 4) — natural to do during Stage 4 plateau assembly.
+- 2 aspirational skeletons (`solution-persisted-state`, `solution-design-system-multi-tenant-theming`) have no Implementation — by design (`> Draft contract — no consumer yet`).
+- A `plateau/README.md` + `agent/` polish parallel to dotnet's — deferred to Stage 4.
 
 ## Stage 4 — plateau-create-by-solutions — pending (depth TBD, owner decides after Stage 3 review)

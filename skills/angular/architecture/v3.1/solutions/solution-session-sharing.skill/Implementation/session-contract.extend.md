@@ -20,9 +20,9 @@ No new directories in this monorepo — `@platform/contracts` is published from 
 # Rules
 
 ## MUST
-- `@platform/contracts`' `SessionContract` MUST be read-only from an embeddable app's point of view — an embeddable app MUST NOT be able to mutate the session (log in/out, change permissions) through the contract; only the platform's own auth slice does that.
-- An embeddable app MUST read session/permission state exclusively through `SessionContract` — it MUST NOT implement its own login flow or maintain its own copy of session state.
-- If an embeddable app is loaded without an authenticated session (e.g. `isAuthenticated` is false), it MUST render its own "not authenticated" state rather than attempting its own authentication — redirecting to authenticate is the platform's responsibility, not the embeddable app's.
+- `@platform/contracts`' `SessionContract` must be read-only from an embeddable app's point of view — an embeddable app must never be able to mutate the session (log in/out, change permissions) through the contract; only the platform's own auth slice does that.
+- An embeddable app must read session/permission state exclusively through `SessionContract` — it must never implement its own login flow or maintain its own copy of session state.
+- If an embeddable app is loaded without an authenticated session (e.g. `isAuthenticated` is false), it must render its own "not authenticated" state rather than attempting its own authentication — redirecting to authenticate is the platform's responsibility, not the embeddable app's.
 
 # Unittest TestCases
 

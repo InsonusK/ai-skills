@@ -24,9 +24,9 @@ No new top-level directories. This extends `apps/platform-shell` (service worker
 # Rules
 
 ## MUST
-- The service worker MUST be generated via Workbox's programmatic build API, integrated into the Nx build pipeline — not via a webpack-specific plugin, and not via `@angular/service-worker` (ngsw), per [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/service-worker-mechanism.md|service-worker-mechanism]].
-- Every feature's `{feature}.client.ts` MUST distinguish a network-level failure (request never reached the server) from a server-side error response, throwing `OfflineTransportError` for the former — this is the one hook this solution establishes for the future `solution-offline-sync` to build a mutation queue on top of.
-- Auth endpoints and every non-GET request MUST be configured as `network-only` in the service worker's routing rules — never cached, per [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type.md|caching-strategy-per-content-type]].
+- The service worker must be generated via Workbox's programmatic build API, integrated into the Nx build pipeline — not via a webpack-specific plugin, and not via `@angular/service-worker` (ngsw), per [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/service-worker-mechanism.md|service-worker-mechanism]].
+- Every feature's `{feature}.client.ts` must distinguish a network-level failure (request never reached the server) from a server-side error response, throwing `OfflineTransportError` for the former — this is the one hook this solution establishes for the future `solution-offline-sync` to build a mutation queue on top of.
+- Auth endpoints and every non-GET request must be configured as `network-only` in the service worker's routing rules — never cached, per [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type.md|caching-strategy-per-content-type]].
 
 - Never introduce any durable, persisted queue for failed mutations — that is explicitly out of scope, deferred to the future `solution-offline-sync`. A mutation that fails due to `OfflineTransportError` in this solution still surfaces as a failure to the caller; it is not queued or retried automatically here.
 # Unittest TestCases

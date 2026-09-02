@@ -40,8 +40,8 @@ export { ORDERS_ROUTES } from './lib/orders.routes';
 # Rule changes
 
 ## MUST
-- `{feature}.routes.ts` paths MUST be defined relative to the feature's own root only (e.g. `''`, `':id'`) — never including the feature's own name or any assumed mount prefix.
-- `{FEATURE}_ROUTES` MUST be exported from `index.ts` — it is part of the feature's public API, alongside its Signal Store.
+- `{feature}.routes.ts` paths must be defined relative to the feature's own root only (e.g. `''`, `':id'`) — never including the feature's own name or any assumed mount prefix.
+- `{FEATURE}_ROUTES` must be exported from `index.ts` — it is part of the feature's public API, alongside its Signal Store.
 
 ## SHOULD
 - **Baking the feature's expected mount segment into its own route paths (e.g. `path: 'orders/:id'`)** — Consequence: breaks the moment the feature is mounted under a different segment or nested inside an embeddable module instead of directly under the shell — Instead: paths are always relative to the feature's own root; the parent assigns the segment at the mounting point

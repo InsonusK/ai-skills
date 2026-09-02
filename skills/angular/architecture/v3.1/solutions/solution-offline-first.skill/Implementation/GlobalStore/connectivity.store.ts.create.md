@@ -67,9 +67,9 @@ interface ConnectivityState {
 # Rule changes
 
 ## MUST
-- `selectIsOnline` MUST require both the browser's own online signal and the most recent health-check result to agree — either one reporting offline is enough to mark the app as offline.
-- The health-check interval MUST back off (check less frequently) while already known to be offline, to avoid flooding the network with pointless requests during an outage.
-- The health-check endpoint MUST be a lightweight, unauthenticated `HEAD` request — it MUST NOT go through `authInterceptor` or require a valid session, since connectivity should be checkable even for a logged-out user.
+- `selectIsOnline` must require both the browser's own online signal and the most recent health-check result to agree — either one reporting offline is enough to mark the app as offline.
+- The health-check interval must back off (check less frequently) while already known to be offline, to avoid flooding the network with pointless requests during an outage.
+- The health-check endpoint must be a lightweight, unauthenticated `HEAD` request — it must never go through `authInterceptor` or require a valid session, since connectivity should be checkable even for a logged-out user.
 
 ## SHOULD
 - **Relying on `browserOnline` alone without factoring in the health-check result** — Consequence: the application can report itself as online while the backend is actually unreachable (captive portal, backend outage), per [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/connectivity-detection.md|connectivity-detection]] — Instead: `isOnline` always requires both signals to agree

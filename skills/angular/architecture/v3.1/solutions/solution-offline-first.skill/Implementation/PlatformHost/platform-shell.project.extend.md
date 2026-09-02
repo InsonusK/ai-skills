@@ -58,8 +58,8 @@ navigator.serviceWorker.register('/sw.js')
 # Rules
 
 ## MUST
-- `main.ts` MUST register `/sw.js` only after the application has bootstrapped.
-- The Workbox build step MUST run as part of the production build, after the application bundle is written to `dist/apps/platform-shell`.
+- `main.ts` must register `/sw.js` only after the application has bootstrapped.
+- The Workbox build step must run as part of the production build, after the application bundle is written to `dist/apps/platform-shell`.
 
 - the service worker must never be registered in development builds unless explicitly requested — it interferes with live reload and HMR.
 ## SHOULD

@@ -60,8 +60,8 @@ export class OrdersValidationError extends Error {}
 # Rule changes
 
 ## MUST
-- Every field conversion between a DTO and its domain model MUST go through an explicit function in `{feature}.mapper.ts` — no inline field renaming elsewhere.
-- Every domain error thrown by this feature's Client or Facade MUST be one of the classes defined in `{feature}.errors.ts`.
+- Every field conversion between a DTO and its domain model must go through an explicit function in `{feature}.mapper.ts` — no inline field renaming elsewhere.
+- Every domain error thrown by this feature's Client or Facade must be one of the classes defined in `{feature}.errors.ts`.
 
 ## SHOULD
 - **A mapper function silently dropping a DTO field with no domain equivalent, with no comment explaining why** — Consequence: a future reader cannot tell whether the omission was intentional or a bug — Instead: if a DTO field is intentionally unused, leave a short comment stating so

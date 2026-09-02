@@ -45,9 +45,9 @@ providers: [
 # Rule changes
 
 ## MUST
-- `GlobalErrorHandler` MUST route every caught exception through `LoggerService.error`, never swallow it silently.
-- `GlobalErrorHandler` MUST NOT log the raw error object if it could contain sensitive data (e.g. an error thrown with a token embedded in its message) — only structured, sanitized fields (`message`, `stack`) are extracted, never the original error object passed through unchanged.
-- `GlobalErrorHandler` MUST be registered once, in `apps/platform-shell`'s root providers, applying to the whole running application (including embeddable apps sharing the same Angular runtime, per the platform-embeddability solution).
+- `GlobalErrorHandler` must route every caught exception through `LoggerService.error`, never swallow it silently.
+- `GlobalErrorHandler` must never log the raw error object if it could contain sensitive data (e.g. an error thrown with a token embedded in its message) — only structured, sanitized fields (`message`, `stack`) are extracted, never the original error object passed through unchanged.
+- `GlobalErrorHandler` must be registered once, in `apps/platform-shell`'s root providers, applying to the whole running application (including embeddable apps sharing the same Angular runtime, per the platform-embeddability solution).
 
 ## SHOULD
 - **Passing the raw caught error object directly into the log context** — Consequence: if the error happens to carry sensitive data in a custom property, it would be logged unsanitized — Instead: extract only `message`/`stack` (or other explicitly safe fields), never the whole error object

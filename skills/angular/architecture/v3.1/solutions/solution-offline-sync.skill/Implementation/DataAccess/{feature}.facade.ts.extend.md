@@ -51,8 +51,8 @@ export class OrdersFacade {
 # Rule changes
 
 ## MUST
-- A Facade MUST explicitly opt an operation into queueing by catching `OfflineTransportError` and calling `MutationQueueService.enqueue` — queueing is never automatic or implicit for every method.
-- A queued operation's return type MUST clearly distinguish "queued for later" from an immediate successful result (e.g. `{ queued: true }`), so the calling Signal Store can reflect a pending state rather than treating it as a completed success.
+- A Facade must explicitly opt an operation into queueing by catching `OfflineTransportError` and calling `MutationQueueService.enqueue` — queueing is never automatic or implicit for every method.
+- A queued operation's return type must clearly distinguish "queued for later" from an immediate successful result (e.g. `{ queued: true }`), so the calling Signal Store can reflect a pending state rather than treating it as a completed success.
 
 - Never enqueue an operation whose business validation (e.g. `OrdersValidationError`) already failed before the Client was ever called — only genuine `OfflineTransportError` failures are queueable.
 ## SHOULD

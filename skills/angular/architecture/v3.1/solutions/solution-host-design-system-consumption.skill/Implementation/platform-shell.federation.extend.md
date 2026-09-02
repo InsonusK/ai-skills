@@ -21,9 +21,9 @@ No new directories. This extends `apps/platform-shell`'s federation config (from
 # Rules
 
 ## MUST
-- `federation.config.ts` MUST declare the design system with `singleton: true` and `strictVersion: false` — never `strictVersion: true`, per [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]].
-- `apps/platform-shell`'s root styles MUST import both `theme.scss` and `custom-tokens.scss` from the design system package.
-- The platform's declared design-system version range MUST be kept up to date as the platform itself upgrades, so embeddable apps have an accurate, current range to negotiate against.
+- `federation.config.ts` must declare the design system with `singleton: true` and `strictVersion: false` — never `strictVersion: true`, per [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]].
+- `apps/platform-shell`'s root styles must import both `theme.scss` and `custom-tokens.scss` from the design system package.
+- The platform's declared design-system version range must be kept up to date as the platform itself upgrades, so embeddable apps have an accurate, current range to negotiate against.
 
 # Unittest TestCases
 

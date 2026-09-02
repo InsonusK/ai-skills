@@ -36,8 +36,8 @@ tags:
 # Rule changes
 
 ## MUST
-- The feature Signal Store MUST live inside `libs/{feature}/feature`, not in a shared location.
-- The feature Signal Store MUST be the only place that feature's components read/write feature-owned state.
+- The feature Signal Store must live inside `libs/{feature}/feature`, not in a shared location.
+- The feature Signal Store must be the only place that feature's components read/write feature-owned state.
 
 ## SHOULD
 - **Placing a feature Signal Store in `libs/shared/state` or another feature's lib** — Consequence: feature state leaks across module boundaries and violates the workspace's enforced module boundaries — Instead: keep the store colocated with the feature it belongs to

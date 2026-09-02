@@ -68,11 +68,11 @@ No new tag values are introduced; `libs/shared/http-core` uses the existing `typ
 # Rules
 
 ## MUST
-- A feature's `{feature}.client.ts` MUST NOT be exported from that feature's `index.ts` — only the Facade (and, if useful, the feature's domain error types) is part of the public API.
-- When a feature has multiple distinct data facets, each facet's files MUST be grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`; every Facade is exported from `index.ts`, but no Client or Mapper is exported.
-- Every Client MUST build its HTTP calls on top of `libs/shared/http-core`'s base service, never call `HttpClient` directly.
-- A Client MUST catch every `HttpErrorResponse` it can produce and rethrow a typed domain error from that feature's `{feature}.errors.ts`, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]] — a raw `HttpErrorResponse` MUST NOT escape the Client.
-- For feature-scoped operations, the calling Signal Store method MUST call the Facade directly — no Action/Reducer/Effect is introduced for feature-level data operations, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]]. This does not apply to global/cross-cutting state, which keeps its existing classical NgRx chain (Effect → Facade → Client) from the "State management" and `solution-authentication`s.
+- A feature's `{feature}.client.ts` must never be exported from that feature's `index.ts` — only the Facade (and, if useful, the feature's domain error types) is part of the public API.
+- When a feature has multiple distinct data facets, each facet's files must be grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`; every Facade is exported from `index.ts`, but no Client or Mapper is exported.
+- Every Client must build its HTTP calls on top of `libs/shared/http-core`'s base service, never call `HttpClient` directly.
+- A Client must catch every `HttpErrorResponse` it can produce and rethrow a typed domain error from that feature's `{feature}.errors.ts`, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]] — a raw `HttpErrorResponse` must never escape the Client.
+- For feature-scoped operations, the calling Signal Store method must call the Facade directly — no Action/Reducer/Effect is introduced for feature-level data operations, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]]. This does not apply to global/cross-cutting state, which keeps its existing classical NgRx chain (Effect → Facade → Client) from the "State management" and `solution-authentication`s.
 
 - a component or Signal Store method must never import a feature's Client directly, bypassing the Facade — business validation would be skipped.
 # Unittest TestCases

@@ -14,9 +14,9 @@ No new directories are introduced. This extension adds a convention on top of th
 # Rules
 
 ## MUST
-- Every routable `type:feature` project MUST export its `Routes` array from `index.ts`, using paths defined only relative to its own root (e.g. `page`, not `{feature}/page`).
-- A project at any level (shell, embeddable module, feature) MUST NOT define a route path that reaches outside the root segment it owns.
-- The project that mounts a child (shell mounting a module or feature; a module mounting its features) MUST assign the root segment (e.g. `feature1/`) at the mounting point — the child itself never declares its own mount prefix.
+- Every routable `type:feature` project must export its `Routes` array from `index.ts`, using paths defined only relative to its own root (e.g. `page`, not `{feature}/page`).
+- A project at any level (shell, embeddable module, feature) must never define a route path that reaches outside the root segment it owns.
+- The project that mounts a child (shell mounting a module or feature; a module mounting its features) must assign the root segment (e.g. `feature1/`) at the mounting point — the child itself never declares its own mount prefix.
 
 - a `type:app` project (the shell) must never reference a path that exists two or more levels below its own mount point (e.g. the shell must not hardcode `module1/feature1/page` — it only knows about `module1/`).
 # Unittest TestCases

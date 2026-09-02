@@ -57,9 +57,9 @@ describe('Orders feature integration', () => {
 # Rule changes
 
 ## MUST
-- This pattern MUST only be used when the test's purpose is genuinely to verify multiple layers wired together — a test that could be satisfied by faking one layer below the unit under test MUST use the corresponding unit-test pattern instead, not this one.
-- MSW request handlers used here MAY be shared with Storybook or local dev-mode mocking, but MUST NOT be duplicated with equivalent `HttpTestingController` expectations elsewhere for the same endpoint.
-- Tests for each Signal Store method exercised by this integration spec MUST be grouped under a nested `describe('<methodName>', () => { ... })` block.
+- This pattern must only be used when the test's purpose is genuinely to verify multiple layers wired together — a test that could be satisfied by faking one layer below the unit under test must use the corresponding unit-test pattern instead, not this one.
+- MSW request handlers used here may be shared with Storybook or local dev-mode mocking, but must never be duplicated with equivalent `HttpTestingController` expectations elsewhere for the same endpoint.
+- Tests for each Signal Store method exercised by this integration spec must be grouped under a nested `describe('<methodName>', () => { ... })` block.
 
 ## SHOULD
 - **Reaching for this integration pattern as the default way to test a Facade or Signal Store** — Consequence: every such test becomes slower and more complex than necessary, and reintroduces the duplicated-mock risk this solution's ADR exists to avoid, since the endpoint may now be mocked both here and in the Client's own `HttpTestingController` test — Instead: default to the narrower unit-test pattern (faking the layer directly below); reserve this pattern for scenarios that genuinely need multiple real layers wired together

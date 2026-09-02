@@ -53,6 +53,11 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|Selective levels, batched sending, bounded IndexedDB-persisted retry queue, global ErrorHandler]]
   - Selected variant: this combination — chosen to balance backend visibility against network/storage cost, and to guarantee uncaught exceptions are captured without relying on explicit instrumentation everywhere
 
+# Boundaries
+- `monolith` catalog, `BackendLogDelivery` (VP6). Assumes `solution-logging-base` (extends its `LOG_SINKS` seam) + `solution-api-http-layer` (sends batches via `libs/shared/http-core`).
+- Adds a second `LogSink`, a bounded IndexedDB retry queue, and one application-root `GlobalErrorHandler` — no existing `LoggerService` call site changes.
+- Only `warn` / `error` / `report()` reach the backend; `debug` / `info` stay local to `ConsoleLogSink`.
+
 # Requirements
 
 SOLUTION:

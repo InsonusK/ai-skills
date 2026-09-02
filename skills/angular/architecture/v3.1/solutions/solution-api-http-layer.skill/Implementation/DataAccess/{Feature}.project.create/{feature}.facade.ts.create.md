@@ -50,9 +50,9 @@ export class OrdersFacade {
 # Rule changes
 
 ## MUST
-- The Facade MUST be the only class in this feature's `data-access` project exported from `index.ts`, along with the feature's domain error types.
-- Business-rule validation that does not require a network call (e.g. "quantity must be positive") MUST happen in the Facade, before calling the Client — not duplicated inside the Client.
-- Any error the Facade lets through to its caller MUST be one of this feature's typed domain errors (from the Client, optionally re-wrapped with business context) — never a raw `HttpErrorResponse`, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+- The Facade must be the only class in this feature's `data-access` project exported from `index.ts`, along with the feature's domain error types.
+- Business-rule validation that does not require a network call (e.g. "quantity must be positive") must happen in the Facade, before calling the Client — not duplicated inside the Client.
+- Any error the Facade lets through to its caller must be one of this feature's typed domain errors (from the Client, optionally re-wrapped with business context) — never a raw `HttpErrorResponse`, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
 
 ## SHOULD
 - **Putting DTO mapping or direct `HttpClient`/`http-core` calls inside the Facade** — Consequence: blurs the Facade/Client separation this solution exists to establish, making business logic and transport concerns hard to test independently — Instead: the Facade only calls the Client; all DTO/transport concerns stay inside the Client

@@ -90,12 +90,12 @@ describe('DsButtonComponent', () => {
 # Rule changes
 
 ## MUST
-- The file MUST be created at `spec/{component-name}.component.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
-- Component tests MUST query and interact with the rendered DOM via Testing Library (`screen.getByRole`, `userEvent`), not via `fixture.componentInstance` or `fixture.debugElement` reaching into internals.
-- A component test MUST NOT use `HttpTestingController`, let a real HTTP call occur, or fake a Facade/Client — if the component injects a Signal Store or Facade directly, the test fakes only that one dependency, going no further down than the component's own immediate collaborator.
-- A component that injects no dependency at all (e.g. a pure `input()`/`output()`/`model()` design-system component) MUST have a test that provides nothing beyond its own inputs — no provider setup is needed or expected.
-- Queries MUST prefer accessible roles/labels (`getByRole`, `getByLabelText`) over test-id attributes, so the test also implicitly checks the component is accessible.
-- Component tests MUST group related cases under nested `describe('<behavior-area>', () => { ... })` blocks (e.g., `rendering`, `user interactions`).
+- The file must be created at `spec/{component-name}.component.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
+- Component tests must query and interact with the rendered DOM via Testing Library (`screen.getByRole`, `userEvent`), not via `fixture.componentInstance` or `fixture.debugElement` reaching into internals.
+- A component test must never use `HttpTestingController`, let a real HTTP call occur, or fake a Facade/Client — if the component injects a Signal Store or Facade directly, the test fakes only that one dependency, going no further down than the component's own immediate collaborator.
+- A component that injects no dependency at all (e.g. a pure `input()`/`output()`/`model()` design-system component) must have a test that provides nothing beyond its own inputs — no provider setup is needed or expected.
+- Queries must prefer accessible roles/labels (`getByRole`, `getByLabelText`) over test-id attributes, so the test also implicitly checks the component is accessible.
+- Component tests must group related cases under nested `describe('<behavior-area>', () => { ... })` blocks (e.g., `rendering`, `user interactions`).
 
 ## SHOULD
 - **Asserting against `fixture.componentInstance.someSignal()` instead of the rendered DOM** — Consequence: couples the test to the component's internal implementation — a refactor that preserves user-visible behavior but renames an internal signal breaks the test for no real reason — Instead: assert what `screen` shows, exactly as a user would perceive it

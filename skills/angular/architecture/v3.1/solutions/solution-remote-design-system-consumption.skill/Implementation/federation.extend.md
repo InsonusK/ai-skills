@@ -22,12 +22,12 @@ This applies to any embeddable app repository (per `solution-platform-embeddabil
 # Rules
 
 ## MUST
-- `federation.config.ts` MUST declare `requiredVersion` as an accurate reflection of the design-system version range this app has actually been built and tested against — not left as a wildcard/unbounded range, which would defeat the purpose of version negotiation.
-- The team MUST keep `requiredVersion` updated as they adopt newer design-system versions, so version negotiation continues to reflect their real compatibility.
-- This app's own `styles.scss` MUST still import the theme, for correct standalone local development — omitting it would make local preview visually incorrect, even though it's redundant in production.
+- `federation.config.ts` must declare `requiredVersion` as an accurate reflection of the design-system version range this app has actually been built and tested against — not left as a wildcard/unbounded range, which would defeat the purpose of version negotiation.
+- The team must keep `requiredVersion` updated as they adopt newer design-system versions, so version negotiation continues to reflect their real compatibility.
+- This app's own `styles.scss` must still import the theme, for correct standalone local development — omitting it would make local preview visually incorrect, even though it's redundant in production.
 
 ## SHOULD
-- The team SHOULD periodically update `requiredVersion` to track the platform's currently targeted design-system version, to get the shared-instance benefit (smaller payload, guaranteed consistency) rather than routinely running an isolated copy.
+- The team should periodically update `requiredVersion` to track the platform's currently targeted design-system version, to get the shared-instance benefit (smaller payload, guaranteed consistency) rather than routinely running an isolated copy.
 
 - **Declaring an unbounded or overly permissive `requiredVersion` (e.g. accepting any major version)** — Consequence: the app may end up sharing a design-system version it was never actually tested against, risking subtle visual or behavioral breakage that version negotiation was meant to prevent — Instead: declare the actual range this app has been built and verified against, updating it deliberately as that range changes
 - **Never updating `requiredVersion` after the initial setup** — Consequence: the app permanently runs its own isolated copy of the design system, missing the shared-instance benefit indefinitely even as the platform and design system both move forward — Instead: periodically revisit and update the declared range as part of normal maintenance

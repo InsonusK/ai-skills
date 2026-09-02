@@ -70,6 +70,11 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|Manual mapper functions instead of an automatic mapping library]]
   - Selected variant: manual mappers — chosen because some fields require enrichment from external context that an automatic mapper would not handle cleanly anyway
 
+# Boundaries
+- `monolith` catalog, `BackendDataAccess` (VP3). Assumes `solution-repository-structure` + `solution-state-tiering`. Gates `solution-offline-first` (VP4), `solution-logging-global` (VP6), `solution-authentication` (VP7) — each needs the HTTP layer.
+- **Modifies `solution-repository-structure`**: the `data-access` lib is added here, per feature that needs server data — a no-backend feature has neither `data-access` nor `libs/shared/http-core`.
+- Owns the Facade/Client/Mapper layering and `libs/shared/http-core`. Global/cross-cutting effects (auth, offline-sync) keep their classical NgRx chain and apply the same error/mapping conventions.
+
 # Requirements
 
 SOLUTION:

@@ -41,8 +41,8 @@ tags:
 # Rules
 
 ## MUST
-- The library MUST NOT depend on feature libraries — only on `libs/shared/state` (auth slice) and core Angular/NgRx packages.
-- `HasPermissionDirective` MUST be the only auth UI primitive exported from `libs/shared/auth-ui` until a future solution explicitly adds more.
+- The library must never depend on feature libraries — only on `libs/shared/state` (auth slice) and core Angular/NgRx packages.
+- `HasPermissionDirective` must be the only auth UI primitive exported from `libs/shared/auth-ui` until a future solution explicitly adds more.
 
 - Never contain business features or page components — only reusable UI primitives.
 ## SHOULD

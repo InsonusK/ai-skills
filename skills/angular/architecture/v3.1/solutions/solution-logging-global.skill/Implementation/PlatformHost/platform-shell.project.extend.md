@@ -48,7 +48,7 @@ export const appConfig: ApplicationConfig = {
 # Rules
 
 ## MUST
-- `app.config.ts` MUST provide `GlobalErrorHandler` under the `ErrorHandler` token — no other error handler may silently swallow uncaught exceptions.
+- `app.config.ts` must provide `GlobalErrorHandler` under the `ErrorHandler` token — no other error handler may silently swallow uncaught exceptions.
 
 - `GlobalErrorHandler` must never be registered only in a module or component-level provider — it must be at the application root.
 ## SHOULD

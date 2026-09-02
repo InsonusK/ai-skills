@@ -41,8 +41,8 @@ tags:
 # Rules
 
 ## MUST
-- The project MUST contain only scenario-level tests that cross at least one routing or feature boundary.
-- Each spec MUST run against the real built application, not against mocked backend or isolated components.
+- The project must contain only scenario-level tests that cross at least one routing or feature boundary.
+- Each spec must run against the real built application, not against mocked backend or isolated components.
 
 - Never contain unit or integration tests — those belong in `libs/{feature}/data-access/src/lib/spec` or `libs/{feature}/feature/src/lib/spec` per this solution's other implementation files.
 ## SHOULD

@@ -60,8 +60,8 @@ tags:
 # Rules
 
 ## MUST
-- Every slice MUST expose its actions and selectors through `index.ts`; reducers and effects are registered once in `apps/platform-shell` and are not imported by feature code directly.
-- Effects MUST be the only place a slice performs HTTP calls or other side effects.
+- Every slice must expose its actions and selectors through `index.ts`; reducers and effects are registered once in `apps/platform-shell` and are not imported by feature code directly.
+- Effects must be the only place a slice performs HTTP calls or other side effects.
 
 - Never import from any `type:feature` or `type:data-access` project.
 ## SHOULD

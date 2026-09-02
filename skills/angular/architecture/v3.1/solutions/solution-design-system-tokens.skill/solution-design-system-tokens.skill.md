@@ -59,6 +59,12 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|Single fixed brand palette, multi-tenant deferred, instead of building swappable theming now]]
   - Selected variant: single palette — chosen to avoid speculative complexity against a requirement that isn't concrete yet
 
+# Boundaries
+- `design-system` catalog, `HybridDesignTokens` (common). Assumes `solution-design-system-structure` (theme/token files live in `projects/design-system`).
+- Consumes Angular Material's own `--mat-sys-*` M3 tokens directly; a small `--ds-*` layer covers only genuine gaps (domain semantic colors, spacing, radius).
+- A **single fixed brand palette** — multi-brand / per-tenant theming is deferred to `solution-design-system-multi-tenant-theming` (the catalog's aspirational VP1), which would generalize this feature.
+- Token values change only through Material's Sass override mixins, never by hand-setting `--mat-*` in raw CSS.
+
 # Requirements
 
 SOLUTION:

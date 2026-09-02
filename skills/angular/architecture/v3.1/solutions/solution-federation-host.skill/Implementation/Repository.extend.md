@@ -29,9 +29,9 @@ No new top-level directories are added to the base layout from [[skills/angular/
 # Rules
 
 ## MUST
-- `apps/platform-shell` MUST declare the `type:host` tag in addition to its existing `type:app`/`scope:platform` tags.
-- `apps/platform-shell` MUST mark `@platform/contracts` (and Angular itself) as `singleton: true` in its federation shared-dependency configuration.
-- The list of available remotes (embeddable apps) and their URLs MUST be resolved at runtime (Dynamic Federation manifest), never hardcoded into the host's build output.
+- `apps/platform-shell` must declare the `type:host` tag in addition to its existing `type:app`/`scope:platform` tags.
+- `apps/platform-shell` must mark `@platform/contracts` (and Angular itself) as `singleton: true` in its federation shared-dependency configuration.
+- The list of available remotes (embeddable apps) and their URLs must be resolved at runtime (Dynamic Federation manifest), never hardcoded into the host's build output.
 
 - Never bundle a specific embeddable app's code at build time — that would defeat independent deployability, which is the entire reason Dynamic Federation was selected in [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]].
 - Never depend on an embeddable app's internal implementation — only on the `@platform/contracts` package and the federation `remoteEntry` contract.

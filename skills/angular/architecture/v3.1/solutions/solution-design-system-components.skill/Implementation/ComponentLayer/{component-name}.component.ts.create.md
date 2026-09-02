@@ -64,12 +64,12 @@ Internally, `DsButtonComponent` may render Angular Material's `<button mat-butto
 # Rule changes
 
 ## MUST
-- The component's inputs/outputs MUST be named and organized around real usage concepts (as in the `variant`/`size`/`color`/`action`/`dropdown` example above), never mirrored from an underlying Material component's own input names.
-- If this component wraps a Material component internally, no Material type/enum MUST leak into this component's own input/output types.
-- If this component is a form control, it MUST implement `ControlValueAccessor`.
+- The component's inputs/outputs must be named and organized around real usage concepts (as in the `variant`/`size`/`color`/`action`/`dropdown` example above), never mirrored from an underlying Material component's own input names.
+- If this component wraps a Material component internally, no Material type/enum must leak into this component's own input/output types.
+- If this component is a form control, it must implement `ControlValueAccessor`.
 
 ## SHOULD
-- The internal implementation SHOULD default to delegating to Angular Material where it fully satisfies the requirement, and SHOULD only be built fully custom when a specific, identified gap justifies it (as in a large-dataset tree needing different performance characteristics than Material's own tree component).
+- The internal implementation should default to delegating to Angular Material where it fully satisfies the requirement, and should only be built fully custom when a specific, identified gap justifies it (as in a large-dataset tree needing different performance characteristics than Material's own tree component).
 
 - **Naming an input identically to Material's own corresponding input, with the same enum of values** — Consequence: even without directly re-exporting Material's type, this mirrors Material's categorization closely enough that any change to Material's own API will likely force a parallel change here — the encapsulation exists in name only — Instead: design the input around this application's own real usage, as the button's `variant`/`action`/`dropdown` example does
 # Check list

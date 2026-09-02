@@ -47,11 +47,11 @@ tags:
 # Rules
 
 ## MUST
-- `federation.config.ts` MUST NOT list embeddable apps' remote entries statically — they are resolved by `remote-registry.service.ts` at runtime.
-- Any component or service in `platform-shell` that needs to talk to an embedded app MUST do so exclusively through the `EventBus`/state contracts exposed by `@platform/contracts` — never by reaching into a remote's internals.
+- `federation.config.ts` must never list embeddable apps' remote entries statically — they are resolved by `remote-registry.service.ts` at runtime.
+- Any component or service in `platform-shell` that needs to talk to an embedded app must do so exclusively through the `EventBus`/state contracts exposed by `@platform/contracts` — never by reaching into a remote's internals.
 
 ## SHOULD
-- `remote-registry.service.ts` SHOULD treat a failure to resolve or load a given remote as a recoverable error (show a fallback UI slot), not a fatal error for the whole shell.
+- `remote-registry.service.ts` should treat a failure to resolve or load a given remote as a recoverable error (show a fallback UI slot), not a fatal error for the whole shell.
 
 - **Reaching into a loaded remote's internal exports instead of the shared contract** — Consequence: couples the shell to one remote's internal structure, breaking silently when that remote refactors — Instead: all cross-boundary interaction goes through `@platform/contracts`
 # Check list

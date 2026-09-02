@@ -63,6 +63,11 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/connectivity-detection.md|navigator.onLine events + periodic health-check instead of navigator.onLine alone]]
   - Selected variant: combined signal — chosen because `navigator.onLine` alone materially misrepresents real backend reachability in common failure modes (captive portals, backend outages)
 
+# Boundaries
+- `monolith` catalog, `OfflineReadResilience` (VP4). Requires `solution-api-http-layer` (VP3 — a Client to throw `OfflineTransportError`, API GETs to cache) and `solution-global-store` (VP2 — the `connectivity` slice).
+- Scope is **read resilience only**: the shell always loads, API reads fall back to last-known-good. A mutation attempted offline still **fails immediately** — write queueing is `solution-offline-sync` (VP5), for which this only prepares the `OfflineTransportError` hook.
+- The service worker has four caching rules here; a fifth (federated remote chunks) is added by `solution-federation-host` only when both are composed.
+
 # Requirements
 
 SOLUTION:

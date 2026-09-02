@@ -46,8 +46,8 @@ tags:
 # Rules
 
 ## MUST
-- Every slice inside `libs/shared/state` MUST correspond to genuinely global/cross-cutting state (read or dispatched by more than one unrelated feature) — feature-scoped state MUST NOT be added here (see solution's Core Principles for the tiering rule).
-- `libs/shared/state` MUST NOT depend on any `type:feature` or `type:data-access` project.
+- Every slice inside `libs/shared/state` must correspond to genuinely global/cross-cutting state (read or dispatched by more than one unrelated feature) — feature-scoped state must never be added here (see solution's Core Principles for the tiering rule).
+- `libs/shared/state` must never depend on any `type:feature` or `type:data-access` project.
 
 - a `type:feature` project must never reach into another feature's Signal Store directly to read cross-cutting data — if the data is genuinely needed by multiple features, it belongs in `libs/shared/state`, not in one feature's own store.
 # Unittest TestCases

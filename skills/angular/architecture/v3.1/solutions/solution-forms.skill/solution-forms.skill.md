@@ -49,6 +49,12 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/adr/forms-approach.md|Signal Forms as the default for all new forms instead of Reactive Forms or a complexity-based hybrid]]
   - Selected variant: Signal Forms as the default for all new forms — chosen now that it is stable (Angular 22+) and resolves the main historical blocker (ControlValueAccessor compatibility) for control-heavy forms
 
+# Boundaries
+- `monolith` catalog, `SignalForms` (common — a zero-cost convention; an app with no forms pays nothing). Assumes `solution-repository-structure` + `solution-state-tiering`; requires Angular 22+.
+- Applies at the component level inside existing feature libs — creates no project.
+- Submission always calls the owning feature's data-access Facade — which only exists once `solution-api-http-layer` (VP3) is composed; a form in a no-backend app calls a local handler instead.
+- Existing Reactive Forms are never force-migrated.
+
 # Requirements
 
 SOLUTION:

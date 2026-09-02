@@ -72,13 +72,13 @@ export class OrderFormComponent {
 # Rule changes
 
 ## MUST
-- A form's submission MUST go through `submitForm()`, not a manually wired `(ngSubmit)` handler that bypasses the form's own validation/state.
-- Any HTTP call triggered by form submission MUST go through the owning feature's `data-access` facade (see the future `solution-api-http-layer`), never call `HttpClient` directly from the form component.
-- A custom, design-system-provided form control used inside a Signal Form MUST implement `ControlValueAccessor` so it is compatible with `formField` binding (see `solution-host-design-system-consumption` for where this contract is defined).
+- A form's submission must go through `submitForm()`, not a manually wired `(ngSubmit)` handler that bypasses the form's own validation/state.
+- Any HTTP call triggered by form submission must go through the owning feature's `data-access` facade (see the future `solution-api-http-layer`), never call `HttpClient` directly from the form component.
+- A custom, design-system-provided form control used inside a Signal Form must implement `ControlValueAccessor` so it is compatible with `formField` binding (see `solution-host-design-system-consumption` for where this contract is defined).
 
 ## SHOULD
-- Field schema/validators SHOULD stay inline in the component for simple forms (a handful of fields, no cross-field logic), and SHOULD be extracted into a `{form-name}.form.ts` file once cross-field validation (`when`) or the number of validators makes the component harder to read.
-- Async validation (e.g. "is this email already taken") SHOULD use `validateHttp()` with its built-in debounce, rather than a hand-rolled debounced subscription.
+- Field schema/validators should stay inline in the component for simple forms (a handful of fields, no cross-field logic), and should be extracted into a `{form-name}.form.ts` file once cross-field validation (`when`) or the number of validators makes the component harder to read.
+- Async validation (e.g. "is this email already taken") should use `validateHttp()` with its built-in debounce, rather than a hand-rolled debounced subscription.
 
 - **Manually subscribing to a signal-based field's changes to imperatively trigger side effects** — Consequence: reintroduces the subscription-management problem Signal Forms exists to avoid, and can desynchronize from the form's own reactivity — Instead: read the field's Signal directly in a computed value or an effect scoped to the component's lifecycle
 - **Wiring a raw `HttpClient` call directly inside a form component's submit handler** — Consequence: bypasses the feature's data-access facade, duplicating error handling and mapping logic that belongs in one place — Instead: call through the feature's facade from inside `submitForm()`'s callback

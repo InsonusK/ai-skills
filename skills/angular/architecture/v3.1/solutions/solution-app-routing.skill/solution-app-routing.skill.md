@@ -49,6 +49,12 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/adr/route-ownership-location.md|Hierarchical route ownership instead of a single centralized routes file in the shell]]
   - Selected variant: hierarchical ownership — chosen to mirror the module-boundary principle from `solution-repository-structure`, preserve affected-based CI, and stay generic enough for any future mounting parent to reuse without modification
 
+# Boundaries
+- `monolith` catalog, `HierarchicalRouting` (common). Assumes the `solution-repository-structure` baseline. Uses only `@angular/router` — no routing library.
+- Defines route *ownership* and lazy `loadChildren` mounting. Preloading strategy, `loadComponent` sub-splitting, and bundle budgets are `solution-performance-tuned-routing` (VP1), not here.
+- Auth guards are deliberately deferred to `solution-authentication` (VP7).
+- The remote catalogs reuse this pattern one level down inside their exposed module (`solution-federation-remote`) without modifying it.
+
 # Requirements
 
 SOLUTION:

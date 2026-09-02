@@ -36,13 +36,13 @@ export const ORDERS_ROUTES: Routes = [
 # Rule changes
 
 ## MUST
-- A feature's own chunk MUST declare a per-chunk bundle budget (see [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#MUST|Repository]]); a sub-route split via `loadComponent` gets its own separate budget.
+- A feature's own chunk must declare a per-chunk bundle budget (see [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#must|Repository]]); a sub-route split via `loadComponent` gets its own separate budget.
 
 ## SHOULD
-- A sub-route SHOULD be split via `loadComponent` when it pulls in a dependency not needed by the feature's main path (e.g. a charting or PDF library used only on one rarely-visited screen).
-- The feature's main/landing path SHOULD stay in the feature's own chunk (not further split) unless it independently exceeds its budget.
+- A sub-route should be split via `loadComponent` when it pulls in a dependency not needed by the feature's main path (e.g. a charting or PDF library used only on one rarely-visited screen).
+- The feature's main/landing path should stay in the feature's own chunk (not further split) unless it independently exceeds its budget.
 
-- Avoid splitting SHOULD NOT be applied to every sub-route indiscriminately — each additional `loadComponent` split is an additional network round-trip on first visit to that sub-route, which is only worth it when the split avoids meaningfully more weight than that round-trip costs.
+- Avoid splitting should never be applied to every sub-route indiscriminately — each additional `loadComponent` split is an additional network round-trip on first visit to that sub-route, which is only worth it when the split avoids meaningfully more weight than that round-trip costs.
 - **Splitting every single sub-route into its own `loadComponent` chunk regardless of size** — Consequence: excessive number of tiny chunks, each paying its own network round-trip cost, with no meaningful bundle-size benefit — Instead: keep small, frequently-visited sub-routes bundled with the feature's main chunk; split only where a sub-route is genuinely heavy or rarely visited
 - **Leaving a heavy, rarely-used dependency (e.g. a PDF/report generation library) in the feature's main chunk instead of splitting it off** — Consequence: inflates the feature's chunk for all users of that feature, even the majority who never touch the heavy sub-page — Instead: split that specific sub-route via `loadComponent` so its dependency is only fetched when actually needed
 # Check list

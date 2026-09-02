@@ -47,12 +47,12 @@ test.describe('DsButtonComponent — style snapshot', () => {
 # Rule changes
 
 ## MUST
-- The file MUST be created at `spec/{component-name}.style-snapshot.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
-- Text snapshot baselines (`*.styles.txt`) MUST be committed under `spec/snapshot/` next to the spec. Configure `snapshotPathTemplate` in `playwright.config.ts` so that `toMatchSnapshot()` stores text snapshots in `spec/snapshot/` rather than the default `__snapshots__` folder.
-- A style-snapshot spec MUST cover exactly the same states (and color schemes) as the component's `.visual.spec.ts` — the two specs stay paired, one per state.
-- Tests in a style-snapshot spec MUST be grouped under a `test.describe('<component-name> — style snapshot', () => { ... })` block.
-- A style-snapshot spec MUST read properties only through [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|the shared `readVisualStyleProperties` helper]], never a component-specific ad hoc property list.
-- Before updating a failing `.visual.spec.ts` baseline (`--update-snapshots`), the corresponding style-snapshot diff MUST be inspected first: no property change means the pixel diff is rendering noise (safe to accept); a property change means the diff itself states what moved, and that change must be confirmed intentional before either snapshot is updated. Note: `--update-snapshots` is the single Playwright flag that updates both the PNG baseline and the paired `.styles.txt` text snapshot; both files are updated together.
+- The file must be created at `spec/{component-name}.style-snapshot.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
+- Text snapshot baselines (`*.styles.txt`) must be committed under `spec/snapshot/` next to the spec. Configure `snapshotPathTemplate` in `playwright.config.ts` so that `toMatchSnapshot()` stores text snapshots in `spec/snapshot/` rather than the default `__snapshots__` folder.
+- A style-snapshot spec must cover exactly the same states (and color schemes) as the component's `.visual.spec.ts` — the two specs stay paired, one per state.
+- Tests in a style-snapshot spec must be grouped under a `test.describe('<component-name> — style snapshot', () => { ... })` block.
+- A style-snapshot spec must read properties only through [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|the shared `readVisualStyleProperties` helper]], never a component-specific ad hoc property list.
+- Before updating a failing `.visual.spec.ts` baseline (`--update-snapshots`), the corresponding style-snapshot diff must be inspected first: no property change means the pixel diff is rendering noise (safe to accept); a property change means the diff itself states what moved, and that change must be confirmed intentional before either snapshot is updated. Note: `--update-snapshots` is the single Playwright flag that updates both the PNG baseline and the paired `.styles.txt` text snapshot; both files are updated together.
 
 - a style-snapshot spec must never be treated as a replacement for the pixel screenshot spec — it does not catch layout/paint issues that fall outside the shared property list (e.g. `z-index` stacking, `overflow` clipping); both specs ship together.
 ## SHOULD

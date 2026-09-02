@@ -49,6 +49,11 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/adr/preloading-strategy.md|Custom selective preloading instead of PreloadAllModules or NoPreloading]]
   - Selected variant: custom selective preloading via a `data.preload` route flag — chosen to avoid unconditionally prefetching federated embeddable-module chunks while still warming up genuinely high-traffic sections
 
+# Boundaries
+- `monolith` catalog, `PerformanceTunedRouting` (VP1). Assumes `solution-app-routing` (extends its per-feature routes and the shell's mount points). Uses only standard `@angular/router` APIs.
+- The baseline already lazy-loads every feature via `loadChildren`; this adds *selective preloading* (opt-in at the mount point), *`loadComponent` sub-splitting* (a per-sub-route decision), and *enforced bundle budgets*.
+- The preload decision is always made by whoever mounts a segment (the shell for top-level, a module for its features), never by the feature itself.
+
 # Requirements
 
 SOLUTION:

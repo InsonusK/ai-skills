@@ -29,8 +29,8 @@ export class LoggerService {
 # Rule changes
 
 ## MUST
-- `report()` entries MUST always reach `BackendLogSink` (per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]]), regardless of `MIN_LOG_LEVEL` — the level filtering that suppresses `debug`/`info` in production does not apply to `report()`.
-- `report()` MUST still be subject to the never-log-sensitive-data rule from the base logging solution — the same PII/token restrictions apply.
+- `report()` entries must always reach `BackendLogSink` (per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]]), regardless of `MIN_LOG_LEVEL` — the level filtering that suppresses `debug`/`info` in production does not apply to `report()`.
+- `report()` must still be subject to the never-log-sensitive-data rule from the base logging solution — the same PII/token restrictions apply.
 
 ## SHOULD
 - **Using `report()` as a substitute for `error()` to bypass expected error-handling conventions** — Consequence: blurs the meaning of severity levels, making it harder to distinguish genuine failures from intentional business events in backend log queries — Instead: use `error()` for actual failures; reserve `report()` for deliberate, non-error events worth tracking

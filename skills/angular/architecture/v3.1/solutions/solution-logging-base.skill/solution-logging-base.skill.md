@@ -47,6 +47,11 @@ adr:
 - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/adr/logging-architecture.md|Custom LoggerService over pluggable LogSinks, structured entries — instead of raw console calls or plain-string logging]]
   - Selected variant: custom LoggerService with pluggable LogSinks — chosen so a future extension adds a sink without touching any existing call site, and so logs are filterable/queryable from the start
 
+# Boundaries
+- `monolith` catalog, `ConsoleLogging` (common — a zero-cost convention). Assumes only `solution-repository-structure`; no dependency beyond Angular's DI/core.
+- Creates `libs/shared/logging` with `LoggerService` + `ConsoleLogSink` + the `LOG_SINKS` multi-provider seam. Registers **only** `ConsoleLogSink`.
+- Backend delivery, the retry queue, and `GlobalErrorHandler` are `solution-logging-global` (VP6), which attaches a second sink to `LOG_SINKS` with no call-site change.
+
 # Requirements
 
 SOLUTION:

@@ -63,17 +63,17 @@ Everything not explicitly listed here is denied by the lint rule.
 # Rules
 
 ## MUST
-- Every Nx project MUST declare exactly one `type:*` tag and exactly one `scope:*` tag.
-- Every lib MUST expose its public API through a single `index.ts` barrel; nothing outside that barrel may be imported by other projects.
-- A `type:feature` project MUST NOT import another `type:feature` project directly, regardless of scope.
-- A `type:data-access` project MUST only be imported by the `type:feature` project that shares its `scope`.
-- Business logic (HTTP calls, state, domain rules) MUST NOT live in `apps/platform-shell` — the shell only composes and routes.
+- Every Nx project must declare exactly one `type:*` tag and exactly one `scope:*` tag.
+- Every lib must expose its public API through a single `index.ts` barrel; nothing outside that barrel may be imported by other projects.
+- A `type:feature` project must never import another `type:feature` project directly, regardless of scope.
+- A `type:data-access` project must only be imported by the `type:feature` project that shares its `scope`.
+- Business logic (HTTP calls, state, domain rules) must never live in `apps/platform-shell` — the shell only composes and routes.
 
 - Never place a routed business feature directly under `/apps` — every feature lives under `/libs/{feature}` and is only routed to from an app.
 - Never add a `type:util` project with any `scope:*` other than `shared` — utils are by definition scope-agnostic; a feature-specific helper belongs inside that feature's own lib, not in a scoped util.
 ## SHOULD
-- New business features SHOULD be scaffolded as a `{feature}/feature` + `{feature}/data-access` pair from the start, even if `data-access` is thin initially — splitting later is more expensive than starting split.
-- Cross-feature communication SHOULD go through routing (navigation) or through a `scope:platform` orchestrating layer, not through direct imports between features.
+- New business features should be scaffolded as a `{feature}/feature` + `{feature}/data-access` pair from the start, even if `data-access` is thin initially — splitting later is more expensive than starting split.
+- Cross-feature communication should go through routing (navigation) or through a `scope:platform` orchestrating layer, not through direct imports between features.
 
 - **Two features importing each other's internal components directly** — Consequence: hidden coupling, `@nx/enforce-module-boundaries` becomes ineffective if features are allowed to bypass it, and `nx affected` starts marking unrelated features as impacted — Instead: extract the shared piece into `libs/shared/ui` or `libs/shared/util`, or communicate through routing
 - **Growing `apps/platform-shell` with feature-specific logic "just for now"** — Consequence: the shell stops being a thin composition root, affected-based builds treat the shell as touched by almost every change, and the future platform/embedded-app split (see `solution-federation-host`) becomes harder to carve out — Instead: scaffold a `libs/{feature}` pair even for small features and route to it from the shell

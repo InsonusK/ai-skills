@@ -33,7 +33,7 @@ export class ExampleDialogComponent {
 # Rule changes
 
 ## MUST
-- State that is read and written only within one component (and optionally its direct children via `input()`) MUST be a plain Signal on that component, not a feature Signal Store or global NgRx state.
+- State that is read and written only within one component (and optionally its direct children via `input()`) must be a plain Signal on that component, not a feature Signal Store or global NgRx state.
 
 - Never introduce a feature Signal Store or a `libs/shared/state` slice purely to hold state no other component or feature ever needs to read.
 ## SHOULD

@@ -38,9 +38,9 @@ test.describe('Orders feature', () => {
 # Rule changes
 
 ## MUST
-- E2E scenarios MUST navigate and interact exactly as a real user would (URLs, roles, labels) — not by calling internal application APIs directly.
-- E2E tests MUST NOT be used as a substitute for unit/component/integration coverage — they are reserved for a small number of critical user-facing scenarios, given their higher cost per test (real browser, real navigation, generally slower than the layers below).
-- E2E specs MUST group related scenarios under a `test.describe('<feature-or-journey>', () => { ... })` block.
+- E2E scenarios must navigate and interact exactly as a real user would (URLs, roles, labels) — not by calling internal application APIs directly.
+- E2E tests must never be used as a substitute for unit/component/integration coverage — they are reserved for a small number of critical user-facing scenarios, given their higher cost per test (real browser, real navigation, generally slower than the layers below).
+- E2E specs must group related scenarios under a `test.describe('<feature-or-journey>', () => { ... })` block.
 
 ## SHOULD
 - **Writing a large number of fine-grained e2e tests for logic already covered by unit/component tests** — Consequence: slow, expensive test suite that duplicates coverage already provided more cheaply at a lower layer — Instead: keep e2e tests focused on a small set of critical, cross-cutting user journeys; push detailed logic coverage down to unit/component/integration tests

@@ -22,9 +22,9 @@ No new top-level directories. This extends [[skills/angular/architecture/v3.1/so
 # Rules
 
 ## MUST
-- `BackendLogSink` MUST be registered via the same `LOG_SINKS` multi-provider token the base solution already established — it MUST NOT require changing `ConsoleLogSink` or any existing `LoggerService` call site.
-- The global `ErrorHandler` MUST be registered in `apps/platform-shell` via `{ provide: ErrorHandler, useClass: GlobalErrorHandler }`, so it applies to the whole application (and, per the platform-embeddability solution, to embeddable apps sharing the same Angular runtime).
-- `BackendLogSink` MUST only forward `warn`/`error` level entries and explicit `report()` calls to the backend — `debug`/`info` entries MUST NOT reach this sink, per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
+- `BackendLogSink` must be registered via the same `LOG_SINKS` multi-provider token the base solution already established — it must never require changing `ConsoleLogSink` or any existing `LoggerService` call site.
+- The global `ErrorHandler` must be registered in `apps/platform-shell` via `{ provide: ErrorHandler, useClass: GlobalErrorHandler }`, so it applies to the whole application (and, per the platform-embeddability solution, to embeddable apps sharing the same Angular runtime).
+- `BackendLogSink` must only forward `warn`/`error` level entries and explicit `report()` calls to the backend — `debug`/`info` entries must never reach this sink, per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
 
 # Unittest TestCases
 

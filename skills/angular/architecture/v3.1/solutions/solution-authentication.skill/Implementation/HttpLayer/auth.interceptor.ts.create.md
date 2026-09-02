@@ -48,9 +48,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 # Rule changes
 
 ## MUST
-- This interceptor MUST be the only place an outgoing request is decorated with the `Authorization` header — feature/data-access code MUST NOT set that header manually.
-- On a 401 response, this interceptor MUST dispatch `Silent Refresh Requested` rather than immediately logging the user out — a single transparent refresh attempt comes before treating the session as expired.
-- This interceptor MUST NOT be applied to the silent-refresh request itself (to avoid an infinite loop) — the refresh call relies solely on the `HttpOnly` cookie, not a bearer header.
+- This interceptor must be the only place an outgoing request is decorated with the `Authorization` header — feature/data-access code must never set that header manually.
+- On a 401 response, this interceptor must dispatch `Silent Refresh Requested` rather than immediately logging the user out — a single transparent refresh attempt comes before treating the session as expired.
+- This interceptor must never be applied to the silent-refresh request itself (to avoid an infinite loop) — the refresh call relies solely on the `HttpOnly` cookie, not a bearer header.
 
 ## SHOULD
 - **Retrying the original request indefinitely on repeated 401s** — Consequence: infinite retry loop if the refresh itself is failing — Instead: attempt exactly one silent refresh per 401; if it also fails, treat the session as expired (dispatch `Session Expired`, handled by the base auth slice from the State management solution)

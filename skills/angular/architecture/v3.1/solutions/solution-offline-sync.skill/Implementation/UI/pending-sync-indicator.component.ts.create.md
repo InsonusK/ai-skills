@@ -47,8 +47,8 @@ export class PendingSyncIndicatorComponent {
 # Rule changes
 
 ## MUST
-- The indicator MUST read from `MutationQueueService.pendingForFeature$`, never poll or query the Dexie table directly outside that service.
-- A feature that queues mutations MUST mount this indicator (or otherwise surface `pendingForFeature$`) somewhere in its UI — a queued action MUST NOT be invisible to the user.
+- The indicator must read from `MutationQueueService.pendingForFeature$`, never poll or query the Dexie table directly outside that service.
+- A feature that queues mutations must mount this indicator (or otherwise surface `pendingForFeature$`) somewhere in its UI — a queued action must never be invisible to the user.
 
 ## SHOULD
 - **A feature queueing mutations without ever showing a pending indicator** — Consequence: the user has no way to know their action wasn't immediately applied, which can look like data loss or a bug — Instead: every feature that queues mutations surfaces this indicator (or an equivalent) somewhere relevant

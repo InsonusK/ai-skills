@@ -33,8 +33,8 @@ registerRoute(
 # Rule changes
 
 ## MUST
-- `KNOWN_REMOTE_ORIGINS` MUST be sourced from the same runtime remote registry configuration [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create|`RemoteRegistryService`]] uses, not hardcoded separately, to avoid the two falling out of sync.
-- This rule MUST be registered after the base solution's network-only rule (auth/mutations), so route-matching order still guarantees auth/mutations never resolve to this rule.
+- `KNOWN_REMOTE_ORIGINS` must be sourced from the same runtime remote registry configuration [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create|`RemoteRegistryService`]] uses, not hardcoded separately, to avoid the two falling out of sync.
+- This rule must be registered after the base solution's network-only rule (auth/mutations), so route-matching order still guarantees auth/mutations never resolve to this rule.
 
 ## SHOULD
 - **Hardcoding `KNOWN_REMOTE_ORIGINS` as a separate static list instead of deriving it from `RemoteRegistryService`'s own manifest** — Consequence: a newly onboarded embeddable app's origin is never cached, and the two lists silently drift apart over time — Instead: derive `KNOWN_REMOTE_ORIGINS` from the same manifest `RemoteRegistryService` fetches

@@ -32,10 +32,10 @@ tags:
 # Rules
 
 ## MUST
-- Every queued mutation MUST carry a client-generated idempotency key, sent with the replayed request, so a retry that succeeded server-side but whose response was lost does not get applied twice.
-- Only mutations a Facade explicitly marks as queueable MAY be enqueued — not every `OfflineTransportError` results in queueing; a Facade MAY still choose to surface certain operations as an immediate failure (e.g. operations with no sensible "pending" state).
-- Every queued mutation MUST be associated with the feature (`scope` tag) that created it, for partitioning per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
-- A mutation endpoint's conflict (409) response MUST include the current values of the fields the original request attempted to change, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]] — this is a required backend contract, not optional.
+- Every queued mutation must carry a client-generated idempotency key, sent with the replayed request, so a retry that succeeded server-side but whose response was lost does not get applied twice.
+- Only mutations a Facade explicitly marks as queueable may be enqueued — not every `OfflineTransportError` results in queueing; a Facade may still choose to surface certain operations as an immediate failure (e.g. operations with no sensible "pending" state).
+- Every queued mutation must be associated with the feature (`scope` tag) that created it, for partitioning per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
+- A mutation endpoint's conflict (409) response must include the current values of the fields the original request attempted to change, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]] — this is a required backend contract, not optional.
 
 # Unittest TestCases
 

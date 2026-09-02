@@ -46,10 +46,10 @@ No new packages — this is a plain Nx `type:app` project using the workspace's 
 # Rules
 
 ## MUST
-- `apps/component-preview` MUST be tagged `type:preview`, `scope:platform`.
-- A previewed component MUST be rendered with static, hardcoded example data — it MUST NOT call a real Facade, real HTTP endpoint, or real Signal Store wired to a backend.
-- Every component covered by a visual regression or accessibility spec (per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) MUST have its `spec/preview/{component-name}.preview.ts` registered as a route in this app.
-- The preview app MUST import preview components from the component library's `spec/preview/` path; it MUST NOT duplicate preview markup inside the app.
+- `apps/component-preview` must be tagged `type:preview`, `scope:platform`.
+- A previewed component must be rendered with static, hardcoded example data — it must never call a real Facade, real HTTP endpoint, or real Signal Store wired to a backend.
+- Every component covered by a visual regression or accessibility spec (per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) must have its `spec/preview/{component-name}.preview.ts` registered as a route in this app.
+- The preview app must import preview components from the component library's `spec/preview/` path; it must never duplicate preview markup inside the app.
 
 - Never be included in the production deployment of `apps/platform-shell` — it is a development/CI-only harness, built and served separately.
 - Never contain business logic, HTTP calls, or routing guards — only route registration and static rendering of preview components.

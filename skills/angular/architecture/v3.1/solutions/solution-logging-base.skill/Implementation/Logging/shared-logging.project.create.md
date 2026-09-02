@@ -45,11 +45,11 @@ None beyond Angular's own DI/core APIs.
 # Rules
 
 ## MUST
-- `LoggerService` MUST be the only class application code interacts with for logging; `ConsoleLogSink` MUST NOT be injected or called directly by feature code.
-- `MIN_LOG_LEVEL` MUST default to filtering out `debug`/`info` in production builds, keeping `warn`/`error` always enabled.
-- `LogEntry`'s `context` MUST be a plain, structured object — never a pre-formatted string standing in for context.
+- `LoggerService` must be the only class application code interacts with for logging; `ConsoleLogSink` must never be injected or called directly by feature code.
+- `MIN_LOG_LEVEL` must default to filtering out `debug`/`info` in production builds, keeping `warn`/`error` always enabled.
+- `LogEntry`'s `context` must be a plain, structured object — never a pre-formatted string standing in for context.
 
-- `LoggerService`/`ConsoleLogSink` must never ever be given a token, password, or PII value to log, regardless of level (see [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend#MUST]]).
+- `LoggerService`/`ConsoleLogSink` must never ever be given a token, password, or PII value to log, regardless of level (see [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend#must]]).
 ## SHOULD
 - **A feature registering its own ad hoc `console.log` wrapper instead of using `LoggerService.forFeature(...)`** — Consequence: recreates, inconsistently, exactly what `LoggerService` already provides, and is invisible to the future backend sink — Instead: call `inject(LoggerService).forFeature('orders')` once per feature and use the returned logger
 

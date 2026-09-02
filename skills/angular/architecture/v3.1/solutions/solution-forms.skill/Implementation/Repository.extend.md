@@ -26,8 +26,8 @@ No new directories. This extension adds a version requirement and a placement co
 # Rules
 
 ## MUST
-- The workspace MUST run Angular >= 22 before this solution's rules apply — Signal Forms is only stable from that version onward.
-- New forms MUST use Signal Forms (`@angular/forms/signals`) by default, per [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/adr/forms-approach.md|forms-approach]].
+- The workspace must run Angular >= 22 before this solution's rules apply — Signal Forms is only stable from that version onward.
+- New forms must use Signal Forms (`@angular/forms/signals`) by default, per [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/adr/forms-approach.md|forms-approach]].
 
 # Unittest TestCases
 
@@ -35,6 +35,6 @@ No new directories. This extension adds a version requirement and a placement co
   - [ ] it is built with `form()`/`FieldTree` from `@angular/forms/signals`, not `FormGroup`/`FormControl`
 
 ## SHOULD
-- Avoid existing Reactive Forms code SHOULD NOT be migrated to Signal Forms purely for the sake of consistency — only migrate a form when it is already being substantially rewritten for other reasons.
+- Avoid existing Reactive Forms code should never be migrated to Signal Forms purely for the sake of consistency — only migrate a form when it is already being substantially rewritten for other reasons.
 - **Starting a brand-new form with Reactive Forms "because that's what the rest of the codebase still has"** — Consequence: perpetuates the older pattern indefinitely and never captures the Signal Forms benefits this solution exists to adopt — Instead: every new form starts with Signal Forms; only an existing, untouched Reactive Forms form is left as-is
 - **Mass-migrating all existing Reactive Forms to Signal Forms in one pass** — Consequence: large, high-risk changeset with no functional benefit to users, and a real chance of subtly breaking complex existing forms — Instead: migrate opportunistically, only when a form is already being substantially reworked

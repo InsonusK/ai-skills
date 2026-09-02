@@ -30,8 +30,8 @@ tags:
 # Rules
 
 ## MUST
-- Every part of the application MUST log through `LoggerService` — no direct `console.*` call is permitted outside `libs/shared/logging`'s own `ConsoleLogSink` implementation.
-- A log entry MUST NOT contain an auth token, password, or other PII in its message or context, regardless of log level — this applies unconditionally, per `solution-authentication`'s token-handling rules.
+- Every part of the application must log through `LoggerService` — no direct `console.*` call is permitted outside `libs/shared/logging`'s own `ConsoleLogSink` implementation.
+- A log entry must never contain an auth token, password, or other PII in its message or context, regardless of log level — this applies unconditionally, per `solution-authentication`'s token-handling rules.
 
 # Unittest TestCases
 

@@ -1,28 +1,28 @@
 # Style-snapshot testing
 
-**Style-snapshot testing** (тестирование стилевых снапшотов) — это проверка, при которой вместо пиксельного скриншота фиксируется набор вычисленных CSS-свойств компонента (`getComputedStyle`), чтобы превратить необъяснимый визуальный дифф в читаемый список изменений: `color: rgb(0,0,0) → rgb(51,51,51)`.
+**Style-snapshot testing** is a check where, instead of a pixel screenshot, a set of the component's computed CSS properties (`getComputedStyle`) is captured — turning an unexplained visual diff into a readable list of changes: `color: rgb(0,0,0) → rgb(51,51,51)`.
 
 ## Why it exists
 
-Пиксельный дифф говорит, что картинка изменилась, но не объясняет почему. Разработчик или агент, видя упавший `.visual.spec.ts`, может либо долго разбирать изображения, либо бездумно запустить `--update-snapshots`, рискуя замазать реальную регрессию. Style-snapshot добавляет структурированный сигнал: если изменился `color`, `padding` или `box-shadow`, дифф текста покажет это прямо; если свойства не изменились, значит, пиксельная разница — это рендерный шум (сглаживание, хинтинг шрифтов), который безопасно принять.
+A pixel diff says the picture changed, but not why. A developer or agent seeing a failed `.visual.spec.ts` can either spend a long time comparing images or blindly run `--update-snapshots`, risking baking a real regression into the baseline. The style-snapshot adds a structured signal: if `color`, `padding`, or `box-shadow` changed, the text diff shows it directly; if no property changed, the pixel difference is rendering noise (anti-aliasing, font hinting) that is safe to accept.
 
 ## How it works
 
-1. Каждому `spec/{component-name}.visual.spec.ts` соответствует параллельный `spec/{component-name}.style-snapshot.spec.ts`.
-2. Тест открывает ту же демо-страницу и эмулирует ту же цветовую схему.
-3. Через единый хелпер `readVisualStyleProperties` считывается зафиксированный список визуально значимых свойств (`color`, `backgroundColor`, `padding`, `border*`, `fontSize`, `lineHeight`, `opacity`, `transform`, `boxShadow`, `display`).
-4. Значения сериализуются в JSON и сравниваются с коммитнутым снапшотом через `toMatchSnapshot`.
-5. Перед обновлением baseline скриншота сначала проверяется style-snapshot дифф: пустой дифф — шум; непустой дифф — указание на конкретное изменение, которое нужно осознанно подтвердить.
+1. Each `spec/{component-name}.visual.spec.ts` has a paired `spec/{component-name}.style-snapshot.spec.ts`.
+2. The test opens the same demo page and emulates the same colour scheme.
+3. A single shared helper `readVisualStyleProperties` reads a fixed list of visually significant properties (`color`, `backgroundColor`, `padding`, `border*`, `fontSize`, `lineHeight`, `opacity`, `transform`, `boxShadow`, `display`).
+4. The values are serialised to JSON and compared with a committed snapshot via `toMatchSnapshot`.
+5. Before updating a screenshot baseline, the style-snapshot diff is checked first: an empty diff is noise; a non-empty diff points at a specific change to confirm deliberately.
 
 ```mermaid
 flowchart LR
-  A[Демо-страница] --> B[getComputedStyle]
+  A[Demo page] --> B[getComputedStyle]
   B --> C[readVisualStyleProperties]
   C --> D[expect.toMatchSnapshot]
-  D --> E[Сравнение JSON-значений CSS]
+  D --> E[Compare JSON CSS values]
 ```
 
-### Что делает `readVisualStyleProperties`
+### What `readVisualStyleProperties` does
 
 ```typescript
 import type { Locator } from '@playwright/test';
@@ -45,33 +45,33 @@ export async function readVisualStyleProperties(locator: Locator): Promise<Visua
 }
 ```
 
-Функция выполняется в контексте браузера (`locator.evaluate(...)`). Она принимает `VISUAL_STYLE_PROPERTIES` — единый, централизованный список имён свойств — и для каждого свойства берёт **вычисленное** значение через `getComputedStyle(el)`. Это не имя CSS-класса, не Tailwind-строка и не содержимое атрибута `style`: это финальное значение, полученное после всех каскадов, наследований, CSS-переменных и `light-dark()`. Именно поэтому снапшот ловит изменение токена, даже если класс остался прежним.
+The function runs in the browser context (`locator.evaluate(...)`). It takes `VISUAL_STYLE_PROPERTIES` — one central list of property names — and for each property reads the **computed** value via `getComputedStyle(el)`. This is not a CSS class name, not a Tailwind string, and not the `style` attribute contents: it is the final value after all cascades, inheritance, CSS variables, and `light-dark()`. That is why the snapshot catches a token change even when the class stayed the same.
 
-### Что такое `.styles.txt`
+### What `.styles.txt` is
 
 ```typescript
 expect(JSON.stringify(styles, null, 2)).toMatchSnapshot(`ds-button-default-${scheme}.styles.txt`);
 ```
 
-`toMatchSnapshot` — это стандартный assertion Playwright для текстовых снапшотов. Он работает так:
+`toMatchSnapshot` is Playwright's standard assertion for text snapshots. It works like this:
 
-- При первом прогоне (или с `--update-snapshots`) Playwright сериализует переданное значение и сохраняет в файл снапшота. В этом решении `snapshotPathTemplate` в `playwright.config.ts` настроен так, что файлы попадают в `spec/snapshot/` рядом с тестом.
-- При последующих прогонах Playwright считывает сохранённый снапшот из `spec/snapshot/` и сравнивает с текущим значением.
-- Если значения отличаются, тест падает, и в выводе/диффе видно, какое именно свойство изменилось: `color: rgb(0, 0, 0) → rgb(51, 51, 51)`.
+- On the first run (or with `--update-snapshots`) Playwright serialises the value and saves it to a snapshot file. In this solution `snapshotPathTemplate` in `playwright.config.ts` is configured so the files land in `spec/snapshot/` next to the test.
+- On later runs Playwright reads the saved snapshot from `spec/snapshot/` and compares it with the current value.
+- If the values differ, the test fails, and the output/diff shows which property changed: `color: rgb(0, 0, 0) → rgb(51, 51, 51)`.
 
-`JSON.stringify(styles, null, 2)` нужен, чтобы файл снапшота был многострочным, читаемым JSON, а не одной строкой. В качестве имени передаётся `ds-button-default-light.styles.txt`, чтобы по имени было понятно, что это стилевой снапшот конкретного состояния и цветовой схемы.
+`JSON.stringify(styles, null, 2)` makes the snapshot file a multi-line, readable JSON rather than one line. The name passed is `ds-button-default-light.styles.txt`, so the file name tells you it is the style snapshot of a specific state and colour scheme.
 
-### Про `--update-snapshots` в style-snapshot
+### About `--update-snapshots` for the style snapshot
 
-`--update-snapshots` — это **общий** флаг Playwright для всех снапшотов в спеке: и для `toHaveScreenshot` (PNG), и для `toMatchSnapshot` (текст). Когда вы осознанно меняете внешний вид, вы запускаете визуальный спек с `--update-snapshots`, и он обновляет **и** PNG-базелайн, **и** текстовый style-snapshot. Поэтому в правиле и сказано: сначала смотри style-snapshot дифф, чтобы понять, что именно изменилось, и только потом обновляй оба снапшота одной командой.
+`--update-snapshots` is a **general** Playwright flag for all snapshots in a spec: both `toHaveScreenshot` (PNG) and `toMatchSnapshot` (text). When you deliberately change the appearance you run the visual spec with `--update-snapshots`, and it updates **both** the PNG baseline **and** the text style snapshot. That is why the rule says: check the style-snapshot diff first to see exactly what changed, and only then update both snapshots with one command.
 
 ## How it is structured
 
-- **Shared helper** — `read-visual-style-properties.ts` с единым списком `VISUAL_STYLE_PROPERTIES`; живёт в project-level test-support, не дублируется на компонент.
-- **Style-snapshot spec** — `spec/{component-name}.style-snapshot.spec.ts`, по одному рядом с `spec/{component-name}.visual.spec.ts`.
-- **Computed-style snapshot** — текстовый снапшот с JSON-значениями свойств, коммитится в `spec/snapshot/`.
-- **Paired visual spec** — изменения сравниваются с изменениями в `spec/{component-name}.visual.spec.ts` перед обновлением baseline.
-- **Curated property list** — список свойств расширяется централизованно, а не заводится отдельный набор под каждый компонент.
+- **Shared helper** — `read-visual-style-properties.ts` with the single `VISUAL_STYLE_PROPERTIES` list; lives in the project-level test-support directory, not duplicated per component.
+- **Style-snapshot spec** — `spec/{component-name}.style-snapshot.spec.ts`, one next to each `spec/{component-name}.visual.spec.ts`.
+- **Computed-style snapshot** — a text snapshot with the JSON property values, committed to `spec/snapshot/`.
+- **Paired visual spec** — changes are compared with the changes in `spec/{component-name}.visual.spec.ts` before updating the baseline.
+- **Curated property list** — the list is extended centrally, not per-component.
 
 ## Example
 
@@ -95,15 +95,15 @@ test.describe('DsButtonComponent — style snapshot', () => {
 
 ## Related concepts
 
-- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — фиксирует пиксельную картинку, с которой работает style-snapshot.
-- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — DOM-тест, не затрагивающий стили.
-- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — проверяет доступность, а не стилевые значения.
+- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — captures the pixel picture the style snapshot pairs with.
+- [Behavioral component testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) — a DOM test that does not touch styles.
+- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — checks accessibility, not style values.
 
 ## Sources
 
 - [MDN — getComputedStyle](https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle)
 - [Playwright — Test Snapshots](https://playwright.dev/docs/test-snapshots)
 - [ADR: style-snapshot-approach](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md)
-- [Generic pattern для style-snapshot спеков](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md)
-- [Хелпер readVisualStyleProperties](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md)
-- [solution-ui-testing.skill.md — раздел про style-snapshot](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)
+- [Generic pattern for style-snapshot specs](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md)
+- [The readVisualStyleProperties helper](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md)
+- [solution-ui-testing.skill.md — the style-snapshot section](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)

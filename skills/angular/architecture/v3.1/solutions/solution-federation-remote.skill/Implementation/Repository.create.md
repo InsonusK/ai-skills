@@ -39,12 +39,12 @@ This is a separate repository from the platform monorepo, owned and deployed ind
 # Rules
 
 ## MUST
-- The repository MUST publish its `remoteEntry` and exposed module path to a location the platform's runtime remote registry can discover (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create]]) — how that publication happens (a manifest file, a registration API call, etc.) is an operational detail owned by this repository's own deploy pipeline.
-- The repository MUST declare `@platform/contracts` as a `singleton: true` shared dependency in its federation config, at a version compatible with the platform's expected range.
+- The repository must publish its `remoteEntry` and exposed module path to a location the platform's runtime remote registry can discover (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create]]) — how that publication happens (a manifest file, a registration API call, etc.) is an operational detail owned by this repository's own deploy pipeline.
+- The repository must declare `@platform/contracts` as a `singleton: true` shared dependency in its federation config, at a version compatible with the platform's expected range.
 
 - Never import platform-shell internals directly — the only contract with the platform is `@platform/contracts` plus the federation `remoteEntry`/exposed-module boundary.
 ## SHOULD
-- The repository SHOULD run its own CI pipeline (lint/test/build/deploy) independent of the platform's pipeline — this is the entire point of the independent-deploy requirement behind this solution.
+- The repository should run its own CI pipeline (lint/test/build/deploy) independent of the platform's pipeline — this is the entire point of the independent-deploy requirement behind this solution.
 
 - **Bumping `@platform/contracts` to an incompatible major version without coordinating with the platform team** — Consequence: the federation runtime will either duplicate the shared singleton or fail to load the remote entirely, depending on `strictVersion` configuration — Instead: treat `@platform/contracts`' version range as a cross-team contract; coordinate major-version bumps the same way any published API's breaking change would be coordinated
 - **Depending on platform-shell's own package instead of only `@platform/contracts`** — Consequence: recreates tight coupling to the platform's internals that federation was chosen specifically to avoid — Instead: everything the embeddable app needs from the platform must be expressed in `@platform/contracts`

@@ -89,6 +89,11 @@ The integration spec sits under the feature library because it exercises the who
 - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|TestBed for non-DOM business-layer units; HttpTestingController only at the Client, MSW only for cross-layer integration tests]]
   - Selected variant: this layered strategy — chosen to give each HTTP mock exactly one source of truth
 
+# Boundaries
+- `monolith` catalog, `BusinessLayerTesting` (common — the test-runner + coverage gate is baseline infra). Assumes `solution-repository-structure`; requires `solution-api-http-layer` + `solution-state-tiering` for the layer patterns it tests.
+- Covers non-DOM business-layer units (Client, Facade, Signal Store) + e2e. **Deliberately does not cover UI/component/visual testing** — that is `solution-ui-testing` (monolith) / `solution-design-system-ui-testing` (design-system), which reuse this solution's Vitest/Playwright tool ADRs.
+- `HttpTestingController` lives only in a Client spec; MSW only for deliberate cross-layer integration specs.
+
 # Requirements
 
 SOLUTION:

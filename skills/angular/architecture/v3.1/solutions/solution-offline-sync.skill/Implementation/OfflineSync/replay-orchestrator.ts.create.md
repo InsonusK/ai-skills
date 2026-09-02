@@ -77,10 +77,10 @@ export class ReplayOrchestrator {
 # Rule changes
 
 ## MUST
-- Replay MUST process all feature partitions concurrently (`Promise.all`), and MUST process entries within a single partition strictly FIFO, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
-- A failure in one partition's replay MUST NOT stop or delay any other partition's replay.
-- `handleConflict` MUST be a single, separately named method/injection point — not inlined into the general replay loop — so a future solution can override it without modifying `replayPartition`'s control flow.
-- On conflict, the discarded change's notification MUST include only the specific touched fields and their current server values, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]] — never the entity's full state.
+- Replay must process all feature partitions concurrently (`Promise.all`), and must process entries within a single partition strictly FIFO, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
+- A failure in one partition's replay must never stop or delay any other partition's replay.
+- `handleConflict` must be a single, separately named method/injection point — not inlined into the general replay loop — so a future solution can override it without modifying `replayPartition`'s control flow.
+- On conflict, the discarded change's notification must include only the specific touched fields and their current server values, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]] — never the entity's full state.
 
 - Never implement per-operation or per-field custom conflict logic beyond server-wins — that is explicitly deferred to a future solution, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
 ## SHOULD
