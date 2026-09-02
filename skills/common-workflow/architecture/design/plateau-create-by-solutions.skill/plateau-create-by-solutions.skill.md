@@ -76,6 +76,29 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
 >
 > `Repository.create.md` / `Repository.extend.md` is a stack-agnostic pattern: use it whenever a solution's change is not specific to one project/package but affects how multiple projects/packages relate to each other in the repository. Most single-package Python repositories will never populate this tier — a plateau built from them will only have the package and module tiers.
 
+## Angular / TypeScript (`stack: typescript`, `framework: angular`)
+
+An Angular solution's `Implementation/` files may sit directly under `Implementation/` or nested one level in a **topic subfolder** (`GlobalStore/`, `Testing/`, `DataAccess/`, `PlatformHost/`, `UI/`, `Routing/`, `Tokens/`, …). Topic subfolders are purely organizational — **ignore them when normalizing a name**; use only the file's own base name and its `element_kind` / `change_kind` frontmatter.
+
+| File pattern | What it describes | Becomes |
+| ------------ | ----------------- | ------- |
+| `Implementation/**/Repository.create.md` / `Repository.extend.md` | Workspace-level changes: the Nx `apps/`/`libs/` layout, `type:*`/`scope:*` tag taxonomy, `@nx/enforce-module-boundaries` allow-list, CI. For a non-Nx workspace (`stack: typescript` design-system / embeddable-app), the repo-level layout of that workspace. | Content for `plateau-{plateau-name}--repo-{plateau-name}.skill.md` |
+| `Implementation/**/{project}.project.create.md` (`element_kind: project`) | An Nx project (app or lib) created by this solution — `{project}` is a path like `libs/shared/state`, `apps/platform-shell`, or a placeholder `{Feature}/feature` | One `plateau-{plateau-name}--project-{normalized}.skill.md` |
+| `Implementation/**/{project}.project.extend.md` (`element_kind: project`) | An Nx project extended by this solution | Merged into the same `plateau-{plateau-name}--project-{normalized}.skill.md` |
+| `Implementation/**/{project}.federation.extend.md` / `{name}.extend.md` (`element_kind: project`) | A project-level config change that is not a `.project.` file — a Native Federation config, an exposed-module wiring, a `routes.ts` mount at project scope | Merged into the owning `plateau-{plateau-name}--project-{normalized}.skill.md` (or a new one if the project has no other file) |
+| `Implementation/**/{name}.{artifact-type}.ts.create.md` / `.extend.md` (`element_kind: component`\|`service`\|`directive`\|`pipe`\|`guard`\|`interceptor`\|`resolver`\|`store`\|`module`) | A TypeScript building block. `{artifact-type}` is the `.`-segment before `.ts` (`auth.interceptor.ts` → `interceptor`, `orders.store.ts` → `store`, `ds-button.component.ts` → `component`) | One `plateau-{plateau-name}--class-{normalized}.skill.md`, `artifact_type` from the pattern; `.extend.md` merges into the same skill |
+| `Implementation/**/{name}.ts.create.md` / `.extend.md` (no `.{artifact-type}` segment) | A plain TS module (a helper, an orchestrator, a queue) — `backend-log-sink.ts`, `replay-orchestrator.ts` | One `plateau-{plateau-name}--class-{normalized}.skill.md`, `artifact_type: module` |
+| `Implementation/**/{name}.spec.ts.create.md` (`element_kind: spec`) | A generic test-spec pattern (`{component}.visual.spec.ts`, `{feature}.client.spec.ts`) | One `plateau-{plateau-name}--class-{normalized}.skill.md`, `artifact_type: spec` |
+| `Implementation/**/{name}.scss.create.md` (`element_kind: style`) | A stylesheet / token file — `theme.scss`, `custom-tokens.scss` | One `plateau-{plateau-name}--class-{normalized}.skill.md`, `artifact_type: style` |
+| `Implementation/**/{project}.project.create/{class}...create.md` / `.extend.md` | A class/artifact created or extended **inside** a project this solution creates | One `plateau-{plateau-name}--class-{normalized}.skill.md`, nested under its project's structure folder |
+| `Implementation/**/{project}.project.extend/{class}...create.md` / `.extend.md` | A class/artifact created or extended inside a project another solution created | One `plateau-{plateau-name}--class-{normalized}.skill.md` |
+
+> `{project}` can be a concrete path (`libs/shared/state`, `libs/shared/http-core`, `apps/platform-shell`, `apps/component-preview`, `projects/design-system`, `projects/demo`) or a placeholder (`{Feature}/feature`, `{Feature}/data-access`, `{Module}`).
+>
+> Use the Angular templates in `templates/angular/`: `repo-{name}.skill.template.md`, `project-{name}.skill.template.md` (`project_kind: application` for `apps/*`, `library` for `libs/*`/`projects/*`), `class-{name}.skill.template.md`, `plateau-{name}.skill.template.md`.
+>
+> A `stack: typescript` solution whose `framework` tag is **not** `angular` (a plain Node/TS package like `@platform/contracts`) uses the same patterns but will usually only populate the `repo` tier plus one or two `class` tiers.
+
 # How to build a plateau
 1. Detect {stack} from the {solutions} or ask the user
 2. Define does {output} folder contain folder with name {plateau-name}
@@ -96,25 +119,29 @@ Every solution-skill has an `Implementation/` folder with concrete mutations. Th
    - Scan `Implementation/` folder in every solution-skill
    - .NET: collect all `{Project}.csproj.create.md` and `{Project}.csproj.extend.md`, and all class files nested under them
    - Python: collect all `{App}.create.md`/`{App}.extend.md` (`element_kind: project`), and all class/functions/init files nested under them
-   - Normalize placeholder names (`{Module}`, `{App}`) to generic templates (see [Mapping rules](#mapping-rules))
+   - Angular: collect all `{project}.project.create.md`/`.extend.md` (`element_kind: project`) plus project-level config files (`.federation.extend.md`, top-level `.extend.md`), and every artifact file (`.{artifact-type}.ts`, `.ts`, `.spec.ts`, `.scss`) — flattening topic subfolders
+   - Normalize placeholder names (`{Module}`, `{App}`, `{Feature}`) to generic templates (see [Mapping rules](#mapping-rules))
 9. Create the repository-level skill using the template that matches {stack}
    - .NET: `plateau-{plateau-name}--sln-{plateau-name}.skill.md` using [templates/dotnet/sln-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/sln-{name}.skill.template.md)
-   - Python: `plateau-{plateau-name}--repo-{plateau-name}.skill.md` using [templates/python/repo-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/repo-{name}.skill.template.md)
+   - Python / Angular: `plateau-{plateau-name}--repo-{plateau-name}.skill.md` using [templates/python/repo-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/repo-{name}.skill.template.md) / [templates/angular/repo-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/angular/repo-{name}.skill.template.md)
    - Aggregate all `Repository.create.md`/`Repository.extend.md` files from {solutions}, plus every parent's own repository-level skill content when {parent_plateaus} is non-empty
    - Keep repository-level content only
 10. For each discovered project/package create its skill using the template that matches {stack}
     - .NET: `plateau-{plateau-name}--csproj-{normalized-name}.skill.md` using [templates/dotnet/csproj-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/csproj-{name}.skill.template.md)
     - Python: `plateau-{plateau-name}--package-{normalized-name}.skill.md` using [templates/python/package-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/package-{name}.skill.template.md)
-    - Merge `.create.md` and all `.extend.md` files for the same project/package
+    - Angular: `plateau-{plateau-name}--project-{normalized-name}.skill.md` using [templates/angular/project-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/angular/project-{name}.skill.template.md)
+    - Merge `.create.md` and all `.extend.md` files for the same project/package (Angular: including its `.federation.extend.md` / top-level `.extend.md`)
     - Keep project/package-level content only
 11. For each discovered class/module create its skill using the template that matches {stack}
     - .NET: `plateau-{plateau-name}--class-{normalized-name}.skill.md` using [templates/dotnet/class-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/class-{name}.skill.template.md)
     - Python: `plateau-{plateau-name}--module-{normalized-name}.skill.md` using [templates/python/module-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/module-{name}.skill.template.md)
+    - Angular: `plateau-{plateau-name}--class-{normalized-name}.skill.md` using [templates/angular/class-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/angular/class-{name}.skill.template.md), setting `artifact_type` from the file pattern
     - Merge `.create.md` and `.extend.md` files for the same class/module
     - Keep class/module-level content only
 12. Create `plateau-{plateau-name}.skill/plateau-{plateau-name}.skill.md` using the plateau template that matches {stack}
     - .NET: [templates/dotnet/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/dotnet/plateau-{name}.skill.template.md)
     - Python: [templates/python/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/python/plateau-{name}.skill.template.md)
+    - Angular: [templates/angular/plateau-{name}.skill.template.md](skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/templates/angular/plateau-{name}.skill.template.md)
     - This is the plateau summary: goal, core principles, capabilities, use-cases
     - It is not a code-generation template
     - If {parent_plateaus} is non-empty, describe the union of every parent's summary plus the delta that {solutions} add or change on top — the reader should not need to open every parent to get the full picture.
@@ -181,6 +208,41 @@ Drop the `{App}.` prefix and the trailing `.py`/`.__init__.py`, replace remainin
 | `{App}.functions.helpers.py.create.md` | `plateau-{plateau-name}--module-functions-helpers.skill.md` |
 | `{App}.service.backup_service.py.create.md` | `plateau-{plateau-name}--module-service-backup-service.skill.md` |
 
+## Angular project name normalization
+Take the project path, drop the leading `apps/`/`libs/`/`projects/`, drop a redundant trailing segment equal to a `type:*` role where it just repeats the folder (`libs/{feature}/feature` → `feature-feature` is the deliberate convention, keep it), replace `/` and `.` with `-`, kebab-case. A placeholder `{Feature}` normalizes to `feature`, `{Module}` to `module`.
+
+| Project path | Skill file | Notes |
+| ------------ | ---------- | ----- |
+| `apps/platform-shell` | `plateau-{plateau-name}--project-platform-shell.skill.md` | Concrete composition-root app |
+| `apps/platform-shell-e2e` | `plateau-{plateau-name}--project-platform-shell-e2e.skill.md` | Concrete e2e app |
+| `apps/component-preview` | `plateau-{plateau-name}--project-component-preview.skill.md` | Concrete UI-preview app |
+| `libs/shared/state` | `plateau-{plateau-name}--project-shared-state.skill.md` | Concrete global-store lib |
+| `libs/shared/http-core` | `plateau-{plateau-name}--project-shared-http-core.skill.md` | Concrete HTTP lib |
+| `libs/shared/logging` | `plateau-{plateau-name}--project-shared-logging.skill.md` | Concrete logging lib |
+| `libs/shared/ui` / `libs/shared/util` | `plateau-{plateau-name}--project-shared-ui.skill.md` / `-shared-util.skill.md` | Concrete shared libs |
+| `libs/shared/offline-sync` / `libs/shared/auth-ui` | `plateau-{plateau-name}--project-shared-offline-sync.skill.md` / `-shared-auth-ui.skill.md` | Concrete shared libs |
+| `libs/{feature}/feature` | `plateau-{plateau-name}--project-feature-feature.skill.md` | Generic feature template |
+| `libs/{feature}/data-access` | `plateau-{plateau-name}--project-feature-data-access.skill.md` | Generic feature template |
+| `projects/design-system` / `projects/demo` | `plateau-{plateau-name}--project-design-system.skill.md` / `-demo.skill.md` | Design-system workspace projects |
+
+## Angular class/artifact name normalization
+Drop the topic subfolder and the trailing `.{artifact-type}.ts` / `.ts` / `.spec.ts` / `.scss` and `.create`/`.extend`; keep the `.{artifact-type}` word only when it disambiguates (`auth.store.ts` → `auth-store`, `ds-button.component.ts` → `ds-button-component`); replace `.` and `/` with `-`; kebab-case. A placeholder `{feature}`/`{component-name}` normalizes to `feature`/`component-name`.
+
+| Implementation file | Skill file | `artifact_type` |
+| -------------------- | ---------- | -------------- |
+| `HttpLayer/auth.interceptor.ts.create.md` | `plateau-{plateau-name}--class-auth-interceptor.skill.md` | `interceptor` |
+| `GlobalStore/auth.store.ts.create.md` | `plateau-{plateau-name}--class-auth-store.skill.md` | `store` |
+| `GlobalStore/connectivity.store.ts.create.md` | `plateau-{plateau-name}--class-connectivity-store.skill.md` | `store` |
+| `UI/has-permission.directive.ts.create.md` | `plateau-{plateau-name}--class-has-permission-directive.skill.md` | `directive` |
+| `Routing/{feature}.guard.ts.create.md` | `plateau-{plateau-name}--class-feature-guard.skill.md` | `guard` |
+| `FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md` | `plateau-{plateau-name}--class-feature-store.skill.md` | `store` |
+| `ComponentLayer/{component-name}.component.ts.create.md` | `plateau-{plateau-name}--class-component-name-component.skill.md` | `component` |
+| `Logging/backend-log-sink.ts.create.md` | `plateau-{plateau-name}--class-backend-log-sink.skill.md` | `module` |
+| `OfflineSync/replay-orchestrator.ts.create.md` | `plateau-{plateau-name}--class-replay-orchestrator.skill.md` | `module` |
+| `Testing/{component-name}.visual.spec.ts.create.md` | `plateau-{plateau-name}--class-component-name-visual-spec.skill.md` | `spec` |
+| `Tokens/theme.scss.create.md` | `plateau-{plateau-name}--class-theme-style.skill.md` | `style` |
+| `ServiceWorker/service-worker.create.md` | `plateau-{plateau-name}--class-service-worker.skill.md` | `module` |
+
 ## .create vs .extend
 Both file types contribute to the same target skill:
 - `.create.md` introduces the project/package or class/module and its base responsibilities
@@ -225,7 +287,7 @@ __Applied solutions:__
 ```
 
 # Repository/root skill structure
-The repository/root skill (`plateau-*--sln-*.skill.md` for .NET, `plateau-*--repo-*.skill.md` for Python) describes the whole plateau at the highest level. Its sections must stay at that level.
+The repository/root skill (`plateau-*--sln-*.skill.md` for .NET, `plateau-*--repo-*.skill.md` for Python and Angular) describes the whole plateau at the highest level. Its sections must stay at that level.
 
 `## Project Structure`:
 - Show **only project/package folders**.
