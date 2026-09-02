@@ -25,7 +25,7 @@ created_by:
   - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 ---
 
-> **First plateau of the `monolith` catalog** — built from scratch, `standalone: true`. It fixes the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md) at **VP2 (GlobalStore) = Yes, VP3 (BackendDataAccess) = Yes**; VP1, VP4–VP8 = No. Next in the chain: `plateau-perf-routing-monolith` (VP1). This is "everything the app needs to run online, end to end, as one deployable unit". No lazy-loading tuning, no offline resilience, no federation, and — deliberately — no authentication (every user implicitly trusted until `plateau-multiuser-monolith`).
+> **First plateau of the `monolith` catalog** — built from scratch, `standalone: true`. It fixes the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md) at **VP2 (GlobalStore) = Yes, VP3 (BackendDataAccess) = Yes**; VP1, VP4–VP8 = No. Next in the chain: `plateau-async-monolith` (VP1). This is "everything the app needs to run online, end to end, as one deployable unit". No lazy-loading tuning, no offline resilience, no federation, and — deliberately — no authentication (every user implicitly trusted until `plateau-multiuser-monolith`).
 
 # Core Principles
 
