@@ -16,6 +16,9 @@ created_by:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]"
+registry:
+  - "[[skills/dotnet/architecture/v3.1/plateau/plateau-offline-sync-service/registry/command-cs.md|registry-command-cs]]"
+  - "[[skills/dotnet/architecture/v3.1/plateau/plateau-offline-sync-service/registry/pipelineregistration-cs.md|registry-pipelineregistration-cs]]"
 standalone: true
 ---
 
