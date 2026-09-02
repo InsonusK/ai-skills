@@ -12,12 +12,12 @@ tags:
 
 ## Project Structure
 ```
-/{Module}
-  /{Module}.Domain.Tests
+/tests
+  /Shared.Tests
     Rules/{Rule}.feature
     StepDefinitions/{Rule}Steps.cs
     reqnroll.json
-  /{Module}.Application.Tests
+  /BuildingBlocks.Tests
     Rules/{Rule}.feature
     StepDefinitions/{Rule}Steps.cs
     reqnroll.json
@@ -25,14 +25,14 @@ tags:
     Rules/{Rule}.feature
     StepDefinitions/{Rule}Steps.cs
     reqnroll.json
-/Shared.Tests
-  Rules/{Rule}.feature
-  StepDefinitions/{Rule}Steps.cs
-  reqnroll.json
-/BuildingBlocks.Tests
-  Rules/{Rule}.feature
-  StepDefinitions/{Rule}Steps.cs
-  reqnroll.json
+  /{Module}.Application.Tests
+    Rules/{Rule}.feature
+    StepDefinitions/{Rule}Steps.cs
+    reqnroll.json
+  /{Module}.Domain.Tests       — only once {Module}.Domain exists (VP1)
+    Rules/{Rule}.feature
+    StepDefinitions/{Rule}Steps.cs
+    reqnroll.json
 /report-template
   index.html
 /scripts
@@ -42,6 +42,8 @@ tags:
 Makefile
 README.md
 ```
+
+Test projects sit flat under `/tests`, one per existing production project, each named `{ProductionProject}.Tests`. There is a test project only for a production project that exists — `{Module}.Domain.Tests` appears only after `solution-domain-behaviour` (VP1) creates `{Module}.Domain`.
 
 ## Directory and class skills
 | Directory | file | Description |
