@@ -13,6 +13,8 @@ created_by:
   - "[[../../../../solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill.md|solution-domain-behaviour]]"
   - "[[../../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]]"
   - "[[../../../../solutions/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]]"
+  - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
 ---
 
 # Goal
@@ -29,7 +31,9 @@ __Applied solutions:__
 - An entity has no public setter for guarded state; every mutating method validates via a locally-owned condition and throws `DomainException`.
 - A strict `{ValueObject}` is `sealed record {ValueObject} : Soft{ValueObject}` — reuses the Soft shape, validates in its constructor.
 - A domain service is a `static class` of extension methods on the entity; it validates locally and mutates only through the entity's guarded methods.
-- References only `Shared` and `{Module}.Interfaces`, plus `Microsoft.EntityFrameworkCore` scoped to `IEntityTypeConfiguration` — never `DbContext`, never a repository.
+- References `Shared`, `{Module}.Interfaces`, `{Module}.Domain.Rules` (VP4), and `Microsoft.EntityFrameworkCore` scoped to `IEntityTypeConfiguration` — never `DbContext`, never a repository.
+- **VP4:** a strict `{ValueObject}` constructor and an entity method that duplicated a condition now call the centralized `{Rule}.Check()` / `IRuleBuilder` extension from `{Module}.Domain.Rules` — the local predicate is deleted, not kept alongside.
+- **VP6:** an external-created entity implements `Shared.Guid.IHasGuid` and adds `Guid Guid { get; internal set; }` set once in its `Create(guid, ...)` factory; its config adds a unique index on `Guid`.
 
 __Applied solutions:__
 - [[../../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]] - [[../../../../solutions/solution-value-objects.skill/Implementation/{Module}.Domain.csproj.extend/{ValueObject}.cs.create.md|{ValueObject}.cs.create]]
@@ -69,8 +73,8 @@ __Applied solutions:__
 - Public DTOs, commands, Soft Value Objects — belong to `{Module}.Interfaces`.
 
 ## Allowed Dependencies
-- `Shared`, `{Module}.Interfaces`
-- NuGet: `Microsoft.EntityFrameworkCore` (`IEntityTypeConfiguration` only)
+- `Shared`, `{Module}.Interfaces`, `{Module}.Domain.Rules`
+- NuGet: `Microsoft.EntityFrameworkCore` (`IEntityTypeConfiguration` only), `FluentValidation` (the `Check()` extension's return type)
 
 # Rules
 MUST:

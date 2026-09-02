@@ -11,6 +11,7 @@ tags:
   - plateau/offline-sync-service
 created_by:
   - "[[../../../../../solutions/solution-value-objects.skill/solution-value-objects.skill.md|solution-value-objects]]"
+  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
 # Goal
@@ -22,7 +23,7 @@ __Applied solutions:__
 # Core Principles
 - Apply ONE plateau template per class.
 - `sealed record {ValueObject} : Soft{ValueObject}` — reuses the Soft shape, never re-declares its properties.
-- The constructor validates via a `private static` predicate on the same class and throws `DomainException` on failure — the only path to an instance.
+- **VP4:** once its condition is duplicated by a `{ValueObject}PropertyValidator` (or another consumer), the constructor is redirected to the centralized `{Module}.Domain.Rules` `{Rule}.Check()` and the local `private static` predicate is deleted. The `DomainException` thrown (code + message) now comes from the rule's blocking `ValidationFailure` (`result.Errors.First(e => e.Severity == Severity.Error)`), not a local literal.
 - Immutable, no identity, no infrastructure/application/rules-project dependency.
 - Multi-property VO keeps a `private` parameterless constructor for EF materialization; single-property VO gets implicit conversion operators.
 - DTOs and other modules still use `Soft{ValueObject}` — the handler maps `{ValueObject}` → `Soft{ValueObject}` when projecting.

@@ -15,6 +15,8 @@ created_by:
   - "[[../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]"
   - "[[../../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
   - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
 # Goal
@@ -60,6 +62,8 @@ __Applied solutions:__
     - [{Entity}ByIdSpec.cs](./classes/plateau-offline-sync-service--class-entity-byidspec.skill.md) — named load-by-Id spec (VP2)
   - /Concurrency
     - [{Entity}VersionResolver.cs](./classes/plateau-offline-sync-service--class-entity-version-resolver.skill.md) — per-entity `IEntityVersionResolver` (VP5)
+  - /Resolvers
+    - [Create{Entity}GuidResolver.cs](./classes/plateau-offline-sync-service--class-create-entity-guid-resolver.skill.md) — per-entity `IGuidResolver` (VP6)
   - [{ModuleName}ApplicationRegistration.cs](./classes/plateau-offline-sync-service--class-module-application-registration.skill.md)
   - {ModuleName}.Application.csproj
 
@@ -75,6 +79,8 @@ __Applied solutions:__
 | {ModuleName}ApplicationRegistration.cs | Module DI self-registration (+ `AddScoped<{Entity}VersionResolver>()`) | [[./classes/plateau-offline-sync-service--class-module-application-registration.skill.md\|class-module-application-registration]] |
 | /Specifications/{Entity}ByIdSpec.cs | Named load-by-Id specification | [[./classes/plateau-offline-sync-service--class-entity-byidspec.skill.md\|class-entity-byidspec]] |
 | /Concurrency/{Entity}VersionResolver.cs | Reads one entity's current version | [[./classes/plateau-offline-sync-service--class-entity-version-resolver.skill.md\|class-entity-version-resolver]] |
+| /Specifications/{Entity}ByGuidSpec.cs | Guid lookup spec for an external-created entity | [[./classes/plateau-offline-sync-service--class-entity-byguidspec.skill.md\|class-entity-byguidspec]] |
+| /Resolvers/Create{Entity}GuidResolver.cs | Returns the existing entity as a `ConflictResult` on a duplicate Guid | [[./classes/plateau-offline-sync-service--class-create-entity-guid-resolver.skill.md\|class-create-entity-guid-resolver]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
@@ -100,7 +106,7 @@ MUST:
 - Put each feature in its own `/Features/{FeatureName}` folder; name files `{FeatureName}.Handler.cs` / `{FeatureName}.Validator.cs`, classes `{FeatureName}Handler` / `{FeatureName}Validator`.
 - Keep the handler shape `guard → (dispatch | read) → return Result<T>`; never inject `DbContext`, write inline LINQ, or call `SaveChangesAsync`.
 - Keep per-feature validators declarative and transport-only; compose `Soft{ValueObject}` / DTO validation via `SetValidator(IValidator<T>)`, never a repeated inline rule; never inject a repository or service into a validator.
-- Expose exactly one `Register{ModuleName}Module(IServiceCollection, IConfiguration)`; register handlers via `AddMediatR` scan and validators via `AddValidatorsFromAssembly`; never register a pipeline behavior or an infrastructure service here.
+- Expose exactly one `Register{ModuleName}Module(IServiceCollection, IConfiguration)`; register handlers via `AddMediatR` scan and validators via `AddValidatorsFromAssembly`; also register each `{Entity}VersionResolver` (VP5) and each `IGuidResolver<Result<Create{Entity}Result>>` → `Create{Entity}GuidResolver` (VP6) as `Scoped`; never register a pipeline behavior or an infrastructure service here.
 - Never contain a business rule; never reference another module's `Application` or `Domain`; cross-module only via `ISender`/`IPublisher`.
 
 __Applied solutions:__

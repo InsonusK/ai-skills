@@ -11,6 +11,7 @@ tags:
   - plateau/offline-sync-service
 created_by:
   - "[[../../../../../solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill.md|solution-dto-property-validators]]"
+  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
 # Goal
@@ -22,7 +23,7 @@ __Applied solutions:__
 # Core Principles
 - Apply ONE plateau template per class.
 - Extends `AbstractValidator<Soft{ValueObject}>` — not `PropertyValidator<T,TProperty>`, which another module cannot resolve generically.
-- The condition is written **locally** in this file (a `Must(...)` predicate or plain `RuleFor` chain) — this solution owns it and may change it independently. It need not match the strict VP3 `{ValueObject}` constructor word-for-word, though they usually agree.
+- **VP4:** once this and the strict `{ValueObject}` constructor were found to duplicate a condition, the local `Must(...)` is replaced by a single call to the centralized `{Module}.Domain.Rules` `IRuleBuilder` extension — `RuleFor(x => x).{ValueObject}IsValid()`. `ErrorCode`/`Message`/`State` now come from that one extension; the local chain is deleted.
 - No repository, no service, no throwing.
 - Lives in `/{Module}.Application/Validators/Property`; registered by the `AddValidatorsFromAssembly` scan.
 

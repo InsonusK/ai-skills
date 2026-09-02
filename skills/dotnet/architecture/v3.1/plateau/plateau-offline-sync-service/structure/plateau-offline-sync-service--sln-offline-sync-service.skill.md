@@ -18,6 +18,8 @@ created_by:
   - "[[../../../solutions/solution-repository-integration.skill/solution-repository-integration.skill.md|solution-repository-integration]]"
   - "[[../../../solutions/solution-query-integration.skill/solution-query-integration.skill.md|solution-query-integration]]"
   - "[[../../../solutions/solution-api-project.skill/solution-api-project.skill.md|solution-api-project]]"
+  - "[[../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
 ---
 
 # Structure
@@ -36,6 +38,8 @@ created_by:
     /[{ModuleName}.Application](./{Module}.Application/plateau-offline-sync-service--csproj-module-application.skill.md)
     /[{ModuleName}.Domain](./{Module}.Domain/plateau-offline-sync-service--csproj-module-domain.skill.md)          — VP1
     /[{ModuleName}.Api](./{Module}.Api/plateau-offline-sync-service--csproj-module-api.skill.md)                   — VP8/VP9
+    /[{ModuleName}.Domain.Rules](./{Module}.Domain.Rules/plateau-offline-sync-service--csproj-module-domain-rules.skill.md)   — VP4 (portable rule project)
+    /{ModuleName}.Domain.Rules.Spec              — .feature files only, shared Gherkin source (not a project)
   /App
     /[App.Host](./App.Host/plateau-offline-sync-service--csproj-app-host.skill.md)
     /[App.Infrastructure](./App.Infrastructure/plateau-offline-sync-service--csproj-app-infrastructure.skill.md)   — VP2 / VP5 / VP11
@@ -47,7 +51,8 @@ created_by:
   /[BuildingBlocks.Tests](./BuildingBlocks.Tests/plateau-offline-sync-service--csproj-building-blocks-tests.skill.md)
   /[{ModuleName}.Interfaces.Tests](./{Module}.Interfaces.Tests/plateau-offline-sync-service--csproj-module-interfaces-tests.skill.md)
   /[{ModuleName}.Application.Tests](./{Module}.Application.Tests/plateau-offline-sync-service--csproj-module-application-tests.skill.md)
-  /[{ModuleName}.Domain.Tests](./{Module}.Domain.Tests/plateau-offline-sync-service--csproj-module-domain-tests.skill.md)     — with VP1
+  /[{ModuleName}.Domain.Tests](./{Module}.Domain.Tests/plateau-offline-sync-service--csproj-module-domain-tests.skill.md)     — with VP1 (+ Cecil Architecture/ with VP4)
+  /[{ModuleName}.Domain.Rules.Tests](./{Module}.Domain.Rules.Tests/plateau-offline-sync-service--csproj-module-domain-rules-tests.skill.md)  — VP4
 /scripts   unit-test.sh   mutation-test.sh   test-report.sh
 /report-template   index.html
 ```
@@ -66,7 +71,8 @@ __Applied solutions:__
 | --- | --- | --- |
 | /src/Modules/{ModuleName}.Interfaces | [[./{Module}.Interfaces/plateau-offline-sync-service--csproj-module-interfaces.skill.md\|csproj-module-interfaces]] | Public contracts (+ concurrency / timestamp interfaces on commands) |
 | /src/Modules/{ModuleName}.Application | [[./{Module}.Application/plateau-offline-sync-service--csproj-module-application.skill.md\|csproj-module-application]] | Orchestration — handlers (load/stage), validators, specs, version resolvers |
-| /src/Modules/{ModuleName}.Domain | [[./{Module}.Domain/plateau-offline-sync-service--csproj-module-domain.skill.md\|csproj-module-domain]] | Entities, strict Value Objects, domain services, EF configs |
+| /src/Modules/{ModuleName}.Domain | [[./{Module}.Domain/plateau-offline-sync-service--csproj-module-domain.skill.md\|csproj-module-domain]] | Entities (Guid + Version), strict VOs, domain services, EF configs |
+| /src/Modules/{ModuleName}.Domain.Rules | [[./{Module}.Domain.Rules/plateau-offline-sync-service--csproj-module-domain-rules.skill.md\|csproj-module-domain-rules]] | Centralized business predicates — portable, FluentValidation + Interfaces only |
 | /src/Modules/{ModuleName}.Api | [[./{Module}.Api/plateau-offline-sync-service--csproj-module-api.skill.md\|csproj-module-api]] | Thin inbound-API adapters (HTTP / gRPC) |
 | /src/App/App.Host | [[./App.Host/plateau-offline-sync-service--csproj-app-host.skill.md\|csproj-app-host]] | Composition root — logging, modules, pipeline, infrastructure, API |
 | /src/App/App.Infrastructure | [[./App.Infrastructure/plateau-offline-sync-service--csproj-app-infrastructure.skill.md\|csproj-app-infrastructure]] | AppDbContext, Repository, UnitOfWork, version-resolver factory, gRPC clients |
@@ -77,7 +83,8 @@ __Applied solutions:__
 | /tests/BuildingBlocks.Tests | [[./BuildingBlocks.Tests/plateau-offline-sync-service--csproj-building-blocks-tests.skill.md\|csproj-building-blocks-tests]] | Tests `BuildingBlocks` |
 | /tests/{ModuleName}.Interfaces.Tests | [[./{Module}.Interfaces.Tests/plateau-offline-sync-service--csproj-module-interfaces-tests.skill.md\|csproj-module-interfaces-tests]] | Tests `{ModuleName}.Interfaces` |
 | /tests/{ModuleName}.Application.Tests | [[./{Module}.Application.Tests/plateau-offline-sync-service--csproj-module-application-tests.skill.md\|csproj-module-application-tests]] | Tests `{ModuleName}.Application` (+ `{ModuleName}.Domain`) |
-| /tests/{ModuleName}.Domain.Tests | [[./{Module}.Domain.Tests/plateau-offline-sync-service--csproj-module-domain-tests.skill.md\|csproj-module-domain-tests]] | Tests `{ModuleName}.Domain` only |
+| /tests/{ModuleName}.Domain.Tests | [[./{Module}.Domain.Tests/plateau-offline-sync-service--csproj-module-domain-tests.skill.md\|csproj-module-domain-tests]] | Tests `{ModuleName}.Domain` (+ Cecil architecture `[Fact]`s) |
+| /tests/{ModuleName}.Domain.Rules.Tests | [[./{Module}.Domain.Rules.Tests/plateau-offline-sync-service--csproj-module-domain-rules-tests.skill.md\|csproj-module-domain-rules-tests]] | Tests `{ModuleName}.Domain.Rules` only |
 
 __Applied solutions:__
 - [[../../../solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]] - [[../../../solutions/solution-sln-structure.skill/Implementation/Repository.create.md|Repository.create]]
@@ -98,6 +105,7 @@ __Applied solutions:__
 
 # Rules
 MUST:
+- `{Module}.Domain.Rules` references `FluentValidation` + `{Module}.Interfaces` only; `{Module}.Domain` and `{Module}.Application` reference `{Module}.Domain.Rules`. `{Module}.Domain.Rules.Spec` is a directory of `.feature` files, not a project — every test project that proves a scenario from it links the physical file in.
 - Keep plateau-core's dependency arrows, and add: `{Module}.Domain → Shared, {Module}.Interfaces` (+ EF Core for configs); `{Module}.Application → {Module}.Domain`; `{Module}.Api → {Module}.Interfaces, Shared, BuildingBlocks` only; `App.Infrastructure → Shared, BuildingBlocks, every {Module}.Domain/Interfaces`; `App.Queries → Shared, every {Module}.Domain/Interfaces`; `App.Host → App.Infrastructure`. `App.Infrastructure` is referenced only by `App.Host`.
 - Keep exactly one `DbContext` (`AppDbContext` in `App.Infrastructure`); `{Module}.Application`/`Domain` never reference it.
 - Give every production project one dedicated test project mirroring its Allowed Dependencies; `{Module}.Api` has none.

@@ -11,6 +11,8 @@ tags:
   - plateau/offline-sync-service
 created_by:
   - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
+  - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]]"
 ---
 
 # Goal
@@ -36,13 +38,15 @@ __Applied solutions:__
 - /{Module}.Domain.Tests
   - /Rules/{Rule}.feature
   - /StepDefinitions/[{Rule}Steps.cs](./classes/plateau-offline-sync-service--class-module-domain-rule-steps.skill.md)
+  - /Architecture/[{Module}ArchitectureTests.cs / GuardedPropertyRuleCoverageTests.cs](./classes/plateau-offline-sync-service--class-architecture-tests.skill.md) — Mono.Cecil `[Fact]`s (VP4 companion)
   - reqnroll.json
   - {Module}.Domain.Tests.csproj
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
-| /StepDefinitions/{Rule}Steps.cs | Bindings asserting entity/VO behavior against the real types | [[./classes/plateau-offline-sync-service--class-module-domain-rule-steps.skill.md\|class-module-domain-rule-steps]] |
+| /StepDefinitions/{Rule}Steps.cs | Bindings asserting entity/VO behavior against the real types (+ `@format` rule scenarios via VP4) | [[./classes/plateau-offline-sync-service--class-module-domain-rule-steps.skill.md\|class-module-domain-rule-steps]] |
+| /Architecture/*.cs | Cecil structural `[Fact]`s over compiled IL | [[./classes/plateau-offline-sync-service--class-architecture-tests.skill.md\|class-architecture-tests]] |
 
 ## NuGet Packages
 | Package | Purpose |

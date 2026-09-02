@@ -11,6 +11,8 @@ tags:
   - plateau/offline-sync-service
 created_by:
   - "[[../../../../../solutions/solution-mediator-integration.skill/solution-mediator-integration.skill.md|solution-mediator-integration]]"
+  - "[[../../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
 ---
 
 # Goal
@@ -25,6 +27,7 @@ __Applied solutions:__
 - `AddMediatR` scans the Application assembly for `IRequestHandler` / `INotificationHandler`.
 - `AddValidatorsFromAssembly` scans the same assembly — command validators, `{ValueObject}PropertyValidator`, `{Dto}Validator` all registered at once.
 - Pipeline behaviors are **not** registered here — that is `App.Host`'s job.
+- Also registers each versioned entity's `{Entity}VersionResolver` (VP5) and each external-created entity's `IGuidResolver<Result<Create{Entity}Result>>` → `Create{Entity}GuidResolver` (VP6), both `Scoped` — the pipeline behaviors resolve these per request.
 - Never registers a `DbContext` or infrastructure service; never references another module's Application assembly.
 
 # Naming convention

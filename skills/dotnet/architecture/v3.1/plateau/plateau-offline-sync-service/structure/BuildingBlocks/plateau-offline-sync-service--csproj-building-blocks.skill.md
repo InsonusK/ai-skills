@@ -15,6 +15,7 @@ created_by:
   - "[[../../../../solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill.md|solution-mediator-exception-handler]]"
   - "[[../../../../solutions/solution-unit-of-work.skill/solution-unit-of-work.skill.md|solution-unit-of-work]]"
   - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
 ---
 
 # Goal
@@ -43,7 +44,7 @@ created_by:
     - [UnitOfWorkBehavior.cs](./classes/plateau-offline-sync-service--class-unit-of-work-behavior.skill.md) — commit once, last, after the outermost command (VP2)
   - BuildingBlocks.csproj
 
-`GuidResolvingBehavior.cs` (VP6) arrives with plateau-offline-sync-service.
+    - [GuidResolvingBehavior.cs](./classes/plateau-offline-sync-service--class-guid-resolving-behavior.skill.md) — idempotent create for an `IHasGuid` command (VP6), registered after `ConcurrencyBehavior`
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
@@ -53,6 +54,7 @@ created_by:
 | /MediatR/ConcurrencyBehavior.cs | Version guard for `IHasVersions` commands | [[./classes/plateau-offline-sync-service--class-concurrency-behavior.skill.md\|class-concurrency-behavior]] |
 | /MediatR/UnitOfWorkContext.cs | Scoped nesting-depth counter | [[./classes/plateau-offline-sync-service--class-unit-of-work-context.skill.md\|class-unit-of-work-context]] |
 | /MediatR/UnitOfWorkBehavior.cs | Atomic commit after the outermost command | [[./classes/plateau-offline-sync-service--class-unit-of-work-behavior.skill.md\|class-unit-of-work-behavior]] |
+| /MediatR/GuidResolvingBehavior.cs | Idempotent create for an `IHasGuid` command | [[./classes/plateau-offline-sync-service--class-guid-resolving-behavior.skill.md\|class-guid-resolving-behavior]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |

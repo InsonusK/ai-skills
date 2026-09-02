@@ -15,6 +15,8 @@ created_by:
   - "[[../../../../../solutions/solution-domain-configuration.skill/solution-domain-configuration.skill.md|solution-domain-configuration]]"
   - "[[../../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
   - "[[../../../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
+  - "[[../../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../../solutions/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]"
 ---
 
 # Goal
@@ -28,7 +30,9 @@ __Applied solutions:__
 - No public setter for guarded state — mutation only through named methods (or `internal set` written only by those methods). A `private` parameterless constructor exists for EF materialization.
 - Every mutating method validates first, via a locally-owned condition (inline or a `private static` helper), and throws `Shared.Exceptions.DomainException` on failure — invalid state is unreachable.
 - Property types are strict `{ValueObject}` where the value carries a domain invariant (VP3), otherwise `Soft{ValueObject}` or primitives.
+- **Classification (documented next to the entity):** Internal/External × Immutable/Mutable decides which of VP5/VP6 apply — no partial application, no concurrency on an immutable entity, no `Guid` on an internal one.
 - **VP5 contribution (bounded):** implement `Shared.Concurrency.IVersioned` + `public uint Version { get; internal set; }`. Application code never assigns `Version` — the database owns it.
+- **VP6 contribution (bounded):** implement `Shared.Guid.IHasGuid` + `public Guid Guid { get; internal set; }`, set once via the `Create(guid, ...)` factory parameter, never reassigned. A correlation handle only — never a foreign key, never a route parameter after creation.
 - **VP7 contribution (bounded):** implement `ICreationInfoModel` (and `IUpdateInfoModel` if the user edits the entity); add the timestamp properties with `internal set` and explicit interface setters; add a `SetTimestamps`-style method this solution owns. Server times are set by `AppDbContext`; the handler copies `ActionTimeStamp` to the user times.
 - Bulky behavior moves to a `static` domain service in `/Services` that calls back into the entity's guarded methods.
 

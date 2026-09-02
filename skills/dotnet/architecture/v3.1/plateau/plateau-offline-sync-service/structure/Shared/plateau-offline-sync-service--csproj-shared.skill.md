@@ -19,6 +19,8 @@ created_by:
   - "[[../../../../solutions/solution-entity-concurrency-change.skill/solution-entity-concurrency-change.skill.md|solution-entity-concurrency-change]]"
   - "[[../../../../solutions/solution-entity-edit-timestamp.skill/solution-entity-edit-timestamp.skill.md|solution-entity-edit-timestamp]]"
   - "[[../../../../solutions/solution-grpc-client.skill/solution-grpc-client.skill.md|solution-grpc-client]]"
+  - "[[../../../../solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
+  - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
 ---
 
 # Goal
@@ -69,6 +71,12 @@ __Applied solutions:__
     - [ICreationInfoModel / IUpdateInfoModel / ICommandWithTimestamp.cs](./classes/plateau-offline-sync-service--class-timestamp-contracts.skill.md) — creation/update timestamp contracts (VP7)
   - /Clients
     - [I{Dependency}Client.cs](./classes/plateau-offline-sync-service--class-i-dependency-client.skill.md) — outbound service contracts returning `Result<T>` (VP11)
+  - /Guid
+    - [IHasGuid.cs / IGuidResolver.cs](./classes/plateau-offline-sync-service--class-guid-contracts.skill.md) — idempotent-create contracts (VP6)
+  - /Results
+    - [ConflictResult.cs](./classes/plateau-offline-sync-service--class-guid-contracts.skill.md) — `Result<T>` with Conflict status carrying the existing entity (VP6)
+  - /Exceptions
+    - [EntityNotLoadedException.cs](./classes/plateau-offline-sync-service--class-entity-not-loaded-exception.skill.md) — required-navigation-not-loaded (VP4)
   - Shared.csproj
 
 __Applied solutions:__
@@ -88,6 +96,8 @@ __Applied solutions:__
 | /Concurrency/*.cs | `IVersioned` / `IHasVersions` / resolver contracts | [[./classes/plateau-offline-sync-service--class-concurrency-contracts.skill.md\|class-concurrency-contracts]] |
 | /Timestamps/*.cs | Creation/update timestamp contracts | [[./classes/plateau-offline-sync-service--class-timestamp-contracts.skill.md\|class-timestamp-contracts]] |
 | /Clients/I{Dependency}Client.cs | Outbound service contract returning `Result<T>` | [[./classes/plateau-offline-sync-service--class-i-dependency-client.skill.md\|class-i-dependency-client]] |
+| /Guid/*.cs, /Results/ConflictResult.cs | Idempotent-create contracts + conflict result | [[./classes/plateau-offline-sync-service--class-guid-contracts.skill.md\|class-guid-contracts]] |
+| /Exceptions/EntityNotLoadedException.cs | Required-navigation-not-loaded exception | [[./classes/plateau-offline-sync-service--class-entity-not-loaded-exception.skill.md\|class-entity-not-loaded-exception]] |
 
 ## NuGet Packages
 | Package | Version constraint | Purpose |
