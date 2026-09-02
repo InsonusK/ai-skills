@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <!-- FluentValidation + {Module}.Interfaces only — portable, no Domain/Application/repository -->
+    <ProjectReference Include="..\Sample.Interfaces\Sample.Interfaces.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+  </ItemGroup>
+</Project>

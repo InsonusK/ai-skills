@@ -14,8 +14,6 @@ RESULT_DIR="tmp/result"
 REPORT_DIR="tmp/report"
 
 mkdir -p "$RESULT_DIR" "$REPORT_DIR/tests"
-# `dotnet test` (MTP) collects each project's --report-xunit-trx into ./TestResults at the
-# solution root — clear it first so the aggregate count is not stale.
 rm -rf TestResults
 
 RUN_ARGS=(--report-xunit-trx)
@@ -23,7 +21,12 @@ if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   RUN_ARGS+=(--coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml)
 fi
 
-dotnet test "$SOLUTION" --configuration Release --no-build -- "${RUN_ARGS[@]}"
+# Capture the MTP run so the aggregate count comes from its own summary line, not from
+# per-project TRX files (whose timestamp-based names can collide across parallel projects).
+set +e
+dotnet test "$SOLUTION" --configuration Release --no-build -- "${RUN_ARGS[@]}" | tee tmp/test-output.txt
+TEST_EXIT=${PIPESTATUS[0]}
+set -e
 
 # Merge each project's Reqnroll HTML report.
 while IFS= read -r -d '' report; do
@@ -32,16 +35,12 @@ while IFS= read -r -d '' report; do
   cp "$report" "$REPORT_DIR/tests/$PROJECT_NAME/index.html"
 done < <(find tests -path "*/bin/Release/net10.0/reqnroll_report.html" -print0)
 
-# Aggregate TRX counters across every test project into one summary.
-TOTAL=0; PASSED=0; FAILED=0
-while IFS= read -r -d '' trx; do
-  COUNTERS=$(grep -o '<Counters[^/]*/>' "$trx" || true)
-  [ -z "$COUNTERS" ] && continue
-  TOTAL=$((TOTAL + $(echo "$COUNTERS" | grep -oP 'total="\K[0-9]+')))
-  PASSED=$((PASSED + $(echo "$COUNTERS" | grep -oP 'passed="\K[0-9]+')))
-  FAILED=$((FAILED + $(echo "$COUNTERS" | grep -oP 'failed="\K[0-9]+')))
-done < <(find TestResults -name '*.trx' -print0 2>/dev/null)
-printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/unit-test.json"
+# Aggregate from the MTP summary block ("  total: N / failed: N / succeeded: N").
+TOTAL=$(grep -oP '^\s*total:\s*\K[0-9]+' tmp/test-output.txt | tail -1 || echo 0)
+FAILED=$(grep -oP '^\s*failed:\s*\K[0-9]+' tmp/test-output.txt | tail -1 || echo 0)
+PASSED=$(grep -oP '^\s*succeeded:\s*\K[0-9]+' tmp/test-output.txt | tail -1 || echo 0)
+printf '{"total":%s,"passed":%s,"failed":%s}' "${TOTAL:-0}" "${PASSED:-0}" "${FAILED:-0}" > "$RESULT_DIR/unit-test.json"
+rm -f tmp/test-output.txt
 
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   dotnet tool run reportgenerator \
@@ -53,4 +52,4 @@ if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   printf '{"linePct":%s}' "$LINE_PCT" > "$RESULT_DIR/coverage-test.json"
 fi
 
-[ "$FAILED" -eq 0 ]
+exit "$TEST_EXIT"
