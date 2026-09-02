@@ -47,7 +47,36 @@ Files under `v3.1/`:
 
 **design-system:** (1) `HybridDesignTokens` common now, becomes a `Theming` VP variant if `MultiTenantTheming` built; (2) `solution-ui-testing` split (shared with monolith).
 
-## Stage 2 — variability-map-create — pending (4 maps)
+## Stage 2 — variability-map-create — DRAFT for review (this session)
+
+Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `variability-map.md` written:
+
+- **`monolith/variability-map.md`** — 7 VPs + 1 aspirational (VP8 PersistedState). VP1 PerformanceTunedRouting, VP2 GlobalStore, VP3 BackendDataAccess, VP4 OfflineReadResilience (req VP3+VP2), VP5 OfflineWriteQueue (per feature, req VP4), VP6 BackendLogDelivery (req VP3), VP7 Authentication (req VP3+VP2). `Migration=Yes` for VP1/VP4/VP5/VP6/VP7 (the V1 plateau chain documents exactly those transitions). Reference table maps the 5 V1 main-chain plateaus; v3.1 additionally allows thinner plateaus (VP2=No / VP3=No / auth-without-federation).
+- **`platform-host/variability-map.md`** — 3 VPs (federation delta only; monolith VPs answered by `parent_plateaus`). VP1 HostDesignSystemConsumption, VP2 SessionSharing (req `monolith:VP7`), VP3 FederatedReadResilience (req `monolith:VP4`). Constraint direction inverted from V1 (`solution-authentication depends_on platform-embeddability` → `solution-session-sharing depends_on monolith solution-authentication`).
+- **`embeddable-app/variability-map.md`** — 2 real VPs + 1 aspirational. VP1 RemoteSessionConsumption, VP2 RemoteDesignSystemConsumption (both near-universal but variable — owner ruling), VP3 RemoteInternalArchitecture (aspirational, `parent_plateaus` a monolith plateau). Host references are "meaningful only if", not legality gates.
+- **`design-system/variability-map.md`** — **0 VPs**. VP1 MultiTenantTheming aspirational only.
+
+### Constraints to encode in `depends_on` at Stage 3 (v3.1 ADRs)
+
+- `solution-offline-first`, `solution-offline-sync`, `solution-authentication` → `depends_on solution-global-store` (monolith VP2 gating).
+- `solution-authentication` → `depends_on solution-api-http-layer` (V1 gap; monolith VP3 gating VP7).
+- `solution-session-sharing` (new) → `depends_on` monolith `solution-authentication` + `solution-platform-contracts`.
+- `solution-repository-structure` modified (data-access lib conditional on VP3) — `solution-update` ADR.
+
+### Solution roster after the Stage-3 splits (planned)
+
+| V1 solution | v3.1 outcome |
+| --- | --- |
+| `solution-state-management` | split → `solution-state-tiering` (common: rule + 2 tiers) + `solution-global-store` (monolith VP2) |
+| `solution-lazy-loading-routing` | renamed → `solution-performance-tuned-routing` (monolith VP1) |
+| `solution-repository-structure` | migrated + modified (data-access conditional) |
+| `solution-api-http-layer` / `solution-offline-first` / `solution-offline-sync` / `solution-logging-base` / `solution-logging-global` / `solution-app-routing` / `solution-forms` / `solution-app-testing` | migrated as-is (format only) |
+| `solution-authentication` | migrated minus SessionContract publication (monolith VP7) |
+| `solution-platform-embeddability` | split → `solution-federation-host` + `solution-platform-contracts` (platform-host) + `solution-federation-remote` (embeddable-app) |
+| `solution-design-system-application` | split → `solution-host-design-system-consumption` (platform-host VP1) + `solution-remote-design-system-consumption` (embeddable-app VP2) |
+| `solution-ui-testing` | split → monolith-side + design-system-side realizations |
+| `solution-design-system-structure` / `-tokens` / `-components` | migrated as-is (design-system common) |
+| — (new) | `solution-session-sharing` (platform-host VP2), `solution-session-consumption` (embeddable-app VP1), `solution-persisted-state` (monolith VP8), later `solution-design-system-multi-tenant-theming` |
 
 ## Stage 3 — solution migration + delta-conflict-detection — pending
 

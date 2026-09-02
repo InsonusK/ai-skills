@@ -70,8 +70,9 @@ v3.1/
 
 ## Status
 
-- **Stage 1 (feature-map-create)** — in progress. Four feature models drafted.
-- Stages 2–4 — pending.
+- **Stage 1 (feature-map-create)** — done (owner-reviewed). Four feature models.
+- **Stage 2 (variability-map-create)** — draft. Four variability maps: monolith (7 VPs), platform-host (3 VPs), embeddable-app (2 VPs), design-system (0 VPs).
+- Stages 3–4 — pending.
 
 V1 input (read-only reference): `skills/angular/architecture/solutions/`,
 `skills/angular/architecture/plateau/`.
