@@ -78,6 +78,32 @@ Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `v
 | `solution-design-system-structure` / `-tokens` / `-components` | migrated as-is (design-system common) |
 | — (new) | `solution-session-sharing` (platform-host VP2), `solution-session-consumption` (embeddable-app VP1), `solution-persisted-state` (monolith VP8), later `solution-design-system-multi-tenant-theming` |
 
-## Stage 3 — solution migration + delta-conflict-detection — pending
+## Stage 3 — solution migration + delta-conflict-detection — DONE (this session)
 
-## Stage 4 — plateau-create-by-solutions — pending (depth TBD)
+**3a — mechanical migration** (commit `3072b192`): 18 V1 solutions copied into `v3.1/solutions/` (flattened). 603 link-path rewrites, 18 version bumps, ~135 de-Russifications (labels + prose; 4 `solution-ui-testing/glossary/*` still Russian — tracked debt). `## MUST NOT`/`## SHOULD NOT`/`# Anti-patterns` → negative bullets under `## MUST`/`## SHOULD` (123 files; forbidden-heading count 0). `triggers:` → one-sentence `whenToUse:` (18). adr links → `.md`; non-slug labels → slugs; "solution #N" → slug. `agent/INVARIANTS.md` written.
+
+**3b — state split + rename** (commit `e75f4ba2`):
+- `solution-lazy-loading-routing` → `solution-performance-tuned-routing`.
+- `solution-state-management` → `solution-state-tiering` (common — rule + 2 lower tiers, new main skill + Boundaries + ADR renamed) + `solution-global-store` (VP2 — `libs/shared/state` + `store.config.ts` seam, new main skill + Boundaries + ADR `classical-ngrx-for-the-global-tier`).
+- `auth.store` worked example moved into `solution-authentication`, `.create` + `.extend` merged.
+- Inbound refs repointed: forms/api-http-layer/app-testing → state-tiering; offline-first/offline-sync/authentication → global-store.
+
+**3c — federation/design-system splits + new solutions** (commit `9c604484`):
+- `solution-platform-embeddability` → `solution-federation-host` (platform-host common; drops over-strong `depends_on solution-offline-first`) + `solution-platform-contracts` (platform-host common; own repo; new main + ADR + Implementation stub) + `solution-federation-remote` (embeddable-app common).
+- `solution-design-system-application` → `solution-host-design-system-consumption` (platform-host VP1) + `solution-remote-design-system-consumption` (embeddable-app VP2).
+- `solution-authentication` rewritten monolith-scoped: `depends_on` global-store + app-routing + api-http-layer (the V1 api-http-layer gap closed); SessionContract publication carved out.
+- NEW: `solution-session-sharing` (platform-host VP2), `solution-session-consumption` (embeddable-app VP1), `solution-persisted-state` (monolith VP8 skeleton, `> Draft contract`), `solution-design-system-multi-tenant-theming` (design-system VP1 skeleton).
+- **26 solutions total.** `agent/check.sh` (9 sections) PASS.
+
+**3d — delta-conflict-detection** (this commit): `delta-conflict-analysis.md`. Pre-analysis: `element/repository` split per-catalog (was 3 `.create` on one element — a design error only because the tag conflated 3 different products), `ds-{component}.component.ts` retagged `element/ds-component-ts`, `demo.project.extend` retagged. **8 intersecting groups, ALL canonical — NO `TMC`/`FMC`/`FDC`, zero resolver solutions.** Findings: (1) split `solution-ui-testing` monolith-side / design-system-side (deferred — the one outstanding structural change); (4) `authentication` + `offline-sync` should carry an explicit `shared-state-project` `.extend` registering their slices (Stage-4 / solution-update).
+
+### Tracked debt (deferred)
+
+- `solution-ui-testing` split (delta-conflict Finding 1).
+- 4 `solution-ui-testing/glossary/*.md` still in Russian — need translation (`documentation-for-concept`).
+- Per-solution `# Boundaries` sections: written for the split/new solutions; **not** yet for the ~14 straight-migrated ones.
+- Implementation-file skill-design polish: inline "MUST NOT" inside `## MUST` bullets (not headings — check.sh-clean), `Risk:`/`Fix:` on every rule bullet, dedup of the doubled `#MUST` link lists the mechanical conversion produced in some main files.
+- `depends_on solution-global-store` not yet added to `solution-offline-first` / `solution-offline-sync` frontmatter (the constraint is in the variability-map + INVARIANTS; the edge is a Stage-4 ADR).
+- 2 aspirational skeletons (`solution-persisted-state`, `solution-design-system-multi-tenant-theming`) have no Implementation.
+
+## Stage 4 — plateau-create-by-solutions — pending (depth TBD, owner decides after Stage 3 review)

@@ -71,8 +71,9 @@ v3.1/
 ## Status
 
 - **Stage 1 (feature-map-create)** — done (owner-reviewed). Four feature models.
-- **Stage 2 (variability-map-create)** — draft. Four variability maps: monolith (7 VPs), platform-host (3 VPs), embeddable-app (2 VPs), design-system (0 VPs).
-- Stages 3–4 — pending.
+- **Stage 2 (variability-map-create)** — done. Four variability maps: monolith (7 VPs), platform-host (3 VPs), embeddable-app (2 VPs), design-system (0 VPs).
+- **Stage 3 (solution migration + delta-conflict)** — done. 26 solutions in `v3.1/solutions/` (18 migrated + 4 splits producing 7 + 4 new). `agent/check.sh` PASS. `delta-conflict-analysis.md` — 8 intersecting groups, all canonical, zero resolvers. Tracked debt list in `agent/DECISIONS.md`.
+- **Stage 4 (plateau-create-by-solutions)** — pending, depth TBD.
 
 V1 input (read-only reference): `skills/angular/architecture/solutions/`,
 `skills/angular/architecture/plateau/`.

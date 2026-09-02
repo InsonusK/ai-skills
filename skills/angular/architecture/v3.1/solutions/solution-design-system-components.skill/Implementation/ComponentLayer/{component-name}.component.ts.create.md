@@ -6,7 +6,7 @@ element_kind: component
 change_kind: create
 tags:
   - solution/design-system-components
-  - element/component-name-component-ts
+  - element/ds-component-ts
 ---
 
 # How this generic file is used

@@ -4,7 +4,7 @@ element_kind: repository
 change_kind: extend
 tags:
   - solution/design-system-tokens
-  - element/repository
+  - element/design-system-repository
 ---
 
 # Structure

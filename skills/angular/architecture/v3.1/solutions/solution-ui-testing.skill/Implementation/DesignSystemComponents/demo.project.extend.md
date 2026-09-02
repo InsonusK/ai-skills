@@ -6,7 +6,7 @@ element_kind: project
 change_kind: extend
 tags:
   - solution/ui-testing
-  - element/demo-project
+  - element/design-system-repository
 ---
 
 # How this file is used

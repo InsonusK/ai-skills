@@ -4,7 +4,7 @@ element_kind: repository
 change_kind: extend
 tags:
   - solution/performance-tuned-routing
-  - element/repository
+  - element/monolith-repository
 ---
 
 # Structure

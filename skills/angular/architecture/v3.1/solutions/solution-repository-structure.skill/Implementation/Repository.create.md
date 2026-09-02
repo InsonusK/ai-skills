@@ -4,7 +4,7 @@ element_kind: repository
 change_kind: create
 tags:
   - solution/repository-structure
-  - element/repository
+  - element/monolith-repository
 ---
 
 # Structure

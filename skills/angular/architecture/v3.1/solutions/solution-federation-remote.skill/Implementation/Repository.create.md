@@ -4,7 +4,7 @@ element_kind: repository
 change_kind: create
 tags:
   - solution/federation-remote
-  - element/repository
+  - element/embeddable-repository
 ---
 
 # Structure

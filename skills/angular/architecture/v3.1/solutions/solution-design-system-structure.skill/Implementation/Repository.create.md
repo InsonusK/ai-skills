@@ -4,7 +4,7 @@ element_kind: repository
 change_kind: create
 tags:
   - solution/design-system-structure
-  - element/repository
+  - element/design-system-repository
 ---
 
 # Structure

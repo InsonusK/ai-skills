@@ -4,7 +4,7 @@ element_kind: repository
 change_kind: extend
 tags:
   - solution/federation-host
-  - element/repository
+  - element/monolith-repository
 ---
 
 # Structure
