@@ -17,6 +17,7 @@ tags:
 # Core Principles
 - Catches the broad `Exception` base type to guarantee no unhandled exception escapes
 - Logs at `LogLevel.Critical` because an unhandled exception indicates a programming or infrastructure defect
+- Logs with the stable `LogEvents.UnhandledException` event id from [[skills/dotnet/architecture/v3.1/solutions/solution-app-logging.skill/solution-app-logging.skill.md|solution-app-logging]] — an unhandled exception is the single most alert-worthy line, so it carries a fixed id
 
 # Structure
 
@@ -39,6 +40,7 @@ tags:
 using Ardalis.Result;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Shared.Logging;
 
 namespace BuildingBlocks.MediatR;
 
@@ -63,7 +65,9 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(
+            _logger.Log(
+                LogLevel.Critical,
+                LogEvents.UnhandledException,
                 ex,
                 "Unhandled exception while handling request {RequestType}. Correlation details will be available in the logs.",
                 typeof(TRequest).Name);
@@ -74,11 +78,13 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>
 }
 ```
 
+`LogEvents` lives in `Shared.Logging` (from [[skills/dotnet/architecture/v3.1/solutions/solution-app-logging.skill/solution-app-logging.skill.md|solution-app-logging]]); `BuildingBlocks` already references `Shared`.
+
 # Rule changes
 
 ## MUST
 - Wrap `await next()` in a `try/catch (Exception ex)` block
-- Log the caught exception at `LogLevel.Critical` with `ILogger.LogCritical`
+- Log the caught exception at `LogLevel.Critical` with the `LogEvents.UnhandledException` event id
 - Return `(TResponse)Result.Error(...)` with a fixed, non-detailed message
 - Define the behavior in `BuildingBlocks/MediatR/ExceptionHandlingBehavior.cs`
 - Constrain the behavior to `where TRequest : IRequest<TResponse>` and `where TResponse : IResult`

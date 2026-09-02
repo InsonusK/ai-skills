@@ -26,6 +26,7 @@ extends:
 depends_on:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-app-logging.skill/solution-app-logging.skill.md|solution-app-logging]]"
 built_on_plateau:
 ---
 
@@ -58,6 +59,8 @@ SOLUTION:
   - [[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create.md|App.Host.csproj]] - hosts centralized `PipelineRegistration` where the behavior is registered
 - [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill.md|solution-pipeline-registration]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-pipeline-registration.skill/Implementation/App.Host.csproj.extend.md|App.Host.csproj]] - provides centralized `PipelineRegistration.AddPipeline()` extension point and is the single source of truth for pipeline behavior order — this solution prepends `ExceptionHandlingBehavior` there, before every other behavior
+- [[skills/dotnet/architecture/v3.1/solutions/solution-app-logging.skill/solution-app-logging.skill.md|solution-app-logging]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-app-logging.skill/Implementation/Shared.csproj.extend/LogEvents.cs.create.md|LogEvents.cs]] - provides the `LogEvents.UnhandledException` event id this behavior logs with
 
 NUGET:
 - `MediatR` {version} - provides `IPipelineBehavior<TRequest, TResponse>` and `IRequest<T>`
