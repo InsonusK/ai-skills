@@ -115,4 +115,32 @@ Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `v
 - 2 aspirational skeletons (`solution-persisted-state`, `solution-design-system-multi-tenant-theming`) have no Implementation — by design (`> Draft contract — no consumer yet`).
 - A `plateau/README.md` + `agent/` polish parallel to dotnet's — deferred to Stage 4.
 
-## Stage 4 — plateau-create-by-solutions — pending (depth TBD, owner decides after Stage 3 review)
+## Stage 4 — plateau-create-by-solutions — IN PROGRESS
+
+### ⚠️ Owner decisions (this session)
+
+- **Depth**: FULL for `monolith` + `design-system` (runnable examples, Vitest/Playwright green); **limited** for `platform-host` + `embeddable-app` (a federation smoke test, not full apps).
+- **Effort**: xhigh, no subagents/workflows (the 4 catalogs are too interdependent — cross-catalog `parent_plateaus`, shared solution pool, cross-catalog registry — for isolated subagents; the build-verify loop is sequential).
+- **Plateau set — 8 plateaus:**
+
+| Catalog | Plateau | Composes | Adds | Example |
+| --- | --- | --- | --- | --- |
+| monolith | `plateau-online-monolith` | — (from scratch) | common + VP2 GlobalStore + VP3 BackendDataAccess | FULL |
+| monolith | `plateau-perf-routing-monolith` *(renamed from V1 `async-monolith` — "async" read as async-data, confusing)* | online-monolith | VP1 PerformanceTunedRouting (selective preload + `loadComponent` split + bundle budgets) | FULL |
+| monolith | `plateau-offline-read-monolith` | perf-routing-monolith | VP4 OfflineReadResilience (Workbox SW, `isOnline`, `OfflineTransportError`) — reads survive offline, writes fail | FULL |
+| monolith | `plateau-offline-full-monolith` | offline-read-monolith | VP5 OfflineWriteQueue (Dexie queue, replay, conflict) — reads + writes survive offline | FULL — **owner's current app** |
+| monolith | `plateau-multiuser-monolith` | offline-full-monolith | VP6 BackendLogDelivery + VP7 Authentication | FULL — **platform-host's parent** |
+| design-system | `plateau-design-system` | — (from scratch) | 4 common | FULL |
+| platform-host | `plateau-platform-host` | `plateau-multiuser-monolith` (cross-catalog `parent_plateaus`) | RuntimeRemoteFederation + PlatformContracts + VP1/2/3 | limited (federation smoke test) |
+| embeddable-app | `plateau-embeddable-app` | — (from scratch) | FederationRemoteContract + VP1 RemoteSessionConsumption + VP2 RemoteDesignSystemConsumption | limited (trivial remote) |
+
+- `offline-read` / `offline-full` naming: chosen so the family is visually grouped by `offline-` prefix with the partial-vs-complete distinction explicit (V1's `async` / `offline` didn't convey it). `plateau-perf-routing-monolith` name pending owner's one-word pick (`perf-routing` / `code-split` / `lazy-tuned`).
+- The example **evolves down the chain** (`plateau-create-by-solutions` step 5): child seeds from parent's `example/`, then extends. One Nx workspace, grown plateau by plateau.
+- `plateau-create-by-solutions` was **extended to document the Angular / TypeScript stack** (commit `0e2be8cd`) — file-pattern table, project/class name normalization, Angular branches in the build steps.
+
+### Status
+
+- `plateau-online-monolith`: folder + root skill (v3.1 format) + structure skills (seeded from V1, repointed, `created_by` fixed, auth removed, MUST-NOT converted) — **~70%**. TODO: missing structure skills (`component-preview` project, ui-testing/app-testing spec classes), `# Boundaries` notes, the `example/` app.
+- Plateaus 2–8: not started.
+
+**This is a multi-session effort** (dotnet's Stage 4 was 3 plateaus over multiple sessions; this is 8 + examples).
