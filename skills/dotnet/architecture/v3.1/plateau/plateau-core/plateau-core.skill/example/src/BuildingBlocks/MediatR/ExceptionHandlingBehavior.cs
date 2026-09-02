@@ -22,7 +22,7 @@ public sealed class ExceptionHandlingBehavior<TRequest, TResponse>(ILogger<Excep
         {
             logger.Log(LogLevel.Critical, LogEvents.UnhandledException, ex, "Unhandled exception handling {Request}", typeof(TRequest).Name);
             var error = typeof(TResponse).GetMethod("Error", [typeof(string)])!;
-            return (TResponse)error.Invoke(null, ["An unexpected error occurred."])!;
+            return (TResponse)error.Invoke(null, ["An unexpected error occurred. Please try again later."])!;
         }
     }
 }
