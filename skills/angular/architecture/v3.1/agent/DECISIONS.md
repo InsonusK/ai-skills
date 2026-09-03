@@ -107,13 +107,15 @@ Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `v
 - ✅ **Variability-map Realized-by links** repointed from V1 paths into `v3.1/solutions/` (with renames); Status paragraphs updated.
 - ✅ **Inline `MUST`/`MUST NOT`/`SHOULD`/`MAY` in Implementation rule bullets** softened to lowercase / `must never` / `should never` (225 bullets, 72 files) — RFC-2119-shout removed; check.sh §3b heading count stays 0.
 
-### Tracked debt (still deferred — genuinely optional / Stage-4-adjacent)
+### Tracked debt
 
-- `Risk:`/`Fix:` sub-bullets on every Implementation `## MUST` rule bullet (dotnet also deferred this through its wave audits; the negative bullets are correctly placed, just terse).
-- `solution-repository-structure` `solution-update` ADR recording the "data-access lib is conditional on VP3" change (currently only in prose + the variability-map).
-- The `shared-state-project` `.extend` on `authentication` / `offline-sync` to register their slices in `store.config.ts` (delta-conflict Finding 4) — natural to do during Stage 4 plateau assembly.
-- 2 aspirational skeletons (`solution-persisted-state`, `solution-design-system-multi-tenant-theming`) have no Implementation — by design (`> Draft contract — no consumer yet`).
-- A `plateau/README.md` + `agent/` polish parallel to dotnet's — deferred to Stage 4.
+- **`Risk:`/`Fix:` sub-bullets on every Implementation `## MUST` rule bullet** — STILL DEFERRED (dotnet also deferred this through its wave audits; the negative bullets are correctly placed, just terse). ~225 bullets — best as its own pass.
+- ✅ **`solution-repository-structure` `solution-update` ADR** — `adr/feature-lib-split-conditional-on-backend-data-access.md` (commit closing the debts). `Repository.create` + main skill + variability-map now say the `data-access` lib is conditional on `BackendDataAccess`.
+- ✅ **`shared-state-project` `.extend` on `authentication` / `offline-sync`** (delta-conflict Finding 4) — both `Implementation/GlobalStore/shared-state.project.extend.md` files exist; registry entries + `plateau-multiuser-monolith/registry/shared-state-project.md` record the closure.
+- 2 aspirational skeletons (`solution-persisted-state`, `solution-design-system-multi-tenant-theming`) have no Implementation — **by design** (`> Draft contract — no consumer yet`).
+- ✅ **`plateau/README.md` per catalogue** — all 4 written (`monolith/`, `design-system/`, `platform-host/`, `embeddable-app/` `plateau/README.md`).
+- ✅ **`whenToUse:` on all plateau structure skills** — backfilled with concrete per-role sentences across the 5 monolith plateaus (166 files); the other 3 catalogues already had it.
+- ✅ **`solution-offline-sync` pending-sync-indicator** — `Implementation/UI/pending-sync-indicator.component.ts.create.md` rewritten to the presentational (`count` input, derived from rows) shape the plateaus actually use, matching the per-entity `syncStatus` state machine (commit `dddf1ed9`).
 
 ## Stage 4 — plateau-create-by-solutions — IN PROGRESS
 

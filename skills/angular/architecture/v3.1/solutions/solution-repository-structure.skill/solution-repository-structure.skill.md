@@ -22,6 +22,7 @@ extends: []
 depends_on: []
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx Vs Angular Cli Workspace ADR]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|Feature Lib Split Conditional On Backend Data Access ADR]]"
 ---
 
 # Goal
@@ -51,6 +52,8 @@ adr:
 
 - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx monorepo instead of plain Angular CLI workspace]]
   - Selected variant: Nx monorepo — chosen for affected-based builds, enforced module boundaries, and readiness for the planned embeddability (Module Federation) and offline-first extensions
+- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|The data-access lib is conditional on BackendDataAccess (v3.1 change from V1)]]
+  - Selected variant: a feature always has a `feature` lib; `solution-api-http-layer` adds the `data-access` lib only when the feature has server data — V1 mandated both "from the start", which no longer holds once `BackendDataAccess` is a Variation Point
 
 # Boundaries
 - This is the base of the `monolith` catalog (`NxWorkspaceStructure`, common). It assumes nothing but an Nx workspace with the Angular preset.

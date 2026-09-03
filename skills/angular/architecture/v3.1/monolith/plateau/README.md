@@ -1,0 +1,64 @@
+# monolith plateaus
+
+Five plateaus, built by `plateau-create-by-solutions` from the catalogue in `../../solutions/`.
+**Flat lineage** — a single chain, each `standalone: true`, each `parent_plateaus` entry the single
+previous plateau. Capabilities are **cumulative**: everything the parent has, plus its own delta.
+VP definitions: [`../variability-map.md`](../variability-map.md).
+
+| # | Plateau | Parent | Adds (VP) | New solutions in its `created_by` |
+|---|---------|--------|-----------|-----------------------------------|
+| 1 | **plateau-online-monolith** | — (from scratch) | common baseline + **VP2** GlobalStore + **VP3** BackendDataAccess | `solution-repository-structure`, `solution-app-routing`, `solution-state-tiering`, `solution-global-store`, `solution-forms`, `solution-api-http-layer`, `solution-logging-base`, `solution-app-testing`, `solution-ui-testing` |
+| 2 | **plateau-async-monolith** | online-monolith | **VP1** PerformanceTunedRouting | `solution-performance-tuned-routing` |
+| 3 | **plateau-offline-read-monolith** | async-monolith | **VP4** OfflineReadResilience (Workbox SW, `connectivity` slice, `OfflineTransportError`) | `solution-offline-first` |
+| 4 | **plateau-offline-full-monolith** | offline-read-monolith | **VP5** OfflineWriteQueue (Dexie queue, replay, per-entity `syncStatus`) — *owner's current app* | `solution-offline-sync` |
+| 5 | **plateau-multiuser-monolith** | offline-full-monolith | **VP6** BackendLogDelivery + **VP7** Authentication — *`plateau-platform-host`'s parent* | `solution-logging-global`, `solution-authentication` |
+
+VP1–VP7 = Yes at plateau 5; **VP8** (PersistedState) is aspirational — its solution
+(`solution-persisted-state`) exists as a `> Draft contract` skeleton, ready to compose into a
+sixth plateau when a real consumer appears.
+
+Build scaffolding (anchor contract, mechanical check, decisions log) is in [`../../agent/`](../../agent/) —
+run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
+
+## What each plateau folder holds
+
+```
+plateau-{name}/
+  plateau-{name}.skill/
+    plateau-{name}.skill.md      the plateau summary an agent reads before writing code
+    example/                     a runnable Nx workspace — vitest + nx lint + prod build (+ build-sw) green
+  structure/                     one skill per project + per class (prefix `plateau-{name}--`)
+  registry/                      delta-conflict-detection ordering records (per plateau)
+```
+
+| Plateau | structure skills | registry | example gates |
+|---|---|---|---|
+| plateau-online-monolith | 27 | 3 | vitest, `nx lint` (10 projects), prod build |
+| plateau-async-monolith | 28 | 1 | + `order-report` emitted as its own lazy chunk |
+| plateau-offline-read-monolith | 31 | 2 | + `nx build-sw` (`dist/.../sw.js`) |
+| plateau-offline-full-monolith | 36 | 1 | vitest 20 files / 70 tests, `nx lint` (11), prod build 446 kB, build-sw |
+| plateau-multiuser-monolith | 44 | 4 | vitest 28 files / 98 tests, `nx lint` (12), prod build 454 kB, build-sw |
+
+The example evolves **one Nx workspace** down the chain — each plateau's `example/` is a snapshot of
+that workspace grown by that plateau's solutions (living workspace at `/tmp/ng-ex/online-monolith`
+where this was built). Playwright specs are written and configured throughout but were not executed
+in the build sandbox.
+
+## `registry/` — DOP step 6
+
+When two or more solutions modify the same code element and the interaction is only about **ordering**
+or is a **benign N≥3 bucket** (not a real semantic conflict), `delta-conflict-detection` records a
+per-element file in the `registry/` folder of the shallowest plateau where all the intersecting
+solutions coexist. Every Angular v3.1 group is **canonical — zero resolver solutions**. Highlights:
+
+- **`monolith-repository`** / **`platform-shell-project`** — repo- and composition-root buckets; every
+  feature adds one distinct tag / allow-list row / bootstrap wiring. `source: ordering-only`, N≥3 benign.
+- **`shared-state-project`** — the `store.config.ts` slice seam: `global-store` `.create` + `offline-first`
+  / `offline-sync` / `authentication` `.extend` (one distinct slice each). `TMN`, `source: constraint`
+  (every slice-adding VP requires VP2). N = 4 at `plateau-multiuser-monolith`. Closes delta-conflict
+  **Finding 4**.
+- **`feature-facade-ts`** / **`feature-routes-ts`** — a feature's Facade / routes array as the natural
+  attachment point for `api-http-layer` + `offline-sync` (queueing branch) / `performance-tuned-routing`
+  + `offline-sync` (route providers) + `authentication` (guard). `TMN` / `FMN`, member-disjoint.
+
+Full classification: [`../../delta-conflict-analysis.md`](../../delta-conflict-analysis.md).

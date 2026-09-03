@@ -1,5 +1,5 @@
 ---
-description: Shared pending-sync indicator, reactively reading MutationQueueService's live query
+description: Shared, presentational pending-sync indicator in libs/shared/ui — a `count` input, fed a value derived from the feature store's rows that carry a syncStatus
 project_name: shared-ui
 name: pending-sync-indicator
 element_kind: component
@@ -11,7 +11,7 @@ tags:
 
 # Goals
 
-- Show the user how many of their actions are queued and waiting to sync, per feature
+- Show the user how many of their actions are queued and waiting to sync, per feature — as an aggregate on top of the per-row `syncStatus` badges the feature already shows
 
 # Naming convention
 
@@ -21,46 +21,54 @@ tags:
 
 # Implementation changes
 
+**Presentational only** — it takes a `count` input and renders when `count > 0`. It never injects `MutationQueueService` and never touches Dexie, keeping `libs/shared/ui` free of a `type:store` dependency (the same call the plateau made for `OfflineBannerComponent`).
+
 ```typescript
 @Component({
-  selector: 'app-pending-sync-indicator',
+  selector: 'ui-pending-sync-indicator',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (pendingCount() > 0) {
-      <div role="status">{{ pendingCount() }} action(s) waiting to sync</div>
+    @if (count() > 0) {
+      <div role="status">
+        {{ count() }} {{ count() === 1 ? 'action' : 'actions' }} waiting to sync
+      </div>
     }
   `,
 })
 export class PendingSyncIndicatorComponent {
-  @Input({ required: true }) feature!: string;
-
-  private readonly queue = inject(MutationQueueService);
-  protected readonly pendingCount = toSignal(
-    toObservable(computed(() => this.feature)).pipe(
-      switchMap(feature => from(this.queue.pendingForFeature$(feature))),
-      map(entries => entries.length),
-    ),
-    { initialValue: 0 },
-  );
+  readonly count = input.required<number>();
 }
+```
+
+The owning feature feeds `count` from a **computed derived from its store's rows**, not a separately tracked number:
+
+```typescript
+// in {feature}.store.ts
+pendingSyncCount: computed(() =>
+  orders().filter((o) => o.syncStatus === 'queued' || o.syncStatus === 'sending' || o.syncStatus === 'failed').length),
+// template:  <ui-pending-sync-indicator [count]="store.pendingSyncCount()" />
 ```
 
 # Rule changes
 
 ## MUST
-- The indicator must read from `MutationQueueService.pendingForFeature$`, never poll or query the Dexie table directly outside that service.
-- A feature that queues mutations must mount this indicator (or otherwise surface `pendingForFeature$`) somewhere in its UI — a queued action must never be invisible to the user.
+- The component renders from its `count` input only — it must never inject `MutationQueueService` or query the Dexie table.
+- The `count` the feature feeds it must be **derived from the feature store's rows that carry a `syncStatus`** — never a number tracked in parallel that can drift from the visible rows.
+- A feature that queues mutations must surface a **per-row `syncStatus`** on its rows (via `<ui-status-badge>` or equivalent) in addition to this aggregate indicator — a queued action must never be invisible or reduced to an opaque count.
 
 ## SHOULD
-- **A feature queueing mutations without ever showing a pending indicator** — Consequence: the user has no way to know their action wasn't immediately applied, which can look like data loss or a bug — Instead: every feature that queues mutations surfaces this indicator (or an equivalent) somewhere relevant
+- **A feature queueing mutations without ever showing pending state** — Consequence: the user has no way to know their action wasn't immediately applied, which can look like data loss or a bug — Instead: every feature that queues mutations shows both the per-row status and this aggregate indicator
 
 # Check list
 
-- [ ] The indicator's count reactively updates as entries are enqueued/synced
-- [ ] Every feature that enqueues mutations surfaces this indicator somewhere in its UI
+- [ ] The component takes only a `count` input — no `MutationQueueService`, no Dexie reference
+- [ ] The `count` a feature feeds it is a computed over the store's rows with a `syncStatus`
+- [ ] Every feature that enqueues mutations shows a per-row `syncStatus` and this indicator
 
 # Unittest TestCases
 
-- [ ] WHEN a mutation is enqueued for a feature THEN
-  - [ ] that feature's indicator count increases by one, reactively
-- [ ] WHEN a queued mutation is successfully synced THEN
-  - [ ] the indicator count decreases accordingly
+- [ ] WHEN `count` is `0` THEN nothing is rendered
+- [ ] WHEN `count` is `1` THEN a `role="status"` element reads "1 action waiting to sync"; `> 1` pluralises
+- [ ] WHEN a mutation is enqueued for a feature THEN the derived count increases by one, reactively (the store row gains `syncStatus: 'queued'`)
+- [ ] WHEN a queued mutation is successfully synced THEN the derived count decreases accordingly (the optimistic row is dropped)
