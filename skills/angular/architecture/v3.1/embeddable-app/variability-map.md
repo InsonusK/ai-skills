@@ -34,7 +34,7 @@ V1's single `plateau-embeddable-app` composes both `solution-authentication` (se
 
 ## Plateau Map derivation
 
-**No plateaus exist in `v3.1/embeddable-app/` yet.**
+**[`plateau-embeddable-app`](skills/angular/architecture/v3.1/embeddable-app/plateau/plateau-embeddable-app/plateau-embeddable-app.skill/plateau-embeddable-app.skill.md) is built** — the catalog's single plateau: `parent_plateaus: []`, `standalone: true`, `created_by: [solution-federation-remote, solution-session-consumption, solution-remote-design-system-consumption]`; VP1 + VP2 = Yes, VP3 (RemoteInternalArchitecture) aspirational. Limited trivial-remote example. One benign intersection group: [`embeddable-repository`](skills/angular/architecture/v3.1/embeddable-app/plateau/plateau-embeddable-app/registry/embeddable-repository.md) (N=3).
 
 ### Reference: V1 → v3.1
 

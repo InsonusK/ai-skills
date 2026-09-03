@@ -1,0 +1,8 @@
+[
+  {
+    "name": "embeddable-app",
+    "remoteEntryUrl": "http://localhost:4401/remoteEntry.json",
+    "exposedModule": "./Routes",
+    "routePath": "reports"
+  }
+]

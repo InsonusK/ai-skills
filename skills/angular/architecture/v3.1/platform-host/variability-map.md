@@ -38,7 +38,7 @@ V1 `solution-platform-embeddability` `depends_on solution-offline-first` uncondi
 
 ## Plateau Map derivation
 
-**No plateaus exist in `v3.1/platform-host/` yet.**
+**[`plateau-platform-host`](skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/plateau-platform-host.skill/plateau-platform-host.skill.md) is built** — the catalog's single plateau: `parent_plateaus: [plateau-multiuser-monolith]`, `standalone: true`, `created_by: [solution-federation-host, solution-platform-contracts, solution-session-sharing, solution-host-design-system-consumption]`; VP1/VP2/VP3 all = Yes (VP2/VP3 satisfiable because the composed monolith has VP7/VP4). Limited federation-smoke-test example. Two benign intersection groups: [`platform-shell-project`](skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/registry/platform-shell-project.md) (N≥3) and [`platform-contracts`](skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/registry/platform-contracts.md) (N=2).
 
 ### Reference: V1 → v3.1
 

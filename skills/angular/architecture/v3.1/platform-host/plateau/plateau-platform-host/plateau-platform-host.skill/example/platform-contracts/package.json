@@ -1,0 +1,28 @@
+{
+  "name": "@platform/contracts",
+  "version": "1.0.0",
+  "description": "The sole build-time contract between the federation host and its remotes \u2014 types and DI tokens only, no implementation.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "pack": "npm run build && npm pack"
+  },
+  "peerDependencies": {
+    "@angular/core": "^22.1.0"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "@angular/core": "^22.1.0"
+  }
+}
