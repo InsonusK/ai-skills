@@ -22,8 +22,12 @@ No new top-level directories. This extension adds artifact-placement conventions
 # Rules
 
 ## MUST
-- Any code that checks "is the user allowed to do X" must express the check in terms of a permission string (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]]), never a role name.
-- The access token must only ever be held in the `shared-state` auth slice's in-memory field — it must never be written to `localStorage`, `sessionStorage`, or any other persistent client storage (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]]).
+- Any "is the user allowed to do X" check is expressed as a permission string, never a role name.
+  - Risk: role checks (`role === 'admin'`) couple every feature to the platform's role taxonomy and cannot be reused by an embeddable app that doesn't know it.
+  - Fix: check `permissions().includes('orders.delete')`; the backend delivers the flat permission set; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]].
+- The access token lives only in the `shared-state` auth slice's in-memory field — never `localStorage`, `sessionStorage`, or any persistent client storage.
+  - Risk: a persisted token is the classic XSS-driven theft vector, worse with federated third-party code in the same runtime.
+  - Fix: reload recovery is silent-refresh-on-bootstrap (an `HttpOnly` refresh cookie), not persistence; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]].
 
 # Unittest TestCases
 

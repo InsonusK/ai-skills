@@ -94,9 +94,15 @@ export class AuthEffects {
 - `accessToken` is held only in this slice's in-memory NgRx state — never written to `localStorage` / `sessionStorage` / any persistent client storage, per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]].
   - Risk: the most common XSS-driven token-theft vector, doubly dangerous with federated third-party code in the same runtime.
   - Fix: rely on silent-refresh-on-bootstrap to repopulate the in-memory token after a reload.
-- `Silent Refresh Requested` is dispatched exactly once during application bootstrap (an `APP_INITIALIZER`-equivalent or root route resolver), before any authenticated request.
-- `permissions` is a flat array of permission strings, never role names, per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]].
-- `Session Expired` is dispatched from a single central place (the HTTP interceptor reacting to a 401), never duplicated across features.
+- `Silent Refresh Requested` is dispatched exactly once during application bootstrap, before any authenticated request.
+  - Risk: dispatched more than once (or too late) means racing refresh calls, or the first authenticated request goes out with no token.
+  - Fix: one `provideAppInitializer(() => inject(Store).dispatch(AuthActions.silentRefreshRequested()))`.
+- `permissions` is a flat array of permission strings, never role names.
+  - Risk: role names in state push features toward role checks and couple them to the platform taxonomy; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]].
+  - Fix: the backend delivers `permissions: string[]`; guards/directives check membership.
+- `Session Expired` is dispatched from a single central place (the interceptor's 401 path), never duplicated across features.
+  - Risk: several features each deciding "the session expired" produce conflicting logout/redirect behaviour.
+  - Fix: only `authInterceptor` dispatches it, after a single failed silent refresh.
 - Never let a feature maintain its own copy of "is logged in" / "current user" / "permissions" — every read goes through `auth.selectors.ts`.
   - Risk: two sources of truth that silently diverge (a feature still renders as logged-in after logout).
   - Fix: select `selectCurrentUser` / `selectPermissions` from `libs/shared/state`.

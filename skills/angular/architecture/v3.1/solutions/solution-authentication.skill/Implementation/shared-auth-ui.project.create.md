@@ -41,10 +41,15 @@ tags:
 # Rules
 
 ## MUST
-- The library must never depend on feature libraries — only on `libs/shared/state` (auth slice) and core Angular/NgRx packages.
-- `HasPermissionDirective` must be the only auth UI primitive exported from `libs/shared/auth-ui` until a future solution explicitly adds more.
-
-- Never contain business features or page components — only reusable UI primitives.
+- The library never depends on feature libraries — only `libs/shared/state` (auth slice) and core Angular/NgRx.
+  - Risk: a dependency on a feature makes `libs/shared/auth-ui` un-shareable and can create an import cycle.
+  - Fix: the `scope:shared` boundary; the directive/guard read `selectPermissions` from `libs/shared/state` only.
+- `HasPermissionDirective` (and, in v3.1, `requirePermission` + the login/forbidden pages) are the only things exported.
+  - Risk: exporting internals invites consumers to couple to them, and blurs what the "auth UI primitives" contract is.
+  - Fix: `index.ts` exports exactly the directive, the guard factory, and the two pages.
+- Never contain business features or page components — only reusable auth UI primitives.
+  - Risk: a feature dropped into `shared/auth-ui` becomes importable by everything, bypassing the feature boundary.
+  - Fix: business features live under `libs/{feature}`; this lib holds only cross-cutting auth UI.
 ## SHOULD
 - **Inlining the permission check into every component instead of using the directive** — Consequence: permission logic spreads across the codebase and becomes inconsistent — Instead: use `*hasPermission` from `libs/shared/auth-ui`
 

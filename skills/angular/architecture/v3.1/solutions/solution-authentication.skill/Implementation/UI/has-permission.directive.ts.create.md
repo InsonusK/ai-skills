@@ -45,8 +45,12 @@ export class HasPermissionDirective {
 # Rule changes
 
 ## MUST
-- The directive must check a permission string, never a role name, consistent with [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]].
-- Hiding an element with this directive must never be treated as a substitute for a server-side authorization check — it is a UI convenience only; the corresponding action must still be authorized on the backend.
+- The directive checks a permission string, never a role name.
+  - Risk: role-based visibility couples templates to the platform's role taxonomy; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]].
+  - Fix: `*hasPermission="'orders.delete'"` — the input is a permission string read from `selectPermissions`.
+- Hiding an element with this directive is never a substitute for a server-side check.
+  - Risk: a determined user unhides the control (devtools, a crafted request) and the action goes through.
+  - Fix: `*hasPermission` is a UX affordance; the backend authorizes the action independently, and a whole route uses `requirePermission`.
 
 ## SHOULD
 - **Relying on `*hasPermission` alone to protect a destructive action, with no server-side check** — Consequence: a user could still trigger the action by calling the API directly, bypassing the UI entirely — Instead: treat this directive purely as UI polish; the backend remains the actual authorization boundary

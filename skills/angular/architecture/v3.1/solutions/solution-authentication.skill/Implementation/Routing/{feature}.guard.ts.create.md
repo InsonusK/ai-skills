@@ -51,9 +51,15 @@ export const ORDERS_ROUTES: Routes = [
 # Rule changes
 
 ## MUST
-- The guard must check a permission string against the `shared-state` auth slice's `permissions`, never a role name (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]]).
-- The guard must be attached inside the feature's own routes, at the specific path it protects — never centralized in `apps/platform-shell`'s `app.routes.ts`, consistent with the hierarchical route ownership from `solution-app-routing`.
-- A failed permission check must redirect to a forbidden/not-authorized route, not silently fail navigation.
+- The guard checks a permission string against the auth slice's `permissions`, never a role name.
+  - Risk: a role check couples the feature to the platform's role taxonomy; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]].
+  - Fix: `inject(Store).selectSignal(selectPermissions)().includes(permission)`.
+- The guard is attached inside the feature's own routes, at the path it protects — never centralized in `apps/platform-shell`'s `app.routes.ts`.
+  - Risk: centralizing guards makes the shell know which feature paths need which permissions — the coupling hierarchical route ownership prevents.
+  - Fix: `canActivate: [requirePermission('orders.archive')]` on the feature's own route object; the factory lives in `libs/shared/auth-ui`.
+- A failed permission check redirects to a forbidden route, not a silent navigation failure.
+  - Risk: navigation that just doesn't happen looks like a broken link to the user.
+  - Fix: return `router.createUrlTree(['/forbidden'])` from the guard.
 
 ## SHOULD
 - **Centralizing all permission guards in the shell's root routes "for visibility"** — Consequence: reintroduces the coupling `solution-app-routing`'s hierarchical ownership was designed to prevent — the shell would need to know which specific feature paths require which permissions — Instead: each feature attaches its own guards to its own routes, using the shared `requirePermission` factory

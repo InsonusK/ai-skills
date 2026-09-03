@@ -60,11 +60,18 @@ export function provideGlobalStore(): EnvironmentProviders {
 # Rules
 
 ## MUST
-- The `auth` slice must be registered in the same `provideGlobalStore()` seam as `connectivity` / `notifications` — never a separate provider call.
-- `AuthEffects` must be registered alongside `ConnectivityEffects` in the same `provideEffects(...)` call.
-- `selectCurrentUser` / `selectAccessToken` / `selectPermissions` / `selectIsLoggedIn` are the only public selectors — feature code reads auth state only through these, never a duplicated copy.
-
-- feature code must never maintain its own "is logged in" / "current user" / "permissions" — every read goes through the exported selectors.
+- The `auth` slice is registered in the same `provideGlobalStore()` seam as `connectivity` / `notifications` — never a separate provider call.
+  - Risk: a slice on its own provider path is easy to omit in a test or a second app, and drifts from the others.
+  - Fix: `provideState(authFeature)` in `store.config.ts`.
+- `AuthEffects` is registered alongside `ConnectivityEffects` in the same `provideEffects(...)` call.
+  - Risk: a separate `provideEffects` call for auth can be missed, so login/refresh effects never run.
+  - Fix: `provideEffects(ConnectivityEffects, AuthEffects)` in the one `provideGlobalStore()`.
+- `selectCurrentUser` / `selectAccessToken` / `selectPermissions` / `selectIsLoggedIn` are the only public selectors.
+  - Risk: feature code reading raw slice fields couples to the slice shape and can derive "is logged in" inconsistently.
+  - Fix: `index.ts` exports those four selectors + `AuthActions` + `AuthFacade` + `authInterceptor`; nothing else.
+- Feature code never keeps its own copy of "is logged in" / "current user" / "permissions".
+  - Risk: two sources of truth that silently diverge — a feature still renders as logged-in after logout.
+  - Fix: every read goes through the exported selectors.
 
 ## SHOULD
 - **Splitting the auth slice into its own Nx library** — Consequence: an extra project to reason about for state that belongs with the other cross-cutting slices — Instead: keep it under `libs/shared/state/src/lib/auth/` like `connectivity` and `notifications`.
