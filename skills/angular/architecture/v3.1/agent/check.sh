@@ -22,19 +22,20 @@ if grep -rn -E 'skills/angular/architecture/(solutions|plateau)/' "$V31" 2>/dev/
   fail=1; note "stale V1 links:"; sed 's/^/    /' /tmp/ng31_stale.txt
 else note "ok"; fi
 
-section "2. No Cyrillic outside solution-ui-testing glossary (tracked debt)"
-n=$(grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" 2>/dev/null | grep -vE 'solution-ui-testing.skill/glossary/|/example/' | wc -l)
-if [ "$n" -gt 0 ]; then fail=1; note "Cyrillic in $n non-glossary files:"; grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" | grep -vE 'solution-ui-testing.skill/glossary/|/example/' | sed 's/^/    /'
-else note "ok (glossary translation is tracked debt)"; fi
+section "2. No Cyrillic anywhere in v3.1/ (HARD)"
+n=$(grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" 2>/dev/null | grep -vE '/example/' | wc -l)
+if [ "$n" -gt 0 ]; then fail=1; note "Cyrillic in $n files:"; grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" | grep -vE '/example/' | sed 's/^/    /'
+else note "ok"; fi
 
 section "3a. Forbidden skill-design headings in main solution files (HARD)"
 if grep -rn -E '^#+[[:space:]]*(MUST NOT|SHOULD NOT)([[:space:]]|:|$)|^#[[:space:]]*Anti-patterns' "$SOL"/*/*.skill.md 2>/dev/null > /tmp/ng31_fm.txt; then
   fail=1; note "forbidden headings:"; sed 's/^/    /' /tmp/ng31_fm.txt
 else note "ok"; fi
 
-section "3b. Same in Implementation/ + adr/ (WARNING — tracked debt)"
-n=$(grep -rn -E '^#+[[:space:]]*(MUST NOT|SHOULD NOT)([[:space:]]|:|$)|^#[[:space:]]*Anti-patterns' "$SOL"/*/Implementation "$SOL"/*/adr 2>/dev/null | wc -l)
-note "$n occurrences"
+section "3b. Same in Implementation/ + adr/ (HARD)"
+if grep -rn -E '^#+[[:space:]]*(MUST NOT|SHOULD NOT)([[:space:]]|:|$)|^#[[:space:]]*Anti-patterns' "$SOL"/*/Implementation "$SOL"/*/adr 2>/dev/null > /tmp/ng31_fm2.txt; then
+  fail=1; note "forbidden headings:"; sed 's/^/    /' /tmp/ng31_fm2.txt
+else note "ok"; fi
 
 section "4. triggers: replaced by whenToUse: in every main file (HARD)"
 tmiss=0

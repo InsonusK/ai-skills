@@ -80,7 +80,7 @@ Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `v
 
 ## Stage 3 — solution migration + delta-conflict-detection — DONE (this session)
 
-**3a — mechanical migration** (commit `3072b192`): 18 V1 solutions copied into `v3.1/solutions/` (flattened). 603 link-path rewrites, 18 version bumps, ~135 de-Russifications (labels + prose; 4 `solution-ui-testing/glossary/*` still Russian — tracked debt). `## MUST NOT`/`## SHOULD NOT`/`# Anti-patterns` → negative bullets under `## MUST`/`## SHOULD` (123 files; forbidden-heading count 0). `triggers:` → one-sentence `whenToUse:` (18). adr links → `.md`; non-slug labels → slugs; "solution #N" → slug. `agent/INVARIANTS.md` written.
+**3a — mechanical migration** (commit `3072b192`): 18 V1 solutions copied into `v3.1/solutions/` (flattened). 603 link-path rewrites, 18 version bumps, ~135 de-Russifications (labels + prose; the 4 `solution-ui-testing/glossary/*` files + README translated in the debt-closing pass — **no Cyrillic anywhere in `v3.1/`**, check.sh §2 is now HARD). `## MUST NOT`/`## SHOULD NOT`/`# Anti-patterns` → negative bullets under `## MUST`/`## SHOULD` (123 files; forbidden-heading count 0). `triggers:` → one-sentence `whenToUse:` (18). adr links → `.md`; non-slug labels → slugs; "solution #N" → slug. `agent/INVARIANTS.md` written.
 
 **3b — state split + rename** (commit `e75f4ba2`):
 - `solution-lazy-loading-routing` → `solution-performance-tuned-routing`.
