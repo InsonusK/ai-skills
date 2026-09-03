@@ -51,8 +51,12 @@ html {
 # Rule changes
 
 ## MUST
-- Every color token here must use `light-dark()`, consistent with how Material's own `--mat-sys-*` tokens are defined.
-- A new `--ds-*` token must only be added when no `--mat-sys-*` equivalent exists — before adding one, check Material's own token set first.
+- Every color token here uses `light-dark()`, consistent with Material's own `--mat-sys-*` tokens.
+  - Risk: a single fixed value renders wrong in one scheme while every Material token around it adapts.
+  - Fix: `light-dark(<light>, <dark>)` for every `--ds-color-*`.
+- A new `--ds-*` token is added only when no `--mat-sys-*` equivalent exists — check Material's token set first.
+  - Risk: a `--ds-*` duplicate of `--mat-sys-error` creates a second, drift-prone way to express the same concept.
+  - Fix: reserve `--ds-*` for domain concepts (priority, workflow state) Material does not model.
 
 ## SHOULD
 - **Adding a new `--ds-*` color token for a concept Material's palette already covers (e.g. a generic "error" or "warning" color)** — Consequence: creates a redundant, inconsistent second way to express something `--mat-sys-error`/`--mat-sys-on-error-container` already expresses — Instead: use the existing Material system token; reserve `--ds-*` for genuinely domain-specific concepts (priority, workflow state) with no Material equivalent

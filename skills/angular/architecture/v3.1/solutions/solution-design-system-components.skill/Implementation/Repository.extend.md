@@ -18,11 +18,21 @@ tags:
 # Rules
 
 ## MUST
-- Every component must use the `ds-` selector prefix — never expose or re-export an Angular Material selector directly.
-- Every component's public API must use `input()`, `output()`, and `model()` — no `@Input()`/`@Output()` decorators, no `EventEmitter`, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|component-api-authoring-style]].
-- Every component's API must be designed around this application's actual usage axes — it must never mirror Angular Material's own input names or category model 1:1, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]].
-- Any component accepting user input as part of a form (per `solution-forms`'s Signal Forms integration) must implement `ControlValueAccessor`, so it is compatible with `formField` binding.
-- No Angular Material selector, input, or type must appear in this library's public API surface (i.e. in what a consuming application imports or binds to) — Material may be used entirely internally.
+- Every component uses the `ds-` selector prefix — never expose or re-export an Angular Material selector directly.
+  - Risk: a re-exported `mat-*` selector lets consumers bind to Material's API and couples them to its versioning.
+  - Fix: a `ds-`-prefixed selector on every component; Material stays behind it.
+- Every component's public API uses `input()`, `output()`, `model()` — no `@Input()`/`@Output()` decorators, no `EventEmitter`.
+  - Risk: mixed authoring styles across the library make the API inconsistent and block signal-based interop.
+  - Fix: signal APIs only; per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|component-api-authoring-style]].
+- Every component's API is designed around this application's usage axes — never mirrors Material's input names or category model 1:1.
+  - Risk: a 1:1 mirror re-exposes Material's model and its churn, defeating the encapsulation this layer exists for.
+  - Fix: name inputs for the app's concepts; map to Material internally; per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]].
+- Any component that accepts user input as part of a form implements `ControlValueAccessor`.
+  - Risk: without CVA the component cannot bind to Signal Forms `formField` and consumers wire it up ad hoc.
+  - Fix: implement `ControlValueAccessor`; verify a `formField` binding works.
+- No Angular Material selector, input, or type appears in this library's public API surface — check the built `dist/**/types/*.d.ts`, not just source.
+  - Risk: a `protected`/`public` field typed as a Material type (e.g. `MatButtonAppearance`) leaks into the emitted `.d.ts` even when source "looks" encapsulated.
+  - Fix: local literal types for such fields (`type MatAppearance = 'filled' | 'outlined' | 'text'`); grep the packed `types/*.d.ts` for `@angular/material`.
 
 ## SHOULD
 - Before building a component's internal implementation, should first evaluate whether Angular Material's own equivalent component satisfies the real functional, performance, and accessibility requirements; delegate to it internally if so, and build a fully custom implementation only when it does not.

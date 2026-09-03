@@ -64,9 +64,15 @@ Internally, `DsButtonComponent` may render Angular Material's `<button mat-butto
 # Rule changes
 
 ## MUST
-- The component's inputs/outputs must be named and organized around real usage concepts (as in the `variant`/`size`/`color`/`action`/`dropdown` example above), never mirrored from an underlying Material component's own input names.
-- If this component wraps a Material component internally, no Material type/enum must leak into this component's own input/output types.
-- If this component is a form control, it must implement `ControlValueAccessor`.
+- Inputs/outputs are named around real usage concepts (`variant`/`size`/`color`/`action`/`dropdown`), never mirrored from the underlying Material component's input names.
+  - Risk: an input named and enumerated like Material's own forces a parallel change here on every Material API bump — encapsulation in name only.
+  - Fix: design each input around this app's usage; map to Material inside the template.
+- If this component wraps a Material component, no Material type/enum leaks into its input/output types — or into any `protected`/`public` field that reaches the emitted `.d.ts`.
+  - Risk: `matAppearance: MatButtonAppearance` on a `protected` field appears in `dist/**/types/*.d.ts` and couples consumers to Material.
+  - Fix: local literal types (`type MatAppearance = 'filled' | 'outlined' | 'text'`); verify against the packed `.d.ts`.
+- If this component is a form control, it implements `ControlValueAccessor`.
+  - Risk: without CVA it cannot bind to Signal Forms `formField`.
+  - Fix: implement `ControlValueAccessor`; test a `formField` binding.
 
 ## SHOULD
 - The internal implementation should default to delegating to Angular Material where it fully satisfies the requirement, and should only be built fully custom when a specific, identified gap justifies it (as in a large-dataset tree needing different performance characteristics than Material's own tree component).

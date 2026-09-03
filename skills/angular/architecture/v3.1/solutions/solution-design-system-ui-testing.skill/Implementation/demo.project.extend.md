@@ -29,11 +29,18 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 # Rules
 
 ## MUST
-- Every component's demo page must cover, at minimum, the states the visual regression suite screenshots — a component's demo page and its visual-spec coverage must never drift apart.
-- The demo app's routes/sections used as screenshot targets must be stable, deep-linkable URLs, so a Playwright spec can navigate directly to a specific component/state without simulating UI interaction first.
-- Every component's preview component must live in `projects/design-system/src/lib/{component-name}/spec/preview/` and be imported by `projects/demo`, rather than being authored directly inside `projects/demo`.
-
-- the demo app must never duplicate preview markup that already exists in the component library's `spec/preview/` directory.
+- Every component's demo page covers at least the states the visual regression suite screenshots.
+  - Risk: if the demo page and the visual spec drift, the spec navigates to a state that no longer exists and fails for the wrong reason.
+  - Fix: add the demo state and its visual/a11y spec in the same change.
+- Routes used as screenshot targets are stable, deep-linkable URLs.
+  - Risk: a state reachable only by clicking through the UI forces the spec to simulate interaction, making it slow and flaky.
+  - Fix: one `/component/state` route per previewed state in `app.routes.ts`.
+- Every preview component lives in `projects/design-system/src/lib/{component-name}/spec/preview/` and is imported by `projects/demo`.
+  - Risk: a preview authored inside `projects/demo` drifts from the component, and the library stops shipping its own harness.
+  - Fix: keep `{component-name}.preview.ts` next to the component; import it by path.
+- The demo app never duplicates preview markup that already exists in the component library's `spec/preview/`.
+  - Risk: two copies of the preview drift apart and reviewers can't tell which one the specs use.
+  - Fix: the demo app only registers routes pointing at the library's preview components.
 ## SHOULD
 - **Adding a new example only to the demo page's visual markup without a corresponding route/anchor a Playwright spec can navigate to directly** — Consequence: the visual/a11y spec can't reliably target just that state, and ends up screenshotting the whole page or skipping the new state entirely — Instead: give every meaningfully distinct state its own stable, directly navigable route in the demo app, backed by the component's `spec/preview/` file
 - **Authoring the preview component inside `projects/demo` instead of `projects/design-system/src/lib/{component-name}/spec/preview/`** — Consequence: the preview file drifts away from the component and its tests, and the design-system library no longer ships with its own test harness — Instead: keep the preview file in the component's `spec/preview/` directory and import it into the demo app

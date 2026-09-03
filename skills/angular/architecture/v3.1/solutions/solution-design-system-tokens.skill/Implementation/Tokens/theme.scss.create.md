@@ -35,9 +35,15 @@ html {
 # Rule changes
 
 ## MUST
-- The theme must be applied at the root selector (`html`), per Angular Material's own guidance, so every consumer (the platform monorepo and every embeddable app importing this package) inherits it consistently.
-- `color-scheme` must be set to `light dark` (following OS preference) unless a future solution introduces an explicit user-facing toggle.
-- Only one palette must be defined — no second/alternate palette or theme-swapping mechanism, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]].
+- The theme is applied at the root selector (`html`).
+  - Risk: applied at a component-level selector, tokens do not cascade to everything, and components outside that scope fall back to Material's un-themed defaults.
+  - Fix: `html { @include mat.theme(...) }`, or the highest selector available to the consumer.
+- `color-scheme` is set to `light dark` (following OS preference), absent an explicit user-facing toggle solution.
+  - Risk: a fixed `color-scheme` ignores the OS setting and forces one appearance on every user.
+  - Fix: `color-scheme: light dark;` on `html`.
+- Only one palette is defined — no second/alternate palette or theme-swapping mechanism.
+  - Risk: multiple palettes reintroduce the per-tenant theming this catalog explicitly excludes.
+  - Fix: a single `primary:` palette in `mat.theme()`; per [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]].
 
 ## SHOULD
 - **Applying the theme at a component-level selector instead of the root** — Consequence: tokens don't cascade consistently to every part of the consuming application, and components outside that selector's scope silently fall back to Material's un-themed defaults — Instead: always apply at `html` (or the highest-level selector available to the consumer)
