@@ -89,9 +89,15 @@ export class MutationQueueService {
 # Rule changes
 
 ## MUST
-- `queuedMutations` must be indexed by `feature` and `enqueuedAt` to support efficient per-partition FIFO reads.
-- `touchedFields` must be stored per queued mutation at enqueue time — it is derived directly from the command's own payload, never a separately captured entity snapshot, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
-- `idempotencyKey` must be generated exactly once, at enqueue time, and reused unchanged across every replay attempt of that entry.
+- `queuedMutations` is indexed by `feature` and `enqueuedAt`.
+  - Risk: a full-table scan + in-code filter to read one partition FIFO scales badly as the queue grows.
+  - Fix: `this.version(1).stores({ queuedMutations: '++id, feature, enqueuedAt' })`; read via `.where('feature').equals(f).sortBy('enqueuedAt')`.
+- `touchedFields` is stored per queued mutation at enqueue time, derived from the command's own payload.
+  - Risk: a captured full-entity snapshot bloats the queue and leaks stale data; without `touchedFields`, conflict resolution has to compare whole entities.
+  - Fix: `touchedFields: Object.keys(input)` at enqueue; the 409 handler diffs only those; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+- `idempotencyKey` is generated exactly once, at enqueue, and reused unchanged on every replay of that entry.
+  - Risk: a fresh key per replay defeats server-side dedup — a lost-response retry double-applies.
+  - Fix: set it in `enqueue()` and never touch it again.
 
 ## SHOULD
 - **Querying the whole `queuedMutations` table and filtering by feature in application code instead of using the `feature` index** — Consequence: unnecessary full-table scans as the queue grows — Instead: always query through the `feature` index, as `pendingForFeature$` does

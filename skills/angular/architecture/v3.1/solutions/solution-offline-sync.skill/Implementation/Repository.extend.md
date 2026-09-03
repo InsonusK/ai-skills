@@ -32,10 +32,18 @@ tags:
 # Rules
 
 ## MUST
-- Every queued mutation must carry a client-generated idempotency key, sent with the replayed request, so a retry that succeeded server-side but whose response was lost does not get applied twice.
-- Only mutations a Facade explicitly marks as queueable may be enqueued — not every `OfflineTransportError` results in queueing; a Facade may still choose to surface certain operations as an immediate failure (e.g. operations with no sensible "pending" state).
-- Every queued mutation must be associated with the feature (`scope` tag) that created it, for partitioning per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
-- A mutation endpoint's conflict (409) response must include the current values of the fields the original request attempted to change, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]] — this is a required backend contract, not optional.
+- Every queued mutation carries a client-generated idempotency key, sent with the replayed request.
+  - Risk: a retry of a request that actually succeeded (its response was lost) applies the mutation twice.
+  - Fix: `crypto.randomUUID()` at enqueue, reused on every replay; the backend dedupes on it.
+- Only mutations a Facade explicitly marks as queueable are enqueued.
+  - Risk: auto-queueing every `OfflineTransportError` queues one-time or time-sensitive actions that produce a wrong result when replayed much later.
+  - Fix: the Facade decides per operation — some `OfflineTransportError`s surface as an immediate failure with no "pending" state.
+- Every queued mutation records the feature (`scope`) that created it, for partitioning.
+  - Risk: without a partition key one struggling feature's stuck entry blocks every other feature's replay.
+  - Fix: `enqueue({ feature: 'orders', ... })`; the queue is read/replayed per `feature` index; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
+- A mutation endpoint's 409 response includes the current values of the fields the original request tried to change.
+  - Risk: without them the client cannot tell the user *what* conflicted, and server-wins resolution is a silent data loss.
+  - Fix: this is a required backend contract; the Client maps it to `ReplayConflictError(currentServerValues)`; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
 
 # Unittest TestCases
 

@@ -92,15 +92,30 @@ The feature side: on `OfflineTransportError` the Facade returns `{ queued: true,
 # Rule changes
 
 ## MUST
-- Replay must process all feature partitions concurrently (`Promise.all`), and must process entries within a single partition strictly FIFO, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
-- A failure in one partition's replay must never stop or delay any other partition's replay.
-- `handleConflict` must be a single, separately named method/injection point — not inlined into the general replay loop — so a future solution can override it without modifying `replayPartition`'s control flow.
-- On conflict, the discarded change's notification must include only the specific touched fields and their current server values, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]] — never the entity's full state.
-- The orchestrator must call `onReplayStart` before, and `onReplayResult` after, every `replay(entry)` — passing `'synced'` on success, `'conflict'` after `handleConflict`, `'failed'` on a transient error. It must not require these callbacks (they are optional).
-- The pending-sync surface a feature shows the user must be a **per-entity `syncStatus`** on its rows (`queued`/`sending`/`failed`/`conflict`) driven from these callbacks — never only an opaque count. The count the indicator renders is *derived* from the rows carrying a `syncStatus`.
-- A feature that queues creates must be able to rebuild its optimistic rows from the persisted queue on a cold start (`MutationQueueService.pendingForFeatureOnce`) — a queued mutation whose in-memory optimistic row was lost on reload must not become an invisible "N pending" with no visible row.
-
-- Never implement per-operation or per-field custom conflict logic beyond server-wins — that is explicitly deferred to a future solution, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+- Replay processes feature partitions concurrently (`Promise.all`) and entries within a partition strictly FIFO.
+  - Risk: a global FIFO lets one stuck feature block every other feature's sync; out-of-order replay within a feature breaks "create then update".
+  - Fix: `Promise.all(features.map(replayPartition))`; each partition loops its entries in `enqueuedAt` order; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
+- A failure in one partition never stops or delays another's replay.
+  - Risk: one feature's outage stalls the whole app's sync.
+  - Fix: a partition stops on its first transient failure (no tight retry) and retries on the next connectivity event; siblings are untouched.
+- `handleConflict` is one separately named method, not inlined into `replayPartition`.
+  - Risk: a future smarter-resolution solution would have to modify the core replay loop to plug in.
+  - Fix: keep `handleConflict` a single overridable seam; the loop calls it and continues.
+- On conflict the notification carries only the touched fields' current server values — never the full entity.
+  - Risk: dumping the whole entity leaks unrelated fields and can't tell the user precisely what didn't apply.
+  - Fix: `error.currentServerValues` holds only `touchedFields`; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+- The orchestrator calls `onReplayStart` before and `onReplayResult` after every `replay(entry)` — `'synced'` / `'conflict'` / `'failed'` for the three outcomes.
+  - Risk: without the callbacks the feature cannot move a row from `queued` to `sending` to done, and the user only ever sees a count.
+  - Fix: `handler.onReplayStart?.(entry)` then `handler.onReplayResult?.(entry, result)`; both are optional.
+- The user-facing pending surface is a **per-entity `syncStatus`** on the feature's rows, driven by those callbacks — the indicator count is *derived* from the rows.
+  - Risk: an opaque "3 pending" tells the user something is syncing but not *what* — after a cold restart it can even lack a visible row.
+  - Fix: `syncStatus` per row (`queued`/`sending`/`failed`/`conflict`); `pendingSyncCount` is a `computed` over them.
+- A feature that queues creates rebuilds its optimistic rows from the persisted queue on a cold start.
+  - Risk: the in-memory optimistic row is lost on reload, leaving a pending count with no row — looks like data loss.
+  - Fix: `hydratePending()` reads `MutationQueueService.pendingForFeatureOnce(feature)` on init and re-adds `syncStatus: 'queued'` rows.
+- Never implement per-operation or per-field conflict logic beyond server-wins here.
+  - Risk: a half-built resolution strategy pre-empts the future solution meant to own it.
+  - Fix: server-wins only; `handleConflict` is the seam a later solution overrides; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
 ## SHOULD
 - **Inlining conflict-handling logic directly inside `replayPartition`'s loop instead of a separate `handleConflict` method** — Consequence: the future extension solution would need to modify the core replay loop itself to add smarter resolution, instead of overriding one well-defined seam — Instead: keep `handleConflict` as the single point of variation
 - **Retrying the same failed entry immediately within the same replay cycle instead of stopping the partition** — Consequence: risks a tight failure loop against a partition that is genuinely stuck (e.g. a persistently failing operation), consuming resources without making progress — Instead: stop the partition on the first failure; the next connectivity-restoration event (or a future periodic retry trigger) tries again

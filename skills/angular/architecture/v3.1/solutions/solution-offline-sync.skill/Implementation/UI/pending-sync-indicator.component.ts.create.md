@@ -53,9 +53,15 @@ pendingSyncCount: computed(() =>
 # Rule changes
 
 ## MUST
-- The component renders from its `count` input only — it must never inject `MutationQueueService` or query the Dexie table.
-- The `count` the feature feeds it must be **derived from the feature store's rows that carry a `syncStatus`** — never a number tracked in parallel that can drift from the visible rows.
-- A feature that queues mutations must surface a **per-row `syncStatus`** on its rows (via `<ui-status-badge>` or equivalent) in addition to this aggregate indicator — a queued action must never be invisible or reduced to an opaque count.
+- The component renders from its `count` input only — never injects `MutationQueueService`, never queries Dexie.
+  - Risk: injecting the queue adds a `type:ui → type:store` boundary dependency and duplicates the reactive read.
+  - Fix: `readonly count = input.required<number>()`; the feature feeds it.
+- The `count` the feature feeds it is **derived from the store's rows that carry a `syncStatus`** — not a number tracked in parallel.
+  - Risk: a separately maintained `pendingSync` counter drifts from the visible rows (e.g. after a partial `hydratePending`).
+  - Fix: `pendingSyncCount = computed(() => rows().filter(r => r.syncStatus === 'queued' || 'sending' || 'failed').length)`.
+- A feature that queues mutations surfaces a **per-row `syncStatus`** (via `<ui-status-badge>`), not just this aggregate.
+  - Risk: a lone "3 pending" tells the user something is syncing but not which item — indistinguishable from data loss after a reload.
+  - Fix: each row renders its own status badge; the indicator is the sum.
 
 ## SHOULD
 - **A feature queueing mutations without ever showing pending state** — Consequence: the user has no way to know their action wasn't immediately applied, which can look like data loss or a bug — Instead: every feature that queues mutations shows both the per-row status and this aggregate indicator

@@ -51,10 +51,15 @@ export class OrdersFacade {
 # Rule changes
 
 ## MUST
-- A Facade must explicitly opt an operation into queueing by catching `OfflineTransportError` and calling `MutationQueueService.enqueue` — queueing is never automatic or implicit for every method.
-- A queued operation's return type must clearly distinguish "queued for later" from an immediate successful result (e.g. `{ queued: true }`), so the calling Signal Store can reflect a pending state rather than treating it as a completed success.
-
-- Never enqueue an operation whose business validation (e.g. `OrdersValidationError`) already failed before the Client was ever called — only genuine `OfflineTransportError` failures are queueable.
+- A Facade explicitly opts an operation into queueing — `catch (OfflineTransportError)` → `MutationQueueService.enqueue`. Queueing is never implicit for every method.
+  - Risk: auto-queueing replays one-time or time-sensitive actions later and produces a wrong result.
+  - Fix: only the operations the Facade wraps are queueable; the rest rethrow `OfflineTransportError`.
+- A queued operation's return type distinguishes "queued for later" from a completed result — `{ queued: true, idempotencyKey, optimistic }`.
+  - Risk: the store treats a queued op as a success and shows no pending state; the user thinks it saved.
+  - Fix: `isQueued(result)` branch in the store; it appends `optimistic` with `syncStatus: 'queued'`.
+- Never enqueue an operation whose business validation already failed before the Client was called.
+  - Risk: an invalid command sits in the queue and fails forever on replay.
+  - Fix: validation runs first and throws its `ValidationError`; only a genuine `OfflineTransportError` is queueable.
 ## SHOULD
 - **Enqueueing an operation whose business validation already failed** — Consequence: queues a command that will never succeed, wasting a replay attempt and confusing the user with a "pending" state for something that was actually invalid — Instead: business validation always runs and fails before any queueing decision is considered
 

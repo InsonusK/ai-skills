@@ -54,11 +54,18 @@ export function provideGlobalStore(): EnvironmentProviders {
 # Rules
 
 ## MUST
-- The `notifications` slice must be registered in the same `provideGlobalStore()` seam as the `connectivity` slice — never in a separate provider call.
-- `selectNotifications` must be the only public selector consumed by feature/UI code.
-- The slice must have no effects — a notification is pushed by whoever detects the event (here, `ReplayOrchestrator.handleConflict`), not by the slice itself.
-
-- feature code must never construct or store conflict messages of its own — it dispatches `NotificationsActions.show(...)` and renders `selectNotifications`.
+- The `notifications` slice is registered in the same `provideGlobalStore()` seam as `connectivity` — never a separate provider call.
+  - Risk: a slice wired through its own provider is easy to omit in a test setup or a second app.
+  - Fix: add `provideState(notificationsFeature)` to `store.config.ts`.
+- `selectNotifications` is the only public selector feature/UI code consumes.
+  - Risk: UI reading raw slice fields couples to the slice's shape and can render the list inconsistently.
+  - Fix: `index.ts` exports `selectNotifications` + `NotificationsActions` only.
+- The slice has no effects — a notification is pushed by whoever detects the event (here `ReplayOrchestrator.handleConflict`).
+  - Risk: an effect in a pure UI-message slice re-introduces the Action→Effect→Action indirection this slice exists to avoid.
+  - Fix: reducer + selectors only; callers dispatch `show(...)`.
+- Feature code never constructs or stores conflict messages of its own.
+  - Risk: parallel notification systems that show duplicate or inconsistent messages.
+  - Fix: dispatch `NotificationsActions.show(...)` and render `selectNotifications`.
 
 ## SHOULD
 - **Adding an effect to the `notifications` slice to "listen" for conflicts** — Consequence: couples the slice to the replay orchestrator and to Dexie — Instead: the orchestrator dispatches `show(...)`; the slice stays a pure list.
