@@ -23,7 +23,7 @@ tags:
 
 ```typescript
 @Component({
-  selector: 'app-offline-banner',
+  selector: 'ui-offline-banner',
   template: `
     @if (!isOnline()) {
       <div role="status" class="offline-banner">You're offline. Showing the latest available data.</div>
@@ -31,12 +31,14 @@ tags:
   `,
 })
 export class OfflineBannerComponent {
-  protected readonly isOnline = inject(Store).selectSignal(selectIsOnline);
+  // presentational — the shell reads selectIsOnline and feeds it in
+  readonly isOnline = input.required<boolean>();
 }
 ```
 
 # Rule changes
 
+## MUST
 - The banner is presentational: it takes an `isOnline` input; the shell reads `selectIsOnline` and feeds it.
   - Risk: injecting `Store` into a `libs/shared/ui` component adds a `type:ui → type:store` boundary dependency.
   - Fix: `input.required<boolean>('isOnline')`; `apps/platform-shell` does `<ui-offline-banner [isOnline]="isOnline()">`.
