@@ -36,7 +36,9 @@ export const ORDERS_ROUTES: Routes = [
 # Rule changes
 
 ## MUST
-- A feature's own chunk must declare a per-chunk bundle budget (see [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#must|Repository]]); a sub-route split via `loadComponent` gets its own separate budget.
+- A feature's own chunk declares a per-chunk bundle budget; a `loadComponent`-split sub-route gets its own separate budget.
+  - Risk: without a scoped budget the feature can grow unbounded, and a heavy sub-route's weight hides inside the feature's main chunk.
+  - Fix: `budgets` entries in `project.json` for the feature chunk and each split sub-route; see [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#must|Repository]].
 
 ## SHOULD
 - A sub-route should be split via `loadComponent` when it pulls in a dependency not needed by the feature's main path (e.g. a charting or PDF library used only on one rarely-visited screen).

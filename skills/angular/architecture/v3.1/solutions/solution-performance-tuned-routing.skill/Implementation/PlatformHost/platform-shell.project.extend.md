@@ -58,8 +58,12 @@ provideRouter(routes, withPreloading(SelectivePreloadingStrategy));
 # Rule changes
 
 ## MUST
-- The router must be configured with `withPreloading(SelectivePreloadingStrategy)`, not `withPreloading(PreloadAllModules)` and not left with the default `NoPreloading`.
-- Marking a top-level segment with `data: { preload: true }` must happen in `app.routes.ts`, at the mounting point — never inside the mounted feature's or module's own routes (see [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#must|Repository]]).
+- The router is configured with `withPreloading(SelectivePreloadingStrategy)` — never `PreloadAllModules`, never the default `NoPreloading`.
+  - Risk: `PreloadAllModules` background-fetches every chunk (including remote federation chunks a host never meant to warm); `NoPreloading` gives up the win entirely.
+  - Fix: `provideRouter(routes, withPreloading(SelectivePreloadingStrategy))`; the strategy preloads only routes flagged `data.preload === true`.
+- `data: { preload: true }` on a top-level segment is set in `app.routes.ts`, at the mounting point — never inside the mounted feature's/module's own routes.
+  - Risk: a self-flagging feature preloads for every host, per [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend#must|Repository]].
+  - Fix: the shell adds the flag only after a deliberate "is this segment high-traffic" review.
 
 ## SHOULD
 - **Marking every top-level segment `preload: true` "to be safe"** — Consequence: degenerates into the equivalent of `PreloadAllModules`, including unconditionally prefetching federated embeddable modules' remote chunks — the exact outcome this ADR chose selective preloading to avoid — Instead: mark only the small number of genuinely high-traffic segments; leave the rest on-demand

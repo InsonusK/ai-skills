@@ -37,9 +37,12 @@ export class OfflineBannerComponent {
 
 # Rule changes
 
-## MUST
-- The banner must read `isOnline` from the shared `connectivity` slice — it must never read `navigator.onLine` directly, to stay consistent with the more accurate combined signal from [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/connectivity-detection.md|connectivity-detection]].
-- The banner must be mounted once, in `apps/platform-shell`, so it is visible regardless of which feature or embeddable module is currently active.
+- The banner is presentational: it takes an `isOnline` input; the shell reads `selectIsOnline` and feeds it.
+  - Risk: injecting `Store` into a `libs/shared/ui` component adds a `type:ui → type:store` boundary dependency.
+  - Fix: `input.required<boolean>('isOnline')`; `apps/platform-shell` does `<ui-offline-banner [isOnline]="isOnline()">`.
+- The banner is mounted once, in `apps/platform-shell`.
+  - Risk: a feature mounting its own banner means duplicate banners, or a gap when that feature is not active.
+  - Fix: mount it once in the shell template so it is visible regardless of the active feature/remote.
 
 ## SHOULD
 - **A feature implementing its own local offline indicator instead of using this shared component** — Consequence: inconsistent messaging and duplicated logic across features — Instead: mount `OfflineBannerComponent` once at the shell level; features do not need their own

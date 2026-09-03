@@ -16,11 +16,18 @@ No new directories. This extension adds two conventions on top of [[skills/angul
 # Rules
 
 ## MUST
-- Every `type:app` project must declare an initial-bundle budget (`error` threshold, not just `warning`) in its build configuration, so an accidental non-lazy import that grows the initial bundle fails CI rather than merely warning.
-- Every routable `type:feature` project must declare a per-chunk budget for its own lazy chunk.
-- The `data: { preload: true }` flag must be set only at the mounting point (the shell's `app.routes.ts` for top-level segments, or a module's own routes for the features it contains) — never inside the feature's/module's own exported routes.
-
-- a feature or embeddable module must never set `preload: true` on its own routes to opt itself into preloading — that decision belongs to whoever mounts it (see `solution-app-routing`'s hierarchical ownership principle).
+- Every `type:app` project declares an initial-bundle budget with an `error` threshold (not just `warning`).
+  - Risk: an accidental non-lazy `import` of a feature grows the initial bundle and only *warns* — it ships.
+  - Fix: `budgets` in `project.json` with `type: initial` and `maximumError`; CI fails the build.
+- Every routable `type:feature` project declares a per-chunk budget for its own lazy chunk.
+  - Risk: a feature quietly bloats its chunk (a heavy chart lib, a PDF renderer) with no signal until users feel the load time.
+  - Fix: a `bundle`/`anyScript` budget scoped to the feature's chunk name.
+- `data: { preload: true }` is set only at the mounting point (the shell's `app.routes.ts`, or a module's own routes for the features it contains) — never inside a feature's/module's own exported routes.
+  - Risk: a feature preloading itself preloads for every host, defeating the host's per-context choice.
+  - Fix: the mounting project decides; the feature's routes stay silent on preloading.
+- A feature or embeddable module never sets `preload: true` on its own routes to opt itself into preloading.
+  - Risk: same as above — the mounted-vs-mounting ownership from `solution-app-routing` is violated.
+  - Fix: preloading is the mounting point's call; a feature that wants it says so in a comment, not in `data`.
 ## SHOULD
 - Bundle budget thresholds should be reviewed and adjusted deliberately when a feature's legitimate size grows, rather than silenced by raising the threshold reflexively.
 

@@ -58,10 +58,15 @@ export const stateConfig = {
 # Rules
 
 ## MUST
-- The connectivity slice must be registered in the same global store configuration as the existing `auth` slice.
-- `selectIsOnline` must be the only public selector consumed by feature code.
-
-- feature code must never read `navigator.onLine` directly — it must use `selectIsOnline`.
+- The `connectivity` slice is registered in the same `provideGlobalStore()` / `store.config.ts` seam as every other cross-cutting slice.
+  - Risk: a slice registered through its own separate provider call is easy to miss in tests and in a second app.
+  - Fix: add `provideState(connectivityFeature)` + `provideEffects(ConnectivityEffects)` to `store.config.ts` (the same seam `solution-global-store` built).
+- `selectIsOnline` is the only public selector feature code consumes from this slice.
+  - Risk: features reading raw slice fields couple to the slice's internal shape and can derive "online" inconsistently.
+  - Fix: `index.ts` exports `selectIsOnline` only; the browser-event and health-check state stay internal.
+- Feature code never reads `navigator.onLine` directly.
+  - Risk: `navigator.onLine` is true behind a captive portal or during a backend outage — features would think they are online when requests fail.
+  - Fix: read `selectIsOnline`, which requires the browser signal *and* the last `HEAD /health` to agree.
 ## SHOULD
 - **Duplicating the connectivity logic inside a feature store** — Consequence: multiple sources of truth for online status — Instead: rely on `libs/shared/state` connectivity slice
 
