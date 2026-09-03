@@ -5,7 +5,7 @@ whenToUse: when you are creating or updating a service and need to produce deplo
 tags:
   - stack
   - app-type/service
-  - concern/devops
+  - concern/ci
   - concern/documentation
   - docker
   - kubernetes
@@ -24,7 +24,7 @@ adr:
 - The deployment skill is created and updated together with the service code — never left as an afterthought.
 - The skill is stack-agnostic in structure but concrete in content: it names real images, ports, volumes, environment variables, and dependencies for this service.
 - Docker Compose is the default path for development, staging, and single-host production; Kubernetes is the path for multi-host / replicated production.
-- This skill is tagged with `concern/devops` because it sits in the DevOps process alongside CI and deployment; see [ADR: use-concern-devops-tag](./adr/use-concern-devops-tag.md) for the trade-offs.
+- This skill is tagged with `concern/ci` because it sits in the DevOps process alongside CI and deployment; see [ADR: use-concern-devops-tag](./adr/use-concern-devops-tag.md) for the trade-offs.
 
 # Rule
 
