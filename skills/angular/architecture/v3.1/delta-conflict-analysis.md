@@ -56,5 +56,5 @@ All canonical — every entry is a record + an ordering note, no resolver link.
 ## Out of scope
 
 - **No fixed-point iteration needed** — zero resolvers built, so the grouping pass does not repeat.
-- **Realized-by / solution names** follow the Stage-3 roster ([INVARIANTS §3](skills/angular/architecture/v3.1/agent/INVARIANTS.md)); the `solution-ui-testing` split (Finding 1) is the one outstanding structural change.
-- **Registry files are not written here** — they are created per plateau during Stage 4, using [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/templates/registry-entry.template.md|registry-entry.template.md]].
+- **Realized-by / solution names** follow the Stage-3 roster ([INVARIANTS §3](skills/angular/architecture/v3.1/agent/INVARIANTS.md)). Findings 1 (the `solution-ui-testing` split) and 4 (the `authentication` / `offline-sync` `shared-state-project` `.extend`s) are **closed**; no structural change is outstanding.
+- **Registry files are not written here** — they are created per plateau during Stage 4 (all 8 plateaus done), using [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/templates/registry-entry.template.md|registry-entry.template.md]].
