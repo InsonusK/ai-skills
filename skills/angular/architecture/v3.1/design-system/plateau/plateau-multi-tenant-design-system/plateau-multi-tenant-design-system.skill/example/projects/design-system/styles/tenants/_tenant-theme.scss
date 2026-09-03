@@ -1,0 +1,21 @@
+// The one place mat.theme() is called for a tenant. Colour only — no typography
+// or density keys, so styles/theme.scss stays the sole source of those.
+@use '@angular/material' as mat;
+
+/// Emit one tenant's colour theme. Call inside a `:root[data-tenant='<id>']` block.
+/// @param {Map} $primary - a Material palette (e.g. `mat.$cyan-palette`)
+/// @param {Map} $ds-overrides - optional `--ds-*` colour custom properties, each a `light-dark(...)` value
+@mixin ds-tenant-theme($primary, $ds-overrides: ()) {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: color-scheme,
+        primary: $primary,
+      ),
+    )
+  );
+
+  @each $name, $value in $ds-overrides {
+    #{$name}: $value;
+  }
+}

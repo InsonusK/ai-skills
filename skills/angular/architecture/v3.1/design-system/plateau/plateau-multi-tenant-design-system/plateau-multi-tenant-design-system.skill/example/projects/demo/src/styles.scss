@@ -1,0 +1,15 @@
+// A consuming application applies the design system's theme + tokens ONCE, at the
+// root. It defines no palette of its own — the design system owns the palettes.
+// `tenants` is @use'd AFTER `theme` so a `[data-tenant]` selector wins the cascade;
+// with no `data-tenant` attribute the base brand from `theme` applies.
+@use 'design-system/styles/theme';
+@use 'design-system/styles/custom-tokens';
+@use 'design-system/styles/tenants';
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+}

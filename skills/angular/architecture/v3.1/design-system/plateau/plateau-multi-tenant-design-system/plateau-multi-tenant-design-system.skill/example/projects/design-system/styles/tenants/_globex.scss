@@ -1,0 +1,13 @@
+// Tenant: globex. Matches DsTenant 'globex' and DS_TENANTS.
+@use '@angular/material' as mat;
+@use './tenant-theme' as tenant;
+
+:root[data-tenant='globex'] {
+  @include tenant.ds-tenant-theme(
+    mat.$cyan-palette,
+    (
+      // globex uses a teal "in progress" to match its cyan brand
+      --ds-color-status-in-progress: light-dark(#00838f, #4dd0e1),
+    )
+  );
+}

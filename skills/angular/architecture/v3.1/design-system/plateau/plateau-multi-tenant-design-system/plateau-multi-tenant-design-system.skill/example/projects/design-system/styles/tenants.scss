@@ -1,0 +1,8 @@
+// Aggregator — the package asset a consuming app imports:
+//   @use 'design-system/styles/theme';
+//   @use 'design-system/styles/tenants';   // after theme
+// then set document.documentElement.dataset.tenant = <DsTenant>.
+//
+// Every tenant here has a matching DS_TENANTS entry in src/lib/tenants.ts.
+@use 'tenants/acme';
+@use 'tenants/globex';
