@@ -57,9 +57,15 @@ describe('Orders feature integration', () => {
 # Rule changes
 
 ## MUST
-- This pattern must only be used when the test's purpose is genuinely to verify multiple layers wired together — a test that could be satisfied by faking one layer below the unit under test must use the corresponding unit-test pattern instead, not this one.
-- MSW request handlers used here may be shared with Storybook or local dev-mode mocking, but must never be duplicated with equivalent `HttpTestingController` expectations elsewhere for the same endpoint.
-- Tests for each Signal Store method exercised by this integration spec must be grouped under a nested `describe('<methodName>', () => { ... })` block.
+- This pattern is used only when the purpose is genuinely to verify multiple layers wired together.
+  - Risk: an integration spec used where a unit test would do is slower, has a wider failure surface, and hides which layer broke.
+  - Fix: if faking one layer below the unit satisfies the test, use the unit pattern instead.
+- MSW handlers here may be shared with dev-mode mocking, but never duplicated with `HttpTestingController` expectations elsewhere for the same endpoint.
+  - Risk: two definitions of the same endpoint's contract drift apart, and a change has to be chased in two places.
+  - Fix: one MSW handler per endpoint, reused; the Client spec asserts the request shape once.
+- Tests for each Signal Store method exercised here are grouped under a nested `describe('<methodName>', ...)` block.
+  - Risk: a flat list obscures which flow a failure belongs to.
+  - Fix: one `describe` per method under test.
 
 ## SHOULD
 - **Reaching for this integration pattern as the default way to test a Facade or Signal Store** — Consequence: every such test becomes slower and more complex than necessary, and reintroduces the duplicated-mock risk this solution's ADR exists to avoid, since the endpoint may now be mocked both here and in the Client's own `HttpTestingController` test — Instead: default to the narrower unit-test pattern (faking the layer directly below); reserve this pattern for scenarios that genuinely need multiple real layers wired together

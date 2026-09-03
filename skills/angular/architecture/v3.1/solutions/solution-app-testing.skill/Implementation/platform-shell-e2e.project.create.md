@@ -41,10 +41,15 @@ tags:
 # Rules
 
 ## MUST
-- The project must contain only scenario-level tests that cross at least one routing or feature boundary.
-- Each spec must run against the real built application, not against mocked backend or isolated components.
-
-- Never contain unit or integration tests — those belong in `libs/{feature}/data-access/src/lib/spec` or `libs/{feature}/feature/src/lib/spec` per this solution's other implementation files.
+- The project contains only scenario-level tests that cross at least one routing or feature boundary.
+  - Risk: a component-level assertion in an e2e project pays the full browser cost for something a Testing Library spec covers faster.
+  - Fix: e2e specs test a user journey end to end; single-component behaviour stays in the feature lib's `spec/`.
+- Each spec runs against the real built application, not a mocked backend or isolated components.
+  - Risk: an e2e test against mocks verifies the mocks, not the deployed app.
+  - Fix: Playwright's `webServer` serves the production build; the backend is a real (or contract-stable) environment.
+- Never contain unit or integration tests here.
+  - Risk: they slow every `nx affected` run and live far from the code they cover.
+  - Fix: unit/integration specs live in `libs/{feature}/*/src/lib/spec/`.
 ## SHOULD
 - **Testing a single component or service in the e2e project** — Consequence: slow, flaky tests that duplicate faster test layers — Instead: keep e2e specs focused on complete user scenarios
 

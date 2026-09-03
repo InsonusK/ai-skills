@@ -59,10 +59,18 @@ describe('OrdersClient', () => {
 # Rule changes
 
 ## MUST
-- Every test in this file must use `HttpTestingController` to assert the exact request (method, URL, body), per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
-- `httpTesting.verify()` must be called in `afterEach` to catch any unexpected or unmatched request.
-- At least one test must assert the typed domain error thrown on a transport failure, consistent with `solution-api-http-layer`'s error-handling rules.
-- Tests for each Client method must be grouped under a nested `describe('<methodName>', () => { ... })` block.
+- Every test uses `HttpTestingController` to assert the exact request (method, URL, body).
+  - Risk: a Client test that only checks the return value can pass while the Client hits the wrong endpoint or omits a field.
+  - Fix: `httpTesting.expectOne({ method: 'POST', url: '/api/orders' })` and assert `req.request.body`; per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
+- `httpTesting.verify()` is called in `afterEach`.
+  - Risk: an unexpected or unmatched request goes unnoticed, so a stray call the Client makes is never caught.
+  - Fix: `afterEach(() => httpTesting.verify())`.
+- At least one test asserts the typed domain error thrown on a transport failure.
+  - Risk: the Client's `catchError` → typed-error mapping is the whole point of the layer, and it is untested.
+  - Fix: `req.flush(null, { status: 409, statusText: 'Conflict' })` then `expect(...).rejects.toBeInstanceOf({Feature}ConflictError)`.
+- Tests for each Client method are grouped under a nested `describe('<methodName>', ...)` block.
+  - Risk: a flat list of `it`s across methods is hard to scan and to see coverage gaps in.
+  - Fix: one `describe` per public method.
 
 # Check list
 

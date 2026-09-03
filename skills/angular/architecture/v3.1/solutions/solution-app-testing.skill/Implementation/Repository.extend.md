@@ -50,11 +50,21 @@ tags:
 # Rules
 
 ## MUST
-- Every Nx project must run its unit tests via Vitest — no project may configure Karma or Jest as its test runner, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]].
-- End-to-end tests must be written with Playwright, in a dedicated `type:e2e` project, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]].
-- `HttpTestingController` must be used only inside `spec/{feature}.client.spec.ts` — no other test may use it, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
-- MSW must be used only for tests that deliberately span more than one architectural layer (e.g. a feature-level integration test), never as a substitute for faking the layer directly below the unit under test.
-- CI must enforce a minimum code coverage threshold per project (`error`, not `warning`, consistent with the bundle-budget enforcement pattern from the "Lazy loading routing" solution); the exact percentage is a configurable, deployment-specific parameter.
+- Every Nx project runs its unit tests via Vitest — no Karma, no Jest.
+  - Risk: a mixed runner set means two config models, two assertion dialects, and CI steps that behave differently per project.
+  - Fix: the `@analogjs/vitest-angular` (or Angular 22 `@angular/build:unit-test`) runner for every project; per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]].
+- End-to-end tests are Playwright, in a dedicated `type:e2e` project.
+  - Risk: e2e specs scattered into feature libs slow every `nx affected` run and blur the unit/e2e boundary.
+  - Fix: one `apps/platform-shell-e2e` (`type:e2e`, `scope:platform`); per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]].
+- `HttpTestingController` is used only inside `spec/{feature}.client.spec.ts`.
+  - Risk: HTTP expectations in a Facade or store test couple that test to transport detail two layers below what it verifies.
+  - Fix: only the Client spec asserts the wire; everything above fakes the layer directly beneath it; per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
+- MSW is used only for tests that deliberately span more than one layer.
+  - Risk: MSW as a default mock hides which layer a test actually exercises and duplicates the Client spec's job.
+  - Fix: MSW for `{feature}.integration.spec.ts` only; unit tests fake the immediate collaborator.
+- CI enforces a per-project minimum coverage threshold as an `error`, not a `warning`.
+  - Risk: a `warning` threshold silently erodes — a real regression in coverage ships.
+  - Fix: fail the build below the configured percentage (the number is deployment-specific), same pattern as the bundle budgets.
 
 # Unittest TestCases
 

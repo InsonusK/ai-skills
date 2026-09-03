@@ -82,10 +82,18 @@ describe('OrdersStore', () => {
 # Rule changes
 
 ## MUST
-- A Facade test must fake its Client directly (e.g. `{ provide: {Feature}Client, useValue: clientMock }`) — it must never use `HttpTestingController` or MSW.
-- A Signal Store test must fake its Facade directly — it must never reach further down to fake the Client or mock HTTP.
-- Tests for each Facade method must be grouped under a nested `describe('<methodName>', () => { ... })` block.
-- Tests for each Signal Store method must be grouped under a nested `describe('<methodName>', () => { ... })` block.
+- A Facade test fakes its Client directly (`{ provide: {Feature}Client, useValue: clientMock }`) — never `HttpTestingController` or MSW.
+  - Risk: mocking HTTP in a Facade test couples it to transport detail and re-tests the Client's job.
+  - Fix: stub the Client's methods; assert the Facade's validation and error re-wrapping.
+- A Signal Store test fakes its Facade directly — never reaches down to the Client or HTTP.
+  - Risk: faking the Client in a store test skips the Facade's business validation and couples the test two layers down.
+  - Fix: `{ provide: {Feature}Facade, useValue: facadeMock }`; assert loading flags, optimistic updates, error state.
+- Tests for each Facade method are grouped under a nested `describe('<methodName>', ...)` block.
+  - Risk: a flat `it` list hides which method a failing test belongs to and where coverage is thin.
+  - Fix: one `describe` per public method.
+- Tests for each Signal Store method are grouped under a nested `describe('<methodName>', ...)` block.
+  - Risk: same as above.
+  - Fix: one `describe` per store method.
 
 ## SHOULD
 - **A Signal Store test faking the Client instead of the Facade** — Consequence: skips exercising the Facade's own business validation, and couples the store test to an implementation detail (the Client) two layers below what it's actually testing — Instead: always fake the layer directly beneath the unit under test — never skip a layer
