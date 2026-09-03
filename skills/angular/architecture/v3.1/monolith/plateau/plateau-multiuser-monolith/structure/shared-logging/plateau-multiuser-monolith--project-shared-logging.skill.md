@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--project-shared-logging
 description: LoggerService on the LOG_SINKS extension point, with ConsoleLogSink plus (VP6) BackendLogSink (batched warn/error/report), a bounded IndexedDB LogRetryQueue, and LoggerService.report() — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing libs/shared/logging — LoggerService, a LogSink, MIN_LOG_LEVEL, the backend sink — or checking all logging goes through the one seam
 plateau: multiuser-monolith
 project_kind: library
 version: 20260903150000

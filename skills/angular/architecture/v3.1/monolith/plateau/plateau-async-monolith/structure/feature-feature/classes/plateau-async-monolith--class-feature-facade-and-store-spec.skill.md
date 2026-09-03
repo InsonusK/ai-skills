@@ -3,7 +3,7 @@ name: plateau-async-monolith--class-feature-facade-and-store-spec
 description: Generic pattern for unit-testing a Facade (faking its Client) and a feature Signal Store (faking its Facade) via TestBed, without any HTTP mocking — async-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the async-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a feature's facade or store unit spec — faking the one layer directly beneath the unit under test
 plateau: async-monolith
 artifact_type: spec
 version: 20260902160000

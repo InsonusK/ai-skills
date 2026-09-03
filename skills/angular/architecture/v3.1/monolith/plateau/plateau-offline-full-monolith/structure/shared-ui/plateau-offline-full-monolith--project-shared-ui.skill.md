@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--project-shared-ui
 description: App-specific reusable UI composed from design-system primitives — plus the shell-mounted OfflineBannerComponent (VP4) — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when adding or editing a presentational component in libs/shared/ui, or checking it stays free of a store/data-access dependency
 plateau: offline-full-monolith
 project_kind: library
 version: 20260903120000

@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-form-component
 description: Generic pattern for a form component built with Signal Forms — applies to any component in any feature that renders a form, tested via Testing Library (behavioral), Playwright screenshot (visual), and @axe-core/playwright (accessibility) — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when building or reviewing a form component (Signal Forms) inside a feature lib
 plateau: offline-full-monolith
 artifact_type: component
 version: 20260903120000

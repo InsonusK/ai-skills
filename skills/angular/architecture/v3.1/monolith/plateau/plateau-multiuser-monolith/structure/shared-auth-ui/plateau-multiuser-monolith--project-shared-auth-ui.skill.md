@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--project-shared-auth-ui
 description: The shared auth primitives lib — the *hasPermission directive, the requirePermission guard factory, and the login form + forbidden page — reads the auth slice, never imports a feature — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing libs/shared/auth-ui — the *hasPermission directive, the requirePermission guard factory, the login / forbidden pages
 plateau: multiuser-monolith
 project_kind: library
 version: 20260903150000

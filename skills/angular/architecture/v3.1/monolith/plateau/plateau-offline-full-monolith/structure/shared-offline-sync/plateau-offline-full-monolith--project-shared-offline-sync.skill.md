@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--project-shared-offline-sync
 description: The Dexie-backed offline mutation queue — MutationQueueService (per-feature partitions), ReplayOrchestrator (concurrent replay, server-wins conflict seam), and MutationReplayRegistry — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing libs/shared/offline-sync — the Dexie mutation queue, the replay orchestrator, the provide* helpers — or checking a feature wires its replay handler from its route providers
 plateau: offline-full-monolith
 project_kind: library
 version: 20260903120000

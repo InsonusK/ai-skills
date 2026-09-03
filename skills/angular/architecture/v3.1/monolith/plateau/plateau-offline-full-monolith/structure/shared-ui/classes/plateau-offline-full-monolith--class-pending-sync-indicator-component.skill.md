@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-pending-sync-indicator-component
 description: The shared, presentational "N actions waiting to sync" indicator in libs/shared/ui — takes a count input, rendered only when count > 0, mounted per feature — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing PendingSyncIndicatorComponent (VP5), or how a feature feeds its count derived from rows with a syncStatus
 plateau: offline-full-monolith
 artifact_type: component
 version: 20260903120000

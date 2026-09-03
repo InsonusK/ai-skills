@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-has-permission-directive
 description: The *hasPermission structural directive in libs/shared/auth-ui — shows/hides UI by permission string (never a role), a UI convenience only — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the *hasPermission structural directive (VP7)
 plateau: multiuser-monolith
 artifact_type: directive
 version: 20260903150000

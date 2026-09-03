@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--project-platform-shell
 description: The single deployable Angular application — composition root, top-level routing, root providers, a SelectivePreloadingStrategy, error-level bundle budgets, and a Workbox service worker (registered after bootstrap, prod only) mounting the shared offline banner. No global error handler yet. — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing apps/platform-shell — app.config.ts, app.routes.ts, main.ts, project.json, the service worker — or checking the composition root holds no business logic and mounts each feature at one root segment
 plateau: offline-full-monolith
 project_kind: application
 version: 20260903120000

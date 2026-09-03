@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-permission-guard
 description: The requirePermission functional guard factory in libs/shared/auth-ui — checks a permission string against the auth slice, attached at a feature's own route, redirecting to /forbidden — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the requirePermission guard factory (VP7), or attaching it at a feature route
 plateau: multiuser-monolith
 artifact_type: guard
 version: 20260903150000

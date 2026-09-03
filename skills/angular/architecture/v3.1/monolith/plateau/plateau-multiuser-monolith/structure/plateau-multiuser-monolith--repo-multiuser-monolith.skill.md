@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--repo-multiuser-monolith
 description: Nx workspace layout for the multiuser-monolith Angular application — the offline-full-monolith workspace plus backend log delivery (BackendLogSink + a bounded IndexedDB retry queue in libs/shared/logging, a GlobalErrorHandler) and authentication (an auth slice with an in-memory access token and silent refresh in libs/shared/state, an authInterceptor, a requirePermission guard factory and a *hasPermission directive in the new libs/shared/auth-ui). The last plateau of the monolith chain — and platform-host's parent. One deployable unit; no Module Federation.
 domain: skill
 type: template
+whenToUse: when scaffolding the Nx workspace, adding a project or a boundary allow-list row, or checking whether a change follows this plateau's workspace-level rules (tags, boundaries, backend log delivery, authentication)
 plateau: multiuser-monolith
 version: 20260903150000
 tags:

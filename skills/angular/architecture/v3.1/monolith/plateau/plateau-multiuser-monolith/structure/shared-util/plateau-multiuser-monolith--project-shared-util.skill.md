@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--project-shared-util
 description: Framework-agnostic pure helpers shared across features — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when adding a framework-agnostic helper to libs/shared/util, or checking it has no Angular/RxJS import
 plateau: multiuser-monolith
 project_kind: library
 version: 20260903150000

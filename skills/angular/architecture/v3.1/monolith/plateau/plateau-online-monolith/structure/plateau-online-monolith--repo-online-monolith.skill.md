@@ -3,6 +3,7 @@ name: plateau-online-monolith--repo-online-monolith
 description: Nx workspace layout for the online-monolith Angular application — apps/libs split with enforced module boundaries, three-tier state management, hierarchical routing, Signal Forms, a Facade/Client HTTP data-access layer, console-only logging, and Vitest/Playwright test coverage. No offline support, no Module Federation, no authentication yet.
 domain: skill
 type: template
+whenToUse: when scaffolding the Nx workspace, adding a project or a `@nx/enforce-module-boundaries` allow-list row, or checking whether a change follows this plateau's workspace-level rules (tags, boundaries, test runner, budgets)
 plateau: online-monolith
 version: 20260902000000
 tags:

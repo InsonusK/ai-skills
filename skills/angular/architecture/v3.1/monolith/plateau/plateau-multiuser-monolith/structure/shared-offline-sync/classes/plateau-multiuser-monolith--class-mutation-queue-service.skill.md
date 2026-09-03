@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-mutation-queue-service
 description: The Dexie-backed mutation queue service — enqueue (with idempotency key), per-feature FIFO reads, a liveQuery observable for pending-sync UI, and markSynced — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the Dexie MutationQueueService (VP5) — enqueue, per-feature FIFO reads, idempotency keys, markSynced
 plateau: multiuser-monolith
 artifact_type: service
 version: 20260903150000

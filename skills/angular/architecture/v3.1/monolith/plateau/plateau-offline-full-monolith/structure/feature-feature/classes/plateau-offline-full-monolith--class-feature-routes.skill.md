@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-feature-routes
 description: Generic pattern for a feature's own root-relative Routes array — applies to any {Feature}/feature lib. VP1 adds loadComponent sub-splitting for heavy/rare sub-routes plus a per-chunk bundle budget. — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a feature's {feature}.routes.ts — root-relative paths, loadComponent splits, route-level providers, permission guards
 plateau: offline-full-monolith
 artifact_type: module
 version: 20260903120000

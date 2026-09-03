@@ -3,6 +3,7 @@ name: plateau-async-monolith--project-feature-feature
 description: Generic template for any {feature}/feature lib — routed, presentational + container components (including Signal Forms) for one feature, its feature-level Signal Store, its own root-relative routes with loadComponent sub-splitting for heavy/rare sub-routes, unit/component tested via Vitest + Testing Library. No permission guards yet. — async-monolith plateau
 domain: skill
 type: template
+whenToUse: when scaffolding or editing a libs/{feature}/feature lib — its Signal Store, routed components, forms, own routes — or checking a change follows the feature conventions
 plateau: async-monolith
 project_kind: library
 version: 20260902160000

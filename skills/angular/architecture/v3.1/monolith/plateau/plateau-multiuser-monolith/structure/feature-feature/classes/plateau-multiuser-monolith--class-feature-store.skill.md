@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-feature-store
 description: Generic pattern for a feature-level NgRx Signal Store — applies to any {Feature}/feature lib, unit-tested by faking its Facade — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a feature's {feature}.store.ts (NgRx Signal Store), including a per-row syncStatus change
 plateau: multiuser-monolith
 artifact_type: store
 version: 20260903150000

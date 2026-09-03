@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--project-platform-shell
 description: The single deployable Angular application — composition root, top-level routing, root providers, a SelectivePreloadingStrategy, error-level bundle budgets, a Workbox service worker (registered after bootstrap, prod only) mounting the shared offline banner, plus (VP6) GlobalErrorHandler and (VP7) the auth interceptor + a single bootstrap silent-refresh with /login and /forbidden routes. — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing apps/platform-shell — app.config.ts, app.routes.ts, main.ts, project.json, the service worker — or checking the composition root holds no business logic and mounts each feature at one root segment
 plateau: multiuser-monolith
 project_kind: application
 version: 20260903150000

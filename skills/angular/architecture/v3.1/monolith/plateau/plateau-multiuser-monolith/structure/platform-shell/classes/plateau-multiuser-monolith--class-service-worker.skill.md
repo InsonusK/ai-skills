@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-service-worker
 description: The Workbox service worker for apps/platform-shell — four content-type routing rules, testable predicates in sw-routes.ts, and the sw-build.mjs Nx build step — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the Workbox service worker — sw-src.ts, sw-routes.ts, sw-build.mjs — or its content-type routing rules
 plateau: multiuser-monolith
 artifact_type: module
 version: 20260903150000

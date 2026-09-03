@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-notifications-store
 description: The notifications slice in libs/shared/state — a classical NgRx feature holding a list of user notifications (show / dismiss / clearAll), used by offline-sync to surface server-wins conflicts — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the notifications slice (VP5) — show / dismiss / clearAll, selectNotifications
 plateau: offline-full-monolith
 artifact_type: store
 version: 20260903120000

@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-mutation-queue-service
 description: The Dexie-backed mutation queue service — enqueue (with idempotency key), per-feature FIFO reads, a liveQuery observable for pending-sync UI, and markSynced — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the Dexie MutationQueueService (VP5) — enqueue, per-feature FIFO reads, idempotency keys, markSynced
 plateau: offline-full-monolith
 artifact_type: service
 version: 20260903120000

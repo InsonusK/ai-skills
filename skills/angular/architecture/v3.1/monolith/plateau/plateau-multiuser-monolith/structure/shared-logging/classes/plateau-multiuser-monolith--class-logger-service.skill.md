@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-logger-service
 description: Central logging entry point — structured debug/info/warn/error/report calls forwarded to every registered LogSink; report() always reaches BackendLogSink regardless of MIN_LOG_LEVEL — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing LoggerService — the levels, the LOG_SINKS factory, report()
 plateau: multiuser-monolith
 artifact_type: service
 version: 20260903150000

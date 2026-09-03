@@ -3,7 +3,7 @@ name: plateau-multiuser-monolith--project-component-preview
 description: A minimal Nx application that renders platform components (feature components, forms, shared/ui) in isolation with static example inputs — the platform plateau's counterpart to the design system's projects/demo, and the target for visual/a11y specs — multiuser-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this project in the multiuser-monolith plateau, or another artifact that plays the same role
+whenToUse: when adding a component preview route to apps/component-preview, or wiring a visual/a11y spec target
 plateau: multiuser-monolith
 project_kind: application
 version: 20260903150000

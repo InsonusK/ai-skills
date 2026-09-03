@@ -3,6 +3,7 @@ name: plateau-online-monolith--class-feature-routes
 description: Generic pattern for a feature's own root-relative Routes array — applies to any {Feature}/feature lib. No lazy sub-splitting yet. — online-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a feature's {feature}.routes.ts — root-relative paths, loadComponent splits, route-level providers, permission guards
 plateau: online-monolith
 artifact_type: module
 version: 20260902000000

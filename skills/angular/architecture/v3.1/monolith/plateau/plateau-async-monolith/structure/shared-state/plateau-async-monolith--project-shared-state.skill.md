@@ -3,6 +3,7 @@ name: plateau-async-monolith--project-shared-state
 description: Classical NgRx Store hosting global, cross-cutting state slices — the project + store.config.ts registration seam; concrete slices are added by the features that need them (connectivity, notifications, auth) — async-monolith plateau
 domain: skill
 type: template
+whenToUse: when adding or editing a global NgRx slice in libs/shared/state, or wiring store.config.ts / provideGlobalStore()
 plateau: async-monolith
 project_kind: library
 version: 20260902160000

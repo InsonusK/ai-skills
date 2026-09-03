@@ -3,6 +3,7 @@ name: plateau-async-monolith--repo-async-monolith
 description: Nx workspace layout for the async-monolith Angular application — the online-monolith workspace plus a selective route-preloading strategy, a loadComponent sub-splitting discipline inside features, and enforced (error-level) bundle budgets on the app build. Still one deployable unit; no offline support, no Module Federation, no authentication.
 domain: skill
 type: template
+whenToUse: when scaffolding the Nx workspace, adding a project or a `@nx/enforce-module-boundaries` allow-list row, or checking whether a change follows this plateau's workspace-level rules (tags, boundaries, test runner, budgets, VP1 preloading)
 plateau: async-monolith
 version: 20260902160000
 tags:

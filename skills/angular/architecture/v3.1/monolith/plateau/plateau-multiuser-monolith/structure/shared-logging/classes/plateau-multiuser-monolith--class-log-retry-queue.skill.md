@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-log-retry-queue
 description: LogRetryQueue in libs/shared/logging — a bounded IndexedDB-persisted retry queue for failed log batches, evicting oldest-first once any of three limits (count, age, size) is exceeded — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing LogRetryQueue (VP6) — the bounded IndexedDB queue, count/age/size oldest-first eviction
 plateau: multiuser-monolith
 artifact_type: service
 version: 20260903150000

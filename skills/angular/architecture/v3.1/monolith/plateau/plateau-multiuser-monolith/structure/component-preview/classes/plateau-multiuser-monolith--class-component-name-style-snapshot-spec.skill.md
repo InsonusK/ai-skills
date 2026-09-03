@@ -3,7 +3,7 @@ name: plateau-multiuser-monolith--class-component-name-style-snapshot-spec
 description: Generic pattern for a computed-CSS-property snapshot spec under spec/, run alongside a component's pixel screenshot spec so a failing visual diff can be explained rather than just observed — multiuser-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the multiuser-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a component's computed-style snapshot spec under spec/, before accepting a new visual baseline
 plateau: multiuser-monolith
 artifact_type: spec
 version: 20260903150000

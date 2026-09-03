@@ -3,6 +3,7 @@ name: plateau-online-monolith--project-platform-shell
 description: The single deployable Angular application — composition root, top-level root-relative routing, root providers. No preloading strategy yet, no global error handler yet. — online-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing apps/platform-shell — app.config.ts, app.routes.ts, main.ts, project.json, the service worker — or checking the composition root holds no business logic and mounts each feature at one root segment
 plateau: online-monolith
 project_kind: application
 version: 20260902000000

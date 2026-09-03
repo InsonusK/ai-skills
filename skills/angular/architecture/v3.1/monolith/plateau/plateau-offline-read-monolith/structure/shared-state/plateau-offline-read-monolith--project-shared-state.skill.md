@@ -3,6 +3,7 @@ name: plateau-offline-read-monolith--project-shared-state
 description: Classical NgRx Store hosting global, cross-cutting state slices — the store.config.ts registration seam plus the `connectivity` slice (`selectIsOnline`). `notifications`/`auth` arrive later in the chain. — offline-read-monolith plateau
 domain: skill
 type: template
+whenToUse: when adding or editing a global NgRx slice in libs/shared/state, or wiring store.config.ts / provideGlobalStore()
 plateau: offline-read-monolith
 project_kind: library
 version: 20260903090000

@@ -3,6 +3,7 @@ name: plateau-online-monolith--class-feature-mapper-and-errors
 description: Generic pattern for a feature's hand-written DTO/domain mapper functions and its typed domain error hierarchy — online-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a feature's DTO mapper or its typed domain error classes
 plateau: online-monolith
 artifact_type: service
 version: 20260902000000

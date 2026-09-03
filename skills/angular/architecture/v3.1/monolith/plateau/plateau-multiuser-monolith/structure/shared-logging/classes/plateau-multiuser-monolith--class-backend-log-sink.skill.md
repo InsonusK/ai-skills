@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-backend-log-sink
 description: BackendLogSink in libs/shared/logging — batches warn/error/report entries and sends them to the backend, with a sendBeacon flush on unload and a LogRetryQueue fallback on failure — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing BackendLogSink (VP6) — the batching, sendBeacon on unload, the LogRetryQueue fallback
 plateau: multiuser-monolith
 artifact_type: service
 version: 20260903150000

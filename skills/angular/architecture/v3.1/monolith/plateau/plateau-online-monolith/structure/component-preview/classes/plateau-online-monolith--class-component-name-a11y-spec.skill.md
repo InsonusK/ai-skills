@@ -3,7 +3,7 @@ name: plateau-online-monolith--class-component-name-a11y-spec
 description: Generic pattern for an @axe-core/playwright accessibility scan under spec/, targeting a component's demo/preview page — online-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the online-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a component's @axe-core/playwright accessibility spec under spec/
 plateau: online-monolith
 artifact_type: spec
 version: 20260902000000

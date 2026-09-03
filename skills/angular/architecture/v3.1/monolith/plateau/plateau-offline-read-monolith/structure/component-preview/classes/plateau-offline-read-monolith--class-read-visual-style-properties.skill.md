@@ -3,7 +3,7 @@ name: plateau-offline-read-monolith--class-read-visual-style-properties
 description: Shared helper that reads a fixed, curated set of visually meaningful computed CSS properties from a page element, for use by every spec/{component-name}.style-snapshot.spec.ts — offline-read-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the offline-read-monolith plateau, or another artifact that plays the same role
+whenToUse: when creating a project's read-visual-style-properties.ts helper, or extending the shared VISUAL_STYLE_PROPERTIES list
 plateau: offline-read-monolith
 artifact_type: module
 version: 20260903090000

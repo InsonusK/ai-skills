@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--project-feature-feature
 description: Generic template for any {feature}/feature lib — routed, presentational + container components (including Signal Forms) for one feature, its feature-level Signal Store, its own root-relative routes with loadComponent sub-splitting for heavy/rare sub-routes, unit/component tested via Vitest + Testing Library. No permission guards yet. — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when scaffolding or editing a libs/{feature}/feature lib — its Signal Store, routed components, forms, own routes — or checking a change follows the feature conventions
 plateau: offline-full-monolith
 project_kind: library
 version: 20260903120000

@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-auth-interceptor
 description: The functional HTTP interceptor that attaches the in-memory access token and, on a 401, dispatches a single silent refresh — never intercepting the refresh call itself — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing authInterceptor (VP7) — the bearer attach, the 401 -> single silent refresh, skipping the refresh call itself
 plateau: multiuser-monolith
 artifact_type: interceptor
 version: 20260903150000

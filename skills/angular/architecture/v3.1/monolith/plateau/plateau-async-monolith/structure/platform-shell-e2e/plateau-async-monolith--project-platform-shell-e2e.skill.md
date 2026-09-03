@@ -3,6 +3,7 @@ name: plateau-async-monolith--project-platform-shell-e2e
 description: Playwright end-to-end test project for the platform shell — scenario-level specs exercising real user flows against the built application — async-monolith plateau
 domain: skill
 type: template
+whenToUse: when adding or reviewing a Playwright scenario spec in apps/platform-shell-e2e
 plateau: async-monolith
 project_kind: application
 version: 20260902160000

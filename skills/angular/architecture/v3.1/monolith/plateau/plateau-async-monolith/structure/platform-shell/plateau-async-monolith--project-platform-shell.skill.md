@@ -3,6 +3,7 @@ name: plateau-async-monolith--project-platform-shell
 description: The single deployable Angular application — composition root, top-level root-relative routing, root providers, a SelectivePreloadingStrategy, and error-level bundle budgets on the production build. No global error handler yet. — async-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing apps/platform-shell — app.config.ts, app.routes.ts, main.ts, project.json, the service worker — or checking the composition root holds no business logic and mounts each feature at one root segment
 plateau: async-monolith
 project_kind: application
 version: 20260902160000

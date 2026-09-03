@@ -3,6 +3,7 @@ name: plateau-online-monolith--class-logger-service
 description: Central logging entry point — structured debug/info/warn/error calls forwarded to every registered LogSink, with environment-based level filtering. No report() yet, console sink only. — online-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing LoggerService — the levels, the LOG_SINKS factory, report()
 plateau: online-monolith
 artifact_type: service
 version: 20260902000000

@@ -3,7 +3,7 @@ name: plateau-offline-full-monolith--class-component-name-component-spec
 description: Generic pattern for a component test under spec/, using Angular Testing Library and interacting through the rendered DOM — a component is tested purely on its own input()/output()/model() surface, independent of whatever business logic (if any) sits around it — offline-full-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the offline-full-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a component's behavioural spec (Testing Library) under spec/
 plateau: offline-full-monolith
 artifact_type: spec
 version: 20260903120000

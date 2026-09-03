@@ -3,7 +3,7 @@ name: plateau-online-monolith--class-feature-client-spec
 description: Generic pattern for unit-testing a feature's Client via TestBed and HttpTestingController — the only place HttpTestingController is used — online-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the online-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a feature's {feature}.client.spec.ts (HttpTestingController, exact request assertions)
 plateau: online-monolith
 artifact_type: spec
 version: 20260902000000

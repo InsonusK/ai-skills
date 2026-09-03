@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-service-worker
 description: The Workbox service worker for apps/platform-shell — four content-type routing rules, testable predicates in sw-routes.ts, and the sw-build.mjs Nx build step — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the Workbox service worker — sw-src.ts, sw-routes.ts, sw-build.mjs — or its content-type routing rules
 plateau: offline-full-monolith
 artifact_type: module
 version: 20260903120000

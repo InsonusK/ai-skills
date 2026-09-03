@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-feature-client
 description: Generic pattern for a feature's Client — the internal transport layer of its data-access lib, never exported outside it, unit-tested via HttpTestingController — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a feature's {feature}.client.ts — DTO mapping, HTTP calls, the typed-domain-error rethrow
 plateau: multiuser-monolith
 artifact_type: service
 version: 20260903150000

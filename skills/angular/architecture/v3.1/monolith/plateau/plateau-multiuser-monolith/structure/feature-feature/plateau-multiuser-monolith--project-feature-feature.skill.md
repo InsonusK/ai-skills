@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--project-feature-feature
 description: Generic template for any {feature}/feature lib — routed, presentational + container components (including Signal Forms) for one feature, its feature-level Signal Store, its own root-relative routes with loadComponent sub-splitting, a VP5 offline-sync replay handler in route providers, and VP7 permission guards (`requirePermission`) + permission-gated UI (`*hasPermission`), unit/component tested via Vitest + Testing Library. — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when scaffolding or editing a libs/{feature}/feature lib — its Signal Store, routed components, forms, own routes — or checking a change follows the feature conventions
 plateau: multiuser-monolith
 project_kind: library
 version: 20260903150000

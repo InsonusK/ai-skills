@@ -3,6 +3,7 @@ name: plateau-offline-read-monolith--project-shared-logging
 description: LoggerService with a pluggable LogSink extension point — ConsoleLogSink is the only sink registered at this plateau. No backend delivery yet. — offline-read-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing libs/shared/logging — LoggerService, a LogSink, MIN_LOG_LEVEL, the backend sink — or checking all logging goes through the one seam
 plateau: offline-read-monolith
 project_kind: library
 version: 20260903090000

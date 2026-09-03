@@ -3,6 +3,7 @@ name: plateau-online-monolith--project-shared-util
 description: Framework-agnostic pure helpers shared across features — online-monolith plateau
 domain: skill
 type: template
+whenToUse: when adding a framework-agnostic helper to libs/shared/util, or checking it has no Angular/RxJS import
 plateau: online-monolith
 project_kind: library
 version: 20260902000000

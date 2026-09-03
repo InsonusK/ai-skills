@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-global-error-handler
 description: GlobalErrorHandler in apps/platform-shell — the application-root ErrorHandler routing every uncaught exception through LoggerService.error with only sanitized fields — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when creating or editing apps/platform-shell/src/app/global-error-handler.ts (VP6)
 plateau: multiuser-monolith
 artifact_type: service
 version: 20260903150000

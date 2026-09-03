@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-auth-store
 description: The auth session slice in libs/shared/state — classical NgRx actions/reducer/effects/selectors for login, silent refresh, logout and session expiry, with an in-memory-only access token and granular permission strings — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the auth slice (VP7) — session lifecycle, the in-memory access token, permission strings, silent refresh
 plateau: multiuser-monolith
 artifact_type: store
 version: 20260903150000

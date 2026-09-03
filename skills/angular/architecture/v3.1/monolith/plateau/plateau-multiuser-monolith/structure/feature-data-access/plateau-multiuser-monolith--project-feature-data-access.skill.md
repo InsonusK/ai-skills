@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--project-feature-data-access
 description: Generic template for any {feature}/data-access lib — Facade (public API) / Client (internal transport) / Mapper+Errors layering for one feature's HTTP data operations, each layer unit-tested at the correct boundary — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when scaffolding or editing a libs/{feature}/data-access lib — the Facade/Client/Mapper/Errors layering — or checking only the Facade (and domain errors) is exported
 plateau: multiuser-monolith
 project_kind: library
 version: 20260903150000

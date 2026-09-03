@@ -3,6 +3,7 @@ name: plateau-offline-read-monolith--class-logger-service
 description: Central logging entry point — structured debug/info/warn/error calls forwarded to every registered LogSink, with environment-based level filtering. No report() yet, console sink only. — offline-read-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing LoggerService — the levels, the LOG_SINKS factory, report()
 plateau: offline-read-monolith
 artifact_type: service
 version: 20260903090000

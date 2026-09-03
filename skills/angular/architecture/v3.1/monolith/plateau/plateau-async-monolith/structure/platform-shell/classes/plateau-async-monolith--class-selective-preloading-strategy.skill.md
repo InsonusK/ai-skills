@@ -3,6 +3,7 @@ name: plateau-async-monolith--class-selective-preloading-strategy
 description: The custom router PreloadingStrategy that preloads a lazy route's chunk only when its mounting route carries data.preload === true — async-monolith plateau
 domain: skill
 type: template
+whenToUse: when creating or editing apps/platform-shell/src/app/preloading/selective-preloading.strategy.ts (VP1)
 plateau: async-monolith
 artifact_type: service
 version: 20260902160000

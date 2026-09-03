@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--project-shared-http-core
 description: Base HTTP service shared by every feature's Client (base URL, timeout, retry) plus the shared OfflineTransportError every Client throws on a network-level failure — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the base HTTP service or the shared transport error types in libs/shared/http-core
 plateau: multiuser-monolith
 project_kind: library
 version: 20260903150000

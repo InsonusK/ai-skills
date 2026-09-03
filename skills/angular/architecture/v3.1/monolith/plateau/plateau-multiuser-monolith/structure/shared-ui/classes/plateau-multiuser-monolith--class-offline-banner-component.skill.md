@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-offline-banner-component
 description: The shared, presentational offline banner in libs/shared/ui — takes an isOnline input, rendered only when offline, mounted once at the shell — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing OfflineBannerComponent (VP4, presentational — isOnline input)
 plateau: multiuser-monolith
 artifact_type: component
 version: 20260903150000

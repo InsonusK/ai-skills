@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-replay-orchestrator
 description: The replay orchestrator — connectivity-triggered, replays feature partitions concurrently (FIFO within a partition), with a single overridable server-wins handleConflict seam — plus MutationReplayRegistry and ReplayConflictError — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing ReplayOrchestrator or the FeatureReplay contract (VP5) — the partition replay loop, the handleConflict seam, the onReplayStart/onReplayResult callbacks
 plateau: multiuser-monolith
 artifact_type: service
 version: 20260903150000

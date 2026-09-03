@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-feature-facade
 description: Generic pattern for a feature's Facade — the public entry point of its data-access lib, owning business validation and orchestration, unit-tested by faking its Client — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a feature's {feature}.facade.ts — business validation, the public API surface, the offline queueing branch
 plateau: offline-full-monolith
 artifact_type: service
 version: 20260903120000

@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-scenario-name-e2e-spec
 description: Generic pattern for a Playwright end-to-end test in apps/platform-shell-e2e, exercising a real user scenario through a real browser — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a Playwright end-to-end scenario spec against the built app
 plateau: offline-full-monolith
 artifact_type: test
 version: 20260903120000

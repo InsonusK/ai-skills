@@ -3,7 +3,7 @@ name: plateau-offline-full-monolith--class-component-name-style-snapshot-spec
 description: Generic pattern for a computed-CSS-property snapshot spec under spec/, run alongside a component's pixel screenshot spec so a failing visual diff can be explained rather than just observed — offline-full-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the offline-full-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a component's computed-style snapshot spec under spec/, before accepting a new visual baseline
 plateau: offline-full-monolith
 artifact_type: spec
 version: 20260903120000

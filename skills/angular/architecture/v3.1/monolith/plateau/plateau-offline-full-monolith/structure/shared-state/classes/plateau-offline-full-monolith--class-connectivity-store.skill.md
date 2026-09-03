@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--class-connectivity-store
 description: The connectivity slice in libs/shared/state — a classical NgRx feature deriving selectIsOnline from navigator.onLine events AND a periodic HEAD /health poll — offline-full-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the connectivity slice (VP4) — the navigator.onLine + HEAD /health derivation of selectIsOnline
 plateau: offline-full-monolith
 artifact_type: store
 version: 20260903120000

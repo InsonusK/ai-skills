@@ -3,6 +3,7 @@ name: plateau-multiuser-monolith--class-feature-routes
 description: Generic pattern for a feature's own root-relative Routes array — applies to any {Feature}/feature lib. VP1 adds loadComponent sub-splitting for heavy/rare sub-routes plus a per-chunk bundle budget; VP5 a parent route with `providers: [provide{Feature}OfflineSync()]`; VP7 `canActivate: [requirePermission('...')]` on a protected sub-route. — multiuser-monolith plateau
 domain: skill
 type: template
+whenToUse: when writing or reviewing a feature's {feature}.routes.ts — root-relative paths, loadComponent splits, route-level providers, permission guards
 plateau: multiuser-monolith
 artifact_type: module
 version: 20260903150000

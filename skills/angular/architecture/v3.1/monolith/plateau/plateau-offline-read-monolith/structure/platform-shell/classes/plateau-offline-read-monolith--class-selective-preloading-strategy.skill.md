@@ -3,6 +3,7 @@ name: plateau-offline-read-monolith--class-selective-preloading-strategy
 description: The custom router PreloadingStrategy that preloads a lazy route's chunk only when its mounting route carries data.preload === true — offline-read-monolith plateau
 domain: skill
 type: template
+whenToUse: when creating or editing apps/platform-shell/src/app/preloading/selective-preloading.strategy.ts (VP1)
 plateau: offline-read-monolith
 artifact_type: service
 version: 20260903090000

@@ -3,6 +3,7 @@ name: plateau-offline-full-monolith--repo-offline-full-monolith
 description: Nx workspace layout for the offline-full-monolith Angular application — the offline-read-monolith workspace plus a Dexie-backed, per-feature-partitioned mutation queue (libs/shared/offline-sync) with idempotent replay and server-wins conflict handling, a notifications slice in libs/shared/state, a per-operation Facade queueing opt-in, and a shared pending-sync indicator. Reads AND writes survive offline. Still one deployable unit; no Module Federation, no authentication.
 domain: skill
 type: template
+whenToUse: when scaffolding the Nx workspace, adding a project or a boundary allow-list row, or checking whether a change follows this plateau's workspace-level rules (tags, boundaries, the offline write queue, per-entity syncStatus)
 plateau: offline-full-monolith
 version: 20260903120000
 tags:

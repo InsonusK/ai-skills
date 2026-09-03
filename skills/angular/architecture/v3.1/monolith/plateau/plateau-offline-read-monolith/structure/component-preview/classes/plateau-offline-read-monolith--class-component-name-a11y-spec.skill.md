@@ -3,7 +3,7 @@ name: plateau-offline-read-monolith--class-component-name-a11y-spec
 description: Generic pattern for an @axe-core/playwright accessibility scan under spec/, targeting a component's demo/preview page — offline-read-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the offline-read-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a component's @axe-core/playwright accessibility spec under spec/
 plateau: offline-read-monolith
 artifact_type: spec
 version: 20260903090000

@@ -3,6 +3,7 @@ name: plateau-async-monolith--project-shared-http-core
 description: Base HTTP service shared by every feature's Client — common concerns (base URL, timeout, retry) — async-monolith plateau
 domain: skill
 type: template
+whenToUse: when editing the base HTTP service or the shared transport error types in libs/shared/http-core
 plateau: async-monolith
 project_kind: library
 version: 20260902160000

@@ -3,6 +3,7 @@ name: plateau-offline-read-monolith--repo-offline-read-monolith
 description: Nx workspace layout for the offline-read-monolith Angular application — the async-monolith workspace plus a Workbox service worker (four content-type caching rules), a connectivity slice in libs/shared/state with an accurate isOnline signal, a shared OfflineTransportError in libs/shared/http-core, and a shell-mounted offline banner. Reads survive offline; a write attempted offline still fails immediately. Still one deployable unit; no offline write queue, no Module Federation, no authentication.
 domain: skill
 type: template
+whenToUse: when scaffolding the Nx workspace, adding a project or a boundary allow-list row, or checking whether a change follows this plateau's workspace-level rules (tags, boundaries, the Workbox SW, the connectivity slice)
 plateau: offline-read-monolith
 version: 20260903090000
 tags:

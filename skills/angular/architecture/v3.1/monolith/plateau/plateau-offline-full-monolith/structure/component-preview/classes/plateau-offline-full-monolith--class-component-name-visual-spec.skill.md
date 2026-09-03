@@ -3,7 +3,7 @@ name: plateau-offline-full-monolith--class-component-name-visual-spec
 description: Generic pattern for a Playwright screenshot-regression spec under spec/, targeting a component's demo/preview page in both light and dark color schemes — offline-full-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the offline-full-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a component's Playwright screenshot spec under spec/, or updating a committed baseline
 plateau: offline-full-monolith
 artifact_type: spec
 version: 20260903120000

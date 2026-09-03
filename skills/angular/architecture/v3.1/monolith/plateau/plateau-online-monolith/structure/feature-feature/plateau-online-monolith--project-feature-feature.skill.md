@@ -3,6 +3,7 @@ name: plateau-online-monolith--project-feature-feature
 description: Generic template for any {feature}/feature lib — routed, presentational + container components (including Signal Forms) for one feature, its feature-level Signal Store, its own root-relative routes, unit/component tested via Vitest + Testing Library. No lazy sub-splitting, no permission guards yet. — online-monolith plateau
 domain: skill
 type: template
+whenToUse: when scaffolding or editing a libs/{feature}/feature lib — its Signal Store, routed components, forms, own routes — or checking a change follows the feature conventions
 plateau: online-monolith
 project_kind: library
 version: 20260902000000

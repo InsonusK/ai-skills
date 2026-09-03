@@ -3,7 +3,7 @@ name: plateau-async-monolith--class-feature-integration-spec
 description: Generic pattern for a feature-level integration test spanning Signal Store, Facade, and Client together, using MSW to intercept at the network boundary — async-monolith plateau
 domain: skill
 type: template
-whenToUse: when creating or editing this class in the async-monolith plateau, or another artifact that plays the same role
+whenToUse: when writing or reviewing a feature's integration spec that deliberately spans more than one architectural layer (MSW)
 plateau: async-monolith
 artifact_type: spec
 version: 20260902160000
