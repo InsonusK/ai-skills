@@ -1,0 +1,18 @@
+/* Type-checking config for the Playwright specs (visual / style-snapshot / a11y). */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/e2e",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "noEmit": true
+  },
+  "include": [
+    "playwright.config.ts",
+    "projects/design-system/src/lib/**/spec/*.visual.spec.ts",
+    "projects/design-system/src/lib/**/spec/*.style-snapshot.spec.ts",
+    "projects/design-system/src/lib/**/spec/*.a11y.spec.ts",
+    "projects/design-system/testing/**/*.ts"
+  ]
+}

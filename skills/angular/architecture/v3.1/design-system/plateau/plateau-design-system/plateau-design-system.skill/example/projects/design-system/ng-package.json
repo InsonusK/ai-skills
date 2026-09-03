@@ -1,0 +1,8 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/design-system",
+  "assets": ["./styles/theme.scss", "./styles/custom-tokens.scss"],
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  }
+}

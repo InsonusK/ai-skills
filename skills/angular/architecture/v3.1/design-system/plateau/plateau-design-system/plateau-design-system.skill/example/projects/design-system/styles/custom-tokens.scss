@@ -1,0 +1,26 @@
+// --ds-* custom properties for concepts Angular Material's M3 token set does not model.
+// Never alias a concept --mat-sys-* already covers. Every colour uses light-dark().
+
+html {
+  // Semantic status / priority colours — no Material equivalent
+  --ds-color-priority-high: light-dark(#c62828, #ef9a9a);
+  --ds-color-priority-medium: light-dark(#ef6c00, #ffcc80);
+  --ds-color-priority-low: light-dark(#2e7d32, #a5d6a7);
+
+  --ds-color-status-stop: light-dark(#c62828, #ef9a9a);
+  --ds-color-status-start: light-dark(#2e7d32, #a5d6a7);
+  --ds-color-status-in-progress: light-dark(#1565c0, #90caf9);
+
+  --ds-color-on-status: light-dark(#ffffff, #1b1b1b);
+
+  // Spacing scale — no Material equivalent
+  --ds-spacing-xs: 4px;
+  --ds-spacing-sm: 8px;
+  --ds-spacing-md: 16px;
+  --ds-spacing-lg: 24px;
+
+  // Radius scale — no Material equivalent
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 16px;
+}

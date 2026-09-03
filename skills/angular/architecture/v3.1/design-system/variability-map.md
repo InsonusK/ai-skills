@@ -23,13 +23,13 @@ Built per [[skills/common-workflow/architecture/design/plateau-map/variability-m
 
 ## Plateau Map derivation
 
-**No plateaus exist in `v3.1/design-system/` yet.**
+**[`plateau-design-system`](skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md) is built** — the catalog's single plateau, composing all four common solutions (`structure` + `tokens` + `components` + `ui-testing`), `standalone: true`, `parent_plateaus: []`. Runnable Angular CLI example (ng-packagr + Vitest green). One benign intersection group: [`design-system-repository`](skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/registry/design-system-repository.md) (N = 4).
 
 ### Reference: V1 → v3.1
 
 | V1 plateau | v3.1 design-system plateau | VP answers |
 | --- | --- | --- |
-| `plateau-design-system` | e.g. `plateau-design-system` | (no VPs) — composes all four common solutions |
+| `plateau-design-system` | `plateau-design-system` (built) | (no VPs) — composes all four common solutions |
 
 ### Combinations v3.1 allows that V1 has no plateau for
 
