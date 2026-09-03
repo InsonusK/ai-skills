@@ -46,13 +46,24 @@ No new packages — this is a plain Nx `type:app` project using the workspace's 
 # Rules
 
 ## MUST
-- `apps/component-preview` must be tagged `type:preview`, `scope:platform`.
-- A previewed component must be rendered with static, hardcoded example data — it must never call a real Facade, real HTTP endpoint, or real Signal Store wired to a backend.
-- Every component covered by a visual regression or accessibility spec (per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) must have its `spec/preview/{component-name}.preview.ts` registered as a route in this app.
-- The preview app must import preview components from the component library's `spec/preview/` path; it must never duplicate preview markup inside the app.
-
-- Never be included in the production deployment of `apps/platform-shell` — it is a development/CI-only harness, built and served separately.
-- Never contain business logic, HTTP calls, or routing guards — only route registration and static rendering of preview components.
+- `apps/component-preview` is tagged `type:preview`, `scope:platform`.
+  - Risk: an untagged preview app is caught by lint/dep-graph rules meant for real apps, or missed by CI filters that target it.
+  - Fix: set both tags in `project.json`.
+- A previewed component is rendered with static, hardcoded example data — never a real Facade, HTTP endpoint, or backend-wired Signal Store.
+  - Risk: a real dependency makes the screenshot target flaky and slow and defeats the harness's whole purpose.
+  - Fix: pass literal inputs; provide a plain-object stub for any injected collaborator.
+- Every component covered by a visual or a11y spec has its `spec/preview/{component-name}.preview.ts` registered as a route here.
+  - Risk: a visual/a11y spec with no preview route has nothing stable to navigate to and cannot run.
+  - Fix: one deep-linkable route per component state in `app.routes.ts`.
+- The preview app imports preview components from the library's `spec/preview/` path — never duplicates preview markup inside the app.
+  - Risk: preview markup in the app drifts from the component and its tests; the library stops shipping its own harness.
+  - Fix: keep `{component-name}.preview.ts` in the component's `spec/preview/`; import it by path alias.
+- The preview app is never included in the production deployment of `apps/platform-shell`.
+  - Risk: shipping the harness bloats the bundle and exposes internal preview routes publicly.
+  - Fix: build and serve it separately; exclude it from the platform-shell deploy.
+- The preview app contains only route registration and static rendering — no business logic, HTTP calls, or routing guards.
+  - Risk: logic in the harness makes previews behave unlike production and adds a second place to maintain it.
+  - Fix: all behaviour stays in the component library; the app only wires routes.
 ## SHOULD
 - **Wiring a previewed component to the real Facade/Store "to keep the preview realistic"** — Consequence: reintroduces exactly the backend dependency this harness exists to avoid, making preview pages flaky and slow, and defeating their purpose as a stable screenshot target — Instead: always use static, hardcoded example data for every previewed state
 - **Putting the preview component directly inside `apps/component-preview/src/app/` instead of `spec/preview/` in the component library** — Consequence: the preview file drifts away from the component and its tests, and the component library no longer ships with its own test harness — Instead: keep the preview file in the component's `spec/preview/` directory and import it from the preview app

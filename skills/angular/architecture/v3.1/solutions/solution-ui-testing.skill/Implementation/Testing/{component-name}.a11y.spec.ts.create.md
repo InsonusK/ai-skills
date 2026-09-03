@@ -41,13 +41,24 @@ test.describe('DsButtonComponent — accessibility', () => {
 # Rule changes
 
 ## MUST
-- The file must be created at `spec/{component-name}.a11y.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
-- An a11y spec must navigate directly to the component's stable demo/preview URL, the same one used by its visual spec.
-- Every meaningfully distinct state the component's demo/preview page exposes must have its own axe-core scan, since a state change (e.g. `disabled`, an error message appearing) can introduce a violation absent from the default state.
-- Tests in an a11y spec must be grouped under a `test.describe('<component-name> — accessibility', () => { ... })` block.
-- Any explicit, individually justified exception to a specific axe rule must be scoped to that one rule and documented inline with the reason — never a blanket disable of the whole scan.
-
-- an a11y spec must never be treated as a complete accessibility audit — it catches the mechanically-checkable subset of WCAG rules only; issues requiring human judgment (meaningful alt text, sensible focus order) still need occasional manual review.
+- The file is created at `spec/{component-name}.a11y.spec.ts`.
+  - Risk: spec files next to `component.ts` clutter the component root and get mixed with source in reviews.
+  - Fix: every test file for the component lives under its `spec/` folder.
+- An a11y spec navigates directly to the component's stable demo/preview URL — the same one its visual spec uses.
+  - Risk: reaching the component through app navigation scans unrelated page content and reports violations outside the component.
+  - Fix: `page.goto('/<component>/<state>')` against the preview app's stable route.
+- Every meaningfully distinct state the demo page exposes has its own axe-core scan.
+  - Risk: a `disabled` state or an appearing error message can introduce a violation the default-state scan never sees.
+  - Fix: one `test` + `AxeBuilder().analyze()` per state.
+- Tests are grouped under a `test.describe('<component-name> — accessibility', ...)` block.
+  - Risk: a flat file gives no grouping in the Playwright report.
+  - Fix: one `test.describe` per component.
+- Any axe-rule exception is scoped to that one rule and documented inline with the reason — never a blanket disable.
+  - Risk: `.disableRules()` with a broad list or a skipped scan drops coverage for every other rule to silence one.
+  - Fix: `.disableRules(['color-contrast'])` with a comment stating why, or better, fix the violation.
+- An a11y spec is never treated as a complete accessibility audit.
+  - Risk: a green mechanical scan gives false confidence while misleading alt text or a broken focus order ships.
+  - Fix: keep it as a regression net for the checkable subset; schedule occasional manual/expert review.
 ## SHOULD
 - **Disabling axe-core entirely for a component because one rule produces a false positive** — Consequence: loses coverage for every other rule the scan would have caught, for the sake of silencing one — Instead: scope the exception to the specific rule ID, with a documented reason
 - **Treating a passing a11y spec as proof the component is fully accessible** — Consequence: real, non-mechanically-detectable issues (misleading alt text, confusing focus order) go unnoticed because the automated check passed — Instead: treat this as a regression net for the mechanically-checkable subset, not a substitute for occasional manual/expert review

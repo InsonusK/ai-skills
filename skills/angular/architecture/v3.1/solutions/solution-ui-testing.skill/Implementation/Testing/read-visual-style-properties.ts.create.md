@@ -59,9 +59,15 @@ export async function readVisualStyleProperties(locator: Locator): Promise<Visua
 # Rule changes
 
 ## MUST
-- `VISUAL_STYLE_PROPERTIES` must stay a single shared list imported by every style-snapshot spec — never redefined per component.
-- The helper must be created in the project's test-support directory (e.g., `libs/{feature}/feature/testing/` or `projects/design-system/testing/`), not duplicated inside each component's `spec/` folder.
-- The helper must read computed property values via `getComputedStyle()`, never a CSS class name or a Tailwind/utility-class string — a class name can stay unchanged while the value it resolves to changes.
+- `VISUAL_STYLE_PROPERTIES` stays a single shared list imported by every style-snapshot spec — never redefined per component.
+  - Risk: per-component lists make snapshots incomparable and pay the "which properties matter" curation cost repeatedly.
+  - Fix: one exported `const`; extend it when a real gap is found.
+- The helper lives in the project's test-support directory, not duplicated inside each component's `spec/` folder.
+  - Risk: copies drift apart between components and the curated, comparable snapshot format is lost.
+  - Fix: `libs/shared/testing/` or `projects/design-system/testing/`; import via the workspace path alias.
+- The helper reads computed values via `getComputedStyle()`, never a class name or utility-class string.
+  - Risk: a class name can stay identical while the token it resolves to changes elsewhere — the regression this file exists to catch slips through.
+  - Fix: `locator.evaluate(el => getComputedStyle(el)[prop])`.
 
 ## SHOULD
 - Extend `VISUAL_STYLE_PROPERTIES` when a real regression class slips through undetected by the current list, rather than adding a component-specific one-off property read.

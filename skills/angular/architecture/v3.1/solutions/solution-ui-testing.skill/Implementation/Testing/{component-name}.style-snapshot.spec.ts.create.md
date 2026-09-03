@@ -47,14 +47,27 @@ test.describe('DsButtonComponent — style snapshot', () => {
 # Rule changes
 
 ## MUST
-- The file must be created at `spec/{component-name}.style-snapshot.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
-- Text snapshot baselines (`*.styles.txt`) must be committed under `spec/snapshot/` next to the spec. Configure `snapshotPathTemplate` in `playwright.config.ts` so that `toMatchSnapshot()` stores text snapshots in `spec/snapshot/` rather than the default `__snapshots__` folder.
-- A style-snapshot spec must cover exactly the same states (and color schemes) as the component's `.visual.spec.ts` — the two specs stay paired, one per state.
-- Tests in a style-snapshot spec must be grouped under a `test.describe('<component-name> — style snapshot', () => { ... })` block.
-- A style-snapshot spec must read properties only through [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|the shared `readVisualStyleProperties` helper]], never a component-specific ad hoc property list.
-- Before updating a failing `.visual.spec.ts` baseline (`--update-snapshots`), the corresponding style-snapshot diff must be inspected first: no property change means the pixel diff is rendering noise (safe to accept); a property change means the diff itself states what moved, and that change must be confirmed intentional before either snapshot is updated. Note: `--update-snapshots` is the single Playwright flag that updates both the PNG baseline and the paired `.styles.txt` text snapshot; both files are updated together.
-
-- a style-snapshot spec must never be treated as a replacement for the pixel screenshot spec — it does not catch layout/paint issues that fall outside the shared property list (e.g. `z-index` stacking, `overflow` clipping); both specs ship together.
+- The file is created at `spec/{component-name}.style-snapshot.spec.ts`.
+  - Risk: spec files next to `component.ts` clutter the component root and get mixed with source in reviews.
+  - Fix: every test file for the component lives under its `spec/` folder.
+- Text snapshot baselines (`*.styles.txt`) are committed under `spec/snapshot/`, via `snapshotPathTemplate` in `playwright.config.ts`.
+  - Risk: snapshots left in Playwright's default `__snapshots__` folder scatter across the tree and are missed in review.
+  - Fix: set `snapshotPathTemplate` so `toMatchSnapshot()` writes to `spec/snapshot/`.
+- A style-snapshot spec covers exactly the same states and color schemes as the component's `.visual.spec.ts`.
+  - Risk: if the two specs drift, a pixel diff has no paired style diff to explain it and the pairing loses its value.
+  - Fix: mirror the visual spec's `for` loop and per-state tests one to one.
+- Tests are grouped under a `test.describe('<component-name> — style snapshot', ...)` block.
+  - Risk: a flat file gives no grouping in the Playwright report.
+  - Fix: one `test.describe` per component.
+- Properties are read only through the shared `readVisualStyleProperties` helper, never an ad hoc per-component list.
+  - Risk: a component-specific property list makes snapshots incomparable across components and defeats the curated set.
+  - Fix: import the one shared helper; extend its `VISUAL_STYLE_PROPERTIES` if a real gap is found.
+- Before running `--update-snapshots` on a failing `.visual.spec.ts`, the paired style-snapshot diff is inspected first.
+  - Risk: `--update-snapshots` updates both the PNG and the `.styles.txt` at once, so a real regression is baked into both baselines unseen.
+  - Fix: empty style diff → pixel change is rendering noise, safe to accept; non-empty → confirm the named property change is intentional before updating.
+- A style-snapshot spec is never treated as a replacement for the pixel screenshot spec.
+  - Risk: the shared property list misses layout/paint issues outside it (`z-index` stacking, `overflow` clipping), so a green style snapshot gives false confidence.
+  - Fix: both specs ship together; neither substitutes for the other.
 ## SHOULD
 - **Running `--update-snapshots` on a failing visual spec without checking the paired style-snapshot diff** — Consequence: exactly [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create#Anti-patterns|the anti-pattern the visual spec already warns about]] — a real regression gets silently baked into the new baseline as "correct" — Instead: check the style-snapshot diff first; an empty diff means the pixel change is rendering noise, a non-empty diff names the exact property/value change to confirm as intentional (or reject as a regression)
 - **Adding a component-specific property list instead of using the shared helper** — Consequence: snapshots become incomparable across components, and defeats the point of a curated, shared, readable property set — Instead: extend [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create|the one shared `VISUAL_STYLE_PROPERTIES` list]] if a real gap is found

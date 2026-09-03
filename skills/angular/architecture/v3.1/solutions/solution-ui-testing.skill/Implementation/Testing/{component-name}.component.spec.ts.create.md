@@ -90,12 +90,24 @@ describe('DsButtonComponent', () => {
 # Rule changes
 
 ## MUST
-- The file must be created at `spec/{component-name}.component.spec.ts` so all test files live under `spec/` and do not clutter the component directory root.
-- Component tests must query and interact with the rendered DOM via Testing Library (`screen.getByRole`, `userEvent`), not via `fixture.componentInstance` or `fixture.debugElement` reaching into internals.
-- A component test must never use `HttpTestingController`, let a real HTTP call occur, or fake a Facade/Client — if the component injects a Signal Store or Facade directly, the test fakes only that one dependency, going no further down than the component's own immediate collaborator.
-- A component that injects no dependency at all (e.g. a pure `input()`/`output()`/`model()` design-system component) must have a test that provides nothing beyond its own inputs — no provider setup is needed or expected.
-- Queries must prefer accessible roles/labels (`getByRole`, `getByLabelText`) over test-id attributes, so the test also implicitly checks the component is accessible.
-- Component tests must group related cases under nested `describe('<behavior-area>', () => { ... })` blocks (e.g., `rendering`, `user interactions`).
+- The file is created at `spec/{component-name}.component.spec.ts`.
+  - Risk: spec files next to `component.ts` clutter the component root and get mixed with source in reviews.
+  - Fix: every test file for the component lives under its `spec/` folder.
+- Tests query and interact through the rendered DOM via Testing Library (`screen.getByRole`, `userEvent`), never `fixture.componentInstance` / `debugElement`.
+  - Risk: asserting on internals breaks the test on a behaviour-preserving refactor and passes while the DOM is wrong.
+  - Fix: assert what `screen` shows; drive the component with `userEvent`.
+- A component test never uses `HttpTestingController`, allows a real HTTP call, or fakes a Facade/Client.
+  - Risk: faking two layers down couples the component test to transport detail and re-tests the business layer's job.
+  - Fix: if the component injects a Signal Store or Facade, fake only that one immediate collaborator.
+- A component that injects nothing (pure `input()`/`output()`/`model()`) has a test that provides nothing beyond its inputs.
+  - Risk: inventing a provider the component does not use adds noise and implies coupling that is not there.
+  - Fix: `render(Cmp, { inputs, on })` with no `providers`.
+- Queries prefer accessible roles/labels (`getByRole`, `getByLabelText`) over test-id attributes.
+  - Risk: `getByTestId` as the default skips the implicit accessibility check and ties selectors to markup, not meaning.
+  - Fix: `getByRole`/`getByLabelText` first; `getByTestId` only for elements with no meaningful role.
+- Related cases are grouped under nested `describe('<behavior-area>', ...)` blocks (e.g. `rendering`, `user interactions`).
+  - Risk: a flat `it` list makes it hard to see which behaviour area is thin on coverage.
+  - Fix: one nested `describe` per behaviour area.
 
 ## SHOULD
 - **Asserting against `fixture.componentInstance.someSignal()` instead of the rendered DOM** — Consequence: couples the test to the component's internal implementation — a refactor that preserves user-visible behavior but renames an internal signal breaks the test for no real reason — Instead: assert what `screen` shows, exactly as a user would perceive it
