@@ -1,6 +1,6 @@
 # monolith plateaus
 
-Five plateaus, built by `plateau-create-by-solutions` from the catalogue in `../../solutions/`.
+Six plateaus, built by `plateau-create-by-solutions` from the catalogue in `../../solutions/`.
 **Flat lineage** — a single chain, each `standalone: true`, each `parent_plateaus` entry the single
 previous plateau. Capabilities are **cumulative**: everything the parent has, plus its own delta.
 VP definitions: [`../variability-map.md`](../variability-map.md).
@@ -12,10 +12,9 @@ VP definitions: [`../variability-map.md`](../variability-map.md).
 | 3 | **plateau-offline-read-monolith** | async-monolith | **VP4** OfflineReadResilience (Workbox SW, `connectivity` slice, `OfflineTransportError`) | `solution-offline-first` |
 | 4 | **plateau-offline-full-monolith** | offline-read-monolith | **VP5** OfflineWriteQueue (Dexie queue, replay, per-entity `syncStatus`) — *owner's current app* | `solution-offline-sync` |
 | 5 | **plateau-multiuser-monolith** | offline-full-monolith | **VP6** BackendLogDelivery + **VP7** Authentication — *`plateau-platform-host`'s parent* | `solution-logging-global`, `solution-authentication` |
+| 6 | **plateau-persisted-state-monolith** | multiuser-monolith | **VP8** PersistedState (`persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` guard + `withPersistedDraft()` + a persisted `preferences` slice) | `solution-persisted-state` |
 
-VP1–VP7 = Yes at plateau 5; **VP8** (PersistedState) is aspirational — its solution
-(`solution-persisted-state`) exists as a `> Draft contract` skeleton, ready to compose into a
-sixth plateau when a real consumer appears.
+VP1–VP8 = Yes at plateau 6 — the full chain. No new Nx project after plateau 5.
 
 Build scaffolding (anchor contract, mechanical check, decisions log) is in [`../../agent/`](../../agent/) —
 run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
@@ -38,6 +37,7 @@ plateau-{name}/
 | plateau-offline-read-monolith | 31 | 2 | + `nx build-sw` (`dist/.../sw.js`) |
 | plateau-offline-full-monolith | 36 | 1 | vitest 20 files / 70 tests, `nx lint` (11), prod build 446 kB, build-sw |
 | plateau-multiuser-monolith | 44 | 4 | vitest 28 files / 98 tests, `nx lint` (12), prod build 454 kB, build-sw |
+| plateau-persisted-state-monolith | 48 | 1 | vitest 31 files / 115 tests, `nx lint` (12), prod build 458 kB, build-sw; e2e typechecks |
 
 The example evolves **one Nx workspace** down the chain — each plateau's `example/` is a snapshot of
 that workspace grown by that plateau's solutions (living workspace at `/tmp/ng-ex/online-monolith`
@@ -54,9 +54,10 @@ solutions coexist. Every Angular v3.1 group is **canonical — zero resolver sol
 - **`monolith-repository`** / **`platform-shell-project`** — repo- and composition-root buckets; every
   feature adds one distinct tag / allow-list row / bootstrap wiring. `source: ordering-only`, N≥3 benign.
 - **`shared-state-project`** — the `store.config.ts` slice seam: `global-store` `.create` + `offline-first`
-  / `offline-sync` / `authentication` `.extend` (one distinct slice each). `TMN`, `source: constraint`
-  (every slice-adding VP requires VP2). N = 4 at `plateau-multiuser-monolith`. Closes delta-conflict
-  **Finding 4**.
+  / `offline-sync` / `authentication` / `persisted-state` `.extend` (one distinct slice each; VP8 also
+  adds a feature-local persistence metaReducer on `preferences`). `TMN`, `source: constraint`
+  (every slice-adding VP requires VP2). N = 4 at `plateau-multiuser-monolith`, **N = 5** at
+  `plateau-persisted-state-monolith`. Closes delta-conflict **Finding 4**.
 - **`feature-facade-ts`** / **`feature-routes-ts`** — a feature's Facade / routes array as the natural
   attachment point for `api-http-layer` + `offline-sync` (queueing branch) / `performance-tuned-routing`
   + `offline-sync` (route providers) + `authentication` (guard). `TMN` / `FMN`, member-disjoint.

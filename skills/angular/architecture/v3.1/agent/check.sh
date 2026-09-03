@@ -11,7 +11,9 @@ note() { printf '  %s\n' "$1"; }
 section() { printf '\n== %s ==\n' "$1"; }
 
 # Aspirational / not-yet-authored solutions: a link to one is a warning, not a failure.
-PLANNED='solution-persisted-state solution-design-system-multi-tenant-theming'
+# (empty — solution-persisted-state and solution-design-system-multi-tenant-theming
+#  were fleshed out and given plateaus; every solution now has full Implementation.)
+PLANNED=''
 PLANNED=" $(printf '%s' "$PLANNED" | tr -s '[:space:]' ' ') "
 is_planned() { case "$PLANNED" in *" $1 "*) return 0;; *) return 1;; esac; }
 

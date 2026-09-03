@@ -23,7 +23,7 @@ Common baseline features (`NxWorkspaceStructure`, `HierarchicalRouting`, `StateT
 | VP5 | **OfflineWriteQueue** (per feature) — a Dexie-backed, per-feature-partitioned mutation queue with idempotent replay and server-wins conflict handling? | Yes / No | **requires VP4=Yes** | Yes → [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md\|solution-offline-sync]] → v3.1 migrated | Mandatory sub-feature: creates a `notifications` slice in `GlobalStore` ([open question 5](#vp5s-notifications-slice)). Cross-feature: a per-feature Facade opt-in on `OfflineTransportError` | **Yes** — V1 `async-monolith → offline-monolith` |
 | VP6 | **BackendLogDelivery** — a `BackendLogSink` (batched, retry-queued to IndexedDB) + a global `ErrorHandler`? | Yes / No | **requires VP3=Yes** | Yes → [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md\|solution-logging-global]] → v3.1 migrated | Cross-feature: registers a second sink on `ConsoleLogging`'s `LOG_SINKS` token and adds `LoggerService.report()`; sends batches via `http-core` (VP3) | **Yes** — V1 `platform-monolith → monitored-app` |
 | VP7 | **Authentication** — in-memory access token, silent refresh, permission-string route guards + `*hasPermission` directive? | Yes / No | **requires VP3=Yes AND VP2=Yes** | Yes → [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md\|solution-authentication]] → v3.1 migrated **minus** the `SessionContract` publication, which becomes `platform-host`'s `solution-session-sharing` ([platform-host VP2](skills/angular/architecture/v3.1/platform-host/variability-map.md)) | Cross-feature: adds an `auth` slice to `GlobalStore`; adds an HTTP interceptor (VP3) and route guards attached at each feature's own route (`HierarchicalRouting`) | **Yes** — V1 `monitored-app → multiuser-app` |
-| VP8 | **PersistedState** *(aspirational — owner-confirmed row-to-be, no solution yet)* — selected NgRx state synced to `localStorage`/IndexedDB across browser sessions (never the access token)? | Yes / No | **requires VP2=Yes** (or the feature Signal Store tier) | *(none yet)* — a new `solution-persisted-state` authored at Stage 3 | Cross-feature: wraps a `GlobalStore` slice or feature Signal Store with a storage-sync effect; must exclude any field `solution-authentication` marks sensitive | No |
+| VP8 | **PersistedState** — an explicit, allow-listed subset of NgRx state synced to `localStorage`/`sessionStorage`/IndexedDB across browser sessions (never the access token)? | Yes / No | **requires VP2=Yes** (or the feature Signal Store tier) | Yes → [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md\|solution-persisted-state]] (full — `persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` guard + `withPersistedDraft()` + a persisted `preferences` slice) | Cross-feature: a per-feature persistence metaReducer on a `GlobalStore` slice, or `withPersistedDraft()` on a feature Signal Store; `assertPersistable()` excludes any `SENSITIVE_STATE_KEYS` field; the `auth` slice is never a target | No |
 
 ### VP3 modifies `solution-repository-structure`
 
@@ -50,7 +50,18 @@ V1 `solution-repository-structure` mandates "every business feature is split int
 
 ## Plateau Map derivation
 
-**No plateaus exist in `v3.1/monolith/` yet.** This section will list one row per `v3.1/monolith/plateau/*` once `plateau-create-by-solutions` runs.
+**Six plateaus are built** — the full monolith chain, each composing the previous via `parent_plateaus` and adding one or two VPs:
+
+| Plateau | Composes | Adds | VP answers |
+| --- | --- | --- | --- |
+| [`plateau-online-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/plateau-online-monolith.skill.md) | — (from scratch) | common + VP2 + VP3 | VP2=Yes, VP3=Yes; VP1/VP4–VP8=No |
+| [`plateau-async-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-async-monolith/plateau-async-monolith.skill/plateau-async-monolith.skill.md) | online-monolith | VP1 | + VP1=Yes |
+| [`plateau-offline-read-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/plateau-offline-read-monolith.skill/plateau-offline-read-monolith.skill.md) | async-monolith | VP4 | + VP4=Yes |
+| [`plateau-offline-full-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-full-monolith/plateau-offline-full-monolith.skill/plateau-offline-full-monolith.skill.md) | offline-read-monolith | VP5 | + VP5=Yes |
+| [`plateau-multiuser-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md) | offline-full-monolith | VP6 + VP7 | + VP6=Yes, VP7=Yes |
+| [`plateau-persisted-state-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/plateau-persisted-state-monolith.skill/plateau-persisted-state-monolith.skill.md) | multiuser-monolith | VP8 | + VP8=Yes (VP1–VP8 all Yes) |
+
+Each has a runnable green example (the workspace evolves down the chain) and a `registry/` folder. `plateau-multiuser-monolith` is also `plateau-platform-host`'s cross-catalog parent.
 
 ### Reference: how the V1 plateaus map onto these VPs
 
@@ -70,7 +81,8 @@ Every reference row is consistent with every stated Constraint: no row sets VP4/
 
 - **VP2=No, VP3=No** — a purely local app (no backend, no global store): tools, calculators, offline-only editors. V1's chain starts at `online-monolith` which already has both.
 - **VP3=Yes, VP2=No** — a backend-connected app with only component + feature-level state, no cross-cutting store.
-- **VP7=Yes without the federation layer** — an authenticated monolith that is not a platform host. V1 only introduces auth on the platform chain (`multiuser-app` descends from `platform-monolith`).
+- **VP7=Yes without the federation layer** — an authenticated monolith that is not a platform host. V1 only introduces auth on the platform chain (`multiuser-app` descends from `platform-monolith`). `plateau-multiuser-monolith` **is** this plateau.
+- **VP8=Yes** — persisted preferences / form drafts. V1 never had a persisted-state plateau; `plateau-persisted-state-monolith` is it (built on the full VP1–VP7 chain).
 
 ## Out of scope
 

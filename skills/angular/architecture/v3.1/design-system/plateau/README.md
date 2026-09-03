@@ -1,42 +1,45 @@
 # design-system plateaus
 
-One plateau — the catalogue has **no VPs** ([`../variability-map.md`](../variability-map.md)).
+Two plateaus — the catalogue's one VP is `MultiTenantTheming` ([`../variability-map.md`](../variability-map.md)).
 
-| Plateau | `standalone` | Parent | Composes |
+| Plateau | `standalone` | Parent | Composes / adds |
 |---|---|---|---|
 | **plateau-design-system** | `true` | — (from scratch) | all four common solutions: `solution-design-system-structure`, `-tokens`, `-components`, `-ui-testing` |
+| **plateau-multi-tenant-design-system** | `true` | plateau-design-system | + `solution-design-system-multi-tenant-theming` (**VP1 = Yes**) — a `styles/tenants/` layer of swappable per-tenant palettes |
 
-**VP1** MultiTenantTheming is aspirational — `solution-design-system-multi-tenant-theming` is a
-`> Draft contract` skeleton; if built, `HybridDesignTokens` becomes the single-tenant variant of a
-`Theming` VP and this catalogue gets its first second plateau.
+`plateau-multi-tenant-design-system` generalizes the single fixed brand palette: `styles/theme.scss`
+is unchanged and is the no-`data-tenant` default; each tenant is one `:root[data-tenant='<id>']` file
+that overrides **colour only** via a shared `ds-tenant-theme` mixin; the consuming app selects a tenant
+with `document.documentElement.dataset.tenant` against the exported `DsTenant` union.
 
 Run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
 
-## What the plateau folder holds
+## What each plateau folder holds
 
 ```
-plateau-design-system/
-  plateau-design-system.skill/
-    plateau-design-system.skill.md   the plateau summary
-    example/                          a plain Angular CLI multi-project workspace (NOT Nx)
-  structure/                          repo + 2 project skills + 8 class skills (prefix plateau-design-system--)
-  registry/                           one entry: design-system-repository
+plateau-{name}/
+  plateau-{name}.skill/
+    plateau-{name}.skill.md   the plateau summary
+    example/                   a plain Angular CLI multi-project workspace (NOT Nx)
+  structure/                   repo + 2 project skills + class skills (prefix plateau-{name}--)
+  registry/                    one entry: design-system-repository
 ```
 
-- **11 structure skills**: `repo-design-system` + `project-design-system` (the ng-packagr library) +
-  `project-demo` (the unpublished preview app / visual-a11y target) + `class-theme`, `class-custom-tokens`,
-  `class-component-name`, `class-read-visual-style-properties`, and the four spec patterns
-  (`component` / `visual` / `style-snapshot` / `a11y`).
-- **example gates**: `ng build design-system` (Angular Package Format) + `ng test design-system`
-  (Vitest via Angular 22's native `@angular/build:unit-test`, 2 files / 7 tests) + `ng build demo`
-  + `tsc -p tsconfig.e2e.json` — all green. `grep "@angular/material" dist/design-system/types/`
-  returns nothing. Playwright specs written, not run.
+| Plateau | structure skills | example gates |
+|---|---|---|
+| plateau-design-system | 11 | `ng build design-system` (APF) + `ng test` (Vitest via `@angular/build:unit-test`, 2 files / 7 tests) + `ng build demo` + `tsc -p tsconfig.e2e.json`; no `@angular/material` in `dist/**/types/` |
+| plateau-multi-tenant-design-system | 14 (+ `class-tenant-theme`, `class-tenant-palette`, `class-tenants`) | + `styles/tenants/**` shipped as assets, `DsTenant` in the typings; `ng test` 3 files / 9 tests; `ng build demo` root CSS carries `:root[data-tenant='acme']` / `[data-tenant='globex']` |
+
+Playwright specs (incl. the per-tenant style-snapshot) are written and configured throughout but were
+not executed in the build sandbox. The design-system CLI workspace has no lint target.
 
 ## `registry/`
 
 - **`design-system-repository`** — `solution-design-system-structure` `.create` + `-tokens` /
-  `-components` / `-ui-testing` `.extend` (each adds one distinct piece — SCSS entry points, the
-  `ds-*` authoring convention, the `projects/demo` visual/a11y targets). `FMN`/`TMN`,
-  `source: ordering-only`, **N = 4 benign** — the analogue of the monolith's `monolith-repository`.
+  `-components` / `-ui-testing` `.extend` (each adds one distinct piece), plus (at
+  `plateau-multi-tenant-design-system`) `-multi-tenant-theming` `.extend` — the `styles/tenants/`
+  layer, entirely in new files under a new directory. `FMN`/`TMN`, `source: ordering-only`,
+  **N = 4 benign** at `plateau-design-system`, **N = 5 benign** at `plateau-multi-tenant-design-system`
+  — the analogue of the monolith's `monolith-repository`.
 
 Full classification: [`../../delta-conflict-analysis.md`](../../delta-conflict-analysis.md).
