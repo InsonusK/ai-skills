@@ -19,6 +19,7 @@ creates:
   - libs/shared/offline-sync
 extends:
   - libs/{feature}/data-access (Facade queueing)
+  - libs/shared/state (notifications slice)
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
@@ -89,6 +90,7 @@ REPOSITORY:
 
 PROJECT:
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create|libs/shared/offline-sync]] - create - Dexie schema, `MutationQueueService`, per-feature partitioning
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/GlobalStore/shared-state.project.extend|libs/shared/state]] - extend - register the `notifications` slice ([delta-conflict Finding 4](skills/angular/architecture/v3.1/delta-conflict-analysis.md#findings))
 
 Artifact-level:
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create|replay-orchestrator.ts]] - create - replays each feature's queue partition, triggered by `connectivity`, server-wins conflict seam
@@ -124,6 +126,7 @@ Artifact-level:
 
 ## MUST
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/Repository.extend#MUST|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/GlobalStore/shared-state.project.extend#MUST|GlobalStore/shared-state.project.extend]]
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create#MUST|OfflineSync/shared-offline-sync.project.create]]
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create#MUST|OfflineSync/replay-orchestrator.ts.create]]
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/DataAccess/{feature}.facade.ts.extend#MUST|DataAccess/{feature}.facade.ts.extend]]
