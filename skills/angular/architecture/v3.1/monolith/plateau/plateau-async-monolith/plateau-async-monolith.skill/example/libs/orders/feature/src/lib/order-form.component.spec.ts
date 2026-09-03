@@ -1,0 +1,32 @@
+import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
+import { OrderFormComponent } from './order-form.component';
+import { OrdersStore } from './orders.store';
+import { OrdersFacade } from '@org/orders-data-access';
+
+describe('OrderFormComponent (behavioral — no business-layer mocks beyond the immediate collaborator)', () => {
+  it('disables the submit button while the store status is creating', async () => {
+    const facade = { list: vi.fn().mockResolvedValue([]), addOrder: vi.fn(() => new Promise(() => undefined)) };
+    await render(OrderFormComponent, {
+      providers: [OrdersStore, { provide: OrdersFacade, useValue: facade }],
+    });
+    await userEvent.type(screen.getByRole('textbox', { name: /product/i }), 'Widget');
+    await userEvent.type(screen.getByRole('spinbutton', { name: /quantity/i }), '2');
+    await userEvent.click(screen.getByRole('button', { name: /add order/i }));
+    expect(screen.getByRole('button', { name: /add order/i })).toBeDisabled();
+  });
+
+  it('shows the validation error returned by the store', async () => {
+    const facade = {
+      list: vi.fn().mockResolvedValue([]),
+      addOrder: vi.fn().mockRejectedValue(new Error('Quantity must be greater than zero')),
+    };
+    await render(OrderFormComponent, {
+      providers: [OrdersStore, { provide: OrdersFacade, useValue: facade }],
+    });
+    await userEvent.type(screen.getByRole('textbox', { name: /product/i }), 'Widget');
+    await userEvent.type(screen.getByRole('spinbutton', { name: /quantity/i }), '0');
+    await userEvent.click(screen.getByRole('button', { name: /add order/i }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(/greater than zero/i);
+  });
+});
