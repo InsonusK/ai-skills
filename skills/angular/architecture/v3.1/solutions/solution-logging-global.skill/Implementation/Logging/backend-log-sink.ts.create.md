@@ -64,9 +64,15 @@ export class BackendLogSink implements LogSink {
 # Rule changes
 
 ## MUST
-- `BackendLogSink` must filter to `warn`/`error`/`report` entries only, discarding `debug`/`info` before they are ever buffered.
-- On a failed flush, the batch must be handed to `LogRetryQueue.enqueue(...)` — it must never be silently discarded.
-- The unload flush must use `navigator.sendBeacon`, not a regular `fetch`/`HttpClient` call, since a normal request can be cancelled by the browser when the page is unloading.
+- `BackendLogSink` filters to `warn` / `error` / `report` only, discarding `debug` / `info` before buffering.
+  - Risk: buffering everything and filtering on flush wastes memory and risks shipping `debug` if the filter is skipped.
+  - Fix: the level check is the first line of `write()`.
+- A failed flush hands the batch to `LogRetryQueue.enqueue(...)` — never silently discarded.
+  - Risk: a brief backend outage loses exactly the `error` logs needed to diagnose it.
+  - Fix: `catch` around the POST → `retryQueue.enqueue(batch)`; retried on the next successful flush.
+- The unload flush uses `navigator.sendBeacon`, not `fetch` / `HttpClient`.
+  - Risk: the browser cancels an in-flight `fetch` when the page unloads, so `pagehide`-time logs are lost.
+  - Fix: `navigator.sendBeacon('/api/logs', JSON.stringify(batch))` from a `pagehide` listener.
 
 ## SHOULD
 - **Sending each entry as its own HTTP request instead of buffering** — Consequence: reintroduces the request-volume problem batching exists to solve — Instead: always buffer and flush on a timer/size threshold/unload, never per-entry

@@ -69,9 +69,15 @@ export class LogRetryQueue {
 # Rule changes
 
 ## MUST
-- The queue must be persisted in IndexedDB, not `localStorage` or in-memory only, so pending batches survive a page reload.
-- The queue must enforce all three limits (`maxEntryCount`, `maxAgeMs`, `maxTotalBytes`) independently — exceeding any one of them triggers eviction of the oldest entries until all three are satisfied.
-- `retryPending()` must stop retrying for the current cycle as soon as one send attempt fails, rather than immediately retrying the remaining queue — avoiding a burst of failing requests when the network is still down.
+- The queue is persisted in IndexedDB — not `localStorage`, not in-memory only.
+  - Risk: in-memory loses pending batches on reload; `localStorage` is small, synchronous, and string-only.
+  - Fix: a Dexie table `pendingLogBatches: '++id, enqueuedAt'`.
+- All three limits (`maxEntryCount`, `maxAgeMs`, `maxTotalBytes`) are enforced independently — exceeding any one evicts oldest-first until all three hold.
+  - Risk: a single limit lets the queue grow unbounded along another axis (many tiny old entries, or few huge ones).
+  - Fix: an `evictIfOverLimits` loop checks all three each enqueue and deletes `all[0]` until satisfied.
+- `retryPending()` stops for the current cycle at the first failed send.
+  - Risk: continuing to drain the queue against a still-down network is a burst of failing requests.
+  - Fix: `for (const b of ordered) { try { await post(b); await delete(b.id); } catch { break; } }`.
 
 ## SHOULD
 - The three limit values should be configurable per deployment via `LOG_RETRY_QUEUE_LIMITS`, not hardcoded, since the right values depend on expected log volume and acceptable storage footprint.

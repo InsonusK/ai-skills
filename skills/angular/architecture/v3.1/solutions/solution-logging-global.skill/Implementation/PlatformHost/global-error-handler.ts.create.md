@@ -45,9 +45,15 @@ providers: [
 # Rule changes
 
 ## MUST
-- `GlobalErrorHandler` must route every caught exception through `LoggerService.error`, never swallow it silently.
-- `GlobalErrorHandler` must never log the raw error object if it could contain sensitive data (e.g. an error thrown with a token embedded in its message) — only structured, sanitized fields (`message`, `stack`) are extracted, never the original error object passed through unchanged.
-- `GlobalErrorHandler` must be registered once, in `apps/platform-shell`'s root providers, applying to the whole running application (including embeddable apps sharing the same Angular runtime, per the platform-embeddability solution).
+- `GlobalErrorHandler.handleError` routes every exception through `LoggerService.error` — never swallows it.
+  - Risk: a caught-and-ignored exception is a production incident with no trace.
+  - Fix: `this.logger.error('Uncaught exception', { ... })` in `handleError`.
+- It extracts only `message` / `stack` — never the raw error object.
+  - Risk: an error thrown with a token in a custom property ships that token to the backend.
+  - Fix: `{ message: e instanceof Error ? e.message : String(e), stack: e instanceof Error ? e.stack : undefined }`.
+- It is registered once, in `apps/platform-shell`'s root providers.
+  - Risk: a scoped registration misses exceptions from other injectors; duplicate registrations double-log.
+  - Fix: exactly one `{ provide: ErrorHandler, useClass: GlobalErrorHandler }` at the root.
 
 ## SHOULD
 - **Passing the raw caught error object directly into the log context** — Consequence: if the error happens to carry sensitive data in a custom property, it would be logged unsanitized — Instead: extract only `message`/`stack` (or other explicitly safe fields), never the whole error object

@@ -48,9 +48,12 @@ export const appConfig: ApplicationConfig = {
 # Rules
 
 ## MUST
-- `app.config.ts` must provide `GlobalErrorHandler` under the `ErrorHandler` token — no other error handler may silently swallow uncaught exceptions.
-
-- `GlobalErrorHandler` must never be registered only in a module or component-level provider — it must be at the application root.
+- `app.config.ts` provides `GlobalErrorHandler` under the `ErrorHandler` token.
+  - Risk: leaving Angular's default `ErrorHandler` (or another custom one) means uncaught exceptions only reach the console — invisible to production diagnostics.
+  - Fix: `{ provide: ErrorHandler, useClass: GlobalErrorHandler }` in the root `providers`.
+- `GlobalErrorHandler` is registered only at the application root, never in a module- or component-level provider.
+  - Risk: a scoped handler covers only that injector's subtree; exceptions elsewhere are unhandled.
+  - Fix: one registration in `apps/platform-shell/src/app/app.config.ts`.
 ## SHOULD
 - **Catching exceptions in the handler without sending them to the backend** — Consequence: production errors disappear, making incidents impossible to diagnose — Instead: always route through `LoggerService.error` so `BackendLogSink` receives them
 

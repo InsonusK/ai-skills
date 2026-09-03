@@ -22,9 +22,15 @@ No new top-level directories. This extends [[skills/angular/architecture/v3.1/so
 # Rules
 
 ## MUST
-- `BackendLogSink` must be registered via the same `LOG_SINKS` multi-provider token the base solution already established — it must never require changing `ConsoleLogSink` or any existing `LoggerService` call site.
-- The global `ErrorHandler` must be registered in `apps/platform-shell` via `{ provide: ErrorHandler, useClass: GlobalErrorHandler }`, so it applies to the whole application (and, per the platform-embeddability solution, to embeddable apps sharing the same Angular runtime).
-- `BackendLogSink` must only forward `warn`/`error` level entries and explicit `report()` calls to the backend — `debug`/`info` entries must never reach this sink, per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
+- `BackendLogSink` is registered on the same `LOG_SINKS` multi-provider token the base solution established — no change to `ConsoleLogSink` or any `LoggerService` call site.
+  - Risk: a bespoke registration path means the two sinks diverge, and call sites have to know which sinks exist.
+  - Fix: the `LOG_SINKS` factory returns `[ConsoleLogSink, BackendLogSink]`; `LoggerService` just iterates the token.
+- The global `ErrorHandler` is registered in `apps/platform-shell` via `{ provide: ErrorHandler, useClass: GlobalErrorHandler }`.
+  - Risk: a module- or component-scoped handler leaves uncaught exceptions elsewhere invisible to the backend.
+  - Fix: register it once at the composition root; it then covers embeddable apps sharing the runtime too.
+- `BackendLogSink` forwards only `warn` / `error` / `report()` to the backend — `debug` / `info` never reach it.
+  - Risk: shipping `debug`/`info` to a backend floods it and can leak internal detail.
+  - Fix: the sink's `write()` filters by level; per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
 
 # Unittest TestCases
 
