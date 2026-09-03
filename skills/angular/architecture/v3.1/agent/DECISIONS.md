@@ -163,6 +163,11 @@ The container has **no Node**. Installed manually from nodejs.org (npm registry 
     1. `solution-offline-first`'s `OfflineBannerComponent` sketch injected `Store` inside the component → `type:ui` → `type:store` boundary violation. Made it presentational (`isOnline` input), shell wires the slice.
     2. Workbox SW needs a dedicated `tsconfig.sw.json` (`lib: webworker`) excluded from the app build; routing decisions extracted to a pure `sw-routes.ts` for unit-testability.
     3. `sw-build.mjs` not `.ts` — plain Node ESM (no `.ts` script runner wired), esbuild-bundles `sw-src.ts` first.
-- **Plateaus 4–8: not started.** The example evolves down the monolith chain from the offline-read base.
+- **DOP-workflow `registry/` backfill — DONE** (this session, owner-requested check): the built plateaus were missing step 6's per-plateau `registry/{element}.md` entries (dotnet v3.1 plateaus have them; Angular did not). Created from `delta-conflict-analysis.md`'s "Registry entries to create" table + the real Implementation files, using `delta-conflict-detection`'s `registry-entry.template.md`, each placed at the shallowest plateau where its intersecting solutions coexist, listed in the plateau root skill's new `registry:` YAML property + an `# Intersection registry` body section:
+  - `plateau-online-monolith/registry/`: `component-name-component-ts` (`FMN`, ordering-only), `monolith-repository` (N≥3 benign), `platform-shell-project` (N≥3 benign)
+  - `plateau-async-monolith/registry/`: `feature-routes-ts` (`FMN`/`TMN`, ordering-only)
+  - `plateau-offline-read-monolith/registry/`: `feature-client-ts` (`TMN`, `source: constraint`), `shared-state-project` (`TMN`, `source: constraint`; N≥3 benign once auth/offline-sync slices land — Finding 4)
+  - All canonical, zero resolvers — consistent with the delta-conflict analysis. Steps 1–5 + the analysis summary table were already done in Stage 3; this closes step 6.
+- **Plateaus 4–8: not started.** Build their `registry/` entries inline going forward. The example evolves down the monolith chain from the offline-read base.
 
 **Multi-session effort** (dotnet's Stage 4 was 3 plateaus over several sessions; this is 8 + evolving examples).

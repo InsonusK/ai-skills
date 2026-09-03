@@ -16,6 +16,9 @@ parent_plateaus:
 standalone: true
 created_by:
   - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+registry:
+  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/registry/feature-client-ts.md|feature-client-ts]]"
+  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/registry/shared-state-project.md|shared-state-project]]"
 ---
 
 > **Third plateau of the `monolith` catalog.** Composes [`plateau-async-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-async-monolith/plateau-async-monolith.skill/plateau-async-monolith.skill.md) (which already carries `plateau-online-monolith` + VP1) and adds exactly one solution — [`solution-offline-first`](skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md) — realizing **VP4 (OfflineReadResilience) = Yes** of the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md). VP1–VP4 = Yes; VP5–VP8 = No. Next in the chain: `plateau-offline-full-monolith` (VP5 — the durable write queue). Scope here is **read resilience only**: the shell always loads, API GETs fall back to last-known data; a mutation attempted offline still **fails immediately** with `OfflineTransportError` — this plateau only prepares that hook. No new Nx project.
@@ -51,6 +54,13 @@ See [`structure/`](structure/plateau-offline-read-monolith--repo-offline-read-mo
 # Example
 
 See [`example/`](plateau-offline-read-monolith.skill/example/) — the parent Nx workspace, evolved: the `connectivity` slice + spec; `OfflineTransportError` + the `orders.client.ts` `status === 0` branch + spec; `OfflineBannerComponent` mounted in the shell; `sw-src.ts` / `sw-routes.ts` (unit-tested predicates) / `sw-build.mjs` + the `build-sw` target + `tsconfig.sw.json`; `main.ts` registers `/sw.js` after bootstrap (prod only). `npm test` (Vitest, 15 files / 44 tests), `npm run lint` (10 projects), `npx nx build-sw platform-shell` (produces `dist/.../sw.js`) all green.
+
+# Intersection registry
+
+New this plateau, per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — both canonical, no resolver:
+
+- [`feature-client-ts`](registry/feature-client-ts.md) — `solution-api-http-layer` `.create` + `solution-offline-first` `.extend` (`status === 0` → `OfflineTransportError`), `TMN`, `source: constraint` (VP4 requires VP3).
+- [`shared-state-project`](registry/shared-state-project.md) — `solution-global-store` `.create` + `solution-offline-first` `.extend` (register the `connectivity` slice), `TMN`, `source: constraint`. Reaches N≥3 (benign) once `solution-authentication` / `solution-offline-sync` add their slices deeper in the chain (delta-conflict-analysis Finding 4).
 
 # Usecases
 

@@ -23,6 +23,10 @@ created_by:
   - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+registry:
+  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/registry/component-name-component-ts.md|component-name-component-ts]]"
+  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/registry/monolith-repository.md|monolith-repository]]"
+  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/registry/platform-shell-project.md|platform-shell-project]]"
 ---
 
 > **First plateau of the `monolith` catalog** — built from scratch, `standalone: true`. It fixes the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md) at **VP2 (GlobalStore) = Yes, VP3 (BackendDataAccess) = Yes**; VP1, VP4–VP8 = No. Next in the chain: `plateau-async-monolith` (VP1). This is "everything the app needs to run online, end to end, as one deployable unit". No lazy-loading tuning, no offline resilience, no federation, and — deliberately — no authentication (every user implicitly trusted until `plateau-multiuser-monolith`).
@@ -56,6 +60,14 @@ See [`structure/`](structure/plateau-online-monolith--repo-online-monolith.skill
 # Example
 
 See [`example/`](plateau-online-monolith.skill/example/) — a runnable Nx workspace with one feature (`orders`) end to end: a routed feature lib with a Signal Forms create form + feature Signal Store, an `orders` data-access lib (Facade/Client/Mapper/errors), `libs/shared/http-core`, `libs/shared/logging`, the empty-but-wired `libs/shared/state`, and the full four-layer test suite. `npm test` (Vitest) and `npm run e2e` (Playwright) green.
+
+# Intersection registry
+
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md), the solution deltas that touch the same element and first coexist at this plateau — all canonical, no resolvers:
+
+- [`component-name-component-ts`](registry/component-name-component-ts.md) — `solution-forms` + `solution-state-tiering`, `FMN`, `source: ordering-only`.
+- [`monolith-repository`](registry/monolith-repository.md) — `solution-repository-structure` `.create` + every feature's `.extend`, `FMN`/`TMN`, N≥3 (benign).
+- [`platform-shell-project`](registry/platform-shell-project.md) — the composition root, extended once per cross-cutting concern, `FMN`/`TMN`, N≥3 (benign).
 
 # Usecases
 
