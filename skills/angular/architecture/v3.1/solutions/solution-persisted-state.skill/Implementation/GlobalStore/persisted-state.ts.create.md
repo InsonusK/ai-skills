@@ -108,7 +108,9 @@ export function persistKeys<T>(config: PersistConfig<T>): MetaReducer<T> {
 Wire it at the slice's `provideState` call in `store.config.ts` (see [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md|shared-state.project.extend]]):
 
 ```typescript
-provideState(preferencesFeature, {
+// createFeature returns { name, reducer, ... } — pass name + reducer + config so the
+// three-arg provideState overload (the only one that accepts metaReducers) is used.
+provideState(preferencesFeature.name, preferencesFeature.reducer, {
   metaReducers: [persistKeys<PreferencesState>({ key: 'app:preferences', keys: ['theme', 'density', 'lastFeatureTab'] })],
 }),
 ```

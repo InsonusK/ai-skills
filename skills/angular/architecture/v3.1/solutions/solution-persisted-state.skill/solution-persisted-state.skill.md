@@ -83,7 +83,7 @@ Artifact-level:
 ## Persisting a global slice
 
 1. The slice is flat and all-scalar (a `Date` / `Map` / nested object does not round-trip through JSON).
-2. Register it in `store.config.ts` with `provideState(fooFeature, { metaReducers: [persistKeys<FooState>({ key: 'app:foo', keys: [...] })] })`.
+2. Register it in `store.config.ts` with `provideState(fooFeature.name, fooFeature.reducer, { metaReducers: [persistKeys<FooState>({ key: 'app:foo', keys: [...] })] })` — the three-arg overload is the only one that applies `metaReducers`.
 3. The `keys` array is the allow-list — list every persisted field literally.
 4. `assertPersistable()` runs inside `persistKeys()` — if a key is on `SENSITIVE_STATE_KEYS`, the app throws on boot.
 

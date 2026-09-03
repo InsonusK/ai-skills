@@ -58,8 +58,9 @@ export function provideGlobalStore(): EnvironmentProviders {
     provideStore({}),
     provideState(connectivityFeature),
     provideState(notificationsFeature),
-    provideState(authFeature),                       // <- never a metaReducer
-    provideState(preferencesFeature, {               // <- new (VP8)
+    provideState(authFeature),                        // <- never a metaReducer
+    // three-arg provideState(name, reducer, config) — the only overload that takes metaReducers
+    provideState(preferencesFeature.name, preferencesFeature.reducer, {   // <- new (VP8)
       metaReducers: [
         persistKeys<PreferencesState>({
           key: 'app:preferences',
@@ -80,9 +81,9 @@ export function provideGlobalStore(): EnvironmentProviders {
 - `preferences` is registered in the same `provideGlobalStore()` / `store.config.ts` seam as every other slice — not through a separate provider call.
   - Risk: a slice registered on its own is easy to miss in tests and in a second consumer app.
   - Fix: one more `provideState(...)` line inside `provideGlobalStore()`.
-- The `persistKeys` metaReducer is attached at `provideState(preferencesFeature, { metaReducers: [...] })` — never as a global metaReducer on `provideStore`.
-  - Risk: a global metaReducer applies to every slice, so `auth` would be persisted too.
-  - Fix: per-feature `metaReducers`; the opt-in is visible at each slice's registration.
+- The `persistKeys` metaReducer is attached at the feature's own `provideState(name, reducer, { metaReducers: [...] })` — never as a global metaReducer on `provideStore`.
+  - Risk: a global metaReducer applies to every slice, so `auth` would be persisted too. Also: `provideState(feature, { metaReducers })` (two args, a `FeatureSlice` object) silently ignores the config — only the three-arg `provideState(name, reducer, config)` overload applies it.
+  - Fix: `provideState(preferencesFeature.name, preferencesFeature.reducer, { metaReducers: [persistKeys(...)] })`; the opt-in is visible at each slice's registration.
 - `provideState(authFeature)` carries no `metaReducers` — ever.
   - Risk: the slice holding the in-memory access token must not be a persistence target, even with an allow-list that excludes the token today.
   - Fix: leave `authFeature`'s registration exactly as `solution-authentication` left it.
