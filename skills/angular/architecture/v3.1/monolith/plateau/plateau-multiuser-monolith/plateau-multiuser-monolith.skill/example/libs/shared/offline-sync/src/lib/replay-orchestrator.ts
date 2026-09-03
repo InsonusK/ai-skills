@@ -4,6 +4,17 @@ import { NotificationsActions, selectIsOnline } from '@org/shared-state';
 import { MutationQueueService, PersistedMutation } from './mutation-queue.service';
 
 /**
+ * The per-entity sync lifecycle a feature drives from the FeatureReplay callbacks:
+ *
+ *   saved on the server            -> no syncStatus
+ *   OfflineTransportError, enqueued -> 'queued'
+ *   orchestrator is replaying it    -> 'sending'
+ *   replay threw (transient)        -> 'failed'   (retried on the next connectivity event)
+ *   replay hit a 409, server wins   -> 'conflict' (local change discarded, notification shown)
+ */
+export type SyncStatus = 'queued' | 'sending' | 'failed' | 'conflict';
+
+/**
  * A conflict surfaced during replay: the server changed one of the fields this
  * queued mutation touched while the client was offline. Carries only the
  * current server values of the touched fields — never a full entity snapshot.
@@ -20,6 +31,10 @@ export interface FeatureReplay {
   readonly feature: string;
   /** Replay the operation. Throw `ReplayConflictError` on a field conflict. */
   replay(entry: PersistedMutation): Promise<void>;
+  /** Called just before the orchestrator replays this entry — set `syncStatus: 'sending'`. */
+  onReplayStart?(entry: PersistedMutation): void;
+  /** Called with the outcome — clear `syncStatus` on `'synced'`, otherwise set `'failed'`/`'conflict'`. */
+  onReplayResult?(entry: PersistedMutation, result: 'synced' | 'failed' | 'conflict'): void;
 }
 
 /**
@@ -73,14 +88,18 @@ export class ReplayOrchestrator {
     if (!handler) return; // no handler registered yet — retried once its feature loads
     const entries = await this.queue.pendingForFeatureOnce(feature);
     for (const entry of entries) {
+      handler.onReplayStart?.(entry); // -> per-entity syncStatus 'sending'
       try {
         await handler.replay(entry);
         await this.queue.markSynced(entry.id);
+        handler.onReplayResult?.(entry, 'synced'); // -> clear syncStatus
       } catch (error) {
         if (error instanceof ReplayConflictError) {
           await this.handleConflict(entry, error);
+          handler.onReplayResult?.(entry, 'conflict'); // -> syncStatus 'conflict'
           continue; // conflict resolved (server wins) — keep draining this partition
         }
+        handler.onReplayResult?.(entry, 'failed'); // -> syncStatus 'failed'
         break; // transient failure — stop this partition; the next online event retries
       }
     }

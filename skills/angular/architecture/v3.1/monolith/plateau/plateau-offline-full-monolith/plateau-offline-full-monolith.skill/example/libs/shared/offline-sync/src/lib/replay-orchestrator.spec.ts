@@ -94,4 +94,30 @@ describe('ReplayOrchestrator', () => {
     );
     expect(store).toBeTruthy();
   });
+
+  it('drives the per-entity sync lifecycle through onReplayStart / onReplayResult', async () => {
+    const events: string[] = [];
+    const track = (label: string): Partial<FeatureReplay> => ({
+      onReplayStart: () => events.push(`${label}:sending`),
+      onReplayResult: (_e, r) => events.push(`${label}:${r}`),
+    });
+    const orch = await setup([
+      { feature: 'orders', replay: async () => undefined, ...track('ok') },
+      { feature: 'flaky', replay: async () => { throw new Error('down'); }, ...track('bad') },
+      {
+        feature: 'clash',
+        replay: async () => { throw new ReplayConflictError({ priority: 'x' }); },
+        ...track('clash'),
+      },
+    ] as FeatureReplay[]);
+    await queue.enqueue(mutation('orders', 'a'));
+    await queue.enqueue(mutation('flaky', 'b'));
+    await queue.enqueue(mutation('clash', 'c'));
+
+    await orch.replayAllPartitions();
+
+    expect(events).toEqual(
+      expect.arrayContaining(['ok:sending', 'ok:synced', 'bad:sending', 'bad:failed', 'clash:sending', 'clash:conflict']),
+    );
+  });
 });

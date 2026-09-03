@@ -8,6 +8,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   styles: `.badge { padding: 2px 8px; border-radius: 4px; font-size: 12px; }`,
 })
 export class StatusBadgeComponent {
-  status = input.required<'idle' | 'creating' | 'created' | 'queued' | 'error'>();
+  /** Presentational only — reflected on `data-status` for styling. Any status vocabulary
+   *  (a feature's sync status, a workflow state, …) is valid. */
+  status = input.required<string>();
   label = input.required<string>();
 }

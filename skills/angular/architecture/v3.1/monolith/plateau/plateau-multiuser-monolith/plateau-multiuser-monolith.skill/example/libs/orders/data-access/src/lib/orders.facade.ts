@@ -8,9 +8,15 @@ import { OrdersClient } from './orders.client';
 import { AddOrderInput, Order } from './orders.model';
 import { OrdersValidationError } from './orders.errors';
 
-/** A queueable operation returns this instead of a result when it was queued. */
+/**
+ * A queueable operation returns this instead of a result when it was queued.
+ * `idempotencyKey` correlates the optimistic row the store shows with the
+ * queue entry the orchestrator replays; `optimistic` is the row to display now.
+ */
 export interface QueuedResult {
   readonly queued: true;
+  readonly idempotencyKey: string;
+  readonly optimistic: Order;
 }
 export type AddOrderResult = Order | QueuedResult;
 
@@ -41,14 +47,18 @@ export class OrdersFacade {
       // addOrder is an explicitly queueable operation: on a network-level
       // failure, enqueue for later replay instead of surfacing an error.
       if (error instanceof OfflineTransportError) {
-        await this.queue.enqueue({
+        const entry = await this.queue.enqueue({
           feature: 'orders',
           operationName: 'addOrder',
           payload: input,
           touchedFields: Object.keys(input),
         });
         this.log.info('Order queued for sync (offline)');
-        return { queued: true };
+        return {
+          queued: true,
+          idempotencyKey: entry.idempotencyKey,
+          optimistic: { id: `pending:${entry.idempotencyKey}`, ...input, createdAt: new Date() },
+        };
       }
       throw error;
     }

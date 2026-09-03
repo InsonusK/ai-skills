@@ -21,7 +21,7 @@ created_by:
   - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 
-> Generic pattern, not tied to one concrete feature — every business feature added to the workspace gets its own `libs/{feature}/feature` project following this template, substituting `{Feature}`/`{feature}` with the real feature name. VP5 adds `{feature}.offline-sync.ts` (the replay handler, registered in the feature's route `providers`) and a `pendingSync` field + `trackPendingSync` rxMethod on the feature Signal Store. VP7 adds `canActivate: [requirePermission('...')]` on any route the feature restricts, and `*hasPermission="'...'"` to gate a control in a component — both consume permission strings from `@org/shared-auth-ui`, never role names.
+> Generic pattern, not tied to one concrete feature — every business feature added to the workspace gets its own `libs/{feature}/feature` project following this template, substituting `{Feature}`/`{feature}` with the real feature name. VP5 adds `{feature}.offline-sync.ts` (the replay handler, registered in the feature's route `providers`, wiring `onReplayStart` / `onReplayResult`), a per-row `syncStatus` (`queued → sending → synced | failed | conflict`) + `setSyncStatus` + `hydratePending` on the feature Signal Store, and a derived `pendingSyncCount`. VP7 adds `canActivate: [requirePermission('...')]` on any route the feature restricts, and `*hasPermission="'...'"` to gate a control in a component — both consume permission strings from `@org/shared-auth-ui`, never role names.
 
 # Goal
 
@@ -51,7 +51,7 @@ __Applied solutions:__
         {feature}.store.spec.ts
         [{feature}.routes.ts](./classes/plateau-multiuser-monolith--class-feature-routes.skill.md)   <- loadComponent split (VP1); parent route `providers: [provide{Feature}OfflineSync()]` (VP5); `canActivate: [requirePermission('...')]` on a restricted sub-route (VP7)
         {feature}.routes.spec.ts   <- asserts no self-set preload flag; split sub-route is loadComponent; route registers the offline-sync provider; guarded route redirects to /forbidden without the permission
-        {feature}.offline-sync.ts   <- new (VP5): the FeatureReplay handler (calls the Facade's replay path, maps a conflict → ReplayConflictError)
+        {feature}.offline-sync.ts   <- new (VP5): the FeatureReplay handler — replay() + onReplayStart/onReplayResult driving the store's per-row syncStatus
         /{form-name}
           [{form-name}.component.ts](./classes/plateau-multiuser-monolith--class-form-component.skill.md)
           {form-name}.component.spec.ts
@@ -123,7 +123,7 @@ __Applied solutions:__
 - `{FEATURE}_ROUTES` must be exported from `index.ts`.
 - A sub-route that pulls a large, rarely-needed dependency must be split via `loadComponent`; the feature must never set `data: { preload: true }` on its own routes.
 - If the feature has a queueable mutation, `{feature}.offline-sync.ts` must register a `FeatureReplay` via `provideFeatureReplay(...)` placed in the feature's own **route `providers`** (a route-level env injector) — never in the shell's `app.config.ts` (a static import of the lazy feature would pull it into the initial bundle).
-- The feature Signal Store must surface the pending-sync count (`MutationQueueService.pendingForFeature$`) so `<ui-pending-sync-indicator>` can render it — a queued action must never be invisible.
+- The feature Signal Store must carry a **per-row `syncStatus`** (`queued`/`sending`/`failed`/`conflict`), set to `'queued'` when the Facade returns `{ queued: true }` and driven from `onReplayStart`/`onReplayResult` in `{feature}.offline-sync.ts`. `<ui-pending-sync-indicator>`'s count is a computed **derived from those rows** — never a separately tracked number. On a cold start the store's `hydratePending()` rebuilds the optimistic rows from `MutationQueueService.pendingForFeatureOnce(...)` — a queued action must never be an invisible count.
 - **VP7** — a route this feature restricts must carry `canActivate: [requirePermission('<permission-string>')]` attached in `{feature}.routes.ts` (add `canMatch` when the route must be invisible). A control gated in a component uses `*hasPermission="'<permission-string>'"`. Both take a permission string, never a role name, and both come from `@org/shared-auth-ui` — the feature never redefines either.
 - **VP7** — a component/store in this feature must never read `currentUser`/`permissions` to build its own visibility logic; it defers to `*hasPermission` (view) or `requirePermission` (route). Feature code never persists or forwards the access token.
 - A form's submission must go through `submitForm()`.

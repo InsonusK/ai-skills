@@ -28,7 +28,7 @@ registry:
 
 # What this plateau adds over its parent
 
-The parent chain is the connected app + performance-tuned routing + offline read **and** write resilience + console logging. Read those skills for the baseline. `plateau-multiuser-monolith` adds two cross-cutting capabilities:
+The parent chain is the connected app + performance-tuned routing + offline read **and** write resilience (VP5 — with a per-entity `syncStatus` state machine on the feature store's rows, driven by the `ReplayOrchestrator`'s `onReplayStart` / `onReplayResult` callbacks) + console logging. Read those skills for the baseline. `plateau-multiuser-monolith` adds two cross-cutting capabilities:
 
 **VP6 — BackendLogDelivery (`solution-logging-global`):**
 

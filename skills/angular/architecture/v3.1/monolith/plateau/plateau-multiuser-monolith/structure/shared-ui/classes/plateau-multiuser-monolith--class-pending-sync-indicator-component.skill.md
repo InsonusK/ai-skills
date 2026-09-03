@@ -65,12 +65,14 @@ export class PendingSyncIndicatorComponent {
 ```
 
 ```typescript
-// the owning feature's Signal Store keeps `pendingSync` in step with the queue:
-trackPendingSync: rxMethod<void>(pipe(
-  switchMap(() => queue.pendingForFeature$('orders')),
-  tap((entries) => patchState(store, { pendingSync: entries.length })),
-)),
-// template:  <ui-pending-sync-indicator [count]="store.pendingSync()" />
+// The count is DERIVED from the feature store's own rows that carry a syncStatus —
+// the per-entity status is the source of truth, the count is just an aggregate.
+pendingSyncCount: computed(
+  () => orders().filter((o) => o.syncStatus === 'queued' || o.syncStatus === 'sending' || o.syncStatus === 'failed').length,
+),
+// template:  <ui-pending-sync-indicator [count]="store.pendingSyncCount()" />
+// Each row also renders its own <ui-status-badge [status]="o.syncStatus"> so the
+// user sees WHICH row is queued / sending / failed / conflict, not just how many.
 ```
 
 __Applied solutions:__
@@ -80,7 +82,8 @@ __Applied solutions:__
 
 ## MUST
 - The component must render from its `count` input only — never inject `MutationQueueService`, never touch the Dexie table.
-- A feature that enqueues mutations must surface this indicator (or `pendingForFeature$` some other way) somewhere in its UI — a queued action must never be invisible.
+- The `count` the feature feeds this component must be **derived from the feature store's rows that carry a `syncStatus`** — not a separately tracked number that can drift from the visible rows.
+- A feature that enqueues mutations must surface a **per-entity `syncStatus`** on its rows (via `<ui-status-badge>` or equivalent) in addition to this aggregate indicator — a queued action must never be invisible or reduced to an opaque count.
 - The message container must carry `role="status"`.
 - Never apply several plateau templates per class/artifact.
 - Never let a feature build its own pending-sync indicator — reuse this component.

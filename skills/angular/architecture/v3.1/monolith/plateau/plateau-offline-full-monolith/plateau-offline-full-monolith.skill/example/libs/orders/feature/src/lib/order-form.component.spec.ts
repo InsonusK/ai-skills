@@ -1,12 +1,11 @@
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
-import { of } from 'rxjs';
 import { MutationQueueService } from '@org/shared-offline-sync';
 import { OrderFormComponent } from './order-form.component';
 import { OrdersStore } from './orders.store';
 import { OrdersFacade } from '@org/orders-data-access';
 
-const fakeQueue = { pendingForFeature$: () => of([]), enqueue: vi.fn() };
+const fakeQueue = { pendingForFeatureOnce: vi.fn().mockResolvedValue([]) };
 const providers = (facade: unknown) => [
   OrdersStore,
   { provide: OrdersFacade, useValue: facade },
@@ -14,7 +13,7 @@ const providers = (facade: unknown) => [
 ];
 
 describe('OrderFormComponent (behavioral — no business-layer mocks beyond the immediate collaborator)', () => {
-  it('disables the submit button while the store status is creating', async () => {
+  it('disables the submit button while a submit is in flight', async () => {
     const facade = { list: vi.fn().mockResolvedValue([]), addOrder: vi.fn(() => new Promise(() => undefined)) };
     await render(OrderFormComponent, { providers: providers(facade) });
     await userEvent.type(screen.getByRole('textbox', { name: /product/i }), 'Widget');
@@ -35,8 +34,15 @@ describe('OrderFormComponent (behavioral — no business-layer mocks beyond the 
     expect(await screen.findByRole('alert')).toHaveTextContent(/greater than zero/i);
   });
 
-  it('shows a "queued" badge when the facade reports the order was queued offline', async () => {
-    const facade = { list: vi.fn().mockResolvedValue([]), addOrder: vi.fn().mockResolvedValue({ queued: true }) };
+  it('shows a "queued" badge on the new row when the facade queued the order offline', async () => {
+    const facade = {
+      list: vi.fn().mockResolvedValue([]),
+      addOrder: vi.fn().mockResolvedValue({
+        queued: true,
+        idempotencyKey: 'k1',
+        optimistic: { id: 'pending:k1', product: 'Widget', quantity: 2, createdAt: new Date() },
+      }),
+    };
     await render(OrderFormComponent, { providers: providers(facade) });
     await userEvent.type(screen.getByRole('textbox', { name: /product/i }), 'Widget');
     await userEvent.type(screen.getByRole('spinbutton', { name: /quantity/i }), '2');

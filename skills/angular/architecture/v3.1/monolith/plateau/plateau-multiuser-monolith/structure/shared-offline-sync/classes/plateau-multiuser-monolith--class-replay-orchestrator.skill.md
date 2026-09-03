@@ -21,6 +21,7 @@ created_by:
 
 - Replay queued mutations per feature partition, FIFO within a partition, in parallel across partitions
 - Default to server-wins, while exposing a single clearly-separated `handleConflict` a future solution can override
+- Drive a **per-entity sync status** in each feature (`queued → sending → synced | failed | conflict`) through the `onReplayStart` / `onReplayResult` callbacks — so the user sees *which* row is in flight, not only a count
 
 __Applied solutions:__
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
@@ -54,12 +55,16 @@ __Applied solutions:__
 // Plateau: multiuser-monolith
 // Version: 20260903120000
 
+export type SyncStatus = 'queued' | 'sending' | 'failed' | 'conflict';
+
 export class ReplayConflictError extends Error {
   constructor(readonly currentServerValues: Record<string, unknown>) { super('replay conflict'); }
 }
 export interface FeatureReplay {
   readonly feature: string;
   replay(entry: PersistedMutation): Promise<void>; // throw ReplayConflictError on a field conflict
+  onReplayStart?(entry: PersistedMutation): void;  // feature sets its row's syncStatus 'sending'
+  onReplayResult?(entry: PersistedMutation, result: 'synced' | 'failed' | 'conflict'): void;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -87,9 +92,18 @@ export class ReplayOrchestrator {
     const handler = this.registry.handlerFor(feature);
     if (!handler) return;                              // registered when its feature loads
     for (const entry of await this.queue.pendingForFeatureOnce(feature)) {
-      try { await handler.replay(entry); await this.queue.markSynced(entry.id); }
-      catch (e) {
-        if (e instanceof ReplayConflictError) { await this.handleConflict(entry, e); continue; }
+      handler.onReplayStart?.(entry);                  // -> row syncStatus 'sending'
+      try {
+        await handler.replay(entry);
+        await this.queue.markSynced(entry.id);
+        handler.onReplayResult?.(entry, 'synced');     // -> clear the row's syncStatus
+      } catch (e) {
+        if (e instanceof ReplayConflictError) {
+          await this.handleConflict(entry, e);
+          handler.onReplayResult?.(entry, 'conflict'); // -> row syncStatus 'conflict'
+          continue;
+        }
+        handler.onReplayResult?.(entry, 'failed');     // -> row syncStatus 'failed'
         break;                                         // transient — stop; next online event retries
       }
     }
@@ -116,6 +130,7 @@ __Applied solutions:__
 - On conflict the notification must carry only the touched fields' current server values — never the full entity.
 - The orchestrator must never `import` a feature lib — handlers come from `MutationReplayRegistry`.
 - No conflict strategy beyond server-wins may be implemented here.
+- The orchestrator must call `onReplayStart` before, and `onReplayResult` after, every `replay(entry)` — `'synced'` on success, `'conflict'` after `handleConflict`, `'failed'` on a transient error. Both callbacks are optional.
 - Never apply several plateau templates per class/artifact.
 
 __Applied solutions:__
@@ -138,6 +153,7 @@ __Applied solutions:__
 - [ ] WHEN a replayed entry gets a conflict THEN the local change is discarded and a field-scoped notification is dispatched
 - [ ] WHEN `isOnline` transitions `false → true` THEN replay is triggered automatically
 - [ ] WHEN a partition has no registered handler THEN it is skipped (retried once its feature loads)
+- [ ] WHEN an entry is replayed THEN `onReplayStart` fires first, then `onReplayResult` with `'synced'` / `'conflict'` / `'failed'` for the three outcomes
 
 __Applied solutions:__
 - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]

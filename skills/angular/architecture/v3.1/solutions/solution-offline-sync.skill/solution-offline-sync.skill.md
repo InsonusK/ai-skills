@@ -40,7 +40,8 @@ adr:
 # Capabilities
 
 - Mutations attempted offline are queued instead of lost or immediately failed, for operations a Facade explicitly opts in
-- Reactive "pending sync" UI, updating automatically as the queue changes
+- A per-entity sync status on the feature's own rows — `queued → sending → (synced | failed | conflict)` — so the user sees *which* row is in flight, not just an opaque count; the count is derived from those rows
+- Optimistic rows are rebuilt from the persisted queue on a cold restart — a queued mutation is never an invisible "N pending" with nothing visible
 - A struggling feature (e.g. one dependent on a flaky external service) only stalls its own queue partition, not the whole application's sync
 - Idempotent replay — a retried command that actually succeeded server-side but lost its response is not double-applied
 - Server-wins conflict resolution with field-scoped detail, telling the user specifically what didn't apply and why — without the cost of storing full entity snapshots client-side
@@ -51,6 +52,7 @@ adr:
 - The queue is partitioned by feature; FIFO ordering is preserved within a partition, and partitions replay independently and in parallel
 - Every queued mutation carries a stable idempotency key, generated once at enqueue time and reused across every replay attempt
 - Only operations a Facade explicitly marks as queueable get enqueued on `OfflineTransportError` — queueing is never implicit
+- The user-facing pending surface is a **per-entity `syncStatus`** on the feature's rows, driven by two optional `FeatureReplay` callbacks (`onReplayStart` / `onReplayResult`) the orchestrator calls around every replay — not a bare count. The queue still stores commands only (no entity snapshot); the *display* is the feature's own optimistic row, rebuildable from the queue on a cold start.
 - Conflict resolution defaults to server-wins, compared only against the fields the queued command itself intended to change — no full entity snapshot is ever stored
 - The conflict-handling step is a single, clearly separated seam in the replay orchestrator, reserved for a future solution to plug in smarter, per-operation resolution logic
 
@@ -102,10 +104,11 @@ Artifact-level:
 ## Mutation attempted offline, later synced (happy path)
 
 1. A user attempts to add an order while offline; `OrdersClient` throws `OfflineTransportError` (per the "Offline-first" solution).
-2. `OrdersFacade` catches it, confirms `addOrder` is a queueable operation, and enqueues it via `MutationQueueService` with a freshly generated idempotency key — returning `{ queued: true }` instead of throwing.
-3. `PendingSyncIndicatorComponent`, reading `pendingForFeature$('orders')`, shows "1 action waiting to sync."
+2. `OrdersFacade` catches it, confirms `addOrder` is a queueable operation, and enqueues it via `MutationQueueService` with a freshly generated idempotency key — returning `{ queued: true, idempotencyKey, optimistic }` instead of throwing.
+3. `OrdersStore` appends `optimistic` with `syncStatus: 'queued'`; the row shows a "Queued — will sync" badge and `PendingSyncIndicatorComponent` (count derived from rows with a `syncStatus`) shows "1 action waiting to sync."
 4. Connectivity is restored; the `connectivity` slice's `isOnline` becomes `true`.
-5. `ReplayOrchestrator` replays the `orders` partition FIFO; `addOrder` succeeds; the entry is removed from the queue; the indicator updates to 0.
+5. `ReplayOrchestrator` replays the `orders` partition FIFO — calling `onReplayStart` (row → `'sending'`) then, on success, `onReplayResult(entry, 'synced')` (the optimistic row is cleared, the real one arrives on the next `load()`); the entry is removed from the queue; the indicator updates to 0.
+6. If the app was closed mid-queue and reopened, `OrdersStore.hydratePending()` rebuilds the `'queued'` rows from the persisted Dexie queue before step 5.
 
 ![Mutation attempted offline, later synced (happy path)](./diagrams/mutation-attempted-offline-later-synced-happy-path.mmd)
 

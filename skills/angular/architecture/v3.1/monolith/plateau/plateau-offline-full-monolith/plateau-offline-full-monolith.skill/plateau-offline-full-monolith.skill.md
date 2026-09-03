@@ -28,9 +28,10 @@ The parent chain is the connected app + performance-tuned routing + offline **re
 
 - **`libs/shared/offline-sync`** (new Nx project, `type:store`): a Dexie `MutationQueueService` — partitioned by feature, FIFO within a partition, each entry with a stable idempotency key (generated once at enqueue) and its `touchedFields`. A `ReplayOrchestrator` replays every partition **concurrently** on connectivity restoration; a stuck partition never blocks another. `handleConflict` is a single overridable seam — **server-wins** by default, surfaced field-scoped. `MutationReplayRegistry` holds per-feature replay handlers.
 - **A `notifications` slice** in `libs/shared/state` (VP5 — closes delta-conflict Finding 4). `ReplayOrchestrator` dispatches `NotificationsActions.show(...)` on a conflict.
-- **Facade queueing opt-in**: for an operation the Facade explicitly marks queueable, `OfflineTransportError` triggers `MutationQueueService.enqueue` + a `{ queued: true }` return instead of a throw. Business validation always fails first — a validation failure is never queued.
+- **Facade queueing opt-in**: for an operation the Facade explicitly marks queueable, `OfflineTransportError` triggers `MutationQueueService.enqueue` + a `{ queued: true, idempotencyKey, optimistic }` return instead of a throw. Business validation always fails first — a validation failure is never queued.
+- **A per-entity `syncStatus` state machine** on the feature store's rows — `queued → sending → (synced | failed | conflict)` — driven by two `FeatureReplay` lifecycle callbacks (`onReplayStart` / `onReplayResult`) the `ReplayOrchestrator` calls around every replay. `PendingSyncIndicatorComponent`'s count is *derived* from those rows; `{feature}.store.ts`'s `hydratePending()` rebuilds the optimistic rows from the persisted Dexie queue on a cold start.
 - **Per-feature replay registration**: `{feature}.offline-sync.ts` registers a `FeatureReplay` via `provideFeatureReplay(...)` placed in the feature's own **route `providers`** — so no feature code enters the initial bundle. The shell's `app.config.ts` only calls `provideOfflineSync()`.
-- **`PendingSyncIndicatorComponent`** in `libs/shared/ui` — presentational (`count` input), fed by the feature Signal Store from `MutationQueueService.pendingForFeature$`.
+- **`PendingSyncIndicatorComponent`** in `libs/shared/ui` — presentational (`count` input), fed a count *derived* from the feature store's rows that carry a `syncStatus`.
 
 # Core Principles
 
@@ -39,6 +40,7 @@ The parent chain is the connected app + performance-tuned routing + offline **re
 - Every queued mutation carries a stable idempotency key, generated once at enqueue and reused across every replay.
 - Queueing is opt-in per operation — never implicit for every method; validation failures are never queued.
 - Conflict resolution is server-wins, compared only against the fields the queued command intended to change — no full entity snapshot is stored. `handleConflict` is one clearly-separated seam a future solution can override.
+- The user-facing pending surface is a **per-entity `syncStatus`** on the feature's own rows, not just a count — and it survives a cold restart (`hydratePending()` rebuilds it from the queue).
 
 # Capabilities
 

@@ -12,13 +12,17 @@ import { OrdersStore } from './orders.store';
     <form (ngSubmit)="submit()">
       <label>Product <input name="product" [(ngModel)]="product" required /></label>
       <label>Quantity <input name="quantity" type="number" [(ngModel)]="quantity" required /></label>
-      <button type="submit" [disabled]="store.status() === 'creating'">Add order</button>
+      <button type="submit" [disabled]="store.submitting()">Add order</button>
     </form>
-    <ui-status-badge [status]="store.status()" [label]="badgeLabel()" />
-    <ui-pending-sync-indicator [count]="store.pendingSync()" />
-    @if (store.error(); as err) { <p role="alert">{{ err }}</p> }
+    <ui-pending-sync-indicator [count]="store.pendingSyncCount()" />
+    @if (store.submitError(); as err) { <p role="alert">{{ err }}</p> }
     <ul>
-      @for (o of store.orders(); track o.id) { <li>{{ o.product }} × {{ o.quantity }}</li> }
+      @for (o of store.orders(); track o.id) {
+        <li>
+          {{ o.product }} × {{ o.quantity }}
+          @if (o.syncStatus; as s) { <ui-status-badge [status]="s" [label]="badgeLabel(s)" /> }
+        </li>
+      }
     </ul>
   `,
 })
@@ -28,18 +32,21 @@ export class OrderFormComponent implements OnInit {
   quantity: number | null = null;
 
   ngOnInit(): void {
-    this.store.trackPendingSync();
+    // Cold start: rebuild optimistic rows from the persisted queue.
+    void this.store.hydratePending();
   }
 
-  badgeLabel(): string {
-    return {
-      idle: 'Ready',
-      creating: 'Creating…',
-      created: 'Created',
-      queued: 'Queued — will sync',
-      error: 'Failed',
-    }[this.store.status()];
+  badgeLabel(s: string): string {
+    return (
+      {
+        queued: 'Queued — will sync',
+        sending: 'Sending…',
+        failed: 'Sync failed — will retry',
+        conflict: "Not applied — changed elsewhere",
+      }[s] ?? s
+    );
   }
+
   async submit(): Promise<void> {
     await this.store.addOrder(this.product, Number(this.quantity));
   }

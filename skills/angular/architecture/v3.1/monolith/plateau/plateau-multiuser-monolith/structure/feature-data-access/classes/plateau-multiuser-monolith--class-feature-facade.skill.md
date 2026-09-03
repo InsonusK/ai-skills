@@ -23,7 +23,7 @@ created_by:
 - Be the only public entry point into the feature's data-access lib, called directly by that feature's Signal Store methods
 - Own business-rule validation and orchestration, keeping it separate from transport/mapping concerns (owned by the Client)
 - Test business validation/orchestration in isolation, without needing to mock HTTP at all
-- For an explicitly queueable operation, turn an `OfflineTransportError` into an enqueue + a `{ queued: true }` return, instead of a failure
+- For an explicitly queueable operation, turn an `OfflineTransportError` into an enqueue + a `{ queued: true, idempotencyKey, optimistic }` return, instead of a failure — the store shows `optimistic` with `syncStatus: 'queued'`
 
 __Applied solutions:__
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create.md|DataAccess/{Feature}.project.create/{feature}.facade.ts.create]]
@@ -56,7 +56,10 @@ __Applied solutions:__
 // Plateau: multiuser-monolith
 // Version: 20260903120000
 
-export type AddOrderResult = Order | { queued: true };
+// `idempotencyKey` correlates the store's optimistic row with the queue entry the
+// orchestrator replays; `optimistic` is the row to show now (id `pending:<key>`).
+export interface QueuedResult { readonly queued: true; readonly idempotencyKey: string; readonly optimistic: Order; }
+export type AddOrderResult = Order | QueuedResult;
 
 @Injectable({ providedIn: 'root' })
 export class OrdersFacade {
@@ -73,13 +76,17 @@ export class OrdersFacade {
     } catch (error) {
       // VP5: addOrder is an explicitly queueable operation
       if (error instanceof OfflineTransportError) {
-        await this.queue.enqueue({
+        const entry = await this.queue.enqueue({
           feature: 'orders',
           operationName: 'addOrder',
           payload: input,
           touchedFields: Object.keys(input),
         });
-        return { queued: true };
+        return {
+          queued: true,
+          idempotencyKey: entry.idempotencyKey,
+          optimistic: { id: `pending:${entry.idempotencyKey}`, ...input, createdAt: new Date() },
+        };
       }
       if (error instanceof OrdersConflictError) {
         throw new OrdersAlreadySubmittedError(input.id, { cause: error });
@@ -169,7 +176,7 @@ __Applied solutions:__
 - [ ] WHEN `addOrder` is called with invalid business input (e.g. non-positive quantity) THEN
   - [ ] the Facade throws a validation error without calling the Client, and enqueues nothing
 - [ ] WHEN a queueable op's Client call throws `OfflineTransportError` THEN
-  - [ ] the Facade enqueues it (with `feature`, `operationName`, `touchedFields`) and returns `{ queued: true }` instead of throwing
+  - [ ] the Facade enqueues it (with `feature`, `operationName`, `touchedFields`) and returns `{ queued: true, idempotencyKey, optimistic }` instead of throwing
 - [ ] WHEN the Client throws a genuine server error (not `OfflineTransportError`) THEN
   - [ ] the Facade re-throws / re-wraps it and enqueues nothing
 - [ ] WHEN the Client throws a transport-level conflict error THEN

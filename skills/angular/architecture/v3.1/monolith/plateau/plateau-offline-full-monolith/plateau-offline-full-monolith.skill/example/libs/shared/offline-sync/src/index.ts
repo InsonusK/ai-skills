@@ -9,5 +9,6 @@ export {
   MutationReplayRegistry,
   ReplayConflictError,
   type FeatureReplay,
+  type SyncStatus,
 } from './lib/replay-orchestrator';
 export { provideOfflineSync, provideFeatureReplay } from './lib/provide-offline-sync';

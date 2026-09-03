@@ -8,12 +8,13 @@ import { OrdersValidationError } from './orders.errors';
 
 describe('OrdersFacade (fakes the Client — the layer directly beneath)', () => {
   const client = { list: vi.fn(), add: vi.fn() };
-  const queue = { enqueue: vi.fn().mockResolvedValue({}) };
+  const enqueued = { id: 1, idempotencyKey: 'k1', operationName: 'addOrder', feature: 'orders', payload: {}, touchedFields: [], enqueuedAt: 1 };
+  const queue = { enqueue: vi.fn().mockResolvedValue(enqueued) };
   let facade: OrdersFacade;
 
   beforeEach(() => {
     client.add.mockReset();
-    queue.enqueue.mockReset().mockResolvedValue({});
+    queue.enqueue.mockReset().mockResolvedValue(enqueued);
     TestBed.configureTestingModule({
       providers: [
         OrdersFacade,
@@ -38,6 +39,11 @@ describe('OrdersFacade (fakes the Client — the layer directly beneath)', () =>
     expect(queue.enqueue).toHaveBeenCalledWith(
       expect.objectContaining({ feature: 'orders', operationName: 'addOrder', touchedFields: ['product', 'quantity'] }),
     );
+    if (isQueued(result)) {
+      // carries the correlation key + the row to show now
+      expect(result.idempotencyKey).toBe('k1');
+      expect(result.optimistic).toMatchObject({ id: 'pending:k1', product: 'W', quantity: 2 });
+    }
   });
 
   it('never enqueues an operation whose business validation already failed', async () => {

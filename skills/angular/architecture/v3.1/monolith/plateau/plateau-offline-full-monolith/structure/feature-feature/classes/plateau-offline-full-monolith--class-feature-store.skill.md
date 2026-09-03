@@ -14,8 +14,9 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 
-> Generic pattern, not tied to one concrete feature — any feature's own `{feature}.store.ts` follows this, substituting `{Feature}`/`{feature}` with the real feature name.
+> Generic pattern, not tied to one concrete feature — any feature's own `{feature}.store.ts` follows this, substituting `{Feature}`/`{feature}` with the real feature name. **VP5**: rows carry a per-entity `syncStatus` — see `# Offline-sync: per-entity syncStatus` below.
 
 # Goal
 
@@ -107,6 +108,44 @@ __Applied solutions:__
 - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md|FeatureStore/{Feature}.project.extend/{feature}.store.ts.create]]
 - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.facade-and-store.spec.ts.create.md|Testing/{feature}.facade-and-store.spec.ts.create]]
 
+# Offline-sync: per-entity syncStatus (VP5)
+
+A row carries `syncStatus?: 'queued' | 'sending' | 'failed' | 'conflict'` while it is not yet confirmed by the server (`type OrderRow = Order & { syncStatus?: SyncStatus }`, id `pending:<idempotencyKey>` for a queued create). The count `<ui-pending-sync-indicator>` renders is a **computed derived from these rows** — never a separately tracked number.
+
+```typescript
+withComputed(({ orders }) => ({
+  pendingSyncCount: computed(() =>
+    orders().filter((o) => o.syncStatus === 'queued' || o.syncStatus === 'sending' || o.syncStatus === 'failed').length),
+})),
+withMethods((store, facade = inject(OrdersFacade), queue = inject(MutationQueueService)) => ({
+  async addOrder(product: string, quantity: number) {
+    const r = await facade.addOrder({ product, quantity });
+    const row = isQueued(r) ? { ...r.optimistic, syncStatus: 'queued' as const } : r;
+    patchState(store, { orders: [...store.orders(), row] });
+  },
+  // driven by {feature}.offline-sync.ts's onReplayStart / onReplayResult
+  setSyncStatus(idempotencyKey: string, status: SyncStatus | undefined) {
+    const id = `pending:${idempotencyKey}`;
+    patchState(store, {
+      orders: status
+        ? store.orders().map((o) => (o.id === id ? { ...o, syncStatus: status } : o))
+        : store.orders().filter((o) => o.id !== id), // synced — drop the optimistic row
+    });
+  },
+  // cold start: rebuild optimistic rows from the persisted Dexie queue
+  async hydratePending() {
+    const known = new Set(store.orders().map((o) => o.id));
+    const rows = (await queue.pendingForFeatureOnce('orders'))
+      .filter((e) => !known.has(`pending:${e.idempotencyKey}`))
+      .map((e) => ({ id: `pending:${e.idempotencyKey}`, ...(e.payload as AddOrderInput), createdAt: new Date(), syncStatus: 'queued' as const }));
+    if (rows.length) patchState(store, { orders: [...store.orders(), ...rows] });
+  },
+})),
+```
+
+__Applied solutions:__
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
+
 # Rules
 
 ## MUST
@@ -114,6 +153,8 @@ __Applied solutions:__
 - All HTTP/data access invoked from the store must go through that feature's own `data-access` Facade — never directly via `HttpClient`, and never via that feature's Client, in the store.
 - For feature-scoped operations, the store method must call the Facade directly — no Action/Reducer/Effect is introduced.
 - A Signal Store test must fake its Facade directly — it must never reach further down to fake the Client or mock HTTP.
+
+- **VP5** — a queueable feature's store must carry a per-row `syncStatus` set from the Facade's `{ queued: true }` result and driven by `{feature}.offline-sync.ts`'s `onReplayStart` / `onReplayResult`; the pending count is a computed derived from those rows; `hydratePending()` rebuilds the optimistic rows from `pendingForFeatureOnce(...)` on a cold start. A bare "N pending" number with no visible row is a defect.
 
 ## SHOULD
 - Genuinely global reads (e.g. current user) should come from `libs/shared/state` selectors, injected into the feature store, rather than duplicated locally.

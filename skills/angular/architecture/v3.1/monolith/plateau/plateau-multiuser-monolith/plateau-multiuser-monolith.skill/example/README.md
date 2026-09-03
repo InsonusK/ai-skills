@@ -29,7 +29,7 @@ parent chain still applies (see those READMEs). This file records only the VP6 +
 ## Running
 
     npm install
-    npm test           # Vitest, jsdom — 28 files / 95 tests green (fake-indexeddb shims IndexedDB for the Dexie queues)
+    npm test           # Vitest, jsdom — 28 files / 98 tests green (fake-indexeddb shims IndexedDB for the Dexie queues)
     npm run lint       # nx run-many -t lint — 12 projects green
     npm run build:prod # nx build platform-shell --configuration=production — initial 454 kB
     npm run build:sw   # nx build-sw platform-shell — sw.js precaches 9 files / 491 KiB
@@ -65,6 +65,14 @@ written and configured but were not executed where this example was built.
 - **The bootstrap silent-refresh uses `provideAppInitializer`.** The solution says "an
   `APP_INITIALIZER`-equivalent or root route resolver"; `provideAppInitializer(() => inject(Store).dispatch(...))`
   is the Angular-22 form, dispatched exactly once in `app.config.ts`.
+- **VP5 offline-sync — a per-entity `syncStatus` state machine, not a bare pending count.**
+  `solution-offline-sync` (carried in from `plateau-offline-full-monolith`) only specified a
+  `pendingSync` *count*. The feature store now carries `syncStatus` per row —
+  `queued → sending → (cleared | failed | conflict)` — driven by two new `FeatureReplay` callbacks
+  (`onReplayStart` / `onReplayResult`) the `ReplayOrchestrator` calls around each replay. The
+  indicator's count is derived from the rows; `OrdersStore.hydratePending()` rebuilds the optimistic
+  rows from the persisted Dexie queue on a cold start. `ui-status-badge`'s `status` input is
+  loosened to `string` (presentational).
 - Budgets unchanged from VP5 (`initial` 500 kB warn / 600 kB error; `anyScript` 460 / 600) — the
   `auth`/`logging` additions land in lazy chunks or stay within the existing initial headroom
   (measured initial 454 kB).

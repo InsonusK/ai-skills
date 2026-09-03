@@ -12,15 +12,16 @@ records only the VP5 delta — `solution-offline-sync`.
 | `notifications` slice (`show` / `dismiss` / `clearAll`, `selectNotifications`) | libs/shared/state/src/lib/notifications/ (+ spec), registered in store.config.ts |
 | Facade enqueues a queueable op on `OfflineTransportError`, returns `{ queued: true }` | libs/orders/data-access/src/lib/orders.facade.ts (+ orders.facade.spec.ts) |
 | Feature registers its replay handler in the route injector | libs/orders/feature/src/lib/orders.offline-sync.ts, wired in orders.routes.ts `providers` |
-| Store tracks `pendingSync` + a `queued` status | libs/orders/feature/src/lib/orders.store.ts |
-| `PendingSyncIndicatorComponent` (presentational, `count` input) | libs/shared/ui/src/lib/pending-sync-indicator/ (+ spec), mounted in order-form.component.ts |
+| Per-row `syncStatus` (`queued → sending → cleared / failed / conflict`) + `hydratePending()` cold-start rebuild | libs/orders/feature/src/lib/orders.store.ts |
+| `ReplayOrchestrator` calls `FeatureReplay.onReplayStart` / `onReplayResult` around each replay | libs/shared/offline-sync/src/lib/replay-orchestrator.ts; wired in libs/orders/feature/src/lib/orders.offline-sync.ts |
+| `PendingSyncIndicatorComponent` (presentational, `count` input) — count derived from the rows with a `syncStatus` | libs/shared/ui/src/lib/pending-sync-indicator/ (+ spec), mounted in order-form.component.ts |
 | Shell wires the orchestrator | apps/platform-shell/src/app/app.config.ts (`provideOfflineSync()` only) |
 | Offline-write e2e specs (written, not run here) | apps/platform-shell-e2e/src/offline.e2e.spec.ts |
 
 ## Running
 
     npm install
-    npm test           # Vitest, jsdom — 20 files / 67 tests green (fake-indexeddb shims IndexedDB)
+    npm test           # Vitest, jsdom — 20 files / 70 tests green (fake-indexeddb shims IndexedDB)
     npm run lint       # nx run-many -t lint — 11 projects green
     npm run build:prod # nx build platform-shell --configuration=production
     npm run build:sw   # nx build-sw platform-shell — generates dist/apps/platform-shell/browser/sw.js
@@ -50,6 +51,16 @@ suites are written and configured but were not executed where this example was b
   the `notifications` slice — closing delta-conflict-analysis **Finding 4** (previously prose-only).
 - `PendingSyncIndicatorComponent` (like `OfflineBannerComponent` before it) is presentational
   (`count` input) rather than store-injecting, to keep `libs/shared/ui` off `type:store`.
+- **A per-entity `syncStatus` state machine replaces the bare `pendingSync` count.**
+  `solution-offline-sync` only specified a pending *count* and the queue "stores commands, no entity
+  snapshot" — which leaves a cold-restart gap: the count survives a reload but the optimistic *row*
+  doesn't. Here each feature-store row carries `syncStatus` — `queued → sending → (cleared on synced |
+  failed | conflict)` — driven by two new optional `FeatureReplay` callbacks (`onReplayStart` /
+  `onReplayResult`) the `ReplayOrchestrator` calls around every `replay(entry)`. The indicator count
+  is *derived* from the rows; `OrdersStore.hydratePending()` rebuilds the optimistic rows from the
+  persisted Dexie queue on bootstrap. `solution-offline-sync` +
+  `plateau-offline-full-monolith` / `plateau-multiuser-monolith` updated to match; `ui-status-badge`'s
+  `status` input loosened to `string` (presentational).
 - Dexie (~65 kB) is in the initial bundle via `provideOfflineSync()` (the orchestrator must be live
   from bootstrap). The `initial` / `anyScript` budgets were bumped once, deliberately (500 kB warn /
   600 kB error), per the VP1 "adjust a budget only as a reviewed decision" rule.
