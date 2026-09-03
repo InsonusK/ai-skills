@@ -18,6 +18,7 @@ creates:
   - libs/shared/auth-ui
   - libs/shared/state/src/lib/auth (the auth slice)
 extends:
+  - libs/shared/state (register the auth slice in provideGlobalStore())
   - apps/platform-shell (HTTP interceptor registration, bootstrap silent refresh)
 depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
@@ -71,6 +72,7 @@ REPOSITORY:
 
 PROJECT:
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|libs/shared/auth-ui]] - create - login form + forbidden page, the only auth UI shared across features
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md|libs/shared/state]] - extend - register the `auth` slice + `AuthEffects` in `provideGlobalStore()` ([delta-conflict Finding 4](skills/angular/architecture/v3.1/delta-conflict-analysis.md#findings))
 
 Artifact-level:
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts (create)]] - create - the `auth` slice: session lifecycle, in-memory token, permissions, silent refresh
@@ -110,6 +112,7 @@ Artifact-level:
 
 ## MUST
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md#MUST|GlobalStore/shared-state.project.extend]]
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md#MUST|auth.store.ts]]
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md#MUST|auth.interceptor.ts]]
 - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md#MUST|{feature}.guard.ts]]

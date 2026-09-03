@@ -1,0 +1,13 @@
+{
+  "name": "shared-auth-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/auth-ui/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["type:store", "scope:shared"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
