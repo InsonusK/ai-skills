@@ -21,9 +21,15 @@ No new directories. This extends `apps/platform-shell`'s federation config (from
 # Rules
 
 ## MUST
-- `federation.config.ts` must declare the design system with `singleton: true` and `strictVersion: false` — never `strictVersion: true`, per [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]].
-- `apps/platform-shell`'s root styles must import both `theme.scss` and `custom-tokens.scss` from the design system package.
-- The platform's declared design-system version range must be kept up to date as the platform itself upgrades, so embeddable apps have an accurate, current range to negotiate against.
+- `federation.config.ts` declares the design system with `singleton: true` and `strictVersion: false` — never `strictVersion: true`.
+  - Risk: `strictVersion: true` fails to load any embeddable app that is behind on its design-system version, forcing lockstep upgrades across teams.
+  - Fix: `strictVersion: false` lets a mismatched consumer fall back to its own isolated copy; per [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]].
+- `apps/platform-shell`'s root styles import both `theme.scss` and `custom-tokens.scss` from the design system package.
+  - Risk: the platform is the only required production consumer of the theme — omit it and every mounted app renders un-themed.
+  - Fix: `@use` both files in `src/styles.scss` at the document root; per [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]].
+- The platform's declared design-system version range is kept up to date as the platform upgrades.
+  - Risk: a stale host range gives embeddable apps a wrong target to negotiate against, so they needlessly load isolated copies.
+  - Fix: bump the range in `federation.config.ts` as part of each design-system upgrade.
 
 # Unittest TestCases
 

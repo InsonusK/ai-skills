@@ -20,9 +20,15 @@ No new directories in this monorepo — `@platform/contracts` is published from 
 # Rules
 
 ## MUST
-- `@platform/contracts`' `SessionContract` must be read-only from an embeddable app's point of view — an embeddable app must never be able to mutate the session (log in/out, change permissions) through the contract; only the platform's own auth slice does that.
-- An embeddable app must read session/permission state exclusively through `SessionContract` — it must never implement its own login flow or maintain its own copy of session state.
-- If an embeddable app is loaded without an authenticated session (e.g. `isAuthenticated` is false), it must render its own "not authenticated" state rather than attempting its own authentication — redirecting to authenticate is the platform's responsibility, not the embeddable app's.
+- `SessionContract` is read-only from an embeddable app's point of view — no method mutates the session (login/logout, permission change).
+  - Risk: a writable contract lets a remote change auth state the platform owns, creating races and an inconsistent session across apps.
+  - Fix: expose `currentUser`/`permissions`/`isAuthenticated` as readonly signals; mutation lives only in the platform's auth slice.
+- An embeddable app reads session/permission state only through `SessionContract` — never its own login flow or its own copy of session state.
+  - Risk: a second source of session truth drifts from the platform's and produces two ways a user can be "authenticated".
+  - Fix: inject `SESSION_CONTRACT`; derive all gating from it.
+- Loaded without an authenticated session, an embeddable app renders its own "not authenticated" state — it never triggers authentication.
+  - Risk: a remote initiating a redirect-to-login fights the platform's own auth handling and can loop or land the user in the wrong place.
+  - Fix: when `isAuthenticated()` is false, show a passive empty/blocked state; the platform decides whether to redirect.
 
 # Unittest TestCases
 

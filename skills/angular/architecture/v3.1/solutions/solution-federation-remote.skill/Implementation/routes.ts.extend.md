@@ -34,8 +34,12 @@ export const MODULE_ROUTES: Routes = [
 # Rule changes
 
 ## MUST
-- The module must only mount its own features' root segments — it must never reach into a feature's internal path structure.
-- The module must never assume or hardcode the segment under which the platform shell will mount it (e.g. it must not reference `module1/` inside its own route definitions) — that prefix is assigned by the shell at the mounting point.
+- The module mounts only its own features' root segments — never reaches into a feature's internal path structure.
+  - Risk: referencing a feature's child paths here couples the module to that feature's internals and breaks on its route refactor.
+  - Fix: `loadChildren` the feature's own `ROUTES` at its root segment; let the feature own everything below.
+- The module never assumes or hardcodes the segment the platform shell mounts it under.
+  - Risk: a hardcoded `module1/` prefix breaks the moment the shell — or a different host reusing the module — mounts it elsewhere.
+  - Fix: define every path relative to the module's own root; the router composes the full path at the mount point.
 
 ## SHOULD
 - **A module hardcoding its own expected mount prefix into its internal route definitions** — Consequence: breaks if the shell (or a different host reusing this module) mounts it under a different segment — Instead: the module only ever defines paths relative to its own root; Angular's router composes the full path automatically once mounted by the parent

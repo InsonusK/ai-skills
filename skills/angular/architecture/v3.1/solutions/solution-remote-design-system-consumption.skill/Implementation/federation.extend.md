@@ -22,9 +22,15 @@ This applies to any embeddable app repository (per `solution-platform-embeddabil
 # Rules
 
 ## MUST
-- `federation.config.ts` must declare `requiredVersion` as an accurate reflection of the design-system version range this app has actually been built and tested against — not left as a wildcard/unbounded range, which would defeat the purpose of version negotiation.
-- The team must keep `requiredVersion` updated as they adopt newer design-system versions, so version negotiation continues to reflect their real compatibility.
-- This app's own `styles.scss` must still import the theme, for correct standalone local development — omitting it would make local preview visually incorrect, even though it's redundant in production.
+- `federation.config.ts` declares `requiredVersion` as the actual design-system range this app was built and tested against — never a wildcard.
+  - Risk: an unbounded range lets the app share a design-system version it was never verified against, admitting the visual/behavioural breakage negotiation exists to prevent.
+  - Fix: pin the tested range (e.g. `^3.1.0`); widen it only after verifying against the new version.
+- The team keeps `requiredVersion` updated as they adopt newer design-system versions.
+  - Risk: a stale range means the app permanently runs its own isolated copy, never getting the shared-instance payload/consistency benefit.
+  - Fix: revisit the range as part of normal maintenance, tracking the platform's targeted version.
+- This app's own `styles.scss` still imports the theme, for correct standalone local development.
+  - Risk: without it, local preview outside the platform renders un-themed and hides visual regressions until integration.
+  - Fix: `@use` the design system's `theme.scss`/`custom-tokens.scss`; it is redundant-but-harmless once mounted in the platform.
 
 ## SHOULD
 - The team should periodically update `requiredVersion` to track the platform's currently targeted design-system version, to get the shared-instance benefit (smaller payload, guaranteed consistency) rather than routinely running an isolated copy.

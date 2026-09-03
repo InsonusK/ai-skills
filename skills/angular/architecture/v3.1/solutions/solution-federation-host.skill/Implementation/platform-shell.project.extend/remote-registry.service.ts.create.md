@@ -49,8 +49,12 @@ export class RemoteRegistryService {
 # Rule changes
 
 ## MUST
-- The manifest fetch must happen at runtime (app init or on demand), never be inlined at build time.
-- A missing or unreachable remote must resolve to an error the caller can catch and render a fallback for — it must not throw uncaught during bootstrap.
+- The manifest fetch happens at runtime (app init or on demand), never inlined at build time.
+  - Risk: a build-time manifest means a new or updated embeddable app is invisible until the host is rebuilt and redeployed.
+  - Fix: `fetch('/assets/remotes-manifest.json')` from a location the remote's own pipeline can update.
+- A missing or unreachable remote resolves to an error the caller can catch and render a fallback for — never an uncaught throw during bootstrap.
+  - Risk: an unhandled rejection while resolving one remote takes down the whole shell for every user.
+  - Fix: `loadRemoteComponent` rejects with a descriptive `Error`; the shell mounts a fallback slot on catch.
 
 ## SHOULD
 - **Caching the manifest for the lifetime of the browser tab with no refresh path** — Consequence: a newly deployed embeddable app version, or a newly onboarded app, only becomes visible after a full page reload, undermining the "no platform rebuild needed" benefit of Dynamic Federation — Instead: allow re-fetching the manifest (e.g. on shell navigation to a section that hosts remotes, or on an explicit refresh trigger)

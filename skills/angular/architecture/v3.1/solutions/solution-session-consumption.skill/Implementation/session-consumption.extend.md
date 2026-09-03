@@ -43,6 +43,8 @@ export function requirePermission(permission: string): CanActivateFn {
   - Risk: the remote competes with the host for the authentication flow.
   - Fix: the host owns login; the remote shows an inert state and waits.
 - Every authorization check is a permission string, matching the host's own `*hasPermission` semantics.
+  - Risk: role-name checks in the remote diverge from the host's permission model, so a user allowed in the shell is blocked in the embedded view (or vice versa).
+  - Fix: gate on `session.permissions().includes('orders.delete')`; never branch on a role or user id.
 
 ## SHOULD
 - Avoid duplicating the host's forbidden/login UI in the remote — a minimal inline "sign in to continue" placeholder is enough.

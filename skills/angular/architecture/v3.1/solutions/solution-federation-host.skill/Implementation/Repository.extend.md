@@ -29,12 +29,21 @@ No new top-level directories are added to the base layout from [[skills/angular/
 # Rules
 
 ## MUST
-- `apps/platform-shell` must declare the `type:host` tag in addition to its existing `type:app`/`scope:platform` tags.
-- `apps/platform-shell` must mark `@platform/contracts` (and Angular itself) as `singleton: true` in its federation shared-dependency configuration.
-- The list of available remotes (embeddable apps) and their URLs must be resolved at runtime (Dynamic Federation manifest), never hardcoded into the host's build output.
-
-- Never bundle a specific embeddable app's code at build time — that would defeat independent deployability, which is the entire reason Dynamic Federation was selected in [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]].
-- Never depend on an embeddable app's internal implementation — only on the `@platform/contracts` package and the federation `remoteEntry` contract.
+- `apps/platform-shell` declares the `type:host` tag in addition to `type:app`/`scope:platform`.
+  - Risk: without it, lint boundary rules and CI filters that target the host by tag silently skip it.
+  - Fix: add `type:host` to the project's tags in `project.json`.
+- `apps/platform-shell` marks `@platform/contracts` and Angular as `singleton: true` in its federation shared-dependency config.
+  - Risk: non-singleton sharing loads a second Angular / contracts instance, and `Signal`/`InjectionToken` identity breaks across the boundary.
+  - Fix: `shared: { '@angular/core': { singleton: true }, '@platform/contracts': { singleton: true }, ... }`.
+- The list of remotes and their URLs is resolved at runtime (Dynamic Federation manifest), never hardcoded into the host's build.
+  - Risk: a build-time remote list forces a host rebuild+redeploy every time any embeddable app ships, defeating independent deployability.
+  - Fix: load `federation.manifest.json` at bootstrap; refresh it independently of host deploys.
+- The host never bundles a specific embeddable app's code at build time.
+  - Risk: static-importing a remote couples the host's release to that remote's, the exact thing Dynamic Federation was chosen to avoid.
+  - Fix: mount remotes only via `loadRemoteModule`; per [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]].
+- The host never depends on an embeddable app's internal implementation — only on `@platform/contracts` and the `remoteEntry` contract.
+  - Risk: importing a remote's own type breaks the moment that team changes it and defeats the shared-contract design.
+  - Fix: every cross-boundary type/event/service interface is defined in `@platform/contracts`.
 # Unittest TestCases
 
 - [ ] WHEN a new embeddable app is added to the runtime remote registry without a platform rebuild THEN

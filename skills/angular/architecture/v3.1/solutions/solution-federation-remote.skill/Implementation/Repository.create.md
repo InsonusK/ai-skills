@@ -39,10 +39,15 @@ This is a separate repository from the platform monorepo, owned and deployed ind
 # Rules
 
 ## MUST
-- The repository must publish its `remoteEntry` and exposed module path to a location the platform's runtime remote registry can discover (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create]]) — how that publication happens (a manifest file, a registration API call, etc.) is an operational detail owned by this repository's own deploy pipeline.
-- The repository must declare `@platform/contracts` as a `singleton: true` shared dependency in its federation config, at a version compatible with the platform's expected range.
-
-- Never import platform-shell internals directly — the only contract with the platform is `@platform/contracts` plus the federation `remoteEntry`/exposed-module boundary.
+- The repository publishes its `remoteEntry` and exposed module path to a location the platform's runtime remote registry can discover.
+  - Risk: if the platform cannot discover the entry, the app can only be wired in by a host code change, defeating independent deploy.
+  - Fix: this repo's deploy pipeline writes the manifest entry (or calls the registration API); see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create|remote-registry.service.ts]].
+- The repository declares `@platform/contracts` as a `singleton: true` shared dependency at a version compatible with the platform's range.
+  - Risk: a non-singleton or incompatible version loads a second contracts instance, breaking `EventBus` and shared-type identity across the boundary.
+  - Fix: `shared: { '@platform/contracts': { singleton: true }, ... }`; treat the version range as a cross-team contract.
+- The repository never imports platform-shell internals — the only contract is `@platform/contracts` plus the `remoteEntry`/exposed-module boundary.
+  - Risk: importing the host's package recreates the tight coupling federation was chosen to avoid and breaks on any host refactor.
+  - Fix: everything the app needs from the platform is expressed in `@platform/contracts`.
 ## SHOULD
 - The repository should run its own CI pipeline (lint/test/build/deploy) independent of the platform's pipeline — this is the entire point of the independent-deploy requirement behind this solution.
 
