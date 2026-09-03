@@ -14,11 +14,18 @@ No new directories are introduced. This extension adds a convention on top of th
 # Rules
 
 ## MUST
-- Every routable `type:feature` project must export its `Routes` array from `index.ts`, using paths defined only relative to its own root (e.g. `page`, not `{feature}/page`).
-- A project at any level (shell, embeddable module, feature) must never define a route path that reaches outside the root segment it owns.
-- The project that mounts a child (shell mounting a module or feature; a module mounting its features) must assign the root segment (e.g. `feature1/`) at the mounting point — the child itself never declares its own mount prefix.
-
-- a `type:app` project (the shell) must never reference a path that exists two or more levels below its own mount point (e.g. the shell must not hardcode `module1/feature1/page` — it only knows about `module1/`).
+- Every routable `type:feature` project exports its `Routes` array from `index.ts`, with paths relative to its own root only (`page`, not `{feature}/page`).
+  - Risk: a baked-in prefix breaks the moment the feature is mounted under a different segment (or reused by another host).
+  - Fix: relative paths only; the mounting project assigns the segment.
+- A project at any level (shell, embeddable module, feature) never defines a route path that reaches outside the root segment it owns.
+  - Risk: the owner of the outer segment loses control of its own path space; two projects can define the same URL.
+  - Fix: each project's routes describe only what lives beneath its own root.
+- The project that mounts a child assigns the root segment (`feature1/`) at the mounting point — the child never declares its own mount prefix.
+  - Risk: the child cannot be remounted or reused without a code change; the mount point and the child both "own" the prefix.
+  - Fix: `loadChildren` at the parent supplies the segment; the child's routes start at `''`.
+- A `type:app` project (the shell) never references a path two or more levels below its own mount point (no hardcoded `module1/feature1/page`).
+  - Risk: the shell becomes coupled to a feature's internal route structure and breaks on any nested-route refactor.
+  - Fix: the shell mounts `module1/` only; `module1` mounts `feature1`; `feature1` defines `page`.
 # Unittest TestCases
 
 - [ ] WHEN a feature's exported `Routes` array is inspected THEN

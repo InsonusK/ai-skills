@@ -48,8 +48,12 @@ export const OrdersStore = signalStore(
 # Rule changes
 
 ## MUST
-- The feature Signal Store must be the only place that feature's components read/write feature-owned state — components must never call the feature's `data-access` facade directly.
-- All HTTP/data access invoked from the store must go through that feature's own `data-access` lib (see the future `solution-api-http-layer`), never directly via `HttpClient` in the store.
+- The feature Signal Store is the only place that feature's components read or write feature-owned state — components never call the feature's `data-access` Facade directly.
+  - Risk: a component calling the Facade bypasses the store's orchestration (loading flags, optimistic updates), and the same call gets tested two inconsistent ways.
+  - Fix: components call store methods; the store calls the Facade.
+- All HTTP/data access from the store goes through that feature's own `data-access` Facade — never `HttpClient` directly in the store.
+  - Risk: transport concerns (DTO mapping, error translation) leak into the store and cannot be unit-tested without mocking HTTP.
+  - Fix: `inject({Feature}Facade)` in `withMethods`; the Facade owns the request.
 
 ## SHOULD
 - Genuinely global reads (e.g. current user) should come from `libs/shared/state` selectors, injected into the feature store, rather than being duplicated locally (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]).

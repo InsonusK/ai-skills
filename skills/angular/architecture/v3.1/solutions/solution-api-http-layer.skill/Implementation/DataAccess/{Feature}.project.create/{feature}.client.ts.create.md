@@ -52,10 +52,18 @@ export class OrdersClient {
 # Rule changes
 
 ## MUST
-- The Client must never be exported from the feature's `index.ts` — it is only ever called by that feature's own Facade.
-- The Client must call `libs/shared/http-core`'s base service, not `HttpClient` directly.
-- The Client must catch every `HttpErrorResponse` its calls can produce and rethrow one of this feature's typed domain errors from `{feature}.errors.ts` — never let the raw error escape, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
-- DTO ↔ domain model mapping must go through this feature's `{feature}.mapper.ts` hand-written functions, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|dto-mapping-strategy]] — never inlined ad hoc inside the Client method.
+- The Client is never exported from the feature's `index.ts` — only the feature's own Facade calls it.
+  - Risk: an exported Client lets a store or component skip the Facade's business validation.
+  - Fix: keep the Client an internal file; the barrel exports the Facade + errors only.
+- The Client calls `libs/shared/http-core`'s base service, not `HttpClient` directly.
+  - Risk: base URL, auth headers, and retry policy get re-implemented per feature, inconsistently.
+  - Fix: `inject(BaseHttpService)`; the base service owns cross-cutting transport concerns.
+- The Client catches every `HttpErrorResponse` its calls can produce and rethrows a typed domain error from `{feature}.errors.ts`.
+  - Risk: a raw transport error reaches the store/component, which then branches on status codes far from the request.
+  - Fix: `catchError` maps status → a `{Feature}...Error`; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+- DTO ↔ domain mapping goes through `{feature}.mapper.ts` hand-written functions — never inline field renaming inside a Client method.
+  - Risk: mapping scattered across Client methods drifts, and a DTO shape change has to be chased through many call sites.
+  - Fix: one `toDomain` / `toDto` per shape in the mapper; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|dto-mapping-strategy]].
 
 ## SHOULD
 - **Letting an `HttpErrorResponse` propagate out of a Client method uncaught** — Consequence: callers (Facade, and transitively Signal Store methods/effects) end up branching on HTTP status codes instead of a meaningful domain error — Instead: catch every failure path and rethrow a typed domain error specific to this feature

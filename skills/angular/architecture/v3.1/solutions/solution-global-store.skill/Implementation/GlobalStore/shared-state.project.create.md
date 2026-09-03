@@ -60,10 +60,15 @@ tags:
 # Rules
 
 ## MUST
-- Every slice must expose its actions and selectors through `index.ts`; reducers and effects are registered once in `apps/platform-shell` and are not imported by feature code directly.
-- Effects must be the only place a slice performs HTTP calls or other side effects.
-
+- Every slice exposes its actions and selectors through `index.ts`; reducers and effects are registered once (via `provideGlobalStore()` in `apps/platform-shell`) and never imported by feature code.
+  - Risk: a feature importing a reducer/effect directly can register it twice, or couple to a slice's internals instead of its selector contract.
+  - Fix: `index.ts` exports actions + selectors only; registration lives in `store.config.ts`.
+- Effects are the only place a slice performs HTTP calls or other side effects.
+  - Risk: a component dispatching an action that itself does I/O scatters side effects and makes them untestable apart from the component tree.
+  - Fix: components dispatch plain actions; a `createEffect` owns the async work.
 - Never import from any `type:feature` or `type:data-access` project.
+  - Risk: the shared store gains a dependency on a feature and stops being a neutral, shareable contract.
+  - Fix: a slice that needs HTTP depends on `libs/shared/http-core` (`scope:shared`), never a feature's `data-access`.
 ## SHOULD
 - **Dispatching HTTP calls directly from a component against this store's actions, bypassing effects** — Consequence: side effects become scattered and untestable in isolation from the component tree — Instead: components dispatch plain actions; effects own all asynchronous work
 

@@ -46,8 +46,12 @@ tags:
 # Rules
 
 ## MUST
-- `base-http.service.ts` must never reference any feature-specific DTO or domain type — it is feature-agnostic by design.
-- Retry policy applied here must only apply to idempotent requests (GET) by default; a feature's Client may opt out or apply its own policy for non-idempotent calls.
+- `base-http.service.ts` never references a feature-specific DTO or domain type.
+  - Risk: a feature type in the base service makes `libs/shared/http-core` depend on a feature and breaks its reusability.
+  - Fix: the base service is generic (`<T>` request/response); feature shapes live in each feature's Client/Mapper.
+- The retry policy here applies only to idempotent requests (GET) by default.
+  - Risk: a blanket retry replays a POST/PUT and creates duplicate side effects on the server.
+  - Fix: retry GET only in the base service; a Client opts a specific non-idempotent call into its own policy (with idempotency keys).
 
 ## SHOULD
 - **Adding a feature-specific special case directly into `base-http.service.ts`** — Consequence: turns a feature-agnostic shared service into a growing pile of one-off conditions, coupling unrelated features to each other through a shared file — Instead: keep this service generic; feature-specific behavior belongs in that feature's own Client

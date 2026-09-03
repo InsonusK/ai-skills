@@ -72,9 +72,15 @@ export class OrderFormComponent {
 # Rule changes
 
 ## MUST
-- A form's submission must go through `submitForm()`, not a manually wired `(ngSubmit)` handler that bypasses the form's own validation/state.
-- Any HTTP call triggered by form submission must go through the owning feature's `data-access` facade (see the future `solution-api-http-layer`), never call `HttpClient` directly from the form component.
-- A custom, design-system-provided form control used inside a Signal Form must implement `ControlValueAccessor` so it is compatible with `formField` binding (see `solution-host-design-system-consumption` for where this contract is defined).
+- A form's submission goes through `submitForm()`, not a hand-wired `(ngSubmit)` handler.
+  - Risk: a manual handler bypasses the form's own validity/touched/error state and can submit an invalid form.
+  - Fix: `await submitForm(this.form, async (value) => { ... })`; field-level errors reflect the outcome automatically.
+- Any HTTP call triggered by form submission goes through the owning feature's `data-access` Facade — never `HttpClient` from the form component.
+  - Risk: transport logic in a form component is untestable without mocking HTTP and duplicates the Facade's validation.
+  - Fix: the `submitForm()` callback calls a store method or the Facade.
+- A custom design-system form control used inside a Signal Form implements `ControlValueAccessor`.
+  - Risk: without CVA the control is not compatible with `formField` binding — value/validity never sync.
+  - Fix: implement `writeValue` / `registerOnChange` / `registerOnTouched` / `setDisabledState` and provide `NG_VALUE_ACCESSOR`.
 
 ## SHOULD
 - Field schema/validators should stay inline in the component for simple forms (a handful of fields, no cross-field logic), and should be extracted into a `{form-name}.form.ts` file once cross-field validation (`when`) or the number of validators makes the component harder to read.

@@ -50,9 +50,15 @@ export class OrdersFacade {
 # Rule changes
 
 ## MUST
-- The Facade must be the only class in this feature's `data-access` project exported from `index.ts`, along with the feature's domain error types.
-- Business-rule validation that does not require a network call (e.g. "quantity must be positive") must happen in the Facade, before calling the Client — not duplicated inside the Client.
-- Any error the Facade lets through to its caller must be one of this feature's typed domain errors (from the Client, optionally re-wrapped with business context) — never a raw `HttpErrorResponse`, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+- The Facade is the only class in this feature's `data-access` project exported from `index.ts`, along with the domain error types.
+  - Risk: an exported Client or Mapper lets a consumer bypass the Facade's validation and couple to internal transport shapes.
+  - Fix: `export { {Feature}Facade } from './lib/{feature}.facade'; export * from './lib/{feature}.errors';` — nothing else.
+- Network-independent business validation (e.g. "quantity must be positive") happens in the Facade, before the Client call — not duplicated in the Client.
+  - Risk: validation split across two layers drifts; the Client's copy runs after a wasted request.
+  - Fix: the Facade validates first and throws its `ValidationError`; the Client is reached only for a valid command.
+- Any error the Facade lets through is one of this feature's typed domain errors — never a raw `HttpErrorResponse`.
+  - Risk: the caller ends up switching on HTTP status codes, defeating the point of the typed error layer.
+  - Fix: the Facade rethrows the Client's typed error, optionally re-wrapped with business context; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
 
 ## SHOULD
 - **Putting DTO mapping or direct `HttpClient`/`http-core` calls inside the Facade** — Consequence: blurs the Facade/Client separation this solution exists to establish, making business logic and transport concerns hard to test independently — Instead: the Facade only calls the Client; all DTO/transport concerns stay inside the Client

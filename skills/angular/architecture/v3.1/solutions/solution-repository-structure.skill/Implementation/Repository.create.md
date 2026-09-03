@@ -63,14 +63,27 @@ Everything not explicitly listed here is denied by the lint rule.
 # Rules
 
 ## MUST
-- Every Nx project must declare exactly one `type:*` tag and exactly one `scope:*` tag.
-- Every lib must expose its public API through a single `index.ts` barrel; nothing outside that barrel may be imported by other projects.
-- A `type:feature` project must never import another `type:feature` project directly, regardless of scope.
-- A `type:data-access` project must only be imported by the `type:feature` project that shares its `scope`.
-- Business logic (HTTP calls, state, domain rules) must never live in `apps/platform-shell` — the shell only composes and routes.
-
-- Never place a routed business feature directly under `/apps` — every feature lives under `/libs/{feature}` and is only routed to from an app.
-- Never add a `type:util` project with any `scope:*` other than `shared` — utils are by definition scope-agnostic; a feature-specific helper belongs inside that feature's own lib, not in a scoped util.
+- Every Nx project declares exactly one `type:*` tag and exactly one `scope:*` tag.
+  - Risk: `@nx/enforce-module-boundaries` cannot reason about an untagged (or multi-typed) project — every boundary rule silently stops covering it.
+  - Fix: set both tags in the project's `project.json` `tags` array the moment it is generated.
+- Every lib exposes its public API through a single `index.ts` barrel; nothing outside that barrel is imported by other projects.
+  - Risk: a deep import couples the consumer to the lib's internal file layout — a refactor that keeps the public API breaks it.
+  - Fix: re-export the public surface from `index.ts`; enable the `enforce-module-boundaries` deep-import check.
+- A `type:feature` project never imports another `type:feature` project directly, regardless of scope.
+  - Risk: hidden feature-to-feature coupling; `nx affected` marks unrelated features as impacted; the future host/remote split cannot carve them apart.
+  - Fix: extract the shared piece into `libs/shared/ui` / `libs/shared/util`, or communicate through routing.
+- A `type:data-access` project is imported only by the `type:feature` project that shares its `scope`.
+  - Risk: another feature (or the shell) reaching into a feature's data layer bypasses that feature's Facade and its business validation.
+  - Fix: the `scope:{feature} → scope:{feature}` allow-list row is the only path in; cross-feature data goes through `libs/shared/state`.
+- Business logic (HTTP calls, state, domain rules) never lives in `apps/platform-shell` — the shell only composes and routes.
+  - Risk: the shell stops being a thin composition root; affected-based builds treat it as touched by almost every change.
+  - Fix: scaffold a `libs/{feature}` lib even for a small feature and route to it lazily from the shell.
+- Never place a routed business feature directly under `/apps`.
+  - Risk: a feature under `/apps` can no longer be lazy-loaded or reused independently, and the platform/embeddable split gets harder.
+  - Fix: every feature is a lib under `/libs/{feature}`, mounted from an app via `loadChildren`.
+- Never add a `type:util` project with any `scope:*` other than `shared`.
+  - Risk: a "scoped util" is really feature code in the wrong place — it invites cross-feature imports the boundary rules were meant to stop.
+  - Fix: a feature-specific helper lives inside that feature's own lib; `libs/shared/util` holds only scope-agnostic pure helpers.
 ## SHOULD
 - A business feature with server data should be scaffolded as a `{feature}/feature` + `{feature}/data-access` pair from the start, even if `data-access` is thin initially — splitting later is more expensive than starting split. A feature with no backend has just the `feature` lib.
 - Cross-feature communication should go through routing (navigation) or through a `scope:platform` orchestrating layer, not through direct imports between features.

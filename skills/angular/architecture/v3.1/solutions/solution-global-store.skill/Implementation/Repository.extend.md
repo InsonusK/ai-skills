@@ -46,10 +46,15 @@ tags:
 # Rules
 
 ## MUST
-- Every slice inside `libs/shared/state` must correspond to genuinely global/cross-cutting state (read or dispatched by more than one unrelated feature) — feature-scoped state must never be added here (see solution's Core Principles for the tiering rule).
-- `libs/shared/state` must never depend on any `type:feature` or `type:data-access` project.
-
-- a `type:feature` project must never reach into another feature's Signal Store directly to read cross-cutting data — if the data is genuinely needed by multiple features, it belongs in `libs/shared/state`, not in one feature's own store.
+- Every slice inside `libs/shared/state` is genuinely global / cross-cutting state — read or dispatched by more than one unrelated feature.
+  - Risk: feature-scoped state in the global store makes every feature a consumer of the whole store, and the tiering rule stops guiding placement.
+  - Fix: feature-owned state stays in that feature's Signal Store; only a second, unrelated consumer justifies a global slice.
+- `libs/shared/state` never depends on any `type:feature` or `type:data-access` project.
+  - Risk: a dependency edge from the shared store to a feature makes the store un-shareable and pulls feature code toward the initial bundle.
+  - Fix: the `scope:shared` boundary allows only `type:util` / `type:data-access` (`scope:shared`) targets; a slice's HTTP goes through `libs/shared/http-core`.
+- A `type:feature` project never reaches into another feature's Signal Store to read cross-cutting data.
+  - Risk: hidden feature-to-feature coupling through a store that was never meant to be a shared contract.
+  - Fix: if two features need the data, promote it to a `libs/shared/state` slice and both read its selectors.
 # Unittest TestCases
 
 - [ ] WHEN a feature attempts to import another feature's Signal Store directly THEN

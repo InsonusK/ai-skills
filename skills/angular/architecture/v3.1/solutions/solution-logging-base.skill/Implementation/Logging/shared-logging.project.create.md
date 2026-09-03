@@ -45,11 +45,18 @@ None beyond Angular's own DI/core APIs.
 # Rules
 
 ## MUST
-- `LoggerService` must be the only class application code interacts with for logging; `ConsoleLogSink` must never be injected or called directly by feature code.
-- `MIN_LOG_LEVEL` must default to filtering out `debug`/`info` in production builds, keeping `warn`/`error` always enabled.
-- `LogEntry`'s `context` must be a plain, structured object — never a pre-formatted string standing in for context.
-
-- `LoggerService`/`ConsoleLogSink` must never ever be given a token, password, or PII value to log, regardless of level (see [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend#must]]).
+- `LoggerService` is the only class application code interacts with for logging; `ConsoleLogSink` is never injected or called directly by feature code.
+  - Risk: feature code bound to a concrete sink cannot benefit from level filtering or a second sink added later.
+  - Fix: inject `LoggerService`; sinks are wired only through the `LOG_SINKS` multi-provider token.
+- `MIN_LOG_LEVEL` defaults to filtering out `debug`/`info` in production builds, keeping `warn`/`error` always enabled.
+  - Risk: `debug`/`info` in production floods the console (and any backend sink) and can leak internal detail.
+  - Fix: `MIN_LOG_LEVEL` token = `'debug'` in dev, `'warn'` in prod.
+- `LogEntry`'s `context` is a plain, structured object — never a pre-formatted string.
+  - Risk: a pre-interpolated string cannot be filtered, queried, or redacted by a backend sink.
+  - Fix: `logger.warn('Order rejected', { orderId, reason })` — message + structured context.
+- `LoggerService` / `ConsoleLogSink` is never given a token, password, or PII value to log, at any level.
+  - Risk: the classic credential-leak vector — see [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend#must]].
+  - Fix: log identifiers and shapes only.
 ## SHOULD
 - **A feature registering its own ad hoc `console.log` wrapper instead of using `LoggerService.forFeature(...)`** — Consequence: recreates, inconsistently, exactly what `LoggerService` already provides, and is invisible to the future backend sink — Instead: call `inject(LoggerService).forFeature('orders')` once per feature and use the returned logger
 

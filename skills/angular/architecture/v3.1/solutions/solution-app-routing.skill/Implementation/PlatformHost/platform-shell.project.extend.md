@@ -50,8 +50,12 @@ export const routes: Routes = [
 # Rule changes
 
 ## MUST
-- Each entry in `app.routes.ts` must correspond to exactly one root segment, mounting either an embeddable module or a directly-owned feature — never a path nested inside one of them.
-- The shell must never import any component from inside a feature or embeddable module directly into `app.routes.ts` — only the feature's/module's exported `Routes`/entry point.
+- Each entry in `app.routes.ts` is exactly one root segment, mounting an embeddable module or a directly-owned feature — never a path nested inside one.
+  - Risk: `path: 'orders/report'` in the shell means the shell now knows the feature's internal routes and breaks when they change.
+  - Fix: mount `orders` as one `loadChildren` entry; the feature's own routes define `report` beneath it.
+- The shell never imports a component from inside a feature or module into `app.routes.ts` — only the exported `Routes` / entry point.
+  - Risk: a static import of a lazy feature pulls it into the initial bundle and couples the shell to that feature's build.
+  - Fix: `loadChildren: () => import('@org/{feature}-feature').then(m => m.{FEATURE}_ROUTES)`.
 
 ## SHOULD
 - **Adding a route in `app.routes.ts` that targets a specific page inside a feature (e.g. `path: 'feature1/page'`)** — Consequence: shell now depends on the feature's internal route structure, breaking hierarchical ownership and making `nx affected` treat the shell as touched by internal feature navigation changes — Instead: mount only `feature1` as a segment; the feature's own routes define `page` beneath it

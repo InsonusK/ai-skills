@@ -30,8 +30,12 @@ tags:
 # Rules
 
 ## MUST
-- Every part of the application must log through `LoggerService` — no direct `console.*` call is permitted outside `libs/shared/logging`'s own `ConsoleLogSink` implementation.
-- A log entry must never contain an auth token, password, or other PII in its message or context, regardless of log level — this applies unconditionally, per `solution-authentication`'s token-handling rules.
+- Every part of the application logs through `LoggerService` — no direct `console.*` outside `libs/shared/logging`'s own `ConsoleLogSink` (and each app's `main.ts` bootstrap catch).
+  - Risk: a stray `console.log` bypasses level filtering and any future backend sink — it is invisible to production diagnostics.
+  - Fix: `inject(LoggerService).forFeature('x')`; enable the `no-console` ESLint rule everywhere else.
+- A log entry never contains an auth token, password, or other PII in its message or context, at any level.
+  - Risk: secrets in logs are the classic credential-leak vector, doubly dangerous once logs ship to a backend.
+  - Fix: log identifiers and shapes, never values; treat this as unconditional, per `solution-authentication`'s token-handling rules.
 
 # Unittest TestCases
 

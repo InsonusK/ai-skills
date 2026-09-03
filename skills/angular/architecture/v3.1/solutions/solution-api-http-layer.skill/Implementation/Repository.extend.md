@@ -68,13 +68,24 @@ No new tag values are introduced; `libs/shared/http-core` uses the existing `typ
 # Rules
 
 ## MUST
-- A feature's `{feature}.client.ts` must never be exported from that feature's `index.ts` — only the Facade (and, if useful, the feature's domain error types) is part of the public API.
-- When a feature has multiple distinct data facets, each facet's files must be grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`; every Facade is exported from `index.ts`, but no Client or Mapper is exported.
-- Every Client must build its HTTP calls on top of `libs/shared/http-core`'s base service, never call `HttpClient` directly.
-- A Client must catch every `HttpErrorResponse` it can produce and rethrow a typed domain error from that feature's `{feature}.errors.ts`, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]] — a raw `HttpErrorResponse` must never escape the Client.
-- For feature-scoped operations, the calling Signal Store method must call the Facade directly — no Action/Reducer/Effect is introduced for feature-level data operations, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]]. This does not apply to global/cross-cutting state, which keeps its existing classical NgRx chain (Effect → Facade → Client) from the "State management" and `solution-authentication`s.
-
-- a component or Signal Store method must never import a feature's Client directly, bypassing the Facade — business validation would be skipped.
+- A feature's `{feature}.client.ts` is never exported from that feature's `index.ts` — only the Facade (and its domain error types) is public.
+  - Risk: an exported Client lets a consumer skip the Facade and its business validation.
+  - Fix: `index.ts` re-exports the Facade + errors only; the Client is an internal file.
+- A feature with multiple data facets groups files under `facade/`, `client/`, `mapper/` as `{feature}_N.{kind}.ts`; every Facade is exported, no Client or Mapper is.
+  - Risk: a flat pile of `orders.client.ts`, `orders2.client.ts` … is unnavigable and blurs which Facade owns which Client.
+  - Fix: one folder per layer, numbered files per facet, a barrel that exports only the Facades.
+- Every Client builds its HTTP calls on `libs/shared/http-core`'s base service — never `HttpClient` directly.
+  - Risk: base-URL, auth, and retry policy get re-implemented (inconsistently) per feature.
+  - Fix: `inject(BaseHttpService)` and call its verbs.
+- A Client catches every `HttpErrorResponse` it can produce and rethrows a typed domain error from `{feature}.errors.ts` — a raw `HttpErrorResponse` never escapes.
+  - Risk: transport-shaped errors reach the store/component, which then branch on HTTP status codes far from the request.
+  - Fix: `catchError` in the Client maps status → a `{Feature}...Error`; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+- For feature-scoped operations the calling Signal Store method calls the Facade directly — no Action/Reducer/Effect for feature-level data.
+  - Risk: classical NgRx boilerplate for state only one feature ever reads, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]].
+  - Fix: `store` method → `Facade` → `Client`. Global/cross-cutting state keeps its Effect → Facade → Client chain.
+- A component or Signal Store method never imports a feature's Client directly, bypassing the Facade.
+  - Risk: the Facade's business-rule validation is skipped entirely.
+  - Fix: always route through the Facade; only the Facade constructs a Client call.
 # Unittest TestCases
 
 - [ ] WHEN a feature's `index.ts` is inspected THEN

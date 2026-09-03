@@ -33,9 +33,12 @@ export class ExampleDialogComponent {
 # Rule changes
 
 ## MUST
-- State that is read and written only within one component (and optionally its direct children via `input()`) must be a plain Signal on that component, not a feature Signal Store or global NgRx state.
-
-- Never introduce a feature Signal Store or a `libs/shared/state` slice purely to hold state no other component or feature ever needs to read.
+- State read and written only within one component (and its direct children via `input()`) is a plain `signal()` on that component — not a feature Signal Store or global NgRx state.
+  - Risk: promoting view-local state to a store adds indirection, a testing surface, and change-detection cost for state nothing else reads.
+  - Fix: `protected readonly x = signal(...)` on the component; promote only when a second, unrelated consumer genuinely needs it.
+- Never introduce a feature Signal Store or a `libs/shared/state` slice purely to hold state no other component or feature ever reads.
+  - Risk: the store tier fills with single-consumer state, and "where does this state live" stops being answerable from the tiering rule.
+  - Fix: keep the three tiers meaningful — component signal → feature store (a second consumer in the feature) → global slice (a second unrelated feature).
 ## SHOULD
 - **Creating a feature-level Signal Store for a single dialog's open/closed flag** — Consequence: unnecessary indirection and injection for state nothing outside the component ever reads — Instead: a plain `signal(false)` field on the component
 - **Lifting genuinely local state into `libs/shared/state` "just in case it's needed later"** — Consequence: erodes the tiering rule this solution exists to enforce, and clutters global state with noise — Instead: keep it local until a second, unrelated feature/component genuinely needs to read it — then promote it deliberately
