@@ -6,6 +6,8 @@ tags:
   - skill/core
   - stack
   - concern/documentation
+adr:
+  - adr/allow-extra-top-level-sections.md
 
 ---
 
@@ -21,6 +23,7 @@ This skill applies to every skill-writing task in the repository. It defines the
 - If you cannot tell when the skill applies by reading `whenToUse`, the skill is not clear enough.
 - **Agent clarity and convenience are the key success factors.** Every rule, example, and checklist must make the skill easier for an AI agent to understand and apply. If a skill is confusing, hard to follow, or forces the agent to guess, rewrite or split it.
 - Write skill in English
+- The allowed set of top-level sections is fixed to `# Goal`, `# Core Principle`, `# Rule`, `# Check list`, plus at most one optional `# Scope`, `# Workflow`, and `# Example` — see [ADR: allow-extra-top-level-sections](./adr/allow-extra-top-level-sections.md) for the trade-offs.
 
 # Rule
 
