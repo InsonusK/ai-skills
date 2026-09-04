@@ -6,34 +6,25 @@ previous plateau. Capabilities are **cumulative**: everything the parent has, pl
 
 ## Plateau × VP matrix
 
-Rows = plateaus, columns = the 8 monolith Variation Points (full definitions:
-[`../variability-map.md`](../variability-map.md)). `Yes` = the VP is realized at that plateau,
-`no` = it is not. Answers are **cumulative** down the chain — a plateau has every VP its parent has,
+Rows = plateaus, columns = the 8 monolith Variation Points. ✅ = the VP is realized at that plateau,
+❌ = it is not. Answers are **cumulative** down the chain — a plateau has every VP its parent has,
 plus its own. Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a
 plateau's complete VP set.
 
 | Plateau | VP1 | VP2 | VP3 | VP4 | VP5 | VP6 | VP7 | VP8 |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| plateau-online-monolith        | no  | Yes | Yes | no  | no  | no  | no  | no  |
-| plateau-async-monolith         | Yes | Yes | Yes | no  | no  | no  | no  | no  |
-| plateau-offline-read-monolith  | Yes | Yes | Yes | Yes | no  | no  | no  | no  |
-| plateau-offline-full-monolith  | Yes | Yes | Yes | Yes | Yes | no  | no  | no  |
-| plateau-multiuser-monolith     | Yes | Yes | Yes | Yes | Yes | Yes | Yes | no  |
-| plateau-persisted-state-monolith | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| plateau-online-monolith        | ❌  | ✅ | ✅ | ❌  | ❌  | ❌  | ❌  | ❌  |
+| plateau-async-monolith         | ✅ | ✅ | ✅ | ❌  | ❌  | ❌  | ❌  | ❌  |
+| plateau-offline-read-monolith  | ✅ | ✅ | ✅ | ✅ | ❌  | ❌  | ❌  | ❌  |
+| plateau-offline-full-monolith  | ✅ | ✅ | ✅ | ✅ | ✅ | ❌  | ❌  | ❌  |
+| plateau-multiuser-monolith     | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌  |
+| plateau-persisted-state-monolith | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-| VP | Name | First realized at | Solution |
-|---|---|---|---|
-| **VP1** | PerformanceTunedRouting — selective preload + `loadComponent` split + enforced bundle budgets | plateau-async-monolith | `solution-performance-tuned-routing` |
-| **VP2** | GlobalStore — `libs/shared/state`, classical NgRx for cross-cutting state | plateau-online-monolith | `solution-global-store` |
-| **VP3** | BackendDataAccess — `libs/shared/http-core` + per-feature Facade/Client/Mapper | plateau-online-monolith | `solution-api-http-layer` |
-| **VP4** | OfflineReadResilience — Workbox SW, `connectivity` slice, `OfflineTransportError` | plateau-offline-read-monolith | `solution-offline-first` |
-| **VP5** | OfflineWriteQueue — Dexie queue, idempotent replay, per-entity `syncStatus` | plateau-offline-full-monolith | `solution-offline-sync` |
-| **VP6** | BackendLogDelivery — `BackendLogSink` + bounded IndexedDB retry queue + `GlobalErrorHandler` | plateau-multiuser-monolith | `solution-logging-global` |
-| **VP7** | Authentication — in-memory access token, silent refresh, permission-string guards | plateau-multiuser-monolith | `solution-authentication` |
-| **VP8** | PersistedState — `persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` guard + `withPersistedDraft()` + a persisted `preferences` slice | plateau-persisted-state-monolith | `solution-persisted-state` |
-
-Constraints between VPs (from the variability map): VP4 requires VP2 **and** VP3; VP5 requires VP4;
-VP6 requires VP3; VP7 requires VP2 **and** VP3; VP8 requires VP2. Every row above satisfies them.
+Column legend — VP1 PerformanceTunedRouting · VP2 GlobalStore · VP3 BackendDataAccess ·
+VP4 OfflineReadResilience · VP5 OfflineWriteQueue · VP6 BackendLogDelivery · VP7 Authentication ·
+VP8 PersistedState. Full descriptions, the solution that realizes each VP, and the constraints
+between VPs are in [`../variability-map.md`](../variability-map.md) — the single source of truth;
+this table is only the plateau-oriented view of the same answers.
 
 ## Lineage & new solutions
 
