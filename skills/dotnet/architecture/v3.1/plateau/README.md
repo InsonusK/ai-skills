@@ -4,15 +4,38 @@ Three plateaus, built by `plateau-create-by-solutions` from the catalogue in `..
 Flat lineage — each is `standalone` except the base, and each `parent_plateaus` entry is the single
 previous plateau. A plateau's capabilities are **cumulative**: everything the parent has, plus its own delta.
 
-| # | Plateau | `standalone` | Parent | Adds (VPs) | New solutions in its `created_by` |
-|---|---------|--------------|--------|------------|-----------------------------------|
-| 1 | **plateau-core** | `false` | — | none — the common baseline every service shares | `solution-central-package-management`, `solution-sln-structure`, `solution-mediator-integration`, `solution-validation-behavior`, `solution-mediator-exception-handler`, `solution-pipeline-registration`, `solution-soft-value-objects`, `solution-dto-property-validators`, `solution-app-logging`, `solution-dotnet-conformance-testing` |
-| 2 | **plateau-domain-service** | `true` | plateau-core | **VP1** DomainLogic · **VP2** Persistence · **VP3** ValueObjects · **VP5** EntityConcurrencyControl · **VP7** AuditTimestamps · **VP8** SyncInboundApi–HTTP · **VP11** SyncOutboundApi–gRPC | VP1 `solution-domain-behaviour` · VP2 `solution-infrastructure-project` + `solution-domain-configuration` + `solution-repository-integration` + `solution-unit-of-work` + `solution-query-integration` · VP3 `solution-value-objects` · VP5 `solution-entity-concurrency-change` · VP7 `solution-entity-edit-timestamp` · VP8 `solution-api-project` + `solution-http-api-publication` · VP11 `solution-grpc-client` |
-| 3 | **plateau-offline-sync-service** | `true` | plateau-domain-service | **VP4** CentralizedRules · **VP6** ExternalIdentity · entity-classification (the VP5×VP6 combination-resolver) | VP4 `solution-domain-rules` + `solution-cecil-architecture-tests` · VP6 `solution-external-created-entity` · `solution-entity-classification` |
+## Plateau × VP matrix
 
-VP definitions are in [`../variability-map.md`](../variability-map.md). VPs **not** in any plateau yet:
-VP9 (gRPC inbound), VP10 (HTTP outbound), VP12–VP14 (async messaging / outbox) — their solutions exist
-as skeletons (`> Draft contract` marker), ready to compose into a future plateau.
+Rows = plateaus, columns = the 14 Variation Points. ✅ = the VP is realized at that plateau, ❌ = it is
+not. Answers are **cumulative** down the chain — a plateau has every VP its parent has, plus its own.
+Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a plateau's
+complete VP set.
+
+| Plateau | VP1 | VP2 | VP3 | VP4 | VP5 | VP6 | VP7 | VP8 | VP9 | VP10 | VP11 | VP12 | VP13 | VP14 |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| plateau-core                 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| plateau-domain-service       | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| plateau-offline-sync-service | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+
+Column legend — VP1 DomainLogic · VP2 Persistence · VP3 ValueObjects · VP4 CentralizedRules ·
+VP5 EntityConcurrencyControl · VP6 ExternalIdentity · VP7 AuditTimestamps · VP8 SyncInboundApi–HTTP ·
+VP9 SyncInboundApi–gRPC · VP10 SyncOutboundApi–HTTP · VP11 SyncOutboundApi–gRPC · VP12 AsyncInboundApi ·
+VP13 AsyncOutboundApi · VP14 OutboxPattern. Full descriptions, the solution that realizes each VP, and
+the constraints between VPs are in [`../variability-map.md`](../variability-map.md) — the single source
+of truth; this table is only the plateau-oriented view of the same answers.
+
+- **VP5 / VP6 / VP7 are decided per persisted entity** — a ✅ means the plateau *enables* the capability
+  (the realizing solution is composed and the example demonstrates it), not that every entity uses it.
+- **VP9, VP10, VP12–VP14 are ❌ everywhere** — their solutions are skeletons (`> Draft contract` marker),
+  ready to compose into a future plateau once a real consumer exists.
+
+## Lineage & new solutions
+
+| # | Plateau | `standalone` | Parent | New solutions in its `created_by` (on top of the parent chain) |
+|---|---------|--------------|--------|-----------------------------------|
+| 1 | **plateau-core** | `false` | — | `solution-central-package-management`, `solution-sln-structure`, `solution-mediator-integration`, `solution-validation-behavior`, `solution-mediator-exception-handler`, `solution-pipeline-registration`, `solution-soft-value-objects`, `solution-dto-property-validators`, `solution-app-logging`, `solution-dotnet-conformance-testing` |
+| 2 | **plateau-domain-service** | `true` | plateau-core | VP1 `solution-domain-behaviour` · VP2 `solution-infrastructure-project` + `solution-domain-configuration` + `solution-repository-integration` + `solution-unit-of-work` + `solution-query-integration` · VP3 `solution-value-objects` · VP5 `solution-entity-concurrency-change` · VP7 `solution-entity-edit-timestamp` · VP8 `solution-api-project` + `solution-http-api-publication` · VP11 `solution-grpc-client` |
+| 3 | **plateau-offline-sync-service** | `true` | plateau-domain-service | VP4 `solution-domain-rules` + `solution-cecil-architecture-tests` · VP6 `solution-external-created-entity` · `solution-entity-classification` (the VP5×VP6 combination-resolver) |
 
 The build scaffolding (anchor contract, mechanical check, decisions log) lives in
 [`../agent/`](../agent/) — run `bash skills/dotnet/architecture/v3.1/agent/check.sh` after any change.
