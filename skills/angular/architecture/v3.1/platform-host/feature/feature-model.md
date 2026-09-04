@@ -4,7 +4,7 @@ The **host** side of a federation system: a `monolith` application whose shell (
 
 The **root product is `PlatformHost`** — one per platform (a platform has exactly one host). A `PlatformHost` **is a monolith**: this catalog's plateaus set `parent_plateaus` to the corresponding [[skills/angular/architecture/v3.1/monolith/feature/feature-model.md|`monolith/`]] plateaus, so every monolith feature is available by composition and is **not re-modeled here**. This model adds only the federation delta.
 
-Built per [[skills/dotnet/architecture/v3.1/design/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
+Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
 
 ## Composed from `monolith/` (by `parent_plateaus`)
 

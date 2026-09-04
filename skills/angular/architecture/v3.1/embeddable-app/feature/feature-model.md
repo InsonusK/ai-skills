@@ -4,7 +4,7 @@ The **remote** side of a federation system: an independently built, independentl
 
 The **root product is `EmbeddableApp`**. Any independently deployed application in this architecture — regardless of which team builds it or with what tooling — must conform to this catalog's baseline to be loadable by a `platform-host`. Each remote is configured **independently**; a platform deployment has zero or more of them, and this model describes one.
 
-Built per [[skills/dotnet/architecture/v3.1/design/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
+Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
 
 ## The common baseline this model assumes (concretely)
 

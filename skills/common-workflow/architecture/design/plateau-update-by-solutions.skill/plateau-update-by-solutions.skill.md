@@ -23,7 +23,8 @@ Read [[skills/common-workflow/architecture/design/plateau-create-by-solutions.sk
 - `Implementation/` file patterns per stack:
   - .NET: `Repository.create.md`, `{Project}.csproj.create.md`, `{Project}.csproj.extend.md`, class files
   - Python: `Repository.create.md`, `{App}.create.md`, `{App}.extend.md`, class/functions/init files
-- project/package and class/module name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`; `{App}` → `package-app`, `{App}.cli.py` → `module-cli`)
+  - Angular/TypeScript: `Repository.create.md`/`.extend.md`, `{project}.project.create.md`/`.extend.md` (plus a project-level `.federation.extend.md` or bare `.extend.md`), and per-artifact `{name}.{artifact-type}.ts.create.md`/`.extend.md` (component/service/directive/pipe/guard/interceptor/resolver/store/module), `{name}.spec.ts.create.md`, `{name}.scss.create.md` — topic subfolders (`GlobalStore/`, `Testing/`, ...) are organizational only, ignored when normalizing
+- project/package and class/module name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`; `{App}` → `package-app`, `{App}.cli.py` → `module-cli`; Angular `libs/{feature}/feature` → `project-feature-feature`, `auth.store.ts` → `class-auth-store`)
 - `.create.md` vs `.extend.md` semantics
 - `{Module}`/`{App}` placeholders become generic templates
 
@@ -46,10 +47,11 @@ Be aware of [[skills/common-workflow/architecture/design/plateau-component-creat
    - `Repository.create.md` / `Repository.extend.md`
    - .NET: `{Project}.csproj.create.md` / `.extend.md` and nested `{Class}.cs.create.md` / `.extend.md`
    - Python: `{App}.create.md` / `.extend.md` (`element_kind: project`) and nested class/functions/init files
+   - Angular/TypeScript: `{project}.project.create.md` / `.extend.md` (`element_kind: project`, plus any `.federation.extend.md` / project-level `.extend.md`) and every `{name}.{artifact-type}.ts` / `.ts` / `.spec.ts` / `.scss` `.create.md` / `.extend.md`, flattening topic subfolders
 4. Map each discovered implementation file to a structural skill using the normalization rules from plateau-create-by-solutions.skill:
-   - `Repository.create.md`/`.extend.md` → `sln-{plateau-name}.skill.md` (.NET) or `repo-{plateau-name}.skill.md` (Python)
-   - `{Project}.csproj.create/.extend.md` → `csproj-{normalized}.skill.md`; `{App}.create/.extend.md` → `package-{normalized}.skill.md`
-   - `{Class}.cs.create/.extend.md` → `class-{normalized}.skill.md`; python class/functions/init files → `module-{normalized}.skill.md`
+   - `Repository.create.md`/`.extend.md` → `sln-{plateau-name}.skill.md` (.NET), `repo-{plateau-name}.skill.md` (Python/Angular)
+   - `{Project}.csproj.create/.extend.md` → `csproj-{normalized}.skill.md`; `{App}.create/.extend.md` → `package-{normalized}.skill.md`; Angular `{project}.project.create/.extend.md` → `project-{normalized}.skill.md`
+   - `{Class}.cs.create/.extend.md` → `class-{normalized}.skill.md`; python class/functions/init files → `module-{normalized}.skill.md`; Angular `{name}.{artifact-type}.ts`/`.ts`/`.spec.ts`/`.scss` → `class-{normalized}.skill.md` (`artifact_type` set per plateau-create-by-solutions' mapping)
 5. The union of (2) and (4) is the set of skills that must be created or updated
 
 # Rules
@@ -152,7 +154,7 @@ If a solution is removed from the plateau:
 - [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/examples/example-add-solution|Adding a new solution to a .NET plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
 - [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/examples/example-update-solution|Updating an existing solution in a .NET plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
 
-> Both examples below use the .NET file patterns and skill names (`sln-*`, `csproj-*`, `class-*`). For a Python plateau, apply the exact same workflow and rules, substituting the Python file patterns and skill names from [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] (`repo-*`, `package-*`, `module-*`).
+> Both examples below use the .NET file patterns and skill names (`sln-*`, `csproj-*`, `class-*`). For a Python or Angular plateau, apply the exact same workflow and rules, substituting that stack's file patterns and skill names from [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] (Python: `repo-*`, `package-*`, `module-*`; Angular: `repo-*`, `project-*`, `class-*`).
 
 # Check list
 

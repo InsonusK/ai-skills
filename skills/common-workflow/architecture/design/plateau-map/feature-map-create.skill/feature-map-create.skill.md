@@ -39,8 +39,8 @@ feature/
    - **Leaf** — no further decomposition.
    - **Group with further features** — decide whether its children are unconditionally present together with it (nest them in the same diagram block as their parent, e.g. a `TestConformance` group inside `Common`) or independently, separately selectable underneath it (draw them outside the block, connected by a labeled edge, e.g. `Persistence`'s three entity-level children).
 6. Identify cross-tree constraints (a requirement between two features not connected by a direct parent-child edge). Verify each one against an existing solution/pattern when possible. Flag any constraint that is architectural reasoning alone, with nothing yet to check it against, as unconfirmed — do not present it with the same confidence as a verified one.
-7. Build [`diagrams/feature-diagram.mmd`](#the-diagram) per the rules below.
-8. Build `feature-model.md`: the baseline structure (step 2), the root/product explanation, the `@import`ed diagram, any boolean logic across parallel constraint edges the diagram itself can't express, the Features table, a note on anything deliberately excluded from the table, any flagged/unconfirmed constraints, and [Out of scope](#out-of-scope).
+7. Build [`diagrams/feature-diagram.mmd`](#the-diagram) per the rules below, starting from [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/feature-diagram.template.mmd|templates/feature-diagram.template.mmd]].
+8. Build `feature-model.md` from [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/feature-model.template.md|templates/feature-model.template.md]]: the baseline structure (step 2), the root/product explanation, the `@import`ed diagram, any boolean logic across parallel constraint edges the diagram itself can't express, the Features table, a note on anything deliberately excluded from the table, any flagged/unconfirmed constraints, and [Out of scope](#out-of-scope). Remove every `hint` block and the template's own "How Apply this template" section before saving.
 9. Confirm each materially new or changed part (a new feature, a rename, a constraint, a common/variable verdict) with the family's owner before building further on top of it.
 
 # The diagram
@@ -97,6 +97,9 @@ Follow [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]]: a di
 - **One change at a time** - Confirm each materially new or changed part of the model with the family's owner before building further on top of it.
   - Risk: a wrong assumption compounds silently across several additions before anyone notices.
   - Fix: present one change at a time and get confirmation before the next.
+- Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
+  - Risk: this skill's own rules cover the Feature Model's content, not the mechanics every skill in the repository must already follow — skipping the shared baseline produces a technically-correct model in a non-conforming skill file.
+  - Fix: apply `skill-design.skill.md` in addition to, never instead of, the rules above.
 
 ## SHOULD
 - **Drop duplicates kept for history** - Rename or merge features once a deeper technical read reveals they are the same mechanism, rather than keeping both for historical reasons.
@@ -120,6 +123,7 @@ Follow [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]]: a di
 - [ ] The diagram lives at `diagrams/feature-diagram.mmd` and is embedded via `@import`, per `mermaid-diagram.skill.md`.
 - [ ] `Out of scope` is filled with real content covering fixed infrastructure, Plateau Components, existing-catalog-vs-intended-family scope, unverified constraints, and the judgment-call nature of `IsCommon`.
 - [ ] Each material change was confirmed with the family's owner before the next was built on top of it.
+- [ ] Facet tags follow [[skills/common-workflow/skill-design.skill/facet-vocabulary.md|facet-vocabulary]]: `concern/architecture`, bare `stack`.
 
 # Examples
-- [[skills/dotnet/architecture/v3.1/design/feature-map-create.skill/examples/example-dotnet-feature-model.md|.NET worked example]] — built live while writing this skill; the real, complete result is [[skills/dotnet/architecture/v3.1/feature/feature-model.md|feature-model.md]].
+- [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/examples/example-dotnet-feature-model.md|.NET worked example]] — built live while writing this skill; the real, complete result is [[skills/dotnet/architecture/v3.1/feature/feature-model.md|feature-model.md]].

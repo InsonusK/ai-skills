@@ -4,7 +4,7 @@ A single-deployable Angular web application in this architecture: an Nx workspac
 
 The **root product is `App`** — you build one per repository. It is never a variability question and never a row in the Features table. Most features are answered once per app; `OfflineWriteQueue` is answered per feature, and `PerformanceTunedRouting`'s `loadComponent` splitting is decided per sub-route — noted inline.
 
-Built per [[skills/dotnet/architecture/v3.1/design/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. The `platform-host/` catalog composes this one; `embeddable-app/` and `design-system/` are independent — see [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
+Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. The `platform-host/` catalog composes this one; `embeddable-app/` and `design-system/` are independent — see [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
 
 ## The common baseline this model assumes (concretely)
 

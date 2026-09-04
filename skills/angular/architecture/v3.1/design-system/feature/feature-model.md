@@ -4,7 +4,7 @@ An independently versioned Angular component library, published as an npm packag
 
 The **root product is `DesignSystem`** — you build one per design-system repository. Every V1 solution in this family sits in the single `plateau-design-system`, so the family currently has **no Variation Points** — every path through it is identical. The model still exists so a future optional capability has somewhere to attach and so the two consuming catalogs have a defined thing to point at.
 
-Built per [[skills/dotnet/architecture/v3.1/design/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
+Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
 
 ## The common baseline this model assumes (concretely)
 
