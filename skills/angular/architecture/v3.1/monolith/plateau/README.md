@@ -3,18 +3,48 @@
 Six plateaus, built by `plateau-create-by-solutions` from the catalogue in `../../solutions/`.
 **Flat lineage** — a single chain, each `standalone: true`, each `parent_plateaus` entry the single
 previous plateau. Capabilities are **cumulative**: everything the parent has, plus its own delta.
-VP definitions: [`../variability-map.md`](../variability-map.md).
 
-| # | Plateau | Parent | Adds (VP) | New solutions in its `created_by` |
-|---|---------|--------|-----------|-----------------------------------|
-| 1 | **plateau-online-monolith** | — (from scratch) | common baseline + **VP2** GlobalStore + **VP3** BackendDataAccess | `solution-repository-structure`, `solution-app-routing`, `solution-state-tiering`, `solution-global-store`, `solution-forms`, `solution-api-http-layer`, `solution-logging-base`, `solution-app-testing`, `solution-ui-testing` |
-| 2 | **plateau-async-monolith** | online-monolith | **VP1** PerformanceTunedRouting | `solution-performance-tuned-routing` |
-| 3 | **plateau-offline-read-monolith** | async-monolith | **VP4** OfflineReadResilience (Workbox SW, `connectivity` slice, `OfflineTransportError`) | `solution-offline-first` |
-| 4 | **plateau-offline-full-monolith** | offline-read-monolith | **VP5** OfflineWriteQueue (Dexie queue, replay, per-entity `syncStatus`) — *owner's current app* | `solution-offline-sync` |
-| 5 | **plateau-multiuser-monolith** | offline-full-monolith | **VP6** BackendLogDelivery + **VP7** Authentication — *`plateau-platform-host`'s parent* | `solution-logging-global`, `solution-authentication` |
-| 6 | **plateau-persisted-state-monolith** | multiuser-monolith | **VP8** PersistedState (`persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` guard + `withPersistedDraft()` + a persisted `preferences` slice) | `solution-persisted-state` |
+## Plateau × VP matrix
 
-VP1–VP8 = Yes at plateau 6 — the full chain. No new Nx project after plateau 5.
+Rows = plateaus, columns = the 8 monolith Variation Points (full definitions:
+[`../variability-map.md`](../variability-map.md)). `Yes` = the VP is realized at that plateau,
+`no` = it is not. Answers are **cumulative** down the chain — a plateau has every VP its parent has,
+plus its own. Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a
+plateau's complete VP set.
+
+| Plateau | VP1 | VP2 | VP3 | VP4 | VP5 | VP6 | VP7 | VP8 |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| plateau-online-monolith        | no  | Yes | Yes | no  | no  | no  | no  | no  |
+| plateau-async-monolith         | Yes | Yes | Yes | no  | no  | no  | no  | no  |
+| plateau-offline-read-monolith  | Yes | Yes | Yes | Yes | no  | no  | no  | no  |
+| plateau-offline-full-monolith  | Yes | Yes | Yes | Yes | Yes | no  | no  | no  |
+| plateau-multiuser-monolith     | Yes | Yes | Yes | Yes | Yes | Yes | Yes | no  |
+| plateau-persisted-state-monolith | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+
+| VP | Name | First realized at | Solution |
+|---|---|---|---|
+| **VP1** | PerformanceTunedRouting — selective preload + `loadComponent` split + enforced bundle budgets | plateau-async-monolith | `solution-performance-tuned-routing` |
+| **VP2** | GlobalStore — `libs/shared/state`, classical NgRx for cross-cutting state | plateau-online-monolith | `solution-global-store` |
+| **VP3** | BackendDataAccess — `libs/shared/http-core` + per-feature Facade/Client/Mapper | plateau-online-monolith | `solution-api-http-layer` |
+| **VP4** | OfflineReadResilience — Workbox SW, `connectivity` slice, `OfflineTransportError` | plateau-offline-read-monolith | `solution-offline-first` |
+| **VP5** | OfflineWriteQueue — Dexie queue, idempotent replay, per-entity `syncStatus` | plateau-offline-full-monolith | `solution-offline-sync` |
+| **VP6** | BackendLogDelivery — `BackendLogSink` + bounded IndexedDB retry queue + `GlobalErrorHandler` | plateau-multiuser-monolith | `solution-logging-global` |
+| **VP7** | Authentication — in-memory access token, silent refresh, permission-string guards | plateau-multiuser-monolith | `solution-authentication` |
+| **VP8** | PersistedState — `persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` guard + `withPersistedDraft()` + a persisted `preferences` slice | plateau-persisted-state-monolith | `solution-persisted-state` |
+
+Constraints between VPs (from the variability map): VP4 requires VP2 **and** VP3; VP5 requires VP4;
+VP6 requires VP3; VP7 requires VP2 **and** VP3; VP8 requires VP2. Every row above satisfies them.
+
+## Lineage & new solutions
+
+| # | Plateau | Parent | New solutions in its `created_by` (on top of the parent chain) |
+|---|---------|--------|-----------------------------------|
+| 1 | **plateau-online-monolith** | — (from scratch) | `solution-repository-structure`, `solution-app-routing`, `solution-state-tiering`, `solution-global-store`, `solution-forms`, `solution-api-http-layer`, `solution-logging-base`, `solution-app-testing`, `solution-ui-testing` |
+| 2 | **plateau-async-monolith** | online-monolith | `solution-performance-tuned-routing` |
+| 3 | **plateau-offline-read-monolith** | async-monolith | `solution-offline-first` |
+| 4 | **plateau-offline-full-monolith** | offline-read-monolith | `solution-offline-sync` — *owner's current app* |
+| 5 | **plateau-multiuser-monolith** | offline-full-monolith | `solution-logging-global`, `solution-authentication` — *`plateau-platform-host`'s parent* |
+| 6 | **plateau-persisted-state-monolith** | multiuser-monolith | `solution-persisted-state` — no new Nx project |
 
 Build scaffolding (anchor contract, mechanical check, decisions log) is in [`../../agent/`](../../agent/) —
 run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
