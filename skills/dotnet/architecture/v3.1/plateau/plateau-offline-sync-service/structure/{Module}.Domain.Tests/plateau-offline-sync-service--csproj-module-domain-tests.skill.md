@@ -36,11 +36,17 @@ __Applied solutions:__
 
 ## Project Structure
 - /{Module}.Domain.Tests
-  - /Rules/{Rule}.feature
+  - /Rules/{Rule}.feature — entity-invariant / domain-service / strict-VO scenarios owned by this project
+  - /Rules/Shared/*.feature — linked in (`<None Include>`), never copied: `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios, re-proven through the VO constructor (VP4)
   - /StepDefinitions/[{Rule}Steps.cs](./classes/plateau-offline-sync-service--class-module-domain-rule-steps.skill.md)
   - /Architecture/[{Module}ArchitectureTests.cs / GuardedPropertyRuleCoverageTests.cs](./classes/plateau-offline-sync-service--class-architecture-tests.skill.md) — Cecil exception-scoping + guarded-property-coverage `[Fact]`s (VP4 companion, VP1-gated; the dead-rule / code-uniqueness checks live in `{Module}.Domain.Rules.Tests`)
   - reqnroll.json
   - {Module}.Domain.Tests.csproj
+
+`{Module}.Domain.Rules.Spec` is linked, not referenced as a project. Link one entry per spec file this layer proves — a file whose scenarios are all `@format` — so a later `@semantic`/`@domain` file is not dragged in:
+```xml
+<None Include="..\..\src\Modules\{ModuleName}\{ModuleName}.Domain.Rules.Spec\{Rule}.feature" Link="Rules\Shared\{Rule}.feature" />
+```
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |

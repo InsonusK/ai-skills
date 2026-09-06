@@ -3,7 +3,6 @@ using Ardalis.Specification.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Reqnroll;
 using Sample.Application.Features.AddItem;
-using Sample.Application.Validators.Property;
 using Sample.Domain.Configurations;
 using Sample.Domain.Entities;
 using Sample.Interfaces.Commands;
@@ -29,8 +28,6 @@ public sealed class AddItemSteps
 
     private string _title = "";
     private Result<AddItemResult> _result = null!;
-    private bool _validationFailed;
-    private string? _failedCode;
 
     [Given("a title \"(.*)\"")]
     public void GivenTitle(string title) => _title = title;
@@ -53,20 +50,5 @@ public sealed class AddItemSteps
         var stored = _db.Set<TodoItem>().Single();
         Assert.Equal(expected, stored.Title.Value);
         Assert.NotEqual(default, stored.UserCreatedDateTime);
-    }
-
-    [When("the title property validator runs on \"(.*)\"")]
-    public void WhenValidator(string value)
-    {
-        var r = new SoftItemTitlePropertyValidator().Validate(new SoftItemTitle(value));
-        _validationFailed = !r.IsValid;
-        _failedCode = r.Errors.FirstOrDefault()?.ErrorCode;
-    }
-
-    [Then("validation fails with error code \"(.*)\"")]
-    public void ThenValidationFails(string code)
-    {
-        Assert.True(_validationFailed);
-        Assert.Equal(code, _failedCode);
     }
 }

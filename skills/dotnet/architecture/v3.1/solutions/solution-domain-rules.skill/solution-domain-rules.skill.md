@@ -1,10 +1,10 @@
 ---
 name: solution-domain-rules
-description: Centralizes the scattered, locally-owned conditions already written by solution-value-objects, solution-dto-property-validators, and solution-domain-behaviour into one reusable Rule shape (predicate + FluentValidation IRuleBuilder extension + Check()) in a dedicated {Module}.Domain.Rules project, then redirects each consumer to call it instead of its own local condition.
+description: Centralizes the scattered, locally-owned conditions already written by solution-value-objects, solution-dto-property-validators, and solution-domain-behaviour into one reusable Rule shape (predicate + FluentValidation IRuleBuilder extension + Check()) in a dedicated {Module}.Domain.Rules project, redirects each consumer to call it instead of its own local condition, and publishes one language-agnostic Gherkin spec per rule ({Module}.Domain.Rules.Spec) that a frontend or another-language service can copy verbatim and re-prove.
 whenToUse: when the same condition has been duplicated by two or more of solution-value-objects/solution-dto-property-validators/solution-domain-behaviour and needs one shared, reusable, cross-adapter home — or when authoring a brand-new module and choosing to start centralized from the beginning.
 domain: skill
 type: architecture
-version: 20260901000000
+version: 20260906000000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -40,12 +40,14 @@ adr:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/rule-as-irulebuilder-extension.md|Rule as bool primitive + IRuleBuilder extension]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/format-semantic-domain-unification.md|Format/Semantic/Domain are one mechanism]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/rules-project-references-interfaces-only.md|Domain.Rules references {Module}.Interfaces only — not gated on DomainLogic]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/spec-as-exported-cross-language-contract.md|Domain.Rules.Spec is an exported cross-language contract]]"
 ---
 
 # Goal
 - Give a condition that turns out to be duplicated across a VO constructor, an Entity method, a PropertyValidator, and a DTO/Command validator exactly one place where it is declared, once each of those already exists independently
 - Let a rule already proven for a Value Object be reused, unmodified, by a DTO validator, an async Command validator, or an external .NET service — never re-declared
 - Give `Domain.Rules` a standalone, FluentValidation-dependent project shape so it is reusable by other .NET services without adopting this service's exception or pipeline conventions
+- Produce, per rule, a language-agnostic Gherkin spec in `{Module}.Domain.Rules.Spec/` that a separate repository — a frontend, or a service written in another language — can copy verbatim and re-prove against its own implementation, so an independent re-implementation of the same validation rules is far less likely to drift from this service's
 
 # Capabilities
 - One rule shape (`IsValid()` + `IRuleBuilder` extension + `Check()`) that VO constructors, Entity methods, `PropertyValidator`s, and DTO/Command validators all call the same way, regardless of whether the rule is Format, Semantic, or Domain
@@ -54,6 +56,7 @@ adr:
 - A documented boundary for when a Domain rule can stay synchronous (same aggregate) versus when it must become a Try/Confirm process (different aggregate or different service)
 - A single point of change: fixing or improving a condition here fixes it everywhere that condition is used, instead of requiring the same fix to be ported to three separately-owned local copies
 - One shared Gherkin source per rule (`{Module}.Domain.Rules.Spec/{Rule}.feature`) proven from every layer that redirects to it — the rule's own logic in `{Module}.Domain.Rules.Tests`, its fail-fast VO/Entity adapter in `{Module}.Domain.Tests`, its collect-all DTO adapter in `{Module}.Application.Tests` — without writing the same scenario text three times
+- That same `{Module}.Domain.Rules.Spec` `.feature` set doubles as an exportable contract: a frontend (or any non-.NET consumer) that must enforce the same rules copies the files unchanged into its own repo and writes only its own step definitions, keeping its behaviour verifiably aligned with this service's rejection codes and pass/fail cases
 - Mutation testing scoped tightly to `{Module}.Domain.Rules` alone, via `{Module}.Domain.Rules.Tests`'s own dedicated project, isolated from the broader Entity/VO mutation surface of `{Module}.Domain.Tests`
 
 # Core Principles
@@ -66,12 +69,14 @@ adr:
 - A blocking check reads `result.Errors.Any(e => e.Severity == Severity.Error)` (or `FirstOrDefault` for the exception to throw), never bare `ValidationResult.IsValid`
 - A Domain rule that needs data from another aggregate or another service is not "just read it" — same-aggregate Domain rules stay synchronous; cross-aggregate/cross-service Domain rules become Try/Confirm (see Workflow)
 - `{Module}.Domain.Rules.Spec` holds `.feature` files only, never a `.cs` file — it is a shared Gherkin source, not a project, and is not itself compiled or referenced by anything; every test project that proves a scenario from it links the physical `.feature` file in via its own `.csproj` and generates its own Reqnroll fixture bound to its own step definitions (see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create.md|{Module}.Domain.Rules.Spec]])
+- Scenario text in `{Module}.Domain.Rules.Spec` is domain language only — no .NET type names, no C#/FluentValidation vocabulary, no reference to which adapter proves it — so the same file binds against a step definition in another language without rewording; the rejection code strings are part of that contract and stay verbatim (see [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/spec-as-exported-cross-language-contract.md|adr/spec-as-exported-cross-language-contract]])
 - `{Module}.Domain.Rules.Tests` proves the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension directly — it takes scenarios both from its own project (`{Module}.Domain.Rules.Tests/Rules/*.feature`, for rule-only edge cases no other layer needs) and, linked in, from `{Module}.Domain.Rules.Spec` (the scenarios shared with `{Module}.Domain.Tests`/`{Module}.Application.Tests`)
 
 # Boundaries
 - **Not gated on DomainLogic** - `{Module}.Domain.Rules.csproj` references only `{Module}.Interfaces` (for `Soft{ValueObject}` types) and FluentValidation — never `{Module}.Domain`. VP4 can be applied to a module with no domain layer: it centralizes conditions duplicated across the common Application-side consumers (`{ValueObject}PropertyValidator`, `{Dto}Validator`). The `extends` entries for `{Module}.Domain.ValueObjects`/`Entities` apply only when VP1/VP3 are present — this solution does **not** `depends_on solution-domain-behaviour` or `solution-value-objects`.
 - Applying this solution is optional; every consumer already works standalone with its own local condition. It does not decide *which* duplicated condition to centralize or *when* — that is the applier's judgement, based on observed duplication, not speculation.
 - `Domain.Rules` defines the predicate and its wiring; the `.extend` files redirect consumers one at a time.
+- This solution authors the `.feature` scenarios and proves them from every .NET layer; it does not own the step definitions of an external consumer that imports the spec into another repo or language — that consumer writes and maintains its own bindings.
 - The Try/Confirm saga orchestration is illustrated, not created here — the actual wiring follows the `solution-mediator-integration` pattern (and, for the durable relay, `solution-transactional-outbox`).
 - Structural guarantees over the rule mechanism ("is every `Check()` called", "is `DomainException` thrown only from the right layer", "are rejection codes unique") are [[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]]'s job — its mandatory companion, whose applicable check subset depends on which of VP1/VP3 are present.
 - A Domain-classified rule's `Load` step needs a repository — it becomes real only once `solution-repository-integration` (VP2) is applied. Format- and Semantic-classified rules need no persistence.
@@ -81,6 +86,8 @@ adr:
   - Selected variant: static class with `IsValid()` + `IRuleBuilder<T,TValue>` extension + `Check()`, `Domain.Rules` depending on FluentValidation directly
 - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/format-semantic-domain-unification.md|Format/Semantic/Domain are one mechanism]]
   - Selected variant: one mechanism, classified only by where the wrapper's values come from
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/spec-as-exported-cross-language-contract.md|Domain.Rules.Spec is an exported cross-language contract]]
+  - Selected variant: the `.feature` set is authored to be copied verbatim into a consumer repo (a frontend, another-language service) that binds it to its own step definitions; this solution owns the scenarios, the consumer owns its bindings
 
 # Requirements
 SOLUTION:
@@ -209,6 +216,7 @@ flowchart LR
 - [ ] `EntityNotLoadedException` is used for every "required navigation not loaded" case, mapped to 500, never confused with `DomainException`
 - [ ] A cross-aggregate/cross-service Domain rule is implemented as Try/Confirm, with the Confirm step reusing the same-aggregate rule/method unmodified
 - [ ] `{Module}.Domain.Rules.Spec` contains only `.feature` files, one per rule, tagged `@format`/`@semantic`/`@domain`
+- [ ] Every `{Module}.Domain.Rules.Spec` scenario is written in domain language — no .NET type names, no adapter references — so it stays copyable into a consumer repo in another language; rejection codes appear verbatim
 - [ ] `{Module}.Domain.Rules.Tests` references `{Module}.Domain.Rules` only, and proves every scenario in the rule's `.feature` file directly against `IsValid()`/`Check()`
 - [ ] Every `@format`-tagged scenario is also proven in `{Module}.Domain.Tests` against the VO/Entity adapter; every `@semantic`/`@domain`-tagged scenario is also proven in `{Module}.Application.Tests` against the DtoValidator/`{Feature}Check` adapter
 - [ ] No scenario text is duplicated across `{Module}.Domain.Rules.Tests`/`{Module}.Domain.Tests`/`{Module}.Application.Tests` — all three link the same physical `.feature` file from `{Module}.Domain.Rules.Spec`

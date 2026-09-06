@@ -74,3 +74,22 @@ folder of the shallowest plateau where all the intersecting solutions are presen
   must precede any commit; there is no Feature-Model constraint between VP5 and VP6).
 
 Full classification is in [`../delta-conflict-analysis.md`](../delta-conflict-analysis.md).
+
+## Reference: v3 plateaus in v3.1 VP terms
+
+The [v3 catalog](skills/dotnet/architecture/v3/README.md) realized a staged subset of this space. Its plateaus, expressed in v3.1 VP IDs (v3's own IDs differ — v3 `VP0`=Persistence, `VP1`=EntityKind, `VP2`/`VP3`=Http/Grpc, `VP4`=CentralizedRules):
+
+| v3 plateau | v3.1 VP answers |
+| --- | --- |
+| [[skills/dotnet/architecture/v3/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md\|plateau-stateless-non-interactive-service]] | all VPs = No (common baseline only) — note: in v3.1, `MediatorModuleIntegration`, `ValidationPipeline` and `ExceptionHandlingPipeline` are common, so this plateau's line moves partly into shared core |
+| [[skills/dotnet/architecture/v3/plateau/plateau-service-with-validated-module-interaction/plateau-service-with-validated-module-interaction.skill/plateau-service-with-validated-module-interaction.skill.md\|plateau-service-with-validated-module-interaction]] | VP1=Yes, VP3=Yes; VP2/VP4–VP14 = No |
+| [[skills/dotnet/architecture/v3/plateau/plateau-statefull-service/plateau-statefull-service.skill/plateau-statefull-service.skill.md\|plateau-statefull-service]] | VP1=Yes, VP2=Yes, VP3=Yes; VP5/VP6/VP7 decided per entity (plateau enables, does not fix); VP4/VP8–VP14 = No |
+| [[skills/dotnet/architecture/v3/plateau/plateau-shared-rules/plateau-shared-rules.skill/plateau-shared-rules.skill.md\|plateau-shared-rules]] | as `plateau-statefull-service` + VP4=Yes |
+| [[skills/dotnet/architecture/v3/plateau/plateau-service-with-api/plateau-service-with-api.skill/plateau-service-with-api.skill.md\|plateau-service-with-api]] | VP1=Yes, VP3=Yes, (VP8=Yes and/or VP9=Yes — at least one); VP2/VP4–VP7/VP10–VP14 = No |
+| [[skills/dotnet/architecture/v3/plateau/plateau-v1/plateau-v1.skill/plateau-v1.skill.md\|plateau-v1]] | union: VP1=Yes, VP2=Yes, VP3=Yes, VP4=Yes, (VP8 and/or VP9); VP5–VP7 per entity; VP10–VP14 = No |
+
+Every reference row above is consistent with every stated Constraint: no row sets VP5–VP7 without VP2=Yes, no row sets VP2=Yes without VP1=Yes, no row sets VP3=Yes without VP1=Yes, and `plateau-service-with-api` correctly does not require VP2.
+
+### Combinations the family now allows that v3 has no plateau for
+
+The Feature Model adds axes v3 never modelled — **VP10–VP14 (outbound sync + async messaging)** are entirely new and aspirational, so any plateau touching them is future work once their solutions exist. Within the axes v3 already had, the [v3 map's open combination](skills/dotnet/architecture/v3/variability-map.md#Plateau Map derivation) still stands: `VP2=Yes` + `(VP8 or VP9)` + `VP4=No` — a persisted module with an external API but no centralized rules — has no dedicated plateau, because `plateau-v1` always brings `VP4=Yes`.

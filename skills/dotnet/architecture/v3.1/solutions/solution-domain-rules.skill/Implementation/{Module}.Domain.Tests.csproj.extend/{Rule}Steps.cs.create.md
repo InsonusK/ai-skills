@@ -26,15 +26,15 @@ public sealed class ComplexityVoSteps
     [Given(@"a complexity value of (-?\d+)")]
     public void GivenAComplexityValueOf(int value) => _input = value;
 
-    [When(@"ComplexityRules validates it")]
-    public void WhenComplexityRulesValidatesIt()
+    [When(@"the complexity value is checked")]
+    public void WhenTheComplexityValueIsChecked()
         => _thrown = Record.Exception(() => new Complexity(_input)) as DomainException;
 
-    [Then(@"the result is valid")]
-    public void ThenTheResultIsValid() => Assert.Null(_thrown);
+    [Then(@"the check passes")]
+    public void ThenTheCheckPasses() => Assert.Null(_thrown);
 
-    [Then(@"the result is invalid with error code ""(.*)""")]
-    public void ThenTheResultIsInvalidWithErrorCode(string errorCode)
+    [Then(@"the check fails with error code ""(.*)""")]
+    public void ThenTheCheckFailsWithErrorCode(string errorCode)
     {
         Assert.NotNull(_thrown);
         Assert.Equal(errorCode, _thrown!.ErrorCode);
@@ -42,7 +42,7 @@ public sealed class ComplexityVoSteps
 }
 ```
 
-The `When` step text (`"ComplexityRules validates it"`) is identical to the one `ComplexityRuleSteps` binds in `{Module}.Domain.Rules.Tests` — Reqnroll resolves bindings independently per test project's own loaded assembly, so the same Gherkin text is free to bind to a different production call in each project without any conflict or shared state.
+The `When` step text (`"the complexity value is checked"`) is identical to the one `ComplexityRuleSteps` binds in `{Module}.Domain.Rules.Tests` — Reqnroll resolves bindings independently per test project's own loaded assembly, so the same Gherkin text is free to bind to a different production call in each project without any conflict or shared state. The same holds for a consumer in another language: it re-binds the identical Gherkin to its own implementation.
 
 # Rule changes
 

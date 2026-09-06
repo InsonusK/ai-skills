@@ -25,9 +25,6 @@ public sealed class TodoItemSteps
     [When("it is completed again")]
     public void WhenCompletedAgain() => _error = Record.Exception(() => _item!.Complete()) as DomainException;
 
-    [When("a title \"(.*)\" is constructed")]
-    public void WhenTitle(string value) => _error = Record.Exception(() => new ItemTitle(value)) as DomainException;
-
     [Then("a domain error \"(.*)\" is raised")]
     public void ThenError(string code)
     {

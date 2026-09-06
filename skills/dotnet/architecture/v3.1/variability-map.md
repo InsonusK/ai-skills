@@ -8,7 +8,7 @@ tags:
 
 Built per [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create]], from the non-common features of [[skills/dotnet/architecture/v3.1/feature/feature-model.md|v3.1/feature/feature-model.md]] (the Feature Model produced by the previous pipeline step). This map is the input to [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]].
 
-**Status of this catalog.** `v3.1/solutions/` now holds the catalog's own solution skills, migrated and adapted from [[skills/dotnet/architecture/v3/README.md|v3]] (see `solutions-plan.md` / `DECISIONS.md`). Every **Realized by** cell links into `v3.1/solutions/`. Rows still marked **aspirational** (VP10–VP14) have skeleton solutions only — their contract is a draft until a real consumer exists. `v3.1/plateau/` does not exist yet; it is built by `plateau-create-by-solutions` after the catalog and the delta-conflict pass.
+**Status of this catalog.** `v3.1/solutions/` now holds the catalog's own solution skills, migrated and adapted from [[skills/dotnet/architecture/v3/README.md|v3]] (see `solutions-plan.md` / `DECISIONS.md`). Every **Realized by** cell links into `v3.1/solutions/`. Rows still marked **aspirational** (VP10–VP14) have skeleton solutions only — their contract is a draft until a real consumer exists. `v3.1/plateau/` holds three plateaus built from this map; the plateau↔VP view lives in [plateau/plateau-repository.md](skills/dotnet/architecture/v3.1/plateau/plateau-repository.md), maintained per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md|plateau-map-create]].
 
 ## Variation Points
 
@@ -63,28 +63,9 @@ Following the Feature Model's own "deliberately not rows" note and [[skills/comm
 - **Entity classification** (Internal/External × Immutable/Mutable) — *not* an input selector but the **consequence** of the VP5 × VP6 combination per entity: Immutable/Mutable = VP5 (concurrency control) No/Yes, Internal/External = VP6 (external identity) No/Yes → one of 4 named states. It has no independent Yes/No, so it is not a VP. [[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/solution-entity-classification.skill.md\|solution-entity-classification]] is a **feature-combination resolver** — a solution that exists only to spell out explicitly what each VP5 × VP6 combination produces. Per the owner, a combination-resolver solution is a warning sign of coupling between two VPs that ought to be independent; it is tolerated here because it is the only one so far. VP7 (`AuditTimestamps`) is a third, genuinely independent per-entity axis (any user-initiated entity), not part of this 4-state classification.
 - **Cecil architecture tests** — a mandatory companion of VP4, never applied independently. Not a VP; folded into VP4's **Realized by**.
 
-## Plateau Map derivation
+## Plateau ↔ VP view
 
-**No plateaus exist in `v3.1/` yet.** This section will list one row per `v3.1/plateau/*` once [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] runs against the combinations below.
-
-### Reference: how the existing v3 plateaus map onto these VPs
-
-The [v3 catalog](skills/dotnet/architecture/v3/README.md) already realizes a staged subset of this space. Its plateaus, expressed in v3.1 VP IDs (v3's own IDs differ — v3 `VP0`=Persistence, `VP1`=EntityKind, `VP2`/`VP3`=Http/Grpc, `VP4`=CentralizedRules):
-
-| v3 plateau | v3.1 VP answers |
-| --- | --- |
-| [[skills/dotnet/architecture/v3/plateau/plateau-stateless-non-interactive-service/plateau-stateless-non-interactive-service.skill/plateau-stateless-non-interactive-service.skill.md\|plateau-stateless-non-interactive-service]] | all VPs = No (common baseline only) — note: in v3.1, `MediatorModuleIntegration`, `ValidationPipeline` and `ExceptionHandlingPipeline` are common, so this plateau's line moves partly into shared core |
-| [[skills/dotnet/architecture/v3/plateau/plateau-service-with-validated-module-interaction/plateau-service-with-validated-module-interaction.skill/plateau-service-with-validated-module-interaction.skill.md\|plateau-service-with-validated-module-interaction]] | VP1=Yes, VP3=Yes; VP2/VP4–VP14 = No |
-| [[skills/dotnet/architecture/v3/plateau/plateau-statefull-service/plateau-statefull-service.skill/plateau-statefull-service.skill.md\|plateau-statefull-service]] | VP1=Yes, VP2=Yes, VP3=Yes; VP5/VP6/VP7 decided per entity (plateau enables, does not fix); VP4/VP8–VP14 = No |
-| [[skills/dotnet/architecture/v3/plateau/plateau-shared-rules/plateau-shared-rules.skill/plateau-shared-rules.skill.md\|plateau-shared-rules]] | as `plateau-statefull-service` + VP4=Yes |
-| [[skills/dotnet/architecture/v3/plateau/plateau-service-with-api/plateau-service-with-api.skill/plateau-service-with-api.skill.md\|plateau-service-with-api]] | VP1=Yes, VP3=Yes, (VP8=Yes and/or VP9=Yes — at least one); VP2/VP4–VP7/VP10–VP14 = No |
-| [[skills/dotnet/architecture/v3/plateau/plateau-v1/plateau-v1.skill/plateau-v1.skill.md\|plateau-v1]] | union: VP1=Yes, VP2=Yes, VP3=Yes, VP4=Yes, (VP8 and/or VP9); VP5–VP7 per entity; VP10–VP14 = No |
-
-Every reference row above is consistent with every stated Constraint: no row sets VP5–VP7 without VP2=Yes, no row sets VP2=Yes without VP1=Yes, no row sets VP3=Yes without VP1=Yes, and `plateau-service-with-api` correctly does not require VP2.
-
-### Combinations the family now allows that v3 has no plateau for
-
-The Feature Model adds axes v3 never modelled — **VP10–VP14 (outbound sync + async messaging)** are entirely new and aspirational, so any plateau touching them is future work once their solutions exist. Within the axes v3 already had, the [v3 map's open combination](skills/dotnet/architecture/v3/variability-map.md#Plateau Map derivation) still stands: `VP2=Yes` + `(VP8 or VP9)` + `VP4=No` — a persisted module with an external API but no centralized rules — has no dedicated plateau, because `plateau-v1` always brings `VP4=Yes`.
+The plateau↔VP matrix — which plateau realizes which VPs, cumulative down the lineage, with the v3 reference mapping — lives in [plateau/plateau-repository.md](skills/dotnet/architecture/v3.1/plateau/plateau-repository.md), maintained per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md|plateau-map-create]]. This map intentionally carries no Plateau Map derivation: it binds VPs to solutions, not plateaus to VPs.
 
 ## Out of scope
 
@@ -92,7 +73,7 @@ The Feature Model adds axes v3 never modelled — **VP10–VP14 (outbound sync +
 - **VP10–VP14 are unrealized.** They come from the Feature Model's intended-Program-Family scope. Their Variants, Constraints, and "Mandatory realization" notes are taken from the Feature Model diagram, not from working solutions — treat them as provisional until authored.
 - **Constraint evidence is uneven.** VP5–VP7's `requires VP2` is backed by real `depends_on` edges in the v3 entity solutions. VP2's `requires VP1` and VP3's `requires VP1` are drawn as `Requires` edges in the feature diagram (owner-confirmed) but not yet in any `depends_on` — the v3 solutions predate this decision. VP14's `requires VP13 AND VP2` is Feature-Model reasoning only (aspirational). The absence of other Constraints reflects this pass, not a proof.
 - **Feature Model was updated during this step** (owner-confirmed): added `Persistence -. "Requires" .-> DomainLogic`; removed the now-redundant `ValueObjects -. "Requires" .-> Persistence`, keeping only `ValueObjects -. "Requires" .-> DomainLogic`. The [feature diagram](skills/dotnet/architecture/v3.1/feature/diagrams/feature-diagram.mmd) and [feature-model.md](skills/dotnet/architecture/v3.1/feature/feature-model.md) now match this map.
-- **The VP5 × VP6 combination-resolver (`solution-entity-classification`) is a known smell**, not a clean pattern — it couples two VPs the map otherwise treats as independent. Kept because it is the only instance; a second one should trigger a rethink of how per-entity axes are modelled.
 - **Migration is `No` everywhere** — no case in this family has yet been observed changing a VP answer after a module was already composed. Per the parent skill, `Migration` is set `Yes` only on a real observed transition, never speculatively.
-- **Plateau Map derivation is empty by design** — `v3.1/plateau/` does not exist. The reference table maps *v3's* plateaus onto v3.1's VPs to show the shape; it is not a claim that those plateaus exist in `v3.1/`.
+- **The VP5 × VP6 combination-resolver (`solution-entity-classification`) is a known smell**, not a clean pattern — it couples two VPs the map otherwise treats as independent. Kept because it is the only instance; a second one should trigger a rethink of how per-entity axes are modelled.
+- **The plateau↔VP view lives outside this map** — see [plateau/plateau-repository.md](skills/dotnet/architecture/v3.1/plateau/plateau-repository.md); this file intentionally ends at the VP↔solution binding.
 - **Entity-level VPs (VP5–VP7) are answered per persisted entity**, not once per module — the only rows in this map at that granularity, matching the Feature Model's mixed-granularity note.

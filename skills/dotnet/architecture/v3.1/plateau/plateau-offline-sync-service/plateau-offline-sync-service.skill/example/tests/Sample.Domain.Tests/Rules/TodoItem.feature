@@ -9,7 +9,3 @@ Feature: TodoItem domain rules
     Given a completed item
     When it is completed again
     Then a domain error "Sample.TodoItem.AlreadyDone" is raised
-
-  Scenario: A blank title is rejected at construction
-    When a title "" is constructed
-    Then a domain error "Sample.ItemTitle.Required" is raised

@@ -31,14 +31,14 @@ public sealed class ComplexityRuleSteps
     [Given(@"a complexity value of (-?\d+)")]
     public void GivenAComplexityValueOf(int value) => _value = new SoftComplexity(value);
 
-    [When(@"ComplexityRules validates it")]
-    public void WhenComplexityRulesValidatesIt() => _result = _value.Check();
+    [When(@"the complexity value is checked")]
+    public void WhenTheComplexityValueIsChecked() => _result = _value.Check();
 
-    [Then(@"the result is valid")]
-    public void ThenTheResultIsValid() => Assert.True(_result.IsValid);
+    [Then(@"the check passes")]
+    public void ThenTheCheckPasses() => Assert.True(_result.IsValid);
 
-    [Then(@"the result is invalid with error code ""(.*)""")]
-    public void ThenTheResultIsInvalidWithErrorCode(string errorCode) =>
+    [Then(@"the check fails with error code ""(.*)""")]
+    public void ThenTheCheckFailsWithErrorCode(string errorCode) =>
         Assert.Contains(_result.Errors, e => e.ErrorCode == errorCode);
 }
 ```
@@ -59,14 +59,14 @@ public sealed class AccountWithdrawalRuleSteps
     [Given(@"a withdrawal amount of (\d+)")]
     public void GivenAWithdrawalAmountOf(decimal amount) => _amount = amount;
 
-    [When(@"AccountWithdrawalRule validates it")]
-    public void WhenAccountWithdrawalRuleValidatesIt() => _result = (_balance, _amount).Check();
+    [When(@"the withdrawal is checked")]
+    public void WhenTheWithdrawalIsChecked() => _result = (_balance, _amount).Check();
 
-    [Then(@"the result is valid")]
-    public void ThenTheResultIsValid() => Assert.True(_result.IsValid);
+    [Then(@"the check passes")]
+    public void ThenTheCheckPasses() => Assert.True(_result.IsValid);
 
-    [Then(@"the result is invalid with error code ""(.*)""")]
-    public void ThenTheResultIsInvalidWithErrorCode(string errorCode) =>
+    [Then(@"the check fails with error code ""(.*)""")]
+    public void ThenTheCheckFailsWithErrorCode(string errorCode) =>
         Assert.Contains(_result.Errors, e => e.ErrorCode == errorCode);
 }
 ```

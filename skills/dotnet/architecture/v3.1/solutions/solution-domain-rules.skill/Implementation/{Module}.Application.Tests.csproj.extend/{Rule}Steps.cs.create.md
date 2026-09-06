@@ -28,14 +28,14 @@ public sealed class ScheduleDtoSteps
     public void GivenDates(DateTimeOffset start, DateTimeOffset due)
         => _dto = _dto with { StartDateTime = start, DueDateTime = due };
 
-    [When(@"ScheduleRules validates it")]
-    public void WhenScheduleRulesValidatesIt() => _result = _validator.Validate(_dto);
+    [When(@"the schedule is checked")]
+    public void WhenTheScheduleIsChecked() => _result = _validator.Validate(_dto);
 
-    [Then(@"the result is valid")]
-    public void ThenTheResultIsValid() => Assert.True(_result.IsValid);
+    [Then(@"the check passes")]
+    public void ThenTheCheckPasses() => Assert.True(_result.IsValid);
 
-    [Then(@"the result is invalid with error code ""(.*)""")]
-    public void ThenTheResultIsInvalidWithErrorCode(string errorCode) =>
+    [Then(@"the check fails with error code ""(.*)""")]
+    public void ThenTheCheckFailsWithErrorCode(string errorCode) =>
         Assert.Contains(_result.Errors, e => e.ErrorCode == errorCode);
 }
 ```
@@ -59,18 +59,18 @@ public sealed class AccountWithdrawalCheckSteps
     public void GivenAWithdrawalAmountOf(decimal amount)
         => _command = new UpdateTransactionAmountCommand(NewAmount: amount);
 
-    [When(@"AccountWithdrawalRule validates it")]
-    public async Task WhenAccountWithdrawalRuleValidatesIt()
+    [When(@"the withdrawal is checked")]
+    public async Task WhenTheWithdrawalIsChecked()
     {
         _context = new ValidationContext<UpdateTransactionAmountCommand>(_command);
         await new TransactionWithdrawalCheck(_repository.Object).CheckAsync(_command, _context, default);
     }
 
-    [Then(@"the result is valid")]
-    public void ThenTheResultIsValid() => Assert.Empty(_context.Failures);
+    [Then(@"the check passes")]
+    public void ThenTheCheckPasses() => Assert.Empty(_context.Failures);
 
-    [Then(@"the result is invalid with error code ""(.*)""")]
-    public void ThenTheResultIsInvalidWithErrorCode(string errorCode) =>
+    [Then(@"the check fails with error code ""(.*)""")]
+    public void ThenTheCheckFailsWithErrorCode(string errorCode) =>
         Assert.Contains(_context.Failures, f => f.ErrorCode == errorCode);
 }
 ```

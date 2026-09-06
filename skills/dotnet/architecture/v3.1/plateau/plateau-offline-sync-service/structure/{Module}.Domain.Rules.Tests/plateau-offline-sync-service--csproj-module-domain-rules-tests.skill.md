@@ -36,11 +36,17 @@ __Applied solutions:__
 
 ## Project Structure
 - /{Module}.Domain.Rules.Tests
-  - /Rules/{Rule}.feature
+  - /Rules/{Rule}.feature — optional: rule-only edge cases no other layer proves (absent when there are none)
+  - /Rules/Shared/*.feature — linked in (`<None Include>`), never copied: every file under `{Module}.Domain.Rules.Spec`, all tags, proven against `Check()`
   - /StepDefinitions/[{Rule}RuleSteps.cs](./classes/plateau-offline-sync-service--class-rule-steps.skill.md)
   - /Architecture/[{Module}RuleArchitectureTests.cs](../{Module}.Domain.Tests/classes/plateau-offline-sync-service--class-architecture-tests.skill.md) — Cecil dead-rule + code-uniqueness `[Fact]`s (always run with VP4)
   - reqnroll.json
   - {Module}.Domain.Rules.Tests.csproj
+
+The whole spec directory is linked (this project proves every scenario regardless of tag):
+```xml
+<None Include="..\..\src\Modules\{ModuleName}\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
+```
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |

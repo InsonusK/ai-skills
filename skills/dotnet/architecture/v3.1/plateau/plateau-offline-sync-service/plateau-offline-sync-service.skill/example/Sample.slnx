@@ -12,6 +12,7 @@
     <Project Path="src/Modules/Sample/Sample.Domain/Sample.Domain.csproj" />
     <Project Path="src/Modules/Sample/Sample.Domain.Rules/Sample.Domain.Rules.csproj" />
     <Project Path="src/Modules/Sample/Sample.Interfaces/Sample.Interfaces.csproj" />
+    <File Path="src/Modules/Sample/Sample.Domain.Rules.Spec/ItemTitle.feature" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />

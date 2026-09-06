@@ -11,6 +11,10 @@
     <PackageReference Include="coverlet.collector" />
   </ItemGroup>
   <ItemGroup>
+    <!-- @format scenarios from the shared spec, re-proven fail-fast through the ItemTitle constructor. Linked, never copied. -->
+    <None Include="..\..\src\Modules\Sample\Sample.Domain.Rules.Spec\ItemTitle.feature" Link="Rules\Shared\ItemTitle.feature" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Sample\Sample.Domain\Sample.Domain.csproj" />
   </ItemGroup>
 </Project>

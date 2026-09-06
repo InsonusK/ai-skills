@@ -71,7 +71,7 @@ The anchor document for the v3.1 solution-catalog build (per [[skills/common-wor
 - `version:` — `20260901000000` for every v3.1 solution created in this build (bump only on a later real edit).
 - `built_on_plateau:` — **empty** for every solution until v3.1 plateaus exist (they are created after the catalog). State the assumed baseline in `# Boundaries` prose instead.
 - `depends_on:` — only real structural dependencies, each resolving to a `solution-*.skill.md` inside `v3.1/solutions/`. A whole-plateau assumption is a `# Boundaries` note, not a `depends_on`.
-- `tags:` — per facet-vocabulary: `skill/architecture/solution`, `solution/{name}`, one `stack/dotnet`, ≥1 `concern/*`. Implementation files: `solution/{name}` + `element/{name}`. ADRs: `solution/{name}` + `concern/documentation` + `concern/documentation/adr` + `stack/dotnet`.
+- `tags:` — per skill-tags: `skill/architecture/solution`, `solution/{name}`, one `stack/dotnet`, ≥1 `concern/*`. Implementation files: `solution/{name}` + `element/{name}`. ADRs: `solution/{name}` + `concern/documentation` + `concern/documentation/adr` + `stack/dotnet`.
 
 ## 6. skill-design compliance (current)
 
