@@ -21,16 +21,16 @@ A plateau/solution catalog (e.g. `skills/dotnet/architecture/v3`) can have sever
 ## One map per catalog (selected)
 
 ### Description
-A single `variability-map.md` at the catalog root, sibling to `plateau/` and `solutions/`. Every plateau is documented as a row in that one map's "Plateau Map derivation" section, stating the exact VP-answer combination it fixes.
+A single `variability-map.md` at the catalog root, sibling to `plateau/` and `solutions/`. It binds every Variation Point to its realizing solutions once for the whole catalog. The plateau↔VP view over it is a separate artifact (`plateau/plateau-repository.md`, built by `plateau-map-create`) — see [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/no-plateau-view-in-variability-map|adr/no-plateau-view-in-variability-map]].
 
 ### Benefits
 - A Variation Point that spans multiple plateaus (most of them do, since plateaus compose cumulatively) is written exactly once, not duplicated into every plateau that happens to include it.
-- The "is this plateau's combination even legal" check (against stated Constraints) has one table to check against, not N potentially-inconsistent copies.
+- The "is this plateau's combination even legal" check (against stated Constraints), run by `plateau-map-create`, has one table to check against, not N potentially-inconsistent copies.
 - Matches how the underlying theory treats it: a Feature Model / OVM table describes one product *line*, not one product.
 
 ### Costs
 - The map can grow long as the catalog grows; mitigated by keeping rows to genuine Variation Points only (per the skill's Core Principle), not every solution.
-- A reader focused on one specific plateau has to find its row inside a larger table instead of opening a dedicated file — mitigated by the "Plateau Map derivation" section being a short, scannable table keyed by plateau name.
+- A reader focused on one specific plateau reads the catalog-wide map rather than a per-plateau file — mitigated by the plateau-oriented view (`plateau/plateau-repository.md`) being a short, scannable matrix keyed by plateau name.
 
 ## One map per plateau
 

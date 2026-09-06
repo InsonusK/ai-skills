@@ -5,6 +5,7 @@ Terms used by [[skills/common-workflow/architecture/design/plateau-map/variabili
 | Term | Page | Covers |
 | --- | --- | --- |
 | Feature Model | [feature-model.md](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/feature-model.md) | Drawing variability as a tree of questions instead of a tree of combinations |
+| Migration | [migration.md](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/migration.md) | Whether a running service can switch its answer to a VP in place, or the answer is design-time bound |
 | Orthogonal Variability Model | [orthogonal-variability-model.md](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/orthogonal-variability-model.md) | Keeping the variability model separate from the artifact model, linked by Realized by |
 | Program Families | [program-families.md](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/program-families.md) | Splitting requirements into Commonality and Variability before designing |
 | Realized by | [realized-by.md](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/realized-by.md) | The link from a Variant to the solution(s) that implement it |

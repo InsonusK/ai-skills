@@ -1,7 +1,8 @@
 ---
 name: delta-conflict-detection
-description: Classify and resolve intersections between solutions (deltas) that touch the same element of a plateau, using a fixed three-axis code (Constraint x Category x Kind), and record the result as per-element Registry entries inside the plateau where the intersection first becomes real
-whenToUse: after a plateau's Variability Map is built and its solutions selected — before, or immediately after, assembling that plateau via plateau-create-by-solutions/plateau-update-by-solutions — whenever two or more solutions in the same plateau share an element/{element-name} tag inside their Implementation/ folders
+description: Fill a Variability Map's Realized by column — walk every Variation Point, author or select the solution(s) that realize it, then classify and resolve intersections between solutions (deltas) that touch the same element, using a fixed three-axis code (Constraint x Category x Kind), recording the result as per-element Registry entries inside the plateau where the intersection first becomes real
+whenToUse: when a catalog's Variability Map has VP, Variants, and Constraint filled and the Realized by column still needs populating — this skill walks each VP, authors/selects its realizing solution(s), and classifies where any two solutions share an element/{element-name} tag inside their Implementation/ folders
+updated: 20260906
 tags:
   - skill/architecture/variability/conflict-detection
   - stack
@@ -11,15 +12,16 @@ adr:
 ---
 
 # Goal
-- Give every pair (or larger group) of solutions that touch the same element a single, fixed classification instead of an ad-hoc "stop and ask the user" every time `plateau-create-by-solutions`/`plateau-update-by-solutions` hits a merge conflict.
-- Build a resolver only for the three codes that genuinely need one, and never fold a resolver into one of the original solutions it resolves.
-- Make a resolver itself a participant in the next pass, since it can intersect with a further solution its author never knew about.
+Fill the `Realized by` column of the catalog's Variability Map and record the classification of every solution intersection it produces. Concretely:
+- **Filled Realized by column** - Every VP row of `{catalog}/variability-map.md` has `Realized by` pointing at the solution skill(s) that realize it — authored via [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] (draft contract when none exists yet) or reused from the catalog.
+- **Classified intersections** - Every group of 2+ solutions sharing an `element/{element-name}` classified with the fixed three-axis code (Constraint x Category x Kind).
+- **Resolvers where needed** - A separate resolver solution for every `TMC`/`FMC`/`FDC` group — never folded into an original solution — with the detection pass iterated to a fixed point.
+- **Registry entries** - One file per intersected element, placed in the shallowest plateau where the intersection is real and listed in that plateau root skill's `registry:` property.
 
 # Core Principle
-- This is the step that runs after [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create]] has produced a Realized-by combination for a plateau, and consumes the `element/{element-name}` tags [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] already puts on every `Implementation/` file — no new tagging convention is introduced.
-- The three-axis classifier below (`Constraint x Category x Kind`) is fixed. Do not reword, reorder, or re-derive it — it was arrived at after several rounds of revision in the design conversation this skill formalizes; treat it as settled input, not a draft.
-- Only three codes (`TMC`, `FMC`, `FDC`) ever require building a resolver. Every other code is canonical: record it, do nothing further.
-- A resolver is itself a delta and can itself intersect with a solution its author did not know about — the detection pass repeats to a fixed point, not once.
+- **Completes the Variability Map** - This step runs to finish [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create]]'s table: once VP, Variants, and Constraint are set, this skill walks each VP and produces its `Realized by` entry. The map is not done until this has run over every row.
+- **On existing tags** - It consumes the `element/{element-name}` tags [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] already puts on every `Implementation/` file — no new tagging convention is introduced.
+- **The classifier is settled** - The three-axis classifier below (`Constraint x Category x Kind`) is fixed. Do not reword, reorder, or re-derive it — treat it as settled input, not a draft.
 
 # The classifier
 Three independent axes, one letter each, read in this order:
@@ -55,16 +57,16 @@ When the constraint defines a finite number of legal combinations (`N x required
 A solution that "looks different depending on which VP called it" is never a new row in this table — check first whether only the DI substitution differs (then it is ordinary `TD-`/`FDN`, the solution stays one) or whether the code's own structure differs (then two solutions were mistakenly bundled under one name and must be honestly split, each with its own realization — an `FMN`/`TMN` case). Never write "if called from VP1 do X, if from VP2 do Y" conditional logic inside one delta as a substitute for this split.
 
 # The 5-step workflow
-1. **Core module** — the plateau's starting point, built the same way [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] already assembles it.
-2. **Unconstrained deltas** — for every VP with no Constraint against another VP in the plateau's Variability Map, build the delta as an ordinary, independent solution.
-3. **Constrained deltas** — for every VP with a Constraint, write the delta accounting for it: DI substitution (`TD-`) or independent code change (`TMN`), both canonical, ordering already guaranteed by the constraint itself. When the intersection is conflicting and the constraint defines a finite combination set, follow [TMC handling](#tmc-handling).
+1. **Core module** — the catalog's shared baseline, the same starting point [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] later assembles from.
+2. **Unconstrained deltas** — for every VP with no Constraint against another VP in the Variability Map, author or reuse the realizing solution as an ordinary, independent one via [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] (a draft contract when none exists yet), and write its wikilink into that VP's `Realized by` cell.
+3. **Constrained deltas** — for every VP with a Constraint, author the realizing solution via [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] accounting for it: DI substitution (`TD-`) or independent code change (`TMN`), both canonical, ordering already guaranteed by the constraint itself. When the intersection is conflicting and the constraint defines a finite combination set, follow [TMC handling](#tmc-handling). Write each solution's wikilink into its VP's `Realized by` cell.
 4. **Conflict Detection pass** — group the plateau's active `Implementation/` files by their existing `element/{element-name}` tag (see [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]]'s tagging rule):
    - Two or more `.create` files on one element → design error outside the grid; fix by turning one into `.extend`, never by writing a resolver.
    - Classify every remaining group using [The classifier](#the-classifier) above.
    - Build a resolver only for `TMC`, `FMC`, `FDC`.
 5. **Fixed-point iteration** — every resolver built in step 4 is itself added to the pool grouped by `element/{element-name}`. Repeat the grouping and classification pass until no new group appears. Record the intersection in a Registry entry (see [Where a Registry entry lives](#where-a-registry-entry-lives)) for every group found, canonical or not.
 
-Finish with a summary: one row per intersecting group, its classification code, and its resolution (canonical / resolver link / core change) — this is the content of the plateau's `registry/` folder, not a separate document.
+Finish with two outputs: every VP row of `{catalog}/variability-map.md` now has its `Realized by` cell filled (including any resolver solutions built in steps 4–5); and a summary of one row per intersecting group, its classification code, and its resolution (canonical / resolver link / core change) — the latter is the content of the plateau's `registry/` folder, not a separate document.
 
 # Where a Registry entry lives
 Record an intersection at the **shallowest plateau** where every intersecting solution is simultaneously present in `created_by` (directly, or transitively via `parent_plateaus`) — the same placement logic [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md#Recording plateau-level decisions|plateau-create-by-solutions already uses for conflict ADRs]]. One file per element, in a `registry/` folder sibling to that plateau's `adr/` and `structure/`, using [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/templates/registry-entry.template|templates/registry-entry.template.md]]. List every registry file in the plateau root skill's `registry:` YAML property, mirroring how `adr:` is already listed. See [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/adr/intersection-registry-design|adr/intersection-registry-design]] for why this format was chosen over one shared document.
@@ -76,37 +78,67 @@ See [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-dete
 # Rule
 
 ## MUST
-- Use the classifier exactly as defined in [The classifier](#the-classifier) — never reword, reorder, merge, or split its axes or codes.
-  - Risk: re-deriving the taxonomy independently each time it is applied produces inconsistent codes across plateaus and silently redoes settled design work.
-  - Fix: apply the fixed table; if a real case does not fit, raise it as a question rather than inventing a new code informally.
-- Build a resolver only for `TMC`, `FMC`, `FDC`; treat every other code as canonical and take no further action beyond recording it.
-  - Risk: writing unnecessary resolvers for canonical cases adds indirection nothing needed.
-  - Fix: check the code against [The classifier](#the-classifier) before deciding a resolver is needed at all.
-- Never fold a resolver's logic into one of the original intersecting solutions — keep the resolver as its own, separate solution, `depends_on` naming every solution it resolves.
-  - Risk: folding the fix into one original solution makes that solution silently aware of, and dependent on, the other — breaking the guarantee that each stays self-sufficient on its own, and hiding the resolution from anyone reading only the original solution's file.
-  - Fix: create a distinct resolver solution per [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]], with `depends_on` listing every intersecting solution it resolves.
-- Re-run the grouping-by-`element/{element-name}` pass after building any resolver, treating the resolver as a normal participant, until a pass produces no new group.
-  - Risk: stopping after one pass misses a conflict the resolver itself introduces with a further solution.
-  - Fix: iterate to a fixed point per [step 5](#the-5-step-workflow).
-- Place every Registry entry at the shallowest plateau where all intersecting solutions are simultaneously present in `created_by` (directly or via `parent_plateaus`), per [Where a Registry entry lives](#where-a-registry-entry-lives).
-  - Risk: recording the intersection at the wrong depth either misses the plateau where it first becomes real, or duplicates the same entry into every deeper plateau that inherits it.
-  - Fix: check `created_by`/`parent_plateaus` transitively before placing the file.
-- Flag two or more `.create` files landing on the same element as a design error and fix it by converting one to `.extend` — never attempt to resolve it with a conflict resolver.
-  - Risk: treating this as an ordinary conflict produces a resolver papering over what is actually a modeling mistake (two solutions both claiming to originate the same artifact).
-  - Fix: identify which solution should really be extending the artifact the other creates, and correct its `Implementation/` files accordingly.
-- Record an architectural-signal note on any Registry entry whose group reaches N≥3 intersecting solutions (`TMC`/`FMC`/`FDC`), stating that this is also a reason to reconsider the involved VPs' boundaries, not only a case needing one more resolver.
-  - Risk: treating N≥3 as "just a bigger version of the same case" hides a real signal that the variability decomposition at that point may need rethinking.
-  - Fix: add the note explicitly in the Registry entry, per [templates/registry-entry.template.md](skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/templates/registry-entry.template.md).
-- Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
+
+### Every VP gets a Realized by entry
+Walk every VP row of the Variability Map and give each one a `Realized by` wikilink to a real solution skill before starting the Conflict Detection pass — author a draft contract via [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] when no solution exists yet.
+- Risk: leaving a VP with no realizing solution means the map still describes intent in prose, and the classifier has nothing to group for that VP.
+- Fix: treat steps 2–3 as complete only when every VP row's `Realized by` cell holds a wikilink.
+
+### The classifier is fixed input
+Use the classifier exactly as defined in [The classifier](#the-classifier) — never reword, reorder, merge, or split its axes or codes.
+- Risk: re-deriving the taxonomy independently each time it is applied produces inconsistent codes across plateaus and silently redoes settled design work.
+- Fix: apply the fixed table; if a real case does not fit, raise it as a question rather than inventing a new code informally.
+
+### Only three codes need a resolver
+Build a resolver only for `TMC`, `FMC`, `FDC`; treat every other code as canonical and take no further action beyond recording it.
+- Risk: writing unnecessary resolvers for canonical cases adds indirection nothing needed.
+- Fix: check the code against [The classifier](#the-classifier) before deciding a resolver is needed at all.
+
+### Resolvers are separate solutions
+Never fold a resolver's logic into one of the original intersecting solutions — keep the resolver as its own, separate solution, `depends_on` naming every solution it resolves.
+- Risk: folding the fix into one original solution makes that solution silently aware of, and dependent on, the other — breaking the guarantee that each stays self-sufficient on its own, and hiding the resolution from anyone reading only the original solution's file.
+- Fix: create a distinct resolver solution per [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]], with `depends_on` listing every intersecting solution it resolves.
+
+### Iterate to a fixed point
+Re-run the grouping-by-`element/{element-name}` pass after building any resolver, treating the resolver as a normal participant, until a pass produces no new group.
+- Risk: stopping after one pass misses a conflict the resolver itself introduces with a further solution.
+- Fix: iterate to a fixed point per [step 5](#the-5-step-workflow).
+
+### Shallowest plateau hosts the entry
+Place every Registry entry at the shallowest plateau where all intersecting solutions are simultaneously present in `created_by` (directly or via `parent_plateaus`), per [Where a Registry entry lives](#where-a-registry-entry-lives).
+- Risk: recording the intersection at the wrong depth either misses the plateau where it first becomes real, or duplicates the same entry into every deeper plateau that inherits it.
+- Fix: check `created_by`/`parent_plateaus` transitively before placing the file.
+
+### Double-create is a design error
+Flag two or more `.create` files landing on the same element as a design error and fix it by converting one to `.extend` — never attempt to resolve it with a conflict resolver.
+- Risk: treating this as an ordinary conflict produces a resolver papering over what is actually a modeling mistake (two solutions both claiming to originate the same artifact).
+- Fix: identify which solution should really be extending the artifact the other creates, and correct its `Implementation/` files accordingly.
+
+### N≥3 carries an architectural-signal note
+Record an architectural-signal note on any Registry entry whose group reaches N≥3 intersecting solutions (`TMC`/`FMC`/`FDC`), stating that this is also a reason to reconsider the involved VPs' boundaries, not only a case needing one more resolver.
+- Risk: treating N≥3 as "just a bigger version of the same case" hides a real signal that the variability decomposition at that point may need rethinking.
+- Fix: add the note explicitly in the Registry entry, per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/templates/registry-entry.template|templates/registry-entry.template.md]].
+
+### Follow the skill-design baseline
+Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
+- Risk: this skill's rules cover conflict detection's content, not the mechanics every skill must follow — skipping the shared baseline produces a technically-correct workflow in a non-conforming skill file.
+- Fix: apply `skill-design.skill.md` in addition to, never instead of, the rules above.
 
 ## SHOULD
-- Prefer the `IEnumerable<T>`-style collection fix for `FDC` over a Composite resolver whenever the shared slot can reasonably become a collection.
-- Cross-check a `TD-`/degenerate-looking case against [the footnote](#the-td--degenerate-footnote) before accepting it as ordinary DI substitution.
+
+### Prefer collections over Composite for FDC
+Prefer the `IEnumerable<T>`-style collection fix for `FDC` over a Composite resolver whenever the shared slot can reasonably become a collection.
+
+### Cross-check degenerate TD- cases
+Cross-check a `TD-`/degenerate-looking case against [the footnote](#the-td-degenerate-footnote) before accepting it as ordinary DI substitution.
 
 ## MAY
-- Skip writing a Registry entry for an `-N-` group when the catalog's scale makes tracking every non-intersection impractical — this code needs no action either way, so the entry is a convenience, not a requirement.
+
+### Skipping -N- entries
+Skip writing a Registry entry for an `-N-` group when the catalog's scale makes tracking every non-intersection impractical — this code needs no action either way, so the entry is a convenience, not a requirement.
 
 # Check list
+- [ ] Every VP row of `{catalog}/variability-map.md` has its `Realized by` cell filled with a wikilink to a real solution skill (draft contract counts).
 - [ ] Every intersecting group found by grouping on `element/{element-name}` was classified using the fixed table in [The classifier](#the-classifier), with no reworded or invented codes.
 - [ ] A resolver was built only for `TMC`, `FMC`, or `FDC` groups.
 - [ ] Every resolver is its own solution with `depends_on` naming every solution it resolves — none folded into an original solution.
@@ -115,4 +147,4 @@ See [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-dete
 - [ ] Any group reaching N≥3 carries the architectural-signal note.
 - [ ] Two-or-more-`.create`-on-one-element cases were fixed by converting one to `.extend`, never by writing a resolver.
 - [ ] The plateau root skill's `registry:` YAML property lists every Registry file created for that plateau.
-- [ ] Facet tags follow [[skills/common-workflow/skill-design.skill/facet-vocabulary.md|facet-vocabulary]]: `concern/architecture`, bare `stack`.
+- [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.

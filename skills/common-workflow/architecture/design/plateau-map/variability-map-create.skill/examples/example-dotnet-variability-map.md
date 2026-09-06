@@ -21,10 +21,8 @@ The candidate test from the parent skill applies directly: different modules on 
 
 The Constraint on VP2 came from `solution-http-api-publication`'s own description stating the requirement in prose — its `depends_on` did not encode it. Per the parent skill's rule, this was flagged and fixed as a plateau-level ADR rather than left as a silent gap between the table and the solution file.
 
-## Plateau Map derivation, abbreviated
-| Plateau | VP answers fixed |
-| --- | --- |
-| `plateau-service-with-api` | `VP2=Yes and/or VP3=Yes` (at least one) |
-| `plateau-v1` | union of `plateau-service-with-api`, `plateau-shared-rules`, `plateau-statefull-service` |
+## Filling Realized by
+
+Once VP, Variants, and Constraint are set for every row, `delta-conflict-detection` walks each VP: it authors or reuses each realizing solution (e.g. `solution-external-created-entity`, `solution-entity-concurrency-change`) and classifies their intersection — `solution-entity-classification` is the `TMC` resolver for the External Mutable combination, so it too lands in a `Realized by` cell. The plateau↔VP view is built separately by `plateau-map-create` in `plateau/plateau-repository.md`.
 
 See the real, complete table at [skills/dotnet/architecture/v3/variability-map.md](skills/dotnet/architecture/v3/variability-map.md).
