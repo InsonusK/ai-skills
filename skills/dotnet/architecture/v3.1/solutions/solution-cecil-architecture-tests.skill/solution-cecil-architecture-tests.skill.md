@@ -23,7 +23,7 @@ extends:
   - "{Module}.Domain.Rules.Tests.csproj"
   - "{Module}.Domain.Tests.csproj"
 depends_on:
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
 built_on_plateau:
 adr:
@@ -32,7 +32,7 @@ adr:
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/adr/checks-degrade-without-domain-layer.md|The four checks degrade to an applicable subset when VP1/VP3 are absent]]"
 ---
 
-> Mandatory companion of `solution-domain-rules` (VP4). The four checks split across two test projects by what each can load: **dead-rule** and **code-uniqueness** scan only `{Module}.Domain.Rules`, so they live in `{Module}.Domain.Rules.Tests` (which always exists with VP4) as `{Module}RuleArchitectureTests`; **exception-scoping** and **guarded-property-coverage** need `{Module}.Domain` entities and `DomainException` (VP1), so they live in `{Module}.Domain.Tests` as `{Module}ArchitectureTests` + `GuardedPropertyRuleCoverageTests`, and are simply absent for a rules-only module. See the ADR.
+> Mandatory companion of `solution-domain-shared-rules` (VP4). The four checks split across two test projects by what each can load: **dead-rule** and **code-uniqueness** scan only `{Module}.Domain.Rules`, so they live in `{Module}.Domain.Rules.Tests` (which always exists with VP4) as `{Module}RuleArchitectureTests`; **exception-scoping** and **guarded-property-coverage** need `{Module}.Domain` entities and `DomainException` (VP1), so they live in `{Module}.Domain.Tests` as `{Module}ArchitectureTests` + `GuardedPropertyRuleCoverageTests`, and are simply absent for a rules-only module. See the ADR.
 
 # Goal
 
@@ -60,7 +60,7 @@ adr:
 - This documentary-`.feature` allowance is scoped to structural/architecture facts specifically — it is not a general license to skip step-definition bindings elsewhere in the codebase; every other `.feature` file in this catalog (including `{Module}.Domain.Rules.Spec`'s own rule-correctness scenarios) still needs a real, executing binding per [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]'s own MUST rule
 - The four checks here are fixed and specific (dead-rule, exception-scoping, code-uniqueness, guarded-property-coverage) — this solution does not define a general framework for writing arbitrary new Cecil checks; a genuinely new kind of structural fact is a new worked example added to this solution, not a plug-in point it exposes
 - `GuardedPropertyRuleCoverageTests` only scans `{Module}.Domain` — it does not scan `{Module}.Domain.Rules`, `{Module}.Application`, or any other module's assembly; narrowing a guarded setter to `private` is what actually closes an external bypass, this test only catches what's left reachable within `Domain` itself (see [[./examples/guarded-property-coverage.md|guarded-property-coverage.md]])
-- This solution proves the rule *mechanism* is wired correctly as a whole — it does not prove any individual rule's own condition is correct; that is `{Module}.Domain.Rules.Tests`'s job, via [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]
+- This solution proves the rule *mechanism* is wired correctly as a whole — it does not prove any individual rule's own condition is correct; that is `{Module}.Domain.Rules.Tests`'s job, via [[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]
 
 # Adr
 
@@ -74,8 +74,8 @@ adr:
 SOLUTION:
 - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]
   - [[skills/dotnet/architecture/v3.1/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create.md|{Module}.Domain.Tests.csproj]] — hosts the `Architecture/` folder these tests live in, already wired into the module's `dotnet test`/`make unit-test` run
-- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]
-  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md|{Module}.Domain.Rules.csproj]] — the assembly the dead-rule/code-uniqueness checks load; without a real `Domain.Rules` project there is nothing for these two checks to scan
+- [[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]
+  - [[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md|{Module}.Domain.Rules.csproj]] — the assembly the dead-rule/code-uniqueness checks load; without a real `Domain.Rules` project there is nothing for these two checks to scan
 
 NUGET:
 - Mono.Cecil {existing solution version} — `AssemblyDefinition`, `TypeDefinition`, `MethodDefinition`, `Instruction`, `MethodReference`/`FieldReference` — the entire object model these tests are built on.

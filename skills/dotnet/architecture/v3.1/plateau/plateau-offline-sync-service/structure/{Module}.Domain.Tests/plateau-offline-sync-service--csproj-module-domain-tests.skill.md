@@ -11,7 +11,7 @@ tags:
   - plateau/offline-sync-service
 created_by:
   - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
-  - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
   - "[[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]]"
 ---
 

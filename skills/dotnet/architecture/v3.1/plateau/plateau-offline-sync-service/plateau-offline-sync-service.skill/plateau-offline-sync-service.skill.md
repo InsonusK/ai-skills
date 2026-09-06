@@ -1,6 +1,6 @@
 ---
 name: plateau-offline-sync-service
-description: A domain service built for an offline-first front end — everything plateau-domain-service has, plus idempotent creation by a client-generated Guid (so an offline client can safely retry a sync) and a centralized, portable Rule project so the same validation condition runs client-side and server-side. Entities here are typically "External Mutable" (both a Guid and a concurrency Version).
+description: A domain service built for an offline-first front end — everything plateau-domain-service has, plus idempotent creation by a client-generated Guid (so an offline client can safely retry a sync) and a shared, portable Rule project so the same validation condition runs client-side and server-side. Entities here are typically "External Mutable" (both a Guid and a concurrency Version).
 whenToUse: when scaffolding or reviewing a service whose entities are created offline by a client and synced later — checking idempotent-create wiring (IHasGuid, GuidResolvingBehavior, the Guid resolver), the {Module}.Domain.Rules project, or the entity classification against this baseline
 domain: skill
 type: template
@@ -12,7 +12,7 @@ tags:
 parent_plateaus:
   - "[[skills/dotnet/architecture/v3.1/plateau/plateau-domain-service/plateau-domain-service.skill/plateau-domain-service.skill.md|plateau-domain-service]]"
 created_by:
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-external-created-entity.skill/solution-external-created-entity.skill.md|solution-external-created-entity]]"
   - "[[skills/dotnet/architecture/v3.1/solutions/solution-entity-classification.skill/solution-entity-classification.skill.md|solution-entity-classification]]"
@@ -28,7 +28,7 @@ Take plateau-domain-service and make it safe for an offline-first client: a crea
 # Core Principles
 - **Everything plateau-domain-service defines still holds** — the domain layer, the persistence stack, optimistic concurrency, timestamps, the HTTP API, the outbound gRPC client. This plateau only adds.
 - **Idempotent creation (VP6).** An entity created outside the system carries an immutable `Guid` correlation handle, set once in its factory. The create command implements `Shared.Guid.IHasGuid`; `GuidResolvingBehavior` (registered after `ConcurrencyBehavior`, before `UnitOfWorkBehavior`) asks the entity's `IGuidResolver<TResponse>` whether the `Guid` already exists and, if so, returns a `ConflictResult<T>` carrying the existing entity's response — the handler and the commit never run. A unique DB index on `Guid` is the last-line guard for a race that passes the pipeline twice. The internal `int Id` stays the only domain identity.
-- **Centralized Rules (VP4).** A condition that turns out duplicated across a strict `{ValueObject}` constructor, an entity method, a `{ValueObject}PropertyValidator`, and a `{Dto}Validator` moves to one `{Rule}` class in `{Module}.Domain.Rules` — `IsValid()` (pure predicate) + one `IRuleBuilder` extension (the only place `ErrorCode`/`Message`/`State` are declared) + `Check()`. Every consumer is redirected to it; the local copies are deleted. `{Module}.Domain.Rules` references only FluentValidation and `{Module}.Interfaces` — it is portable to any .NET service (or a Blazor client) without this service's exception or pipeline conventions. It never does I/O.
+- **Shared Rules (VP4).** A condition that turns out duplicated across a strict `{ValueObject}` constructor, an entity method, a `{ValueObject}PropertyValidator`, and a `{Dto}Validator` moves to one `{Rule}` class in `{Module}.Domain.Rules` — `IsValid()` (pure predicate) + one `IRuleBuilder` extension (the only place `ErrorCode`/`Message`/`State` are declared) + `Check()`. Every consumer is redirected to it; the local copies are deleted. `{Module}.Domain.Rules` references only FluentValidation and `{Module}.Interfaces` — it is portable to any .NET service (or a Blazor client) without this service's exception or pipeline conventions. It never does I/O.
 - **Entity classification is explicit (entity-classification).** Every entity is one of Internal/External × Immutable/Mutable, documented next to its definition. The classification determines exactly which of `solution-entity-concurrency-change` (mutable) and `solution-external-created-entity` (external) applies — no partial application, no concurrency on an immutable entity, no `Guid` infrastructure on an internal one.
 - **The rule mechanism is structurally verified (cecil).** `solution-cecil-architecture-tests` (VP4's mandatory companion) adds Mono.Cecil `[Fact]`s over the compiled IL: every `Check()` is actually called by production code (no dead rule), `DomainException` / `EntityNotLoadedException` are thrown only from their intended layer, rejection-code constants stay unique and well-formed, and every entity member writing a rule-guarded property also calls that rule.
 - **Rules are proven once, from every layer.** `{Module}.Domain.Rules.Spec` holds `.feature` files only (not a project). `{Module}.Domain.Rules.Tests` proves the rule's own `Check()`; `{Module}.Domain.Tests` re-proves `@format` scenarios through the VO/entity (fail-fast, `DomainException`); `{Module}.Application.Tests` re-proves `@semantic`/`@domain` scenarios through the validators (collect-all, `ValidationResult`) — one Gherkin source, three independent proofs.
@@ -67,7 +67,7 @@ sequenceDiagram
     end
 ```
 
-## Centralize a condition once it is duplicated
+## Share a condition once it is duplicated
 ```mermaid
 flowchart LR
     subgraph before [before — duplicated]

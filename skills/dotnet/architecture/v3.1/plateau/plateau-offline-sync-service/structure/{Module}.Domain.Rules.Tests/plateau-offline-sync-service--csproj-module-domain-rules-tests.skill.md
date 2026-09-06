@@ -10,7 +10,7 @@ tags:
   - skill/template/csproj
   - plateau/offline-sync-service
 created_by:
-  - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
   - "[[../../../../solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]]"
   - "[[../../../../solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill.md|solution-cecil-architecture-tests]]"
 ---
@@ -20,7 +20,7 @@ created_by:
 - Prove every scenario in the rule's `.feature` file directly against `IsValid()` / `Check()` / the `IRuleBuilder` extension — the one place the rule's own correctness is proven in isolation.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create.md|{Module}.Domain.Rules.Tests.csproj.create]]
+- [[../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create.md|{Module}.Domain.Rules.Tests.csproj.create]]
 
 # Core Principles
 - References `{Module}.Domain.Rules` (+ `Mono.Cecil` and the production assemblies the Cecil dead-rule check inspects).
@@ -76,7 +76,7 @@ MUST:
 - Never duplicate scenario text — link the physical `.feature` file from `{Module}.Domain.Rules.Spec`.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md|{Rule}RuleSteps.cs.create]]
+- [[../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md|{Rule}RuleSteps.cs.create]]
 
 # Check list
 - [ ] `{Module}.Domain.Rules.Tests.csproj` references only `{Module}.Domain.Rules` plus the five test packages.

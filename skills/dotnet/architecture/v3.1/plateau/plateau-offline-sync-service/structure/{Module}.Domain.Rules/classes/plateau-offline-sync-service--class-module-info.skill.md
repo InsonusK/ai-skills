@@ -10,14 +10,14 @@ tags:
   - skill/template/class
   - plateau/offline-sync-service
 created_by:
-  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
 ---
 
 # Goal
 - Give every rejection code in the module the same prefix without a central registry file.
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/Common.ModuleInfo.cs.create.md|Common.ModuleInfo.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/Common.ModuleInfo.cs.create.md|Common.ModuleInfo.cs.create]]
 
 # Core Principles
 - Apply ONE plateau template per class.
@@ -38,7 +38,7 @@ internal static class ModuleInfo
 ```
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/Common.ModuleInfo.cs.create.md|Common.ModuleInfo.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/Common.ModuleInfo.cs.create.md|Common.ModuleInfo.cs.create]]
 
 # Rules
 MUST:

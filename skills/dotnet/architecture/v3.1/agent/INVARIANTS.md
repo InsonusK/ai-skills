@@ -44,7 +44,7 @@ The anchor document for the v3.1 solution-catalog build (per [[skills/common-wor
 | VP1 DomainLogic | `solution-domain-behaviour` (creates `{Module}.Domain`) | — |
 | VP2 Persistence | `solution-infrastructure-project`, `solution-domain-configuration`, `solution-repository-integration`, `solution-unit-of-work`, `solution-query-integration` | requires VP1 |
 | VP3 ValueObjects | `solution-value-objects` (strict `{VO}`) | requires VP1 |
-| VP4 CentralizedRules | `solution-domain-rules` + `solution-cecil-architecture-tests` | — (adoption precondition only) |
+| VP4 SharedRules | `solution-domain-shared-rules` + `solution-cecil-architecture-tests` | — (adoption precondition only) |
 | VP5 EntityConcurrencyControl | `solution-entity-concurrency-change` | requires VP2 |
 | VP6 ExternalIdentity | `solution-external-created-entity` | requires VP2 |
 | VP7 AuditTimestamps | `solution-entity-edit-timestamp` | requires VP2 |

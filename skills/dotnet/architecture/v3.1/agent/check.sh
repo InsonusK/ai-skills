@@ -13,7 +13,7 @@ section() { printf '\n== %s ==\n' "$1"; }
 # Solutions named in INVARIANTS.md that may not exist yet mid-build — a link to one of these is a warning, not a failure.
 PLANNED='solution-domain-behaviour solution-api-project solution-http-api-publication solution-grpc-integration
 solution-infrastructure-project solution-domain-configuration solution-repository-integration solution-unit-of-work
-solution-query-integration solution-value-objects solution-domain-rules solution-cecil-architecture-tests
+solution-query-integration solution-value-objects solution-domain-shared-rules solution-cecil-architecture-tests
 solution-entity-concurrency-change solution-external-created-entity solution-entity-edit-timestamp solution-entity-classification
 solution-http-api-client solution-grpc-client solution-messaging-infrastructure solution-kafka-consumer
 solution-kafka-producer solution-transactional-outbox'
@@ -87,7 +87,7 @@ section "7. Feature / VP coverage (WARNING only — expected incomplete mid-buil
 for s in central-package-management soft-value-objects validation-behavior mediator-exception-handler \
          dto-property-validators mediator-integration app-logging dotnet-conformance-testing sln-structure \
          domain-behaviour infrastructure-project domain-configuration repository-integration unit-of-work \
-         query-integration value-objects domain-rules cecil-architecture-tests entity-concurrency-change \
+         query-integration value-objects domain-shared-rules cecil-architecture-tests entity-concurrency-change \
          external-created-entity entity-edit-timestamp entity-classification api-project \
          http-api-publication grpc-integration; do
   [ -d "$SOL/solution-$s.skill" ] || echo "    not yet: solution-$s" >> /tmp/v31_cov.txt

@@ -10,14 +10,14 @@ tags:
   - skill/template/class
   - plateau/offline-sync-service
 created_by:
-  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
 ---
 
 # Goal
 - Signal a programming error — an entity method reached for a navigation the caller failed to load — as a distinct type from `DomainException` (an expected invariant violation), so the exception behavior maps it to a generic 500, never to a client-facing domain outcome.
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md|EntityNotLoadedException.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md|EntityNotLoadedException.cs.create]]
 
 # Core Principles
 - Apply ONE plateau template per class.
@@ -37,7 +37,7 @@ public sealed class EntityNotLoadedException(string entity, string navigation)
 ```
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md|EntityNotLoadedException.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/Shared.csproj.extend/EntityNotLoadedException.cs.create.md|EntityNotLoadedException.cs.create]]
 
 # Rules
 MUST:

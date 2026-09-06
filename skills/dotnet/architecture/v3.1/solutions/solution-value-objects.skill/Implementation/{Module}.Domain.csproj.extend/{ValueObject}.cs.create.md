@@ -17,7 +17,7 @@ tags:
 # Core Principles
 - Declared as `sealed record`, inherits from `Soft{ValueObject}` — never redeclares its properties
 - Constructor validates via its own local predicate — a `private static` method on the same class — and throws `DomainException` on failure
-- This solution does not require a shared rule abstraction: the condition is written and owned right here, next to the type it protects. A later, optional solution (`solution-domain-rules`) may centralize this condition into a reusable form — see that solution's own scope — but this file works completely on its own without it
+- This solution does not require a shared rule abstraction: the condition is written and owned right here, next to the type it protects. A later, optional solution (`solution-domain-shared-rules`) may centralize this condition into a reusable form — see that solution's own scope — but this file works completely on its own without it
 
 # Naming convention
 

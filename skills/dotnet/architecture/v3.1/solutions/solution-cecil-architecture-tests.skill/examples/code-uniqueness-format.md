@@ -1,6 +1,6 @@
 # Generated-constant uniqueness and format
 
-When rejection codes (or any other generated `public const string`) move from one central registry file to living next to each rule that produces them (see [solution-domain-rules.skill](../../solution-domain-rules.skill/solution-domain-rules.skill.md)), the central file's one real benefit — a duplicate or malformed code was visible by eye in one place — disappears. This test replaces that eyeballing with a build-time check.
+When rejection codes (or any other generated `public const string`) move from one central registry file to living next to each rule that produces them (see [solution-domain-shared-rules.skill](../../solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md)), the central file's one real benefit — a duplicate or malformed code was visible by eye in one place — disappears. This test replaces that eyeballing with a build-time check.
 
 Reference implementation: `TaskModuleArchitectureTests.RejectionCodes_AreUniqueAndFollowModuleDotClassDotReasonFormat`.
 

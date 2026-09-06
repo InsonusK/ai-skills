@@ -1,5 +1,5 @@
 ---
-description: FluentValidation validator for a Soft{ValueObject}, using its own local condition — validation-agnostic today, may later be redirected to a centralized condition by solution-domain-rules
+description: FluentValidation validator for a Soft{ValueObject}, using its own local condition — validation-agnostic today, may later be redirected to a centralized condition by solution-domain-shared-rules
 project_name: "{Module}.Application"
 name: "{ValueObject}PropertyValidator.cs"
 element_kind: class
@@ -15,7 +15,7 @@ tags:
 # Core Principles
 - Extends `AbstractValidator<Soft{ValueObject}>` — not `PropertyValidator<T,TProperty>`, which cannot be resolved generically by another module (see the `use-abstract-validator-for-soft-value-objects` ADR)
 - The condition is written locally, in this file — a `Must(...)` predicate this solution owns and is free to change on its own. It is not required to match the Domain `{ValueObject}` constructor's own predicate word-for-word, though the two typically agree
-- This solution works completely on its own; a later, optional `solution-domain-rules` solution may redirect this validator to a shared, centralized condition, but nothing here assumes that exists
+- This solution works completely on its own; a later, optional `solution-domain-shared-rules` solution may redirect this validator to a shared, centralized condition, but nothing here assumes that exists
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |

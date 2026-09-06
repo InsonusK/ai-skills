@@ -26,7 +26,7 @@ v3's `solution-sln-structure` always creates **4 module projects** (`Domain`, `I
 | 1 | Reads (query integration) are part of **Persistence (VP2)**; a module with an API but no VP2 gets a **write-only** API. Add to feature-model.md. | confirmed (user #5) |
 | 2 | `MediatorModuleIntegration` (common) = the **Command-dispatch + Notification-dispatch mechanism** only (ICommand/INotification markers, handler/validator co-location, DI self-registration, App.Host wiring). "Load an entity and call its guarded method from a handler" is **VP1**, not common. | needs confirm |
 | 3 | v3's `solution-command-integration` `depends_on solution-domain-behaviour` — **dropped** for v3.1 (that coupling is VP1). Record as a v3.1 ADR. | needs confirm |
-| 4 | VP4 (CentralizedRules) is **not** hard-gated on VP1: `{Module}.Domain.Rules` references only `{Module}.Interfaces` + FluentValidation. Entity/strict-VO redirects apply only when VP1/VP3 are present. The Cecil companion runs its applicable subset (dead-rule + code-uniqueness always; exception-scoping + guarded-property-coverage only with VP1). | needs confirm |
+| 4 | VP4 (SharedRules) is **not** hard-gated on VP1: `{Module}.Domain.Rules` references only `{Module}.Interfaces` + FluentValidation. Entity/strict-VO redirects apply only when VP1/VP3 are present. The Cecil companion runs its applicable subset (dead-rule + code-uniqueness always; exception-scoping + guarded-property-coverage only with VP1). | needs confirm |
 | 5 | `solution-command-integration` becomes **`solution-mediator-integration`** — one common solution for "this family uses the MediatR pattern": `ICommand`/`IQuery`/`INotification` markers, handler + validator co-location, module DI self-registration, App.Host wiring, the dispatch mechanism. Folds in the old `solution-command-integration`, the notification half, and the *marker + dispatch* part of `solution-query-integration`. | resolved (user #1) |
 | 6 | **Central Package Management** — new common feature `CentralPackageManagement` (added to feature-model.md) + new `solution-central-package-management` in Wave 0: repo-root `Directory.Packages.props`, `<ManagePackageVersionsCentrally>`, versionless `<PackageReference>` everywhere. | resolved (user) |
 
@@ -57,7 +57,7 @@ Legend: **copy** = copy from v3, rebind links only · **copy+mod** = copy then c
 | `solution-api-project` | NEW | (VP8+VP9 prereq) | creates `{Module}.Api.csproj`, App.Host wiring skeleton |
 | `solution-http-api-publication` | copy+mod | VP8 | `depends_on solution-api-project`; GET actions gated on VP2 (write-only otherwise) |
 | `solution-grpc-integration` | copy+mod | VP9 | `depends_on solution-api-project`; read RPCs gated on VP2 |
-| `solution-domain-rules` | copy+mod | VP4 | requirements: Application-only consumers OK; entity/VO redirect optional; `depends_on` cleaned up |
+| `solution-domain-shared-rules` | copy+mod | VP4 | requirements: Application-only consumers OK; entity/VO redirect optional; `depends_on` cleaned up |
 | `solution-cecil-architecture-tests` | copy+mod | VP4 companion | applicable-subset of the 4 checks by which of VP1/VP3 are present |
 
 ### Wave 2 — dependent VPs

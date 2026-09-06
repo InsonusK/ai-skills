@@ -25,7 +25,7 @@ __Applied solutions:__
 - Validator-shaped: construct the entity / VO, invoke the real method, capture the outcome; on a failure scenario assert `DomainException.Code`.
 - `Record.Exception(() => ...) as DomainException` is the idiom for a throw expectation.
 - References `{Module}.Domain` only.
-- Two feature sources, two binding classes: this project's own `/Rules/{Rule}.feature` (entity/domain-service/strict-VO invariants, `Then a domain error "..." is raised`) and, with VP4, the linked `@format` scenarios from `{Module}.Domain.Rules.Spec` (`Then the check fails with error code "..."`) re-proven through the VO constructor. The Gherkin wording of the shared file is fixed by `solution-domain-rules` — bind to it exactly, never reword.
+- Two feature sources, two binding classes: this project's own `/Rules/{Rule}.feature` (entity/domain-service/strict-VO invariants, `Then a domain error "..." is raised`) and, with VP4, the linked `@format` scenarios from `{Module}.Domain.Rules.Spec` (`Then the check fails with error code "..."`) re-proven through the VO constructor. The Gherkin wording of the shared file is fixed by `solution-domain-shared-rules` — bind to it exactly, never reword.
 
 # Implementation
 ```csharp
@@ -96,7 +96,7 @@ MUST:
 - `[Binding] sealed class {Rule}Steps` in `{Module}.Domain.Tests/StepDefinitions`.
 - Invoke the real entity method / VO constructor; on a failure scenario assert the exact `DomainException.Code`.
 - Reference `{Module}.Domain` only; never reach into `{Module}.Application`.
-- For a linked `{Module}.Domain.Rules.Spec` `@format` scenario, bind the shared Gherkin verbatim (`the check fails with error code "..."` / `the check passes`) — that wording is owned by `solution-domain-rules`; never copy the scenario text into a local `.feature`.
+- For a linked `{Module}.Domain.Rules.Spec` `@format` scenario, bind the shared Gherkin verbatim (`the check fails with error code "..."` / `the check passes`) — that wording is owned by `solution-domain-shared-rules`; never copy the scenario text into a local `.feature`.
 - Never apply several plateau templates per class.
 
 # Check list

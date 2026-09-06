@@ -10,7 +10,7 @@ tags:
   - skill/template/csproj
   - plateau/offline-sync-service
 created_by:
-  - "[[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
 ---
 
 # Goal
@@ -18,7 +18,7 @@ created_by:
 - Exists only once a condition is genuinely duplicated across two or more consumers (`{ValueObject}` ctor, entity method, `{ValueObject}PropertyValidator`, `{Dto}Validator`, `{Feature}Check`) — applying VP4 is a refactor, not a prerequisite.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md|{Module}.Domain.Rules.csproj.create]]
+- [[../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md|{Module}.Domain.Rules.csproj.create]]
 
 # Core Principles
 - References **FluentValidation and `{Module}.Interfaces` only** — never a repository, `DbContext`, `{Module}.Domain`, or `{Module}.Application`. Never performs I/O.
@@ -71,7 +71,7 @@ MUST:
 - Never reference a repository / `DbContext` / `{Module}.Domain` / `{Module}.Application`; never perform I/O; never accept a pre-computed boolean.
 
 __Applied solutions:__
-- [[../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md|{Rule}.cs.create]]
+- [[../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md|{Rule}.cs.create]]
 
 # Check list
 - [ ] `{Module}.Domain.Rules.csproj` references only `FluentValidation` + `{Module}.Interfaces`.

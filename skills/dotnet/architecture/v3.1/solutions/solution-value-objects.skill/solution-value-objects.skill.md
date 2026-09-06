@@ -29,7 +29,7 @@ adr:
 # Goal
 - Give a domain concept a strict, self-validating type in `{Module}.Domain` — invalid instances cannot be constructed.
 - Reuse the shape declared once as `Soft{ValueObject}` (`{ValueObject} : Soft{ValueObject}`), never re-declaring it.
-- Keep the invariant condition local to the `{ValueObject}` (a `private static` predicate), so this solution stands alone; [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] (VP4) may later centralize it.
+- Keep the invariant condition local to the `{ValueObject}` (a `private static` predicate), so this solution stands alone; [[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] (VP4) may later centralize it.
 
 # Capabilities
 - Entity properties typed as `{ValueObject}` — the type system guarantees the invariant holds for any value stored.
@@ -46,7 +46,7 @@ adr:
 # Boundaries
 - The permissive `Soft{ValueObject}` base is `solution-soft-value-objects` (common); this solution only adds the strict subtype.
 - Persistence mapping (`OwnsOne`) of a `{ValueObject}` is `solution-domain-configuration` (VP2).
-- Whether the `{ValueObject}`'s condition matches the same concept's boundary validator (`solution-dto-property-validators`) is not enforced here — `solution-domain-rules` (VP4) is the mechanism for one shared declaration.
+- Whether the `{ValueObject}`'s condition matches the same concept's boundary validator (`solution-dto-property-validators`) is not enforced here — `solution-domain-shared-rules` (VP4) is the mechanism for one shared declaration.
 
 # Adr
 - [[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/adr/soft-and-strict-value-object-split.md|Soft and strict Value Object as two separate solutions]]

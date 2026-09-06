@@ -17,7 +17,7 @@ complete VP set.
 | plateau-domain-service       | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | plateau-offline-sync-service | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 
-Column legend — VP1 DomainLogic · VP2 Persistence · VP3 ValueObjects · VP4 CentralizedRules ·
+Column legend — VP1 DomainLogic · VP2 Persistence · VP3 ValueObjects · VP4 SharedRules ·
 VP5 EntityConcurrencyControl · VP6 ExternalIdentity · VP7 AuditTimestamps · VP8 SyncInboundApi–HTTP ·
 VP9 SyncInboundApi–gRPC · VP10 SyncOutboundApi–HTTP · VP11 SyncOutboundApi–gRPC · VP12 AsyncInboundApi ·
 VP13 AsyncOutboundApi · VP14 OutboxPattern. Full descriptions, the solution that realizes each VP, and
@@ -35,7 +35,7 @@ of truth; this table is only the plateau-oriented view of the same answers.
 |---|---------|--------------|--------|-----------------------------------|
 | 1 | **plateau-core** | `false` | — | `solution-central-package-management`, `solution-sln-structure`, `solution-mediator-integration`, `solution-validation-behavior`, `solution-mediator-exception-handler`, `solution-pipeline-registration`, `solution-soft-value-objects`, `solution-dto-property-validators`, `solution-app-logging`, `solution-dotnet-conformance-testing` |
 | 2 | **plateau-domain-service** | `true` | plateau-core | VP1 `solution-domain-behaviour` · VP2 `solution-infrastructure-project` + `solution-domain-configuration` + `solution-repository-integration` + `solution-unit-of-work` + `solution-query-integration` · VP3 `solution-value-objects` · VP5 `solution-entity-concurrency-change` · VP7 `solution-entity-edit-timestamp` · VP8 `solution-api-project` + `solution-http-api-publication` · VP11 `solution-grpc-client` |
-| 3 | **plateau-offline-sync-service** | `true` | plateau-domain-service | VP4 `solution-domain-rules` + `solution-cecil-architecture-tests` · VP6 `solution-external-created-entity` · `solution-entity-classification` (the VP5×VP6 combination-resolver) |
+| 3 | **plateau-offline-sync-service** | `true` | plateau-domain-service | VP4 `solution-domain-shared-rules` + `solution-cecil-architecture-tests` · VP6 `solution-external-created-entity` · `solution-entity-classification` (the VP5×VP6 combination-resolver) |
 
 The build scaffolding (anchor contract, mechanical check, decisions log) lives in
 [`../agent/`](../agent/) — run `bash skills/dotnet/architecture/v3.1/agent/check.sh` after any change.
@@ -77,7 +77,7 @@ Full classification is in [`../delta-conflict-analysis.md`](../delta-conflict-an
 
 ## Reference: v3 plateaus in v3.1 VP terms
 
-The [v3 catalog](skills/dotnet/architecture/v3/README.md) realized a staged subset of this space. Its plateaus, expressed in v3.1 VP IDs (v3's own IDs differ — v3 `VP0`=Persistence, `VP1`=EntityKind, `VP2`/`VP3`=Http/Grpc, `VP4`=CentralizedRules):
+The [v3 catalog](skills/dotnet/architecture/v3/README.md) realized a staged subset of this space. Its plateaus, expressed in v3.1 VP IDs (v3's own IDs differ — v3 `VP0`=Persistence, `VP1`=EntityKind, `VP2`/`VP3`=Http/Grpc, `VP4`=SharedRules):
 
 | v3 plateau | v3.1 VP answers |
 | --- | --- |
@@ -92,4 +92,4 @@ Every reference row above is consistent with every stated Constraint: no row set
 
 ### Combinations the family now allows that v3 has no plateau for
 
-The Feature Model adds axes v3 never modelled — **VP10–VP14 (outbound sync + async messaging)** are entirely new and aspirational, so any plateau touching them is future work once their solutions exist. Within the axes v3 already had, the [v3 map's open combination](skills/dotnet/architecture/v3/variability-map.md#Plateau Map derivation) still stands: `VP2=Yes` + `(VP8 or VP9)` + `VP4=No` — a persisted module with an external API but no centralized rules — has no dedicated plateau, because `plateau-v1` always brings `VP4=Yes`.
+The Feature Model adds axes v3 never modelled — **VP10–VP14 (outbound sync + async messaging)** are entirely new and aspirational, so any plateau touching them is future work once their solutions exist. Within the axes v3 already had, the [v3 map's open combination](skills/dotnet/architecture/v3/variability-map.md#Plateau Map derivation) still stands: `VP2=Yes` + `(VP8 or VP9)` + `VP4=No` — a persisted module with an external API but no shared rules — has no dedicated plateau, because `plateau-v1` always brings `VP4=Yes`.

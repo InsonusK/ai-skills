@@ -46,7 +46,7 @@ Two cross-tree `Requires` edges, both single-source (no boolean logic to spell o
 | DomainLogic | The module has a real Domain layer — entities whose state-transition methods guard themselves with a locally-owned invariant check before mutating | false |
 | ValueObjects | Domain invariants enforced through a fail-fast Value Object type embedded in an entity, not just at the boundary — requires `DomainLogic` (directly, or transitively via `Persistence`) | false |
 | Persistence | The module durably stores and reloads entities (`DbContext`, generic `Repository<T>`, atomic commit via `UnitOfWork`) — requires `DomainLogic` (persisted entities live in `{Module}.Domain`, which only `DomainLogic` introduces) | false |
-| CentralizedRules | A validation condition duplicated across two or more consumers gets exactly one centralized declaration, reused everywhere | false |
+| SharedRules | A validation condition duplicated across two or more consumers gets exactly one shared declaration, reused everywhere | false |
 | EntityConcurrencyControl | A specific persisted entity uses optimistic concurrency (version-checked updates) — only meaningful once `Persistence` is selected, and only for a mutable entity | false |
 | ExternalIdentity | A specific persisted entity's identity is client-generated and its creation is idempotent — only meaningful once `Persistence` is selected, and only for an externally-created entity | false |
 | AuditTimestamps | A specific persisted entity tracks user/server creation and update timestamps — only meaningful once `Persistence` is selected, and only for a user-initiated entity | false |
@@ -64,7 +64,7 @@ Two cross-tree `Requires` edges, both single-source (no boolean logic to spell o
 
 Two things this catalog contains are deliberately **not** rows above:
 - **Entity classification** (the four-way Internal/External × Immutable/Mutable decision) is not itself a feature — it is the *consequence* of the `EntityConcurrencyControl` × `ExternalIdentity` combination per entity (Mutable = concurrency-control Yes, External = external-identity Yes → one of 4 named states). It has no independent Yes/No of its own; the `solution-entity-classification` skill is a combination-resolver that spells out what each pairing produces.
-- **Cecil architecture tests** (the structural build-time guarantees over the rule mechanism) is a mandatory companion of `CentralizedRules`, not an independently optional feature — nothing in the catalog applies one without the other.
+- **Cecil architecture tests** (the structural build-time guarantees over the rule mechanism) is a mandatory companion of `SharedRules`, not an independently optional feature — nothing in the catalog applies one without the other.
 
 ## Out of scope
 Limitations of this model, stated explicitly rather than left implicit:

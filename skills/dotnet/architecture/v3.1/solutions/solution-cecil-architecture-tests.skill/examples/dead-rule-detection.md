@@ -55,7 +55,7 @@ public void EveryDomainRuleCheck_IsCalledByProductionCodeOutsideRules()
 
 ## Why this, not the raw `IsValid()` predicate
 
-The target of the search is `Check()`, not the underlying `IsValid()` bool predicate. In the `bool + IRuleBuilder + Check()` rule shape (see [solution-domain-rules.skill](../../solution-domain-rules.skill/solution-domain-rules.skill.md)), `IsValid()` is only ever called from inside its own `IRuleBuilder` extension (`.Must(x => x.IsValid())`) — ​production code always goes through `Check()` or the extension, never the raw predicate directly. Searching for `IsValid()` callers would report every rule as "dead" incorrectly.
+The target of the search is `Check()`, not the underlying `IsValid()` bool predicate. In the `bool + IRuleBuilder + Check()` rule shape (see [solution-domain-shared-rules.skill](../../solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md)), `IsValid()` is only ever called from inside its own `IRuleBuilder` extension (`.Must(x => x.IsValid())`) — ​production code always goes through `Check()` or the extension, never the raw predicate directly. Searching for `IsValid()` callers would report every rule as "dead" incorrectly.
 
 ## Why `FullName` equality, not `Resolve()`
 

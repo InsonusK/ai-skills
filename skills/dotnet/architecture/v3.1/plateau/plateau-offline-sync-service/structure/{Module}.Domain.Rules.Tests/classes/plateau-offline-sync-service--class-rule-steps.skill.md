@@ -10,14 +10,14 @@ tags:
   - skill/template/class
   - plateau/offline-sync-service
 created_by:
-  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
 ---
 
 # Goal
 - Prove every scenario in the rule's `.feature` file directly against `{Rule}.IsValid()` / `{Rule}.Check()` / the `IRuleBuilder` extension — the rule's own correctness in isolation.
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md|{Rule}RuleSteps.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md|{Rule}RuleSteps.cs.create]]
 
 # Core Principles
 - Apply ONE plateau template per class.
@@ -59,7 +59,7 @@ public sealed class {ValueObject}RuleSteps
 ```
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md|{Rule}RuleSteps.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create.md|{Rule}RuleSteps.cs.create]]
 
 # Rules
 MUST:

@@ -10,14 +10,14 @@ tags:
   - skill/template/class
   - plateau/offline-sync-service
 created_by:
-  - "[[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]]"
+  - "[[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]]"
 ---
 
 # Goal
 - Encode a reusable business predicate as a single source of truth — condition, rejection code, default message, structured state — callable fail-fast (VO/entity ctor) and collect-all (DTO/command validator) with no divergent logic.
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md|{Rule}.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md|{Rule}.cs.create]]
 
 # Core Principles
 - Apply ONE plateau template per class.
@@ -62,7 +62,7 @@ public static class {ValueObject}Rules
 ```
 
 __Applied solutions:__
-- [[../../../../../solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] - [[../../../../../solutions/solution-domain-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md|{Rule}.cs.create]]
+- [[../../../../../solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] - [[../../../../../solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create/{Rule}.cs.create.md|{Rule}.cs.create]]
 
 # Rules
 MUST:

@@ -26,7 +26,7 @@ tags:
 ```
 At the v3.1 baseline `Shared` is an almost-empty project. Folders appear as their owning solution is applied:
 - `/MediatR` — `ICommand.cs`, `IQuery.cs`, `INotificationEvent.cs` (solution-mediator-integration)
-- `/Exceptions` — `DomainException.cs` (solution-domain-behaviour), `EntityNotLoadedException.cs` (solution-domain-rules)
+- `/Exceptions` — `DomainException.cs` (solution-domain-behaviour), `EntityNotLoadedException.cs` (solution-domain-shared-rules)
 - `/Repositories`, `/UnitOfWork`, `/Concurrency`, `/Timestamps` (VP2 / VP5 / VP7 solutions)
 
 ## Directory and class skills

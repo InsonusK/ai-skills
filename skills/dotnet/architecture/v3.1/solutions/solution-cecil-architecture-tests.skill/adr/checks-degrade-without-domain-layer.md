@@ -1,7 +1,7 @@
 ---
 name: checks-degrade-without-domain-layer
 description: What the mandatory Cecil companion does for a module that applies VP4 but has no domain layer
-problem: solution-cecil-architecture-tests is the mandatory companion of solution-domain-rules (VP4). Two of its four checks scan {Module}.Domain entities and DomainException, which only exist with DomainLogic (VP1). VP4 is not gated on VP1, so a rules-only module can apply VP4 with no entities.
+problem: solution-cecil-architecture-tests is the mandatory companion of solution-domain-shared-rules (VP4). Two of its four checks scan {Module}.Domain entities and DomainException, which only exist with DomainLogic (VP1). VP4 is not gated on VP1, so a rules-only module can apply VP4 with no entities.
 decision: The companion is still applied, split by which test project can host each check. Dead-rule detection and code-uniqueness/format live in {Module}.Domain.Rules.Tests (always present with VP4) as {Module}RuleArchitectureTests. Exception-scoping and guarded-property-coverage live in {Module}.Domain.Tests as {Module}ArchitectureTests + GuardedPropertyRuleCoverageTests — which, like {Module}.Domain itself, only exist once VP1 is added; for a rules-only module they are simply absent, not empty no-ops.
 tags:
   - solution/cecil-architecture-tests
@@ -21,7 +21,7 @@ The four checks:
 | Exception-type scoping | every assembly, for `new DomainException(...)` outside the allowed layer | `DomainException` + entities (VP1) |
 | Guarded-property rule coverage | `{Module}.Domain` entity members writing rule-guarded properties | `{Module}.Domain` entities (VP1) |
 
-[[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/adr/rules-project-references-interfaces-only.md|VP4 is not gated on VP1]] — a rules-only module (validation/policy, no entities) can apply it. For such a module the bottom two checks have nothing to scan.
+[[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/adr/rules-project-references-interfaces-only.md|VP4 is not gated on VP1]] — a rules-only module (validation/policy, no entities) can apply it. For such a module the bottom two checks have nothing to scan.
 
 # Selected variant
 
@@ -32,7 +32,7 @@ The four checks:
 ## Make VP4 require VP1 so all four always apply
 
 ### Description
-Gate CentralizedRules on DomainLogic.
+Gate SharedRules on DomainLogic.
 
 ### Benefits
 - The companion is always fully meaningful.

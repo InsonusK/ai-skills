@@ -44,7 +44,7 @@ built_on_plateau:
 # Core Principle
 - **Domain project = this feature** - `{Module}.Domain` is created by this solution and by nothing else; a module without it has no domain layer (its `Application` handlers only orchestrate and shape data).
 - The entity is the single point of truth for its own state validity; every mutating method or setter validates first, using a condition written locally (in the method or a `private static` helper on the same class).
-- This solution needs no shared rules abstraction — the condition is owned by the entity/service that enforces it. [[skills/dotnet/architecture/v3.1/solutions/solution-domain-rules.skill/solution-domain-rules.skill.md|solution-domain-rules]] (VP4) may later centralize a duplicated one, but every method here works standalone.
+- This solution needs no shared rules abstraction — the condition is owned by the entity/service that enforces it. [[skills/dotnet/architecture/v3.1/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill.md|solution-domain-shared-rules]] (VP4) may later centralize a duplicated one, but every method here works standalone.
 - Invalid state must never be reachable — throw `DomainException` if attempted.
 - Bulky behavior goes to static domain service extension methods in `{Module}.Domain/Services`; a property must not have multiple uncoordinated mutation points.
 
