@@ -16,4 +16,4 @@ An "API surface profile" entry that is fully determined by which API features ar
 
 ## Related concepts
 - [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/mandatory-companion|Mandatory companion]] — the other kind of entry that gets prose instead of a row
-- [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/feature-model|Feature Model]]
+- [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/feature-model|Feature Model]]

@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goal
-Produce a [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/feature-model|Feature Model]] for a [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/program-families|Program Family]]. Concretely:
+Produce a [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/feature-model|Feature Model]] for a [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/program-families|Program Family]]. Concretely:
 - **Feature list** - Enumerate the family's features — both already implemented and aspirational.
 - **Common vs variable split** - Mark each feature as common (mandatory baseline) or variable, with every verdict tested against a concrete, written-out baseline project structure.
 - **Relations between features** - Define how features relate: parent-child decomposition (bundled or independently selectable) and cross-tree `Requires` constraints.

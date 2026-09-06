@@ -1,6 +1,6 @@
 # FODA (Feature-Oriented Domain Analysis)
 
-**FODA** is the 1990 SEI methodology that introduced the feature diagram: modeling a domain as a tree of features whose parent-child edges are typed (`Mandatory`, `Optional`, `Alternative`, `Or`), plus cross-tree constraints written separately. It was the first methodology to turn the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/program-families|Program Families]] commonality/variability split into a concrete notation.
+**FODA** is the 1990 SEI methodology that introduced the feature diagram: modeling a domain as a tree of features whose parent-child edges are typed (`Mandatory`, `Optional`, `Alternative`, `Or`), plus cross-tree constraints written separately. It was the first methodology to turn the [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/program-families|Program Families]] commonality/variability split into a concrete notation.
 
 ## Why it exists
 Domain analysis needed a compact way to record what all members of a family share versus how individual members differ — without enumerating every product combination, which grows exponentially with the number of independent choices.
@@ -15,8 +15,8 @@ This repository keeps FODA's relation semantics but changes the surface notation
 `skills/dotnet/architecture/v3.1/feature/diagrams/feature-diagram.mmd` — a feature diagram rendered with mermaid edge labels per this repository's convention.
 
 ## Related concepts
-- [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/feature-model|Feature Model]]
-- [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/program-families|Program Families]]
+- [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/feature-model|Feature Model]]
+- [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/program-families|Program Families]]
 
 ## Sources
 - Kang, K. C. et al. (1990). "Feature-Oriented Domain Analysis (FODA) Feasibility Study." CMU/SEI-90-TR-21.

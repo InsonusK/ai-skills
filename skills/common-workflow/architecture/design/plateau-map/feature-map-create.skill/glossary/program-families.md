@@ -17,7 +17,7 @@ In `skills/dotnet/architecture/v3`, every plateau shares a fixed module shape, a
 
 ## Related concepts
 - [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/variation-point|Variation Point]]
-- [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/feature-model|Feature Model]]
+- [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/feature-model|Feature Model]]
 
 ## Sources
 - Parnas, D. L. (1976). "On the Design and Development of Program Families." *IEEE Transactions on Software Engineering*.

@@ -6,7 +6,7 @@ The **Core module** is the one concrete, fully-runnable, minimal baseline that e
 Deltas need a real starting point to apply to — not an abstract skeleton, but something that already runs. Choosing the core deliberately is what lets every other Variation Point's delta stay small: it only needs to state what changes relative to a known-working baseline.
 
 ## How it works
-The core is built once, contains only genuine [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/program-families|Commonality]], and is never itself gated by an Application condition — it is always present.
+The core is built once, contains only genuine [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/program-families|Commonality]], and is never itself gated by an Application condition — it is always present.
 
 ## How it is structured
 In this repository, a plateau's `structure/` folder before any `created_by` solution is applied plays this role — the deepest plateau in a `parent_plateaus` chain is effectively the family's core.

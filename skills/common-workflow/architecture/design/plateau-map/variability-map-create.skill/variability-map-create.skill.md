@@ -20,7 +20,7 @@ Produce `{catalog}/variability-map.md` — the binding between the catalog's Var
 - **Surfaced missing edges** - Every requirement found in prose or in the Feature Model but absent from a solution's `depends_on` raised as a fix proposal, not left as an unencoded assumption.
 
 # Core Principle
-- **Two teams, two answers** - A [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/variation-point|Variation Point]] exists only where two teams building on this catalog could legitimately answer differently. If every path through the catalog includes a solution, it is shared core (see [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/program-families|Program Families]]) — it does not get a row.
+- **Two teams, two answers** - A [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/variation-point|Variation Point]] exists only where two teams building on this catalog could legitimately answer differently. If every path through the catalog includes a solution, it is shared core (see [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/program-families|Program Families]]) — it does not get a row.
 - **The table is the artifact** - A plateau never re-describes its own variability separately from the map. [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/realized-by|Realized by]] always points at solutions that exist — this skill never re-authors solution content.
 - **Runs after the Feature Model** - The catalog's Feature Model feeds this skill its candidate features.
 - **Realized by is a sub-step, not a later stage** - Filling `Realized by` — authoring each VP's realizing solution(s) and classifying where two of them touch the same code element — is done by [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]], run to complete this map. Assembling plateaus from the finished map is a separate stage this skill does not describe.
@@ -85,7 +85,7 @@ Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-d
 ### Alternatives share a VP, combinables split
 Group solutions into one VP with several Variants when they are mutually-exclusive alternative answers to the same question (the entity-kind shape); keep them as separate boolean VPs when they are freely, independently combinable (an "Or" group in Feature-Model terms, not an "Alternative" group). Never pre-enumerate combinations of independent VPs as separate rows — each stays its own row regardless of how many other VPs it can combine with.
 - Risk: enumerating combinations doubles the table every time a new independent answer appears, and the rows stop being questions a team answers.
-- Fix: one row per question; a categorical VP only for genuinely mutually-exclusive answers (see the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/feature-model|Feature model]] shapes).
+- Fix: one row per question; a categorical VP only for genuinely mutually-exclusive answers (see the [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/feature-model|Feature model]] shapes).
 
 ### Reuse a near-duplicate VP first
 Prefer reusing an existing VP's Variant set over introducing a near-duplicate VP when a new solution answers almost the same question an existing VP already covers.
