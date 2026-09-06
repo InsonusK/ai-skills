@@ -2,6 +2,7 @@
 name: skill-name
 description: Short description of what the skill does and why it exists
 whenToUse: Concrete conditions that tell an agent when to apply this skill
+updated: 20260101
 tags:
   - tag1
   - tag2
@@ -11,9 +12,10 @@ tags:
 1. Decide the skill format:
    - **Human Flat**: use for self-contained skills. Save as `{skill-name}.skill.md`.
    - **Human Dir**: use when the skill references extra files (templates, examples, diagrams, etc.). Save as `{skill-name}.skill/{skill-name}.skill.md` and keep all supporting files inside `{skill-name}.skill/`.
-2. Fill the front matter. Make `whenToUse` concrete enough that an agent can decide to use the skill just by reading it.
+2. Fill the front matter. Make `whenToUse` concrete enough that an agent can decide to use the skill just by reading it; set `updated:` to today (YYYYMMDD).
 3. Fill each section following the `hint` blocks.
-4. Remove all `hint`, `example`, and `code example` blocks, and this `# How Apply this template` section before finalizing the skill.
+4. Apply [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] to the prose and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] to the `tags:` list; run their `# Check list`s alongside this template's.
+5. Remove all `hint`, `example`, and `code example` blocks, and this `# How Apply this template` section before finalizing the skill.
 
 # Goal
 ```hint
@@ -86,10 +88,11 @@ instead of restating it.
 
 # Check list
 - [ ] The skill uses the correct format (Human Flat or Human Dir).
-- [ ] Front matter is filled, and `whenToUse` clearly states when to apply the skill.
+- [ ] Front matter is filled: `whenToUse` is concrete and `updated: YYYYMMDD` is set.
 - [ ] All rules are actionable for an AI agent.
 - [ ] All links use relative or repository-root-relative markdown/wikilink syntax.
 - [ ] `# Goal` lists verifiable deliverables — no principles, scope notes, or meta-intentions.
 - [ ] Every rule under `# Rule` is a `###` heading followed by the imperative statement as a paragraph; every `## MUST` rule carries `Risk` and `Fix` bullets (`Violation` optional); there is no separate `# Anti-patterns` section and no `## MUST NOT`/`## SHOULD NOT` heading.
 - [ ] Any `# Goal`/`# Core Principle` bullet over ~20 words starts with `**{Name}** - ` (name self-explanatory, distinct from the description's opening words).
 - [ ] All template hints and example blocks are removed from the final skill.
+- [ ] [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]]'s and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]'s check lists pass.
