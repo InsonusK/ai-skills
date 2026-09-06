@@ -2,6 +2,7 @@
 name: skill-design
 description: Rules for writing skills that AI agents can understand and apply correctly
 whenToUse: when you create a new skill or update an existing one
+updated: 20260906
 tags:
   - skill/core
   - stack
@@ -111,6 +112,11 @@ Make `whenToUse` describe concrete trigger conditions, not vague marketing text 
 - Risk: the agent cannot decide whether the skill applies to the current task.
 - Fix: "Use this skill when you add logging to code or choose a log level."
 
+### Every skill carries its change date
+Keep `updated: YYYYMMDD` (compact date, no separators) in every skill's frontmatter and bump it on every change to the skill. Validation tooling ([skill-validation](skills/common-workflow/skill-validation.skill/skill-validation.skill.md)) derives queue staleness from these dates.
+- Risk: without a bumped `updated` date, a changed skill — or a changed standard — triggers no re-validation, and the validation queue silently trusts a stale file.
+- Fix: bump `updated` in the same commit that changes the skill.
+
 ### Rules are actionable
 Keep the skill actionable: rules, workflows, and checklists must tell the agent exactly what to do, not describe the topic for a human reader.
 - Violation: "This skill explains the importance of clean code."
@@ -202,7 +208,7 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] If a domain-specific skill/template is used, the baseline requirements of this skill are still satisfied.
 - [ ] The skill uses the correct format (Human Flat or Human Dir).
 - [ ] The skill file name and folder name match the `name` in the front matter.
-- [ ] `whenToUse` clearly states when the skill should be applied.
+- [ ] Front matter is filled: `whenToUse` clearly states when to apply the skill, and `updated: YYYYMMDD` is present and bumped on every change.
 - [ ] All rules are actionable for an AI agent.
 - [ ] All links are relative to the skill file or repository root and use markdown or wikilink syntax.
 - [ ] All supporting files are inside the skill folder (for Human Dir).

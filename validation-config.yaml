@@ -1,0 +1,22 @@
+# Configuration for the skill-validation pass (see skills/common-workflow/skill-validation.skill/).
+#
+# log-dir: optional, defaults to ./.validation — holds one flat log file per
+#   reference standard: {validation-skill}-log.yaml.
+# rules: each rule selects a set of files (filter minus exclude) and names the
+#   reference standard skill they are validated against. Rule names must be
+#   unique (the CLI addresses rules by name), but they are safe to rename or
+#   refilter — logs are keyed by the standard, not by the rule.
+# validation-skill: reference standard; must carry `updated: YYYYMMDD` in its
+#   frontmatter, bumped on every change.
+rules:
+  - name: skill-design
+    filter: "./**/*.skill.md"
+    exclude:
+      - "./**/plateau/**/structure/**"
+    validation-skill: skill-design
+  # Example of a second rule with its own standard:
+  # - name: plateau-structure
+  #   filter: "./**/architecture/**/*.skill.md"
+  #   exclude:
+  #     - "./**/plateau/**/structure/**"
+  #   validation-skill: plateau-create-by-solutions
