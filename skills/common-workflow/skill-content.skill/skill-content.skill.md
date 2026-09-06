@@ -21,6 +21,7 @@ adr:
 
 # Core Principle
 - **Reader is an agent under load** - The reader is an AI agent skimming this file mid-task; every sentence competes for its attention, so a sentence that does not change what the agent does is removed.
+- **Brevity has a floor** - Cut every word that does not change what the agent does, but keep every word the agent needs to act correctly; when concision and comprehension collide, comprehension wins.
 - **State it once** - A fact lives in the one section or rule that owns it; every other place points to it, never restates it.
 - **Statement, then reasoning** - A rule's paragraph says what to do; why it matters goes in `Risk`, the correction in `Fix` — never folded back into the statement.
 - **Names carry the scan** - A bullet or rule name is the reader's index into the text; a name that needs backstory to decode, or that parrots the description, is worse than no name.
