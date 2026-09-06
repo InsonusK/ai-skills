@@ -1,4 +1,4 @@
-# Validation log for standard 'skill-design': <repository-root-relative skill path> -> last validation date (YYYYMMDD).
+# Validation log for standard 'skill-tags': <repository-root-relative skill path> -> last validation date (YYYYMMDD).
 # Written by 'validation_queue.py mark' / 'queue --dry-run' — never edit by hand (see skill-validation).
 skills/angular/architecture/plateau/plateau-async-monolith/plateau-async-monolith.skill.md: 19700101
 skills/angular/architecture/plateau/plateau-design-system/plateau-design-system.skill.md: 19700101
@@ -91,9 +91,9 @@ skills/common-workflow/documentation/documentation-for-concept.skill/documentati
 skills/common-workflow/documentation/documentation-for-human.skill/documentation-for-human.skill.md: 19700101
 skills/common-workflow/mermaid-diagram.skill.md: 19700101
 skills/common-workflow/skill-content.skill/skill-content.skill.md: 19700101
-skills/common-workflow/skill-design.skill/skill-design.skill.md: 20260906
+skills/common-workflow/skill-design.skill/skill-design.skill.md: 19700101
 skills/common-workflow/skill-tags.skill/skill-tags.skill.md: 19700101
-skills/common-workflow/skill-validation.skill/skill-validation.skill.md: 20260906
+skills/common-workflow/skill-validation.skill/skill-validation.skill.md: 19700101
 skills/common-workflow/test/architect-validator.skill.md: 19700101
 skills/common-workflow/test/code-coverage.skill.md: 19700101
 skills/common-workflow/test/no-test-theater.skill/no-test-theater.skill.md: 19700101

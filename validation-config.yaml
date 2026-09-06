@@ -14,6 +14,16 @@ rules:
     exclude:
       - "./**/plateau/**/structure/**"
     validation-skill: skill-design
+  - name: skill-content
+    filter: "./**/*.skill.md"
+    exclude:
+      - "./**/plateau/**/structure/**"
+    validation-skill: skill-content
+  - name: skill-tags
+    filter: "./**/*.skill.md"
+    exclude:
+      - "./**/plateau/**/structure/**"
+    validation-skill: skill-tags
   # Example of a second rule with its own standard:
   # - name: plateau-structure
   #   filter: "./**/architecture/**/*.skill.md"
