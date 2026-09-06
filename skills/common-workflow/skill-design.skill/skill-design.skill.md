@@ -15,7 +15,7 @@ adr:
 - A skill in the correct format (Human Flat or Human Dir) whose folder and main-file names both match the `name` field.
 - Frontmatter carrying a concrete `whenToUse`, `updated: YYYYMMDD`, and — per [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] — facet tags.
 - Exactly one `# Goal`, `# Core Principle`, `# Rule`, and `# Check list`; `# Rule` using only `## MUST`/`## SHOULD`/`## MAY`.
-- Every cross-skill link a genuine input, an applied standard/template, or an active prohibition.
+- Every cross-skill link an input, a required sub-step, an applied standard/template, or an active prohibition — nothing that only runs after this skill's artifact is done.
 - Every decision made while writing the skill recorded as an ADR in the owning skill's `adr/` folder.
 - The `# Check list`s of [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] also passed.
 
@@ -110,11 +110,12 @@ Never bundle two independently-triggered procedures into one skill; if `descript
 - Risk: the agent must filter every rule by an invisible precondition instead of trusting that everything in the file applies; duplicated headings drift; the file grows too large to skim.
 - Fix: a base skill with the unconditional rules, and an extension skill whose `whenToUse` states the precondition ("when a project following `[[other-skill]]` needs..."); each keeps its own single `# Rule`/`# Check list`.
 
-### Link inputs and standards, not next steps
-Link only the skill whose artifact this one reads as input, the standards and templates it applies, and — deliberately — an active "do not apply X here" prohibition; never link a skill that consumes this one's output, a "next, run X" step, or a skill named only to mark a topic out of scope. Pipeline sequencing lives in that pipeline's non-skill `README.md`, which the loader does not pull in. Decision recorded in [adr/cross-skill-links-scope.md](./adr/cross-skill-links-scope.md).
-- Violation: a Core Principle bullet reading "grouping into VPs and resolving conflicts belong downstream: `[[next-skill]]` and `[[later-skill]]`", or "the X view is not here — see `[[other-skill]]`".
-- Risk: the skill loader pulls every linked skill into the agent's context, so a forward or "not my job" link inflates every load while buying nothing functional; non-goals are unbounded, so each new neighbour adds another until the file references a large fraction of the repository.
-- Fix: name the boundary and any forward step in plain words; keep a cross-skill link only where this skill reads the target as input, applies it as a standard/template, or actively forbids it.
+### Link what the artifact needs, not what comes after it
+Link a skill this one needs to finish its own artifact — an input it reads, a sub-step it must run (even when that sub-step is its own skill), a standard or template it applies — and an active "do not apply X here" prohibition; never link a skill that only runs once this skill's artifact is already complete (the next stage of a pipeline, a consumer of the output) or one named only to mark a topic out of scope. Sequencing across finished artifacts lives in the pipeline's non-skill `README.md`, which the loader does not pull in. Decision recorded in [adr/cross-skill-links-scope.md](./adr/cross-skill-links-scope.md).
+- Test: could an agent complete this skill's artifact without knowing the linked skill? If yes, drop the link; if no, keep it.
+- Violation: a Goal or Core Principle bullet reading "once the map is done, proceed to `[[later-stage]]`", or "the X view is not here — see `[[other-skill]]`".
+- Risk: the skill loader pulls every linked skill into the agent's context, so a link to a later stage or a "not my job" pointer inflates every load while buying nothing the current task needs; non-goals are unbounded, so each new neighbour adds another.
+- Fix: keep links for inputs, required sub-steps, and applied standards; name a later stage or an out-of-scope boundary in plain words.
 
 ### Record decisions as ADRs
 When a choice between considered variants — each with real benefits and costs — is made while writing or updating a skill, record it as an ADR following [adr-create.skill.md](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), inside the skill folder that owns the decision.
@@ -152,7 +153,7 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] No `## MUST NOT`/`## SHOULD NOT` heading and no `# Anti-patterns` section anywhere; prohibitions are negative bullets inside MUST/SHOULD.
 - [ ] All links resolve from the skill file or repository root; one link syntax used throughout.
 - [ ] All supporting files are inside the skill folder (Human Dir); a Human Flat skill has none.
-- [ ] Every cross-skill link is a genuine input, an applied standard/template, or an active prohibition — no consumer, next-step, or out-of-scope link.
+- [ ] Every cross-skill link is an input, a required sub-step, an applied standard/template, or an active prohibition — an agent could not finish this skill's artifact without it; no link to a later pipeline stage, a consumer, or an out-of-scope topic.
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
 - [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
