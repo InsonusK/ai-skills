@@ -17,7 +17,7 @@ When connectivity is restored, queued mutations need to be replayed in some orde
 
 **Selected variant:** [[#Partition by feature]]
 
-The queue is partitioned by feature (matching the `scope:*` tag from the "Структура репозитория" solution's Nx taxonomy). Within a single feature's partition, mutations replay strictly FIFO — preserving intra-feature ordering (e.g. create-then-update on the same entity, which normally happens within one feature). Different features' partitions replay independently and in parallel, so a stuck or slow partition does not block the others.
+The queue is partitioned by feature (matching the `scope:*` tag from `solution-repository-structure`'s Nx taxonomy). Within a single feature's partition, mutations replay strictly FIFO — preserving intra-feature ordering (e.g. create-then-update on the same entity, which normally happens within one feature). Different features' partitions replay independently and in parallel, so a stuck or slow partition does not block the others.
 
 # Searched variants
 
@@ -25,7 +25,7 @@ The queue is partitioned by feature (matching the `scope:*` tag from the "Стр
 
 ### Description
 
-Each feature (`libs/{feature}/data-access`) gets its own FIFO queue partition, identified by the feature's `scope` tag. The replay orchestrator processes all partitions concurrently; within a partition, it processes entries strictly in enqueue order, stopping that partition's replay on a failure (same "stop on first failure per cycle" pattern as the retry queue in the "Логирование (глобальное)" solution) without affecting other partitions.
+Each feature (`libs/{feature}/data-access`) gets its own FIFO queue partition, identified by the feature's `scope` tag. The replay orchestrator processes all partitions concurrently; within a partition, it processes entries strictly in enqueue order, stopping that partition's replay on a failure (same "stop on first failure per cycle" pattern as the retry queue in `solution-logging-global`) without affecting other partitions.
 
 ### Benefits
 

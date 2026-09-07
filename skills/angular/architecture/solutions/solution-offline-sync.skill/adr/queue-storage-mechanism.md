@@ -2,7 +2,7 @@
 name: queue-storage-mechanism
 description: What storage/reactivity layer backs the offline mutation queue
 problem: Raw IndexedDB is too low-level to give reactive UI updates without hand-rolling a change-notification system; RxDB's replication model assumes the backend is a document store synced via whole-document push/pull, which does not match this application's command-oriented API (PUT/PATCH entities, but also distinct RPC-style operations like POST /tasks/{id}/set-complete)
-decision: Use Dexie.js as the storage/reactivity layer, with the actual replay/retry/conflict orchestration built as custom code on top of the existing Facade/Client architecture from the "API/HTTP-слой" solution
+decision: Use Dexie.js as the storage/reactivity layer, with the actual replay/retry/conflict orchestration built as custom code on top of the existing Facade/Client architecture from `solution-api-http-layer`
 tags:
   - solution/offline-sync
   - concern/documentation
@@ -25,7 +25,7 @@ Dexie.js is used purely as a typed, reactive storage layer for queue records —
 
 ### Description
 
-Dexie.js provides typed tables, transactions, and `liveQuery()` for reactive UI updates as queue records are added/removed. It carries no opinion about what "sync" means — the queue simply stores records of the form "call this Facade operation with these arguments," and a custom replay orchestrator (triggered by the `connectivity` slice from the "Offline-first" solution) works through the queue, invoking the real Facade/Client methods already established by the "API/HTTP-слой" solution.
+Dexie.js provides typed tables, transactions, and `liveQuery()` for reactive UI updates as queue records are added/removed. It carries no opinion about what "sync" means — the queue simply stores records of the form "call this Facade operation with these arguments," and a custom replay orchestrator (triggered by the `connectivity` slice from the "Offline-first" solution) works through the queue, invoking the real Facade/Client methods already established by `solution-api-http-layer`.
 
 ### Benefits
 
@@ -37,7 +37,7 @@ Dexie.js provides typed tables, transactions, and `liveQuery()` for reactive UI 
 ### Costs
 
 - The replay/retry/conflict orchestration has to be built by hand — Dexie provides no built-in sync engine, unlike RxDB
-- No built-in conflict-resolution primitives — this solution's own conflict-handling logic (see [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy]]) has to be designed and implemented from scratch, rather than configuring an existing one
+- No built-in conflict-resolution primitives — this solution's own conflict-handling logic (see [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]]) has to be designed and implemented from scratch, rather than configuring an existing one
 
 ## RxDB (full replication engine)
 
@@ -54,7 +54,7 @@ Adopt RxDB as both storage and synchronization engine, using its push/pull repli
 
 - RxDB's replication protocol is fundamentally document-oriented: it compares and syncs whole document states between a local collection and a backend treated as a document store. This application's backend instead exposes semantically specific operations (`PUT`/`PATCH` an entity, but also standalone commands like `POST /tasks/{id}/set-complete`) that don't naturally express as "here is the new document state, please persist it"
 - Command-style operations would need custom push/pull handlers that bypass RxDB's own document-comparison conflict handling anyway, meaning the parts of RxDB this application would actually use shrink to "a reactive local store," while still carrying the weight and conceptual overhead of its full replication engine
-- Forces the application's mutation model to be reshaped around RxDB's document-collection abstraction, rather than reusing the Facade/Client architecture already established and battle-tested by the "API/HTTP-слой" solution
+- Forces the application's mutation model to be reshaped around RxDB's document-collection abstraction, rather than reusing the Facade/Client architecture already established and battle-tested by `solution-api-http-layer`
 
 ## Raw IndexedDB (or a thin wrapper like idb)
 
@@ -64,7 +64,7 @@ Use the native IndexedDB API directly, or a minimal promise wrapper, with no que
 
 ### Benefits
 
-- Zero additional dependency weight beyond what's already used elsewhere (e.g. the "Логирование" solution's retry queue)
+- Zero additional dependency weight beyond what's already used elsewhere (e.g. `solution-logging-global`'s retry queue)
 - Full, low-level control
 
 ### Costs

@@ -1,5 +1,5 @@
 ---
-description: Extend the generic Facade pattern from the API/HTTP-слой solution to catch OfflineTransportError (from the Offline-first solution) and enqueue queueable operations instead of failing outright
+description: Extend the generic Facade pattern from `solution-api-http-layer` to catch OfflineTransportError (from `solution-offline-first`) and enqueue queueable operations instead of failing outright
 project_name: "{Feature}"
 name: "{feature}"
 element_kind: service
@@ -10,7 +10,7 @@ tags:
 ---
 
 # How this generic file is used
-This extends [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create]], applied to any feature's `{feature}.facade.ts`, for operations that Facade explicitly marks as queueable.
+This extends [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create.md]], applied to any feature's `{feature}.facade.ts`, for operations that Facade explicitly marks as queueable.
 
 # Goals
 
@@ -51,17 +51,17 @@ export class OrdersFacade {
 # Rule changes
 
 ## MUST
-- A Facade MUST explicitly opt an operation into queueing by catching `OfflineTransportError` and calling `MutationQueueService.enqueue` — queueing is never automatic or implicit for every method.
-- A queued operation's return type MUST clearly distinguish "queued for later" from an immediate successful result (e.g. `{ queued: true }`), so the calling Signal Store can reflect a pending state rather than treating it as a completed success.
-
-## MUST NOT
-- A Facade MUST NOT enqueue an operation whose business validation (e.g. `OrdersValidationError`) already failed before the Client was ever called — only genuine `OfflineTransportError` failures are queueable.
-
-# Anti-patterns
-
-- **Enqueueing an operation whose business validation already failed**
-  - Consequence: queues a command that will never succeed, wasting a replay attempt and confusing the user with a "pending" state for something that was actually invalid
-  - Instead: business validation always runs and fails before any queueing decision is considered
+- A Facade explicitly opts an operation into queueing — `catch (OfflineTransportError)` → `MutationQueueService.enqueue`. Queueing is never implicit for every method.
+  - Risk: auto-queueing replays one-time or time-sensitive actions later and produces a wrong result.
+  - Fix: only the operations the Facade wraps are queueable; the rest rethrow `OfflineTransportError`.
+- A queued operation's return type distinguishes "queued for later" from a completed result — `{ queued: true, idempotencyKey, optimistic }`.
+  - Risk: the store treats a queued op as a success and shows no pending state; the user thinks it saved.
+  - Fix: `isQueued(result)` branch in the store; it appends `optimistic` with `syncStatus: 'queued'`.
+- Never enqueue an operation whose business validation already failed before the Client was called.
+  - Risk: an invalid command sits in the queue and fails forever on replay.
+  - Fix: validation runs first and throws its `ValidationError`; only a genuine `OfflineTransportError` is queueable.
+## SHOULD
+- **Enqueueing an operation whose business validation already failed** — Consequence: queues a command that will never succeed, wasting a replay attempt and confusing the user with a "pending" state for something that was actually invalid — Instead: business validation always runs and fails before any queueing decision is considered
 
 # Check list
 
