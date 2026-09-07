@@ -171,5 +171,4 @@ Leave the reserved relation type (`Alternative (group name)`) unused in the diag
 - [ ] Each material change was confirmed with the family's owner before the next was built on top of it.
 - [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
 
-# Examples
-- [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/examples/example-dotnet-feature-model.md|.NET worked example]] — built live while writing this skill; the real, complete result is [[skills/dotnet/architecture/v3.1/feature/feature-model.md|feature-model.md]].
+

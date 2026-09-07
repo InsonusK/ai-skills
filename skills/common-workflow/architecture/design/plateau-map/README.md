@@ -86,8 +86,3 @@ for how a Solution, a Plateau, and a Plateau Component relate, independent of th
       adr/
 ```
 
-Worked example of the whole pipeline against a real catalog:
-[`skills/angular/architecture/v3.1/`](../../../../angular/architecture/v3.1/README.md) (four
-catalogs — `monolith/`, `design-system/`, `platform-host/`, `embeddable-app/` — each with its own
-`feature/`, `variability-map.md`, and `plateau/`) and
-[`skills/dotnet/architecture/v3.1/`](../../../../dotnet/architecture/v3.1/plateau/plateau-repository.md).
