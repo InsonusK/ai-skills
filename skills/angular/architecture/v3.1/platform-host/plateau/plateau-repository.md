@@ -15,6 +15,44 @@ Aspirational: `ContractEventBus`, `RemoteHealthAndVersioning` — no solutions y
 
 Run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
 
+## Plateau × VP matrix
+
+Columns are the three **federation-delta** VPs of [`../variability-map.md`](../variability-map.md).
+Every monolith VP (VP1–VP8 there) is answered by the composed monolith plateau via
+`parent_plateaus` and is **not** a column here — see
+[`../../monolith/plateau/plateau-repository.md`](../../monolith/plateau/plateau-repository.md).
+
+| Plateau | Parent (cross-catalogue) | VP1 | VP2 | VP3 |
+|---|---|:-:|:-:|:-:|
+| plateau-platform-host | [plateau-multiuser-monolith](../../monolith/plateau/plateau-multiuser-monolith/) | ✅ | ✅ | ✅ |
+
+Column legend — VP1 HostDesignSystemConsumption · VP2 SessionSharing · VP3 FederatedReadResilience.
+Full descriptions, realizing solutions, and Constraints are in
+[`../variability-map.md`](../variability-map.md).
+
+VP2 and VP3 are only *satisfiable* here because the parent `plateau-multiuser-monolith` answers
+monolith VP7 (Authentication) and monolith VP4 (OfflineReadResilience) — the map's Constraints
+`requires monolith:VP7` / `requires monolith:VP4`.
+
+## Reference: V1 → v3.1
+
+| V1 plateau | composes (monolith) | + platform-host VPs |
+|---|---|---|
+| `plateau-platform-monolith` | `plateau-offline-monolith` (monolith VP1–VP5) | VP1; VP2/VP3 = No |
+| `plateau-monitored-app` | `plateau-monitored-app` (monolith, + VP6) | VP1 |
+| `plateau-multiuser-app` | `plateau-multiuser-app` (monolith, + VP7) | VP1, **VP2** (SessionSharing — satisfiable, monolith VP7=Yes) |
+
+V1 bundled "become a platform" with "add offline write queue" (`platform-monolith` descended from
+`offline-monolith`). v3.1 does not: a `platform-host` plateau can compose *any* monolith plateau.
+`plateau-platform-host` composes `plateau-multiuser-monolith`, so all three of its own VPs are Yes.
+
+## Coverage: combinations with no named plateau
+
+- **Host composing `plateau-online-monolith`** — a federation host with no preloading, no offline, no
+  auth (VP2/VP3 then unsatisfiable, VP1 still free).
+- **VP1=No** — a host whose remotes each ship their own visual language.
+- **VP2=Yes, VP3=No** — session-sharing platform without federated read resilience.
+
 ## What the plateau folder holds
 
 ```

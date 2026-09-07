@@ -10,7 +10,7 @@ tags:
 ---
 
 # How this generic file is used
-This extends [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create]] applied to any feature's `{feature}.client.ts`.
+This extends [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create.md]] applied to any feature's `{feature}.client.ts`.
 
 # Goals
 

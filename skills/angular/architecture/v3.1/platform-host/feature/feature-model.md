@@ -69,16 +69,18 @@ Two cross-catalog `Requires` edges point into `monolith/`: `SessionSharing` requ
 | ContractEventBus | `@platform/contracts` mentions an `EventBus` for host↔remote events, but no V1 solution details it (only `SessionContract` is worked out). A future feature: typed event channels between host and remotes. | optional, host + remote |
 | RemoteHealthAndVersioning | A runtime health/compat surface for remotes (which remote is up, on which `@platform/contracts` major) beyond the load-time fallback. | optional, host |
 
-The `monolith/` aspirational candidates (SSR, i18n, telemetry, feature-flags, runtime-config, `PersistedState`) apply to the host **via composition** — they belong to `monolith/`, not here.
+Everything `monolith/` offers — its aspirational candidates (SSR, i18n, telemetry, feature-flags, runtime-config) and its VPs (`PersistedState` included) — applies to the host **via composition**; it belongs to `monolith/`, not here.
 
 ## Open questions on V1
 
-1. **`solution-platform-embeddability` is three things in one solution.** **Working hypothesis: split during delta-conflict-detection** into `solution-federation-host` (this catalog: `RuntimeRemoteFederation`, `FederatedReadResilience`), `solution-platform-contracts` (this catalog: `PlatformContracts` — the package), and `solution-federation-remote` (the `embeddable-app` catalog: its `FederationRemoteContract`).
-2. **`solution-design-system-application` is two-sided.** **Working hypothesis: split** into `solution-host-design-system-consumption` (this catalog: `HostDesignSystemConsumption`) and `solution-remote-design-system-consumption` (the `embeddable-app` catalog).
-3. **`solution-authentication`'s `SessionContract` publication is a separate concern.** Full auth stays in `monolith/`. **Working hypothesis: a new `solution-session-sharing`** (this catalog: `SessionSharing`) `depends_on` the monolith `solution-authentication`.
-4. **Does `RuntimeRemoteFederation` require `HostDesignSystemConsumption`?** V1 `solution-design-system-application` `depends_on solution-platform-embeddability` (real), and every V1 platform plateau has both. But a federation host whose remotes each bring their own UI, with no shared design system, is conceivable. **Working hypothesis: `HostDesignSystemConsumption` is variable (near-universal)** — a platform almost always wants one visual language, but it is not a federation prerequisite.
-5. **V1 `solution-platform-embeddability` `depends_on solution-offline-first`** — over-strong (see [[skills/angular/architecture/v3.1/monolith/feature/feature-model.md#open-questions-on-v1|monolith open questions]]). **Working hypothesis:** only `FederatedReadResilience` requires the host's monolith `OfflineReadResilience`; `RuntimeRemoteFederation` does not.
-6. **Is a host with zero remotes a valid `PlatformHost`?** Structurally yes — a host ready to mount remotes, none registered yet, is the initial state of every platform. **Working hypothesis: yes.**
+**All resolved.** Recorded during Stage 1; resolved by the owner across Stages 2–4.
+
+1. **`solution-platform-embeddability` is three things in one solution.** **Resolved:** split into `solution-federation-host` (this catalog: `RuntimeRemoteFederation`, `FederatedReadResilience`), `solution-platform-contracts` (this catalog: `PlatformContracts` — the package), and `solution-federation-remote` (the `embeddable-app` catalog: its `FederationRemoteContract`).
+2. **`solution-design-system-application` is two-sided.** **Resolved:** split into `solution-host-design-system-consumption` (this catalog) and `solution-remote-design-system-consumption` (the `embeddable-app` catalog).
+3. **`solution-authentication`'s `SessionContract` publication is a separate concern.** **Resolved:** full auth stays in `monolith/`; a new `solution-session-sharing` (this catalog: `SessionSharing`) `depends_on` the monolith `solution-authentication` + `solution-platform-contracts` + `solution-federation-host`. ADR [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]].
+4. **Does `RuntimeRemoteFederation` require `HostDesignSystemConsumption`?** **Resolved: no** — `HostDesignSystemConsumption` is variable (near-universal): a platform almost always wants one visual language, but it is not a federation prerequisite.
+5. **V1 `solution-platform-embeddability` `depends_on solution-offline-first`** — over-strong. **Resolved:** only `FederatedReadResilience` requires the host's monolith `OfflineReadResilience`; `RuntimeRemoteFederation` does not (`solution-federation-host` dropped the edge).
+6. **Is a host with zero remotes a valid `PlatformHost`?** **Resolved: yes** — a host ready to mount remotes, none registered yet, is the initial state of every platform.
 
 ## Out of scope
 

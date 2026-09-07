@@ -61,9 +61,9 @@ SOLUTION:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend|Repository]] - extend - add `libs/shared/logging`, enforce "log only through [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend|Repository]] workspace-wide"
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/logging`, enforce "log only through [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md|Repository]] workspace-wide"
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]] - create - `LoggerService` workflow
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|libs/shared/logging]] - create - `LoggerService` workflow
 
 ## Logging from a feature (happy path)
 
@@ -86,9 +86,9 @@ PROJECT:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md#MUST|Logging/shared-logging.project.create]]
 
 ## SHOULD
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend|See Repository.extend.md]] — calling `console.*` directly from feature code; logging a token/passwo[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend#MUST|Repository]]shar[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST|Logging/shared-logging.project.create]]console wrapper ins[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create#MUST|Logging/shared-logging.project.create]]tside `libs/shared/loggin[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend|See Repository.extend.md]] context, not an interpolated string
-- Avoid — [ ] Production builds filter out `debug`/`info`, keeping `warn`/`error[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|See shared-logging.project.create.md]]
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — calling `console.*` directly from feature code; logging a token/passwo[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md#MUST|Repository]]shar[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md#MUST|Logging/shared-logging.project.create]]console wrapper ins[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md#MUST|Logging/shared-logging.project.create]]tside `libs/shared/loggin[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md|See Repository.extend.md]] context, not an interpolated string
+- Avoid — [ ] Production builds filter out `debug`/`info`, keeping `warn`/`error[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|See shared-logging.project.create.md]]

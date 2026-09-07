@@ -70,13 +70,13 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend|Repository]] - extend - bump minimum Angular version to 22+, add the convention for extracting non-trivial field schemas into `.form.ts` files
+- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend.md|Repository]] - extend - bump minimum Angular version to 22+, add the convention for extracting non-trivial field schemas into `.form.ts` files
 
 PROJECT:
 - No new project — this solution's changes apply at the component level, inside existing feature projects
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend|{form-name} (generic pattern)]] - extend - build the form with Signal Forms, applied to any form component in any feature
+- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|{form-name} (generic pattern)]] - extend - build the form with Signal Forms, applied to any form component in any feature
 
 # Workflow
 
@@ -103,15 +103,15 @@ Artifact-level:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend#MUST|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend#MUST|{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md#MUST|{component-name}.component.ts.extend]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend#SHOULD|{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md#SHOULD|{component-name}.component.ts.extend]]
 
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend#SHOULD|Repository.extend]]
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend|See Repository.extend.md]] — starting a new form with Reactive Forms out of habit; mass-migrating existing forms for consistency's sake alone.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend|See {component-name}.component.ts.extend.md]] — manually subscribing to a signal-based field's changes instead of reading it in a computed/effect.
+- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend.md#SHOULD|Repository.extend]]
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — starting a new form with Reactive Forms out of habit; mass-migrating existing forms for consistency's sake alone.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|See {component-name}.component.ts.extend.md]] — manually subscribing to a signal-based field's changes instead of reading it in a computed/effect.
 # Check list
 
 - [ ] The workspace runs Angular >= 22

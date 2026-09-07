@@ -9,13 +9,13 @@ tags:
 
 # Structure
 
-No new directories. This extension adds a version requirement and a placement convention on top of [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create]].
+No new directories. This extension adds a version requirement and a placement convention on top of [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]].
 
 ## Directory and file skills
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| libs/{feature}/feature/src/lib/**/*.form.ts | Optional, used only when a form's field schema/validators are non-trivial enough to extract from the component — see [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend]] for when to extract vs. keep inline |
+| libs/{feature}/feature/src/lib/**/*.form.ts | Optional, used only when a form's field schema/validators are non-trivial enough to extract from the component — see [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md]] for when to extract vs. keep inline |
 
 # NPM Packages
 

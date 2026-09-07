@@ -78,7 +78,7 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create|Repository]] - create - Angular CLI multi-project workspace with the publishable `design-system` library, the `demo` preview application, ng-packagr build config, and Changesets configuration
+- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository]] - create - Angular CLI multi-project workspace with the publishable `design-system` library, the `demo` preview application, ng-packagr build config, and Changesets configuration
 
 No project- or artifact-level (component/service) implementation files are introduced by this solution — it establishes only the repository-level structure. Individual components and tokens are introduced by `solution-design-system-tokens` and `solution-design-system-components`s.
 
@@ -100,18 +100,18 @@ No project- or artifact-level (component/service) implementation files are intro
 ## Missing changeset (failure path, caught in CI)
 
 1. A PR modifies the library's public API but does not include a changeset file.
-2. CI fails per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create#Unittest TestCases]], blocking merge until a changeset is added.
+2. CI fails per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#Unittest TestCases]], blocking merge until a changeset is added.
 3. This prevents the release-time uncertainty ("what should this bump be? did we forget something since the last release?") that motivated choosing Changesets in the first place.
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create#MUST|Repository]]
+- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#MUST|Repository]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create#SHOULD|Repository]]
+- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#SHOULD|Repository]]
 
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create|See Repository.create.md]] — publishing without a changeset; reintroducing Storybook for an individual component after this repository already decided against it.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|See Repository.create.md]] — publishing without a changeset; reintroducing Storybook for an individual component after this repository already decided against it.
 # Check list
 
 - [ ] The repository is a plain Angular CLI multi-project workspace, not Nx

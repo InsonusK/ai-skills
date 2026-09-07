@@ -10,7 +10,7 @@ tags:
 ---
 
 # How this file is used
-This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create|projects/demo]], already established as the design system's self-built component preview app (see [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling ADR]]). No new project is created — `projects/demo` already fills the role `apps/component-preview` fills for the platform plateau; this file only adds the convention that every example page becomes a target for visual/a11y specs. The actual preview components now live next to each design-system component under `spec/preview/` and are imported by the demo app.
+This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|projects/demo]], already established as the design system's self-built component preview app (see [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling ADR]]). No new project is created — `projects/demo` already fills the role `apps/component-preview` fills for the platform plateau; this file only adds the convention that every example page becomes a target for visual/a11y specs. The actual preview components now live next to each design-system component under `spec/preview/` and are imported by the demo app.
 
 # Goals
 
@@ -54,4 +54,4 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 # Unittest TestCases
 
 - [ ] WHEN a new component/state is added to `projects/demo` THEN
-  - [ ] a corresponding visual and accessibility spec is added in the same change, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create]]
+  - [ ] a corresponding visual and accessibility spec is added in the same change, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md]]

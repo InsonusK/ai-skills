@@ -22,7 +22,7 @@ extends:
   - libs/shared/logging (adds BackendLogSink, LogRetryQueue, LoggerService.report())
   - apps/platform-shell (registers GlobalErrorHandler)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill|solution-logging-base]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
   - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|Backend Log Sink Strategy ADR]]"
@@ -61,8 +61,8 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill|solution-logging-base]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]] - extended with `BackendLogSink`, `LogRetryQueue`, `LoggerService.report()`
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]
+  - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|libs/shared/logging]] - extended with `BackendLogSink`, `LogRetryQueue`, `LoggerService.report()`
 - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]
   - `BackendLogSink` sends batches through `libs/shared/http-core`'s base HTTP service, consistent with that solution's conventions
 
@@ -72,16 +72,16 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Repository.extend|Repository]] - extend - register `BackendLogSink` alongside `ConsoleLogSink`, extend `LoggerService` with `report()`
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Repository.extend.md|Repository]] - extend - register `BackendLogSink` alongside `ConsoleLogSink`, extend `LoggerService` with `report()`
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend|apps/platform-shell]] - extend - register `GlobalErrorHandler` as the application-wide `ErrorHandler`
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - register `GlobalErrorHandler` as the application-wide `ErrorHandler`
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create|backend-log-sink.ts]] - create - batches and sends `warn`/`error`/`report` entries to the backend
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create|log-retry-queue.ts]] - create - bounded, IndexedDB-persisted retry queue for failed batches
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend|logger.service.ts (extend)]] - extend - add `report()`, always sent regardless of environment-based level filtering
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create|global-error-handler.ts]] - create - captures uncaught exceptions, routes them through `LoggerService.error`
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|backend-log-sink.ts]] - create - batches and sends `warn`/`error`/`report` entries to the backend
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|log-retry-queue.ts]] - create - bounded, IndexedDB-persisted retry queue for failed batches
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend.md|logger.service.ts (extend)]] - extend - add `report()`, always sent regardless of environment-based level filtering
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|global-error-handler.ts]] - create - captures uncaught exceptions, routes them through `LoggerService.error`
 
 # Workflow
 
@@ -137,20 +137,20 @@ sequenceDiagram
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create#MUST|backend-log-sink.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create#MUST|log-retry-queue.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend#MUST|logger.service.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create#MUST|global-error-handler.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md#MUST|backend-log-sink.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md#MUST|log-retry-queue.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend.md#MUST|logger.service.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md#MUST|global-error-handler.ts]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create#SHOULD|log-retry-queue.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md#SHOULD|log-retry-queue.ts]]
 
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Repository.extend|See Repository.extend.md]] — forwarding `debug`/`info` entries to `BackendLogSink`.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create|See backend-log-sink.ts.create.md]] — sending each entry as its own request instead of batching.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create|See log-retry-queue.ts.create.md]] — an unbounded retry queue; retrying the whole queue in a tight loop after the first failure.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend|See logger.service.ts.extend.md]] — using `report()` as a workaround to bypass `error()` conventions.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create|See global-error-handler.ts.create.md]] — logging the raw caught error object instead of sanitized fields.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — forwarding `debug`/`info` entries to `BackendLogSink`.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|See backend-log-sink.ts.create.md]] — sending each entry as its own request instead of batching.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|See log-retry-queue.ts.create.md]] — an unbounded retry queue; retrying the whole queue in a tight loop after the first failure.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend.md|See logger.service.ts.extend.md]] — using `report()` as a workaround to bypass `error()` conventions.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|See global-error-handler.ts.create.md]] — logging the raw caught error object instead of sanitized fields.
 # Check list
 
 - [ ] Only `warn`/`error`/`report()` entries ever reach `BackendLogSink`

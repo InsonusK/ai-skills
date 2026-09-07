@@ -16,6 +16,35 @@ built, its plateau would `parent_plateaus` a `monolith` plateau. No solution yet
 
 Run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
 
+## Plateau × VP matrix
+
+Columns are the VPs of [`../variability-map.md`](../variability-map.md).
+
+| Plateau | Parent | VP1 | VP2 | VP3 |
+|---|---|:-:|:-:|:-:|
+| plateau-embeddable-app | — (from scratch) | ✅ | ✅ | ❌ |
+
+Column legend — VP1 RemoteSessionConsumption · VP2 RemoteDesignSystemConsumption ·
+VP3 RemoteInternalArchitecture. Full descriptions and realizing solutions are in
+[`../variability-map.md`](../variability-map.md).
+
+**Shape note — VP3 is aspirational (skeleton).** ❌ means no solution realizes it yet, not that a
+remote can never be internally a monolith. When `solution-*` for `RemoteInternalArchitecture` exists,
+its plateau will `parent_plateaus` a `monolith/` plateau.
+
+## Reference: V1 → v3.1
+
+| V1 plateau | v3.1 plateau | VP answers |
+|---|---|---|
+| `plateau-embeddable-app` (parent `plateau-platform-monolith` — wrong; feature-model open question 1) | `plateau-embeddable-app` (`parent_plateaus: []`) | VP1, VP2; VP3=No |
+
+## Coverage: combinations with no named plateau
+
+- **VP1=No** — a remote with no user-scoped data (a public widget).
+- **VP2=No** — a remote that renders no design-system-styled UI (a canvas/chart embed).
+- **VP1=No, VP2=No** — the minimal remote: just `FederationRemoteContract`.
+- **VP3=Yes** — a remote that is internally a full monolith (aspirational, no solution).
+
 ## What the plateau folder holds
 
 ```

@@ -11,13 +11,13 @@ tags:
 
 ## Workspace Structure
 
-No new top-level directories are added to the base layout from [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create]]. `apps/platform-shell` is reconfigured, and one new tag is introduced.
+No new top-level directories are added to the base layout from [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]]. `apps/platform-shell` is reconfigured, and one new tag is introduced.
 
 ## Directory and project skills
 
 | Directory | Description |
 | ---------- | ----------- |
-| /apps/platform-shell | Gains `type:host` tag in addition to `type:app`, `scope:platform`. Now owns federation host configuration (`federation.config.ts`) and a runtime remote registry (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend]]). |
+| /apps/platform-shell | Gains `type:host` tag in addition to `type:app`, `scope:platform`. Now owns federation host configuration (`federation.config.ts`) and a runtime remote registry (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md]]). |
 
 # NPM Packages
 

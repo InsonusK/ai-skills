@@ -83,17 +83,17 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend|Repository]] - extend - Workbox build integration, `OfflineTransportError` distinction in every feature's Client
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend.md|Repository]] - extend - Workbox build integration, `OfflineTransportError` distinction in every feature's Client
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend|apps/platform-shell]] - extend - register the generated service worker and add the Workbox build step
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - register the generated service worker and add the Workbox build step
 - [[./Implementation/GlobalStore/shared-state.project.extend.md|libs/shared/state]] - extend - register the `connectivity` slice
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|service-worker (sw-src.ts / sw-build.ts)]] - create - the five content-type routing rules
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create|connectivity.store.ts]] - create - `isOnline` signal combining browser events and health-check
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|{feature}.client.ts (extend)]] - extend - throws `OfflineTransportError` on network-level failure, generic pattern applied to any feature's Client
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create|offline-banner.component.ts]] - create - shared offline indicator, mounted once at the shell level
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|service-worker (sw-src.ts / sw-build.ts)]] - create - the five content-type routing rules
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|connectivity.store.ts]] - create - `isOnline` signal combining browser events and health-check
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend.md|{feature}.client.ts (extend)]] - extend - throws `OfflineTransportError` on network-level failure, generic pattern applied to any feature's Client
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|offline-banner.component.ts]] - create - shared offline indicator, mounted once at the shell level
 
 # Workflow
 
@@ -136,18 +136,18 @@ sequenceDiagram
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create#MUST|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create#MUST|GlobalStore/connectivity.store.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend#MUST|DataAccess/{feature}.client.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create#MUST|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md#MUST|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md#MUST|GlobalStore/connectivity.store.ts.create]]
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend.md#MUST|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md#MUST|UI/offline-banner.component.ts.create]]
 
 ## SHOULD
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend|See Repository.extend.md]] — building even a minimal mutation queue as part of this solution; caching auth/mutation endpoints with anything other than network-only.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create|See service-worker.create.md]] — registering routes in an order that lets a mutation be matched by the API-reads rule.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create|See connectivity.store.ts.create.md]] — relying on the browser's online signal alone without the health-check.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend|See {feature}.client.ts.extend.md]] — treating a network-level failure the same as a server error.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create|See offline-banner.component.ts.create.md]] — a feature building its own local offline indicator instead of the shared one.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — building even a minimal mutation queue as part of this solution; caching auth/mutation endpoints with anything other than network-only.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|See service-worker.create.md]] — registering routes in an order that lets a mutation be matched by the API-reads rule.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|See connectivity.store.ts.create.md]] — relying on the browser's online signal alone without the health-check.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend.md|See {feature}.client.ts.extend.md]] — treating a network-level failure the same as a server error.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|See offline-banner.component.ts.create.md]] — a feature building its own local offline indicator instead of the shared one.
 
 # Check list
 

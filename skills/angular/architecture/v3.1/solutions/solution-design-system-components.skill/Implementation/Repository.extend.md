@@ -13,7 +13,7 @@ tags:
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| /projects/design-system/src/lib/{component-name} | One directory per component, following the generic pattern in [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create]]. |
+| /projects/design-system/src/lib/{component-name} | One directory per component, following the generic pattern in [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md]]. |
 
 # Rules
 

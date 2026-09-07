@@ -68,10 +68,10 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend|Repository]] - extend - add the convention that every routable feature exports its `Routes` via `index.ts`, relative to its own root only
+- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend.md|Repository]] - extend - add the convention that every routable feature exports its `Routes` via `index.ts`, relative to its own root only
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend|apps/platform-shell]] - extend - root `app.routes.ts` mounting feature root segments only
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create|{Feature}/feature (generic pattern)]] - create - feature's own root-relative routes, exported from `index.ts`, applied by any future feature-owning solution
+- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - root `app.routes.ts` mounting feature root segments only
+- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|{Feature}/feature (generic pattern)]] - create - feature's own root-relative routes, exported from `index.ts`, applied by any future feature-owning solution
 
 # Workflow
 
@@ -84,20 +84,20 @@ PROJECT:
 ## Boundary violation (failure path)
 
 1. A developer adds a route to `apps/platform-shell` that targets a path nested inside a feature (e.g. `feature1/page`) instead of mounting only `feature1`.
-2. This is caught in review against the rule in [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend#MUST NOT]] — the shell must not reference a path two or more levels below its own mount point.
+2. This is caught in review against the rule in [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend.md#MUST NOT]] — the shell must not reference a path two or more levels below its own mount point.
 3. Fix: the shell mounts only `feature1`; the `page` path is defined inside the feature's own `{feature}.routes.ts`.
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend#MUST|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create#MUST|{feature}.routes.ts]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md#MUST|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md#MUST|{feature}.routes.ts]]
 
 ## SHOULD
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend|See Repository.extend.md]] — a feature baking its own mount segment into its routes; the shell reaching into a feature's internal path structure.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend|See platform-shell.project.extend.md]] — the shell defining a nested path instead of mounting a single root segment.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create|See {feature}.routes.ts.create.md]] — a feature baking its own name into its own route paths.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — a feature baking its own mount segment into its routes; the shell reaching into a feature's internal path structure.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|See platform-shell.project.extend.md]] — the shell defining a nested path instead of mounting a single root segment.
+- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|See {feature}.routes.ts.create.md]] — a feature baking its own name into its own route paths.
 
 # Check list
 

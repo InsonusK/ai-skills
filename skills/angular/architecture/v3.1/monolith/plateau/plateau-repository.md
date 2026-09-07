@@ -26,6 +26,12 @@ VP8 PersistedState. Full descriptions, the solution that realizes each VP, and t
 between VPs are in [`../variability-map.md`](../variability-map.md) — the single source of truth;
 this table is only the plateau-oriented view of the same answers.
 
+### Shape notes
+
+- **VP5 (OfflineWriteQueue) is per feature.** ✅ means the plateau ships the queue mechanism and at
+  least one feature opts a mutation into it — not that every feature is queued. See the
+  [map](../variability-map.md).
+
 ## Lineage & new solutions
 
 | # | Plateau | Parent | New solutions in its `created_by` (on top of the parent chain) |
@@ -39,6 +45,38 @@ this table is only the plateau-oriented view of the same answers.
 
 Build scaffolding (anchor contract, mechanical check, decisions log) is in [`../../agent/`](../../agent/) —
 run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
+
+## Reference: the V1 plateau chain → v3.1 VP answers
+
+The V1 main chain (`online-monolith → async-monolith → offline-monolith → monitored-app →
+multiuser-app`) realizes a staged subset of this VP space. V1 always materialized `GlobalStore` and
+`BackendDataAccess` from its first plateau, so its `online-monolith` already answers VP2, VP3.
+
+| V1 plateau | v3.1 monolith VPs added | Notes |
+|---|---|---|
+| `plateau-online-monolith` | VP2, VP3 | v3.1 also allows a thinner plateau below this (VP2=No, VP3=No — a local-only app) that V1 has no equivalent for |
+| `plateau-async-monolith` | + VP1, VP4 | preloading/budgets + read resilience |
+| `plateau-offline-monolith` | + VP5 (per feature) | durable write queue |
+| `plateau-monitored-app` | + VP6 | *(V1 also adds the whole platform-host layer here — now [`../../platform-host/plateau/plateau-repository.md`](../../platform-host/plateau/plateau-repository.md))* |
+| `plateau-multiuser-app` | + VP7 | *(V1's final chain plateau; the federation/session parts are `platform-host/` + `embeddable-app/`)* |
+
+Every V1 row satisfies every Constraint in the [map](../variability-map.md): no row sets
+VP4/VP5/VP7 without VP2+VP3, VP5 without VP4, or VP6 without VP3.
+
+## Coverage: legitimate VP combinations with no named plateau
+
+The chain names one plateau per useful cumulative point. Combinations it does **not** name a plateau
+for, all legal under the map's Constraints:
+
+- **VP2=No, VP3=No** — a purely local app (tools, calculators, offline-only editors). The chain
+  starts at `plateau-online-monolith`, which already has both.
+- **VP3=Yes, VP2=No** — a backend-connected app with only component + feature-level state, no
+  cross-cutting store.
+- **VP4+ without VP1** — read resilience without the preloading/budget discipline; the chain bundles
+  VP1 into `plateau-async-monolith` ahead of VP4.
+
+`plateau-multiuser-monolith` already covers "VP7=Yes outside a platform host" and
+`plateau-persisted-state-monolith` covers VP8 — neither had a V1 equivalent.
 
 ## What each plateau folder holds
 
@@ -70,7 +108,17 @@ in the build sandbox.
 When two or more solutions modify the same code element and the interaction is only about **ordering**
 or is a **benign N≥3 bucket** (not a real semantic conflict), `delta-conflict-detection` records a
 per-element file in the `registry/` folder of the shallowest plateau where all the intersecting
-solutions coexist. Every Angular v3.1 group is **canonical — zero resolver solutions**. Highlights:
+solutions coexist. Every Angular v3.1 group is **canonical — zero resolver solutions**.
+
+**Convention for groups that grow down the chain.** A group whose membership increases plateau by
+plateau (`shared-state-project`: N 2 → 5 across `offline-read` / `multiuser` / `persisted-state`;
+`feature-routes-ts`: N 2 → 4 across `async` / `multiuser`) is recorded as a **cumulative snapshot** at
+each plateau that carries an entry — the file lists the solutions present *at that plateau*, links
+the deeper snapshot, and the deepest one is the canonical full-group entry. Intermediate plateaus
+where a member joins but no new classification question arises (e.g. `offline-full` for
+`shared-state-project`) inherit the parent's entry rather than duplicating it. This is a deliberate
+variant of the skill's "one file per element" — it keeps each plateau's `registry/` a complete local
+picture. Highlights:
 
 - **`monolith-repository`** / **`platform-shell-project`** — repo- and composition-root buckets; every
   feature adds one distinct tag / allow-list row / bootstrap wiring. `source: ordering-only`, N≥3 benign.

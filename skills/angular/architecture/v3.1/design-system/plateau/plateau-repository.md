@@ -14,6 +14,30 @@ with `document.documentElement.dataset.tenant` against the exported `DsTenant` u
 
 Run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
 
+## Plateau × VP matrix
+
+The catalog has one VP — `MultiTenantTheming` ([`../variability-map.md`](../variability-map.md)).
+Answers are cumulative down the lineage.
+
+| Plateau | Parent | VP1 |
+|---|---|:-:|
+| plateau-design-system | — (from scratch) | ❌ |
+| plateau-multi-tenant-design-system | plateau-design-system | ✅ |
+
+Column legend — VP1 MultiTenantTheming (requires `HybridDesignTokens`; realized by
+`solution-design-system-multi-tenant-theming`). Full description in
+[`../variability-map.md`](../variability-map.md).
+
+## Reference: V1 → v3.1
+
+| V1 plateau | v3.1 plateau | VP1 |
+|---|---|:-:|
+| `plateau-design-system` | `plateau-design-system` | ❌ — composes all four common solutions |
+| *(none)* | `plateau-multi-tenant-design-system` | ✅ — + `solution-design-system-multi-tenant-theming` |
+
+`plateau-multi-tenant-design-system` is the catalog's first plateau with no V1 equivalent — a
+multi-tenant-themed design system, built on `plateau-design-system` via `parent_plateaus`.
+
 ## What each plateau folder holds
 
 ```

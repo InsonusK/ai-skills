@@ -34,7 +34,7 @@ tags:
 | Directory/file | Description |
 | --------------- | ----------- |
 | federation.config.ts | Native Federation config: declares `@platform/contracts` (and Angular) as `singleton: true` shared dependencies; host does not declare any remotes at build time (Dynamic Federation) |
-| /remote-registry/remote-registry.service.ts | Runtime service that resolves the list of available embeddable apps and their `remoteEntry` URLs from configuration (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create]]) |
+| /remote-registry/remote-registry.service.ts | Runtime service that resolves the list of available embeddable apps and their `remoteEntry` URLs from configuration (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md]]) |
 | /shell/shell.component.ts | Mounts a resolved remote's exposed entry point into a host-provided slot, using `loadRemoteModule` |
 
 # NPM Packages

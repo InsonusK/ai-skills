@@ -27,7 +27,7 @@ There is no prescribed `feature`/`data-access` split, no required state tier, no
 
 @import "./diagrams/feature-diagram.mmd" {as="mermaid"}
 
-`RemoteSessionConsumption` and `RemoteDesignSystemConsumption` have dotted edges to the `platform-host` catalog: a remote can *declare* session consumption with no host `SessionSharing` (it just always reads `isAuthenticated: false`), and its design-system version negotiation is *with* the host's `HostDesignSystemConsumption`. Neither is a hard `Requires` on the host — a remote is built and deployed without knowing which host will load it.
+`RemoteSessionConsumption` and `RemoteDesignSystemConsumption` are cross-catalog-coupled to `platform-host` but carry **no hard `Requires`**, so neither is drawn as an edge: a remote can *declare* session consumption with no host `SessionSharing` (it just always reads `isAuthenticated: false`), and its design-system version negotiation is *with* the host's `HostDesignSystemConsumption`. A remote is built and deployed without knowing which host will load it.
 
 ## Features
 
@@ -53,14 +53,16 @@ There is no prescribed `feature`/`data-access` split, no required state tier, no
 
 ## Open questions on V1
 
-1. **`plateau-embeddable-app`'s `parent_plateau: plateau-platform-monolith` is wrong** for a separate-repo product with a different baseline. **Working hypothesis: this catalog's plateaus are built from scratch (`parent_plateaus` empty)**; the host↔remote relationship is expressed as cross-catalog references, not `parent_plateaus`. (`RemoteInternalArchitecture=Yes` plateaus are the exception — they `parent_plateaus` a `monolith/` plateau.)
-2. **Are `RemoteSessionConsumption` and `RemoteDesignSystemConsumption` really optional?** V1's single `plateau-embeddable-app` has both. But a public widget with no user context could skip `SessionContract` entirely, and a remote that renders no shared-styled UI could skip the design system. **Working hypothesis: `FederationRemoteContract` is the only common feature; the other two are variable (near-universal).** This gives the catalog its first two real VPs. Owner call.
+**All resolved.** Recorded during Stage 1; resolved by the owner across Stages 2–4.
+
+1. **`plateau-embeddable-app`'s `parent_plateau: plateau-platform-monolith` is wrong** for a separate-repo product with a different baseline. **Resolved:** this catalog's plateau is built from scratch (`parent_plateaus: []`); the host↔remote relationship is expressed as cross-catalog references. (`RemoteInternalArchitecture=Yes` plateaus would be the exception — they `parent_plateaus` a `monolith/` plateau.)
+2. **Are `RemoteSessionConsumption` and `RemoteDesignSystemConsumption` really optional?** A public widget with no user context can skip `SessionContract`; a remote that renders no shared-styled UI can skip the design system. **Resolved (owner): `FederationRemoteContract` is the only common feature; the other two are variable** — the catalog's VP1 and VP2.
 3. **Three V1 solutions are two-sided** (see [[skills/angular/architecture/v3.1/platform-host/feature/feature-model.md#open-questions-on-v1|platform-host open questions]] 1–3). This catalog's realizations are the remote halves: `solution-federation-remote` (`FederationRemoteContract`), `solution-remote-design-system-consumption` (`RemoteDesignSystemConsumption`), `solution-session-consumption` (`RemoteSessionConsumption`).
-4. **Does this catalog need its own testing / structure solutions?** V1's `plateau-embeddable-app` includes none. **Working hypothesis: no** — testing and internal structure are the remote team's choice; only `RemoteInternalArchitecture=Yes` pulls in `monolith/`'s testing features.
+4. **Does this catalog need its own testing / structure solutions?** **Resolved: no** — testing and internal structure are the remote team's choice; only `RemoteInternalArchitecture=Yes` would pull in `monolith/`'s testing features.
 
 ## Out of scope
 
 - **The host side** of federation, design-system sharing, and session publication is in [[skills/angular/architecture/v3.1/platform-host/feature/feature-model.md|`platform-host/`]].
 - **`@platform/contracts`** is owned and published by `platform-host/` (`PlatformContracts`); this model consumes it.
 - **The remote's own internal architecture** is unconstrained unless `RemoteInternalArchitecture` is adopted — this is a contract-conformance model, not a build guide.
-- **`IsCommon` is a judgment call** — only `FederationRemoteContract` is common (pending open question 2); everything else is a per-remote choice.
+- **`IsCommon` is a judgment call** — only `FederationRemoteContract` is common; `RemoteSessionConsumption` / `RemoteDesignSystemConsumption` are per-remote choices (VP1 / VP2).

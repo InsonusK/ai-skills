@@ -113,7 +113,7 @@ Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `v
 - ✅ **`solution-repository-structure` `solution-update` ADR** — `adr/feature-lib-split-conditional-on-backend-data-access.md` (commit closing the debts). `Repository.create` + main skill + variability-map now say the `data-access` lib is conditional on `BackendDataAccess`.
 - ✅ **`shared-state-project` `.extend` on `authentication` / `offline-sync`** (delta-conflict Finding 4) — both `Implementation/GlobalStore/shared-state.project.extend.md` files exist; registry entries + `plateau-multiuser-monolith/registry/shared-state-project.md` record the closure.
 - ✅ **The 2 aspirational skeletons are now full solutions with plateaus** (this session — user asked to build both). `solution-persisted-state` (monolith VP8): 2 ADRs + 6 Implementation files (`persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` + `withPersistedDraft()` + `preferences` slice) → `plateau-persisted-state-monolith` (parent `plateau-multiuser-monolith`, no new project, 48 structure skills, registry N=5, example 31 files/115 tests green). `solution-design-system-multi-tenant-theming` (design-system VP1): 2 ADRs + 5 Implementation files (`ds-tenant-theme` mixin + per-tenant `[data-tenant]` files + `DsTenant` union) → `plateau-multi-tenant-design-system` (parent `plateau-design-system`, no new project, 14 structure skills, registry N=5, example green). Both drop the `> Draft contract` banner. `check.sh` `PLANNED=''` — every solution now has full Implementation. Catalog feedback: (1) `provideState(feature, { metaReducers })` silently ignores the config — only the three-arg `provideState(name, reducer, config)` applies it; (2) the tenants asset must resolve as `styles/tenants.scss`, not nested.
-- ✅ **`plateau/README.md` per catalogue** — all 4 written (`monolith/`, `design-system/`, `platform-host/`, `embeddable-app/` `plateau/README.md`).
+- ✅ **`plateau/plateau-repository.md` per catalogue** — all 4 written (`monolith/`, `design-system/`, `platform-host/`, `embeddable-app/` `plateau/plateau-repository.md`; renamed from `plateau/README.md` when `plateau-map-repository` became `plateau-map-create`).
 - ✅ **`whenToUse:` on all plateau structure skills** — backfilled with concrete per-role sentences across the 5 monolith plateaus (166 files); the other 3 catalogues already had it.
 - ✅ **`solution-offline-sync` pending-sync-indicator** — `Implementation/UI/pending-sync-indicator.component.ts.create.md` rewritten to the presentational (`count` input, derived from rows) shape the plateaus actually use, matching the per-entity `syncStatus` state machine (commit `dddf1ed9`).
 
@@ -228,6 +228,53 @@ The container has **no Node**. Installed manually from nodejs.org (npm registry 
   - `structure/` = 11 seeded from `plateau-design-system` + 3 new (`class-tenant-theme`, `class-tenant-palette`, `class-tenants`); repo + `project-design-system` + `project-demo` merged the VP1 delta; `class-theme` noted unchanged. `registry/design-system-repository.md` updated to **N = 5** (canonical — VP1 is entirely new files under a new `styles/tenants/` dir).
   - `example/` = the plateau-design-system CLI workspace evolved: `projects/design-system/styles/tenants/` (`_tenant-theme.scss` + `_acme.scss` + `_globex.scss`) + `styles/tenants.scss` aggregator asset + `src/lib/tenants.ts` (`DS_TENANTS`/`DsTenant`, + spec) + `ng-package.json` asset entries + `public-api` export; `projects/demo` gains a `<select>` tenant switcher + `@use '…/tenants'`; `status-chip` gains a per-tenant style-snapshot spec. **`ng build design-system` (APF — `styles/tenants/**` shipped, `DsTenant` in `types/*.d.ts`, no `@angular/material` leak) + `ng test design-system` (3 files / 9 tests) + `ng build demo` (root CSS carries `:root[data-tenant='acme']` / `[data-tenant='globex']`) + `tsc -p tsconfig.e2e.json` all GREEN.**
   - **Catalog feedback**: (1) the tenants asset must resolve as `styles/tenants.scss` (the `styles/<name>.scss` pattern the existing `@use 'design-system/styles/theme'` follows) — an aggregator at `styles/tenants/tenants.scss` would not resolve. (2) "a tenant varies colour only" is asserted in the per-tenant spec (resolved `font` byte-identical across tenants), not just a review rule. (3) `noPropertyAccessFromIndexSignature` forces `dataset['tenant']`.
-- **All 10 plateaus DONE.** `check.sh` PASS (`PLANNED=''` — every solution has full Implementation). variability maps + `plateau/README.md` (monolith, design-system) updated. Stage 4 complete — **no aspirational solutions remain**.
+- **All 10 plateaus DONE.** `check.sh` PASS (`PLANNED=''` — every solution has full Implementation). variability maps + `plateau/plateau-repository.md` (monolith, design-system) updated. Stage 4 complete — **no aspirational solutions remain**.
 
 **Multi-session effort** (dotnet's Stage 4 was 3 plateaus over several sessions; this is 10 + evolving examples).
+
+## Post-build validation pass — DONE (this session)
+
+Validated the catalog against the `plateau-map` pipeline skills; fixed the drift the completed
+build had left in the upstream artifacts:
+
+- **`no-plateau-view-in-variability-map` ADR** — removed the `## Plateau Map derivation` section from
+  all four `variability-map.md` files (the ADR's "drift cleanup"). The V1→v3.1 reference mapping and
+  the "combinations with no named plateau" coverage notes moved into each `plateau/plateau-repository.md`.
+- **`Realized by` links** — every cell now wikilinks its realizing solution. `platform-host` VP2/VP3
+  and all three `embeddable-app` VPs previously linked the V1 source solution (or nothing) instead of
+  the v3.1 solution that realizes them. Stripped the Stage-2 `→ v3.1 solution-x (migrated)` tails.
+- **Stale provisional prose** — "`v3.1/solutions/` does not exist yet", "Realized-by links are
+  provisional (Stage 3 repoints)", "to be encoded in `depends_on` at Stage 3", "recorded as a v3.1
+  ADR at Stage 3" replaced with the actual state (edges are in place; decisions logged here — the
+  session never authored separate constraint ADRs for the VP2/VP3 gating).
+- **Feature models** — "Open questions on V1" sections marked all-resolved with the outcome per item;
+  `PersistedState` (monolith) and `MultiTenantTheming` (design-system) moved from the aspirational
+  tables to real Features-table rows (they are realized VPs now); stale `(aspirational)` labels
+  dropped from the two diagrams; monolith "Out of scope" gained the Plateau-Components exclusion.
+- **Feature diagrams** — edge labels normalised to the closed list (`Optional (per feature)` →
+  `Optional` + node annotation; dotted `Optional` → solid; `platform-host` cross-catalog edges →
+  bare `Requires` with the target feature named in the node; `embeddable-app` soft cross-catalog
+  edges removed, kept as prose).
+- **`plateau/plateau-repository.md`** — `platform-host`, `embeddable-app`, `design-system` gained the
+  formal Plateau × VP matrix + column legend they were missing; monolith gained a VP5 per-feature
+  shape note and a note documenting the cumulative-snapshot `registry/` convention.
+- **Minor** — `solution-logging-global` `depends_on` link `.skill` → `.skill.md`; 11 other body
+  wikilinks ending `.skill|` → `.skill.md|`.
+
+Second pass (the two items left open after the first):
+
+- **The two ADRs the maps promised** were authored:
+  - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]]
+    (`solution-session-sharing`) — the `SessionContract` carve-out + the inverted `auth ↔ federation`
+    dependency (feature-model open question 3). `adr: []` → registered + `# Adr` body section.
+  - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]
+    (`solution-global-store`) — why VP4/VP5/VP7/VP8 each `require` VP2 and add a slice rather than
+    carrying their own store. The maps + monolith feature model now link it instead of `DECISIONS.md`.
+  - VP3→VP7 was *not* given an ADR — it is inherent to `solution-authentication`'s HTTP usage, not a
+    design choice. Two empty `adr/` folders (`solution-federation-remote`,
+    `solution-remote-design-system-consumption`) were removed — both reuse a shared host-side ADR.
+- **Implementation-file links normalised to `.md`** (INVARIANTS §4) — 239 wikilinks across ~57 files
+  ended `…/{file}.{create,extend}` without the `.md` suffix; all now `…/{file}.{create,extend}.md`.
+  `check.sh` tolerated both (its `resolve()` appends `.md`); the conform pass removes the drift.
+
+`check.sh` PASS. 6117 absolute wikilinks in `v3.1/` resolve.

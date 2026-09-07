@@ -9,7 +9,7 @@ tags:
 
 # Structure
 
-No new top-level directories. This extension adds artifact-placement conventions on top of [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create]] and extends the `auth` slice already created by this solution's [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts]].
+No new top-level directories. This extension adds artifact-placement conventions on top of [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]] and extends the `auth` slice already created by this solution's [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts]].
 
 ## Directory and project skills
 
@@ -17,7 +17,7 @@ No new top-level directories. This extension adds artifact-placement conventions
 | ---------- | ----------- |
 | /libs/shared/state/src/lib/auth | Extended (not recreated) with: in-memory access token field, permission list field, silent-refresh trigger. See [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]. |
 | /libs/shared/auth-ui | New lib, tagged `type:util`, `scope:shared`: hosts the permission-checking structural directive and any shared "not authorized" presentational pieces. |
-| /libs/{feature}/feature/src/lib/**/*.guard.ts | Route guards live inside the feature they protect, following the functional guard pattern in [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create]]. |
+| /libs/{feature}/feature/src/lib/**/*.guard.ts | Route guards live inside the feature they protect, following the functional guard pattern in [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md]]. |
 
 # Rules
 

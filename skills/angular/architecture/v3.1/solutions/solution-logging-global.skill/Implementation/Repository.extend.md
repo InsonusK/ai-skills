@@ -9,7 +9,7 @@ tags:
 
 # Structure
 
-No new top-level directories. This extends [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create|libs/shared/logging]] (adding `BackendLogSink` and its retry queue) and `apps/platform-shell` (registering a global `ErrorHandler`).
+No new top-level directories. This extends [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|libs/shared/logging]] (adding `BackendLogSink` and its retry queue) and `apps/platform-shell` (registering a global `ErrorHandler`).
 
 ## Directory and project skills
 

@@ -23,6 +23,7 @@ depends_on:
   - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
   - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]]"
+  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]"
 ---
 
 # Goal
@@ -49,6 +50,7 @@ adr:
 
 # Adr
 - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]] — the global tier is classical NgRx (actions/reducers/effects), not another Signal Store, for the action log and effect-based retry/conflict handling. Rejected: `@ngrx/signals` all the way up; a hand-rolled service.
+- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]] — `OfflineReadResilience` / `OfflineWriteQueue` / `Authentication` / `PersistedState` each `require` VP2 and register a slice here, rather than each carrying its own store. Rejected: a per-VP store; leaving the requirement implicit.
 
 # Requirements
 

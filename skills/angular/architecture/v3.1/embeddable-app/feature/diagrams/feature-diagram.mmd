@@ -17,6 +17,5 @@ graph TD
     Common -->|Optional| RDSC["RemoteDesignSystemConsumption"]
     Common -->|Optional| RIA["RemoteInternalArchitecture<br/>(aspirational)"]
 
-    RSC -. "meaningful only if platform-host:SessionSharing" .-> H1["(platform-host catalog)"]
-    RDSC -. "shares with platform-host:HostDesignSystemConsumption" .-> H1
-    style H1 fill:none,stroke-dasharray: 3 3
+    %% RemoteSessionConsumption / RemoteDesignSystemConsumption are cross-catalog-coupled to
+    %% platform-host but carry no hard Requires — see the prose in feature-model.md.

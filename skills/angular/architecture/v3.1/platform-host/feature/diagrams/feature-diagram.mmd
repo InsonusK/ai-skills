@@ -21,6 +21,7 @@ graph TD
     Common -->|Optional| FRR["FederatedReadResilience"]
     Common -->|Optional| EB["ContractEventBus<br/>(aspirational)"]
 
-    SS -. "Requires monolith:Authentication" .-> M1["(monolith catalog)"]
-    FRR -. "Requires monolith:OfflineReadResilience" .-> M1
-    style M1 fill:none,stroke-dasharray: 3 3
+    SS -. Requires .-> M_AUTH["monolith: Authentication"]
+    FRR -. Requires .-> M_ORR["monolith: OfflineReadResilience"]
+    style M_AUTH fill:none,stroke-dasharray: 3 3
+    style M_ORR fill:none,stroke-dasharray: 3 3

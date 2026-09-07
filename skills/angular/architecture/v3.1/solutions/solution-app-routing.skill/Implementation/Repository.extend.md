@@ -9,7 +9,7 @@ tags:
 
 # Structure
 
-No new directories are introduced. This extension adds a convention on top of the existing `index.ts` public-API rule from [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create]]: any `type:feature` project that is routable exports a `Routes` array (its own root-relative routes) from `index.ts`, in addition to whatever components/store it already exports.
+No new directories are introduced. This extension adds a convention on top of the existing `index.ts` public-API rule from [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]]: any `type:feature` project that is routable exports a `Routes` array (its own root-relative routes) from `index.ts`, in addition to whatever components/store it already exports.
 
 # Rules
 

@@ -55,7 +55,7 @@ None beyond Angular's own DI/core APIs.
   - Risk: a pre-interpolated string cannot be filtered, queried, or redacted by a backend sink.
   - Fix: `logger.warn('Order rejected', { orderId, reason })` — message + structured context.
 - `LoggerService` / `ConsoleLogSink` is never given a token, password, or PII value to log, at any level.
-  - Risk: the classic credential-leak vector — see [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend#must]].
+  - Risk: the classic credential-leak vector — see [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Repository.extend.md#must]].
   - Fix: log identifiers and shapes only.
 ## SHOULD
 - **A feature registering its own ad hoc `console.log` wrapper instead of using `LoggerService.forFeature(...)`** — Consequence: recreates, inconsistently, exactly what `LoggerService` already provides, and is invisible to the future backend sink — Instead: call `inject(LoggerService).forFeature('orders')` once per feature and use the returned logger

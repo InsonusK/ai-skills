@@ -31,7 +31,7 @@ tags:
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| `{feature}.store.ts` | Feature-level NgRx Signal Store, created by [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create]]. Owns all state and derived data specific to this feature. |
+| `{feature}.store.ts` | Feature-level NgRx Signal Store, created by [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md]]. Owns all state and derived data specific to this feature. |
 
 # Rule changes
 
