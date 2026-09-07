@@ -6,6 +6,8 @@ tags:
   - skill/core
   - stack
   - concern/documentation
+adr:
+  - adr/allow-extra-top-level-sections.md
 
 ---
 
@@ -21,6 +23,7 @@ This skill applies to every skill-writing task in the repository. It defines the
 - If you cannot tell when the skill applies by reading `whenToUse`, the skill is not clear enough.
 - **Agent clarity and convenience are the key success factors.** Every rule, example, and checklist must make the skill easier for an AI agent to understand and apply. If a skill is confusing, hard to follow, or forces the agent to guess, rewrite or split it.
 - Write skill in English
+- The allowed set of top-level sections is fixed to `# Goal`, `# Core Principle`, `# Rule`, `# Check list`, plus at most one optional `# Scope`, `# Workflow`, and `# Example` — see [ADR: allow-extra-top-level-sections](./adr/allow-extra-top-level-sections.md) for the trade-offs.
 
 # Rule
 
@@ -34,6 +37,10 @@ This skill applies to every skill-writing task in the repository. It defines the
 - Use exactly one `# Goal`, one `# Core Principle`, one `# Rule`, and one `# Check list` top-level section per skill file — never repeat a top-level section for a sub-topic within the same skill. Keep the `## MUST`/`## SHOULD`/`## MAY` subsections under `# Rule` at a consistent `##` heading level throughout the skill; never drop a later occurrence to `###` or deeper.
   - Risk: a repeated `# Rule` block, or a `## MUST` that silently becomes `### MUST` further down the file, makes an agent scanning for "## MUST" miss requirements that exist under the wrong heading level.
   - Fix: if a skill has two conditionally-triggered halves, split it into two skills (see the bundling rule below) instead of repeating sections in one file.
+- If the skill needs a scope statement, a descriptive process overview, or an example pointer, add at most one `# Scope`, at most one `# Workflow`, and at most one `# Example` top-level section in addition to the mandatory four. A `# Scope` section states what the skill covers and what it does not cover. A `# Workflow` section must only describe the process; every normative requirement in it must also appear as a `## MUST`/`## SHOULD`/`## MAY` bullet under `# Rule`. An `# Example` section must contain only one-line links to files inside the skill's own `examples/` or `templates/` folder; never paste inline code blocks or tables longer than ~15 lines.
+  - Violation: a `# Scope` section drifts into rules, a `# Workflow` section contains its own `## MUST` rules, an `# Example` section contains a multi-line code block or table, or more than one `# Scope`/`# Workflow`/`# Example` section is used.
+  - Risk: an agent scanning `## MUST` under `# Rule` misses requirements buried elsewhere, scope/workflow sections become a second rule set, and example sections grow into unskimmable copies of the referenced files.
+  - Fix: keep `# Scope` to coverage boundaries only; move every normative requirement to a `## MUST`/`## SHOULD`/`## MAY` bullet under `# Rule`; keep `# Example` to a list of one-line links; use only a single `# Scope`, `# Workflow`, and/or `# Example` section.
 - Treat this skill as the baseline for every skill-writing task, even when a domain-specific skill provides its own template or workflow.
   - Violation: "I am following `solution-create.skill`, so I do not need to check `skill-design`."
   - Risk: the resulting skill may have vague `whenToUse`, broken links, a missing checklist, an inconsistent format, or instructions that are hard for an agent to apply.
@@ -125,7 +132,7 @@ This skill applies to every skill-writing task in the repository. It defines the
 - [ ] `# Check list` is filled; there is no separate `# Anti-patterns` section and no `## MUST NOT`/`## SHOULD NOT` heading anywhere.
 - [ ] Every `## MUST` bullet carries a nested `Risk` and `Fix` (`Violation` optional); `## SHOULD` carries them only where non-obvious; `## MAY` carries none.
 - [ ] Examples referenced by this skill live in this skill's own `examples/` folder, not in another skill.
-- [ ] The skill contains exactly one `# Rule` and one `# Check list` section, each at a consistent heading depth.
+- [ ] The skill contains exactly one `# Goal`, one `# Core Principle`, one `# Rule`, and one `# Check list` section, each at a consistent heading depth. If present, `# Scope`, `# Workflow`, and `# Example` sections are used at most once and follow the constraints in `## MUST`.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately"; if it does, the skill has been split.
 - [ ] No inline code block or table exceeds ~15 lines unless it defines part of the rule/contract itself; longer illustrative examples live in `examples/`/`templates/` with a one-line pointer.
 - [ ] Tags follow the facet vocabulary in [facet-vocabulary.md](./facet-vocabulary.md): at least one `concern/*`, a `stack/*` value or the bare `stack` tag, no two facets chained in one `/`-path, and the parent tag duplicated alongside any nested value.
