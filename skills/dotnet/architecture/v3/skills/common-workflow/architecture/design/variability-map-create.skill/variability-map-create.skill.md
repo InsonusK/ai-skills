@@ -1,2 +1,0 @@
-# variability-map-create.skill
-
