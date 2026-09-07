@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {service-name}
+  namespace: {namespace}
+  labels:
+    app: {service-name}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {service-name}
+  template:
+    metadata:
+      labels:
+        app: {service-name}
+    spec:
+      containers:
+        - name: {service-name}
+          image: "{registry}/{service-name}:{version}"
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {service-name}-config
+          env:
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: {service-name}-secrets
+                  key: connection-string
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
