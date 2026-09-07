@@ -19,9 +19,9 @@ extends:
   - "the remote's federation config (design-system as a version-negotiated singleton)"
   - "the remote's styles.scss (theme import for standalone dev only)"
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]]"
+  - "[[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]]"
 ---
 
 # Goal
@@ -38,17 +38,17 @@ adr:
 - The remote imports the theme only for **standalone local development** — in production its mounted components inherit the host shell's theme from the shared document.
 
 # Boundaries
-- The **remote** side. The host side is [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]].
+- The **remote** side. The host side is [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]].
 - `embeddable-app` VP2. A remote that renders no shared-styled UI does not compose this solution.
 - Consumes the published `design-system` package (the `design-system` catalog); does not model it.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]] — shared with the host: version-negotiated singleton is the mechanism both sides implement.
+- [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]] — shared with the host: version-negotiated singleton is the mechanism both sides implement.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]
   - the remote federation config this extends
 
 NPM:
@@ -57,7 +57,7 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|Remote federation config]] - extend - declare `design-system` as a version-negotiated singleton with an accurate `requiredVersion`; import the theme for standalone dev only
+- [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|Remote federation config]] - extend - declare `design-system` as a version-negotiated singleton with an accurate `requiredVersion`; import the theme for standalone dev only
 
 # Workflow
 
@@ -74,7 +74,7 @@ REPOSITORY:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md#MUST|federation.extend]]
+- [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md#MUST|federation.extend]]
 - Never declare an unbounded `requiredVersion` — keep it an accurate range for what the remote was built and tested against.
   - Risk: the remote silently shares an incompatible host version and renders wrong.
   - Fix: a bounded range; a mismatch then degrades to a safe isolated copy.

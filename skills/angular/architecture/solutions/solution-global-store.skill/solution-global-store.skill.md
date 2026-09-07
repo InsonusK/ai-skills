@@ -19,11 +19,11 @@ creates:
 extends:
   - apps/platform-shell (root store registration)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]"
 ---
 
 # Goal
@@ -37,7 +37,7 @@ adr:
 - `@nx/enforce-module-boundaries` proves no `type:feature` / `type:data-access` project is a dependency of the store.
 
 # Core Principle
-- `libs/shared/state` is the **third tier** of [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] — reached only when a second, unrelated feature genuinely needs a piece of state.
+- `libs/shared/state` is the **third tier** of [[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] — reached only when a second, unrelated feature genuinely needs a piece of state.
 - One slice per cross-cutting concern; a slice never holds feature-specific data.
 - Effects own every side effect (HTTP, retries, timers). Components and feature Signal Stores dispatch plain actions and read selectors — nothing else.
 - The store project depends only on `libs/shared/util`; it never depends on a `type:feature` or `type:data-access` project — global state is a foundation other layers read from, not the reverse.
@@ -49,16 +49,16 @@ adr:
 - Does not itself author any slice. A plateau that composes this solution without any slice-adding solution gets an empty-but-wired store.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]] — the global tier is classical NgRx (actions/reducers/effects), not another Signal Store, for the action log and effect-based retry/conflict handling. Rejected: `@ngrx/signals` all the way up; a hand-rolled service.
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]] — `OfflineReadResilience` / `OfflineWriteQueue` / `Authentication` / `PersistedState` each `require` VP2 and register a slice here, rather than each carrying its own store. Rejected: a per-VP store; leaving the requirement implicit.
+- [[skills/angular/architecture/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]] — the global tier is classical NgRx (actions/reducers/effects), not another Signal Store, for the action log and effect-based retry/conflict handling. Rejected: `@ngrx/signals` all the way up; a hand-rolled service.
+- [[skills/angular/architecture/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]] — `OfflineReadResilience` / `OfflineWriteQueue` / `Authentication` / `PersistedState` each `require` VP2 and register a slice here, rather than each carrying its own store. Rejected: a per-VP store; leaving the requirement implicit.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]
   - provides the tiering rule this store is the third tier of
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|libs/shared]] - hosts the new `libs/shared/state` project
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
+  - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|libs/shared]] - hosts the new `libs/shared/state` project
 
 NPM:
 - `@ngrx/store`, `@ngrx/effects` — matching the Angular major version in use.
@@ -66,10 +66,10 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/state`, the `type:store` tag, and the module-boundary rules for cross-cutting state
+- [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/state`, the `type:store` tag, and the module-boundary rules for cross-cutting state
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|libs/shared/state]] - create - the store project + `store.config.ts` registration seam (no concrete slices)
+- [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|libs/shared/state]] - create - the store project + `store.config.ts` registration seam (no concrete slices)
 
 # Workflow
 
@@ -83,8 +83,8 @@ PROJECT:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md#MUST|shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md#MUST|shared-state.project.create]]
 - Never add a feature-scoped slice to `libs/shared/state`.
   - Risk: the store becomes a dumping ground and the tiering rule this catalog enforces erodes.
   - Fix: keep the slice in the owning feature's Signal Store until a second unrelated feature needs it.

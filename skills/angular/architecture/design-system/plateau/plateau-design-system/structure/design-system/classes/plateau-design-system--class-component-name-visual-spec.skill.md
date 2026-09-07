@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
 ---
 
 > `projects/design-system/src/lib/{component}/spec/{component}.visual.spec.ts`. Runs via `playwright test` against a served `projects/demo`. Baselines commit to `spec/snapshot/` (`snapshotPathTemplate` in `playwright.config.ts`). No Storybook, no Chromatic.
@@ -25,7 +25,7 @@ created_by:
 - Catch layout, dark-mode, contrast, and CSS-specificity regressions that a jsdom behavioural test cannot detect
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
 
 # Implementation
 
@@ -49,7 +49,7 @@ test.describe('DsButtonComponent — visual', () => {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
 
 # Rules
 
@@ -62,7 +62,7 @@ __Applied solutions:__
 - A baseline is updated (`--update-snapshots`) only as a reviewed, intentional appearance change — never to silence an unexplained CI failure; check the paired style-snapshot diff first.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
 
 
 - **Updating a baseline without understanding why it changed**
@@ -70,7 +70,7 @@ __Applied solutions:__
   - Instead: investigate the diff (and the paired style-snapshot) first
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
 
 # Check list
 
@@ -80,7 +80,7 @@ __Applied solutions:__
 - [ ] Tests grouped under `test.describe('<component-name> — visual', ...)`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -88,4 +88,4 @@ __Applied solutions:__
 - [ ] WHEN a component's `light-dark()` dark branch stops applying THEN the dark screenshot fails while the light one still passes
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]

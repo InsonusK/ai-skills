@@ -14,11 +14,11 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
 
-> `solution-app-testing` does not extend this project directly — its content lives in the sibling [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill.md|platform-shell-e2e]] project and in each feature's own test specs. Also depends on the `design-system` npm package (see the NPM Packages table below) — plain, non-federated consumption only.
+> `solution-app-testing` does not extend this project directly — its content lives in the sibling [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/platform-shell-e2e/plateau-online-monolith--project-platform-shell-e2e.skill.md|platform-shell-e2e]] project and in each feature's own test specs. Also depends on the `design-system` npm package (see the NPM Packages table below) — plain, non-federated consumption only.
 
 # Goal
 
@@ -27,8 +27,8 @@ created_by:
 - Mount each directly-owned feature at a single root segment, without knowing what routes exist beneath that segment
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
 
 # Structure
 
@@ -51,27 +51,27 @@ __Applied solutions:__
 | app.routes.ts | Top-level `Routes` array — one `loadChildren` entry per directly-owned feature's root segment. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
 
 ## NPM Packages
 
 | Package | Version constraint | Purpose |
 | ------- | ------------------- | ------- |
-| design-system | latest compatible, per [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] | The [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] plateau's published component library. `theme.scss` is applied once at the application root. |
+| design-system | latest compatible, per [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] | The [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] plateau's published component library. `theme.scss` is applied once at the application root. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill#must|repo-online-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill#must|repo-online-monolith]]
 
-- [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill#must never|repo-online-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill#must never|repo-online-monolith]]
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
 
 
 - **Adding a route in `app.routes.ts` that targets a specific page inside a feature (e.g. `path: 'feature1/page'`)**
@@ -79,7 +79,7 @@ __Applied solutions:__
   - Instead: mount only `feature1` as a segment; the feature's own routes define `page` beneath it
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
 
 # Check list
 
@@ -88,4 +88,4 @@ __Applied solutions:__
 - [ ] `design-system`'s `theme.scss` is applied exactly once, at the application root
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]

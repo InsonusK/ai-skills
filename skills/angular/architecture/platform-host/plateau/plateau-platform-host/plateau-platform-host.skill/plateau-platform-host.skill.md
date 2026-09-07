@@ -13,19 +13,19 @@ tags:
   - framework/native-federation
   - concern/architecture
 parent_plateaus:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|plateau-multiuser-monolith]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|plateau-multiuser-monolith]]"
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
+  - "[[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
+  - "[[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/registry/platform-shell-project.md|platform-shell-project]]"
-  - "[[skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/registry/platform-contracts.md|platform-contracts]]"
+  - "[[skills/angular/architecture/platform-host/plateau/plateau-platform-host/registry/platform-shell-project.md|platform-shell-project]]"
+  - "[[skills/angular/architecture/platform-host/plateau/plateau-platform-host/registry/platform-contracts.md|platform-contracts]]"
 ---
 
-> **The `platform-host` catalog's single plateau.** Composes [`plateau-multiuser-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md) **cross-catalog** via `parent_plateaus` — every monolith VP (VP1–VP7) is answered by that plateau. This plateau adds **only the federation delta**: the two common `platform-host` features (`RuntimeRemoteFederation`, `PlatformContracts`) plus all three `platform-host` VPs = Yes (VP1 `HostDesignSystemConsumption`, VP2 `SessionSharing` — satisfiable because monolith VP7 = Yes, VP3 `FederatedReadResilience` — because monolith VP4 = Yes). See the [platform-host variability map](skills/angular/architecture/v3.1/platform-host/variability-map.md).
+> **The `platform-host` catalog's single plateau.** Composes [`plateau-multiuser-monolith`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md) **cross-catalog** via `parent_plateaus` — every monolith VP (VP1–VP7) is answered by that plateau. This plateau adds **only the federation delta**: the two common `platform-host` features (`RuntimeRemoteFederation`, `PlatformContracts`) plus all three `platform-host` VPs = Yes (VP1 `HostDesignSystemConsumption`, VP2 `SessionSharing` — satisfiable because monolith VP7 = Yes, VP3 `FederatedReadResilience` — because monolith VP4 = Yes). See the [platform-host variability map](skills/angular/architecture/platform-host/variability-map.md).
 
 # What this plateau adds over its parent
 
@@ -56,7 +56,7 @@ The parent is the full multiuser monolith — state tiering + global store, perf
 
 # Structure
 
-See [`structure/`](structure/plateau-platform-host--repo-platform-host.skill.md) — the **federation delta only** (matching how the variability map is scoped). [`repo-platform-host`](structure/plateau-platform-host--repo-platform-host.skill.md) (the `type:host` tag + shared-dep rules), [`project-platform-shell`](structure/platform-shell/plateau-platform-host--project-platform-shell.skill.md) (the shell's federation extend), [`repo-platform-contracts`](structure/platform-contracts/plateau-platform-host--repo-platform-contracts.skill.md) (the separate package), and class skills [`class-remote-registry-service`](structure/platform-shell/classes/plateau-platform-host--class-remote-registry-service.skill.md), [`class-host-session`](structure/platform-shell/classes/plateau-platform-host--class-host-session.skill.md), [`class-service-worker`](structure/platform-shell/classes/plateau-platform-host--class-service-worker.skill.md). Every monolith project comes from [`plateau-multiuser-monolith`'s `structure/`](skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill.md).
+See [`structure/`](structure/plateau-platform-host--repo-platform-host.skill.md) — the **federation delta only** (matching how the variability map is scoped). [`repo-platform-host`](structure/plateau-platform-host--repo-platform-host.skill.md) (the `type:host` tag + shared-dep rules), [`project-platform-shell`](structure/platform-shell/plateau-platform-host--project-platform-shell.skill.md) (the shell's federation extend), [`repo-platform-contracts`](structure/platform-contracts/plateau-platform-host--repo-platform-contracts.skill.md) (the separate package), and class skills [`class-remote-registry-service`](structure/platform-shell/classes/plateau-platform-host--class-remote-registry-service.skill.md), [`class-host-session`](structure/platform-shell/classes/plateau-platform-host--class-host-session.skill.md), [`class-service-worker`](structure/platform-shell/classes/plateau-platform-host--class-service-worker.skill.md). Every monolith project comes from [`plateau-multiuser-monolith`'s `structure/`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill.md).
 
 # Example
 
@@ -64,7 +64,7 @@ See [`example/`](plateau-platform-host.skill/example/) — a **limited federatio
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — canonical, no resolvers:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolvers:
 
 - [`platform-shell-project`](registry/platform-shell-project.md) — the cross-catalog N≥3 point where `federation-host` / `session-sharing` / `host-design-system-consumption` join the monolith's own six shell extenders. `FMN`/`TMN`, `source: ordering-only`, **benign** (Finding 5: this intersection lives in a platform-host plateau, not the monolith map).
 - [`platform-contracts`](registry/platform-contracts.md) — `solution-platform-contracts` `.create` + `solution-session-sharing` `.extend` (the `SessionContract` shape). `TMN`, `source: constraint` (VP2 requires `PlatformContracts`), N = 2, benign.

@@ -13,7 +13,7 @@ tags:
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| /projects/design-system/src/lib/{component-name} | One directory per component, following the generic pattern in [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md]]. |
+| /projects/design-system/src/lib/{component-name} | One directory per component, following the generic pattern in [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md]]. |
 
 # Rules
 
@@ -23,10 +23,10 @@ tags:
   - Fix: a `ds-`-prefixed selector on every component; Material stays behind it.
 - Every component's public API uses `input()`, `output()`, `model()` — no `@Input()`/`@Output()` decorators, no `EventEmitter`.
   - Risk: mixed authoring styles across the library make the API inconsistent and block signal-based interop.
-  - Fix: signal APIs only; per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|component-api-authoring-style]].
+  - Fix: signal APIs only; per [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|component-api-authoring-style]].
 - Every component's API is designed around this application's usage axes — never mirrors Material's input names or category model 1:1.
   - Risk: a 1:1 mirror re-exposes Material's model and its churn, defeating the encapsulation this layer exists for.
-  - Fix: name inputs for the app's concepts; map to Material internally; per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]].
+  - Fix: name inputs for the app's concepts; map to Material internally; per [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]].
 - Any component that accepts user input as part of a form implements `ControlValueAccessor`.
   - Risk: without CVA the component cannot bind to Signal Forms `formField` and consumers wire it up ad hoc.
   - Fix: implement `ControlValueAccessor`; verify a `formField` binding works.

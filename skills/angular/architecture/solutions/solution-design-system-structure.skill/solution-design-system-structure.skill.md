@@ -20,10 +20,10 @@ creates:
 extends: []
 depends_on: []
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling.md|design-system-workspace-tooling]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|library-build-tooling]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|release-versioning-strategy]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling.md|design-system-workspace-tooling]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|library-build-tooling]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|release-versioning-strategy]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling]]"
 ---
 
 # Goal
@@ -49,13 +49,13 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling.md|Angular CLI multi-project workspace instead of Nx]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling.md|Angular CLI multi-project workspace instead of Nx]]
   - Selected variant: plain Angular CLI workspace — chosen because Nx's benefits (affected-builds, enforced boundaries, federation generators) don't meaningfully apply to a two-project repository
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|ng-packagr instead of a custom Vite/Rollup build]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|ng-packagr instead of a custom Vite/Rollup build]]
   - Selected variant: ng-packagr — the official tool for Angular Package Format compliance and Ivy partial compilation
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|Changesets instead of manual semver/CHANGELOG]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|Changesets instead of manual semver/CHANGELOG]]
   - Selected variant: Changesets — chosen because manual versioning risks a breaking change reaching multiple independent consumer teams under a non-major version
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|Self-built demo Angular app instead of Storybook]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|Self-built demo Angular app instead of Storybook]]
   - Selected variant: demo app — chosen based on direct prior experience with Storybook's friction for this exact use case
 
 # Boundaries
@@ -71,14 +71,14 @@ SOLUTION:
 
 NPM:
 - ng-packagr
-  - Library build, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|library-build-tooling]]
+  - Library build, per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|library-build-tooling]]
 - @changesets/cli
-  - Version bump classification and CHANGELOG generation, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|release-versioning-strategy]]
+  - Version bump classification and CHANGELOG generation, per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|release-versioning-strategy]]
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository]] - create - Angular CLI multi-project workspace with the publishable `design-system` library, the `demo` preview application, ng-packagr build config, and Changesets configuration
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository]] - create - Angular CLI multi-project workspace with the publishable `design-system` library, the `demo` preview application, ng-packagr build config, and Changesets configuration
 
 No project- or artifact-level (component/service) implementation files are introduced by this solution — it establishes only the repository-level structure. Individual components and tokens are introduced by `solution-design-system-tokens` and `solution-design-system-components`s.
 
@@ -100,18 +100,18 @@ No project- or artifact-level (component/service) implementation files are intro
 ## Missing changeset (failure path, caught in CI)
 
 1. A PR modifies the library's public API but does not include a changeset file.
-2. CI fails per [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#Unittest TestCases]], blocking merge until a changeset is added.
+2. CI fails per [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#Unittest TestCases]], blocking merge until a changeset is added.
 3. This prevents the release-time uncertainty ("what should this bump be? did we forget something since the last release?") that motivated choosing Changesets in the first place.
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#MUST|Repository]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#MUST|Repository]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#SHOULD|Repository]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md#SHOULD|Repository]]
 
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|See Repository.create.md]] — publishing without a changeset; reintroducing Storybook for an individual component after this repository already decided against it.
+- Avoid — [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|See Repository.create.md]] — publishing without a changeset; reintroducing Storybook for an individual component after this repository already decided against it.
 # Check list
 
 - [ ] The repository is a plain Angular CLI multi-project workspace, not Nx

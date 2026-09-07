@@ -11,8 +11,8 @@ tags:
 `element/shared-logging-project` — `libs/shared/logging`: `LoggerService`, the `LogSink` interface and the `LOG_SINKS` multi-provider token, `MIN_LOG_LEVEL`, and the concrete sinks.
 
 # Involved solutions
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] (baseline, `.create` — `Logging/shared-logging.project.create` — the lib, `LoggerService`, the `LOG_SINKS` token, and `ConsoleLogSink`)
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] (VP6, `.extend` — `Logging/backend-log-sink.ts.create` + `Logging/log-retry-queue.ts.create` + `Logging/logger.service.ts.extend` — a second `LogSink` on the same token, the bounded IndexedDB retry queue, and `LogLevel` gaining `'report'` + `LoggerService.report()`)
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] (baseline, `.create` — `Logging/shared-logging.project.create` — the lib, `LoggerService`, the `LOG_SINKS` token, and `ConsoleLogSink`)
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] (VP6, `.extend` — `Logging/backend-log-sink.ts.create` + `Logging/log-retry-queue.ts.create` + `Logging/logger.service.ts.extend` — a second `LogSink` on the same token, the bounded IndexedDB retry queue, and `LogLevel` gaining `'report'` + `LoggerService.report()`)
 
 This is the shallowest plateau where both coexist — `solution-logging-base` is a common-baseline convention present from `plateau-online-monolith`; VP6 is first Yes here.
 

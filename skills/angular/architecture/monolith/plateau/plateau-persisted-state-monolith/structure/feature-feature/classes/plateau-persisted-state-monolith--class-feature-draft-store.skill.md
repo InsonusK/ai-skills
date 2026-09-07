@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
 
 > `libs/{feature}/feature/src/lib/{feature}-draft.store.ts`. A dedicated store — never `withPersistedDraft` on the feature's main list/detail store.
 
@@ -24,7 +24,7 @@ created_by:
 - Keep the persistence opt-in narrow: a separate store, an explicit field allow-list, cleared on submit
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - Cleared on submit success — the persist effect then writes the emptied state
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
 
 # Naming convention
 
@@ -75,7 +75,7 @@ export const OrderDraftStore = signalStore(
 The form component binds `[ngModel]` / `(ngModelChange)` to the draft store's signals and calls `draft.clear()` after a successful submit.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
 
 # Rules
 
@@ -88,7 +88,7 @@ __Applied solutions:__
 - Never add `withPersistedDraft` to the feature's main store — persisted server data goes stale with no invalidation.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
 
 # Check list
 
@@ -106,4 +106,4 @@ __Applied solutions:__
 - [ ] WHEN the form is submitted successfully THEN the draft store is `empty`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]

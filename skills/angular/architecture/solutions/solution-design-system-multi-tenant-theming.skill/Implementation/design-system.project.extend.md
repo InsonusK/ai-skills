@@ -43,10 +43,10 @@ tags:
 
 | `Directory\|file` | Description | Pattern skill |
 | ---------------- | ----------- | ------------- |
-| styles/tenants/_tenant-theme.scss | The shared `ds-tenant-theme` mixin — colour only. | [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md\|tenant-theme.scss]] |
-| styles/tenants/_{tenant}.scss | One per tenant. | [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md\|{tenant}-palette.scss]] |
+| styles/tenants/_tenant-theme.scss | The shared `ds-tenant-theme` mixin — colour only. | [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md\|tenant-theme.scss]] |
+| styles/tenants/_{tenant}.scss | One per tenant. | [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md\|{tenant}-palette.scss]] |
 | styles/tenants/tenants.scss | Aggregator; the package asset. | — |
-| src/lib/tenants.ts | `DS_TENANTS` + `DsTenant`. | [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenants.ts.create.md\|tenants.ts]] |
+| src/lib/tenants.ts | `DS_TENANTS` + `DsTenant`. | [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenants.ts.create.md\|tenants.ts]] |
 
 ## NPM Packages
 

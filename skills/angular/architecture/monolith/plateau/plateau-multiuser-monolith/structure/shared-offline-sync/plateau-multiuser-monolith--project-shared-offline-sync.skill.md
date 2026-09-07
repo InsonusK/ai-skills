@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 
 > NEW at this plateau (VP5). Tagged `type:store`, `scope:shared` — it holds durable cross-cutting state (the queue) and a store-triggered orchestrator, sibling to `libs/shared/state`. The V1 `solution-offline-sync` Repository.extend tags it `type:util`; that cannot hold — the lib reads the `connectivity`/`notifications` slices and is imported by feature Facades. See the [example README](../../plateau-multiuser-monolith.skill/example/README.md).
 
@@ -24,7 +24,7 @@ created_by:
 - Never import a feature lib — features register their replay handler at runtime, so nothing forces feature code into the initial bundle
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
 
 # Structure
 
@@ -46,13 +46,13 @@ __Applied solutions:__
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| mutation-queue.db.ts / mutation-queue.service.ts | Dexie schema + the queue's public API. `enqueue` generates the idempotency key; `pendingForFeature$` is a `liveQuery` observable for the indicator. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/shared-offline-sync/classes/plateau-multiuser-monolith--class-mutation-queue-service.skill.md\|class-mutation-queue-service]] |
-| replay-orchestrator.ts | `ReplayOrchestrator` (connectivity-triggered, concurrent partitions, `handleConflict` seam), `MutationReplayRegistry`, `ReplayConflictError`. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/shared-offline-sync/classes/plateau-multiuser-monolith--class-replay-orchestrator.skill.md\|class-replay-orchestrator]] |
+| mutation-queue.db.ts / mutation-queue.service.ts | Dexie schema + the queue's public API. `enqueue` generates the idempotency key; `pendingForFeature$` is a `liveQuery` observable for the indicator. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/shared-offline-sync/classes/plateau-multiuser-monolith--class-mutation-queue-service.skill.md\|class-mutation-queue-service]] |
+| replay-orchestrator.ts | `ReplayOrchestrator` (connectivity-triggered, concurrent partitions, `handleConflict` seam), `MutationReplayRegistry`, `ReplayConflictError`. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/shared-offline-sync/classes/plateau-multiuser-monolith--class-replay-orchestrator.skill.md\|class-replay-orchestrator]] |
 | provide-offline-sync.ts | `provideOfflineSync()` — shell registers + eagerly instantiates the orchestrator. `provideFeatureReplay(factory)` — a feature's route `providers` registers its handler. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
 
 ## NPM Packages
 
@@ -62,7 +62,7 @@ __Applied solutions:__
 | fake-indexeddb | latest compatible (dev) | IndexedDB shim so the queue specs run under Vitest/jsdom |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
 
 ## Allowed Dependencies
 
@@ -70,7 +70,7 @@ __Applied solutions:__
 - `libs/shared/util` (tag: `type:util`, `scope:shared`)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 ## What Does NOT Belong Here
 
@@ -79,7 +79,7 @@ __Applied solutions:__
 - A generic document-sync protocol — replay calls the app's own Facade methods
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
 
 # Rules
 
@@ -92,8 +92,8 @@ __Applied solutions:__
 - `provideFeatureReplay` must be placed in a feature's route `providers` (not the shell) — the shell only calls `provideOfflineSync()`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
 
 # Check list
 
@@ -105,7 +105,7 @@ __Applied solutions:__
 - [ ] The queue survives a full page reload (Dexie persistence)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
 
 # Unittest TestCases
 
@@ -115,4 +115,4 @@ __Applied solutions:__
 - [ ] WHEN `isOnline` transitions `false → true` THEN replay is triggered automatically
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/replay-orchestrator.ts.create.md|OfflineSync/replay-orchestrator.ts.create]]

@@ -14,11 +14,11 @@ tags:
   - framework/angular
   - concern/architecture
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
 ---
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create.md|{feature}.client.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.client.spec.ts.create.md|{feature}.client.spec.ts.create]]
 
 
 # How this generic file is used
@@ -71,7 +71,7 @@ describe('OrdersClient', () => {
 # Rule changes
 
 ## MUST
-- Every test in this file must use `HttpTestingController` to assert the exact request (method, URL, body), per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
+- Every test in this file must use `HttpTestingController` to assert the exact request (method, URL, body), per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
 - `httpTesting.verify()` must be called in `afterEach` to catch any unexpected or unmatched request.
 - At least one test must assert the typed domain error thrown on a transport failure, consistent with `solution-api-http-layer`'s error-handling rules.
 - Tests for each Client method must be grouped under a nested `describe('<methodName>', () => { ... })` block.

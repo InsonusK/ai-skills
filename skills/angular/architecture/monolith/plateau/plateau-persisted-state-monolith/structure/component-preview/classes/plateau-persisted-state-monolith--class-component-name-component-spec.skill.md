@@ -14,15 +14,15 @@ tags:
   - framework/angular
   - concern/architecture
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 ---
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|{component-name}.component.spec.ts.create]]
 
 
 # How this generic file is used
-Created at `spec/{component-name}.component.spec.ts` next to the component implementation. This is not tied to one concrete component, and applies identically to both plateaus this solution covers: a platform feature component (may fake a Signal Store, if it injects one) and a design-system component (pure `input()`/`output()`/`model()`, no store, no injected dependency to fake at all). In both cases the [behavioral component test](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) never mocks HTTP, never fakes a Facade/Client — see [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] for that separate, business-layer concern.
+Created at `spec/{component-name}.component.spec.ts` next to the component implementation. This is not tied to one concrete component, and applies identically to both plateaus this solution covers: a platform feature component (may fake a Signal Store, if it injects one) and a design-system component (pure `input()`/`output()`/`model()`, no store, no injected dependency to fake at all). In both cases the [behavioral component test](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) never mocks HTTP, never fakes a Facade/Client — see [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] for that separate, business-layer concern.
 
 # Goals
 

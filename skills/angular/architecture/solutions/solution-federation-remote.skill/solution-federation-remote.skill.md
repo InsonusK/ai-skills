@@ -17,10 +17,10 @@ creates:
   - "{embeddable-app-name} (its own repository)"
 extends: []
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]]"
 ---
 
 # Goal
@@ -46,14 +46,14 @@ adr:
 - `parent_plateaus` is empty for this catalog's plateaus — a remote is not a continuation of the platform chain. (A `RemoteInternalArchitecture=Yes` plateau is the one exception; it composes a `monolith` plateau.)
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]] — shared with the host: Native Federation + Dynamic Federation is the mechanism both sides implement.
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]] — shared with the host: Native Federation + Dynamic Federation is the mechanism both sides implement.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
   - the hierarchical route-ownership pattern the exposed module reuses one level down
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
   - provides `@platform/contracts`, declared here as a strict shared singleton
 
 NPM:
@@ -62,10 +62,10 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository]] - create - the baseline remote repository: federation remote config, `@platform/contracts` singleton, exposed module, independent CI/deploy
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository]] - create - the baseline remote repository: federation remote config, `@platform/contracts` singleton, exposed module, independent CI/deploy
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|Exposed module (generic pattern)]] - extend - mounts its own features' root segments, reusing `solution-app-routing`'s hierarchical ownership one level down
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|Exposed module (generic pattern)]] - extend - mounts its own features' root segments, reusing `solution-app-routing`'s hierarchical ownership one level down
 
 # Workflow
 
@@ -85,8 +85,8 @@ PROJECT:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md#MUST|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md#MUST|routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md#MUST|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md#MUST|routes.ts.extend]]
 - Never hardcode the remote's own expected mount prefix in its routes.
   - Risk: the remote cannot be remounted at a different segment without a code change.
   - Fix: relative paths only; the host assigns the segment at mount time.
@@ -95,7 +95,7 @@ PROJECT:
   - Fix: the only contract is `@platform/contracts` + the federation boundary.
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md#SHOULD|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md#SHOULD|Repository.create]]
 - Avoid bumping `@platform/contracts` to an incompatible major without cross-team coordination.
 
 # Check list

@@ -22,13 +22,13 @@ extends:
   - libs/{feature}/feature (component spec files under spec/)
   - libs/shared/ui (component spec files under spec/)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md|style-snapshot-approach]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md|style-snapshot-approach]]"
 ---
 
 # Goal
@@ -37,10 +37,10 @@ adr:
 - Reuse the already-adopted tools (Vitest, Playwright, Testing Library) — no new tool.
 
 # Capabilities
-- Fast, ESM-native [behavioral component tests](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) via Vitest + Testing Library, no business-layer mocks.
-- Automated [visual regression](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) coverage (Playwright screenshots, light + dark) against `apps/component-preview`.
-- [Computed-style snapshot](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) coverage paired with every visual spec — a failing pixel diff becomes a named property/value change.
-- Automated [accessibility](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) regression coverage (`@axe-core/playwright`) for the same components.
+- Fast, ESM-native [behavioral component tests](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/behavioral-component-testing.md) via Vitest + Testing Library, no business-layer mocks.
+- Automated [visual regression](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) coverage (Playwright screenshots, light + dark) against `apps/component-preview`.
+- [Computed-style snapshot](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) coverage paired with every visual spec — a failing pixel diff becomes a named property/value change.
+- Automated [accessibility](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) regression coverage (`@axe-core/playwright`) for the same components.
 
 # Core Principle
 - A UI component is tested independently of the business logic around it — a signal/input in, a rendered result/event out — the test never needs a Facade, Client, or backend.
@@ -49,23 +49,23 @@ adr:
 - Checks run against `apps/component-preview` — a minimal harness this solution introduces — never Storybook, never Chromatic.
 
 # Boundaries
-- The **monolith** side. The identical approach applied to the design system's `ds-*` components against `projects/demo` is [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]], which reuses this solution's three ADRs and spec patterns.
+- The **monolith** side. The identical approach applied to the design system's `ds-*` components against `projects/demo` is [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]], which reuses this solution's three ADRs and spec patterns.
 - monolith `ComponentTesting` (flagged common — feature-model open question). Assumes the `solution-repository-structure` baseline + `solution-app-testing` (Vitest/Playwright tool ADRs).
 - Business-layer testing (Client/Facade/Store, `HttpTestingController`, MSW) is `solution-app-testing`, not this — a component test never needs it.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] — Playwright `toHaveScreenshot()` against a preview page, over Storybook + Chromatic.
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]] — `@axe-core/playwright` reusing the same Playwright pages.
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md|style-snapshot-approach]] — a fixed `getComputedStyle()` property list snapshotted per state, pairing each pixel screenshot with an explanation.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] — Playwright `toHaveScreenshot()` against a preview page, over Storybook + Chromatic.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]] — `@axe-core/playwright` reusing the same Playwright pages.
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md|style-snapshot-approach]] — a fixed `getComputedStyle()` property list snapshotted per state, pairing each pixel screenshot with an explanation.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]
-  - reuses its Vitest ([[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]]) and Playwright ([[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]]) ADRs without re-arguing them
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]
+  - reuses its Vitest ([[skills/angular/architecture/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]]) and Playwright ([[skills/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]]) ADRs without re-arguing them
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
   - the base Nx workspace `apps/component-preview` is added to
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]
   - a form component is the clearest case tested purely at the UI level — its Signal Forms state is entirely internal
 
 NPM:
@@ -75,14 +75,14 @@ NPM:
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md|apps/component-preview]] - create - a minimal harness app rendering components in isolation
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md|apps/component-preview]] - create - a minimal harness app rendering components in isolation
 
 Artifact-level (generic patterns):
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|{component-name}.component.spec.ts]] - create - behavioral test via Testing Library
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|{component-name}.visual.spec.ts]] - create - Playwright screenshot-regression spec
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|{component-name}.style-snapshot.spec.ts]] - create - computed-style snapshot, paired with the visual spec
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|read-visual-style-properties.ts]] - create - shared helper + curated property list
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|{component-name}.a11y.spec.ts]] - create - `@axe-core/playwright` scan
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|{component-name}.component.spec.ts]] - create - behavioral test via Testing Library
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|{component-name}.visual.spec.ts]] - create - Playwright screenshot-regression spec
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|{component-name}.style-snapshot.spec.ts]] - create - computed-style snapshot, paired with the visual spec
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|read-visual-style-properties.ts]] - create - shared helper + curated property list
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|{component-name}.a11y.spec.ts]] - create - `@axe-core/playwright` scan
 
 # Directory layout
 
@@ -123,12 +123,12 @@ The shared `readVisualStyleProperties` helper lives in `libs/{feature}/feature/t
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md#MUST|{component-name}.component.spec.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md#MUST|{component-name}.visual.spec.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md#MUST|{component-name}.style-snapshot.spec.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md#MUST|read-visual-style-properties.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md#MUST|{component-name}.a11y.spec.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md#MUST|apps/component-preview]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md#MUST|{component-name}.component.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md#MUST|{component-name}.visual.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md#MUST|{component-name}.style-snapshot.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md#MUST|read-visual-style-properties.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md#MUST|{component-name}.a11y.spec.ts]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md#MUST|apps/component-preview]]
 - Never update a failing visual baseline without first checking the paired style-snapshot diff.
   - Risk: a real regression is baked into the baseline as "expected".
   - Fix: empty style-snapshot diff → rendering noise, safe; a named property change → confirm intentional first.

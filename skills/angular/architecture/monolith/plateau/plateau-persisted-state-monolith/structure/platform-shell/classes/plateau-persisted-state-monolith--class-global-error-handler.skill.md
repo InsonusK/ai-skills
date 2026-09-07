@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
 
 > `apps/platform-shell/src/app/global-error-handler.ts`. Registered once as `{ provide: ErrorHandler, useClass: GlobalErrorHandler }` in `app.config.ts`.
 
@@ -23,7 +23,7 @@ created_by:
 - Capture every uncaught, unhandled exception and send it to the backend automatically, without every code path logging it explicitly
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
 
 # Core Principles
 
@@ -33,7 +33,7 @@ __Applied solutions:__
 - Registered once, at the application root — never module- or component-scoped
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
 
 # Naming convention
 
@@ -62,7 +62,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
 
 # Rules
 
@@ -73,7 +73,7 @@ __Applied solutions:__
 - Never apply several plateau templates per class/artifact.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
 
 # Check list
 
@@ -82,7 +82,7 @@ __Applied solutions:__
 - [ ] Registered exactly once, in `apps/platform-shell`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
 
 # Unittest TestCases
 
@@ -90,4 +90,4 @@ __Applied solutions:__
 - [ ] WHEN a non-Error value is thrown THEN it is stringified into `message` with `stack: undefined`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/global-error-handler.ts.create.md|PlatformHost/global-error-handler.ts.create]]

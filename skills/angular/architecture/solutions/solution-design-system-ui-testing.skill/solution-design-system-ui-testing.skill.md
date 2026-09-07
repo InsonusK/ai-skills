@@ -21,10 +21,10 @@ extends:
   - projects/design-system (component spec files under spec/)
   - projects/demo (visual/a11y spec target via spec/preview/)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
 adr: []
 ---
 
@@ -44,26 +44,26 @@ adr: []
 - No Storybook, no Chromatic — the visual-regression ADR builds directly on `solution-design-system-structure`'s `component-preview-tooling` decision (the demo app, not Storybook).
 
 # Boundaries
-- The **design-system** side. The monolith side is [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
+- The **design-system** side. The monolith side is [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
 - design-system `ComponentTesting` (common). Assumes `solution-design-system-structure` (the `projects/demo` app) + `solution-design-system-components` (the `ds-*` convention under test) + `solution-app-testing` (Vitest/Playwright tool ADRs).
 - Adds no new ADR, no new spec pattern, no new tool — it is the design-system application of an existing solution.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]
   - provides the three ADRs, the four spec patterns, `read-visual-style-properties.ts`, and every rule — reused verbatim
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
-  - `projects/demo`, already established there, is reused as the visual/a11y target ([[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling]])
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
+  - `projects/demo`, already established there, is reused as the visual/a11y target ([[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling]])
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]
   - the `ds-*` authoring convention this tests
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]
   - the Vitest/Playwright tool ADRs
 
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|projects/demo]] - extend - now also the visual/a11y target, one preview section per `ds-*` component state
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|projects/demo]] - extend - now also the visual/a11y target, one preview section per `ds-*` component state
 
 Artifact-level (generic patterns): reused from `solution-ui-testing` — `{component-name}.component.spec.ts` / `.visual.spec.ts` / `.style-snapshot.spec.ts` / `.a11y.spec.ts` and `read-visual-style-properties.ts`, applied under `projects/design-system/src/lib/{component}/spec/`.
 
@@ -88,7 +88,7 @@ The shared `readVisualStyleProperties` helper lives in `projects/design-system/t
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md#MUST|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md#MUST|demo.project.extend]]
 - Apply `solution-ui-testing`'s rules unchanged — the four spec layers ship together, no business-layer mocks, no baseline update without checking the style-snapshot diff.
   - Risk: the design system's tests drift from the monolith's discipline and a `ds-*` regression slips through.
   - Fix: the method is `solution-ui-testing`'s; only the target path differs.

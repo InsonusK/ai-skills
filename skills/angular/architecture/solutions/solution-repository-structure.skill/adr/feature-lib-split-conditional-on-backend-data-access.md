@@ -15,7 +15,7 @@ tags:
 
 V1's `solution-repository-structure` mandates: *"every business feature is split into at least a `feature` lib and a `data-access` lib **from the start**"*. V1 could say this because every V1 plateau had backend data access — there was no such thing as a feature without a server.
 
-v3.1 makes **BackendDataAccess a Variation Point** ([monolith VP3](skills/angular/architecture/v3.1/monolith/variability-map.md)): a plateau can answer `BackendDataAccess = No` (a local-only app), and even in a `BackendDataAccess = Yes` plateau an individual feature may have no server data (a purely client-side tool, a settings panel backed only by `PersistedState`). For such a feature a `data-access` lib would be an empty project — a `type:data-access` tag, an `index.ts`, a `project.json`, and nothing to put in them.
+v3.1 makes **BackendDataAccess a Variation Point** ([monolith VP3](skills/angular/architecture/monolith/variability-map.md)): a plateau can answer `BackendDataAccess = No` (a local-only app), and even in a `BackendDataAccess = Yes` plateau an individual feature may have no server data (a purely client-side tool, a settings panel backed only by `PersistedState`). For such a feature a `data-access` lib would be an empty project — a `type:data-access` tag, an `index.ts`, a `project.json`, and nothing to put in them.
 
 The question: does `solution-repository-structure` still create a `data-access` lib for every feature, or does it become conditional?
 

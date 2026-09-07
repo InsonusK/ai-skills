@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
 
 > Generic pattern, not tied to one concrete scenario — every Playwright spec added to `apps/platform-shell-e2e` follows this.
 
@@ -23,7 +23,7 @@ created_by:
 - Verify a complete user-facing scenario through a real browser, across real routing (including lazy-loaded features)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
 
 # Core Principles
 
@@ -31,7 +31,7 @@ __Applied solutions:__
 - E2E tests are reserved for a small number of critical, cross-cutting user journeys, given their higher cost per test than the layers below
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
 
 # Naming convention
 
@@ -59,7 +59,7 @@ test('user can add an order from the orders feature', async ({ page }) => {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
 
 # Rules
 
@@ -68,7 +68,7 @@ __Applied solutions:__
 - E2E tests must never be used as a substitute for unit/component/integration coverage.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
 
 
 - Apply SEVERAL plateau templates per class/artifact
@@ -77,7 +77,7 @@ __Applied solutions:__
   - Instead: keep e2e tests focused on a small set of critical, cross-cutting user journeys
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
 
 # Check list
 
@@ -85,7 +85,7 @@ __Applied solutions:__
 - [ ] The e2e suite stays focused on critical journeys, not exhaustive logic coverage already provided elsewhere
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -93,4 +93,4 @@ __Applied solutions:__
   - [ ] the scenario completes and the expected confirmation is visible to the user
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md|Testing/{scenario-name}.e2e.spec.ts.create]]

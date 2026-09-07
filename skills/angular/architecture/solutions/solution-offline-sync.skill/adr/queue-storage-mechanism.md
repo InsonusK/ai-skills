@@ -37,7 +37,7 @@ Dexie.js provides typed tables, transactions, and `liveQuery()` for reactive UI 
 ### Costs
 
 - The replay/retry/conflict orchestration has to be built by hand — Dexie provides no built-in sync engine, unlike RxDB
-- No built-in conflict-resolution primitives — this solution's own conflict-handling logic (see [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]]) has to be designed and implemented from scratch, rather than configuring an existing one
+- No built-in conflict-resolution primitives — this solution's own conflict-handling logic (see [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]]) has to be designed and implemented from scratch, rather than configuring an existing one
 
 ## RxDB (full replication engine)
 

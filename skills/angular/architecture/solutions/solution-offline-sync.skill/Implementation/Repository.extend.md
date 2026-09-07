@@ -40,10 +40,10 @@ tags:
   - Fix: the Facade decides per operation — some `OfflineTransportError`s surface as an immediate failure with no "pending" state.
 - Every queued mutation records the feature (`scope`) that created it, for partitioning.
   - Risk: without a partition key one struggling feature's stuck entry blocks every other feature's replay.
-  - Fix: `enqueue({ feature: 'orders', ... })`; the queue is read/replayed per `feature` index; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
+  - Fix: `enqueue({ feature: 'orders', ... })`; the queue is read/replayed per `feature` index; per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
 - A mutation endpoint's 409 response includes the current values of the fields the original request tried to change.
   - Risk: without them the client cannot tell the user *what* conflicted, and server-wins resolution is a silent data loss.
-  - Fix: this is a required backend contract; the Client maps it to `ReplayConflictError(currentServerValues)`; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+  - Fix: this is a required backend contract; the Client maps it to `ReplayConflictError(currentServerValues)`; per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
 
 # Unittest TestCases
 

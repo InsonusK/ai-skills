@@ -35,7 +35,7 @@ tags:
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| auth/ | The `auth` slice + its `AuthFacade` (HTTP) + `authInterceptor`. Same classical-NgRx shape as `connectivity`. Created per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]. |
+| auth/ | The `auth` slice + its `AuthFacade` (HTTP) + `authInterceptor`. Same classical-NgRx shape as `connectivity`. Created per [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]. |
 
 # Implementation changes
 

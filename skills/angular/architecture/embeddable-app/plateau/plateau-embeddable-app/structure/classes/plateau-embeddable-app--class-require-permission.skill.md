@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
 ---
 
 > `src/app/session/require-permission.ts`. Reads the `SESSION_CONTRACT` singleton the host published (`solution-session-sharing`). This is the remote's **own** small guard — it does NOT import `@org/shared-auth-ui` (that is a monolith lib).
@@ -25,7 +25,7 @@ created_by:
 - Let the remote gate its own routes on the host's session using permission strings, with zero authentication code of its own
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Implementation
 
@@ -46,7 +46,7 @@ export function requirePermission(permission: string): CanActivateFn {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Rules
 
@@ -59,7 +59,7 @@ __Applied solutions:__
 - Do not duplicate the host's forbidden/login page — a minimal inline "sign in to continue" placeholder in the guarded component is enough.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Check list
 
@@ -69,7 +69,7 @@ __Applied solutions:__
 - [ ] The check is a permission string, not a role
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Unittest TestCases
 
@@ -78,4 +78,4 @@ __Applied solutions:__
 - [ ] WHEN an authenticated user has the permission string THEN the guard allows
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]

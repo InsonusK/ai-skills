@@ -21,11 +21,11 @@ extends:
   - apps/platform-shell (Native Federation dynamic host)
   - Repository (type:host tag, federation shared-dependency rules)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]]"
 ---
 
 # Goal
@@ -48,20 +48,20 @@ adr:
 # Boundaries
 - Assumes a `monolith` baseline (`solution-repository-structure` + `solution-app-routing`). The host is a monolith plateau + this solution; state, data-access, auth, offline are all monolith concerns composed via `parent_plateaus`, not re-declared here.
 - Does **not** `depends_on solution-offline-first` (the V1 `depends_on` was over-strong). `FederatedReadResilience`'s `service-worker.ts.extend` applies conditionally when both solutions co-occur — a plateau-level ordering, recorded in that plateau's `registry/`.
-- Does not model the remote side — see [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]. Does not model the contracts package — see [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]].
-- Does not implement `SessionContract` publication — that is [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]].
+- Does not model the remote side — see [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]. Does not model the contracts package — see [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]].
+- Does not implement `SessionContract` publication — that is [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]].
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]] — Native Federation + Dynamic Federation, over Webpack Module Federation / Web Components / iframe: matches Angular's esbuild build, one shared Angular runtime for real singleton state, runtime discovery without a host rebuild.
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]] — Native Federation + Dynamic Federation, over Webpack Module Federation / Web Components / iframe: matches Angular's esbuild build, one shared Angular runtime for real singleton state, runtime discovery without a host rebuild.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|apps/platform-shell]] - extended into a federation host
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
+  - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|apps/platform-shell]] - extended into a federation host
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
   - the hierarchical route-ownership pattern is what a remote reuses one level down
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
   - provides the `@platform/contracts` package this host shares as a strict singleton
 
 NPM:
@@ -70,18 +70,18 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/Repository.extend.md|Repository]] - extend - `type:host` tag, federation shared-dependency rules, explicit-failure requirement on a version mismatch
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/Repository.extend.md|Repository]] - extend - `type:host` tag, federation shared-dependency rules, explicit-failure requirement on a version mismatch
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|apps/platform-shell]] - extend - turn into a Native Federation dynamic host
-  - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts]] - create - runtime resolver for remotes' `remoteEntry` URLs
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|service-worker (extend)]] - extend - the fifth caching rule (federated remote chunks); applies only when `solution-offline-first` is also composed
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|apps/platform-shell]] - extend - turn into a Native Federation dynamic host
+  - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts]] - create - runtime resolver for remotes' `remoteEntry` URLs
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|service-worker (extend)]] - extend - the fifth caching rule (federated remote chunks); applies only when `solution-offline-first` is also composed
 
 # Workflow
 
 ## Onboard a new remote (happy path)
 
-1. A separate team scaffolds their repo per [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] and publishes its `remoteEntry` URL + exposed module path to the platform's runtime manifest.
+1. A separate team scaffolds their repo per [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] and publishes its `remoteEntry` URL + exposed module path to the platform's runtime manifest.
 2. `RemoteRegistryService` picks up the new entry on its next manifest refresh — no host rebuild.
 3. The shell loads the remote's exposed module via `loadRemoteModule` and mounts it at one root segment.
 4. Host and remote exchange events/state through the shared `@platform/contracts` — the same singleton instance.
@@ -101,10 +101,10 @@ PROJECT:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md#MUST|platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md#MUST|remote-registry.service.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md#MUST|service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md#MUST|platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md#MUST|remote-registry.service.ts]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md#MUST|service-worker.ts.extend]]
 - Never hardcode a remote's URL or version into the host — always resolve through `RemoteRegistryService`'s manifest.
   - Risk: a remote redeploy or re-host forces a platform code change, defeating the whole point.
   - Fix: the manifest is the single source of remote locations.
@@ -113,7 +113,7 @@ PROJECT:
   - Fix: the only contract is `@platform/contracts` + the federation boundary.
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md#SHOULD|platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md#SHOULD|platform-shell.project.extend]]
 - Avoid caching the remotes manifest for the whole tab lifetime with no refresh path.
 - Avoid hardcoding `KNOWN_REMOTE_ORIGINS` for the SW rule instead of deriving it from `RemoteRegistryService`.
 

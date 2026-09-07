@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
 ---
 
 > `src/app/remote.routes.ts`, declared in `federation.config.mjs` as `exposes: { './Routes': './src/app/remote.routes.ts' }`. The host's `loadChildren` reads `REMOTE_ROUTES` off the loaded module.
@@ -25,7 +25,7 @@ created_by:
 - Define the remote's internal navigation entirely relative to its own root, so any host can mount it at any segment without a code change — hierarchical route ownership (from `solution-app-routing`) one level down
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
 
 # Naming convention
 
@@ -55,7 +55,7 @@ export const REMOTE_ROUTES: Routes = [
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
 
 # Rules
 
@@ -68,7 +68,7 @@ __Applied solutions:__
 - A `loadComponent` / `loadChildren` split inside the remote is a normal per-route decision, unchanged from the monolith's `class-feature-routes` guidance.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
 
 # Check list
 
@@ -77,7 +77,7 @@ __Applied solutions:__
 - [ ] `./Routes` is the only federation-exposed surface
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
 
 # Unittest TestCases
 
@@ -85,4 +85,4 @@ __Applied solutions:__
 - [ ] WHEN the host mounts `./Routes` at a segment THEN Angular's router composes the full path automatically, with no change to the remote
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]

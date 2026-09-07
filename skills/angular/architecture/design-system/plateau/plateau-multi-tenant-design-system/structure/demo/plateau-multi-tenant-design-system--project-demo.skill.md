@@ -15,19 +15,19 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
 ---
 
-> `projects/demo` is the design system's self-built component preview app (Storybook was rejected, see [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling]]). `solution-design-system-ui-testing` adds nothing structural — it only makes every preview page a stable target for the visual / style-snapshot / a11y specs.
+> `projects/demo` is the design system's self-built component preview app (Storybook was rejected, see [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling]]). `solution-design-system-ui-testing` adds nothing structural — it only makes every preview page a stable target for the visual / style-snapshot / a11y specs.
 
 # Goal
 
 - Give a human somewhere to review every shipped component, and give the Playwright specs a stable, deep-linkable target — one set of preview pages, not two
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Core Principles
 
@@ -37,7 +37,7 @@ __Applied solutions:__
 - **VP1** — the demo carries a tenant `<select data-testid="tenant-select">` (options: `(base brand)` + every `DS_TENANTS` id) that sets / clears `document.documentElement.dataset.tenant`. This models the consuming-app responsibility; the design system ships no such control. Per-tenant style-snapshot specs drive it with `selectOption(...)`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
 
 # Structure
 
@@ -62,7 +62,7 @@ __Applied solutions:__
 | src/app/app.ts | Minimal shell — component nav + a tenant `<select data-testid="tenant-select">` (sets `document.documentElement.dataset.tenant`) + `<router-outlet />`. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
 
 ## What Does NOT Belong Here
 
@@ -72,7 +72,7 @@ __Applied solutions:__
 - Publication config — `projects/demo` is never published (`.changeset` `ignore`)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
 
 # Rules
 
@@ -88,7 +88,7 @@ __Applied solutions:__
 - Give every meaningfully distinct state its own directly navigable route/anchor, backed by the component's `spec/preview/` file — a new example with no navigable target can't be reliably screenshotted.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
 
 # Check list
 
@@ -99,9 +99,9 @@ __Applied solutions:__
 - [ ] The tenant switcher's options are `(base brand)` + every `DS_TENANTS` id, and it only sets/clears `data-tenant`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Unittest TestCases
 
@@ -111,4 +111,4 @@ __Applied solutions:__
 - [ ] WHEN the tenant switcher is set back to `(base brand)` THEN `data-tenant` is removed and the base palette applies
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]

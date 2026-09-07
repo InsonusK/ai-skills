@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
 ---
 
 > `projects/design-system/styles/tenants/_{tenant}.scss` + one `@use` line in `styles/tenants.scss` (the package asset). Not tied to one tenant.
@@ -26,7 +26,7 @@ created_by:
 - Keep the file to a single `@include ds-tenant-theme(...)` — no bare `mat.theme()`, no typography, no density
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]
 
 # Core Principles
 
@@ -36,7 +36,7 @@ __Applied solutions:__
 - `--ds-*` overrides are only for colours Material does not model, each a `light-dark()` value
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-resolution-strategy.md|tenant-resolution-strategy]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-resolution-strategy.md|tenant-resolution-strategy]]
 
 # Naming convention
 
@@ -73,7 +73,7 @@ Then in `styles/tenants.scss`:
 And in `src/lib/tenants.ts`: add `'globex'` to `DS_TENANTS`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]
 
 # Rules
 
@@ -86,7 +86,7 @@ __Applied solutions:__
 - Never put a bare `mat.theme()` or extra rules in a tenant file — everything goes through `ds-tenant-theme`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]
 
 # Check list
 
@@ -101,4 +101,4 @@ __Applied solutions:__
 - [ ] WHEN `data-tenant` is removed THEN the same component falls back to the base brand palette
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/{tenant}-palette.scss.create.md|Tenants/{tenant}-palette.scss.create]]

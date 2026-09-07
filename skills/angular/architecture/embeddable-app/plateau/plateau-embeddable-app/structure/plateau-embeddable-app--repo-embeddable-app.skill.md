@@ -15,12 +15,12 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
+  - "[[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]]"
 ---
 
-> **The `embeddable-app` catalog's single plateau — built from scratch (`parent_plateaus: []`).** A remote is not a continuation of the platform chain: its own internal architecture is unconstrained (a remote *may* adopt the [monolith](skills/angular/architecture/v3.1/monolith/variability-map.md) catalog's feature models — the aspirational `RemoteInternalArchitecture` — but is not required to). This plateau prescribes **only the federation boundary** plus VP1 (`RemoteSessionConsumption`) and VP2 (`RemoteDesignSystemConsumption`). It is a **separate repository**, any tooling — a plain Angular CLI workspace is sufficient.
+> **The `embeddable-app` catalog's single plateau — built from scratch (`parent_plateaus: []`).** A remote is not a continuation of the platform chain: its own internal architecture is unconstrained (a remote *may* adopt the [monolith](skills/angular/architecture/monolith/variability-map.md) catalog's feature models — the aspirational `RemoteInternalArchitecture` — but is not required to). This plateau prescribes **only the federation boundary** plus VP1 (`RemoteSessionConsumption`) and VP2 (`RemoteDesignSystemConsumption`). It is a **separate repository**, any tooling — a plain Angular CLI workspace is sufficient.
 
 # Structure
 
@@ -49,15 +49,15 @@ created_by:
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
 | federation.config.mjs | `withNativeFederation({ name, exposes: { './Routes': './src/app/remote.routes.ts' }, shared: { ...shareAll(strict), '@platform/contracts': strict, 'design-system': {strictVersion:false} } })`. | — |
-| src/app/remote.routes.ts | The federation-exposed module — `REMOTE_ROUTES: Routes`. Mounts this remote's own features' root segments; never references the segment the host mounts it at. | [[skills/angular/architecture/v3.1/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-remote-routes.skill\|class-remote-routes]] |
-| src/app/session/require-permission.ts | `requirePermission(perm): CanActivateFn` — reads `SESSION_CONTRACT`; `isAuthenticated() === false` → `false` (the host owns the redirect). | [[skills/angular/architecture/v3.1/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-require-permission.skill\|class-require-permission]] |
-| src/app/session/has-permission.directive.ts | `*hasPermission="'x'"` — shows/hides by a permission string from `SESSION_CONTRACT`. Same model as the host's directive. | [[skills/angular/architecture/v3.1/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-has-permission-directive.skill\|class-has-permission-directive]] |
+| src/app/remote.routes.ts | The federation-exposed module — `REMOTE_ROUTES: Routes`. Mounts this remote's own features' root segments; never references the segment the host mounts it at. | [[skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-remote-routes.skill\|class-remote-routes]] |
+| src/app/session/require-permission.ts | `requirePermission(perm): CanActivateFn` — reads `SESSION_CONTRACT`; `isAuthenticated() === false` → `false` (the host owns the redirect). | [[skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-require-permission.skill\|class-require-permission]] |
+| src/app/session/has-permission.directive.ts | `*hasPermission="'x'"` — shows/hides by a permission string from `SESSION_CONTRACT`. Same model as the host's directive. | [[skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-has-permission-directive.skill\|class-has-permission-directive]] |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/routes.ts.extend.md|routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]
 
 ## NPM Packages
 
@@ -68,8 +68,8 @@ __Applied solutions:__
 | design-system | version-negotiated `requiredVersion`, this team's real tested range | Theme + `ds-*` components; `singleton: true, strictVersion: false` — a mismatch falls back to a bundled copy, never blocks this remote's deploy |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]
 
 # Rules
 
@@ -87,9 +87,9 @@ __Applied solutions:__
 - Keep a minimal "sign in to continue" placeholder — do not duplicate the host's full forbidden/login UI.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]
 
 # Check list
 
@@ -102,8 +102,8 @@ __Applied solutions:__
 - [ ] The remote builds/tests/deploys on its own pipeline
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Unittest TestCases
 
@@ -114,6 +114,6 @@ __Applied solutions:__
 - [ ] WHEN this remote's `design-system` `requiredVersion` matches the host's loaded version THEN no separate design-system bundle is fetched
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]] - [[skills/angular/architecture/solutions/solution-federation-remote.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]] - [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/Implementation/federation.extend.md|federation.extend]]

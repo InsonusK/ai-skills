@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
 
 > `libs/shared/state/src/lib/persistence/persisted-state.ts`. Mechanism only — the `key` / `keys` config for any slice lives at the `store.config.ts` call site, never here.
 
@@ -24,7 +24,7 @@ created_by:
 - Make it structurally impossible to persist a key on `SENSITIVE_STATE_KEYS` — `assertPersistable()` throws at construction
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - `SENSITIVE_STATE_KEYS` is the single registry of never-persist keys; a solution that adds a sensitive field adds its key here
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]
 
 # Naming convention
 
@@ -106,7 +106,7 @@ provideState(preferencesFeature.name, preferencesFeature.reducer, {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]
 
 # Rules
 
@@ -120,7 +120,7 @@ __Applied solutions:__
 - Never put a slice's `key` / `keys` values inside this file — they belong at the `store.config.ts` call site.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]
 
 # Check list
 
@@ -139,4 +139,4 @@ __Applied solutions:__
 - [ ] WHEN `setItem` throws THEN the dispatch still completes and state updates
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|GlobalStore/persisted-state.ts.create]]

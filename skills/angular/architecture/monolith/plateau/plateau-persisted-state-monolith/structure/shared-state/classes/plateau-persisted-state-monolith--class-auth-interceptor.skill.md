@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 
 > `libs/shared/state/src/lib/auth/auth.interceptor.ts`. Registered once at the shell via `provideHttpClient(withFetch(), withInterceptors([authInterceptor]))`.
 
@@ -24,7 +24,7 @@ created_by:
 - Recover transparently from an expired access token via a single silent-refresh, without surfacing a spurious error
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - On a 401 it dispatches `Silent Refresh Requested` (one attempt) and re-throws — it does not immediately log the user out
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
 
 # Naming convention
 
@@ -66,7 +66,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
 
 # Rules
 
@@ -79,7 +79,7 @@ __Applied solutions:__
 - Never retry the original request indefinitely on repeated 401s — one refresh attempt, then treat as logged out.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
 
 # Check list
 
@@ -89,7 +89,7 @@ __Applied solutions:__
 - [ ] A 401 → exactly one `Silent Refresh Requested`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
 
 # Unittest TestCases
 
@@ -98,4 +98,4 @@ __Applied solutions:__
 - [ ] WHEN the request is to `/auth/refresh` THEN it is not decorated with a bearer
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]

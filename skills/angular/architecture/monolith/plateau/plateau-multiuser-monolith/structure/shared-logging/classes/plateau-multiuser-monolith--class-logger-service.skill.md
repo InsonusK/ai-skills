@@ -14,8 +14,8 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
 
 > VP6: `LogLevel` gains `'report'`; the `LOG_SINKS` factory now returns `[ConsoleLogSink, BackendLogSink]`; `report()` bypasses `MIN_LOG_LEVEL` (it is a routing marker, not a severity).
 
@@ -24,7 +24,7 @@ created_by:
 - Give every part of the application a single logging entry point, with structured entries and environment-based level filtering
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Core Principles
 
@@ -32,7 +32,7 @@ __Applied solutions:__
 - A log entry is always structured: a message plus a context object, never a single interpolated string
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Naming convention
 
@@ -86,7 +86,7 @@ export class LoggerService {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Rules
 
@@ -100,8 +100,8 @@ __Applied solutions:__
 - Never use `report()` as a substitute for `error()` — it blurs severity in backend log queries.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend.md|Logging/logger.service.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/logger.service.ts.extend.md|Logging/logger.service.ts.extend]]
 
 
 - Apply SEVERAL plateau templates per class/artifact
@@ -110,7 +110,7 @@ __Applied solutions:__
   - Instead: call `inject(LoggerService).forFeature('orders')` once per feature
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Check list
 
@@ -119,7 +119,7 @@ __Applied solutions:__
 - [ ] Every log entry's context is a structured object, not a pre-formatted string
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Unittest TestCases
 
@@ -131,4 +131,4 @@ __Applied solutions:__
   - [ ] the resulting entry's context includes `{ feature: 'orders' }` merged with any additional context passed at the call site
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]

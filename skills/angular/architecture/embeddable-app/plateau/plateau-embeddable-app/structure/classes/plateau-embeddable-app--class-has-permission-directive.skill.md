@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
 ---
 
 > `src/app/session/has-permission.directive.ts`. The remote's own copy — deliberately NOT `@org/shared-auth-ui`'s (a monolith lib). It reads the same `SESSION_CONTRACT` singleton the host published.
@@ -25,7 +25,7 @@ created_by:
 - Gate a control in a remote component on a permission string, using the host's session, with the exact model the host's own `*hasPermission` uses
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Implementation
 
@@ -55,7 +55,7 @@ export class HasPermissionDirective {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Rules
 
@@ -65,7 +65,7 @@ __Applied solutions:__
 - `*hasPermission` is a UX affordance only — the real enforcement is server-side and, for a whole route, `requirePermission` in `remote.routes.ts`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Check list
 
@@ -74,7 +74,7 @@ __Applied solutions:__
 - [ ] It is the remote's own directive, not imported from a monolith lib
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
 
 # Unittest TestCases
 
@@ -82,4 +82,4 @@ __Applied solutions:__
 - [ ] WHEN `isAuthenticated()` is false THEN the gated control is absent regardless of the permission list
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] - [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|session-consumption.extend]]

@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 
 > `libs/shared/auth-ui/src/lib/permission.guard.ts`. The factory is shared; the **attachment** is per-feature — inside `{feature}.routes.ts`, never in the shell. This is where the auth guards `solution-app-routing` deferred are formally defined.
 
@@ -23,7 +23,7 @@ created_by:
 - Restrict navigation into a route by a required permission, reusing the same permission model as `*hasPermission`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - Attached at the feature's own route (hierarchical ownership) — never in `apps/platform-shell`'s root routes
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
 
 # Naming convention
 
@@ -62,7 +62,7 @@ export function requirePermission(permission: string): CanActivateFn & CanMatchF
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
 
 # Rules
 
@@ -73,7 +73,7 @@ __Applied solutions:__
 - Never apply several plateau templates per class/artifact.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
 
 # Check list
 
@@ -81,7 +81,7 @@ __Applied solutions:__
 - [ ] No permission guard is defined in `apps/platform-shell`'s root routes
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
 
 # Unittest TestCases
 
@@ -89,4 +89,4 @@ __Applied solutions:__
 - [ ] WHEN a user without it navigates THEN it returns a `UrlTree` for `/forbidden`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]

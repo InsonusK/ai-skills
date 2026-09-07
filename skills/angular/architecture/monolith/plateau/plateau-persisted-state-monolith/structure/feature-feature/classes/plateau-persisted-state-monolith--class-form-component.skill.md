@@ -14,9 +14,9 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
+  - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 
 > Generic pattern, not tied to one concrete form — every component that renders a form inside `libs/{feature}/feature` follows this, substituting `{form-name}` with the real form's name. VP7: a control that only some users may use is wrapped in `*hasPermission="'<permission-string>'"` (from `@org/shared-auth-ui`) — never shown/hidden by a hand-rolled `permissions().includes(...)` check in the component.
 
@@ -27,10 +27,10 @@ created_by:
 - Verify what a user actually experiences (rendered DOM, interactions) rather than internal implementation details
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Core Principles
 
@@ -40,10 +40,10 @@ __Applied solutions:__
 - The component's spec queries and interacts with the rendered DOM via Testing Library, faking the component's Signal Store — never a real HTTP call
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Naming convention
 
@@ -114,10 +114,10 @@ describe('OrdersListComponent', () => {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Rules
 
@@ -127,7 +127,7 @@ __Applied solutions:__
 - A custom, design-system-provided form control used inside a Signal Form must implement `ControlValueAccessor` so it is compatible with `formField` binding.
 - Component tests must query and interact with the rendered DOM via Testing Library (`screen.getByRole`, `userEvent`), not via `fixture.componentInstance` or `fixture.debugElement` reaching into internals.
 - A component test must fake the component's Signal Store (or Facade, if the component calls one directly) — it must never use `HttpTestingController` or let a real HTTP call occur.
-- The form must also have a route in `apps/component-preview` with representative example states (empty, filled, validation-error), a Playwright screenshot spec, and an `@axe-core/playwright` scan against that route, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
+- The form must also have a route in `apps/component-preview` with representative example states (empty, filled, validation-error), a Playwright screenshot spec, and an `@axe-core/playwright` scan against that route, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]].
 - **VP7** — a control only some users may use must be gated with `*hasPermission="'<permission-string>'"` from `@org/shared-auth-ui`, never a hand-written `@if (permissions().includes(...))`. The argument is a permission string, never a role. `*hasPermission` is a UX affordance only — the real enforcement is server-side and, for a whole route, `requirePermission` in `{feature}.routes.ts`.
 
 ## SHOULD
@@ -136,11 +136,11 @@ __Applied solutions:__
 - Queries should prefer accessible roles/labels (`getByRole`, `getByLabelText`) over test-id attributes, so the test also implicitly checks the component is accessible.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md|UI/has-permission.directive.ts.create]]
 
 
 - Apply SEVERAL plateau templates per class/artifact
@@ -158,10 +158,10 @@ __Applied solutions:__
   - Instead: prefer `getByRole`/`getByLabelText`; reserve `getByTestId` for elements with no meaningful accessible role
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Check list
 
@@ -176,10 +176,10 @@ __Applied solutions:__
 - [ ] The form has a `apps/component-preview` route, a passing visual spec, and a passing accessibility spec
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -199,7 +199,7 @@ __Applied solutions:__
   - [ ] that control is present
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]

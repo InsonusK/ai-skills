@@ -62,7 +62,7 @@ Every one of the four solutions declares `depends_on solution-global-store` and 
 ### Costs
 
 - Four parallel root stores, each with its own bootstrap and DevTools registration.
-- No unified action ordering across a cross-VP sequence — the exact interleaving of an auth refresh and an offline replay is unrecoverable, which is where these flows fail (see [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]]).
+- No unified action ordering across a cross-VP sequence — the exact interleaving of an auth refresh and an offline replay is unrecoverable, which is where these flows fail (see [[skills/angular/architecture/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]]).
 - `connectivity` / `auth` are read by many features; giving each its own store recreates tier 3 four times under four different shapes — the sprawl `solution-state-tiering` exists to prevent.
 
 ## Make GlobalStore implied rather than a constraint

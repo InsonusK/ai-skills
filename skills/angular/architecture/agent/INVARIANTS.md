@@ -2,7 +2,7 @@
 
 Anchor document for the v3.1 solution-catalog build (per [[skills/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md|bulk-authoring-harness]]). Every solution in `v3.1/solutions/` must satisfy every invariant here. `check.sh` enforces the mechanical ones; the fresh-eyes audit enforces the rest.
 
-The shared solution pool `v3.1/solutions/` serves four catalogs — [[skills/angular/architecture/v3.1/README.md|monolith / platform-host / embeddable-app / design-system]]. A solution belongs to whichever catalog(s)' variability-map cites it in **Realized by**.
+The shared solution pool `v3.1/solutions/` serves four catalogs — [[skills/angular/architecture/README.md|monolith / platform-host / embeddable-app / design-system]]. A solution belongs to whichever catalog(s)' variability-map cites it in **Realized by**.
 
 ## 1. Baselines (what exists before any optional feature)
 
@@ -68,7 +68,7 @@ libs/{feature}/feature          ← solution-repository-structure (feature lib; 
 ## 4. Link & path conventions
 
 - Every internal link points inside `skills/angular/architecture/v3.1/` or `skills/common-workflow/` — **never** `skills/angular/architecture/solutions/` or `.../plateau/` (the V1 catalog).
-- Wikilink form: `[[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
+- Wikilink form: `[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
 - Implementation-file links: `[[.../solution-forms.skill/Implementation/{File}.{kind}.md#SECTION|label]]`.
 - A solution's folder name, its main file name, and its `name:` field are identical: `solution-{name}.skill` / `solution-{name}.skill.md` / `name: solution-{name}`.
 - `depends_on` labels must be English (V1 used Russian labels — de-Russify on migration).

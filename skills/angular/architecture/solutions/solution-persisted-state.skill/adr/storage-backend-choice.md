@@ -35,7 +35,7 @@ The `persistKeys()` metaReducer factory takes a `storage: Storage` argument and 
 
 ### Benefits
 
-- `localStorage`'s synchronous read lets the metaReducer merge persisted values into the initial state *before the first render that reads it* — no flash of default state, no post-render patch (see [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]).
+- `localStorage`'s synchronous read lets the metaReducer merge persisted values into the initial state *before the first render that reads it* — no flash of default state, no post-render patch (see [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]).
 - One backend covers the overwhelmingly common case (a handful of scalar preferences), so most consumers never make a decision.
 - `sessionStorage` is the same API with a different lifetime — no new code path, just a different argument.
 - Dexie is already a workspace dependency (`solution-offline-sync`'s mutation queue, `solution-logging-global`'s retry queue), so the large-draft path adds no new package.

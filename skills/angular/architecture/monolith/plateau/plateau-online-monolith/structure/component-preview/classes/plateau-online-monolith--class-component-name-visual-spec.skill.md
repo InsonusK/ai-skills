@@ -14,15 +14,15 @@ tags:
   - framework/angular
   - concern/architecture
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 ---
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|{component-name}.visual.spec.ts.create]]
 
 
 # How this generic file is used
-Created at `spec/{component-name}.visual.spec.ts` next to the component implementation. Applies identically in both catalogs (`solution-ui-testing` monolith / `solution-design-system-ui-testing` design system): navigate to the component's existing demo/preview page (design system: `projects/demo`, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md]]; platform: `apps/component-preview`, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md]]) and assert a [visual regression](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) screenshot match. Per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] — no Storybook, no Chromatic.
+Created at `spec/{component-name}.visual.spec.ts` next to the component implementation. Applies identically in both catalogs (`solution-ui-testing` monolith / `solution-design-system-ui-testing` design system): navigate to the component's existing demo/preview page (design system: `projects/demo`, per [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md]]; platform: `apps/component-preview`, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md]]) and assert a [visual regression](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) screenshot match. Per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] — no Storybook, no Chromatic.
 
 # Goals
 

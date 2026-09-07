@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
 
 > `libs/shared/state/src/lib/preferences/`. Registered via `provideGlobalStore()` with a `persistKeys` metaReducer whose allow-list equals every field. The reference persisted slice — flat, all-scalar, no effects.
 
@@ -24,7 +24,7 @@ created_by:
 - Be the worked example of the persisted-slice pattern
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - The `persistKeys` allow-list is exactly `['theme', 'density', 'lastFeatureTab']` — every field, listed literally
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
 
 # Naming convention
 
@@ -87,7 +87,7 @@ export const { reducer: preferencesReducer, selectTheme, selectDensity, selectLa
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
 
 # Rules
 
@@ -99,7 +99,7 @@ __Applied solutions:__
 - Never apply several plateau templates per class/artifact.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
 
 # Check list
 
@@ -115,4 +115,4 @@ __Applied solutions:__
 - [ ] WHEN `setDensity` is dispatched THEN after a microtask `localStorage.getItem('app:preferences')` reflects the new density
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|GlobalStore/preferences.store.ts.create]]

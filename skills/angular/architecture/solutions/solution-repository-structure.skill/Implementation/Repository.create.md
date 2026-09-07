@@ -25,7 +25,7 @@ tags:
 ```
 
 - `{feature}` is a placeholder for each business feature (e.g. `orders`, `catalog`, `billing`).
-- The minimum for a feature is a single `feature` lib (components, routing, store). A feature that talks to a backend is **additionally** split into a `data-access` lib (API calls, DTO mapping) so UI and data-access evolve and are reused independently — that split is added by `solution-api-http-layer` (`BackendDataAccess` = Yes), per [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|feature-lib-split-conditional-on-backend-data-access]]. A feature never gets a single *flat* lib mixing UI and data concerns.
+- The minimum for a feature is a single `feature` lib (components, routing, store). A feature that talks to a backend is **additionally** split into a `data-access` lib (API calls, DTO mapping) so UI and data-access evolve and are reused independently — that split is added by `solution-api-http-layer` (`BackendDataAccess` = Yes), per [[skills/angular/architecture/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|feature-lib-split-conditional-on-backend-data-access]]. A feature never gets a single *flat* lib mixing UI and data concerns.
 - `libs/shared/ui` hosts app-specific UI wrappers that are not part of the design system itself (the design system is a separate npm package, see the `solution-design-system-*` solutions) — for example composed layouts built out of design-system primitives.
 - `libs/shared/util` hosts framework-agnostic helpers (pure functions, RxJS operators, mapping utilities) with no Angular DI, no HTTP, no state.
 

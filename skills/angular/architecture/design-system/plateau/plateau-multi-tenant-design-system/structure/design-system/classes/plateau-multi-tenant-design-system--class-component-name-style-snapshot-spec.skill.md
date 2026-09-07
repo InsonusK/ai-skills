@@ -15,17 +15,17 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
 ---
 
-> `projects/design-system/src/lib/{component}/spec/{component}.style-snapshot.spec.ts`. Navigates to the same preview page as `.visual.spec.ts`, reads a computed-style snapshot via the shared [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-read-visual-style-properties.skill.md|read-visual-style-properties]] helper. Text baselines commit to `spec/snapshot/`.
+> `projects/design-system/src/lib/{component}/spec/{component}.style-snapshot.spec.ts`. Navigates to the same preview page as `.visual.spec.ts`, reads a computed-style snapshot via the shared [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-read-visual-style-properties.skill.md|read-visual-style-properties]] helper. Text baselines commit to `spec/snapshot/`.
 
 # Goal
 
 - Turn a failing pixel screenshot into a readable list of which CSS properties changed, and from what to what — checked *before* accepting a new visual baseline
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
 
 # Implementation
 
@@ -48,7 +48,7 @@ test.describe('DsButtonComponent — style snapshot', () => {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
 
 # Rules
 
@@ -60,7 +60,7 @@ __Applied solutions:__
 - Before `--update-snapshots` on a failing visual baseline, inspect this diff first: an empty diff = rendering noise (safe); a non-empty diff names the property change to confirm intentional.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
 
 
 - **A component-specific property list instead of the shared helper**
@@ -68,7 +68,7 @@ __Applied solutions:__
   - Instead: extend the one shared `VISUAL_STYLE_PROPERTIES` list if a real gap is found
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
 
 # Check list
 
@@ -78,7 +78,7 @@ __Applied solutions:__
 - [ ] Tests grouped under `test.describe('<component-name> — style snapshot', ...)`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -87,4 +87,4 @@ __Applied solutions:__
 - [ ] WHEN a `light-dark()` dark branch stops applying THEN the dark-scheme style-snapshot fails, naming the properties
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.style-snapshot.spec.ts.create.md|Testing/{component-name}.style-snapshot.spec.ts.create]]

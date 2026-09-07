@@ -21,13 +21,13 @@ extends:
   - libs/shared/state (register the auth slice in provideGlobalStore())
   - apps/platform-shell (HTTP interceptor registration, bootstrap silent refresh)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]]"
 ---
 
 # Goal
@@ -49,36 +49,36 @@ adr:
 
 # Boundaries
 - Assumes a `monolith` baseline with `solution-global-store` (for the `auth` slice), `solution-app-routing` (for guards), and `solution-api-http-layer` (the interceptor, silent-refresh call, and login all go through `libs/shared/http-core`). It is monolith VP7 and **requires** VP2 (GlobalStore) + VP3 (BackendDataAccess).
-- **Does not publish `SessionContract` to embeddable apps** — that is [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] in the `platform-host` catalog, which `depends_on` this solution. A non-federated authenticated monolith needs neither `@platform/contracts` nor federation.
+- **Does not publish `SessionContract` to embeddable apps** — that is [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] in the `platform-host` catalog, which `depends_on` this solution. A non-federated authenticated monolith needs neither `@platform/contracts` nor federation.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]] — in-memory access token + `HttpOnly` refresh cookie, over `localStorage` or fully cookie-based auth. Rejected: `localStorage` (XSS), full cookie auth (CSRF surface, no fine control).
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]] — granular permission strings, over coarse roles. Rejected: role names (do not scale; couple consumers to one taxonomy).
+- [[skills/angular/architecture/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]] — in-memory access token + `HttpOnly` refresh cookie, over `localStorage` or fully cookie-based auth. Rejected: `localStorage` (XSS), full cookie auth (CSRF surface, no fine control).
+- [[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]] — granular permission strings, over coarse roles. Rejected: role names (do not scale; couple consumers to one taxonomy).
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|libs/shared/state auth slice]] - this solution adds the `auth` slice to the store
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
-  - implements the auth guards that solution deferred (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|{feature}.guard.ts.create]])
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
+  - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|libs/shared/state auth slice]] - this solution adds the `auth` slice to the store
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
+  - implements the auth guards that solution deferred (see [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|{feature}.guard.ts.create]])
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]
   - the interceptor, silent-refresh call, and login round trips go through `libs/shared/http-core`
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/auth-ui`, and guard/interceptor/directive placement conventions
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend.md|Repository]] - extend - add `libs/shared/auth-ui`, and guard/interceptor/directive placement conventions
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|libs/shared/auth-ui]] - create - login form + forbidden page, the only auth UI shared across features
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md|libs/shared/state]] - extend - register the `auth` slice + `AuthEffects` in `provideGlobalStore()` ([delta-conflict Finding 4](skills/angular/architecture/v3.1/delta-conflict-analysis.md#findings))
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|libs/shared/auth-ui]] - create - login form + forbidden page, the only auth UI shared across features
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md|libs/shared/state]] - extend - register the `auth` slice + `AuthEffects` in `provideGlobalStore()` ([delta-conflict Finding 4](skills/angular/architecture/delta-conflict-analysis.md#findings))
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts (create)]] - create - the `auth` slice: session lifecycle, in-memory token, permissions, silent refresh
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|auth.interceptor.ts]] - create - attaches the access token, triggers silent refresh on 401
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|{feature}.guard.ts (generic pattern)]] - create - functional guard restricting navigation into one of a feature's own routes
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md|has-permission.directive.ts]] - create - structural directive controlling UI visibility by permission
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts (create)]] - create - the `auth` slice: session lifecycle, in-memory token, permissions, silent refresh
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|auth.interceptor.ts]] - create - attaches the access token, triggers silent refresh on 401
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|{feature}.guard.ts (generic pattern)]] - create - functional guard restricting navigation into one of a feature's own routes
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md|has-permission.directive.ts]] - create - structural directive controlling UI visibility by permission
 
 # Workflow
 
@@ -111,12 +111,12 @@ Artifact-level:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md#MUST|GlobalStore/shared-state.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md#MUST|auth.store.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md#MUST|auth.interceptor.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md#MUST|{feature}.guard.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md#MUST|has-permission.directive.ts]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md#MUST|GlobalStore/shared-state.project.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md#MUST|auth.store.ts]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md#MUST|auth.interceptor.ts]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md#MUST|{feature}.guard.ts]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md#MUST|has-permission.directive.ts]]
 - `authInterceptor` is excluded from the silent-refresh request itself.
   - Risk: an infinite loop — the refresh request 401s, triggers a refresh, which 401s…
   - Fix: skip the interceptor for the refresh endpoint.

@@ -57,7 +57,7 @@ libs/{feature}/data-access/src/lib
 | /libs/{feature}/data-access/src/lib/facade/{feature}_N.facade.ts | Same as above, used when a feature has multiple distinct data facets. Exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/{feature}.client.ts | Internal: DTO mapping via the Mapper, calls `libs/shared/http-core`, catches `HttpErrorResponse` and throws a typed domain error from `{feature}.errors.ts`. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/client/{feature}_N.client.ts | Same as above, used when a feature has multiple distinct data facets. Never exported from `index.ts`. |
-| /libs/{feature}/data-access/src/lib/{feature}.mapper.ts | Internal: hand-written `dtoToModel`/`modelToDto` functions, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|dto-mapping-strategy]]. Never exported from `index.ts`. |
+| /libs/{feature}/data-access/src/lib/{feature}.mapper.ts | Internal: hand-written `dtoToModel`/`modelToDto` functions, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|dto-mapping-strategy]]. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/mapper/{feature}_N.mapper.ts | Same as above, used when a feature has multiple distinct data facets. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/{feature}.errors.ts | Domain error types for this feature's operations. The Facade may re-export these from `index.ts` so callers can narrow on them. |
 
@@ -79,9 +79,9 @@ No new tag values are introduced; `libs/shared/http-core` uses the existing `typ
   - Fix: `inject(BaseHttpService)` and call its verbs.
 - A Client catches every `HttpErrorResponse` it can produce and rethrows a typed domain error from `{feature}.errors.ts` — a raw `HttpErrorResponse` never escapes.
   - Risk: transport-shaped errors reach the store/component, which then branch on HTTP status codes far from the request.
-  - Fix: `catchError` in the Client maps status → a `{Feature}...Error`; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+  - Fix: `catchError` in the Client maps status → a `{Feature}...Error`; per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
 - For feature-scoped operations the calling Signal Store method calls the Facade directly — no Action/Reducer/Effect for feature-level data.
-  - Risk: classical NgRx boilerplate for state only one feature ever reads, per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]].
+  - Risk: classical NgRx boilerplate for state only one feature ever reads, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]].
   - Fix: `store` method → `Facade` → `Client`. Global/cross-cutting state keeps its Effect → Facade → Client chain.
 - A component or Signal Store method never imports a feature's Client directly, bypassing the Facade.
   - Risk: the Facade's business-rule validation is skipped entirely.
@@ -97,4 +97,4 @@ No new tag values are introduced; `libs/shared/http-core` uses the existing `typ
 
 ## SHOULD
 - **A Signal Store method calling the feature's Client directly, skipping the Facade** — Consequence: bypasses business-rule validation the Facade exists to enforce, and duplicates that validation elsewhere or omits it entirely — Instead: the store always goes through the Facade; only the Facade calls the Client
-- **A Client method letting a raw `HttpErrorResponse` propagate uncaught** — Consequence: feature/business code ends up branching on HTTP status codes instead of a meaningful domain error, coupling it to backend transport details (see [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]]) — Instead: catch every possible transport error inside the Client and rethrow the feature's typed domain error
+- **A Client method letting a raw `HttpErrorResponse` propagate uncaught** — Consequence: feature/business code ends up branching on HTTP status codes instead of a meaningful domain error, coupling it to backend transport details (see [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]]) — Instead: catch every possible transport error inside the Client and rethrow the feature's typed domain error

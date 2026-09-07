@@ -9,7 +9,7 @@ tags:
 
 # Structure
 
-No new directories. This extension adds two conventions on top of [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]] and [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/Repository.extend.md]]:
+No new directories. This extension adds two conventions on top of [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]] and [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/Repository.extend.md]]:
 - Every `type:app` and routable `type:feature` project declares a `budgets` block in its build configuration.
 - Any route that should be background-preloaded carries `data: { preload: true }`, set only by the project that mounts it (see Rules below).
 

@@ -14,15 +14,15 @@ tags:
 parent_plateaus: []
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/registry/design-system-repository.md|design-system-repository]]"
+  - "[[skills/angular/architecture/design-system/plateau/plateau-design-system/registry/design-system-repository.md|design-system-repository]]"
 ---
 
-> **The single plateau of the `design-system` catalog** — built from scratch, composing all four common solutions (`solution-design-system-structure`, `-tokens`, `-components`, `-ui-testing`). No VPs ([variability map](skills/angular/architecture/v3.1/design-system/variability-map.md)); VP1 `MultiTenantTheming` is aspirational. This lives in **its own repository**, separate from the Nx platform monorepo — it is a standalone product (an npm package), not a stage the monolith chain passes through. `plateau-online-monolith` onward, `plateau-platform-host`, and `plateau-embeddable-app` all consume the package produced here.
+> **The single plateau of the `design-system` catalog** — built from scratch, composing all four common solutions (`solution-design-system-structure`, `-tokens`, `-components`, `-ui-testing`). No VPs ([variability map](skills/angular/architecture/design-system/variability-map.md)); VP1 `MultiTenantTheming` is aspirational. This lives in **its own repository**, separate from the Nx platform monorepo — it is a standalone product (an npm package), not a stage the monolith chain passes through. `plateau-online-monolith` onward, `plateau-platform-host`, and `plateau-embeddable-app` all consume the package produced here.
 
 # Core Principles
 
@@ -51,7 +51,7 @@ See [`example/`](plateau-design-system.skill/example/) — a plain Angular CLI w
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — canonical, no resolver:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
 - [`design-system-repository`](registry/design-system-repository.md) — `solution-design-system-structure` `.create` + `-tokens` / `-components` / `-ui-testing` `.extend`. `FMN`/`TMN`, `source: ordering-only`, **N = 4 — benign** (a two-project repo where each of its four common solutions adds one distinct, member-disjoint piece — the analogue of `monolith-repository`).
 

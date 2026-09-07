@@ -21,8 +21,8 @@ creates:
 extends: []
 depends_on: []
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx Vs Angular Cli Workspace ADR]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|Feature Lib Split Conditional On Backend Data Access ADR]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx Vs Angular Cli Workspace ADR]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|Feature Lib Split Conditional On Backend Data Access ADR]]"
 ---
 
 # Goal
@@ -50,9 +50,9 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx monorepo instead of plain Angular CLI workspace]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx monorepo instead of plain Angular CLI workspace]]
   - Selected variant: Nx monorepo — chosen for affected-based builds, enforced module boundaries, and readiness for the planned embeddability (Module Federation) and offline-first extensions
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|The data-access lib is conditional on BackendDataAccess (v3.1 change from V1)]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|The data-access lib is conditional on BackendDataAccess (v3.1 change from V1)]]
   - Selected variant: a feature always has a `feature` lib; `solution-api-http-layer` adds the `data-access` lib only when the feature has server data — V1 mandated both "from the start", which no longer holds once `BackendDataAccess` is a Variation Point
 
 # Boundaries
@@ -70,14 +70,14 @@ NPM:
 - nx / @nx/angular
   - Workspace generators, `project.json` graph, `nx affected`/`nx run-many` task running
 - @nx/eslint-plugin
-  - `@nx/enforce-module-boundaries` rule — enforces the `type:*`/`scope:*` tag taxonomy defined in [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]]
+  - `@nx/enforce-module-boundaries` rule — enforces the `type:*`/`scope:*` tag taxonomy defined in [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]]
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository]] - create - define the `apps/libs` layout, the `type:*`/`scope:*` tag taxonomy, and the module-boundary allow-list
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository]] - create - define the `apps/libs` layout, the `type:*`/`scope:*` tag taxonomy, and the module-boundary allow-list
 
-No project- or artifact-level (component/service/etc.) implementation files are introduced by this solution — it only establishes workspace-level structure. Individual features created later will follow the `{feature}/feature` + `{feature}/data-access` split defined in [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]], with their own Project/Class-level implementation files written as part of the solutions that create them.
+No project- or artifact-level (component/service/etc.) implementation files are introduced by this solution — it only establishes workspace-level structure. Individual features created later will follow the `{feature}/feature` + `{feature}/data-access` split defined in [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]], with their own Project/Class-level implementation files written as part of the solutions that create them.
 
 # Workflow
 
@@ -86,7 +86,7 @@ No project- or artifact-level (component/service/etc.) implementation files are 
 1. Engineer creates an Nx workspace with the Angular preset.
 2. `apps/platform-shell` is generated as the single deployable unit, tagged `type:app`, `scope:platform`.
 3. `libs/shared/ui` and `libs/shared/util` are generated, tagged `type:ui`/`type:util` with `scope:shared`.
-4. `@nx/enforce-module-boundaries` allow-list from [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]] is configured in the root ESLint config.
+4. `@nx/enforce-module-boundaries` allow-list from [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]] is configured in the root ESLint config.
 5. CI is configured to run `nx affected -t lint,test,build` instead of `nx run-many` on the whole workspace.
 
 ## Add a new business feature (happy path)
@@ -123,15 +123,15 @@ sequenceDiagram
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md#MUST|Repository]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md#MUST|Repository]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md#SHOULD|Repository]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md#SHOULD|Repository]]
 
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|See Repository.create.md for the full list]] — two features importing each other directly, business logic creeping into `apps/platform-shell`, and single flat feature libs instead of the `feature`/`data-access` split.
+- Avoid — [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|See Repository.create.md for the full list]] — two features importing each other directly, business logic creeping into `apps/platform-shell`, and single flat feature libs instead of the `feature`/`data-access` split.
 # Check list
 
-- [ ] `nx graph` shows only the dependencies allowed by the [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|tag taxonomy]]
+- [ ] `nx graph` shows only the dependencies allowed by the [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|tag taxonomy]]
 - [ ] Every project under `/apps` and `/libs` has both a `type:*` and a `scope:*` tag
 - [ ] `nx run-many -t lint` passes with zero `@nx/enforce-module-boundaries` violations
 - [ ] CI is configured to use `nx affected`, not a full `nx run-many` on every commit

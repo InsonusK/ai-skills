@@ -18,8 +18,8 @@ creates: []
 extends:
   - "the remote's exposed module (reads SessionContract, renders a not-authenticated state)"
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
 adr: []
 ---
 
@@ -38,27 +38,27 @@ adr: []
 - Authorization checks the remote makes are permission strings, never role names.
 
 # Boundaries
-- This is the **remote** side. The host side (publishing `SessionContract`) is [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]].
+- This is the **remote** side. The host side (publishing `SessionContract`) is [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]].
 - `embeddable-app` VP1. No legality gate on the host: a remote configured for session consumption with no host `SessionSharing` simply reads `isAuthenticated: false` forever — it is *meaningful* only when a host publishes.
 - A remote with no user-scoped data at all (a public widget) does not compose this solution.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]
+- [[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]
   - the baseline remote contract this reads the session on top of
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
   - carries the `SessionContract` shape the remote reads
 
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|Exposed module (generic pattern)]] - extend - inject `SessionContract`, render a not-authenticated state, express authorization as permission strings
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md|Exposed module (generic pattern)]] - extend - inject `SessionContract`, render a not-authenticated state, express authorization as permission strings
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md#MUST|session-consumption.extend]]
+- [[skills/angular/architecture/solutions/solution-session-consumption.skill/Implementation/session-consumption.extend.md#MUST|session-consumption.extend]]
 - Never implement a login flow or keep a local copy of session state in the remote.
   - Risk: two sources of truth; a user authenticated in the remote but not the host (or vice versa).
   - Fix: read `SessionContract` only; the host owns the session.

@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
 ---
 
 > `projects/design-system/testing/read-visual-style-properties.ts` — one shared helper for the whole plateau, imported by every `spec/{component}.style-snapshot.spec.ts`. The method, list, and ADR are `solution-ui-testing`'s; only the location differs.
@@ -25,7 +25,7 @@ created_by:
 - Read `getComputedStyle()` values — resolved property values, never class names — restricted to one shared list of visually meaningful properties, kept in exactly one place
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
 
 # Implementation
 
@@ -50,7 +50,7 @@ export async function readVisualStyleProperties(locator: Locator): Promise<Visua
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
 
 # Rules
 
@@ -63,7 +63,7 @@ __Applied solutions:__
 - Keep this list identical to the monolith's `solution-ui-testing` list so a snapshot means the same thing in both catalogs — extend it only when a real regression class slips through.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
 
 # Check list
 
@@ -72,7 +72,7 @@ __Applied solutions:__
 - [ ] No spec reads `className` in place of `getComputedStyle()`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
 
 # Unittest TestCases
 
@@ -80,4 +80,4 @@ __Applied solutions:__
 - [ ] WHEN a `--ds-*` token changes an element's resolved colour without touching its class name THEN the returned `color`/`backgroundColor` reflects the new value
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/read-visual-style-properties.ts.create.md|Testing/read-visual-style-properties.ts.create]]

@@ -15,8 +15,8 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
 ---
 
 > Not tied to one concrete component — every component added to the library follows this. Worked examples below: `DsButtonComponent` (delegates to `matButton` internally) and `DsStatusChipComponent` (fully custom, `--ds-*` tokens).
@@ -28,7 +28,7 @@ created_by:
 - Test the component purely on its own `input()`/`output()`/`model()` surface — nothing to fake — plus the visual / style / a11y regressions a behavioural test structurally cannot catch
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
 
 # Core Principles
 
@@ -39,8 +39,8 @@ __Applied solutions:__
 - A behavioural test provides only the component's own inputs — a pure `ds-*` component injects no dependency to fake
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]
 
 # Naming convention
 
@@ -131,8 +131,8 @@ export class DsTextFieldComponent implements ControlValueAccessor {
 Every component also gets a `spec/preview/{component-name}.preview.ts` (imported by `projects/demo`), and `spec/{component-name}.{component,visual,style-snapshot,a11y}.spec.ts`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
 
 # Rules
 
@@ -147,8 +147,8 @@ __Applied solutions:__
 - Default to delegating to Angular Material internally where it fully satisfies the requirement; build fully custom only for a specific, identified gap (a large-dataset control needing different performance than Material's; a domain concept — like workflow status — Material does not model).
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
 
 
 - **Naming an input identically to Material's own corresponding input, with the same enum of values**
@@ -162,7 +162,7 @@ __Applied solutions:__
   - Instead: a pure `ds-*` component's test provides only its inputs
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
 
 # Check list
 
@@ -174,7 +174,7 @@ __Applied solutions:__
 - [ ] A form-participating component implements `ControlValueAccessor`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
 
 # Unittest TestCases
 
@@ -185,5 +185,5 @@ __Applied solutions:__
 - [ ] WHEN the component loses an accessible label or drops below the contrast ratio THEN the a11y spec fails
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md|Testing/{component-name}.visual.spec.ts.create]]

@@ -1,10 +1,10 @@
 # Feature Model — embeddable-app
 
-The **remote** side of a federation system: an independently built, independently deployed application, in its own repository, owned and released by its own team, that a [[skills/angular/architecture/v3.1/platform-host/feature/feature-model.md|`platform-host`]] loads at runtime. Derived from the V1 `plateau-embeddable-app` (the remote half of `plateau-platform-embeddability` / `plateau-design-system-application` / `plateau-authentication`).
+The **remote** side of a federation system: an independently built, independently deployed application, in its own repository, owned and released by its own team, that a [[skills/angular/architecture/platform-host/feature/feature-model.md|`platform-host`]] loads at runtime. Derived from the V1 `plateau-embeddable-app` (the remote half of `plateau-platform-embeddability` / `plateau-design-system-application` / `plateau-authentication`).
 
 The **root product is `EmbeddableApp`**. Any independently deployed application in this architecture — regardless of which team builds it or with what tooling — must conform to this catalog's baseline to be loadable by a `platform-host`. Each remote is configured **independently**; a platform deployment has zero or more of them, and this model describes one.
 
-Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
+Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/README.md|the catalog overview]].
 
 ## The common baseline this model assumes (concretely)
 
@@ -36,7 +36,7 @@ There is no prescribed `feature`/`data-access` split, no required state tier, no
 | FederationRemoteContract | What a remote must satisfy to be loadable: a valid Native Federation `remoteEntry` and an exposed module; `singleton: true` on Angular + `@platform/contracts` so host and remote share one runtime and one contract instance; hierarchical route ownership inside the exposed module (mounts its own feature root segments one level down, never hardcoding its own mount prefix); an independent CI/CD pipeline; and **no import of `platform-shell` internals in either direction** — the only contract is `@platform/contracts` + the federation boundary. | true |
 | RemoteSessionConsumption | The remote reads `SessionContract` (`currentUser`, `permissions`, `isAuthenticated`) from `@platform/contracts` — the same singleton the host published — and never implements its own login flow or keeps its own session copy. If `isAuthenticated` is false it renders a "not authenticated" state and defers to the host. Authorization checks, where the remote makes them, are permission strings, never role names. | false |
 | RemoteDesignSystemConsumption | The remote declares `design-system` as a version-negotiated federation singleton (`singleton: true`, `strictVersion: false`) with an accurate `requiredVersion` range: it shares the host's already-loaded instance when ranges align, and falls back to its own bundled copy when they don't — never blocking its own deploy. The theme is imported only for standalone local development; in production its mounted components inherit the host shell's theme from the shared document. | false |
-| RemoteInternalArchitecture | The remote reuses the [[skills/angular/architecture/v3.1/monolith/feature/feature-model.md|`monolith/`]] catalog's own internal feature models (`NxWorkspaceStructure`, `StateTieringPolicy`, `GlobalStore`, `BackendDataAccess`, `SignalForms`, testing, …) inside its own repo — so the remote is a full monolith wrapped in a federation entry point. `solution-platform-embeddability` explicitly permits this ("free to apply solution #1's structure internally if it also chooses Nx"). | false (aspirational) |
+| RemoteInternalArchitecture | The remote reuses the [[skills/angular/architecture/monolith/feature/feature-model.md|`monolith/`]] catalog's own internal feature models (`NxWorkspaceStructure`, `StateTieringPolicy`, `GlobalStore`, `BackendDataAccess`, `SignalForms`, testing, …) inside its own repo — so the remote is a full monolith wrapped in a federation entry point. `solution-platform-embeddability` explicitly permits this ("free to apply solution #1's structure internally if it also chooses Nx"). | false (aspirational) |
 
 ### Deliberately not rows
 
@@ -57,12 +57,12 @@ There is no prescribed `feature`/`data-access` split, no required state tier, no
 
 1. **`plateau-embeddable-app`'s `parent_plateau: plateau-platform-monolith` is wrong** for a separate-repo product with a different baseline. **Resolved:** this catalog's plateau is built from scratch (`parent_plateaus: []`); the host↔remote relationship is expressed as cross-catalog references. (`RemoteInternalArchitecture=Yes` plateaus would be the exception — they `parent_plateaus` a `monolith/` plateau.)
 2. **Are `RemoteSessionConsumption` and `RemoteDesignSystemConsumption` really optional?** A public widget with no user context can skip `SessionContract`; a remote that renders no shared-styled UI can skip the design system. **Resolved (owner): `FederationRemoteContract` is the only common feature; the other two are variable** — the catalog's VP1 and VP2.
-3. **Three V1 solutions are two-sided** (see [[skills/angular/architecture/v3.1/platform-host/feature/feature-model.md#open-questions-on-v1|platform-host open questions]] 1–3). This catalog's realizations are the remote halves: `solution-federation-remote` (`FederationRemoteContract`), `solution-remote-design-system-consumption` (`RemoteDesignSystemConsumption`), `solution-session-consumption` (`RemoteSessionConsumption`).
+3. **Three V1 solutions are two-sided** (see [[skills/angular/architecture/platform-host/feature/feature-model.md#open-questions-on-v1|platform-host open questions]] 1–3). This catalog's realizations are the remote halves: `solution-federation-remote` (`FederationRemoteContract`), `solution-remote-design-system-consumption` (`RemoteDesignSystemConsumption`), `solution-session-consumption` (`RemoteSessionConsumption`).
 4. **Does this catalog need its own testing / structure solutions?** **Resolved: no** — testing and internal structure are the remote team's choice; only `RemoteInternalArchitecture=Yes` would pull in `monolith/`'s testing features.
 
 ## Out of scope
 
-- **The host side** of federation, design-system sharing, and session publication is in [[skills/angular/architecture/v3.1/platform-host/feature/feature-model.md|`platform-host/`]].
+- **The host side** of federation, design-system sharing, and session publication is in [[skills/angular/architecture/platform-host/feature/feature-model.md|`platform-host/`]].
 - **`@platform/contracts`** is owned and published by `platform-host/` (`PlatformContracts`); this model consumes it.
 - **The remote's own internal architecture** is unconstrained unless `RemoteInternalArchitecture` is adopted — this is a contract-conformance model, not a build guide.
 - **`IsCommon` is a judgment call** — only `FederationRemoteContract` is common; `RemoteSessionConsumption` / `RemoteDesignSystemConsumption` are per-remote choices (VP1 / VP2).

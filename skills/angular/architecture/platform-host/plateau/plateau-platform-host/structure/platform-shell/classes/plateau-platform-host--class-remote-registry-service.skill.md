@@ -16,7 +16,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
 ---
 
 > `apps/platform-shell/src/app/remote-registry/remote-registry.service.ts`. `@Injectable({ providedIn: 'root' })`. Loaded once at bootstrap via `provideAppInitializer`.
@@ -26,7 +26,7 @@ created_by:
 - Resolve which remotes exist and where their `remoteEntry` is served from, at **runtime**, from an externally updatable source — not from the host's build output
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
 
 # Naming convention
 
@@ -69,7 +69,7 @@ export class RemoteRegistryService {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
 
 # Rules
 
@@ -82,7 +82,7 @@ __Applied solutions:__
 - Allow re-fetching the manifest (on navigation to a remote-hosting section, or an explicit refresh) rather than caching it for the whole tab lifetime.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
 
 # Check list
 
@@ -91,7 +91,7 @@ __Applied solutions:__
 - [ ] `loadRemote` rejects (not throws) for an unknown remote
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
 
 # Unittest TestCases
 
@@ -100,4 +100,4 @@ __Applied solutions:__
 - [ ] WHEN the manifest endpoint returns non-OK THEN `load()` rejects with an `unreachable` error, not an unhandled throw
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]

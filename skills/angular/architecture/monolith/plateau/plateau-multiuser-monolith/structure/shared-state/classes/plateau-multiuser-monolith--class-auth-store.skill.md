@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 
 > `libs/shared/state/src/lib/auth/`. Registered via `provideGlobalStore()` alongside `connectivity` / `notifications`. The `AuthFacade` (HTTP) lives beside it; the `authInterceptor` too.
 >
@@ -26,7 +26,7 @@ created_by:
 - Hold the access token in memory only; recover after a reload via silent-refresh-on-bootstrap, never persistent storage
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
 
 # Core Principles
 
@@ -37,9 +37,9 @@ __Applied solutions:__
 - `Session Expired` is dispatched from exactly one place (the interceptor's 401 path)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy ADR]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy ADR]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]]
 
 # Naming convention
 
@@ -89,7 +89,7 @@ readonly login$ = createEffect(() => this.actions$.pipe(
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
 
 # Rules
 
@@ -103,7 +103,7 @@ __Applied solutions:__
 - Never let a feature keep its own copy of "is logged in" / "current user" / "permissions" — read the exported selectors.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
 
 # Check list
 
@@ -113,7 +113,7 @@ __Applied solutions:__
 - [ ] `Session Expired` dispatched from exactly one place
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
 
 # Unittest TestCases
 
@@ -123,4 +123,4 @@ __Applied solutions:__
 - [ ] WHEN `Session Expired` / `Logout Requested` is dispatched THEN `currentUser`, `accessToken` and `permissions` are all cleared
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]

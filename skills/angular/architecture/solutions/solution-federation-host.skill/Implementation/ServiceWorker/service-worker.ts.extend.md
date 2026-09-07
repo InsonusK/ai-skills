@@ -10,7 +10,7 @@ tags:
 ---
 
 # How this file is used
-This applies only once both [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] and this solution are both present — it extends [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|the base service worker's four content-type rules]] with a fifth rule for federated remote chunks, whose origins are only known once this solution's `RemoteRegistryService` exists. Not applicable to a plateau that has offline-first without platform-embeddability.
+This applies only once both [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] and this solution are both present — it extends [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|the base service worker's four content-type rules]] with a fifth rule for federated remote chunks, whose origins are only known once this solution's `RemoteRegistryService` exists. Not applicable to a plateau that has offline-first without platform-embeddability.
 
 # Goals
 
@@ -33,7 +33,7 @@ registerRoute(
 # Rule changes
 
 ## MUST
-- `KNOWN_REMOTE_ORIGINS` is sourced from the same runtime manifest [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|`RemoteRegistryService`]] uses — never a separate hardcoded list.
+- `KNOWN_REMOTE_ORIGINS` is sourced from the same runtime manifest [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|`RemoteRegistryService`]] uses — never a separate hardcoded list.
   - Risk: a second static list drifts from the manifest, so a newly onboarded remote's chunks are never cached and go offline-fragile.
   - Fix: derive `KNOWN_REMOTE_ORIGINS` from the fetched manifest.
 - This rule is registered after the base solution's network-only rule (auth/mutations).

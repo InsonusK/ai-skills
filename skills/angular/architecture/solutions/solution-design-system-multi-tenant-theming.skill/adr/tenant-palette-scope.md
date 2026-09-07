@@ -14,7 +14,7 @@ tags:
 
 # Problem
 
-Given the `[data-tenant]` selector mechanism (see [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-resolution-strategy.md|tenant-resolution-strategy]]), a tenant file still has latitude in *what* it emits under that selector:
+Given the `[data-tenant]` selector mechanism (see [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-resolution-strategy.md|tenant-resolution-strategy]]), a tenant file still has latitude in *what* it emits under that selector:
 
 - a full `mat.theme((color, typography, density))` — re-declaring every system token and Material's base component styles per tenant;
 - only the colour keys of `mat.theme()`;

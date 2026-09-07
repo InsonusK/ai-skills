@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
 ---
 
 > `projects/design-system/styles/custom-tokens.scss` — shipped as a package asset, consumed as `@use 'design-system/styles/custom-tokens'`.
@@ -25,7 +25,7 @@ created_by:
 - Give components a consistent, themeable set of tokens for domain concepts (priority, workflow state, spacing, radius) Material's own token set has no equivalent for
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
 
 # Core Principles
 
@@ -33,7 +33,7 @@ __Applied solutions:__
 - Never re-alias a concept `--mat-sys-*` already models — this file is only for genuine gaps
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
 
 # Naming convention
 
@@ -73,7 +73,7 @@ html {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
 
 # Rules
 
@@ -82,7 +82,7 @@ __Applied solutions:__
 - A new `--ds-*` token is added only when no `--mat-sys-*` equivalent exists — check Material's token set first.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
 
 
 - **Adding a `--ds-*` colour token for a concept Material's palette already covers (a generic "error"/"warning")**
@@ -90,7 +90,7 @@ __Applied solutions:__
   - Instead: use the Material system token; reserve `--ds-*` for genuinely domain-specific concepts
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
 
 # Check list
 
@@ -98,11 +98,11 @@ __Applied solutions:__
 - [ ] Every `--ds-*` colour token uses `light-dark()`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
 
 # Unittest TestCases
 
 - [ ] WHEN a component references `--ds-color-priority-high` in dark mode THEN it resolves to the dark-mode value, consistent with `--mat-sys-*`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|Tokens/custom-tokens.scss.create]]

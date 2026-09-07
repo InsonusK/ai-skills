@@ -14,22 +14,22 @@ tags:
 parent_plateaus: []
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
+  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
+  - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/registry/component-name-component-ts.md|component-name-component-ts]]"
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/registry/monolith-repository.md|monolith-repository]]"
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/registry/platform-shell-project.md|platform-shell-project]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-online-monolith/registry/component-name-component-ts.md|component-name-component-ts]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-online-monolith/registry/monolith-repository.md|monolith-repository]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-online-monolith/registry/platform-shell-project.md|platform-shell-project]]"
 ---
 
-> **First plateau of the `monolith` catalog** — built from scratch, `standalone: true`. It fixes the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md) at **VP2 (GlobalStore) = Yes, VP3 (BackendDataAccess) = Yes**; VP1, VP4–VP8 = No. Next in the chain: `plateau-async-monolith` (VP1). This is "everything the app needs to run online, end to end, as one deployable unit". No lazy-loading tuning, no offline resilience, no federation, and — deliberately — no authentication (every user implicitly trusted until `plateau-multiuser-monolith`).
+> **First plateau of the `monolith` catalog** — built from scratch, `standalone: true`. It fixes the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md) at **VP2 (GlobalStore) = Yes, VP3 (BackendDataAccess) = Yes**; VP1, VP4–VP8 = No. Next in the chain: `plateau-async-monolith` (VP1). This is "everything the app needs to run online, end to end, as one deployable unit". No lazy-loading tuning, no offline resilience, no federation, and — deliberately — no authentication (every user implicitly trusted until `plateau-multiuser-monolith`).
 
 # Core Principles
 
@@ -63,7 +63,7 @@ See [`example/`](plateau-online-monolith.skill/example/) — a runnable Nx works
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md), the solution deltas that touch the same element and first coexist at this plateau — all canonical, no resolvers:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md), the solution deltas that touch the same element and first coexist at this plateau — all canonical, no resolvers:
 
 - [`component-name-component-ts`](registry/component-name-component-ts.md) — `solution-forms` + `solution-state-tiering`, `FMN`, `source: ordering-only`.
 - [`monolith-repository`](registry/monolith-repository.md) — `solution-repository-structure` `.create` + every feature's `.extend`, `FMN`/`TMN`, N≥3 (benign).

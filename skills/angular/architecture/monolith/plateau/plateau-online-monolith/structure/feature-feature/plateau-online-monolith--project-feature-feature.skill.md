@@ -14,10 +14,10 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
+  - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
 
 > Generic pattern, not tied to one concrete feature — every business feature added to the workspace gets its own `libs/{feature}/feature` project following this template, substituting `{Feature}`/`{feature}` with the real feature name.
 
@@ -30,11 +30,11 @@ created_by:
 - Give every component and Signal Store a fast, DOM-accurate test, without ever hitting real HTTP
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Structure
 
@@ -59,16 +59,16 @@ __Applied solutions:__
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| `{feature}.store.ts` | Feature-level NgRx Signal Store. Owns all state and derived data specific to this feature. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-store.skill\|class-feature-store]] |
-| `{feature}.store.spec.ts` | Vitest unit test faking the feature's Facade. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-store.skill\|class-feature-store]] |
-| `{feature}.routes.ts` | Feature's own root-relative `Routes` array, exported from `index.ts`. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-routes.skill\|class-feature-routes]] |
-| `{form-name}.component.ts` (+ optional `{form-name}.form.ts`) | Any component in this feature that renders a form. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-form-component.skill\|class-form-component]] |
-| `{form-name}.component.spec.ts` | Testing Library component test, faking the component's Signal Store. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-form-component.skill\|class-form-component]] |
+| `{feature}.store.ts` | Feature-level NgRx Signal Store. Owns all state and derived data specific to this feature. | [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-store.skill\|class-feature-store]] |
+| `{feature}.store.spec.ts` | Vitest unit test faking the feature's Facade. | [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-store.skill\|class-feature-store]] |
+| `{feature}.routes.ts` | Feature's own root-relative `Routes` array, exported from `index.ts`. | [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-feature-routes.skill\|class-feature-routes]] |
+| `{form-name}.component.ts` (+ optional `{form-name}.form.ts`) | Any component in this feature that renders a form. | [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-form-component.skill\|class-form-component]] |
+| `{form-name}.component.spec.ts` | Testing Library component test, faking the component's Signal Store. | [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/feature-feature/classes/plateau-online-monolith--class-form-component.skill\|class-form-component]] |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
 
 ## NPM Packages
 
@@ -79,7 +79,7 @@ __Applied solutions:__
 | vitest | matching workspace configuration | Unit/component test runner |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
 
 ## What Does NOT Belong Here
 
@@ -90,9 +90,9 @@ __Applied solutions:__
 - `HttpTestingController` usage in any spec in this project — that belongs only in the sibling `data-access` lib's Client spec
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 ## Allowed Dependencies
 
@@ -102,7 +102,7 @@ __Applied solutions:__
 - `libs/shared/state` (tag: `type:store`, `scope:shared`)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Rules
 
@@ -123,10 +123,10 @@ __Applied solutions:__
 - Component test queries should prefer accessible roles/labels (`getByRole`, `getByLabelText`) over test-id attributes.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
 
 
 - **Placing a feature Signal Store in `libs/shared/state` or another feature's lib**
@@ -143,9 +143,9 @@ __Applied solutions:__
   - Instead: always fake the layer directly beneath the unit under test
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md|Testing/{component-name}.component.spec.ts.create]]
 
 # Check list
 
@@ -156,6 +156,6 @@ __Applied solutions:__
 - [ ] Every component and Signal Store in this project has a Vitest spec, none of which use `HttpTestingController`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]] - [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|FeatureStore/{Feature}.project.extend]]
+- [[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]] - [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md|FormComponent/{component-name}.component.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]

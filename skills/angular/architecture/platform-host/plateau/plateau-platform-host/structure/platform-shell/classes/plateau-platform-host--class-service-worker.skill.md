@@ -15,17 +15,17 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
 ---
 
-> Extends [`plateau-multiuser-monolith`'s `class-service-worker`](skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-service-worker.skill.md) (four content-type rules) with a fifth. **Conditional** — applies only when the composed monolith plateau answers `OfflineReadResilience` (VP4) = Yes. `RuntimeRemoteFederation` itself has no offline dependency. Not part of the `example/` (a smoke test with no SW).
+> Extends [`plateau-multiuser-monolith`'s `class-service-worker`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-service-worker.skill.md) (four content-type rules) with a fifth. **Conditional** — applies only when the composed monolith plateau answers `OfflineReadResilience` (VP4) = Yes. `RuntimeRemoteFederation` itself has no offline dependency. Not part of the `example/` (a smoke test with no SW).
 
 # Goal
 
 - Let a federated remote's chunks keep working from their last-cached version when that team's independent deployment is temporarily unreachable, using the runtime-caching mechanism the base service worker already established
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
 
 # Implementation
 
@@ -43,7 +43,7 @@ registerRoute(
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
 
 # Rules
 
@@ -53,7 +53,7 @@ __Applied solutions:__
 - The rule is added only in a plateau whose composed monolith has `solution-offline-first` — never in a host composing a monolith plateau with offline = No.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
 
 # Check list
 
@@ -62,7 +62,7 @@ __Applied solutions:__
 - [ ] The rule is absent when the composed monolith has no offline-first
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
 
 # Unittest TestCases
 
@@ -70,4 +70,4 @@ __Applied solutions:__
 - [ ] WHEN an auth or non-GET request is made to a remote origin THEN it still resolves to the base network-only rule, never this one
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/ServiceWorker/service-worker.ts.extend.md|ServiceWorker/service-worker.ts.extend]]

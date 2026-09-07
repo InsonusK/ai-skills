@@ -18,7 +18,7 @@ creates:
 extends: []
 depends_on: []
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/adr/contracts-as-published-package.md|contracts-as-published-package]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-contracts.skill/adr/contracts-as-published-package.md|contracts-as-published-package]]"
 ---
 
 # Goal
@@ -42,7 +42,7 @@ adr:
 - The `EventBus` beyond the `SessionContract` is a draft — only the session shape is worked out in this catalog. Typed event channels are the aspirational `ContractEventBus`.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/adr/contracts-as-published-package.md|contracts-as-published-package]] — its own repo + npm publish + `strictVersion: true`, over a monorepo lib or a loosely-shared package. Rejected: a `libs/shared/contracts` in the platform monorepo (couples remote teams to the monorepo); `strictVersion: false` (a silent duplicate contract instance breaks state sharing invisibly).
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/adr/contracts-as-published-package.md|contracts-as-published-package]] — its own repo + npm publish + `strictVersion: true`, over a monorepo lib or a loosely-shared package. Rejected: a `libs/shared/contracts` in the platform monorepo (couples remote teams to the monorepo); `strictVersion: false` (a silent duplicate contract instance breaks state sharing invisibly).
 
 # Requirements
 
@@ -52,12 +52,12 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository]] - create - the `@platform/contracts` package repository: TypeScript library, Changesets, published to npm, exporting contract types + tokens only
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository]] - create - the `@platform/contracts` package repository: TypeScript library, Changesets, published to npm, exporting contract types + tokens only
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md#MUST|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md#MUST|Repository.create]]
 - Never put runtime logic in `@platform/contracts` — types, interfaces, and DI tokens only.
   - Risk: a behavioural change forces every consumer to re-test; the package stops being a pure contract.
   - Fix: implementations live in the host (`solution-session-sharing`) or a remote; the package only declares shapes.

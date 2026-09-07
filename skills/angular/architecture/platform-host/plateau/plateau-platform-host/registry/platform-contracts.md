@@ -11,8 +11,8 @@ tags:
 `element/platform-contracts` — the `@platform/contracts` npm package (its own repository): `src/session-contract.ts`, `src/event-bus.ts`, `src/index.ts` — types, interfaces, and DI tokens only.
 
 # Involved solutions
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] (`.create` — `Repository.create` — the package, the `EventBus` draft interface, the Changesets/publish setup, `@angular/core` as a peer)
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] (`.extend` — `session-contract.extend` — adds the `SessionContract` interface + `SESSION_CONTRACT` DI token: `currentUser` / `permissions` / `isAuthenticated` as read-only signals)
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] (`.create` — `Repository.create` — the package, the `EventBus` draft interface, the Changesets/publish setup, `@angular/core` as a peer)
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] (`.extend` — `session-contract.extend` — adds the `SessionContract` interface + `SESSION_CONTRACT` DI token: `currentUser` / `permissions` / `isAuthenticated` as read-only signals)
 
 Both coexist at this plateau — VP2 `SessionSharing` requires the package `solution-platform-contracts` creates.
 

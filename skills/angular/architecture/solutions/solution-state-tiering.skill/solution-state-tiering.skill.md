@@ -20,9 +20,9 @@ extends:
   - libs/{feature}/feature (feature-level Signal Store)
   - "{component-name}.component.ts (component-local Signals)"
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/adr/state-tiering-policy.md|state-tiering-policy]]"
+  - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/adr/state-tiering-policy.md|state-tiering-policy]]"
 ---
 
 # Goal
@@ -38,7 +38,7 @@ adr:
 # Core Principle
 - **Component-local state** (dialog visibility, selected tab, form draft, component-scoped loading flags) is a plain Angular `signal()` on the component — no store of any kind.
 - **Feature-scoped state** (data and UI state owned by exactly one feature) is an NgRx Signal Store, colocated inside that feature's `libs/{feature}/feature` project.
-- **Cross-cutting state** (read or dispatched by more than one unrelated feature — auth session, notifications, connectivity, the offline-sync queue) is the third tier, a classical NgRx Store in `libs/shared/state` — realized by [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]], **not** this solution.
+- **Cross-cutting state** (read or dispatched by more than one unrelated feature — auth session, notifications, connectivity, the offline-sync queue) is the third tier, a classical NgRx Store in `libs/shared/state` — realized by [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]], **not** this solution.
 - State is promoted from a lower tier to a higher one **only** when a second, unrelated consumer genuinely needs it — never preemptively.
 - A feature store or component never duplicates cross-cutting state locally; it always reads it through `libs/shared/state` selectors (once `solution-global-store` is present).
 
@@ -48,13 +48,13 @@ adr:
 - Does not decide *which* state is genuinely cross-cutting — that judgement is made by whoever applies the rule, against observed multi-feature need, not speculation.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/adr/state-tiering-policy.md|state-tiering-policy]] — three tiers (Signal / Signal Store / classical NgRx), promote only on a second unrelated consumer. Rejected: one tool everywhere; promote-by-default.
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/adr/state-tiering-policy.md|state-tiering-policy]] — three tiers (Signal / Signal Store / classical NgRx), promote only on a second unrelated consumer. Rejected: one tool everywhere; promote-by-default.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|libs/{feature}/feature]] - the feature-level Signal Store is colocated inside this project
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]
+  - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|libs/{feature}/feature]] - the feature-level Signal Store is colocated inside this project
 
 NPM:
 - `@ngrx/signals` — `signalStore`, `withState`, `withMethods`, `patchState` for the feature tier.
@@ -62,9 +62,9 @@ NPM:
 # Template Skill Mutations
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|{Feature}/feature (generic pattern)]] - extend - add a feature-level Signal Store
-  - [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md|{feature}.store.ts]] - create - feature-level Signal Store pattern, applied by any feature-owning solution
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/LocalState/{component-name}.component.ts.extend.md|{component-name} (generic pattern)]] - extend - component-local state via plain Signals
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend.md|{Feature}/feature (generic pattern)]] - extend - add a feature-level Signal Store
+  - [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md|{feature}.store.ts]] - create - feature-level Signal Store pattern, applied by any feature-owning solution
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/LocalState/{component-name}.component.ts.extend.md|{component-name} (generic pattern)]] - extend - component-local state via plain Signals
 
 # Workflow
 
@@ -97,8 +97,8 @@ sequenceDiagram
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md#MUST|{feature}.store.ts]]
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/LocalState/{component-name}.component.ts.extend.md#MUST|{component-name}.component.ts]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md#MUST|{feature}.store.ts]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/LocalState/{component-name}.component.ts.extend.md#MUST|{component-name}.component.ts]]
 - Never create a feature or global store for state only one component ever reads.
   - Risk: NgRx boilerplate and an indirection layer for state that a `signal()` already handles.
   - Fix: keep it a component `signal()` until a second consumer appears.
@@ -107,7 +107,7 @@ sequenceDiagram
   - Fix: if the data is genuinely shared, promote it to `libs/shared/state`; otherwise pass it through routing.
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md#SHOULD|{feature}.store.ts]]
+- [[skills/angular/architecture/solutions/solution-state-tiering.skill/Implementation/FeatureStore/{Feature}.project.extend/{feature}.store.ts.create.md#SHOULD|{feature}.store.ts]]
 - Avoid promoting a component `signal()` to a feature store "in case another component needs it later" — promote on the second real consumer, not the first hypothetical one.
 
 # Check list

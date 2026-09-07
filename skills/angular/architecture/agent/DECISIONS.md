@@ -264,10 +264,10 @@ build had left in the upstream artifacts:
 Second pass (the two items left open after the first):
 
 - **The two ADRs the maps promised** were authored:
-  - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]]
+  - [[skills/angular/architecture/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]]
     (`solution-session-sharing`) — the `SessionContract` carve-out + the inverted `auth ↔ federation`
     dependency (feature-model open question 3). `adr: []` → registered + `# Adr` body section.
-  - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]
+  - [[skills/angular/architecture/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]
     (`solution-global-store`) — why VP4/VP5/VP7/VP8 each `require` VP2 and add a slice rather than
     carrying their own store. The maps + monolith feature model now link it instead of `DECISIONS.md`.
   - VP3→VP7 was *not* given an ADR — it is inherent to `solution-authentication`'s HTTP usage, not a

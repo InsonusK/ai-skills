@@ -19,11 +19,11 @@ extends:
   - "@platform/contracts (adds the SessionContract shape + the host's implementation binding)"
   - apps/platform-shell (provides the SessionContract implementation at the composition root)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]]"
+  - "[[skills/angular/architecture/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]]"
 ---
 
 # Goal
@@ -42,27 +42,27 @@ adr:
 - A remote loaded with no authenticated session reads `isAuthenticated: false`; establishing a session is the host's responsibility, never the remote's.
 
 # Boundaries
-- This is the **host** side. The remote side — a remote *reading* `SessionContract` — is [[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] in the `embeddable-app` catalog.
+- This is the **host** side. The remote side — a remote *reading* `SessionContract` — is [[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]] in the `embeddable-app` catalog.
 - `platform-host` VP2. Requires the host's monolith has `solution-authentication` (VP7) — a federation host without auth has no session to share.
 - Defines only the `SessionContract` shape + the host binding. The broader `@platform/contracts` `EventBus` is `solution-platform-contracts`' concern.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]] — `SessionContract` publication is carved out of V1 `solution-authentication` into this platform-host solution, which `depends_on` monolith auth (not the other way round). Rejected: an optional "publish" mode inside `solution-authentication`; keeping the V1 `auth → federation` edge.
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]] — `SessionContract` publication is carved out of V1 `solution-authentication` into this platform-host solution, which `depends_on` monolith auth (not the other way round). Rejected: an optional "publish" mode inside `solution-authentication`; keeping the V1 `auth → federation` edge.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]
   - the `auth` slice whose selectors `SessionContract` is a read-only view of
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]
   - carries the `SessionContract` type as part of the shared singleton package
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]
   - the host that mounts the remotes this session is shared with
 
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|@platform/contracts (extend)]] - extend - adds the `SessionContract` shape and the host-side implementation binding
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|@platform/contracts (extend)]] - extend - adds the `SessionContract` shape and the host-side implementation binding
 
 # Workflow
 
@@ -75,7 +75,7 @@ REPOSITORY:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md#MUST|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md#MUST|session-contract.extend]]
 - `SessionContract` is read-only from a remote's point of view — the host's `auth` slice is the only writer.
   - Risk: two ways to establish a session; the single-session model breaks.
   - Fix: the contract exposes selectors only, no dispatch.

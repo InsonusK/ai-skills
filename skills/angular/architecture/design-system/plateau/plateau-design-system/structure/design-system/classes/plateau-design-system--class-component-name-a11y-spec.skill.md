@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
 ---
 
 > `projects/design-system/src/lib/{component}/spec/{component}.a11y.spec.ts`. Reuses the same preview page the visual spec navigates to.
@@ -25,7 +25,7 @@ created_by:
 - Automatically catch WCAG-level violations (contrast, ARIA validity, landmark/heading structure) that neither a behavioural nor a visual test detects
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Implementation
 
@@ -43,7 +43,7 @@ test.describe('DsButtonComponent — accessibility', () => {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Rules
 
@@ -55,7 +55,7 @@ __Applied solutions:__
 - Any exception to an axe rule is scoped to that one rule and documented inline — never a blanket disable of the whole scan.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 
 - **Treating a passing a11y spec as proof the component is fully accessible**
@@ -63,7 +63,7 @@ __Applied solutions:__
   - Instead: a regression net for the mechanical subset, not a substitute for occasional expert review
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Check list
 
@@ -73,7 +73,7 @@ __Applied solutions:__
 - [ ] Tests grouped under `test.describe('<component-name> — accessibility', ...)`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
 
 # Unittest TestCases
 
@@ -81,4 +81,4 @@ __Applied solutions:__
 - [ ] WHEN a form control loses its associated label THEN the a11y spec fails with a `label`/`aria-*` violation
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md|Testing/{component-name}.a11y.spec.ts.create]]

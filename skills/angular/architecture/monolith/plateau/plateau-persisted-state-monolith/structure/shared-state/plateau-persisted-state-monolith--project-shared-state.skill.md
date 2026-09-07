@@ -14,11 +14,11 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
 
 > This plateau ships `libs/shared/state` with four concrete slices — `connectivity` (VP4, `selectIsOnline`), `notifications` (VP5, `selectNotifications`), `auth` (VP7, `selectCurrentUser` / `selectAccessToken` / `selectPermissions` / `selectIsLoggedIn`), and `preferences` (VP8, `selectTheme` / `selectDensity` / `selectLastFeatureTab` — persisted to `localStorage`). The `auth/` folder also holds `AuthFacade` and `authInterceptor`. The new `persistence/` folder holds the VP8 mechanism: `persistKeys()` (a per-feature `MetaReducer`), `withPersistedDraft()` (a feature-tier `signalStoreFeature`), `SENSITIVE_STATE_KEYS`, and `assertPersistable()`. The root store itself is still empty. **`auth` is never given a persistence metaReducer.**
 
@@ -28,7 +28,7 @@ created_by:
 - Give features one place to read/dispatch against global state without depending on each other
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
 
 # Core Principles
 
@@ -36,7 +36,7 @@ __Applied solutions:__
 - Effects own all side effects (HTTP calls, retries, timers) — components and feature stores only dispatch actions and read selectors
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
 
 # Structure
 
@@ -83,21 +83,21 @@ __Applied solutions:__
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| /connectivity | The `connectivity` slice — `isOnline` derived from `navigator.onLine` events AND a periodic `HEAD /health` (either offline → offline). | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-connectivity-store.skill.md\|class-connectivity-store]] |
-| /notifications | The `notifications` slice — a list of `{ id, message, detail? }` with `show` / `dismiss` / `clearAll`; `ReplayOrchestrator` dispatches `show(...)` on a server-wins conflict. No effects. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-notifications-store.skill.md\|class-notifications-store]] |
-| /auth | The `auth` slice + `AuthFacade` (HTTP) + `authInterceptor`. In-memory access token, silent refresh, permission strings. **Never persisted.** | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-auth-store.skill.md\|class-auth-store]] · [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-auth-interceptor.skill.md\|class-auth-interceptor]] |
-| /persistence | The VP8 mechanism — `persistKeys()` metaReducer factory (+ `SENSITIVE_STATE_KEYS`, `assertPersistable()`) and `withPersistedDraft()` signal-store feature. Mechanism only; no slice config. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-persisted-state.skill.md\|class-persisted-state]] · [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-with-persisted-draft.skill.md\|class-with-persisted-draft]] |
-| /preferences | The `preferences` slice — `theme` / `density` / `lastFeatureTab`, all scalar, persisted to `localStorage` via `persistKeys` with an allow-list equal to every field. No effects. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-preferences-store.skill.md\|class-preferences-store]] |
+| /connectivity | The `connectivity` slice — `isOnline` derived from `navigator.onLine` events AND a periodic `HEAD /health` (either offline → offline). | [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-connectivity-store.skill.md\|class-connectivity-store]] |
+| /notifications | The `notifications` slice — a list of `{ id, message, detail? }` with `show` / `dismiss` / `clearAll`; `ReplayOrchestrator` dispatches `show(...)` on a server-wins conflict. No effects. | [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-notifications-store.skill.md\|class-notifications-store]] |
+| /auth | The `auth` slice + `AuthFacade` (HTTP) + `authInterceptor`. In-memory access token, silent refresh, permission strings. **Never persisted.** | [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-auth-store.skill.md\|class-auth-store]] · [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-auth-interceptor.skill.md\|class-auth-interceptor]] |
+| /persistence | The VP8 mechanism — `persistKeys()` metaReducer factory (+ `SENSITIVE_STATE_KEYS`, `assertPersistable()`) and `withPersistedDraft()` signal-store feature. Mechanism only; no slice config. | [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-persisted-state.skill.md\|class-persisted-state]] · [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-with-persisted-draft.skill.md\|class-with-persisted-draft]] |
+| /preferences | The `preferences` slice — `theme` / `density` / `lastFeatureTab`, all scalar, persisted to `localStorage` via `persistKeys` with an allow-list equal to every field. No effects. | [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-preferences-store.skill.md\|class-preferences-store]] |
 | store.config.ts | `provideGlobalStore()` — the empty root store plus the `connectivity`, `notifications`, `auth` and `preferences` reducers (+ `ConnectivityEffects`, `AuthEffects`); `preferences` registered via the three-arg `provideState(name, reducer, { metaReducers: [persistKeys(...)] })`. | — |
 | index.ts | Public API: `provideGlobalStore`, the `*IsOnline` / `*Notifications` / `*CurrentUser` / `*AccessToken` / `*Permissions` / `*IsLoggedIn` / `*Theme` / `*Density` / `*LastFeatureTab` selectors, `AuthActions` / `NotificationsActions` / `ConnectivityActions` / `PreferencesActions`, `AuthFacade`, `authInterceptor`, `persistKeys` / `withPersistedDraft` / `SENSITIVE_STATE_KEYS`. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md|GlobalStore/shared-state.project.extend]]
 
 ## NPM Packages
 
@@ -108,7 +108,7 @@ __Applied solutions:__
 | @ngrx/signals | matching the Angular major version in use | `withPersistedDraft()` is a `signalStoreFeature` (`withHooks` / `getState` / `patchState`) |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
 
 ## What Does NOT Belong Here
 
@@ -116,7 +116,7 @@ __Applied solutions:__
 - Feature-specific DTO mapping — belongs in a feature's `data-access` lib. (The `auth/` folder's `AuthFacade` is the one sanctioned exception: it owns the login/refresh/logout round trips, which are cross-cutting, not feature-specific — see VP7.)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
 
 ## Allowed Dependencies
 
@@ -124,7 +124,7 @@ __Applied solutions:__
 - `libs/shared/http-core` (tag: `type:data-access`, `scope:shared`) — VP7: `AuthFacade` sends login/refresh/logout through the base HTTP service
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
 
 # Rules
 
@@ -141,7 +141,7 @@ __Applied solutions:__
 - This project must never import from any `type:feature` or `type:data-access` project (except the sanctioned `auth/` → `libs/shared/http-core`).
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
 
 
 - **Dispatching HTTP calls directly from a component against this store's actions, bypassing effects**
@@ -149,7 +149,7 @@ __Applied solutions:__
   - Instead: components dispatch plain actions; effects own all asynchronous work
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
 
 # Check list
 
@@ -161,4 +161,4 @@ __Applied solutions:__
 - [ ] `persistence/` contains no slice-specific `key` / `keys` values
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]] - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|GlobalStore/shared-state.project.create]]

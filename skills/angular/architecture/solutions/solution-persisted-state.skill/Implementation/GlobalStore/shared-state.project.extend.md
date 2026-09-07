@@ -40,8 +40,8 @@ tags:
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| persistence/ | The persistence mechanism. `persisted-state.ts` per [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|persisted-state.ts.create]]; `with-persisted-draft.ts` per [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|with-persisted-draft.ts.create]]. |
-| preferences/ | The `preferences` slice (`theme` / `density` / `lastFeatureTab`). Per [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|preferences.store.ts.create]]. |
+| persistence/ | The persistence mechanism. `persisted-state.ts` per [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|persisted-state.ts.create]]; `with-persisted-draft.ts` per [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|with-persisted-draft.ts.create]]. |
+| preferences/ | The `preferences` slice (`theme` / `density` / `lastFeatureTab`). Per [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|preferences.store.ts.create]]. |
 
 # Implementation changes
 

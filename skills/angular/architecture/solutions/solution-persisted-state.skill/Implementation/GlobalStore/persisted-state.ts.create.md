@@ -105,7 +105,7 @@ export function persistKeys<T>(config: PersistConfig<T>): MetaReducer<T> {
 }
 ```
 
-Wire it at the slice's `provideState` call in `store.config.ts` (see [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md|shared-state.project.extend]]):
+Wire it at the slice's `provideState` call in `store.config.ts` (see [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md|shared-state.project.extend]]):
 
 ```typescript
 // createFeature returns { name, reducer, ... } — pass name + reducer + config so the

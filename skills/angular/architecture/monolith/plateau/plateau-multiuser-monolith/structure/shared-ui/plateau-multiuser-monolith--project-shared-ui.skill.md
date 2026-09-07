@@ -14,18 +14,18 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 
-> The bare project is established implicitly by [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill.md|repo-multiuser-monolith]]'s `Repository.create` directory table. VP4 adds `OfflineBannerComponent` (`isOnline` input, shell-mounted); VP5 adds `PendingSyncIndicatorComponent` (`count` input, mounted per feature). Both presentational — the owning host wires the store/queue.
+> The bare project is established implicitly by [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill.md|repo-multiuser-monolith]]'s `Repository.create` directory table. VP4 adds `OfflineBannerComponent` (`isOnline` input, shell-mounted); VP5 adds `PendingSyncIndicatorComponent` (`count` input, mounted per feature). Both presentational — the owning host wires the store/queue.
 
 # Goal
 
-- Host reusable, app-specific UI composed out of [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] primitives — not the design system itself, and not feature-specific business logic
+- Host reusable, app-specific UI composed out of [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] primitives — not the design system itself, and not feature-specific business logic
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Structure
 
@@ -49,13 +49,13 @@ __Applied solutions:__
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| /offline-banner | The shared offline indicator. Presentational (`isOnline` input) — the shell owns the store wiring and mounts it once. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/shared-ui/classes/plateau-multiuser-monolith--class-offline-banner-component.skill.md\|class-offline-banner-component]] |
-| /pending-sync-indicator | The shared "N actions waiting to sync" indicator. Presentational (`count` input) — the owning feature feeds it from `MutationQueueService.pendingForFeature$`. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/shared-ui/classes/plateau-multiuser-monolith--class-pending-sync-indicator-component.skill.md\|class-pending-sync-indicator-component]] |
+| /offline-banner | The shared offline indicator. Presentational (`isOnline` input) — the shell owns the store wiring and mounts it once. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/shared-ui/classes/plateau-multiuser-monolith--class-offline-banner-component.skill.md\|class-offline-banner-component]] |
+| /pending-sync-indicator | The shared "N actions waiting to sync" indicator. Presentational (`count` input) — the owning feature feeds it from `MutationQueueService.pendingForFeature$`. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/shared-ui/classes/plateau-multiuser-monolith--class-pending-sync-indicator-component.skill.md\|class-pending-sync-indicator-component]] |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
 
 ## What Does NOT Belong Here
 
@@ -64,15 +64,15 @@ __Applied solutions:__
 - Store wiring inside a component — `OfflineBannerComponent` takes `isOnline` as an input; the shell injects `Store` and passes `selectIsOnline`, keeping this lib free of a `type:store` dependency
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill#must|repo-multiuser-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill#must|repo-multiuser-monolith]]
 - `OfflineBannerComponent` must read connectivity from its `isOnline` input only — never `navigator.onLine`, never the store directly — and must be mounted exactly once, at the shell.
 - A feature must never build its own local offline indicator — reuse this component.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]

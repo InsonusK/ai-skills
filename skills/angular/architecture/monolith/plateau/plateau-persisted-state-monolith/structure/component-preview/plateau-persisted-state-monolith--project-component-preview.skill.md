@@ -14,17 +14,17 @@ tags:
   - framework/angular
   - concern/architecture
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 ---
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md|component-preview.project.create]]
+- [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]] - [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/PlatformComponents/component-preview.project.create.md|component-preview.project.create]]
 
 
 # Goals
 
 - Give the platform plateau a place to render a component with representative inputs/states, independent of routing, a real backend, or a real Signal Store — the same practical role `projects/demo` plays for the design system
-- Be the target [visual regression](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) Playwright screenshots and [accessibility](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) axe-core scans run against, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
+- Be the target [visual regression](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) Playwright screenshots and [accessibility](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) axe-core scans run against, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
 
 # Structure
 
@@ -60,7 +60,7 @@ No new packages — this is a plain Nx `type:app` project using the workspace's 
 ## MUST
 - `apps/component-preview` must be tagged `type:preview`, `scope:platform`.
 - A previewed component must be rendered with static, hardcoded example data — it must never call a real Facade, real HTTP endpoint, or real Signal Store wired to a backend.
-- Every component covered by a visual regression or accessibility spec (per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) must have its `spec/preview/{component-name}.preview.ts` registered as a route in this app.
+- Every component covered by a visual regression or accessibility spec (per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]) must have its `spec/preview/{component-name}.preview.ts` registered as a route in this app.
 - The preview app must import preview components from the component library's `spec/preview/` path; it must never duplicate preview markup inside the app.
 
 - Never be included in the production deployment of `apps/platform-shell` — it is a development/CI-only harness, built and served separately.

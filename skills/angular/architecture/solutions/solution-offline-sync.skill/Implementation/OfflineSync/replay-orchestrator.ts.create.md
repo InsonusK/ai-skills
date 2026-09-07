@@ -94,7 +94,7 @@ The feature side: on `OfflineTransportError` the Facade returns `{ queued: true,
 ## MUST
 - Replay processes feature partitions concurrently (`Promise.all`) and entries within a partition strictly FIFO.
   - Risk: a global FIFO lets one stuck feature block every other feature's sync; out-of-order replay within a feature breaks "create then update".
-  - Fix: `Promise.all(features.map(replayPartition))`; each partition loops its entries in `enqueuedAt` order; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
+  - Fix: `Promise.all(features.map(replayPartition))`; each partition loops its entries in `enqueuedAt` order; per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]].
 - A failure in one partition never stops or delays another's replay.
   - Risk: one feature's outage stalls the whole app's sync.
   - Fix: a partition stops on its first transient failure (no tight retry) and retries on the next connectivity event; siblings are untouched.
@@ -103,7 +103,7 @@ The feature side: on `OfflineTransportError` the Facade returns `{ queued: true,
   - Fix: keep `handleConflict` a single overridable seam; the loop calls it and continues.
 - On conflict the notification carries only the touched fields' current server values — never the full entity.
   - Risk: dumping the whole entity leaks unrelated fields and can't tell the user precisely what didn't apply.
-  - Fix: `error.currentServerValues` holds only `touchedFields`; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+  - Fix: `error.currentServerValues` holds only `touchedFields`; per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
 - The orchestrator calls `onReplayStart` before and `onReplayResult` after every `replay(entry)` — `'synced'` / `'conflict'` / `'failed'` for the three outcomes.
   - Risk: without the callbacks the feature cannot move a row from `queued` to `sending` to done, and the user only ever sees a count.
   - Fix: `handler.onReplayStart?.(entry)` then `handler.onReplayResult?.(entry, result)`; both are optional.
@@ -115,7 +115,7 @@ The feature side: on `OfflineTransportError` the Facade returns `{ queued: true,
   - Fix: `hydratePending()` reads `MutationQueueService.pendingForFeatureOnce(feature)` on init and re-adds `syncStatus: 'queued'` rows.
 - Never implement per-operation or per-field conflict logic beyond server-wins here.
   - Risk: a half-built resolution strategy pre-empts the future solution meant to own it.
-  - Fix: server-wins only; `handleConflict` is the seam a later solution overrides; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+  - Fix: server-wins only; `handleConflict` is the seam a later solution overrides; per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
 ## SHOULD
 - **Inlining conflict-handling logic directly inside `replayPartition`'s loop instead of a separate `handleConflict` method** — Consequence: the future extension solution would need to modify the core replay loop itself to add smarter resolution, instead of overriding one well-defined seam — Instead: keep `handleConflict` as the single point of variation
 - **Retrying the same failed entry immediately within the same replay cycle instead of stopping the partition** — Consequence: risks a tight failure loop against a partition that is genuinely stuck (e.g. a persistently failing operation), consuming resources without making progress — Instead: stop the partition on the first failure; the next connectivity-restoration event (or a future periodic retry trigger) tries again

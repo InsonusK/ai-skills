@@ -14,16 +14,16 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 
-> `solution-app-testing` does not extend this project directly — its content lives in the sibling [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell-e2e/plateau-multiuser-monolith--project-platform-shell-e2e.skill.md|platform-shell-e2e]] project and in each feature's own test specs. Also depends on the `design-system` npm package (see the NPM Packages table below) — plain, non-federated consumption only.
+> `solution-app-testing` does not extend this project directly — its content lives in the sibling [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell-e2e/plateau-multiuser-monolith--project-platform-shell-e2e.skill.md|platform-shell-e2e]] project and in each feature's own test specs. Also depends on the `design-system` npm package (see the NPM Packages table below) — plain, non-federated consumption only.
 
 # Goal
 
@@ -32,8 +32,8 @@ created_by:
 - Mount each directly-owned feature at a single root segment, without knowing what routes exist beneath that segment
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
 
 # Structure
 
@@ -65,34 +65,34 @@ __Applied solutions:__
 | ------------------ | ----------- | -------------- |
 | app.config.ts | Root provider registration. VP1: `withPreloading(SelectivePreloadingStrategy)`. VP4: `provideGlobalStore()`. VP5: `provideOfflineSync()`. VP6: `{ provide: ErrorHandler, useClass: GlobalErrorHandler }`. VP7: `provideHttpClient(withFetch(), withInterceptors([authInterceptor]))` + `provideAppInitializer(() => inject(Store).dispatch(AuthActions.silentRefreshRequested()))` — exactly one silent-refresh at bootstrap. | — |
 | app.routes.ts | Top-level `Routes` array — one `loadChildren` entry per feature root segment. VP1: a reviewed subset carries `data: { preload: true }`. VP7: `/login` + `/forbidden` `loadComponent` from `@org/shared-auth-ui`. A permission-guarded route lives inside the feature, not here. | — |
-| global-error-handler.ts | VP6: `ErrorHandler` implementation routing every uncaught exception through `LoggerService.error` (only `message` / `stack`). | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-global-error-handler.skill.md\|class-global-error-handler]] |
+| global-error-handler.ts | VP6: `ErrorHandler` implementation routing every uncaught exception through `LoggerService.error` (only `message` / `stack`). | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-global-error-handler.skill.md\|class-global-error-handler]] |
 | app.ts / app.html | Shell component. VP4: injects `Store`, mounts `<ui-offline-banner [isOnline]="isOnline()">` once (store wiring lives here, not in `shared-ui`). | — |
-| preloading/selective-preloading.strategy.ts | Custom `PreloadingStrategy` — preloads a route's chunk only when `route.data['preload'] === true`. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-selective-preloading-strategy.skill.md\|class-selective-preloading-strategy]] |
-| sw-src.ts / sw-routes.ts / sw-build.mjs | The Workbox service worker: four content-type routing rules, testable predicates, and the Nx build step. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-service-worker.skill.md\|class-service-worker]] |
+| preloading/selective-preloading.strategy.ts | Custom `PreloadingStrategy` — preloads a route's chunk only when `route.data['preload'] === true`. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-selective-preloading-strategy.skill.md\|class-selective-preloading-strategy]] |
+| sw-src.ts / sw-routes.ts / sw-build.mjs | The Workbox service worker: four content-type routing rules, testable predicates, and the Nx build step. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-service-worker.skill.md\|class-service-worker]] |
 | main.ts | VP4: after `bootstrapApplication(...)` resolves and only when `!isDevMode()`, `navigator.serviceWorker.register('/sw.js')`. | — |
 | project.json | VP1: `budgets` (`initial` + `anyScript`, `maximumError`). VP4: a `build-sw` target (`nx:run-commands` → `node src/sw-build.mjs`, `dependsOn: [build]`). | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
 
 ## NPM Packages
 
 | Package | Version constraint | Purpose |
 | ------- | ------------------- | ------- |
-| design-system | latest compatible, per [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] | The [[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] plateau's published component library. `theme.scss` is applied once at the application root. |
+| design-system | latest compatible, per [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] | The [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] plateau's published component library. `theme.scss` is applied once at the application root. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill#must|repo-multiuser-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill#must|repo-multiuser-monolith]]
 
-- [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill#must never|repo-multiuser-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill#must never|repo-multiuser-monolith]]
 - `app.config.ts` must register the router with `withPreloading(SelectivePreloadingStrategy)`.
 - `data: { preload: true }` is set only here, on a top-level `loadChildren` entry — never passed down into or set by a feature's own routes.
 - `project.json`'s production build must carry an `initial` and a per-script bundle budget, each with a `maximumError` (not only `maximumWarning`).
@@ -107,12 +107,12 @@ __Applied solutions:__
 - `/login` and `/forbidden` are the only auth routes declared here (`loadComponent` from `@org/shared-auth-ui`); a permission-guarded feature route lives in that feature's own `*.routes.ts`, never here.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/HttpLayer/auth.interceptor.ts.create.md|HttpLayer/auth.interceptor.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|GlobalStore/auth.store.ts.create]]
 
 
 - **Adding a route in `app.routes.ts` that targets a specific page inside a feature (e.g. `path: 'feature1/page'`)**
@@ -120,7 +120,7 @@ __Applied solutions:__
   - Instead: mount only `feature1` as a segment; the feature's own routes define `page` beneath it
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
 
 # Check list
 
@@ -140,6 +140,6 @@ __Applied solutions:__
 - [ ] `/login` and `/forbidden` are the only auth routes in `app.routes.ts`; no permission guard is attached here
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]

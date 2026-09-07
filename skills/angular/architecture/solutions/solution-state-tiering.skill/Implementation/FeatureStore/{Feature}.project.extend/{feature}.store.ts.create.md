@@ -56,7 +56,7 @@ export const OrdersStore = signalStore(
   - Fix: `inject({Feature}Facade)` in `withMethods`; the Facade owns the request.
 
 ## SHOULD
-- Genuinely global reads (e.g. current user) should come from `libs/shared/state` selectors, injected into the feature store, rather than being duplicated locally (see [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]).
+- Genuinely global reads (e.g. current user) should come from `libs/shared/state` selectors, injected into the feature store, rather than being duplicated locally (see [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]).
 
 - **A feature Signal Store re-implementing auth/session state locally instead of reading `libs/shared/state`** — Consequence: duplicated, potentially stale source of truth for cross-cutting state — Instead: inject and select from the shared global store for anything cross-cutting; keep only feature-owned data in the feature store
 # Check list

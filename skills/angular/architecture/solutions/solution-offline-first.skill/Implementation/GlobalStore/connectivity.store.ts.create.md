@@ -78,7 +78,7 @@ interface ConnectivityState {
   - Fix: a bare `fetch('/health', { method: 'HEAD' })` (or an `HttpClient` call on a context that skips the interceptor).
 
 ## SHOULD
-- **Relying on `browserOnline` alone without factoring in the health-check result** — Consequence: the application can report itself as online while the backend is actually unreachable (captive portal, backend outage), per [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/connectivity-detection.md|connectivity-detection]] — Instead: `isOnline` always requires both signals to agree
+- **Relying on `browserOnline` alone without factoring in the health-check result** — Consequence: the application can report itself as online while the backend is actually unreachable (captive portal, backend outage), per [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection.md|connectivity-detection]] — Instead: `isOnline` always requires both signals to agree
 
 # Check list
 

@@ -62,7 +62,7 @@ provideRouter(routes, withPreloading(SelectivePreloadingStrategy));
   - Risk: `PreloadAllModules` background-fetches every chunk (including remote federation chunks a host never meant to warm); `NoPreloading` gives up the win entirely.
   - Fix: `provideRouter(routes, withPreloading(SelectivePreloadingStrategy))`; the strategy preloads only routes flagged `data.preload === true`.
 - `data: { preload: true }` on a top-level segment is set in `app.routes.ts`, at the mounting point — never inside the mounted feature's/module's own routes.
-  - Risk: a self-flagging feature preloads for every host, per [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#must|Repository]].
+  - Risk: a self-flagging feature preloads for every host, per [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#must|Repository]].
   - Fix: the shell adds the flag only after a deliberate "is this segment high-traffic" review.
 
 ## SHOULD

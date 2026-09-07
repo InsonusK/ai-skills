@@ -12,15 +12,15 @@ tags:
   - framework/angular
   - concern/architecture
 parent_plateaus:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/plateau-offline-read-monolith.skill/plateau-offline-read-monolith.skill.md|plateau-offline-read-monolith]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/plateau-offline-read-monolith.skill/plateau-offline-read-monolith.skill.md|plateau-offline-read-monolith]]"
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-full-monolith/registry/feature-facade-ts.md|feature-facade-ts]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-offline-full-monolith/registry/feature-facade-ts.md|feature-facade-ts]]"
 ---
 
-> **Fourth plateau of the `monolith` catalog — the owner's current app.** Composes [`plateau-offline-read-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/plateau-offline-read-monolith.skill/plateau-offline-read-monolith.skill.md) (online + VP1 + VP4) and adds exactly one solution — [`solution-offline-sync`](skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md) — realizing **VP5 (OfflineWriteQueue, per feature) = Yes** of the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md). VP1–VP5 = Yes; VP6–VP8 = No. Next: `plateau-multiuser-monolith` (VP6 + VP7). **Reads and writes both survive offline.**
+> **Fourth plateau of the `monolith` catalog — the owner's current app.** Composes [`plateau-offline-read-monolith`](skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/plateau-offline-read-monolith.skill/plateau-offline-read-monolith.skill.md) (online + VP1 + VP4) and adds exactly one solution — [`solution-offline-sync`](skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md) — realizing **VP5 (OfflineWriteQueue, per feature) = Yes** of the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md). VP1–VP5 = Yes; VP6–VP8 = No. Next: `plateau-multiuser-monolith` (VP6 + VP7). **Reads and writes both survive offline.**
 
 # What this plateau adds over its parent
 
@@ -61,10 +61,10 @@ See [`example/`](plateau-offline-full-monolith.skill/example/) — the parent Nx
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — canonical, no resolver:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
 - [`feature-facade-ts`](registry/feature-facade-ts.md) — `solution-api-http-layer` `.create` + `solution-offline-sync` `.extend` (queueing branch), `TMN`, `source: constraint` (VP5 requires VP3).
-- The parent's [`shared-state-project`](skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/registry/shared-state-project.md) group reaches **N = 3** here (global-store + offline-first + offline-sync) — a benign N≥3 bucket (the `store.config.ts` seam extended once per slice). `solution-offline-sync` now carries its own `shared-state.project.extend` (delta-conflict Finding 4, closed).
+- The parent's [`shared-state-project`](skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/registry/shared-state-project.md) group reaches **N = 3** here (global-store + offline-first + offline-sync) — a benign N≥3 bucket (the `store.config.ts` seam extended once per slice). `solution-offline-sync` now carries its own `shared-state.project.extend` (delta-conflict Finding 4, closed).
 
 # Usecases
 

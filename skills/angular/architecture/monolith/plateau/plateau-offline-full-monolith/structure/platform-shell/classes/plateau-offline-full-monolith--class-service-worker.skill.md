@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
 
 > Three files in `apps/platform-shell/src/`: `sw-src.ts` (Workbox runtime, WebWorker context, compiled with `tsconfig.sw.json`, excluded from the app build), `sw-routes.ts` (pure content-type predicates, unit-tested), `sw-build.mjs` (Nx `build-sw` step — esbuild-bundles `sw-src.ts` then `workbox-build`'s `injectManifest`).
 
@@ -23,7 +23,7 @@ created_by:
 - Implement the four content-type caching strategies as concrete Workbox routing rules, keeping the routing *decisions* in a plain module that can be unit-tested without a service worker context
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
 
 # Core Principles
 
@@ -33,8 +33,8 @@ __Applied solutions:__
 - Generated via Workbox's programmatic API in the Nx pipeline — never ngsw, never a webpack plugin (this workspace uses the esbuild `@angular/build:application` builder)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type.md|Caching Strategy Per Content Type ADR]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type.md|Caching Strategy Per Content Type ADR]]
 
 # Naming convention
 
@@ -72,7 +72,7 @@ registerRoute((c) => isApiRead(toInput(c)), new StaleWhileRevalidate({ cacheName
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
 
 # Rules
 
@@ -85,7 +85,7 @@ __Applied solutions:__
 - Never cache an auth endpoint or any non-GET request with anything other than `network-only`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
 
 # Check list
 
@@ -95,7 +95,7 @@ __Applied solutions:__
 - [ ] `nx build-sw platform-shell` emits `dist/apps/platform-shell/browser/sw.js`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
 
 # Unittest TestCases
 
@@ -107,4 +107,4 @@ __Applied solutions:__
   - [ ] `isNetworkOnly` is true regardless of method
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md|ServiceWorker/service-worker.create]]

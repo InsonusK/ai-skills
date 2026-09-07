@@ -15,21 +15,21 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
 ---
 
-> No solution produces a dedicated `design-system.project.create` file — this project is established by [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/plateau-multi-tenant-design-system--repo-multi-tenant-design-system.skill.md|repo-multi-tenant-design-system]]'s `Repository.create`/`.extend` entries. This skill gives its classes a consistent home, per the plateau's repo → project → class convention.
+> No solution produces a dedicated `design-system.project.create` file — this project is established by [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/plateau-multi-tenant-design-system--repo-multi-tenant-design-system.skill.md|repo-multi-tenant-design-system]]'s `Repository.create`/`.extend` entries. This skill gives its classes a consistent home, per the plateau's repo → project → class convention.
 
 # Goal
 
 - Provide one independently versioned npm package that every consumer (platform monorepo, embeddable apps) uses for theming (`mat.theme()` + `--ds-*` tokens) and UI components — with zero required Angular Material knowledge at the call site
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Core Principles
 
@@ -39,8 +39,8 @@ __Applied solutions:__
 - The public surface (`public-api.ts` **and** the built `types/*.d.ts`) never contains an Angular Material selector, input, or type
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Structure
 
@@ -80,21 +80,21 @@ __Applied solutions:__
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| styles/theme.scss | The base `mat.theme()` (default brand) + the sole source of typography/density. Unchanged by VP1. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-theme.skill\|class-theme]] |
-| styles/custom-tokens.scss | `--ds-*` custom properties for concepts Material's token set doesn't cover. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-custom-tokens.skill\|class-custom-tokens]] |
-| styles/tenants/_tenant-theme.scss | The `ds-tenant-theme` mixin — the one place `mat.theme((color: ...))` is called for a tenant; colour only, `light-dark()` preserved. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-tenant-theme.skill\|class-tenant-theme]] |
-| styles/tenants/_{tenant}.scss + tenants.scss | One `:root[data-tenant='<id>']` block per tenant; `tenants.scss` aggregates them and is the package asset. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-tenant-palette.skill\|class-tenant-palette]] |
-| src/lib/tenants.ts | `DS_TENANTS` tuple + `DsTenant` union — the valid-tenant contract, exported from `public-api`. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-tenants.skill\|class-tenants]] |
-| src/lib/{component-name}/ | One directory per component — the generic `ds-*` authoring pattern. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name.skill\|class-component-name]] |
-| src/lib/{component-name}/spec/ | The four test layers + `preview/` + committed `snapshot/` baselines. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-component-spec.skill\|component-spec]] · [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-visual-spec.skill\|visual-spec]] · [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-style-snapshot-spec.skill\|style-snapshot-spec]] · [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-a11y-spec.skill\|a11y-spec]] |
-| testing/read-visual-style-properties.ts | The one shared `VISUAL_STYLE_PROPERTIES` list every style-snapshot spec imports. | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-read-visual-style-properties.skill\|read-visual-style-properties]] |
+| styles/theme.scss | The base `mat.theme()` (default brand) + the sole source of typography/density. Unchanged by VP1. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-theme.skill\|class-theme]] |
+| styles/custom-tokens.scss | `--ds-*` custom properties for concepts Material's token set doesn't cover. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-custom-tokens.skill\|class-custom-tokens]] |
+| styles/tenants/_tenant-theme.scss | The `ds-tenant-theme` mixin — the one place `mat.theme((color: ...))` is called for a tenant; colour only, `light-dark()` preserved. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-tenant-theme.skill\|class-tenant-theme]] |
+| styles/tenants/_{tenant}.scss + tenants.scss | One `:root[data-tenant='<id>']` block per tenant; `tenants.scss` aggregates them and is the package asset. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-tenant-palette.skill\|class-tenant-palette]] |
+| src/lib/tenants.ts | `DS_TENANTS` tuple + `DsTenant` union — the valid-tenant contract, exported from `public-api`. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-tenants.skill\|class-tenants]] |
+| src/lib/{component-name}/ | One directory per component — the generic `ds-*` authoring pattern. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name.skill\|class-component-name]] |
+| src/lib/{component-name}/spec/ | The four test layers + `preview/` + committed `snapshot/` baselines. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-component-spec.skill\|component-spec]] · [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-visual-spec.skill\|visual-spec]] · [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-style-snapshot-spec.skill\|style-snapshot-spec]] · [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-component-name-a11y-spec.skill\|a11y-spec]] |
+| testing/read-visual-style-properties.ts | The one shared `VISUAL_STYLE_PROPERTIES` list every style-snapshot spec imports. | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/classes/plateau-multi-tenant-design-system--class-read-visual-style-properties.skill\|read-visual-style-properties]] |
 | src/public-api.ts | The public barrel — `ds-*` component classes + their own literal types only. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/design-system.project.extend.md|design-system.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/design-system.project.extend.md|design-system.project.extend]]
 
 ## NPM Packages
 
@@ -105,7 +105,7 @@ __Applied solutions:__
 | @changesets/cli | latest | Version bump classification + CHANGELOG |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
 
 ## What Does NOT Belong Here
 
@@ -117,16 +117,16 @@ __Applied solutions:__
 - Preview components authored inside `projects/demo` — they live in each component's `spec/preview/`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/plateau-multi-tenant-design-system--repo-multi-tenant-design-system.skill#must|repo-multi-tenant-design-system]]
+- [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/plateau-multi-tenant-design-system--repo-multi-tenant-design-system.skill#must|repo-multi-tenant-design-system]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/plateau-multi-tenant-design-system--repo-multi-tenant-design-system.skill#should|repo-multi-tenant-design-system]]
+- [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/plateau-multi-tenant-design-system--repo-multi-tenant-design-system.skill#should|repo-multi-tenant-design-system]]
 
 # Check list
 
@@ -140,7 +140,7 @@ __Applied solutions:__
 - [ ] Every `DS_TENANTS` entry has a `styles/tenants/_<id>.scss` file and a `@use` line in `tenants.scss`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/design-system.project.extend.md|design-system.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/design-system.project.extend.md|design-system.project.extend]]

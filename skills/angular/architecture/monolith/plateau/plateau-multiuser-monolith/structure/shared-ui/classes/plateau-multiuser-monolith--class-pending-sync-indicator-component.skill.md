@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 
 > `libs/shared/ui/src/lib/pending-sync-indicator/`. Presentational: it takes `count` as an input; the owning feature feeds it from `MutationQueueService.pendingForFeature$(...)` (via its feature Signal Store). This keeps `libs/shared/ui` free of a `type:store` dependency — same call the plateau made for `OfflineBannerComponent`.
 
@@ -23,7 +23,7 @@ created_by:
 - Show the user how many of their actions are queued and waiting to sync, per feature
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
 
 # Core Principles
 
@@ -32,7 +32,7 @@ __Applied solutions:__
 - `OnPush`; nothing rendered while `count` is `0`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
 
 # Naming convention
 
@@ -77,7 +77,7 @@ pendingSyncCount: computed(
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
 
 # Rules
 
@@ -90,7 +90,7 @@ __Applied solutions:__
 - Never let a feature build its own pending-sync indicator — reuse this component.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
 
 # Check list
 
@@ -99,7 +99,7 @@ __Applied solutions:__
 - [ ] Singular / plural wording is correct
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
 
 # Unittest TestCases
 
@@ -108,4 +108,4 @@ __Applied solutions:__
 - [ ] WHEN `count` is `> 1` THEN the message is pluralised
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/UI/pending-sync-indicator.component.ts.create.md|UI/pending-sync-indicator.component.ts.create]]

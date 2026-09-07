@@ -11,7 +11,7 @@ tags:
 
 # Goals
 
-- Define the one fixed brand palette (per [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]]) as a single M3 theme, with light/dark handled via `light-dark()`
+- Define the one fixed brand palette (per [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]]) as a single M3 theme, with light/dark handled via `light-dark()`
 
 # Implementation changes
 
@@ -43,7 +43,7 @@ html {
   - Fix: `color-scheme: light dark;` on `html`.
 - Only one palette is defined — no second/alternate palette or theme-swapping mechanism.
   - Risk: multiple palettes reintroduce the per-tenant theming this catalog explicitly excludes.
-  - Fix: a single `primary:` palette in `mat.theme()`; per [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]].
+  - Fix: a single `primary:` palette in `mat.theme()`; per [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]].
 
 ## SHOULD
 - **Applying the theme at a component-level selector instead of the root** — Consequence: tokens don't cascade consistently to every part of the consuming application, and components outside that selector's scope silently fall back to Material's un-themed defaults — Instead: always apply at `html` (or the highest-level selector available to the consumer)

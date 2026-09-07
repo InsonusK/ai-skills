@@ -12,15 +12,15 @@ tags:
   - framework/angular
   - concern/architecture
 parent_plateaus:
-  - "[[skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|plateau-design-system]]"
+  - "[[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|plateau-design-system]]"
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/registry/design-system-repository.md|design-system-repository]]"
+  - "[[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/registry/design-system-repository.md|design-system-repository]]"
 ---
 
-> **The `design-system` catalog's `MultiTenantTheming` plateau (VP1 = Yes).** Composes [`plateau-design-system`](skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md) (all four common solutions) and adds **one** solution — [`solution-design-system-multi-tenant-theming`](skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md) of the [design-system Variability Map](skills/angular/architecture/v3.1/design-system/variability-map.md). **No new project.** Still a separate repository — a plain Angular CLI multi-project workspace, published as an independently versioned npm package.
+> **The `design-system` catalog's `MultiTenantTheming` plateau (VP1 = Yes).** Composes [`plateau-design-system`](skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md) (all four common solutions) and adds **one** solution — [`solution-design-system-multi-tenant-theming`](skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md) of the [design-system Variability Map](skills/angular/architecture/design-system/variability-map.md). **No new project.** Still a separate repository — a plain Angular CLI multi-project workspace, published as an independently versioned npm package.
 
 # What this plateau adds over its parent
 
@@ -38,8 +38,8 @@ The parent is the design system as an ng-packagr npm package — one `mat.theme(
 
 # Core Principles
 
-- A tenant is a **colour palette** scoped to `:root[data-tenant='<id>']`, emitted through the shared `ds-tenant-theme` mixin — never typography, density, spacing, or radius. See [`tenant-palette-scope`](skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-palette-scope.md).
-- The active tenant is picked by a CSS `[data-tenant]` attribute the consuming app sets — no JavaScript rewrites `--mat-sys-*` / `--ds-*` values, no per-tenant compiled bundle. See [`tenant-resolution-strategy`](skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-resolution-strategy.md).
+- A tenant is a **colour palette** scoped to `:root[data-tenant='<id>']`, emitted through the shared `ds-tenant-theme` mixin — never typography, density, spacing, or radius. See [`tenant-palette-scope`](skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-palette-scope.md).
+- The active tenant is picked by a CSS `[data-tenant]` attribute the consuming app sets — no JavaScript rewrites `--mat-sys-*` / `--ds-*` values, no per-tenant compiled bundle. See [`tenant-resolution-strategy`](skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-resolution-strategy.md).
 - `styles/theme.scss` is unchanged and is the no-attribute default; typography / density / base styles are emitted once, there.
 - Every tenant colour uses `light-dark()`; the scheme still resolves inside whichever tenant is active.
 - Components never learn about tenants — they consume `--mat-sys-*` / `--ds-*`; only the values behind the tokens vary under the attribute.
@@ -64,7 +64,7 @@ See [`example/`](plateau-multi-tenant-design-system.skill/example/) — the pare
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — canonical, no resolver:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
 - [`design-system-repository`](registry/design-system-repository.md) — `solution-design-system-structure` `.create` + `-tokens` / `-components` / `-ui-testing` / **`-multi-tenant-theming`** `.extend`. `FMN`/`TMN`, `source: ordering-only` (VP1 depends on `tokens`). **N = 5 here — benign** (VP1's contribution is entirely in new files under a new `styles/tenants/` directory + `src/lib/tenants.ts`; `styles/theme.scss` is untouched — it structurally cannot collide with the base token/component/test conventions).
 

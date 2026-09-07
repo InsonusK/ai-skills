@@ -26,7 +26,7 @@ This is not tied to one concrete component. Any component added to the design sy
 
 # Implementation changes
 
-Worked example — a button component whose API is organized around this application's real usage axes, not Material's own button categorization, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]:
+Worked example — a button component whose API is organized around this application's real usage axes, not Material's own button categorization, per [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]:
 
 ```typescript
 // ds-button.component.ts

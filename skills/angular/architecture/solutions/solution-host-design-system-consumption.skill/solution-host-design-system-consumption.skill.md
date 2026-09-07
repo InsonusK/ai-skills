@@ -18,10 +18,10 @@ creates: []
 extends:
   - apps/platform-shell (federation config, root styles)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]]"
+  - "[[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]]"
+  - "[[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]]"
 ---
 
 # Goal
@@ -39,18 +39,18 @@ adr:
 - This upgrades the plain npm dependency a monolith already had — the design system is consumed the same way, only the federation sharing config is added.
 
 # Boundaries
-- The **host** side. The remote side (a remote declaring its own `requiredVersion`) is [[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]].
+- The **host** side. The remote side (a remote declaring its own `requiredVersion`) is [[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]].
 - `platform-host` VP1. Not a federation prerequisite — a host whose remotes each bring their own UI can skip it (feature-model open question).
 - Does not model the `design-system` package itself — see the `design-system` catalog.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]] — version-negotiated singleton over a strict singleton or fully independent per-consumer versions.
-- [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]] — the host applies the theme in production; remotes apply it only for standalone dev.
+- [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]] — version-negotiated singleton over a strict singleton or fully independent per-consumer versions.
+- [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]] — the host applies the theme in production; remotes apply it only for standalone dev.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]
   - the federation config this extends with a shared-dependency declaration
 
 NPM:
@@ -59,12 +59,12 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md|apps/platform-shell]] - extend - declare `design-system` as a version-negotiated shared dependency; apply the theme at the root
+- [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md|apps/platform-shell]] - extend - declare `design-system` as a version-negotiated shared dependency; apply the theme at the root
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md#MUST|platform-shell.federation.extend]]
+- [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md#MUST|platform-shell.federation.extend]]
 - Never set `strictVersion: true` for the design system — that reintroduces lockstep coupling with every remote.
   - Risk: a host design-system upgrade blocks every remote that has not adopted it.
   - Fix: `strictVersion: false` — a mismatch degrades to an isolated copy, never a hard failure.

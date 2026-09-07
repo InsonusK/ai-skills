@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
 
 > `libs/shared/logging/src/lib/log-retry-queue.ts`. Used by `BackendLogSink` when a batch send fails. Backed by Dexie/IndexedDB (dev-tested with `fake-indexeddb`).
 
@@ -24,7 +24,7 @@ created_by:
 - Never grow unbounded — cap by count, age AND size, evicting the oldest first
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
 
 # Core Principles
 
@@ -35,7 +35,7 @@ __Applied solutions:__
 - Limits configurable per deployment via `LOG_RETRY_QUEUE_LIMITS`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
 
 # Naming convention
 
@@ -67,7 +67,7 @@ export class LogRetryQueue {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
 
 # Rules
 
@@ -79,7 +79,7 @@ __Applied solutions:__
 - Never let the queue grow without all three bounds enforced.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
 
 # Check list
 
@@ -88,7 +88,7 @@ __Applied solutions:__
 - [ ] A retry cycle stops at the first failure
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
 
 # Unittest TestCases
 
@@ -98,4 +98,4 @@ __Applied solutions:__
 - [ ] WHEN a batch is enqueued and the app "reloads" THEN a fresh queue instance still reports it
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/log-retry-queue.ts.create.md|Logging/log-retry-queue.ts.create]]

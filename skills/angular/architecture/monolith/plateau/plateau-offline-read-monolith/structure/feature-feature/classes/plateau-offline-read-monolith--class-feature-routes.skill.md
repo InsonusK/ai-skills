@@ -14,8 +14,8 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
 
 > Generic pattern, not tied to one concrete feature. `solution-forms` and `solution-api-http-layer` don't touch a feature's routes; `solution-performance-tuned-routing` (VP1) adds the `loadComponent` sub-splitting rule.
 
@@ -25,8 +25,8 @@ created_by:
 - Keep the feature's main chunk lean by splitting a genuinely heavy or rarely-visited sub-route into its own `loadComponent` chunk
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
 
 # Core Principles
 
@@ -36,8 +36,8 @@ __Applied solutions:__
 - The feature stays silent on preloading — it never sets `data: { preload: true }` on its own routes; that decision belongs to whoever mounts the feature
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
 
 # Naming convention
 
@@ -70,8 +70,8 @@ export { ORDERS_ROUTES } from './lib/orders.routes';
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
 
 # Rules
 
@@ -86,8 +86,8 @@ __Applied solutions:__
 - Never split every sub-route via `loadComponent` by default — each split is an extra network round-trip on first visit; split only where it avoids meaningfully more weight than that round-trip costs.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
 
 
 - **Baking the feature's expected mount segment into its own route paths**
@@ -98,8 +98,8 @@ __Applied solutions:__
   - Instead: split that specific sub-route via `loadComponent`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
 
 # Check list
 
@@ -109,8 +109,8 @@ __Applied solutions:__
 - [ ] No route in `{feature}.routes.ts` sets `data: { preload: true }`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
 
 # Unittest TestCases
 
@@ -121,5 +121,5 @@ __Applied solutions:__
   - [ ] its dependency is fetched in a separate chunk, not present in the feature's main chunk
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] - [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend]]

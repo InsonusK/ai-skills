@@ -44,7 +44,7 @@ For a feature Signal Store, `withPersistedDraft({ key, keys, storage })` is a `s
 ### Costs
 
 - The metaReducer must tolerate a malformed / stale / partial JSON string in storage (a previous app version wrote a different shape). It wraps the parse in `try/catch` and intersects parsed keys with the current allow-list, falling back to `initialState` on any mismatch. This is real code that must be tested, not free.
-- IndexedDB-backed drafts cannot use this synchronous path — they hydrate asynchronously in `onInit` and accept a one-frame default state for a large draft that is usually off-screen at boot anyway. Accepted, and the reason the large-draft path is a deliberate exception (see [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]]).
+- IndexedDB-backed drafts cannot use this synchronous path — they hydrate asynchronously in `onInit` and accept a one-frame default state for a large draft that is usually off-screen at boot anyway. Accepted, and the reason the large-draft path is a deliberate exception (see [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]]).
 
 ## An effect on ROOT_EFFECTS_INIT that dispatches a Hydrate action
 

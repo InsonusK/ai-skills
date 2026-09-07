@@ -60,10 +60,10 @@ export class OrdersClient {
   - Fix: `inject(BaseHttpService)`; the base service owns cross-cutting transport concerns.
 - The Client catches every `HttpErrorResponse` its calls can produce and rethrows a typed domain error from `{feature}.errors.ts`.
   - Risk: a raw transport error reaches the store/component, which then branches on status codes far from the request.
-  - Fix: `catchError` maps status → a `{Feature}...Error`; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+  - Fix: `catchError` maps status → a `{Feature}...Error`; per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
 - DTO ↔ domain mapping goes through `{feature}.mapper.ts` hand-written functions — never inline field renaming inside a Client method.
   - Risk: mapping scattered across Client methods drifts, and a DTO shape change has to be chased through many call sites.
-  - Fix: one `toDomain` / `toDto` per shape in the mapper; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|dto-mapping-strategy]].
+  - Fix: one `toDomain` / `toDto` per shape in the mapper; per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|dto-mapping-strategy]].
 
 ## SHOULD
 - **Letting an `HttpErrorResponse` propagate out of a Client method uncaught** — Consequence: callers (Facade, and transitively Signal Store methods/effects) end up branching on HTTP status codes instead of a meaningful domain error — Instead: catch every failure path and rethrow a typed domain error specific to this feature

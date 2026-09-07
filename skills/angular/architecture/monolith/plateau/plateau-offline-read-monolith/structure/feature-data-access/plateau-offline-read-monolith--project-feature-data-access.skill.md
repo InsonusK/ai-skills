@@ -14,9 +14,9 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 
-> Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template, substituting `{Feature}`/`{feature}` with the real feature name. The bare project placeholder already exists by [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/plateau-offline-read-monolith--repo-offline-read-monolith.skill.md|repo-offline-read-monolith]]'s repository layout; `solution-api-http-layer` is the first solution to fill in its internal structure.
+> Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template, substituting `{Feature}`/`{feature}` with the real feature name. The bare project placeholder already exists by [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/plateau-offline-read-monolith--repo-offline-read-monolith.skill.md|repo-offline-read-monolith]]'s repository layout; `solution-api-http-layer` is the first solution to fill in its internal structure.
 
 # Goal
 
@@ -25,9 +25,9 @@ created_by:
 - Test the Client (the only place `HttpTestingController` is used) and the Facade (which fakes the Client) each in isolation, plus an occasional cross-layer integration test via MSW
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Core Principles
 
@@ -37,8 +37,8 @@ __Applied solutions:__
 - `HttpTestingController` is used only inside `{feature}.client.spec.ts` — every other spec fakes the layer directly beneath it.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Structure
 
@@ -78,19 +78,19 @@ libs/{feature}/data-access/src/lib
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| `{feature}.facade.ts` | Public API: business validation/orchestration, calls the Client. Exported from `index.ts`. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-facade.skill\|class-feature-facade]] |
-| `facade/{feature}_N.facade.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-facade.skill\|class-feature-facade]] |
-| `{feature}.facade.spec.ts` | Vitest unit test faking the Client. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-facade.skill\|class-feature-facade]] |
-| `{feature}.client.ts` | Internal: DTO mapping via the Mapper, calls `libs/shared/http-core`, catches `HttpErrorResponse` and throws a typed domain error. Never exported. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-client.skill\|class-feature-client]] |
-| `client/{feature}_N.client.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-client.skill\|class-feature-client]] |
-| `{feature}.client.spec.ts` | Vitest unit test using `HttpTestingController` — the only place it is used. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-client.skill\|class-feature-client]] |
-| `{feature}.mapper.ts` / `{feature}.errors.ts` | Internal: hand-written mapping functions and this feature's typed domain error hierarchy. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-mapper-and-errors.skill\|class-feature-mapper-and-errors]] |
-| `mapper/{feature}_N.mapper.ts` / `{feature}_N.errors.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-mapper-and-errors.skill\|class-feature-mapper-and-errors]] |
+| `{feature}.facade.ts` | Public API: business validation/orchestration, calls the Client. Exported from `index.ts`. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-facade.skill\|class-feature-facade]] |
+| `facade/{feature}_N.facade.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-facade.skill\|class-feature-facade]] |
+| `{feature}.facade.spec.ts` | Vitest unit test faking the Client. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-facade.skill\|class-feature-facade]] |
+| `{feature}.client.ts` | Internal: DTO mapping via the Mapper, calls `libs/shared/http-core`, catches `HttpErrorResponse` and throws a typed domain error. Never exported. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-client.skill\|class-feature-client]] |
+| `client/{feature}_N.client.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-client.skill\|class-feature-client]] |
+| `{feature}.client.spec.ts` | Vitest unit test using `HttpTestingController` — the only place it is used. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-client.skill\|class-feature-client]] |
+| `{feature}.mapper.ts` / `{feature}.errors.ts` | Internal: hand-written mapping functions and this feature's typed domain error hierarchy. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-mapper-and-errors.skill\|class-feature-mapper-and-errors]] |
+| `mapper/{feature}_N.mapper.ts` / `{feature}_N.errors.ts` | Same as above, used when a feature has multiple distinct data facets. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/feature-data-access/classes/plateau-offline-read-monolith--class-feature-mapper-and-errors.skill\|class-feature-mapper-and-errors]] |
 | `{feature}.integration.spec.ts` | Reserved for the rare case that genuinely needs Store → Facade → Client wired together, using MSW at the network boundary. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create.md|Testing/{feature}.integration.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create.md|Testing/{feature}.integration.spec.ts.create]]
 
 ## NPM Packages
 
@@ -101,8 +101,8 @@ __Applied solutions:__
 | vitest | matching workspace configuration | Unit/integration test runner |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create.md|Testing/{feature}.integration.spec.ts.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{feature}.integration.spec.ts.create.md|Testing/{feature}.integration.spec.ts.create]]
 
 ## What Does NOT Belong Here
 
@@ -111,9 +111,9 @@ __Applied solutions:__
 - `HttpTestingController` usage anywhere outside `{feature}.client.spec.ts`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 ## Allowed Dependencies
 
@@ -121,8 +121,8 @@ __Applied solutions:__
 - `libs/shared/util` (tag: `type:util`, `scope:shared`)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Rules
 
@@ -138,9 +138,9 @@ __Applied solutions:__
 - A component or Signal Store method must never import a feature's Client directly, bypassing the Facade.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 
 - **Putting DTO mapping or direct `HttpClient`/`http-core` calls inside the Facade**
@@ -157,8 +157,8 @@ __Applied solutions:__
   - Instead: default to the narrower unit-test pattern; reserve integration specs for genuine cross-layer scenarios
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Check list
 
@@ -169,5 +169,5 @@ __Applied solutions:__
 - [ ] Every Facade method has a spec faking the Client
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]] - [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Repository.extend.md|Repository.extend]]

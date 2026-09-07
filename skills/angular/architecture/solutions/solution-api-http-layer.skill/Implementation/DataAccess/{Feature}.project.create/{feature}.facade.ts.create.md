@@ -58,7 +58,7 @@ export class OrdersFacade {
   - Fix: the Facade validates first and throws its `ValidationError`; the Client is reached only for a valid command.
 - Any error the Facade lets through is one of this feature's typed domain errors — never a raw `HttpErrorResponse`.
   - Risk: the caller ends up switching on HTTP status codes, defeating the point of the typed error layer.
-  - Fix: the Facade rethrows the Client's typed error, optionally re-wrapped with business context; per [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+  - Fix: the Facade rethrows the Client's typed error, optionally re-wrapped with business context; per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
 
 ## SHOULD
 - **Putting DTO mapping or direct `HttpClient`/`http-core` calls inside the Facade** — Consequence: blurs the Facade/Client separation this solution exists to establish, making business logic and transport concerns hard to test independently — Instead: the Facade only calls the Client; all DTO/transport concerns stay inside the Client

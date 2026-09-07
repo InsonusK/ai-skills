@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
+  - "[[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
 ---
 
 > `apps/platform-shell/src/app/session/host-session.ts`. Bound once as `{ provide: SESSION_CONTRACT, useExisting: HostSession }` in `app.config.ts`. VP2 `SessionSharing` — requires the monolith's `auth` slice (VP7).
@@ -25,7 +25,7 @@ created_by:
 - Give every mounted remote a live, read-only view of the current session (`currentUser` / `permissions` / `isAuthenticated`) without any remote implementing authentication — in lockstep with the host's own `auth` slice, no polling
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - The signals are a thin view over `libs/shared/state`'s `selectCurrentUser` / `selectPermissions` / `selectIsLoggedIn` — never a second copy of session state
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
 
 # Implementation
 
@@ -60,7 +60,7 @@ export class HostSession implements SessionContract {
 > The `example/` uses a minimal signal-backed stand-in (`setSession` / `clearSession`) instead of an NgRx store, so the federation wiring can be exercised without composing the whole monolith.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
 
 # Rules
 
@@ -71,7 +71,7 @@ __Applied solutions:__
 - Authorization is expressed as permission strings — the same strings the host's own `*hasPermission` uses.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
 
 # Check list
 
@@ -81,7 +81,7 @@ __Applied solutions:__
 - [ ] Permissions are strings, never role names
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
 
 # Unittest TestCases
 
@@ -90,4 +90,4 @@ __Applied solutions:__
 - [ ] WHEN resolved through `SESSION_CONTRACT` and through `HostSession` THEN it is the same instance
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]

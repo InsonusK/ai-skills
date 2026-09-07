@@ -15,7 +15,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
 ---
 
 > `projects/design-system/styles/tenants/_tenant-theme.scss` — a partial, `@use`d only by the per-tenant files. Ships inside the `styles/tenants/` asset directory.
@@ -27,7 +27,7 @@ created_by:
 - Preserve `light-dark()` inside every tenant
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]
 
 # Core Principles
 
@@ -37,7 +37,7 @@ __Applied solutions:__
 - `$primary` is a Material palette map (`mat.$<name>-palette` or `mat.define-palette(...)`), not a single colour — so the M3 tonal ramp is generated
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-palette-scope.md|tenant-palette-scope]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-palette-scope.md|tenant-palette-scope]]
 
 # Naming convention
 
@@ -73,7 +73,7 @@ __Applied solutions:__
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]
 
 # Rules
 
@@ -86,7 +86,7 @@ __Applied solutions:__
 - Never add a parameter for typography, density, spacing, or radius — a tenant varies colour only.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]
 
 # Check list
 
@@ -100,4 +100,4 @@ __Applied solutions:__
 - [ ] WHEN `$ds-overrides` is `(--ds-color-status-in-progress: light-dark(#00838f, #4dd0e1))` THEN the compiled CSS contains that custom property under the tenant selector
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Tenants/tenant-theme.scss.create.md|Tenants/tenant-theme.scss.create]]

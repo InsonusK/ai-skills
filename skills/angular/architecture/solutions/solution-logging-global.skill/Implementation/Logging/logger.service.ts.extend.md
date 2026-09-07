@@ -31,7 +31,7 @@ export class LoggerService {
 ## MUST
 - `report()` entries always reach `BackendLogSink`, regardless of `MIN_LOG_LEVEL`.
   - Risk: if `report()` were level-filtered like `info`, a deliberate "send this to the backend" call would be silently dropped in production.
-  - Fix: `if (level !== 'report' && ORDER[level] < ORDER[min]) return;` — `report` bypasses the check; per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
+  - Fix: `if (level !== 'report' && ORDER[level] < ORDER[min]) return;` — `report` bypasses the check; per [[skills/angular/architecture/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
 - `report()` is still subject to the never-log-sensitive-data rule.
   - Risk: "it goes to the backend anyway" invites logging a token or PII through `report()`.
   - Fix: same restriction as every other level — identifiers and shapes only.

@@ -9,7 +9,7 @@ tags:
 
 # Structure
 
-No new top-level directories. This extends [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|libs/shared/logging]] (adding `BackendLogSink` and its retry queue) and `apps/platform-shell` (registering a global `ErrorHandler`).
+No new top-level directories. This extends [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|libs/shared/logging]] (adding `BackendLogSink` and its retry queue) and `apps/platform-shell` (registering a global `ErrorHandler`).
 
 ## Directory and project skills
 
@@ -30,7 +30,7 @@ No new top-level directories. This extends [[skills/angular/architecture/v3.1/so
   - Fix: register it once at the composition root; it then covers embeddable apps sharing the runtime too.
 - `BackendLogSink` forwards only `warn` / `error` / `report()` to the backend — `debug` / `info` never reach it.
   - Risk: shipping `debug`/`info` to a backend floods it and can leak internal detail.
-  - Fix: the sink's `write()` filters by level; per [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
+  - Fix: the sink's `write()` filters by level; per [[skills/angular/architecture/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|backend-log-sink-strategy]].
 
 # Unittest TestCases
 

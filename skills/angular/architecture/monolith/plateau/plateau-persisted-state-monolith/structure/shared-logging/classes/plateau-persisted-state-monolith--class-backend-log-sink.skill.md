@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
 
 > `libs/shared/logging/src/lib/backend-log-sink.ts`. Registered on the existing `LOG_SINKS` multi-provider seam alongside `ConsoleLogSink` — no existing `LoggerService` call site changes.
 
@@ -23,7 +23,7 @@ created_by:
 - Send only `warn` / `error` / `report()` entries to the backend, batched, without a network request per log call
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
 
 # Core Principles
 
@@ -33,8 +33,8 @@ __Applied solutions:__
 - A failed flush hands the batch to `LogRetryQueue.enqueue(...)` — never dropped; a successful flush opportunistically drains the retry queue too
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|Backend Log Sink Strategy ADR]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|Backend Log Sink Strategy ADR]]
 
 # Naming convention
 
@@ -70,7 +70,7 @@ export class BackendLogSink implements LogSink, OnDestroy {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
 
 # Rules
 
@@ -82,7 +82,7 @@ __Applied solutions:__
 - Never send each entry as its own request — always buffer + flush on timer/size/unload.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
 
 # Check list
 
@@ -91,7 +91,7 @@ __Applied solutions:__
 - [ ] The unload path uses `navigator.sendBeacon`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
 
 # Unittest TestCases
 
@@ -100,4 +100,4 @@ __Applied solutions:__
 - [ ] WHEN the page is unloaded with entries buffered THEN `navigator.sendBeacon` is called
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]
+- [[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]] - [[skills/angular/architecture/solutions/solution-logging-global.skill/Implementation/Logging/backend-log-sink.ts.create.md|Logging/backend-log-sink.ts.create]]

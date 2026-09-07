@@ -14,15 +14,15 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
 
 # Goal
 
 - Give every feature's Client a single, consistent place for cross-cutting HTTP concerns (base URL resolution, timeout, retry policy), instead of each Client reimplementing them
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
 
 # Structure
 
@@ -45,8 +45,8 @@ __Applied solutions:__
 | offline-transport-error.ts | The single shared `OfflineTransportError` — thrown by every feature's Client when an `HttpErrorResponse` has `status === 0` (the request never reached the server). Defined once here, never per feature, so callers catch it uniformly. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend.md|DataAccess/{feature}.client.ts.extend]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/DataAccess/{feature}.client.ts.extend.md|DataAccess/{feature}.client.ts.extend]]
 
 ## NPM Packages
 
@@ -55,7 +55,7 @@ __Applied solutions:__
 | @angular/common (HttpClient) | matching the Angular major version in use | Underlying HTTP transport |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
 
 ## What Does NOT Belong Here
 
@@ -64,14 +64,14 @@ __Applied solutions:__
 - Business-specific retry/conflict logic (e.g. offline-sync retry queues) — belongs to a future offline-sync solution
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
 
 ## Allowed Dependencies
 
 - None (leaf project within `type:util`, `scope:shared`)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
 
 # Rules
 
@@ -81,7 +81,7 @@ __Applied solutions:__
 - `OfflineTransportError` must be defined exactly once, here, and re-exported from `index.ts` — never redefined inside a feature's `data-access` lib.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
 
 
 - **Adding a feature-specific special case directly into `base-http.service.ts`**
@@ -89,7 +89,7 @@ __Applied solutions:__
   - Instead: keep this service generic; feature-specific behavior belongs in that feature's own Client
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
 
 # Check list
 
@@ -97,7 +97,7 @@ __Applied solutions:__
 - [ ] Every feature's Client calls this service rather than `HttpClient` directly
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
 
 # Unittest TestCases
 
@@ -107,4 +107,4 @@ __Applied solutions:__
   - [ ] the default retry policy retries it before surfacing a failure
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]
+- [[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]] - [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/HttpCore/shared-http-core.project.create.md|HttpCore/shared-http-core.project.create]]

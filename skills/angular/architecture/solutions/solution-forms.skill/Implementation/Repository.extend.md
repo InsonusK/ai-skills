@@ -9,19 +9,19 @@ tags:
 
 # Structure
 
-No new directories. This extension adds a version requirement and a placement convention on top of [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]].
+No new directories. This extension adds a version requirement and a placement convention on top of [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]].
 
 ## Directory and file skills
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| libs/{feature}/feature/src/lib/**/*.form.ts | Optional, used only when a form's field schema/validators are non-trivial enough to extract from the component — see [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md]] for when to extract vs. keep inline |
+| libs/{feature}/feature/src/lib/**/*.form.ts | Optional, used only when a form's field schema/validators are non-trivial enough to extract from the component — see [[skills/angular/architecture/solutions/solution-forms.skill/Implementation/FormComponent/{component-name}.component.ts.extend.md]] for when to extract vs. keep inline |
 
 # NPM Packages
 
 | Package | Version constraint | Purpose |
 | ------- | ------------------- | ------- |
-| @angular/core, @angular/forms | >= 22.0 | Minimum version required for Signal Forms to be available as stable (see [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/adr/forms-approach.md|forms-approach]]) |
+| @angular/core, @angular/forms | >= 22.0 | Minimum version required for Signal Forms to be available as stable (see [[skills/angular/architecture/solutions/solution-forms.skill/adr/forms-approach.md|forms-approach]]) |
 
 # Rules
 
@@ -29,7 +29,7 @@ No new directories. This extension adds a version requirement and a placement co
 - The workspace runs Angular >= 22 before this solution's rules apply.
   - Risk: Signal Forms is not stable before 22 — adopting it earlier ships an unstable API to production.
   - Fix: gate the convention on the Angular major; on an older workspace, Reactive Forms remains the default.
-- New forms use Signal Forms (`@angular/forms/signals`) by default, per [[skills/angular/architecture/v3.1/solutions/solution-forms.skill/adr/forms-approach.md|forms-approach]].
+- New forms use Signal Forms (`@angular/forms/signals`) by default, per [[skills/angular/architecture/solutions/solution-forms.skill/adr/forms-approach.md|forms-approach]].
   - Risk: a mix of Reactive and Signal Forms across features means two mental models, two test styles, and no shared validator patterns.
   - Fix: `form()` / `FieldTree` for every new form; migrate existing Reactive Forms only when they change substantially, never for consistency alone.
 

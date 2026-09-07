@@ -11,10 +11,10 @@ tags:
 `{feature}.routes.ts` — a feature's own root-relative `Routes` array in `libs/{feature}/feature/src/lib/`, exported from `index.ts`.
 
 # Involved solutions
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] (`.create` — `FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create` — the feature's root-relative routes; the feature as a whole is lazy via `loadChildren` at its mount point)
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] (VP1, `.extend` — switches a heavy / rarely-visited sub-route from `component:` to `loadComponent:` and declares the per-chunk budget)
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] (VP5, `.extend` — `Repository.extend` — wraps the feature's routes in a parent route whose `providers: [provide{Feature}OfflineSync()]` registers the feature's replay handler in a route-level env injector)
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] (VP7, `.extend` — `Routing/{feature}.guard.ts.create` — attaches `canActivate: [requirePermission('...')]` / `canMatch` on a route the feature restricts; the `requirePermission` factory itself lives in `libs/shared/auth-ui`)
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] (`.create` — `FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create` — the feature's root-relative routes; the feature as a whole is lazy via `loadChildren` at its mount point)
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] (VP1, `.extend` — switches a heavy / rarely-visited sub-route from `component:` to `loadComponent:` and declares the per-chunk budget)
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] (VP5, `.extend` — `Repository.extend` — wraps the feature's routes in a parent route whose `providers: [provide{Feature}OfflineSync()]` registers the feature's replay handler in a route-level env injector)
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] (VP7, `.extend` — `Routing/{feature}.guard.ts.create` — attaches `canActivate: [requirePermission('...')]` / `canMatch` on a route the feature restricts; the `requirePermission` factory itself lives in `libs/shared/auth-ui`)
 
 This is the shallowest plateau where all four coexist — VP1 landed at `plateau-async-monolith`, VP5 at `plateau-offline-full-monolith`, VP7 is first Yes here.
 

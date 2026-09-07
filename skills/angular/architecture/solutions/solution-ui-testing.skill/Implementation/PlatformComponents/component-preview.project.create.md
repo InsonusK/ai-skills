@@ -12,7 +12,7 @@ tags:
 # Goals
 
 - Give the platform plateau a place to render a component with representative inputs/states, independent of routing, a real backend, or a real Signal Store — the same practical role `projects/demo` plays for the design system
-- Be the target [visual regression](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) Playwright screenshots and [accessibility](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) axe-core scans run against, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
+- Be the target [visual regression](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) Playwright screenshots and [accessibility](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) axe-core scans run against, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
 
 # Structure
 

@@ -14,9 +14,9 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
 
-> `libs/shared/state/src/lib/persistence/with-persisted-draft.ts`. The feature-tier counterpart of [[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-persisted-state.skill.md|persistKeys()]] — same guard, same "before first read" rehydration, for `@ngrx/signals` stores.
+> `libs/shared/state/src/lib/persistence/with-persisted-draft.ts`. The feature-tier counterpart of [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-persisted-state.skill.md|persistKeys()]] — same guard, same "before first read" rehydration, for `@ngrx/signals` stores.
 
 # Goal
 
@@ -24,7 +24,7 @@ created_by:
 - Rehydrate in `withHooks({ onInit })` — before the component's template reads the store
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - Reuse `assertPersistable()` from `persisted-state.ts` — no second, weaker check
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]
 
 # Naming convention
 
@@ -94,7 +94,7 @@ export const OrderDraftStore = signalStore(
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]
 
 # Rules
 
@@ -107,7 +107,7 @@ __Applied solutions:__
 - Never use `withPersistedDraft` to cache a loaded list across navigation — it is a draft mechanism with no invalidation.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]
 
 # Check list
 
@@ -123,4 +123,4 @@ __Applied solutions:__
 - [ ] WHEN `withPersistedDraft({ keys: ['accessToken'] })` is constructed THEN it throws
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] - [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|FeatureStore/with-persisted-draft.ts.create]]

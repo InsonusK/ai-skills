@@ -15,8 +15,8 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
+  - "[[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
+  - "[[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
 ---
 
 > `@platform/contracts` is its **own repository**, separate from the platform monorepo and every remote — built and published like any external dependency, the same pattern as the `design-system` package. Owned by the platform-host team, consumed by every remote.
@@ -27,7 +27,7 @@ created_by:
 - Make cross-team compatibility a semver contract, not a monorepo implementation detail
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Structure
 
@@ -54,8 +54,8 @@ export const SESSION_CONTRACT = new InjectionToken<SessionContract>('platform.Se
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
 
 # Rules
 
@@ -67,7 +67,7 @@ __Applied solutions:__
 - Ship ESM with explicit `.js` import extensions in source and a `rootDir` — a bare bundler-resolution build emits extensionless specifiers a Node/Vite consumer refuses.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Check list
 
@@ -78,7 +78,7 @@ __Applied solutions:__
 - [ ] The build is plain ESM + `.d.ts`, no Angular compilation
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
 
 # Unittest TestCases
 
@@ -87,4 +87,4 @@ __Applied solutions:__
 - [ ] WHEN a remote is built against an incompatible major THEN `strictVersion: true` makes it a visible load-time failure
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/v3.1/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]] - [[skills/angular/architecture/solutions/solution-platform-contracts.skill/Implementation/Repository.create.md|Repository.create]]

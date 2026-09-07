@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
 
 > `libs/shared/offline-sync/src/lib/mutation-queue.{db,service}.ts`. Dexie is a storage/reactivity layer only.
 
@@ -23,7 +23,7 @@ created_by:
 - Give the queue one durable, reactive home — feature Facades `enqueue()`, the orchestrator drains it, the indicator reads `pendingForFeature$()`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
 
 # Core Principles
 
@@ -33,8 +33,8 @@ __Applied solutions:__
 - `touchedFields` is derived from the command payload at enqueue time — never a separately captured entity snapshot
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism.md|Queue Storage Mechanism ADR]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism.md|Queue Storage Mechanism ADR]]
 
 # Naming convention
 
@@ -87,7 +87,7 @@ export class MutationQueueService {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
 
 # Rules
 
@@ -99,7 +99,7 @@ __Applied solutions:__
 - Never expose a way to read the Dexie table other than `pendingForFeature$` / `pendingForFeatureOnce`.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
 
 # Check list
 
@@ -109,7 +109,7 @@ __Applied solutions:__
 - [ ] The queue survives a page reload (a new connection reads the same data)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
 
 # Unittest TestCases
 
@@ -118,4 +118,4 @@ __Applied solutions:__
 - [ ] WHEN `markSynced(id)` is called THEN the entry is removed and `pendingForFeature$` reflects it
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]
+- [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] - [[skills/angular/architecture/solutions/solution-offline-sync.skill/Implementation/OfflineSync/shared-offline-sync.project.create.md|OfflineSync/shared-offline-sync.project.create]]

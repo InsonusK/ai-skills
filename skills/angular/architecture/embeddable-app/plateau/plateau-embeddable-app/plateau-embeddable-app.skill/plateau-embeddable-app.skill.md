@@ -15,14 +15,14 @@ tags:
 parent_plateaus: []
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-remote.skill/solution-federation-remote.skill.md|solution-federation-remote]]"
+  - "[[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/embeddable-app/plateau/plateau-embeddable-app/registry/embeddable-repository.md|embeddable-repository]]"
+  - "[[skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/registry/embeddable-repository.md|embeddable-repository]]"
 ---
 
-> **The `embeddable-app` catalog's single plateau — built from scratch (`parent_plateaus: []`).** A remote is not a continuation of the platform chain: its own internal architecture is unconstrained (the aspirational `RemoteInternalArchitecture` VP would `parent_plateaus` a monolith plateau; not built). This plateau prescribes the common `FederationRemoteContract` plus VP1 `RemoteSessionConsumption` = Yes and VP2 `RemoteDesignSystemConsumption` = Yes (both "near-universal but optional" — the [embeddable-app variability map](skills/angular/architecture/v3.1/embeddable-app/variability-map.md)). A **separate repository**, any tooling — a plain Angular CLI workspace is enough.
+> **The `embeddable-app` catalog's single plateau — built from scratch (`parent_plateaus: []`).** A remote is not a continuation of the platform chain: its own internal architecture is unconstrained (the aspirational `RemoteInternalArchitecture` VP would `parent_plateaus` a monolith plateau; not built). This plateau prescribes the common `FederationRemoteContract` plus VP1 `RemoteSessionConsumption` = Yes and VP2 `RemoteDesignSystemConsumption` = Yes (both "near-universal but optional" — the [embeddable-app variability map](skills/angular/architecture/embeddable-app/variability-map.md)). A **separate repository**, any tooling — a plain Angular CLI workspace is enough.
 
 # Core Principles
 
@@ -50,7 +50,7 @@ See [`example/`](plateau-embeddable-app.skill/example/) — a **limited trivial 
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — canonical, no resolver:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
 - [`embeddable-repository`](registry/embeddable-repository.md) — `solution-federation-remote` `.create` + `solution-session-consumption` (VP1) / `solution-remote-design-system-consumption` (VP2) `.extend`. `FMN`/`TMN`, `source: ordering-only`, **N = 3 — benign** (the analogue of `monolith-repository` / `design-system-repository`; the `element/repository` retag is recorded in the analysis).
 

@@ -17,7 +17,7 @@ This applies to any embeddable app repository (per `solution-platform-embeddabil
 | Directory/file | Description |
 | --------------- | ----------- |
 | federation.config.ts | Declares the design system as a shared dependency: `singleton: true`, `strictVersion: false`, and this team's own `requiredVersion` range — the version(s) of the design system this app has been built and tested against. |
-| /src/styles.scss | Imports the design system's `theme.scss`/`custom-tokens.scss`, used when this app is run standalone during local development — per [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]], this import is redundant (but harmless) once the app is mounted inside the platform in production. |
+| /src/styles.scss | Imports the design system's `theme.scss`/`custom-tokens.scss`, used when this app is run standalone during local development — per [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]], this import is redundant (but harmless) once the app is mounted inside the platform in production. |
 
 # Rules
 

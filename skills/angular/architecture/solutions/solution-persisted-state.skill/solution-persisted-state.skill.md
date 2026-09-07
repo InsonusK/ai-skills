@@ -19,10 +19,10 @@ extends:
   - libs/shared/state (persistence/ mechanism + the preferences slice + persistKeys metaReducer registration)
   - libs/{feature}/feature (opt-in withPersistedDraft on a dedicated draft Signal Store)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
+  - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]"
 ---
 
 # Goal
@@ -38,8 +38,8 @@ adr:
 
 # Core Principle
 - Persistence is opt-in at the slice / feature-store level, declaring a finite key allow-list — never `*`.
-- `localStorage` is the default backend (synchronous, ~5 MB, survives a tab close); `sessionStorage` for per-tab state; IndexedDB via Dexie only for a large or structured draft — per [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]].
-- Rehydration happens once, before the first render that reads the state — a synchronous metaReducer for a slice, a `withHooks({ onInit })` for a feature store, never a post-render patch — per [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]].
+- `localStorage` is the default backend (synchronous, ~5 MB, survives a tab close); `sessionStorage` for per-tab state; IndexedDB via Dexie only for a large or structured draft — per [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]].
+- Rehydration happens once, before the first render that reads the state — a synchronous metaReducer for a slice, a `withHooks({ onInit })` for a feature store, never a post-render patch — per [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]].
 - The `auth` slice's `accessToken` (and anything `solution-authentication`'s `token-storage-strategy` ADR marks sensitive) is **never** persisted — the slice holding the token is simply never given a persistence metaReducer.
 - The persistence mechanism (`persistKeys`, `withPersistedDraft`, `SENSITIVE_STATE_KEYS`) lives in `libs/shared/state/src/lib/persistence/` and holds no slice-specific config — the `key` / `keys` are passed at each call site.
 
@@ -50,16 +50,16 @@ adr:
 - Adds no Nx project and no new `type:*` tag — one folder in `libs/shared/state`, one new slice, an opt-in feature-store feature.
 
 # Adr
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]] — `localStorage` default, `sessionStorage` for per-tab, IndexedDB (Dexie) only for large/structured drafts; no generic third-party sync library (the allow-list + sensitive-key guard are the point); no cookie. Rejected: IndexedDB for everything; `ngrx-store-localstorage`; a cookie.
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]] — synchronous merge inside a per-feature metaReducer on the store-init action for slices; `withHooks({ onInit })` for feature stores; never an effect on `ROOT_EFFECTS_INIT`, `APP_INITIALIZER`, or a component effect. Rejected: hydrate-action effect; `provideAppInitializer`; component `effect()`.
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]] — `localStorage` default, `sessionStorage` for per-tab, IndexedDB (Dexie) only for large/structured drafts; no generic third-party sync library (the allow-list + sensitive-key guard are the point); no cookie. Rejected: IndexedDB for everything; `ngrx-store-localstorage`; a cookie.
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]] — synchronous merge inside a per-feature metaReducer on the store-init action for slices; `withHooks({ onInit })` for feature stores; never an effect on `ROOT_EFFECTS_INIT`, `APP_INITIALIZER`, or a component effect. Rejected: hydrate-action effect; `provideAppInitializer`; component `effect()`.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|libs/shared/state]] - hosts the `persistence/` folder and the `preferences` slice
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] *(when VP7 is also present)*
-  - its [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]] ADR is the reason `accessToken` is on `SENSITIVE_STATE_KEYS` and the `auth` slice is never a persistence target
+- [[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]
+  - [[skills/angular/architecture/solutions/solution-global-store.skill/Implementation/GlobalStore/shared-state.project.create.md|libs/shared/state]] - hosts the `persistence/` folder and the `preferences` slice
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] *(when VP7 is also present)*
+  - its [[skills/angular/architecture/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]] ADR is the reason `accessToken` is on `SENSITIVE_STATE_KEYS` and the `auth` slice is never a persistence target
 
 NPM:
 - No new package for the default path. `dexie` (already present via `solution-offline-sync` / `solution-logging-global`) only if a large-draft variant is used.
@@ -67,16 +67,16 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/Repository.extend.md|Repository]] - extend - the `persistence/` convention, the finite-allow-list rule, the `SENSITIVE_STATE_KEYS` invariant, the "`auth` slice is never persisted" rule
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/Repository.extend.md|Repository]] - extend - the `persistence/` convention, the finite-allow-list rule, the `SENSITIVE_STATE_KEYS` invariant, the "`auth` slice is never persisted" rule
 
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md|libs/shared/state]] - extend - add `persistence/` + the `preferences` slice; register `preferences` with `persistKeys(...)` in `store.config.ts`
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|libs/{feature}/feature]] - extend - opt a dedicated `{Feature}DraftStore` into `withPersistedDraft()`
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md|libs/shared/state]] - extend - add `persistence/` + the `preferences` slice; register `preferences` with `persistKeys(...)` in `store.config.ts`
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/{Feature}.project.extend.md|libs/{feature}/feature]] - extend - opt a dedicated `{Feature}DraftStore` into `withPersistedDraft()`
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|persisted-state.ts]] - create - the `persistKeys()` metaReducer factory + `SENSITIVE_STATE_KEYS` + `assertPersistable()`
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|preferences.store.ts]] - create - the `preferences` classical-NgRx slice (the reference persisted slice)
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|with-persisted-draft.ts]] - create - the `signalStoreFeature` for the feature tier
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md|persisted-state.ts]] - create - the `persistKeys()` metaReducer factory + `SENSITIVE_STATE_KEYS` + `assertPersistable()`
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/preferences.store.ts.create.md|preferences.store.ts]] - create - the `preferences` classical-NgRx slice (the reference persisted slice)
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/FeatureStore/with-persisted-draft.ts.create.md|with-persisted-draft.ts]] - create - the `signalStoreFeature` for the feature tier
 
 # Workflow
 
@@ -96,9 +96,9 @@ Artifact-level:
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md#MUST|shared-state.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md#MUST|persisted-state.ts]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/Repository.extend.md#MUST|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/shared-state.project.extend.md#MUST|shared-state.project.extend]]
+- [[skills/angular/architecture/solutions/solution-persisted-state.skill/Implementation/GlobalStore/persisted-state.ts.create.md#MUST|persisted-state.ts]]
 - Never persist a whole store or slice with `*` — always an explicit, finite key list.
   - Risk: a whole-slice persist captures fields never meant to survive a session and silently absorbs any field added later.
   - Fix: `keys: ['theme', 'density']` — a literal array; adding a persisted field is a deliberate edit.

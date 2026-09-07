@@ -76,13 +76,13 @@ describe('DsButtonComponent', () => {
 
 ## Related concepts
 
-- [Visual regression testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — catches broken layout and dark-mode failures a DOM test cannot see.
-- [Style-snapshot testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — explains *why* a visual test broke.
-- [Accessibility testing](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — checks WCAG violations Testing Library does not exhaust.
+- [Visual regression testing](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) — catches broken layout and dark-mode failures a DOM test cannot see.
+- [Style-snapshot testing](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/style-snapshot-testing.md) — explains *why* a visual test broke.
+- [Accessibility testing](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) — checks WCAG violations Testing Library does not exhaust.
 
 ## Sources
 
 - [Angular Testing Library — official docs](https://testing-library.com/docs/angular-testing-library/intro/)
 - [Which query should I use? — Testing Library](https://testing-library.com/docs/queries/about/#priority)
-- [Generic pattern for component specs in this solution](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md)
-- [solution-ui-testing.skill.md — the overall testing-layer description](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)
+- [Generic pattern for component specs in this solution](skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.component.spec.ts.create.md)
+- [solution-ui-testing.skill.md — the overall testing-layer description](skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md)

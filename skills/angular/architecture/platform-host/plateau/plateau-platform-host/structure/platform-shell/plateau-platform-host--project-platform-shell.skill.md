@@ -16,19 +16,19 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]]"
+  - "[[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
+  - "[[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
+  - "[[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]]"
 ---
 
-> The federation delta ONLY. Everything else about `apps/platform-shell` — routing, root providers, the `SelectivePreloadingStrategy`, bundle budgets, the Workbox SW, `GlobalErrorHandler`, `authInterceptor`, the bootstrap silent refresh — is [`plateau-multiuser-monolith`'s `project-platform-shell`](skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/plateau-multiuser-monolith--project-platform-shell.skill.md), carried forward unchanged.
+> The federation delta ONLY. Everything else about `apps/platform-shell` — routing, root providers, the `SelectivePreloadingStrategy`, bundle budgets, the Workbox SW, `GlobalErrorHandler`, `authInterceptor`, the bootstrap silent refresh — is [`plateau-multiuser-monolith`'s `project-platform-shell`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/plateau-multiuser-monolith--project-platform-shell.skill.md), carried forward unchanged.
 
 # Goal
 
 - Load independently built, independently deployed remotes into `apps/platform-shell` at runtime, sharing one Angular runtime and one `@platform/contracts` instance — with no host rebuild when a remote ships
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
 
 # Structure
 
@@ -60,15 +60,15 @@ __Applied solutions:__
 | ------------------ | ----------- | -------------- |
 | federation.config.mjs | `withNativeFederation({ name: 'platform-host', shared: { ...shareAll({singleton,strictVersion}), '@platform/contracts': strict, 'design-system': {strictVersion:false} } })`. No remotes declared at build time. | — |
 | src/main.ts | `initFederation('federation.manifest.json', { hostRemoteEntry: {...} }).then(() => import('./bootstrap'))`. | — |
-| /remote-registry/remote-registry.service.ts | Fetches the remotes manifest at runtime; `loadRemote(name)` → `loadRemoteModule({ remoteEntry, exposedModule })`; a missing remote **rejects** (caller renders a fallback), never throws at bootstrap. | [[skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/structure/platform-shell/classes/plateau-platform-host--class-remote-registry-service.skill\|class-remote-registry-service]] |
-| /session/host-session.ts | Implements `SessionContract` as a read-only signal view over `libs/shared/state`'s `auth` slice; provided once, here, under `SESSION_CONTRACT`. | [[skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/structure/platform-shell/classes/plateau-platform-host--class-host-session.skill\|class-host-session]] |
+| /remote-registry/remote-registry.service.ts | Fetches the remotes manifest at runtime; `loadRemote(name)` → `loadRemoteModule({ remoteEntry, exposedModule })`; a missing remote **rejects** (caller renders a fallback), never throws at bootstrap. | [[skills/angular/architecture/platform-host/plateau/plateau-platform-host/structure/platform-shell/classes/plateau-platform-host--class-remote-registry-service.skill\|class-remote-registry-service]] |
+| /session/host-session.ts | Implements `SessionContract` as a read-only signal view over `libs/shared/state`'s `auth` slice; provided once, here, under `SESSION_CONTRACT`. | [[skills/angular/architecture/platform-host/plateau/plateau-platform-host/structure/platform-shell/classes/plateau-platform-host--class-host-session.skill\|class-host-session]] |
 | app.routes.ts | One `loadChildren` entry per remote root segment: `async () => { try { const m = await registry.loadRemote('x'); return m.REMOTE_ROUTES; } catch { return [{ path:'', component: RemoteUnavailableComponent }]; } }`. | — |
-| sw-src.ts | 5th `registerRoute` — `StaleWhileRevalidate` for `KNOWN_REMOTE_ORIGINS` (from the manifest), registered after the base network-only rule. | [[skills/angular/architecture/v3.1/platform-host/plateau/plateau-platform-host/structure/platform-shell/classes/plateau-platform-host--class-service-worker.skill\|class-service-worker]] |
+| sw-src.ts | 5th `registerRoute` — `StaleWhileRevalidate` for `KNOWN_REMOTE_ORIGINS` (from the manifest), registered after the base network-only rule. | [[skills/angular/architecture/platform-host/plateau/plateau-platform-host/structure/platform-shell/classes/plateau-platform-host--class-service-worker.skill\|class-service-worker]] |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md|platform-shell.federation.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]] - [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md|platform-shell.federation.extend]]
 
 # Rules
 
@@ -84,8 +84,8 @@ __Applied solutions:__
 - Treat a manifest fetch failure at bootstrap as recoverable (the app still loads; remote-backed routes show a fallback), not fatal.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
 
 # Check list
 
@@ -97,8 +97,8 @@ __Applied solutions:__
 - [ ] The shell's root styles import the design-system theme once
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]] - [[skills/angular/architecture/v3.1/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md|platform-shell.federation.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md|platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]] - [[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/Implementation/platform-shell.federation.extend.md|platform-shell.federation.extend]]
 
 # Unittest TestCases
 
@@ -109,5 +109,5 @@ __Applied solutions:__
 - [ ] WHEN the host session changes THEN every mounted remote sees it through the shared `SESSION_CONTRACT` singleton, no message passing
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]
+- [[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]] - [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts.create]]
+- [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]

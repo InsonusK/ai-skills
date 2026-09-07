@@ -14,9 +14,9 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
 
-> No backend log delivery yet — `BackendLogSink` and its retry queue arrive with [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|multiuser-monolith]].
+> No backend log delivery yet — `BackendLogSink` and its retry queue arrive with [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|multiuser-monolith]].
 
 # Goal
 
@@ -24,7 +24,7 @@ created_by:
 - Provide an extension point (`LOG_SINKS`) a future backend-sending sink can be added to, without touching this project's console sink or any call site
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Core Principles
 
@@ -34,7 +34,7 @@ __Applied solutions:__
 - Sensitive data (tokens, passwords, PII) is never logged, at any level
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Structure
 
@@ -55,20 +55,20 @@ __Applied solutions:__
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| logger.service.ts | Public API: `debug/info/warn/error/report(message, context?)`, plus `forFeature(name)`. Forwards each entry to every registered `LogSink`, after checking it against the configured minimum level. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-read-monolith/structure/shared-logging/classes/plateau-offline-read-monolith--class-logger-service.skill\|class-logger-service]] |
+| logger.service.ts | Public API: `debug/info/warn/error/report(message, context?)`, plus `forFeature(name)`. Forwards each entry to every registered `LogSink`, after checking it against the configured minimum level. | [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/shared-logging/classes/plateau-offline-read-monolith--class-logger-service.skill\|class-logger-service]] |
 | log-sink.ts | `LogSink` interface and the `LOG_SINKS` multi-provider injection token. | — |
 | console-log-sink.ts | Writes each entry to the matching `console.*` method. Always registered. | — |
 | log-level.token.ts | `MIN_LOG_LEVEL` injection token, `'debug'` in development, `'warn'` in production. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 ## NPM Packages
 
 None beyond Angular's own DI/core APIs.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 ## What Does NOT Belong Here
 
@@ -76,14 +76,14 @@ __Applied solutions:__
 - Any network call — this plateau logs to the console only
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 ## Allowed Dependencies
 
 - `libs/shared/util` (tag: `type:util`, `scope:shared`)
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Rules
 
@@ -95,7 +95,7 @@ __Applied solutions:__
 - `LoggerService`/any sink must never ever be given a token, password, or PII value to log, regardless of level.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 
 - **A feature registering its own ad hoc `console.log` wrapper instead of using `LoggerService.forFeature(...)`**
@@ -103,7 +103,7 @@ __Applied solutions:__
   - Instead: call `inject(LoggerService).forFeature('orders')` once per feature and use the returned logger
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
 
 # Check list
 
@@ -111,4 +111,4 @@ __Applied solutions:__
 - [ ] `MIN_LOG_LEVEL` filters `debug`/`info` out of production builds
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/v3.1/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]
+- [[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]] - [[skills/angular/architecture/solutions/solution-logging-base.skill/Implementation/Logging/shared-logging.project.create.md|Logging/shared-logging.project.create]]

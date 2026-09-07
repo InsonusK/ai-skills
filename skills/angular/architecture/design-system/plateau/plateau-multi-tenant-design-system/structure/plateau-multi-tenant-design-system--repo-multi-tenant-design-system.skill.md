@@ -14,14 +14,14 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
 ---
 
-> **The `design-system` catalog's `MultiTenantTheming` plateau (VP1 = Yes)** ([variability map](skills/angular/architecture/v3.1/design-system/variability-map.md)). Composes [`plateau-design-system`](skills/angular/architecture/v3.1/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md) (all four common solutions) and adds [`solution-design-system-multi-tenant-theming`](skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md) — a `styles/tenants/` layer that generalizes the single fixed brand palette into swappable per-tenant palettes, resolved by a CSS `[data-tenant]` attribute the consuming app sets. This is a **separate repository** from the Nx platform monorepo — a plain **Angular CLI multi-project workspace**, published and consumed as an independently versioned npm package. `monolith`, `platform-host` and `embeddable-app` all consume the package produced here.
+> **The `design-system` catalog's `MultiTenantTheming` plateau (VP1 = Yes)** ([variability map](skills/angular/architecture/design-system/variability-map.md)). Composes [`plateau-design-system`](skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md) (all four common solutions) and adds [`solution-design-system-multi-tenant-theming`](skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md) — a `styles/tenants/` layer that generalizes the single fixed brand palette into swappable per-tenant palettes, resolved by a CSS `[data-tenant]` attribute the consuming app sets. This is a **separate repository** from the Nx platform monorepo — a plain **Angular CLI multi-project workspace**, published and consumed as an independently versioned npm package. `monolith`, `platform-host` and `embeddable-app` all consume the package produced here.
 
 # Structure
 
@@ -50,15 +50,15 @@ created_by:
 
 | Directory | template link | Description |
 | ---------- | ------------- | ----------- |
-| /projects/design-system | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/plateau-multi-tenant-design-system--project-design-system.skill\|project-design-system]] | The publishable library — `styles/theme.scss`, `styles/custom-tokens.scss`, `src/lib/{component}/` `ds-*` components, `src/public-api.ts`. Built with ng-packagr → Angular Package Format (Ivy partial compilation). The only project published to npm. |
-| /projects/demo | [[skills/angular/architecture/v3.1/design-system/plateau/plateau-multi-tenant-design-system/structure/demo/plateau-multi-tenant-design-system--project-demo.skill\|project-demo]] | Plain Angular application, never published. Consumes `design-system` (the built package) for `theme.scss`/`custom-tokens.scss`/`tenants.scss` at the root, mounts one route per component preview, and carries a tenant switcher that sets `document.documentElement.dataset.tenant` — the navigation target for every `.visual` / `.style-snapshot` / `.a11y` spec, including the per-tenant snapshot specs. |
+| /projects/design-system | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/design-system/plateau-multi-tenant-design-system--project-design-system.skill\|project-design-system]] | The publishable library — `styles/theme.scss`, `styles/custom-tokens.scss`, `src/lib/{component}/` `ds-*` components, `src/public-api.ts`. Built with ng-packagr → Angular Package Format (Ivy partial compilation). The only project published to npm. |
+| /projects/demo | [[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/structure/demo/plateau-multi-tenant-design-system--project-demo.skill\|project-demo]] | Plain Angular application, never published. Consumes `design-system` (the built package) for `theme.scss`/`custom-tokens.scss`/`tenants.scss` at the root, mounts one route per component preview, and carries a tenant switcher that sets `document.documentElement.dataset.tenant` — the navigation target for every `.visual` / `.style-snapshot` / `.a11y` spec, including the per-tenant snapshot specs. |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 ## NPM Packages
 
@@ -71,8 +71,8 @@ __Applied solutions:__
 | @playwright/test, @axe-core/playwright | latest compatible | Visual regression + style-snapshot + accessibility specs against `projects/demo` |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
 
 # Rules
 
@@ -87,7 +87,7 @@ __Applied solutions:__
 - Every component uses the `ds-` selector prefix and a signal-based API (`input()`/`output()`/`model()`) — no `@Input()`/`@Output()` decorators, no `EventEmitter`. Its API is designed around real usage axes, never a 1:1 mirror of Material's own input names.
 - **No Angular Material selector, input, or type appears in the library's public API surface** — check the *built* `dist/design-system/types/*.d.ts`, not just the `.ts` source: ng-packagr emits `protected` members too, so an internal helper typed with a Material-exported type leaks it. Use local literal types for internal Material mapping.
 - Any component participating in a form implements `ControlValueAccessor`.
-- Every component ships all four test layers — behavioural (Testing Library), visual (Playwright screenshot), style-snapshot (computed CSS), accessibility (`@axe-core/playwright`) — per [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]. A behavioural spec provides nothing beyond the component's own inputs — a pure `ds-*` component injects no dependency to fake.
+- Every component ships all four test layers — behavioural (Testing Library), visual (Playwright screenshot), style-snapshot (computed CSS), accessibility (`@axe-core/playwright`) — per [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]. A behavioural spec provides nothing beyond the component's own inputs — a pure `ds-*` component injects no dependency to fake.
 - Never reach for Storybook or Chromatic — component preview is `projects/demo`; visual regression is a Playwright screenshot against it.
 - **VP1** — a tenant is a colour palette scoped to `:root[data-tenant='<id>']`, emitted through the shared `ds-tenant-theme` mixin (colour only — no typography / density keys). `styles/theme.scss` is unchanged and is the no-attribute default; typography, density and Material base styles are emitted once, there.
 - **VP1** — the active tenant is selected by the consuming app setting `document.documentElement.dataset.tenant` to a `DsTenant` value; the library ships no runtime `applyTenant()` and no per-tenant CSS bundle. Every tenant colour uses `light-dark()`.
@@ -102,11 +102,11 @@ __Applied solutions:__
 - Never ship a per-tenant compiled stylesheet a consumer injects via `<link>`, or a runtime JS token-rewrite — the first flashes, the second is the JS theme toggle the token layer's ADR rejected.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 # Check list
 
@@ -124,8 +124,8 @@ __Applied solutions:__
 - [ ] No component references a tenant name; no runtime JS writes theme tokens
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
 
 # Unittest TestCases
 
@@ -140,8 +140,8 @@ __Applied solutions:__
 - [ ] WHEN `data-tenant` is removed THEN the same component falls back to the base brand palette
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/v3.1/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]] - [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|Repository.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]] - [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]] - [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]] - [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/Implementation/demo.project.extend.md|demo.project.extend]]
+- [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]] - [[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/Implementation/Repository.extend.md|Repository.extend]]

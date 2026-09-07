@@ -46,7 +46,7 @@ export class HasPermissionDirective {
 
 ## MUST
 - The directive checks a permission string, never a role name.
-  - Risk: role-based visibility couples templates to the platform's role taxonomy; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]].
+  - Risk: role-based visibility couples templates to the platform's role taxonomy; per [[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]].
   - Fix: `*hasPermission="'orders.delete'"` — the input is a permission string read from `selectPermissions`.
 - Hiding an element with this directive is never a substitute for a server-side check.
   - Risk: a determined user unhides the control (devtools, a crafted request) and the action goes through.

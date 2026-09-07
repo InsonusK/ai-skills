@@ -12,15 +12,15 @@ tags:
   - framework/angular
   - concern/architecture
 parent_plateaus:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/plateau-online-monolith.skill.md|plateau-online-monolith]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/plateau-online-monolith.skill.md|plateau-online-monolith]]"
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-async-monolith/registry/feature-routes-ts.md|feature-routes-ts]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-async-monolith/registry/feature-routes-ts.md|feature-routes-ts]]"
 ---
 
-> **Second plateau of the `monolith` catalog.** Composes [`plateau-online-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/plateau-online-monolith.skill.md) unchanged and adds exactly one solution — [`solution-performance-tuned-routing`](skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md) — which realizes **VP1 (PerformanceTunedRouting) = Yes** of the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md). It fixes VP1 = Yes, VP2 = Yes, VP3 = Yes; VP4–VP8 = No. Next in the chain: `plateau-offline-read-monolith` (VP4). No new Nx project is created — the delta is a `SelectivePreloadingStrategy` in `apps/platform-shell`, a `loadComponent` rule inside every feature's own routes, and `error`-level bundle budgets on the production build. Still online-only, one deployable unit, every user implicitly trusted.
+> **Second plateau of the `monolith` catalog.** Composes [`plateau-online-monolith`](skills/angular/architecture/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/plateau-online-monolith.skill.md) unchanged and adds exactly one solution — [`solution-performance-tuned-routing`](skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md) — which realizes **VP1 (PerformanceTunedRouting) = Yes** of the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md). It fixes VP1 = Yes, VP2 = Yes, VP3 = Yes; VP4–VP8 = No. Next in the chain: `plateau-offline-read-monolith` (VP4). No new Nx project is created — the delta is a `SelectivePreloadingStrategy` in `apps/platform-shell`, a `loadComponent` rule inside every feature's own routes, and `error`-level bundle budgets on the production build. Still online-only, one deployable unit, every user implicitly trusted.
 
 # What this plateau adds over its parent
 
@@ -58,7 +58,7 @@ See [`example/`](plateau-async-monolith.skill/example/) — the parent's runnabl
 
 # Intersection registry
 
-New this plateau, per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — canonical, no resolver:
+New this plateau, per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
 - [`feature-routes-ts`](registry/feature-routes-ts.md) — `solution-app-routing` `.create` + `solution-performance-tuned-routing` `.extend` (`loadComponent` sub-splitting), `FMN`/`TMN`, `source: ordering-only`.
 

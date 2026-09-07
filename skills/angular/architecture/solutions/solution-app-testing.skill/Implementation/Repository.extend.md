@@ -38,7 +38,7 @@ tags:
 | ---------- | ----------- |
 | /apps/platform-shell-e2e | New Nx project, tagged `type:e2e`, `scope:platform`. Playwright specs exercising the running application end-to-end. |
 | /libs/{feature}/data-access/src/lib/spec/*.spec.ts | `TestBed`-based unit tests for `{feature}.client.ts` (using `HttpTestingController`) and `{feature}.facade.ts` (faking the Client). |
-| /libs/{feature}/feature/src/lib/spec/*.store.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade). Component-level test files in this same directory belong to [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution. |
+| /libs/{feature}/feature/src/lib/spec/*.store.spec.ts | Signal Store unit tests (`TestBed`, faking the Facade). Component-level test files in this same directory belong to [[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], not this solution. |
 | /libs/{feature}/feature/src/lib/spec/*.integration.spec.ts | Cross-layer integration tests using MSW, reserved for genuine multi-layer scenarios. |
 
 # Nx tag taxonomy — extension
@@ -52,13 +52,13 @@ tags:
 ## MUST
 - Every Nx project runs its unit tests via Vitest — no Karma, no Jest.
   - Risk: a mixed runner set means two config models, two assertion dialects, and CI steps that behave differently per project.
-  - Fix: the `@analogjs/vitest-angular` (or Angular 22 `@angular/build:unit-test`) runner for every project; per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]].
+  - Fix: the `@analogjs/vitest-angular` (or Angular 22 `@angular/build:unit-test`) runner for every project; per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/test-runner-choice.md|test-runner-choice]].
 - End-to-end tests are Playwright, in a dedicated `type:e2e` project.
   - Risk: e2e specs scattered into feature libs slow every `nx affected` run and blur the unit/e2e boundary.
-  - Fix: one `apps/platform-shell-e2e` (`type:e2e`, `scope:platform`); per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]].
+  - Fix: one `apps/platform-shell-e2e` (`type:e2e`, `scope:platform`); per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|e2e-framework-choice]].
 - `HttpTestingController` is used only inside `spec/{feature}.client.spec.ts`.
   - Risk: HTTP expectations in a Facade or store test couple that test to transport detail two layers below what it verifies.
-  - Fix: only the Client spec asserts the wire; everything above fakes the layer directly beneath it; per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
+  - Fix: only the Client spec asserts the wire; everything above fakes the layer directly beneath it; per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
 - MSW is used only for tests that deliberately span more than one layer.
   - Risk: MSW as a default mock hides which layer a test actually exercises and duplicates the Client spec's job.
   - Fix: MSW for `{feature}.integration.spec.ts` only; unit tests fake the immediate collaborator.

@@ -1,10 +1,10 @@
 # Feature Model — platform-host
 
-The **host** side of a federation system: a `monolith` application whose shell (`apps/platform-shell`) is turned into a Native Federation dynamic host that discovers and mounts independently deployed [[skills/angular/architecture/v3.1/embeddable-app/feature/feature-model.md|`embeddable-app`]] remotes at runtime, plus the `@platform/contracts` package that is the only contract between them. Derived from the V1 `plateau-platform-monolith` (the host half of `plateau-platform-embeddability` / `plateau-design-system-application` / `plateau-authentication`).
+The **host** side of a federation system: a `monolith` application whose shell (`apps/platform-shell`) is turned into a Native Federation dynamic host that discovers and mounts independently deployed [[skills/angular/architecture/embeddable-app/feature/feature-model.md|`embeddable-app`]] remotes at runtime, plus the `@platform/contracts` package that is the only contract between them. Derived from the V1 `plateau-platform-monolith` (the host half of `plateau-platform-embeddability` / `plateau-design-system-application` / `plateau-authentication`).
 
-The **root product is `PlatformHost`** — one per platform (a platform has exactly one host). A `PlatformHost` **is a monolith**: this catalog's plateaus set `parent_plateaus` to the corresponding [[skills/angular/architecture/v3.1/monolith/feature/feature-model.md|`monolith/`]] plateaus, so every monolith feature is available by composition and is **not re-modeled here**. This model adds only the federation delta.
+The **root product is `PlatformHost`** — one per platform (a platform has exactly one host). A `PlatformHost` **is a monolith**: this catalog's plateaus set `parent_plateaus` to the corresponding [[skills/angular/architecture/monolith/feature/feature-model.md|`monolith/`]] plateaus, so every monolith feature is available by composition and is **not re-modeled here**. This model adds only the federation delta.
 
-Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/v3.1/README.md|the catalog overview]].
+Built per [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]. See [[skills/angular/architecture/README.md|the catalog overview]].
 
 ## Composed from `monolith/` (by `parent_plateaus`)
 
@@ -77,7 +77,7 @@ Everything `monolith/` offers — its aspirational candidates (SSR, i18n, teleme
 
 1. **`solution-platform-embeddability` is three things in one solution.** **Resolved:** split into `solution-federation-host` (this catalog: `RuntimeRemoteFederation`, `FederatedReadResilience`), `solution-platform-contracts` (this catalog: `PlatformContracts` — the package), and `solution-federation-remote` (the `embeddable-app` catalog: its `FederationRemoteContract`).
 2. **`solution-design-system-application` is two-sided.** **Resolved:** split into `solution-host-design-system-consumption` (this catalog) and `solution-remote-design-system-consumption` (the `embeddable-app` catalog).
-3. **`solution-authentication`'s `SessionContract` publication is a separate concern.** **Resolved:** full auth stays in `monolith/`; a new `solution-session-sharing` (this catalog: `SessionSharing`) `depends_on` the monolith `solution-authentication` + `solution-platform-contracts` + `solution-federation-host`. ADR [[skills/angular/architecture/v3.1/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]].
+3. **`solution-authentication`'s `SessionContract` publication is a separate concern.** **Resolved:** full auth stays in `monolith/`; a new `solution-session-sharing` (this catalog: `SessionSharing`) `depends_on` the monolith `solution-authentication` + `solution-platform-contracts` + `solution-federation-host`. ADR [[skills/angular/architecture/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]].
 4. **Does `RuntimeRemoteFederation` require `HostDesignSystemConsumption`?** **Resolved: no** — `HostDesignSystemConsumption` is variable (near-universal): a platform almost always wants one visual language, but it is not a federation prerequisite.
 5. **V1 `solution-platform-embeddability` `depends_on solution-offline-first`** — over-strong. **Resolved:** only `FederatedReadResilience` requires the host's monolith `OfflineReadResilience`; `RuntimeRemoteFederation` does not (`solution-federation-host` dropped the edge).
 6. **Is a host with zero remotes a valid `PlatformHost`?** **Resolved: yes** — a host ready to mount remotes, none registered yet, is the initial state of every platform.
@@ -85,7 +85,7 @@ Everything `monolith/` offers — its aspirational candidates (SSR, i18n, teleme
 ## Out of scope
 
 - **The host's monolith features are in `monolith/`.** This model is only the federation delta.
-- **The remote side** — what an embeddable app must satisfy, and its own variability — is in [[skills/angular/architecture/v3.1/embeddable-app/feature/feature-model.md|`embeddable-app/`]].
+- **The remote side** — what an embeddable app must satisfy, and its own variability — is in [[skills/angular/architecture/embeddable-app/feature/feature-model.md|`embeddable-app/`]].
 - **`design-system` is a separate catalog** — `HostDesignSystemConsumption` consumes its published package.
-- **Cross-catalog constraints** (`SessionSharing` → monolith `Authentication`, `FederatedReadResilience` → monolith `OfflineReadResilience`) appear in the [[skills/angular/architecture/v3.1/platform-host/variability-map.md|platform-host Variability Map]]'s Constraint column referencing monolith VP IDs.
+- **Cross-catalog constraints** (`SessionSharing` → monolith `Authentication`, `FederatedReadResilience` → monolith `OfflineReadResilience`) appear in the [[skills/angular/architecture/platform-host/variability-map.md|platform-host Variability Map]]'s Constraint column referencing monolith VP IDs.
 - **`IsCommon` is a judgment call** — two features common (the federation mechanism, the contracts package); everything else is a variable host upgrade.

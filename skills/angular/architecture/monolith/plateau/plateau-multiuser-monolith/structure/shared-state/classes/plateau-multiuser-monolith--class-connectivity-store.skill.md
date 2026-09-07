@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
 
 > Lives at `libs/shared/state/src/lib/connectivity/`. Registered via `provideGlobalStore()` in `store.config.ts`. Follows the same classical-NgRx shape the future `notifications` / `auth` slices will use.
 
@@ -23,7 +23,7 @@ created_by:
 - Give the whole application one accurate `isOnline` signal — more trustworthy than `navigator.onLine` alone — and nothing else
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
 
 # Core Principles
 
@@ -33,8 +33,8 @@ __Applied solutions:__
 - The health-check is a lightweight, unauthenticated `HEAD /health` that must not require a session — connectivity is checkable for a logged-out user
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/adr/connectivity-detection.md|Connectivity Detection ADR]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection.md|Connectivity Detection ADR]]
 
 # Naming convention
 
@@ -91,7 +91,7 @@ readonly healthCheck$ = createEffect(() =>
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
 
 # Rules
 
@@ -104,7 +104,7 @@ __Applied solutions:__
 - Never let feature code read `navigator.onLine` directly, or duplicate this logic in a feature store.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
 
 # Check list
 
@@ -114,7 +114,7 @@ __Applied solutions:__
 - [ ] `index.ts` exports `selectIsOnline` (and the actions), not the reducer/effects directly
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
 
 # Unittest TestCases
 
@@ -128,4 +128,4 @@ __Applied solutions:__
   - [ ] `healthCheck$` emits `healthCheckFailed()`, not an error
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/GlobalStore/connectivity.store.ts.create.md|GlobalStore/connectivity.store.ts.create]]

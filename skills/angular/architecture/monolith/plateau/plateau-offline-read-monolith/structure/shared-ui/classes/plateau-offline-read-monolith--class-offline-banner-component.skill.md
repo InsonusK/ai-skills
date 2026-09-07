@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
+  - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
 
 > Lives at `libs/shared/ui/src/lib/offline-banner/`. Presentational: it takes `isOnline` as an input; the shell owns the `Store` and passes `selectIsOnline`. This keeps `libs/shared/ui` free of a `type:store` dependency (the solution's original sketch injected `Store` in the component — this plateau moves that wiring to the shell).
 
@@ -23,7 +23,7 @@ created_by:
 - Give the user one clear, persistent signal when the application is offline, driven by the accurate `isOnline` value
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
 
 # Core Principles
 
@@ -32,7 +32,7 @@ __Applied solutions:__
 - `OnPush` change detection; nothing rendered while `isOnline` is `true`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
 
 # Naming convention
 
@@ -71,7 +71,7 @@ export class OfflineBannerComponent {
 ```
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
 
 # Rules
 
@@ -83,7 +83,7 @@ __Applied solutions:__
 - Never let a feature build its own local offline indicator — reuse this component.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
 
 # Check list
 
@@ -92,7 +92,7 @@ __Applied solutions:__
 - [ ] Nothing is rendered while `isOnline()` is `true`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
 
 # Unittest TestCases
 
@@ -102,4 +102,4 @@ __Applied solutions:__
   - [ ] nothing is rendered
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]] - [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/UI/offline-banner.component.ts.create.md|UI/offline-banner.component.ts.create]]

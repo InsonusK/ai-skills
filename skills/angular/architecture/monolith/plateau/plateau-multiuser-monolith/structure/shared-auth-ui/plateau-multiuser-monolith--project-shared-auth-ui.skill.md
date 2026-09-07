@@ -14,7 +14,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 
 > NEW at this plateau (VP7). Tagged `type:store`, `scope:shared` — its directive/guard read the `auth` slice (`selectPermissions`) directly. The V1 `solution-authentication` Repository.extend tags it `type:util`; that cannot hold — a `type:util` lib may not depend on `type:store`. See the [example README](../../plateau-multiuser-monolith.skill/example/README.md).
 
@@ -24,7 +24,7 @@ created_by:
 - Never import a feature lib — this stays a leaf of the auth graph
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
 
 # Structure
 
@@ -46,13 +46,13 @@ __Applied solutions:__
 
 | `Directory\|file` | Description | Pattern skill |
 | ------------------ | ----------- | -------------- |
-| has-permission.directive.ts | `<x *hasPermission="'orders.delete'">` — shows/hides by permission. UI convenience only. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/shared-auth-ui/classes/plateau-multiuser-monolith--class-has-permission-directive.skill.md\|class-has-permission-directive]] |
-| permission.guard.ts | `requirePermission('orders.archive')` — a functional guard attached at the FEATURE's own route, redirecting to `/forbidden`. | [[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/structure/shared-auth-ui/classes/plateau-multiuser-monolith--class-permission-guard.skill.md\|class-permission-guard]] |
+| has-permission.directive.ts | `<x *hasPermission="'orders.delete'">` — shows/hides by permission. UI convenience only. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/shared-auth-ui/classes/plateau-multiuser-monolith--class-has-permission-directive.skill.md\|class-has-permission-directive]] |
+| permission.guard.ts | `requirePermission('orders.archive')` — a functional guard attached at the FEATURE's own route, redirecting to `/forbidden`. | [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/shared-auth-ui/classes/plateau-multiuser-monolith--class-permission-guard.skill.md\|class-permission-guard]] |
 | login-form.component.ts / forbidden-page.component.ts | The shared auth pages, lazily mounted at `/login` and `/forbidden` by the shell. | — |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md|UI/has-permission.directive.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/UI/has-permission.directive.ts.create.md|UI/has-permission.directive.ts.create]]
 
 ## NPM Packages
 
@@ -61,14 +61,14 @@ __Applied solutions:__
 | @ngrx/store | matching the Angular major version in use | `Store.selectSignal(selectPermissions)` in the directive/guard |
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
 
 ## Allowed Dependencies
 
 - `libs/shared/state` (tag: `type:store`, `scope:shared`) — the `auth` slice's `selectPermissions` / `AuthActions`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Repository.extend.md|Repository.extend]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Repository.extend.md|Repository.extend]]
 
 ## What Does NOT Belong Here
 
@@ -77,7 +77,7 @@ __Applied solutions:__
 - The `auth` slice itself — that lives in `libs/shared/state/src/lib/auth/`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
 
 # Rules
 
@@ -89,7 +89,7 @@ __Applied solutions:__
 - `index.ts` exports only the directive, the guard factory, and the two auth pages.
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
 
 # Check list
 
@@ -99,7 +99,7 @@ __Applied solutions:__
 - [ ] Every check is a permission string, never a role
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/shared-auth-ui.project.create.md|shared-auth-ui.project.create]]
 
 # Unittest TestCases
 
@@ -107,4 +107,4 @@ __Applied solutions:__
 - [ ] WHEN a user with the permission hits a `requirePermission`-guarded route THEN navigation proceeds; without it, it redirects to `/forbidden`
 
 __Applied solutions:__
-- [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]
+- [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] - [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md|Routing/{feature}.guard.ts.create]]

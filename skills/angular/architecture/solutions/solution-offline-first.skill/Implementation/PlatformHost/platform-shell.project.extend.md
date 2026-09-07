@@ -80,4 +80,4 @@ navigator.serviceWorker.register('/sw.js')
 
 - [ ] WHEN the production build completes THEN
   - [ ] `dist/apps/platform-shell/sw.js` exists
-  - [ ] it contains the five routing rules defined in [[skills/angular/architecture/v3.1/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md]]
+  - [ ] it contains the five routing rules defined in [[skills/angular/architecture/solutions/solution-offline-first.skill/Implementation/ServiceWorker/service-worker.create.md]]

@@ -10,7 +10,7 @@ tags:
 ---
 
 # How this generic file is used
-This extends [[skills/angular/architecture/v3.1/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create.md]], applied to any feature's `{feature}.facade.ts`, for operations that Facade explicitly marks as queueable.
+This extends [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.facade.ts.create.md]], applied to any feature's `{feature}.facade.ts`, for operations that Facade explicitly marks as queueable.
 
 # Goals
 

@@ -41,7 +41,7 @@ This is a separate repository from the platform monorepo, owned and deployed ind
 ## MUST
 - The repository publishes its `remoteEntry` and exposed module path to a location the platform's runtime remote registry can discover.
   - Risk: if the platform cannot discover the entry, the app can only be wired in by a host code change, defeating independent deploy.
-  - Fix: this repo's deploy pipeline writes the manifest entry (or calls the registration API); see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts]].
+  - Fix: this repo's deploy pipeline writes the manifest entry (or calls the registration API); see [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend/remote-registry.service.ts.create.md|remote-registry.service.ts]].
 - The repository declares `@platform/contracts` as a `singleton: true` shared dependency at a version compatible with the platform's range.
   - Risk: a non-singleton or incompatible version loads a second contracts instance, breaking `EventBus` and shared-type identity across the boundary.
   - Fix: `shared: { '@platform/contracts': { singleton: true }, ... }`; treat the version range as a cross-team contract.

@@ -61,7 +61,7 @@ describe('OrdersClient', () => {
 ## MUST
 - Every test uses `HttpTestingController` to assert the exact request (method, URL, body).
   - Risk: a Client test that only checks the return value can pass while the Client hits the wrong endpoint or omits a field.
-  - Fix: `httpTesting.expectOne({ method: 'POST', url: '/api/orders' })` and assert `req.request.body`; per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
+  - Fix: `httpTesting.expectOne({ method: 'POST', url: '/api/orders' })` and assert `req.request.body`; per [[skills/angular/architecture/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|testing-layers-and-mocking]].
 - `httpTesting.verify()` is called in `afterEach`.
   - Risk: an unexpected or unmatched request goes unnoticed, so a stray call the Client makes is never caught.
   - Fix: `afterEach(() => httpTesting.verify())`.

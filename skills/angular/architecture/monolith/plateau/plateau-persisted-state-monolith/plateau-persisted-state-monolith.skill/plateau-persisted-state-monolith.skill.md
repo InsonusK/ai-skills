@@ -12,15 +12,15 @@ tags:
   - framework/angular
   - concern/architecture
 parent_plateaus:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|plateau-multiuser-monolith]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|plateau-multiuser-monolith]]"
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
+  - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-persisted-state-monolith/registry/shared-state-project.md|shared-state-project]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/registry/shared-state-project.md|shared-state-project]]"
 ---
 
-> **Sixth and last plateau of the `monolith` catalog.** Composes [`plateau-multiuser-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md) (online + VP1 + VP4 + VP5 + VP6 + VP7) and adds **one** solution — [`solution-persisted-state`](skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md) (**VP8 — PersistedState**) of the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md). VP1–VP8 = Yes. **No new Nx project.** Still one deployable unit — Module Federation is `platform-host`, not here.
+> **Sixth and last plateau of the `monolith` catalog.** Composes [`plateau-multiuser-monolith`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md) (online + VP1 + VP4 + VP5 + VP6 + VP7) and adds **one** solution — [`solution-persisted-state`](skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md) (**VP8 — PersistedState**) of the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md). VP1–VP8 = Yes. **No new Nx project.** Still one deployable unit — Module Federation is `platform-host`, not here.
 
 # What this plateau adds over its parent
 
@@ -39,8 +39,8 @@ The parent chain is the connected app + performance-tuned routing + offline read
 # Core Principles
 
 - Persistence is opt-in per slice / per feature store, declaring a **finite key allow-list** — never `*`, never the whole slice.
-- Rehydration happens once, before the first render that reads the state — a synchronous metaReducer for a slice, `withHooks({ onInit })` for a feature store, never a post-render patch. See [`rehydration-timing`](skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/rehydration-timing.md).
-- `localStorage` is the default backend (`sessionStorage` for per-tab, Dexie for a large draft). See [`storage-backend-choice`](skills/angular/architecture/v3.1/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md).
+- Rehydration happens once, before the first render that reads the state — a synchronous metaReducer for a slice, `withHooks({ onInit })` for a feature store, never a post-render patch. See [`rehydration-timing`](skills/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md).
+- `localStorage` is the default backend (`sessionStorage` for per-tab, Dexie for a large draft). See [`storage-backend-choice`](skills/angular/architecture/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md).
 - No token / PII key is ever on an allow-list; `assertPersistable()` enforces it at construction. The `auth` slice carries no `metaReducers`.
 - The `persistence/` folder holds mechanism only — the `key` / `keys` config lives at each `store.config.ts` (or draft store) call site.
 - The three-arg `provideState(name, reducer, config)` is the only overload that applies `metaReducers` — `provideState(feature, config)` silently drops it.
@@ -62,7 +62,7 @@ See [`example/`](plateau-persisted-state-monolith.skill/example/) — the parent
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — canonical, no resolver:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
 - [`shared-state-project`](registry/shared-state-project.md) — `solution-global-store` `.create` + `offline-first` / `offline-sync` / `authentication` / **`persisted-state`** `.extend`. `TMN`, `source: constraint` (every slice-adding VP requires VP2). **N = 5 here — benign** (the `store.config.ts` seam extended once per distinct slice; VP8's contribution is a feature-local metaReducer on the `preferences` registration only, structurally unable to collide with the others).
 

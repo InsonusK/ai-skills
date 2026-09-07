@@ -12,19 +12,19 @@ tags:
   - framework/angular
   - concern/architecture
 parent_plateaus:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-full-monolith/plateau-offline-full-monolith.skill/plateau-offline-full-monolith.skill.md|plateau-offline-full-monolith]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-offline-full-monolith/plateau-offline-full-monolith.skill/plateau-offline-full-monolith.skill.md|plateau-offline-full-monolith]]"
 standalone: true
 created_by:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
+  - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
+  - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 registry:
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/registry/shared-state-project.md|shared-state-project]]"
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/registry/shared-logging-project.md|shared-logging-project]]"
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/registry/platform-shell-project.md|platform-shell-project]]"
-  - "[[skills/angular/architecture/v3.1/monolith/plateau/plateau-multiuser-monolith/registry/feature-routes-ts.md|feature-routes-ts]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/shared-state-project.md|shared-state-project]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/shared-logging-project.md|shared-logging-project]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/platform-shell-project.md|platform-shell-project]]"
+  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/feature-routes-ts.md|feature-routes-ts]]"
 ---
 
-> **Fifth and last plateau of the `monolith` catalog — and [`plateau-platform-host`](skills/angular/architecture/v3.1/platform-host/variability-map.md)'s parent.** Composes [`plateau-offline-full-monolith`](skills/angular/architecture/v3.1/monolith/plateau/plateau-offline-full-monolith/plateau-offline-full-monolith.skill/plateau-offline-full-monolith.skill.md) (online + VP1 + VP4 + VP5) and adds **two** solutions — [`solution-logging-global`](skills/angular/architecture/v3.1/solutions/solution-logging-global.skill/solution-logging-global.skill.md) (**VP6 — BackendLogDelivery**) and [`solution-authentication`](skills/angular/architecture/v3.1/solutions/solution-authentication.skill/solution-authentication.skill.md) (**VP7 — Authentication**) of the [monolith Variability Map](skills/angular/architecture/v3.1/monolith/variability-map.md). VP1–VP7 = Yes; VP8 (PersistedState) is aspirational. Still one deployable unit — Module Federation is `platform-host`, not here.
+> **Fifth and last plateau of the `monolith` catalog — and [`plateau-platform-host`](skills/angular/architecture/platform-host/variability-map.md)'s parent.** Composes [`plateau-offline-full-monolith`](skills/angular/architecture/monolith/plateau/plateau-offline-full-monolith/plateau-offline-full-monolith.skill/plateau-offline-full-monolith.skill.md) (online + VP1 + VP4 + VP5) and adds **two** solutions — [`solution-logging-global`](skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md) (**VP6 — BackendLogDelivery**) and [`solution-authentication`](skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md) (**VP7 — Authentication**) of the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md). VP1–VP7 = Yes; VP8 (PersistedState) is aspirational. Still one deployable unit — Module Federation is `platform-host`, not here.
 
 # What this plateau adds over its parent
 
@@ -72,7 +72,7 @@ See [`example/`](plateau-multiuser-monolith.skill/example/) — the parent Nx wo
 
 # Intersection registry
 
-Per [`delta-conflict-analysis.md`](skills/angular/architecture/v3.1/delta-conflict-analysis.md) — all canonical, no resolvers:
+Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — all canonical, no resolvers:
 
 - [`shared-state-project`](registry/shared-state-project.md) — `solution-global-store` `.create` + `offline-first` / `offline-sync` / **`authentication`** `.extend` (the `auth` slice), `TMN`, `source: constraint` (every slice-adding VP requires VP2). **N = 4 here — benign** (the `store.config.ts` seam extended once per distinct slice). **Closes delta-conflict Finding 4** — `solution-authentication` now carries `Implementation/GlobalStore/shared-state.project.extend.md`.
 - [`shared-logging-project`](registry/shared-logging-project.md) — `solution-logging-base` `.create` + `solution-logging-global` `.extend`, `TMN`, `source: constraint` (VP6 requires the base logging seam). Canonical — `BackendLogSink` is added on the `LOG_SINKS` token the base built for exactly this.

@@ -52,7 +52,7 @@ export const ORDERS_ROUTES: Routes = [
 
 ## MUST
 - The guard checks a permission string against the auth slice's `permissions`, never a role name.
-  - Risk: a role check couples the feature to the platform's role taxonomy; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]].
+  - Risk: a role check couples the feature to the platform's role taxonomy; per [[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model ADR]].
   - Fix: `inject(Store).selectSignal(selectPermissions)().includes(permission)`.
 - The guard is attached inside the feature's own routes, at the path it protects — never centralized in `apps/platform-shell`'s `app.routes.ts`.
   - Risk: centralizing guards makes the shell know which feature paths need which permissions — the coupling hierarchical route ownership prevents.

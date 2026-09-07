@@ -21,11 +21,11 @@ creates:
 extends:
   - projects/design-system (publishable library project from solution-design-system-structure)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|component-api-authoring-style]]"
-  - "[[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|component-api-authoring-style]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]"
 ---
 
 # Goal
@@ -51,9 +51,9 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|Signal-based input()/output()/model() exclusively, instead of decorators]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|Signal-based input()/output()/model() exclusively, instead of decorators]]
   - Selected variant: signal-based API — chosen for consistency with the platform's broader Signals commitment and `output()`'s improved type safety over `EventEmitter`
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|Full API encapsulation with independently designed axes, internal implementation decided per component, instead of a thin passthrough wrapper or no wrapping at all]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|Full API encapsulation with independently designed axes, internal implementation decided per component, instead of a thin passthrough wrapper or no wrapping at all]]
   - Selected variant: full encapsulation — chosen so application developers never need Material's own API, and so a Material version bump never forces a design-system API change
 
 # Boundaries
@@ -65,9 +65,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
   - Components live inside `projects/design-system`, the publishable library project
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]
   - Every component consumes `--mat-sys-*`/`--ds-*` tokens per that solution's rules, rather than hardcoding style values
 
 NPM:
@@ -77,10 +77,10 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository]] - extend - add the `ds-*` selector convention, signal-based API requirement, and the ControlValueAccessor/internal-implementation rules
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|Repository]] - extend - add the `ds-*` selector convention, signal-based API requirement, and the ControlValueAccessor/internal-implementation rules
 
 Artifact-level:
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|{component-name} (generic pattern, with a worked ds-button example)]] - create - applied to every component added to the library
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|{component-name} (generic pattern, with a worked ds-button example)]] - create - applied to every component added to the library
 
 # Workflow
 
@@ -117,21 +117,21 @@ sequenceDiagram
 ## Naming an input identically to Material's own (anti-pattern, caught in review)
 
 1. A new component's input is named and typed identically to the Material component it wraps internally (e.g. reusing Material's own `color` enum verbatim).
-2. This is flagged against [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#Anti-patterns]] — mirroring Material's categorization this closely defeats the point of encapsulation, even without directly re-exporting Material's type.
+2. This is flagged against [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#Anti-patterns]] — mirroring Material's categorization this closely defeats the point of encapsulation, even without directly re-exporting Material's type.
 3. Fix: design the input around this application's own real usage instead.
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md#MUST|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#MUST|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#MUST|ComponentLayer/{component-name}.component.ts.create]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md#SHOULD|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#SHOULD|ComponentLayer/{component-name}.component.ts.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md#SHOULD|Repository]]
+- [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#SHOULD|ComponentLayer/{component-name}.component.ts.create]]
 
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — exposing a Material type/enum through the public API; defaulting to a custom implementation without first checking if Material suffices.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|See {component-name}.component.ts.create.md]] — naming an input identically to Material's own corresponding input and enum.
+- Avoid — [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — exposing a Material type/enum through the public API; defaulting to a custom implementation without first checking if Material suffices.
+- Avoid — [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md|See {component-name}.component.ts.create.md]] — naming an input identically to Material's own corresponding input and enum.
 # Check list
 
 - [ ] Every component uses `input()`/`output()`/`model()`, never decorators or `EventEmitter`

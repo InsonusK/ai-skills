@@ -11,7 +11,7 @@ tags:
 
 # Goals
 
-- Durable, reactive storage for queued mutations, partitioned by feature per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]]
+- Durable, reactive storage for queued mutations, partitioned by feature per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]]
 
 # Structure
 
@@ -33,7 +33,7 @@ tags:
 | --------------- | ----------- |
 | mutation-queue.db.ts | Dexie database definition: a `queuedMutations` table, indexed by `feature` (partition key) and `enqueuedAt` (for FIFO ordering within a partition). |
 | mutation-queue.service.ts | Public API: `enqueue()`, `pendingForFeature$()` (a `liveQuery`-backed observable for reactive UI), `markSynced()`, `markConflict()`. |
-| replay-orchestrator.ts | Triggered by the `connectivity` slice's `isOnline` transitioning to `true` (from the "Offline-first" solution); replays each feature's partition independently and in parallel, FIFO within a partition, per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]]. |
+| replay-orchestrator.ts | Triggered by the `connectivity` slice's `isOnline` transitioning to `true` (from the "Offline-first" solution); replays each feature's partition independently and in parallel, FIFO within a partition, per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|queue-partitioning-and-ordering]]. |
 
 # Implementation changes
 
@@ -94,7 +94,7 @@ export class MutationQueueService {
   - Fix: `this.version(1).stores({ queuedMutations: '++id, feature, enqueuedAt' })`; read via `.where('feature').equals(f).sortBy('enqueuedAt')`.
 - `touchedFields` is stored per queued mutation at enqueue time, derived from the command's own payload.
   - Risk: a captured full-entity snapshot bloats the queue and leaks stale data; without `touchedFields`, conflict resolution has to compare whole entities.
-  - Fix: `touchedFields: Object.keys(input)` at enqueue; the 409 handler diffs only those; per [[skills/angular/architecture/v3.1/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
+  - Fix: `touchedFields: Object.keys(input)` at enqueue; the 409 handler diffs only those; per [[skills/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|conflict-resolution-strategy]].
 - `idempotencyKey` is generated exactly once, at enqueue, and reused unchanged on every replay of that entry.
   - Risk: a fresh key per replay defeats server-side dedup — a lost-response retry double-applies.
   - Fix: set it in `enqueue()` and never touch it again.

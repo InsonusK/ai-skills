@@ -20,9 +20,9 @@ extends:
   - apps/platform-shell
   - libs/{feature}/feature (routes)
 depends_on:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
+  - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
 adr:
-  - "[[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/adr/preloading-strategy.md|Preloading Strategy ADR]]"
+  - "[[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/adr/preloading-strategy.md|Preloading Strategy ADR]]"
 ---
 
 # Goal
@@ -46,7 +46,7 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/adr/preloading-strategy.md|Custom selective preloading instead of PreloadAllModules or NoPreloading]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/adr/preloading-strategy.md|Custom selective preloading instead of PreloadAllModules or NoPreloading]]
   - Selected variant: custom selective preloading via a `data.preload` route flag — chosen to avoid unconditionally prefetching federated embeddable-module chunks while still warming up genuinely high-traffic sections
 
 # Boundaries
@@ -57,9 +57,9 @@ adr:
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
-  - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell (app.routes.ts)]] - top-level segments gain the `data.preload` flag at their mounting point
-  - [[skills/angular/architecture/v3.1/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|{Feature}/feature routes]] - feature's own sub-routes gain `loadComponent` splitting where justified
+- [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]
+  - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell (app.routes.ts)]] - top-level segments gain the `data.preload` flag at their mounting point
+  - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.create.md|{Feature}/feature routes]] - feature's own sub-routes gain `loadComponent` splitting where justified
 
 NPM:
 - @angular/router
@@ -68,10 +68,10 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md|Repository]] - extend - add enforced bundle budgets and the `data.preload` mounting-point convention
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md|Repository]] - extend - add enforced bundle budgets and the `data.preload` mounting-point convention
 PROJECT:
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - register a custom `SelectivePreloadingStrategy`, mark selected top-level segments `preload: true`
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|{Feature}/feature routes (generic pattern)]] - extend - rule for splitting heavy/rare sub-routes via `loadComponent`, plus the feature's own chunk budget
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|apps/platform-shell]] - extend - register a custom `SelectivePreloadingStrategy`, mark selected top-level segments `preload: true`
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|{Feature}/feature routes (generic pattern)]] - extend - rule for splitting heavy/rare sub-routes via `loadComponent`, plus the feature's own chunk budget
 
 # Workflow
 
@@ -91,7 +91,7 @@ PROJECT:
 ## Bundle regression caught in CI (failure path)
 
 1. A developer adds a non-lazy, top-level import that accidentally pulls a feature's code into the initial bundle.
-2. The `type:app` project's initial-bundle budget (declared per [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#MUST]]) is exceeded.
+2. The `type:app` project's initial-bundle budget (declared per [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#MUST]]) is exceeded.
 3. CI fails the build with an error rather than a warning, before the regression reaches production.
 
 ```mermaid
@@ -113,17 +113,17 @@ sequenceDiagram
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#MUST|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md#MUST|PlatformHost/platform-shell.project.extend]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md#MUST|{feature}.routes.ts]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md#MUST|PlatformHost/platform-shell.project.extend]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md#MUST|{feature}.routes.ts]]
 
 ## SHOULD
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#SHOULD|Repository]]
-- [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md#SHOULD|{feature}.routes.ts]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md#SHOULD|Repository]]
+- [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md#SHOULD|{feature}.routes.ts]]
 
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — silencing a bundle budget failure by raising the threshold; a feature setting its own `preload` flag.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|See platform-shell.project.extend.md]] — marking every top-level segment `preload: true`, degenerating into `PreloadAllModules`.
-- Avoid — [[skills/angular/architecture/v3.1/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|See {feature}.routes.ts.extend.md]] — splitting every sub-route via `loadComponent` regardless of actual size/usage, or leaving a genuinely heavy sub-page unsplit in the main chunk.
+- Avoid — [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — silencing a bundle budget failure by raising the threshold; a feature setting its own `preload` flag.
+- Avoid — [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|See platform-shell.project.extend.md]] — marking every top-level segment `preload: true`, degenerating into `PreloadAllModules`.
+- Avoid — [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/Implementation/FeatureRoutes/{Feature}.project.extend/{feature}.routes.ts.extend.md|See {feature}.routes.ts.extend.md]] — splitting every sub-route via `loadComponent` regardless of actual size/usage, or leaving a genuinely heavy sub-page unsplit in the main chunk.
 # Check list
 
 - [ ] The router is configured with `withPreloading(SelectivePreloadingStrategy)`

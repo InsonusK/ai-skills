@@ -10,11 +10,11 @@ tags:
 ---
 
 # How this file is used
-This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|projects/demo]], already established as the design system's self-built component preview app (see [[skills/angular/architecture/v3.1/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling ADR]]). No new project is created — `projects/demo` already fills the role `apps/component-preview` fills for the platform plateau; this file only adds the convention that every example page becomes a target for visual/a11y specs. The actual preview components now live next to each design-system component under `spec/preview/` and are imported by the demo app.
+This extends [[skills/angular/architecture/solutions/solution-design-system-structure.skill/Implementation/Repository.create.md|projects/demo]], already established as the design system's self-built component preview app (see [[skills/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling ADR]]). No new project is created — `projects/demo` already fills the role `apps/component-preview` fills for the platform plateau; this file only adds the convention that every example page becomes a target for visual/a11y specs. The actual preview components now live next to each design-system component under `spec/preview/` and are imported by the demo app.
 
 # Goals
 
-- Reuse the demo app already built for manual visual review as the target for automated [visual regression](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) and [accessibility](skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) checks, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
+- Reuse the demo app already built for manual visual review as the target for automated [visual regression](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/visual-regression-testing.md) and [accessibility](skills/angular/architecture/solutions/solution-ui-testing.skill/glossary/accessibility-testing.md) checks, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]
 - Keep preview components in the component library's `spec/preview/` directory so they stay close to the component and its tests
 
 # Structure
@@ -23,7 +23,7 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| `projects/design-system/src/lib/{component-name}/spec/preview/{component-name}.preview.ts` | Preview component per design-system component, per [[skills/angular/architecture/v3.1/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]'s authoring convention. Every meaningfully distinct state a component supports (default, disabled, error, loading, etc.) gets its own route or clearly delineated section on the page. |
+| `projects/design-system/src/lib/{component-name}/spec/preview/{component-name}.preview.ts` | Preview component per design-system component, per [[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]'s authoring convention. Every meaningfully distinct state a component supports (default, disabled, error, loading, etc.) gets its own route or clearly delineated section on the page. |
 | `projects/demo/src/app/app.routes.ts` | Imports each preview component from the design-system library and registers one deep-linkable route per component/state. |
 
 # Rules
@@ -54,4 +54,4 @@ This extends [[skills/angular/architecture/v3.1/solutions/solution-design-system
 # Unittest TestCases
 
 - [ ] WHEN a new component/state is added to `projects/demo` THEN
-  - [ ] a corresponding visual and accessibility spec is added in the same change, per [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md]] and [[skills/angular/architecture/v3.1/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md]]
+  - [ ] a corresponding visual and accessibility spec is added in the same change, per [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.visual.spec.ts.create.md]] and [[skills/angular/architecture/solutions/solution-ui-testing.skill/Implementation/Testing/{component-name}.a11y.spec.ts.create.md]]

@@ -9,25 +9,25 @@ tags:
 
 # Structure
 
-No new top-level directories. This extension adds artifact-placement conventions on top of [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]] and extends the `auth` slice already created by this solution's [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts]].
+No new top-level directories. This extension adds artifact-placement conventions on top of [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]] and extends the `auth` slice already created by this solution's [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md|auth.store.ts]].
 
 ## Directory and project skills
 
 | Directory | Description |
 | ---------- | ----------- |
-| /libs/shared/state/src/lib/auth | Extended (not recreated) with: in-memory access token field, permission list field, silent-refresh trigger. See [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]. |
+| /libs/shared/state/src/lib/auth | Extended (not recreated) with: in-memory access token field, permission list field, silent-refresh trigger. See [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/GlobalStore/auth.store.ts.create.md]]. |
 | /libs/shared/auth-ui | New lib, tagged `type:util`, `scope:shared`: hosts the permission-checking structural directive and any shared "not authorized" presentational pieces. |
-| /libs/{feature}/feature/src/lib/**/*.guard.ts | Route guards live inside the feature they protect, following the functional guard pattern in [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md]]. |
+| /libs/{feature}/feature/src/lib/**/*.guard.ts | Route guards live inside the feature they protect, following the functional guard pattern in [[skills/angular/architecture/solutions/solution-authentication.skill/Implementation/Routing/{feature}.guard.ts.create.md]]. |
 
 # Rules
 
 ## MUST
 - Any "is the user allowed to do X" check is expressed as a permission string, never a role name.
   - Risk: role checks (`role === 'admin'`) couple every feature to the platform's role taxonomy and cannot be reused by an embeddable app that doesn't know it.
-  - Fix: check `permissions().includes('orders.delete')`; the backend delivers the flat permission set; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]].
+  - Fix: check `permissions().includes('orders.delete')`; the backend delivers the flat permission set; per [[skills/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]].
 - The access token lives only in the `shared-state` auth slice's in-memory field — never `localStorage`, `sessionStorage`, or any persistent client storage.
   - Risk: a persisted token is the classic XSS-driven theft vector, worse with federated third-party code in the same runtime.
-  - Fix: reload recovery is silent-refresh-on-bootstrap (an `HttpOnly` refresh cookie), not persistence; per [[skills/angular/architecture/v3.1/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]].
+  - Fix: reload recovery is silent-refresh-on-bootstrap (an `HttpOnly` refresh cookie), not persistence; per [[skills/angular/architecture/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]].
 
 # Unittest TestCases
 

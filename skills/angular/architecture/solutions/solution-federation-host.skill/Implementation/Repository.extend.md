@@ -11,13 +11,13 @@ tags:
 
 ## Workspace Structure
 
-No new top-level directories are added to the base layout from [[skills/angular/architecture/v3.1/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]]. `apps/platform-shell` is reconfigured, and one new tag is introduced.
+No new top-level directories are added to the base layout from [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md]]. `apps/platform-shell` is reconfigured, and one new tag is introduced.
 
 ## Directory and project skills
 
 | Directory | Description |
 | ---------- | ----------- |
-| /apps/platform-shell | Gains `type:host` tag in addition to `type:app`, `scope:platform`. Now owns federation host configuration (`federation.config.ts`) and a runtime remote registry (see [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md]]). |
+| /apps/platform-shell | Gains `type:host` tag in addition to `type:app`, `scope:platform`. Now owns federation host configuration (`federation.config.ts`) and a runtime remote registry (see [[skills/angular/architecture/solutions/solution-federation-host.skill/Implementation/platform-shell.project.extend.md]]). |
 
 # NPM Packages
 
@@ -40,7 +40,7 @@ No new top-level directories are added to the base layout from [[skills/angular/
   - Fix: load `federation.manifest.json` at bootstrap; refresh it independently of host deploys.
 - The host never bundles a specific embeddable app's code at build time.
   - Risk: static-importing a remote couples the host's release to that remote's, the exact thing Dynamic Federation was chosen to avoid.
-  - Fix: mount remotes only via `loadRemoteModule`; per [[skills/angular/architecture/v3.1/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]].
+  - Fix: mount remotes only via `loadRemoteModule`; per [[skills/angular/architecture/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]].
 - The host never depends on an embeddable app's internal implementation — only on `@platform/contracts` and the `remoteEntry` contract.
   - Risk: importing a remote's own type breaks the moment that team changes it and defeats the shared-contract design.
   - Fix: every cross-boundary type/event/service interface is defined in `@platform/contracts`.

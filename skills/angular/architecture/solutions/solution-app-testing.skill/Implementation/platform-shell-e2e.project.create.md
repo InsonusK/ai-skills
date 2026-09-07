@@ -29,7 +29,7 @@ tags:
 
 | Directory/file | Description |
 | --------------- | ----------- |
-| `src/spec/{scenario-name}.e2e.spec.ts` | One spec per real user scenario, per [[skills/angular/architecture/v3.1/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md]]. |
+| `src/spec/{scenario-name}.e2e.spec.ts` | One spec per real user scenario, per [[skills/angular/architecture/solutions/solution-app-testing.skill/Implementation/Testing/{scenario-name}.e2e.spec.ts.create.md]]. |
 | `playwright.config.ts` | Playwright configuration: base URL, browsers, CI reporter. |
 
 # NPM Packages
