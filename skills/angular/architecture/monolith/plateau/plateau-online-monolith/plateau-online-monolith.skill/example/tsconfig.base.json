@@ -1,0 +1,47 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@org/shared-util": [
+        "./libs/shared/util/src/index.ts"
+      ],
+      "@org/shared-ui": [
+        "./libs/shared/ui/src/index.ts"
+      ],
+      "@org/shared-logging": [
+        "./libs/shared/logging/src/index.ts"
+      ],
+      "@org/shared-state": [
+        "./libs/shared/state/src/index.ts"
+      ],
+      "@org/shared-http-core": [
+        "./libs/shared/http-core/src/index.ts"
+      ],
+      "@org/orders-feature": [
+        "./libs/orders/feature/src/index.ts"
+      ],
+      "@org/orders-data-access": [
+        "./libs/orders/data-access/src/index.ts"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
+}

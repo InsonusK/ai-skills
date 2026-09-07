@@ -1,7 +1,7 @@
 ---
 name: design-system-workspace-tooling
 description: Which workspace tool hosts the design system's library and demo app
-problem: The platform monorepo uses Nx (per the "Структура репозитория" solution), but the design system is a separate, much smaller repository with only two projects (the library and its demo app) — Nx's main benefits may not justify its overhead at this scale
+problem: The platform monorepo uses Nx (per `solution-repository-structure`), but the design system is a separate, much smaller repository with only two projects (the library and its demo app) — Nx's main benefits may not justify its overhead at this scale
 decision: Use a plain Angular CLI multi-project workspace, not Nx
 tags:
   - solution/design-system-structure
@@ -40,7 +40,7 @@ A single `angular.json` lists the library and demo app projects. No additional t
 
 ### Description
 
-Bring Nx into the design system repository as well, matching the platform's tooling choice from the "Структура репозитория" solution.
+Bring Nx into the design system repository as well, matching the platform's tooling choice from `solution-repository-structure`.
 
 ### Benefits
 

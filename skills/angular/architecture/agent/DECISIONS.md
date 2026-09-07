@@ -1,0 +1,280 @@
+# Angular architecture v3.1 — build decisions log
+
+One line per non-mechanical choice made while building the Angular v3.1 catalog. `⚠️` marks a fork that needs the owner's sign-off; everything else is execution against [[skills/angular/architecture/agent/INVARIANTS]].
+
+Pipeline: `feature-map-create` → `variability-map-create` → (copy + migrate V1 solutions) → `delta-conflict-detection` → `plateau-create-by-solutions`. Output root: `skills/angular/architecture/v3.1/`. V1 input (read-only): `skills/angular/architecture/solutions/` + `skills/angular/architecture/plateau/`.
+
+## Settled before the build (owner, this session)
+
+- **Output layout** = full parallel catalog under `v3.1/`. V1 dirs untouched.
+- **Phasing** = stages 1–3 now; stage-4 depth decided after stage 3.
+- **Plateau set** = derived fresh from the Variability Maps; existing 8 V1 plateaus become a reference mapping.
+- **Solution migration** = full format migration + fresh-eyes audit, mirroring dotnet v3.1's wave audits.
+- **Aspirational** = V1 solutions + owner-reviewed aspirational candidates (flagged, no `Realized by`).
+- **V1 doubts** = recorded per model in `Open questions on V1`, carried forward with a working hypothesis, batch-reviewed.
+
+## ⚠️ Structural decisions (owner, this session)
+
+- **Round 2 — four catalogs, not one** (was three, then four): `monolith/`, `platform-host/`, `embeddable-app/`, `design-system/`. Each has one concrete baseline + its own `feature/`, `variability-map.md`, `plateau/`. Reason: the four products differ in deployment topology, repository, and workspace tooling; one shared variability space would force every reader to filter rows that don't apply to their product.
+  - `platform-host/` **composes** `monolith/` via `parent_plateaus` (a host **is** a monolith + federation). Its own variability space is only the federation delta.
+  - `embeddable-app/` and `platform-host/` are two roles of one distributed product but have incompatible baselines (Nx monolith vs. any-tooling contract-conformant) → separate catalogs, related by cross-catalog `Requires`.
+  - `@platform/contracts` is owned/published by `platform-host/` (`PlatformContracts` feature), consumed by `embeddable-app/`.
+- **One shared solution pool** `v3.1/solutions/` for all four catalogs (avoids duplicating `solution-app-testing` etc.); two-sided V1 solutions are split during delta-conflict-detection.
+- **Baseline correction (monolith, first-principles not "what V1 plateaus include"):**
+  - `BackendDataAccess` (Facade/Client/`http-core`) is a **VP**, not common — a no-backend app is legitimate. Gates `OfflineReadResilience`, `BackendLogDelivery`, `Authentication`.
+  - `GlobalStore` (`libs/shared/state` classical NgRx) is a **VP** (round 3 — was "on-demand artifact"; owner wants it explicit). `Authentication` / `OfflineReadResilience` / `OfflineWriteQueue` `require GlobalStore` (dotnet "VP5/6/7 require VP2" pattern).
+  - `StateTieringPolicy` common = the rule + the two lower tiers (component signal, feature Signal Store) only.
+  - `SignalForms` + `ConsoleLogging` stay common — zero-cost conventions.
+  - `PersistedState` (NgRx state → `localStorage`/IndexedDB across sessions, **not** tokens) — owner-confirmed as a row-to-be; no V1 solution, so a new one is authored at Stage 3. Aspirational until then.
+
+## Stage 1 — feature-map-create — DRAFT for review (this session)
+
+Files under `v3.1/`:
+
+- **`README.md`** — the four-catalog structure, how they relate, the feature→variability→plateau reading guide.
+- **`monolith/feature/feature-model.md`** (+ diagram) — root `App`. Common (7): NxWorkspaceStructure, HierarchicalRouting, StateTieringPolicy, SignalForms, ConsoleLogging, BusinessLayerTesting, ComponentTesting[flagged]. Variable (6): PerformanceTunedRouting, GlobalStore, BackendDataAccess, + 3 children of BackendDataAccess (OfflineReadResilience → child OfflineWriteQueue[per-feature]; BackendLogDelivery; Authentication). Requires-edges: ORR/AUTH → GlobalStore; ORR/BLD/AUTH → BackendDataAccess; BLD → ConsoleLogging. 7 open questions. 6 aspirational candidates (incl. PersistedState, owner-confirmed).
+- **`platform-host/feature/feature-model.md`** (+ diagram) — root `PlatformHost`, composes `monolith/`. Common (2): RuntimeRemoteFederation, PlatformContracts. Variable (3): HostDesignSystemConsumption, SessionSharing, FederatedReadResilience. Cross-catalog Requires into monolith: SessionSharing→Authentication, FederatedReadResilience→OfflineReadResilience. 6 open questions. 2 aspirational.
+- **`embeddable-app/feature/feature-model.md`** (+ diagram) — root `EmbeddableApp`, minimal contract-conformant baseline. Common (1): FederationRemoteContract. Variable (2, near-universal): RemoteSessionConsumption, RemoteDesignSystemConsumption. Aspirational: RemoteInternalArchitecture (composes `monolith/`). 4 open questions.
+- **`design-system/feature/feature-model.md`** (+ diagram) — root `DesignSystem`. Common (4): DesignSystemWorkspace, HybridDesignTokens, EncapsulatedComponentLayer, ComponentTesting. **0 variable.** 1 aspirational: MultiTenantTheming. 2 open questions.
+
+### ⚠️ Open questions for the owner (batch review)
+
+**monolith:** (1) modify `solution-repository-structure` — `data-access` split conditional on `BackendDataAccess`; (2) `ComponentTesting` common vs variable (working: common); (3) `solution-ui-testing` splits monolith-side / design-system-side; (4) RESOLVED — `GlobalStore` is a VP; (5) `notifications` slice owned by `OfflineWriteQueue`; (6) rename `solution-lazy-loading-routing` → `PerformanceTunedRouting`; (7) keep `apps/platform-shell` name.
+
+**platform-host:** (1) split `solution-platform-embeddability` → `solution-federation-host` + `solution-platform-contracts` + `solution-federation-remote`; (2) split `solution-design-system-application` host/remote; (3) new `solution-session-sharing` (depends_on monolith `solution-authentication`); (4) `HostDesignSystemConsumption` variable, not a federation prerequisite; (5) V1 `platform-embeddability depends_on offline-first` over-strong → only `FederatedReadResilience` needs it; (6) zero-remote host is valid.
+
+**embeddable-app:** (1) `plateau-embeddable-app`'s `parent_plateau` is wrong — plateaus built from scratch; (2) `RemoteSessionConsumption` / `RemoteDesignSystemConsumption` optional (near-universal) → catalog's first 2 VPs; (3) three V1 solutions split, this catalog gets the remote halves; (4) no own testing/structure solutions.
+
+**design-system:** (1) `HybridDesignTokens` common now, becomes a `Theming` VP variant if `MultiTenantTheming` built; (2) `solution-ui-testing` split (shared with monolith).
+
+## Stage 2 — variability-map-create — DRAFT for review (this session)
+
+Owner reviewed & approved the four feature models; proceeded to Stage 2. Four `variability-map.md` written:
+
+- **`monolith/variability-map.md`** — 7 VPs + 1 aspirational (VP8 PersistedState). VP1 PerformanceTunedRouting, VP2 GlobalStore, VP3 BackendDataAccess, VP4 OfflineReadResilience (req VP3+VP2), VP5 OfflineWriteQueue (per feature, req VP4), VP6 BackendLogDelivery (req VP3), VP7 Authentication (req VP3+VP2). `Migration=Yes` for VP1/VP4/VP5/VP6/VP7 (the V1 plateau chain documents exactly those transitions). Reference table maps the 5 V1 main-chain plateaus; v3.1 additionally allows thinner plateaus (VP2=No / VP3=No / auth-without-federation).
+- **`platform-host/variability-map.md`** — 3 VPs (federation delta only; monolith VPs answered by `parent_plateaus`). VP1 HostDesignSystemConsumption, VP2 SessionSharing (req `monolith:VP7`), VP3 FederatedReadResilience (req `monolith:VP4`). Constraint direction inverted from V1 (`solution-authentication depends_on platform-embeddability` → `solution-session-sharing depends_on monolith solution-authentication`).
+- **`embeddable-app/variability-map.md`** — 2 real VPs + 1 aspirational. VP1 RemoteSessionConsumption, VP2 RemoteDesignSystemConsumption (both near-universal but variable — owner ruling), VP3 RemoteInternalArchitecture (aspirational, `parent_plateaus` a monolith plateau). Host references are "meaningful only if", not legality gates.
+- **`design-system/variability-map.md`** — **0 VPs**. VP1 MultiTenantTheming aspirational only.
+
+### Constraints to encode in `depends_on` at Stage 3 (v3.1 ADRs)
+
+- `solution-offline-first`, `solution-offline-sync`, `solution-authentication` → `depends_on solution-global-store` (monolith VP2 gating).
+- `solution-authentication` → `depends_on solution-api-http-layer` (V1 gap; monolith VP3 gating VP7).
+- `solution-session-sharing` (new) → `depends_on` monolith `solution-authentication` + `solution-platform-contracts`.
+- `solution-repository-structure` modified (data-access lib conditional on VP3) — `solution-update` ADR.
+
+### Solution roster after the Stage-3 splits (planned)
+
+| V1 solution | v3.1 outcome |
+| --- | --- |
+| `solution-state-management` | split → `solution-state-tiering` (common: rule + 2 tiers) + `solution-global-store` (monolith VP2) |
+| `solution-lazy-loading-routing` | renamed → `solution-performance-tuned-routing` (monolith VP1) |
+| `solution-repository-structure` | migrated + modified (data-access conditional) |
+| `solution-api-http-layer` / `solution-offline-first` / `solution-offline-sync` / `solution-logging-base` / `solution-logging-global` / `solution-app-routing` / `solution-forms` / `solution-app-testing` | migrated as-is (format only) |
+| `solution-authentication` | migrated minus SessionContract publication (monolith VP7) |
+| `solution-platform-embeddability` | split → `solution-federation-host` + `solution-platform-contracts` (platform-host) + `solution-federation-remote` (embeddable-app) |
+| `solution-design-system-application` | split → `solution-host-design-system-consumption` (platform-host VP1) + `solution-remote-design-system-consumption` (embeddable-app VP2) |
+| `solution-ui-testing` | split → monolith-side + design-system-side realizations |
+| `solution-design-system-structure` / `-tokens` / `-components` | migrated as-is (design-system common) |
+| — (new) | `solution-session-sharing` (platform-host VP2), `solution-session-consumption` (embeddable-app VP1), `solution-persisted-state` (monolith VP8), later `solution-design-system-multi-tenant-theming` |
+
+## Stage 3 — solution migration + delta-conflict-detection — DONE (this session)
+
+**3a — mechanical migration** (commit `3072b192`): 18 V1 solutions copied into `v3.1/solutions/` (flattened). 603 link-path rewrites, 18 version bumps, ~135 de-Russifications (labels + prose; the 4 `solution-ui-testing/glossary/*` files + README translated in the debt-closing pass — **no Cyrillic anywhere in `v3.1/`**, check.sh §2 is now HARD). `## MUST NOT`/`## SHOULD NOT`/`# Anti-patterns` → negative bullets under `## MUST`/`## SHOULD` (123 files; forbidden-heading count 0). `triggers:` → one-sentence `whenToUse:` (18). adr links → `.md`; non-slug labels → slugs; "solution #N" → slug. `agent/INVARIANTS.md` written.
+
+**3b — state split + rename** (commit `e75f4ba2`):
+- `solution-lazy-loading-routing` → `solution-performance-tuned-routing`.
+- `solution-state-management` → `solution-state-tiering` (common — rule + 2 lower tiers, new main skill + Boundaries + ADR renamed) + `solution-global-store` (VP2 — `libs/shared/state` + `store.config.ts` seam, new main skill + Boundaries + ADR `classical-ngrx-for-the-global-tier`).
+- `auth.store` worked example moved into `solution-authentication`, `.create` + `.extend` merged.
+- Inbound refs repointed: forms/api-http-layer/app-testing → state-tiering; offline-first/offline-sync/authentication → global-store.
+
+**3c — federation/design-system splits + new solutions** (commit `9c604484`):
+- `solution-platform-embeddability` → `solution-federation-host` (platform-host common; drops over-strong `depends_on solution-offline-first`) + `solution-platform-contracts` (platform-host common; own repo; new main + ADR + Implementation stub) + `solution-federation-remote` (embeddable-app common).
+- `solution-design-system-application` → `solution-host-design-system-consumption` (platform-host VP1) + `solution-remote-design-system-consumption` (embeddable-app VP2).
+- `solution-authentication` rewritten monolith-scoped: `depends_on` global-store + app-routing + api-http-layer (the V1 api-http-layer gap closed); SessionContract publication carved out.
+- NEW: `solution-session-sharing` (platform-host VP2), `solution-session-consumption` (embeddable-app VP1), `solution-persisted-state` (monolith VP8 skeleton, `> Draft contract`), `solution-design-system-multi-tenant-theming` (design-system VP1 skeleton).
+- **26 solutions total.** `agent/check.sh` (9 sections) PASS.
+
+**3d — delta-conflict-detection** (this commit): `delta-conflict-analysis.md`. Pre-analysis: `element/repository` split per-catalog (was 3 `.create` on one element — a design error only because the tag conflated 3 different products), `ds-{component}.component.ts` retagged `element/ds-component-ts`, `demo.project.extend` retagged. **8 intersecting groups, ALL canonical — NO `TMC`/`FMC`/`FDC`, zero resolver solutions.** Findings: (1) split `solution-ui-testing` monolith-side / design-system-side (deferred — the one outstanding structural change); (4) `authentication` + `offline-sync` should carry an explicit `shared-state-project` `.extend` registering their slices (Stage-4 / solution-update).
+
+### Debt-closing pass — DONE (this session, commits `6c70acdc` + this one)
+
+- ✅ **`solution-ui-testing` split** (delta-conflict Finding 1) — `solution-ui-testing` (monolith) + `solution-design-system-ui-testing` (design-system, reuses the 3 ADRs + 4 spec patterns). 27 solutions.
+- ✅ **Doubled `#MUST`/`#SHOULD` link lists** deduped in 9 main files.
+- ✅ **4 `solution-ui-testing/glossary/*.md` + README** translated to English. No Cyrillic anywhere in `v3.1/` (check.sh §2).
+- ✅ **`# Boundaries` sections** added to the 13 straight-migrated solutions — all 27 solutions now have one.
+- ✅ **`depends_on solution-global-store`** — already present on `offline-first` / `offline-sync` / `authentication` (added during the state-split repoint; the earlier note was stale).
+- ✅ **Variability-map Realized-by links** repointed from V1 paths into `v3.1/solutions/` (with renames); Status paragraphs updated.
+- ✅ **Inline `MUST`/`MUST NOT`/`SHOULD`/`MAY` in Implementation rule bullets** softened to lowercase / `must never` / `should never` (225 bullets, 72 files) — RFC-2119-shout removed; check.sh §3b heading count stays 0.
+
+### Tracked debt
+
+- ✅ **`Risk:`/`Fix:` sub-bullets on every Implementation `## MUST` rule bullet** — DONE (commits `…batch 1` through `…batch 9`, this session). Every `## MUST` bullet in every solution's `Implementation/*.md` now carries `Risk:`/`Fix:` sub-bullets, matching the dotnet v3.1 format. Batches: 1 foundation, 2 perf-routing+offline-first, 3 offline-sync, 4 logging-global, 5 authentication, 6 app-testing, 7 ui-testing, 8 design-system solutions, 9 federation+contracts+session+ds-consumption. Malformed lowercase negative bullets (visual/style-snapshot/a11y specs, several federation files) folded into proper `Risk:`/`Fix:` form in the same pass. Audit: `awk` over all `*/Implementation/*.md` — 0 MUST bullets without a matching `Risk:`.
+- ✅ **`solution-repository-structure` `solution-update` ADR** — `adr/feature-lib-split-conditional-on-backend-data-access.md` (commit closing the debts). `Repository.create` + main skill + variability-map now say the `data-access` lib is conditional on `BackendDataAccess`.
+- ✅ **`shared-state-project` `.extend` on `authentication` / `offline-sync`** (delta-conflict Finding 4) — both `Implementation/GlobalStore/shared-state.project.extend.md` files exist; registry entries + `plateau-multiuser-monolith/registry/shared-state-project.md` record the closure.
+- ✅ **The 2 aspirational skeletons are now full solutions with plateaus** (this session — user asked to build both). `solution-persisted-state` (monolith VP8): 2 ADRs + 6 Implementation files (`persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` + `withPersistedDraft()` + `preferences` slice) → `plateau-persisted-state-monolith` (parent `plateau-multiuser-monolith`, no new project, 48 structure skills, registry N=5, example 31 files/115 tests green). `solution-design-system-multi-tenant-theming` (design-system VP1): 2 ADRs + 5 Implementation files (`ds-tenant-theme` mixin + per-tenant `[data-tenant]` files + `DsTenant` union) → `plateau-multi-tenant-design-system` (parent `plateau-design-system`, no new project, 14 structure skills, registry N=5, example green). Both drop the `> Draft contract` banner. `check.sh` `PLANNED=''` — every solution now has full Implementation. Catalog feedback: (1) `provideState(feature, { metaReducers })` silently ignores the config — only the three-arg `provideState(name, reducer, config)` applies it; (2) the tenants asset must resolve as `styles/tenants.scss`, not nested.
+- ✅ **`plateau/plateau-repository.md` per catalogue** — all 4 written (`monolith/`, `design-system/`, `platform-host/`, `embeddable-app/` `plateau/plateau-repository.md`; renamed from `plateau/README.md` when `plateau-map-repository` became `plateau-map-create`).
+- ✅ **`whenToUse:` on all plateau structure skills** — backfilled with concrete per-role sentences across the 5 monolith plateaus (166 files); the other 3 catalogues already had it.
+- ✅ **`solution-offline-sync` pending-sync-indicator** — `Implementation/UI/pending-sync-indicator.component.ts.create.md` rewritten to the presentational (`count` input, derived from rows) shape the plateaus actually use, matching the per-entity `syncStatus` state machine (commit `dddf1ed9`).
+
+## Stage 4 — plateau-create-by-solutions — COMPLETE
+
+### ⚠️ Owner decisions
+
+- **Depth**: FULL for `monolith` + `design-system` (runnable examples, Vitest/Playwright green); **limited** for `platform-host` + `embeddable-app` (a federation smoke test, not full apps).
+- **Effort**: xhigh, no subagents/workflows (the 4 catalogs are too interdependent — cross-catalog `parent_plateaus`, shared solution pool, cross-catalog registry — for isolated subagents; the build-verify loop is sequential).
+- **Plateau set — 10 plateaus** (8 original + `plateau-persisted-state-monolith` and `plateau-multi-tenant-design-system`, added when the user asked to build the two aspirational VPs):
+
+| Catalog | Plateau | Composes | Adds | Example |
+| --- | --- | --- | --- | --- |
+| monolith | `plateau-online-monolith` | — (from scratch) | common + VP2 GlobalStore + VP3 BackendDataAccess | FULL |
+| monolith | `plateau-async-monolith` *(renamed from V1 `async-monolith` — "async" read as async-data, confusing)* | online-monolith | VP1 PerformanceTunedRouting (selective preload + `loadComponent` split + bundle budgets) | FULL |
+| monolith | `plateau-offline-read-monolith` | perf-routing-monolith | VP4 OfflineReadResilience (Workbox SW, `isOnline`, `OfflineTransportError`) — reads survive offline, writes fail | FULL |
+| monolith | `plateau-offline-full-monolith` | offline-read-monolith | VP5 OfflineWriteQueue (Dexie queue, replay, conflict) — reads + writes survive offline | FULL — **owner's current app** |
+| monolith | `plateau-multiuser-monolith` | offline-full-monolith | VP6 BackendLogDelivery + VP7 Authentication | FULL — **platform-host's parent** |
+| monolith | `plateau-persisted-state-monolith` | multiuser-monolith | VP8 PersistedState (`persistKeys()` metaReducer + `SENSITIVE_STATE_KEYS` guard + `withPersistedDraft()` + `preferences` slice) — no new project | FULL — sixth/last of the chain |
+| design-system | `plateau-design-system` | — (from scratch) | 4 common | FULL |
+| design-system | `plateau-multi-tenant-design-system` | plateau-design-system | VP1 MultiTenantTheming (`styles/tenants/` layer, `ds-tenant-theme` colour-only mixin, `[data-tenant]` resolution, `DsTenant` union) — no new project | FULL |
+| platform-host | `plateau-platform-host` | `plateau-multiuser-monolith` (cross-catalog `parent_plateaus`) | RuntimeRemoteFederation + PlatformContracts + VP1/2/3 | limited (federation smoke test) |
+| embeddable-app | `plateau-embeddable-app` | — (from scratch) | FederationRemoteContract + VP1 RemoteSessionConsumption + VP2 RemoteDesignSystemConsumption | limited (trivial remote) |
+
+- `offline-read` / `offline-full` naming: chosen so the family is visually grouped by `offline-` prefix with the partial-vs-complete distinction explicit (V1's `async` / `offline` didn't convey it). `plateau-async-monolith` name kept from V1 (owner-confirmed) — the name is not self-evident, so the plateau's own description makes clear it is about JS chunk-loading strategy, not async data.
+- The example **evolves down the chain** (`plateau-create-by-solutions` step 5): child seeds from parent's `example/`, then extends. One Nx workspace, grown plateau by plateau.
+- `plateau-create-by-solutions` was **extended to document the Angular / TypeScript stack** (commit `0e2be8cd`) — file-pattern table, project/class name normalization, Angular branches in the build steps.
+
+### Environment (this session)
+
+The container has **no Node**. Installed manually from nodejs.org (npm registry reachable): Node v24.20.0, npm 11.19.0. Angular **22.1.4** is `latest` (Signal Forms available), Nx **23.2.0**, NgRx **22.0.0**. Playwright chromium installed. **The `@playwright/test` runner cannot fork workers in this Bash sandbox** (`chromium.launch()` API works; the test-runner hangs) — so Playwright suites are written + configured but not executed here; Vitest (jsdom) is the runnable gate. Repro steps: `agent/example-setup.md`.
+
+### Status
+
+- **`plateau-online-monolith` — DONE** (commits `37a774b5`, `a52d01b8`, `2fb2e52a`):
+  - Root skill (v3.1 format, `standalone: true`, `parent_plateaus: []`, 9-solution `created_by`, VP2=Yes VP3=Yes).
+  - `structure/` — 27 skills (1 repo + 11 project + 15 class), seeded from V1, repointed to v3.1/solutions, `created_by` fixed per element, auth removed (VP7), `## MUST NOT`/`# Anti-patterns` converted, 9 missing skills generated from their solution Implementation files.
+  - `example/` — runnable Nx 23 / Angular 22.1.4 / NgRx 22 workspace. `orders` feature end to end (Signal Forms form, `OrdersStore` → Facade direct, Facade/Client/Mapper/typed-errors, http-core, LoggerService+ConsoleLogSink). **`npm test` (Vitest, 9 projects) + `npm run lint` GREEN.** Playwright e2e + visual/style-snapshot/a11y specs written & configured (container-safe args, API mocked), documented to run elsewhere.
+  - **Catalog feedback**: confirmed `solution-api-http-layer`'s "retry GET only" rule — an early `base-http.service.ts` that retried POST doubled a 409'd write.
+  - **Post-commit fix** (`ff98210a`): the committed example did **not** actually pass `nx run-many -t lint` (~19 errors) — the Nx generator's scaffold `@nx/enforce-module-boundaries` `depConstraints` (`scope:shop`/`scope:api`/`type:data`) matched none of this taxonomy's tags, and per-lib component-selector prefixes were left at the generator default `lib`. `eslint.config.mjs` now encodes the real type/scope allow-list (+ two gaps: `data-access → data-access`, `preview → data-access`); `no-console` enabled as an error. The repo skill's allow-list table was updated to match.
+- **`plateau-async-monolith` — DONE** (this session):
+  - Root skill: `parent_plateaus: [plateau-online-monolith]`, `standalone: true`, `created_by: [solution-performance-tuned-routing]` (VP1). Fixes VP1=Yes, VP2=Yes, VP3=Yes; VP4–VP8=No.
+  - `structure/` — seeded from `plateau-online-monolith/structure/` (27 skills, prefix-renamed + `plateau:` swapped + version `20260902160000`), then merged `solution-performance-tuned-routing`: repo skill (bundle-budget + preload rules), `project-platform-shell` (`/preloading/`, `withPreloading`, `project.json` budgets), `class-feature-routes` (`loadComponent` sub-splitting), + **1 new** `class-selective-preloading-strategy`. No new project.
+  - `example/` — the online-monolith Nx workspace evolved: `SelectivePreloadingStrategy` (+ spec), `withPreloading(...)`, `data: { preload: true }` on the `orders` mount, a `loadComponent`-split `report` sub-route (own component + `orders.routes.spec.ts` guard), `error`-level `initial`+`anyScript` budgets. **`npm test` (Vitest, 12 files / 23 tests) + `npm run lint` (10 projects) + `nx build platform-shell --configuration=production` all GREEN** — the build output confirms `order-report-component` is its own lazy chunk.
+  - **Catalog feedback**: Angular's `anyScript` budget also constrains `main` (initial), not just lazy chunks — the first-draft 300 kB `anyScript` error failed on `main` (301 kB). Budgets tuned so both pass while still catching a real regression.
+- **`plateau-offline-read-monolith` — DONE** (this session):
+  - Root skill: `parent_plateaus: [plateau-async-monolith]`, `standalone: true`, `created_by: [solution-offline-first]` (VP4). VP1–VP4=Yes; VP5–VP8=No.
+  - `structure/` — seeded from `plateau-async-monolith/structure/` (28 skills, renamed, version `20260903090000`), then merged `solution-offline-first`: repo skill (SW / connectivity / OfflineTransportError rules), `project-platform-shell` (SW files + `build-sw` target + banner mount), `project-shared-state` (`connectivity/` slice, no longer "empty"), `project-shared-http-core` (`OfflineTransportError`), `project-shared-ui` (`offline-banner/`), `class-feature-client` (`status === 0` branch), + **3 new** class skills: `class-connectivity-store`, `class-offline-banner-component`, `class-service-worker`. No new project.
+  - `example/` — Nx workspace evolved: full `connectivity` classical-NgRx slice + spec; `OfflineTransportError` in http-core + `orders.client.ts` branch + spec; `OfflineBannerComponent` (presentational, `isOnline` input) mounted in the shell; Workbox `sw-src.ts` + pure `sw-routes.ts` (unit-tested) + `sw-build.mjs` + `tsconfig.sw.json` + `build-sw` nx target; `main.ts` registers `/sw.js` post-bootstrap prod-only. **`npm test` (Vitest, 15 files / 44 tests) + `npm run lint` (10 projects) + `npx nx build-sw platform-shell` (emits `dist/.../sw.js`, 7 files precached) all GREEN.** Installed `workbox-{build,precaching,routing,strategies,expiration}` + `esbuild` (already present).
+  - **Catalog feedback** (recorded in example README + class skills):
+    1. `solution-offline-first`'s `OfflineBannerComponent` sketch injected `Store` inside the component → `type:ui` → `type:store` boundary violation. Made it presentational (`isOnline` input), shell wires the slice.
+    2. Workbox SW needs a dedicated `tsconfig.sw.json` (`lib: webworker`) excluded from the app build; routing decisions extracted to a pure `sw-routes.ts` for unit-testability.
+    3. `sw-build.mjs` not `.ts` — plain Node ESM (no `.ts` script runner wired), esbuild-bundles `sw-src.ts` first.
+- **DOP-workflow `registry/` backfill — DONE** (this session, owner-requested check): the built plateaus were missing step 6's per-plateau `registry/{element}.md` entries (dotnet v3.1 plateaus have them; Angular did not). Created from `delta-conflict-analysis.md`'s "Registry entries to create" table + the real Implementation files, using `delta-conflict-detection`'s `registry-entry.template.md`, each placed at the shallowest plateau where its intersecting solutions coexist, listed in the plateau root skill's new `registry:` YAML property + an `# Intersection registry` body section:
+  - `plateau-online-monolith/registry/`: `component-name-component-ts` (`FMN`, ordering-only), `monolith-repository` (N≥3 benign), `platform-shell-project` (N≥3 benign)
+  - `plateau-async-monolith/registry/`: `feature-routes-ts` (`FMN`/`TMN`, ordering-only)
+  - `plateau-offline-read-monolith/registry/`: `feature-client-ts` (`TMN`, `source: constraint`), `shared-state-project` (`TMN`, `source: constraint`; N≥3 benign once auth/offline-sync slices land — Finding 4)
+  - All canonical, zero resolvers — consistent with the delta-conflict analysis. Steps 1–5 + the analysis summary table were already done in Stage 3; this closes step 6.
+- **`plateau-offline-full-monolith` — DONE** (this session). **The owner's current app.**
+  - Root skill: `parent_plateaus: [plateau-offline-read-monolith]`, `standalone`, `created_by: [solution-offline-sync]` (VP5). VP1–VP5=Yes; VP6–VP8=No. `registry: [feature-facade-ts]`.
+  - `structure/` — seeded from offline-read (31 skills, version `20260903120000`) + merged `solution-offline-sync`: repo skill; **NEW project skill `project-shared-offline-sync`** (`type:store`); NEW class skills `class-mutation-queue-service`, `class-replay-orchestrator`, `class-notifications-store`, `class-pending-sync-indicator-component`; merged the `.facade.ts.extend` into `class-feature-facade`; updated `project-shared-state` (+notifications), `project-shared-ui` (+pending-sync-indicator), `project-feature-feature` (+`{feature}.offline-sync.ts` route-provider registration), `project-feature-data-access` (+`type:store` dep), `project-platform-shell` (+`provideOfflineSync()`).
+  - `example/` — `libs/shared/offline-sync` (Dexie `MutationQueueService` + `ReplayOrchestrator` + `MutationReplayRegistry` + provide helpers); `notifications` slice + spec; `orders.facade.ts` enqueues; `orders.offline-sync.ts` registers the replay handler in `ORDERS_ROUTES` route `providers` (nested parent route); `OrdersStore` `pendingSync`/`queued`; `<ui-pending-sync-indicator>`. **`vitest run` (20 files / 67 tests) + `nx run-many -t lint` (11 projects) + `nx build platform-shell --configuration=production` + `nx build-sw platform-shell` all GREEN.** Added `dexie` + `fake-indexeddb`(dev). Budgets bumped once, reviewed: 500 kb warn / 600 kb error (Dexie ~65 kb in initial via `provideOfflineSync()`).
+  - **Catalog feedback** (example README + class skills):
+    1. `libs/shared/offline-sync` must be `type:store`, not the solution's `type:util` (reads `connectivity`/`notifications`, imported by Facades). Allow-list += `data-access→store`, `store→store`.
+    2. `ReplayOrchestrator` must NOT statically import feature facades (cycle / initial-bundle bloat). Uses `MutationReplayRegistry` populated from each feature's route `providers` via `provideFeatureReplay`; the shell only `provideOfflineSync()`. `nx lint` "Static imports of lazy-loaded libraries" caught the wrong approach.
+    3. **Closed delta-conflict Finding 4** — `solution-offline-sync` now carries `Implementation/GlobalStore/shared-state.project.extend.md` for the `notifications` slice (was prose-only). `shared-state-project` registry updated: N=3 at this plateau, benign.
+    4. `PendingSyncIndicatorComponent` presentational (`count` input), like `OfflineBannerComponent`.
+- **DOP registry:** `feature-facade-ts` (`plateau-offline-full-monolith/registry/`, `TMN`, `source: constraint`); the `shared-state-project` entry (at offline-read) updated for the N=3 growth.
+- **`plateau-multiuser-monolith` — DONE** (this session). **The last monolith plateau; platform-host's parent.**
+  - Root skill: `parent_plateaus: [plateau-offline-full-monolith]`, `standalone`, `created_by: [solution-logging-global, solution-authentication]` (VP6 + VP7). VP1–VP7=Yes; VP8 aspirational. `registry: [shared-state-project, shared-logging-project, platform-shell-project, feature-routes-ts]`.
+  - `structure/` — seeded from offline-full (version `20260903150000`) + merged **two** solutions. `solution-logging-global` (VP6): repo skill; merged `project-shared-logging` (+`backend-log-sink.ts`, `log-retry-queue.ts`, `http-core` dep), `class-logger-service` (+`report()`, `LOG_SINKS` factory); NEW class skills `class-backend-log-sink`, `class-log-retry-queue`, `class-global-error-handler` (in `platform-shell`); merged `project-platform-shell` (+`GlobalErrorHandler`). `solution-authentication` (VP7): **NEW project skill `project-shared-auth-ui`** (`type:store`); NEW class skills `class-auth-store`, `class-auth-interceptor`, `class-has-permission-directive`, `class-permission-guard`; merged `project-shared-state` (+`auth/` folder), `project-platform-shell` (+interceptor + bootstrap refresh + `/login` `/forbidden`), `project-feature-feature` + `class-feature-routes` + `class-form-component` (+`requirePermission` / `*hasPermission` attachment), `project-feature-data-access` (+"Client never sets Authorization").
+  - `solution-authentication` gained `Implementation/GlobalStore/shared-state.project.extend.md` (Finding 4 second half) + `extends:` / `# Template Skill Mutations` / `## MUST` updates.
+  - `example/` — `libs/shared/logging` +`backend-log-sink.ts` +`log-retry-queue.ts` (Dexie) +`LoggerService.report()`; `apps/platform-shell` +`global-error-handler.ts`; `libs/shared/state/src/lib/auth/` (slice + `AuthFacade` + `authInterceptor`); NEW `libs/shared/auth-ui` (`*hasPermission`, `requirePermission`, login form, forbidden page); `orders.routes.ts` guards `archive`; `order-form.component.ts` gates a control. `fake-indexeddb/auto` in 3 test-setups. **`vitest run` (28 files / 95 tests) + `nx run-many -t lint` (12 projects) + `nx build platform-shell --configuration=production` (initial 454 kB) + `nx build-sw platform-shell` (9 files) all GREEN.** Budgets unchanged from VP5.
+  - **Catalog feedback** (example README + class skills):
+    1. `libs/shared/auth-ui` must be `type:store`, not the solution's `type:util` — the directive + guard inject `Store`; a `type:util` lib may not depend on `type:store`.
+    2. `Login Succeeded` must carry `{ user, accessToken, permissions }`, not the solution's `{ user }` — a fresh login has no other way to populate the in-memory token (matches `Silent Refresh Succeeded`).
+    3. `libs/shared/logging` → `libs/shared/http-core` (VP6 batches through the base HTTP service). Allow-list += `type:util → type:data-access` (+ `type:store` for symmetry), kept to shared primitives by `scope:shared → scope:shared`.
+    4. `GlobalErrorHandler` lives in `apps/platform-shell` (composition-root concern), per the solution's own `PlatformHost/global-error-handler.ts.create` — not `libs/shared/logging`.
+    5. Bootstrap silent-refresh uses `provideAppInitializer(() => inject(Store).dispatch(...))` — the Angular-22 form of the solution's "`APP_INITIALIZER`-equivalent".
+  - **DOP registry** (`plateau-multiuser-monolith/registry/`, all canonical, zero resolvers): `shared-state-project` (`TMN`, `source: constraint`, N=4 — Finding 4 fully closed), `shared-logging-project` (`TMN`, `source: constraint`, N=2), `platform-shell-project` (`FMN`/`TMN`, `source: ordering-only`, N≥5 benign), `feature-routes-ts` (`FMN`/`TMN`, `source: ordering-only`, N=4). Updated the online-monolith `platform-shell-project` + offline-read `shared-state-project` forward-refs.
+  - `check.sh`: removed `plateau-multiuser-monolith` from `PLANNED`. `check.sh` PASS.
+- **`plateau-design-system` — DONE** (this session). **The `design-system` catalog's single plateau; from scratch, FULL.**
+  - Root skill: `parent_plateaus: []`, `standalone: true`, `created_by: [solution-design-system-structure, -tokens, -components, -ui-testing]`. No VPs. `registry: [design-system-repository]`.
+  - `structure/` — `repo-design-system` + 2 project skills (`project-design-system` library, `project-demo` preview app) + 8 class skills (`class-theme`, `class-custom-tokens`, `class-component-name`, `class-read-visual-style-properties`, + the 4 spec patterns `class-component-name-{component,visual,style-snapshot,a11y}-spec`). All `whenToUse:` populated (unlike the monolith set — from-scratch, no deferred-debt reason).
+  - `example/` — a **plain Angular CLI multi-project workspace** (`ng new --create-application=false` + `ng generate library/application` + `ng add @angular/material`), NOT Nx. `projects/design-system`: `styles/theme.scss` (one `mat.theme()`, `$violet-palette`), `styles/custom-tokens.scss` (`--ds-color-status-*` etc.), `DsButtonComponent` (delegates to `matButton`), `DsStatusChipComponent` (fully custom, `--ds-*` tokens), each with `spec/{component}.component.spec.ts` + `.visual/.style-snapshot/.a11y.spec.ts` + `spec/preview/{component}.preview.ts` (imports the *published* package). `projects/demo` routes to previews via `@ds-preview/*` TS aliases, applies `design-system/styles/theme` at the root. `playwright.config.ts` (`snapshotPathTemplate` → `spec/snapshot/`), `.changeset/` (`demo` ignored), `ng-package.json` `assets` ship the SCSS. **`ng build design-system` (Angular Package Format) + `ng test design-system` (Vitest via Angular 22's native `@angular/build:unit-test`, 2 files / 7 tests) + `ng build demo` (prod) + `tsc -p tsconfig.e2e.json` all GREEN.** Playwright not run (sandbox can't fork workers).
+  - **Catalog feedback** (example README + `repo-design-system` / `class-component-name`):
+    1. **A Material type leaks into the ng-packagr `.d.ts` even from a `protected` field.** `DsButtonComponent`'s internal `matAppearance` computed was first typed `MatButtonAppearance` — ng-packagr emitted `import { MatButtonAppearance } from '@angular/material/button'` into `types/design-system.d.ts`. Fix: internal Material-mapping helpers use a **local literal type**; the encapsulation MUST checks the *built* `types/*.d.ts`, not just the `.ts` source.
+    2. Angular 22's `@angular/build:unit-test` builder (Vitest + jsdom, `setupFiles` + `include` narrowed to `**/*.component.spec.ts`) replaces the Analog Vitest setup the monolith plateaus used — no `vite.config` / Analog plugin.
+    3. Preview components import the *published* package (`from 'design-system'`), so the demo is a real consumer of the built artifact; they stay in `spec/preview/` and are excluded from the lib build (`tsconfig.lib.json` excludes `**/spec/**`).
+    4. `theme.scss` / `custom-tokens.scss` ship as package assets at `design-system/styles/`; consumers resolve via Sass `includePaths: ["dist"]` + `@use 'design-system/styles/theme'`.
+  - **DOP registry:** `design-system-repository` (`FMN`/`TMN`, `source: ordering-only`, N=4 benign — the analogue of `monolith-repository`). Zero resolvers, consistent with `delta-conflict-analysis.md`.
+  - `variability-map.md` updated ("plateau built"). `check.sh`: dropped `plateau-design-system` from `PLANNED`; PASS.
+- **`plateau-platform-host` — DONE** (this session). **The `platform-host` catalog's single plateau; composes `plateau-multiuser-monolith` cross-catalog.**
+  - Root skill: `parent_plateaus: [plateau-multiuser-monolith]`, `standalone: true`, `created_by: [solution-federation-host, solution-platform-contracts, solution-session-sharing, solution-host-design-system-consumption]`. VP1/VP2/VP3 all = Yes (VP2 satisfiable — monolith VP7; VP3 — monolith VP4). `registry: [platform-shell-project, platform-contracts]`.
+  - `structure/` = **the federation delta only** (matching how the variability map is scoped — every monolith project is inherited from the parent). `repo-platform-host` (`type:host` tag + federation shared-dep rules), `project-platform-shell` (federation extend of the shell), NEW `repo-platform-contracts` (the separate `@platform/contracts` package), NEW class skills `class-remote-registry-service`, `class-host-session`, `class-service-worker` (5th SW rule, conditional on monolith offline-first).
+  - `example/` = **limited federation smoke test** (NOT the full monolith). Native Federation dynamic host (`ng add @angular-architects/native-federation@22.1.2 --type dynamic-host`), a tiny `@platform/contracts` package (vendored as a tarball), `RemoteRegistryService` (runtime manifest → `loadRemoteModule`, rejects for a missing remote), `HostSession` (sole `SESSION_CONTRACT` provider, signal stand-in for the auth slice), remote mounted at `/reports` via `loadChildren` → `REMOTE_ROUTES` with a `RemoteUnavailableComponent` fallback. **`ng test` (2 files / 6 tests) + `ng build` (Native Federation host — `remoteEntry.json` shares `@platform/contracts` + Angular as strict singletons) + `tsc -p tsconfig.e2e.json` GREEN.** Two-server Playwright smoke e2e written, not run.
+  - **Catalog feedback**: (1) `@angular-architects/native-federation@22.1.2` supports Angular 22's `@angular/build` (`--type dynamic-host` switches build to `native-federation:build`, keeps `@angular/build:unit-test`) — Native Federation + Dynamic Federation, no V1 webpack module-federation; (2) `@platform/contracts` must ship ESM with explicit `.js` import extensions + a `rootDir`, `@angular/core` a **peer only** (a `file:`/symlink install nests a 2nd `@angular/core` and breaks `Signal` type identity → consumed as a packed **tarball**); (3) `RemoteRegistryService.loadRemote` returns the exposed module, the host route reads `REMOTE_ROUTES` off it (the remote exposes `./Routes`, a `Routes` array, not a component).
+  - **DOP registry** (`plateau-platform-host/registry/`): `platform-shell-project` (`FMN`/`TMN`, `source: ordering-only`, N≥3 — the cross-catalog Finding-5 point) + `platform-contracts` (`TMN`, `source: constraint`, N=2). Both canonical, zero resolvers.
+- **`plateau-embeddable-app` — DONE** (this session). **The `embeddable-app` catalog's single plateau; from scratch (`parent_plateaus: []`).**
+  - Root skill: `standalone: true`, `created_by: [solution-federation-remote, solution-session-consumption, solution-remote-design-system-consumption]`. VP1 + VP2 = Yes; VP3 (RemoteInternalArchitecture) aspirational. `registry: [embeddable-repository]`.
+  - `structure/` = `repo-embeddable-app` (one flat app, no project tier) + class skills `class-remote-routes` (the exposed `REMOTE_ROUTES`, root-relative), `class-require-permission` (the remote's own tiny guard reading `SESSION_CONTRACT` — NOT `@org/shared-auth-ui`), `class-has-permission-directive`.
+  - `example/` = **limited trivial remote**. Native Federation remote (`ng add … --type remote`) exposing `./Routes`; `requirePermission('reports.view')` reading `SESSION_CONTRACT`; `ReportsComponent` renders a not-authenticated state when the host session is anonymous (never its own login) and gates Export on `*hasPermission`. **`ng test` (2 files / 6 tests) + `ng build` (`remoteEntry.json` exposes `./Routes`, shares `@platform/contracts` strict singleton) GREEN.**
+  - **Catalog feedback**: the exposed module is a `Routes` array (`./Routes`), not a component — hierarchical route ownership carries one level down; `requirePermission` here is the remote's own guard, not a monolith import.
+  - **DOP registry** (`plateau-embeddable-app/registry/`): `embeddable-repository` (`FMN`/`TMN`, `source: ordering-only`, N=3 benign — analogue of `monolith-repository` / `design-system-repository`; the `element/repository` retag recorded in `delta-conflict-analysis.md`). Canonical, zero resolvers.
+- **`plateau-persisted-state-monolith` — DONE** (this session — the monolith chain's sixth and last plateau). `parent_plateaus: [plateau-multiuser-monolith]`, `standalone: true`, `created_by: [solution-persisted-state]` (VP8). VP1–VP8 all Yes. **No new Nx project.**
+  - `solution-persisted-state` fleshed out first: `adr/storage-backend-choice.md` (localStorage default, sessionStorage per-tab, Dexie for large drafts; no generic sync lib) + `adr/rehydration-timing.md` (sync metaReducer merge on store-init for slices; `withHooks({ onInit })` for feature stores; never a post-render patch). Implementation: `Repository.extend`, `GlobalStore/{shared-state.project.extend, persisted-state.ts.create, preferences.store.ts.create}`, `FeatureStore/{with-persisted-draft.ts.create, {Feature}.project.extend}`. Risk/Fix throughout.
+  - `structure/` = 44 seeded from `plateau-multiuser-monolith` + 4 new (`class-persisted-state`, `class-with-persisted-draft`, `class-preferences-store`, `class-feature-draft-store`); repo + `project-shared-state` + `project-feature-feature` merged the VP8 delta. `registry/shared-state-project.md` updated to **N = 5** (canonical — the VP8 metaReducer is feature-local to the `preferences` `provideState`).
+  - `example/` = the multiuser Nx workspace evolved: `libs/shared/state/src/lib/persistence/` (`persisted-state.ts` + `with-persisted-draft.ts` + spec), `preferences/` slice + spec, `store.config.ts` registers `preferences` with `persistKeys`; `libs/orders/feature` gains `orders-draft.store.ts` (+ spec) wired into `order-form.component.ts`; `apps/platform-shell-e2e` gains `persisted-draft.e2e.spec.ts`. **`npm test` 31 files / 115 tests + `nx lint` (12) + `nx build platform-shell --configuration=production` (458 kB) + `nx build-sw` all GREEN; `tsc -p apps/platform-shell-e2e/tsconfig.json` OK.**
+  - **Catalog feedback**: (1) `provideState(feature, { metaReducers })` (2-arg, a `FeatureSlice` object) **silently ignores** the config — only the 3-arg `provideState(name, reducer, config)` applies `metaReducers`; fixed in the solution + plateau skills, a `Risk:` bullet added. (2) `withPersistedDraft`'s persist `effect()` needs `TestBed.tick()` to flush in a pure store test. (3) `auth` is structurally excluded from persistence (no `metaReducers` entry at all), not just by an allow-list.
+- **`plateau-multi-tenant-design-system` — DONE** (this session — the design-system catalog's VP1 plateau). `parent_plateaus: [plateau-design-system]`, `standalone: true`, `created_by: [solution-design-system-multi-tenant-theming]` (VP1 = Yes). **No new project.**
+  - `solution-design-system-multi-tenant-theming` fleshed out first: `adr/tenant-resolution-strategy.md` (CSS `[data-tenant]` attribute set by the consumer; no runtime JS token rewrite, no per-tenant bundle, no build-time baking) + `adr/tenant-palette-scope.md` (colour-only via a shared `ds-tenant-theme` mixin; typography/density stay in `theme.scss`). Implementation: `Repository.extend`, `design-system.project.extend`, `Tenants/{tenant-theme.scss.create, {tenant}-palette.scss.create, tenants.ts.create}`.
+  - `structure/` = 11 seeded from `plateau-design-system` + 3 new (`class-tenant-theme`, `class-tenant-palette`, `class-tenants`); repo + `project-design-system` + `project-demo` merged the VP1 delta; `class-theme` noted unchanged. `registry/design-system-repository.md` updated to **N = 5** (canonical — VP1 is entirely new files under a new `styles/tenants/` dir).
+  - `example/` = the plateau-design-system CLI workspace evolved: `projects/design-system/styles/tenants/` (`_tenant-theme.scss` + `_acme.scss` + `_globex.scss`) + `styles/tenants.scss` aggregator asset + `src/lib/tenants.ts` (`DS_TENANTS`/`DsTenant`, + spec) + `ng-package.json` asset entries + `public-api` export; `projects/demo` gains a `<select>` tenant switcher + `@use '…/tenants'`; `status-chip` gains a per-tenant style-snapshot spec. **`ng build design-system` (APF — `styles/tenants/**` shipped, `DsTenant` in `types/*.d.ts`, no `@angular/material` leak) + `ng test design-system` (3 files / 9 tests) + `ng build demo` (root CSS carries `:root[data-tenant='acme']` / `[data-tenant='globex']`) + `tsc -p tsconfig.e2e.json` all GREEN.**
+  - **Catalog feedback**: (1) the tenants asset must resolve as `styles/tenants.scss` (the `styles/<name>.scss` pattern the existing `@use 'design-system/styles/theme'` follows) — an aggregator at `styles/tenants/tenants.scss` would not resolve. (2) "a tenant varies colour only" is asserted in the per-tenant spec (resolved `font` byte-identical across tenants), not just a review rule. (3) `noPropertyAccessFromIndexSignature` forces `dataset['tenant']`.
+- **All 10 plateaus DONE.** `check.sh` PASS (`PLANNED=''` — every solution has full Implementation). variability maps + `plateau/plateau-repository.md` (monolith, design-system) updated. Stage 4 complete — **no aspirational solutions remain**.
+
+**Multi-session effort** (dotnet's Stage 4 was 3 plateaus over several sessions; this is 10 + evolving examples).
+
+## Post-build validation pass — DONE (this session)
+
+Validated the catalog against the `plateau-map` pipeline skills; fixed the drift the completed
+build had left in the upstream artifacts:
+
+- **`no-plateau-view-in-variability-map` ADR** — removed the `## Plateau Map derivation` section from
+  all four `variability-map.md` files (the ADR's "drift cleanup"). The V1→v3.1 reference mapping and
+  the "combinations with no named plateau" coverage notes moved into each `plateau/plateau-repository.md`.
+- **`Realized by` links** — every cell now wikilinks its realizing solution. `platform-host` VP2/VP3
+  and all three `embeddable-app` VPs previously linked the V1 source solution (or nothing) instead of
+  the v3.1 solution that realizes them. Stripped the Stage-2 `→ v3.1 solution-x (migrated)` tails.
+- **Stale provisional prose** — "`v3.1/solutions/` does not exist yet", "Realized-by links are
+  provisional (Stage 3 repoints)", "to be encoded in `depends_on` at Stage 3", "recorded as a v3.1
+  ADR at Stage 3" replaced with the actual state (edges are in place; decisions logged here — the
+  session never authored separate constraint ADRs for the VP2/VP3 gating).
+- **Feature models** — "Open questions on V1" sections marked all-resolved with the outcome per item;
+  `PersistedState` (monolith) and `MultiTenantTheming` (design-system) moved from the aspirational
+  tables to real Features-table rows (they are realized VPs now); stale `(aspirational)` labels
+  dropped from the two diagrams; monolith "Out of scope" gained the Plateau-Components exclusion.
+- **Feature diagrams** — edge labels normalised to the closed list (`Optional (per feature)` →
+  `Optional` + node annotation; dotted `Optional` → solid; `platform-host` cross-catalog edges →
+  bare `Requires` with the target feature named in the node; `embeddable-app` soft cross-catalog
+  edges removed, kept as prose).
+- **`plateau/plateau-repository.md`** — `platform-host`, `embeddable-app`, `design-system` gained the
+  formal Plateau × VP matrix + column legend they were missing; monolith gained a VP5 per-feature
+  shape note and a note documenting the cumulative-snapshot `registry/` convention.
+- **Minor** — `solution-logging-global` `depends_on` link `.skill` → `.skill.md`; 11 other body
+  wikilinks ending `.skill|` → `.skill.md|`.
+
+Second pass (the two items left open after the first):
+
+- **The two ADRs the maps promised** were authored:
+  - [[skills/angular/architecture/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]]
+    (`solution-session-sharing`) — the `SessionContract` carve-out + the inverted `auth ↔ federation`
+    dependency (feature-model open question 3). `adr: []` → registered + `# Adr` body section.
+  - [[skills/angular/architecture/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]
+    (`solution-global-store`) — why VP4/VP5/VP7/VP8 each `require` VP2 and add a slice rather than
+    carrying their own store. The maps + monolith feature model now link it instead of `DECISIONS.md`.
+  - VP3→VP7 was *not* given an ADR — it is inherent to `solution-authentication`'s HTTP usage, not a
+    design choice. Two empty `adr/` folders (`solution-federation-remote`,
+    `solution-remote-design-system-consumption`) were removed — both reuse a shared host-side ADR.
+- **Implementation-file links normalised to `.md`** (INVARIANTS §4) — 239 wikilinks across ~57 files
+  ended `…/{file}.{create,extend}` without the `.md` suffix; all now `…/{file}.{create,extend}.md`.
+  `check.sh` tolerated both (its `resolve()` appends `.md`); the conform pass removes the drift.
+
+`check.sh` PASS. 6117 absolute wikilinks in `v3.1/` resolve.

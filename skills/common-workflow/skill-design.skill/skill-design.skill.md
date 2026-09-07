@@ -1,132 +1,170 @@
 ---
 name: skill-design
-description: Rules for writing skills that AI agents can understand and apply correctly
-whenToUse: when you create a new skill or update an existing one
+description: How a skill file is organized so an AI agent can find, load, and follow it — Human Flat vs Dir, folder and file naming, the top-level section set, cross-skill links, supporting files, and ADRs; the entry point that also requires skill-content and skill-tags
+whenToUse: when you create a new skill, or change how one is organized — its Human Flat/Dir format, file and folder layout, top-level sections, cross-skill links, or ADRs
+updated: 20260907
 tags:
   - skill/core
   - stack
   - concern/documentation
-
+adr:
+  - adr/cross-skill-links-scope.md
+  - adr/allow-extra-top-level-sections.md
 ---
 
 # Goal
-- Define how to describe skills so that an AI agent can decide when to use them and how to follow them.
-- Standardize skill structure, naming, and cross-references across the repository.
-
-# Scope
-This skill applies to every skill-writing task in the repository. It defines the baseline goals, principles, and rules that must be followed when creating or updating any skill. If a domain-specific skill provides its own template or workflow, use it, but still satisfy the baseline requirements from this skill. Use the generic [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists.
+- A skill in the correct format (Human Flat or Human Dir) whose folder and main-file names both match the `name` field.
+- Frontmatter carrying a concrete `whenToUse`, `updated: YYYYMMDD`, and — per [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] — facet tags.
+- Exactly one `# Goal`, `# Core Principle`, `# Rule`, and `# Check list` — plus at most one optional `# Scope`, `# Workflow`, and `# Example`; `# Rule` using only `## MUST`/`## SHOULD`/`## MAY`.
+- Every cross-skill link an input, a required sub-step, an applied standard/template, or an active prohibition — nothing that only runs after this skill's artifact is done.
+- Every decision made while writing the skill recorded as an ADR in the owning skill's `adr/` folder.
+- The `# Check list`s of [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] also passed.
 
 # Core Principle
-- Write every skill as instructions you would need to execute the task yourself.
-- If you cannot tell when the skill applies by reading `whenToUse`, the skill is not clear enough.
-- **Agent clarity and convenience are the key success factors.** Every rule, example, and checklist must make the skill easier for an AI agent to understand and apply. If a skill is confusing, hard to follow, or forces the agent to guess, rewrite or split it.
-- Write skill in English
+- **Instructions you could execute** - Write every skill as the instructions you would need to do the task yourself; if `whenToUse` alone does not tell you when the skill applies, it is not clear enough.
+- **Reader is an agent** - Agent clarity and convenience are the measure — a skill that forces the agent to guess, or is too large to skim, is rewritten or split.
+- **Three skills, one baseline** - Every skill-writing task satisfies this skill (organization), [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] (how the text reads), and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] (frontmatter tags); a domain-specific skill or template exempts none of the three.
+- **Fixed top-level section set** - The allowed top-level sections are `# Goal`, `# Core Principle`, `# Rule`, `# Check list`, plus at most one optional `# Scope`, `# Workflow`, and `# Example` — see [ADR: allow-extra-top-level-sections](./adr/allow-extra-top-level-sections.md) for the trade-offs.
+- Write skills in English.
 
 # Rule
 
 ## MUST
-- Under `# Rule`, use only `## MUST`, `## SHOULD`, and `## MAY` subsections — never `## MUST NOT`/`## SHOULD NOT` headings. Express a prohibition as a negatively-phrased bullet ("Never...", "Do not...") inside `## MUST` or `## SHOULD`, at whichever strength it actually carries; do not maintain a separate `# Anti-patterns` section.
-  - Risk: without one convention, some skills explain rules with a separate anti-pattern narrative while others don't, and readers have to guess whether a positively- or negatively-phrased rule is "critical" or "recommended" from inconsistent section names across the repository.
-  - Fix: pick the bullet's strength (MUST/SHOULD/MAY) based on how mandatory it is, and its polarity (positive/negative) based on wording alone — the heading only ever names the strength.
-- Nest an elaboration directly under a `# Rule` bullet using exactly `Violation`/`Risk`/`Fix`, defined relative to the violation, not the rule's own polarity: `Violation` (optional) is what not following the rule looks like — an omission or wrong attempt for a positively-phrased rule, the forbidden action itself for a negatively-phrased one; `Risk` is what breaks because of that violation; `Fix` is the correct action that replaces it. Every `## MUST` bullet requires `Risk` and `Fix` (`Violation` stays optional); `## SHOULD` bullets carry the elaboration only when the rule is non-obvious; `## MAY` bullets never carry it — permission has nothing to violate.
-  - Risk: without a shared definition, "Fix" reads as "instead of the forbidden action" for a prohibition but has no obvious meaning for a positively-phrased rule, so different skill authors invent different, incompatible interpretations.
-  - Fix: always phrase `Risk`/`Fix` around "the violation described (or implied) by `Violation`," which reads identically regardless of whether the rule itself is phrased as an obligation or a prohibition.
-- Use exactly one `# Goal`, one `# Core Principle`, one `# Rule`, and one `# Check list` top-level section per skill file — never repeat a top-level section for a sub-topic within the same skill. Keep the `## MUST`/`## SHOULD`/`## MAY` subsections under `# Rule` at a consistent `##` heading level throughout the skill; never drop a later occurrence to `###` or deeper.
-  - Risk: a repeated `# Rule` block, or a `## MUST` that silently becomes `### MUST` further down the file, makes an agent scanning for "## MUST" miss requirements that exist under the wrong heading level.
-  - Fix: if a skill has two conditionally-triggered halves, split it into two skills (see the bundling rule below) instead of repeating sections in one file.
-- Treat this skill as the baseline for every skill-writing task, even when a domain-specific skill provides its own template or workflow.
-  - Violation: "I am following `solution-create.skill`, so I do not need to check `skill-design`."
-  - Risk: the resulting skill may have vague `whenToUse`, broken links, a missing checklist, an inconsistent format, or instructions that are hard for an agent to apply.
-  - Fix: use the domain-specific skill for specialized guidance, but verify that the baseline requirements from this skill are still met.
-- Use [skill.template.md](./templates/skill.template.md) as the starting point only when no domain-specific template or skill exists for the skill you are writing.
-  - Risk: reinventing structure ad hoc when a domain-specific template already exists produces a skill inconsistent with its siblings.
-  - Fix: check for a domain-specific template/skill first; fall back to the generic template only when none exists.
-- When you follow a domain-specific skill, still satisfy the baseline requirements of this skill: clear `whenToUse`, actionable rules, valid links, correct format, and a filled `# Check list`.
-  - Risk: a skill can pass its domain-specific review while still having vague `whenToUse`, broken links, a missing checklist, or an inconsistent format — none of which the domain-specific skill checks for.
-  - Fix: run this skill's own `# Check list` against the result even after following a domain-specific skill.
-- Choose the correct skill format:
-  - **Human Flat**: a single file named `{skill-name}.skill.md`. Use for self-contained skills that do not need additional files.
-  - **Human Dir**: a folder named `{skill-name}.skill/` containing a file named `{skill-name}.skill.md`. Use when the skill references its own supporting files (templates, examples, diagrams, ADRs, etc.).
-  - Violation: a flat skill that also creates a `templates/` folder next to it without converting to Human Dir.
-  - Risk: files are scattered and the skill structure is unclear.
-  - Fix: convert to Human Dir when the skill needs supporting files.
-- Never put supporting files for a Human Flat skill outside the single markdown file.
-  - Risk: files placed outside the single file defeat the reason for choosing "Flat" — a reader or agent following just that file never discovers them.
-  - Fix: convert to Human Dir instead, and place the supporting files inside `{skill-name}.skill/`.
-- For Human Dir skills, keep all referenced supporting files inside the skill folder.
-  - Risk: a supporting file placed outside the skill folder can be moved, renamed, or deleted independently of the skill, silently breaking its links.
-  - Fix: keep every template, example, and ADR the skill references inside `{skill-name}.skill/`.
-- Match the folder name and the main skill file name exactly: `{skill-name}.skill/{skill-name}.skill.md`.
-  - Risk: tooling and cross-skill links that assume this exact pattern cannot resolve the file.
-  - Fix: name both the folder and the main file after the skill's `name` field, exactly.
-- Make `whenToUse` describe concrete trigger conditions, not vague marketing text like "when needed" or "for development". An agent must read it and know whether to apply the skill.
-  - Violation: "Use this skill for best practices."
-  - Risk: the agent cannot decide whether the skill applies to the current task.
-  - Fix: "Use this skill when you add logging to code or choose a log level."
-- Keep the skill actionable: rules, workflows, and checklists must tell the agent exactly what to do, not describe the topic for a human reader.
-  - Violation: "This skill explains the importance of clean code."
-  - Risk: the agent does not know what actions to take or when to take them.
-  - Fix: "Apply these rules when you create or refactor a class: ..."
-- Use links that are resolvable from the skill file:
-  - Relative to the skill file: `[label](./path/to/file.md)` or `[[./path/to/file.md|label]]`.
-  - Relative to the repository root: `[label](skills/.../file.md)` or `[[skills/.../file.md|label]]`.
-  - Violation: `[template](C:\Users\...\skill.template.md)` or `[[skill.template.md]]` used from a different folder.
-  - Risk: the agent cannot find related files.
-  - Fix: use relative links from the skill file or repository-root-relative links.
-- Use wikilinks or standard markdown links consistently within one skill.
-  - Risk: mixing link syntaxes within one file means tooling that only renders one syntax leaves some links unstyled or unresolved.
-  - Fix: pick one syntax per skill file and use it throughout.
-- Never link to another skill's file as an example for this skill.
-  - Violation: `See [some-example](../other-skill.skill/other-skill.skill.md) for an example.`
-  - Risk: creates an unnecessary dependency between skills that have no real relationship — the other skill can be renamed, restructured, or removed independently, silently breaking this skill's example.
-  - Fix: create an `examples/` folder inside this skill's own folder (Human Dir), place the example there, and link to `[example](./examples/example.md)`.
-- Never bundle two independently-triggered procedures into one skill just because they are related or often used together. If `description`/`whenToUse` needs "plus/also/and separately" to introduce a second condition-gated capability, split into two skills and cross-link them via wikilinks instead of branching the same `# Rule`/`# Check list` on that condition.
-  - Violation: a PR-validation skill whose `whenToUse` reads "...or when a project following X needs Y wired in", with a second `# Rule`/`# Check list` block gated by "if the project follows X" appended after the first.
-  - Risk: the agent must mentally filter every rule and checklist item by an invisible precondition instead of trusting that everything in the file applies; duplicated section headings drift out of sync, and the file grows too large to skim.
-  - Fix: split into a base skill carrying the unconditional rules, and an extension skill whose `whenToUse` states the precondition explicitly (e.g. "when a project following `[[other-skill]]` needs..."). Cross-link the two with wikilinks; each keeps its own single `# Rule`/`# Check list`.
-- Move an illustrative code block or table (a full runnable workflow/config file, a multi-step script, a sample end-to-end implementation) longer than ~15 lines into `examples/` or `templates/` inside the skill's own folder (Human Dir), and leave only a link with a one-line caption of what it shows in the skill body. Keep a code block, snippet, or table inline when it defines part of the rule/contract itself (e.g. a table of required fields, a 3-line config flag) rather than merely illustrating one.
-  - Violation: a 120-line GitHub Actions YAML workflow pasted directly under `# Example` instead of `./examples/<name>.example.md` (should have been extracted); or, the opposite mistake, a `make`-target contract table moved into `examples/contract.md`, leaving `# Rule` say only "see the example" (should have stayed inline).
-  - Risk: in the first case, the example's length and formatting dominate the file, burying the actual rules the agent needs to skim; in the second, the agent must open a second file just to learn a rule it is required to follow.
-  - Fix: move only content that illustrates or demonstrates a rule; keep content that states or defines the rule itself inline.
-- Tag every skill's frontmatter `tags:` using the facet vocabulary defined in [facet-vocabulary.md](./facet-vocabulary.md): at least one `concern/*` value, and either one `stack/<value>` tag or the bare `stack` tag for skills that apply regardless of stack. Add `framework/*`, `app-type/*`, and `artifact/*` tags when they apply. Never chain two different facets into one `/`-path, and when using a nested facet value also add its parent value as its own tag.
-  - Violation: tagging a skill `angular/component` (two different facets — framework and artifact — forced into one chain) instead of separate `framework/angular` and `artifact/component` tags; or tagging only `concern/testing/unit` without also adding `concern/testing`.
-  - Risk: an agent resolving its skillset with a tag-expression query (e.g. `stack/typescript & concern/testing`) silently misses the skill, or a query for the parent concern misses every skill that only carries the narrower child value — the skill becomes invisible to exactly the agents that need it.
-  - Fix: tag each facet independently, combine facets on one skill by adding multiple tags, and duplicate the parent tag whenever a nested value is used. Run the self-check in facet-vocabulary.md before inventing a new facet or value.
-- When an architecture decision is made while writing or updating this skill — a choice made between considered variants, each with real benefits and costs — record it as an ADR following [adr-create.skill.md](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), inside the skill folder that owns the decision.
-  - Violation: choosing between approaches during the writing session and moving on without creating an ADR file, leaving the reasoning only in conversation history.
-  - Risk: the rejected alternatives and the trade-offs behind the choice are lost, and the same decision gets re-opened and re-argued the next time someone touches the skill.
-  - Fix: create the ADR immediately following adr-create.skill, register it in the skill's `adr:` YAML property, and link it from the skill body.
+
+### Also satisfy skill-content and skill-tags
+Apply [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] on every skill you create or change, and run their `# Check list`s alongside this one.
+- Risk: a skill can pass this skill's structural checks while its prose is padded and unscannable, or its tags leave it invisible to the queries that should surface it.
+- Fix: treat the three as one baseline — organization here, prose in skill-content, tags in skill-tags.
+
+### This skill is the baseline
+Treat this baseline as mandatory for every skill-writing task, even when a domain-specific skill provides its own template or workflow.
+- Violation: "I am following `solution-create.skill`, so I do not need to check `skill-design`."
+- Risk: the resulting skill may have vague `whenToUse`, broken links, a missing checklist, an inconsistent format, or instructions hard for an agent to apply — none of which the domain-specific skill checks for.
+- Fix: use the domain-specific skill for specialized guidance; run this baseline's `# Check list` against the result regardless.
+
+### Generic template as fallback only
+Start from [skill.template.md](./templates/skill.template.md) only when no domain-specific template or skill exists for the skill you are writing.
+- Risk: reinventing structure ad hoc when a domain-specific template already exists produces a skill inconsistent with its siblings.
+- Fix: check for a domain-specific template/skill first; fall back to the generic template only when none exists.
+
+### One of each top-level section
+Use exactly one `# Goal`, one `# Core Principle`, one `# Rule`, and one `# Check list` top-level section — never repeat one for a sub-topic, never nest one inside another heading (a `## Rule` under `# Workflow`, a `### MUST` under `## Rule`).
+- Risk: a repeated `# Rule` block, or a `MUST` nested at the wrong level, makes an agent scanning for `## MUST` miss requirements.
+- Fix: if a skill has two conditionally-triggered halves, split it into two skills (see [One trigger per skill](#one-trigger-per-skill)) instead of repeating sections.
+
+### Optional Scope, Workflow, Example only
+Beyond the mandatory four, add at most one `# Scope`, at most one `# Workflow`, and at most one `# Example` top-level section — no other top-level section is allowed. `# Scope` states only what the skill covers and does not cover. `# Workflow` only describes the process; every normative requirement in it must also appear as a `## MUST`/`## SHOULD`/`## MAY` bullet under `# Rule`. `# Example` contains only one-line links to files inside the skill's own `examples/` or `templates/` folder — never inline code blocks or tables longer than ~15 lines. Decision recorded in [adr/allow-extra-top-level-sections.md](./adr/allow-extra-top-level-sections.md).
+- Violation: a `# Scope` section drifts into rules, a `# Workflow` section carries its own `## MUST` rules, an `# Example` section holds a multi-line code block, or a second `# Scope`/`# Workflow`/`# Example` section appears.
+- Risk: an agent scanning `## MUST` under `# Rule` misses requirements buried elsewhere, and scope/workflow sections become a shadow rule set.
+- Fix: keep `# Scope` to coverage boundaries, move every normative requirement to a `## MUST`/`## SHOULD`/`## MAY` bullet, keep `# Example` to one-line links, and use each optional section at most once.
+
+### Only MUST, SHOULD, MAY
+Under `# Rule`, use only `## MUST`, `## SHOULD`, and `## MAY` subsections; express a prohibition as a negatively-phrased rule ("Never...", "Do not...") inside one of them at its actual strength, never as a `## MUST NOT`/`## SHOULD NOT` heading or a separate `# Anti-patterns` section.
+- Risk: without one convention, some skills carry a separate anti-pattern narrative and readers guess a rule's strength from inconsistent section names across the repository.
+- Fix: pick strength (MUST/SHOULD/MAY) by how mandatory the rule is, polarity (positive/negative) by wording alone — the heading only names the strength.
+
+### Pick Flat or Dir
+Choose the skill's format: **Human Flat** — a single file `{skill-name}.skill.md`, for a self-contained skill with no supporting files; **Human Dir** — a folder `{skill-name}.skill/` containing `{skill-name}.skill.md`, when the skill references its own templates, examples, diagrams, or ADRs.
+- Violation: a flat skill that also creates a `templates/` folder beside it without converting to Human Dir.
+- Risk: files scattered outside the single file are never discovered by an agent following just that file.
+- Fix: convert to Human Dir the moment the skill needs a supporting file.
+
+### Flat means one file
+Never place a supporting file for a Human Flat skill outside its single markdown file.
+- Risk: a file outside the single file defeats the reason for choosing Flat — nothing points to it.
+- Fix: convert to Human Dir and put the supporting file inside `{skill-name}.skill/`.
+
+### Supporting files stay inside
+For a Human Dir skill, keep every referenced supporting file inside the skill folder.
+- Risk: a supporting file outside the folder can be moved, renamed, or deleted independently, silently breaking the skill's links.
+- Fix: keep every template, example, and ADR the skill references inside `{skill-name}.skill/`.
+
+### Folder and file names match the skill name
+Match the folder name and the main file name exactly to the skill's `name`: `{skill-name}.skill/{skill-name}.skill.md`.
+- Risk: tooling and cross-skill links that assume this pattern cannot resolve the file.
+- Fix: name both after the `name` field, exactly.
+
+### whenToUse names concrete triggers
+Write `whenToUse` as the concrete situations that must make an agent apply the skill, decidable from that sentence alone — never vague text like "when needed" or "for best practices".
+- Violation: "Use this skill for best practices."
+- Risk: the agent cannot decide whether the skill applies to the current task.
+- Fix: name the tasks or situations — "when you add logging to code or choose a log level".
+
+### Every skill carries its change date
+Keep `updated: YYYYMMDD` (compact, no separators) in every skill's frontmatter and bump it in the same commit that changes the skill.
+- Risk: without a bumped date, a changed skill — or a changed standard — triggers no re-validation, and the validation queue trusts a stale file.
+- Fix: bump `updated` on every change; the skill-validation pass derives staleness from it.
+
+### Links resolve from the skill file
+Use links resolvable from the skill file — relative to the file (`[label](./path/file.md)`, `[[./path/file.md|label]]`) or to the repository root (`[label](skills/.../file.md)`, `[[skills/.../file.md|label]]`).
+- Violation: `[template](C:\Users\...\skill.template.md)`, or a bare `[[skill.template.md]]` used from a different folder.
+- Risk: the agent cannot find the related file.
+- Fix: use a skill-file-relative or repository-root-relative link.
+
+### One link syntax per skill
+Use wikilinks or standard markdown links consistently within one skill file.
+- Risk: a file mixing both leaves some links unstyled or unresolved by tooling that renders only one.
+- Fix: pick one syntax per file and use it throughout.
+
+### Examples live in the owning skill
+Never link another skill's file as an example for this one.
+- Violation: `See [some-example](../other-skill.skill/other-skill.skill.md) for an example.`
+- Risk: an unnecessary dependency on a skill with no real relationship — it can be renamed or removed independently, breaking this skill's example.
+- Fix: put the example in this skill's own `examples/` folder (Human Dir) and link `[example](./examples/example.md)`.
+
+### One trigger per skill
+Never bundle two independently-triggered procedures into one skill; if `description`/`whenToUse` needs "plus/also/and separately" to introduce a second condition-gated capability, split into two skills cross-linked via wikilinks.
+- Violation: a PR-validation skill whose `whenToUse` reads "...or when a project following X needs Y wired in", with a second `# Rule`/`# Check list` block gated by "if the project follows X".
+- Risk: the agent must filter every rule by an invisible precondition instead of trusting that everything in the file applies; duplicated headings drift; the file grows too large to skim.
+- Fix: a base skill with the unconditional rules, and an extension skill whose `whenToUse` states the precondition ("when a project following `[[other-skill]]` needs..."); each keeps its own single `# Rule`/`# Check list`.
+
+### Link what the artifact needs, not what comes after it
+Link a skill this one needs to finish its own artifact — an input it reads, a sub-step it must run (even when that sub-step is its own skill), a standard or template it applies — and an active "do not apply X here" prohibition; never link a skill that only runs once this skill's artifact is already complete (the next stage of a pipeline, a consumer of the output) or one named only to mark a topic out of scope. Sequencing across finished artifacts lives in the pipeline's non-skill `README.md`, which the loader does not pull in. Decision recorded in [adr/cross-skill-links-scope.md](./adr/cross-skill-links-scope.md).
+- Test: could an agent complete this skill's artifact without knowing the linked skill? If yes, drop the link; if no, keep it.
+- Violation: a Goal or Core Principle bullet reading "once the map is done, proceed to `[[later-stage]]`", or "the X view is not here — see `[[other-skill]]`".
+- Risk: the skill loader pulls every linked skill into the agent's context, so a link to a later stage or a "not my job" pointer inflates every load while buying nothing the current task needs; non-goals are unbounded, so each new neighbour adds another.
+- Fix: keep links for inputs, required sub-steps, and applied standards; name a later stage or an out-of-scope boundary in plain words.
+
+### Record decisions as ADRs
+When a choice between considered variants — each with real benefits and costs — is made while writing or updating a skill, record it as an ADR following [adr-create.skill.md](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), inside the skill folder that owns the decision.
+- Violation: choosing between approaches during the session and moving on without an ADR file, leaving the reasoning only in conversation history.
+- Risk: the rejected alternatives and trade-offs are lost, and the decision gets re-argued the next time someone touches the skill.
+- Fix: create the ADR immediately, register it in the skill's `adr:` YAML property, and link it from the skill body.
 
 ## SHOULD
-- Provide a `# Check list` so the agent can verify it has followed the skill.
-- Add free-form tags beyond the required facet tags (e.g. `xunit`, `mediatr`) when they help a reader skim the skill's specific topic; keep them outside the controlled facet vocabulary in facet-vocabulary.md.
-- Prefer short, focused skills over large monolithic ones.
-- Do not use absolute file-system paths or URLs that depend on the local machine.
-  - Risk: a path or link that only resolves on the author's machine/checkout is broken for every other agent or contributor who opens the skill.
-  - Fix: use paths relative to the skill file or the repository root, as required under `## MUST`.
-- Do not leave empty hint/example blocks in the final skill file.
-  - Violation: keeping `hint` and `example` blocks after filling the template.
-  - Risk: the final skill is noisy and harder to follow.
-  - Fix: remove all `hint`, `example`, and `code example` blocks, and the `# How Apply this template` section before committing.
+
+### Always ship a check list
+Provide a `# Check list` so the agent can verify it followed the skill.
+
+### Short skills over monoliths
+Prefer short, focused skills over large monolithic ones — split when two parts have independent triggers and independent reasons to change.
+
+### One question per section
+Give each top-level section a single responsibility, and extract a reference vocabulary (a closed list of relation types, a set of layout mechanics) into its own named section when several rules or workflow steps cite it.
+- Risk: a section mixing layout mechanics with a reference vocabulary forces the reader to hold two kinds of knowledge at once, and every citation points into the middle of an unrelated block.
+- Fix: one section per reader question — what (`# Goal`), how to think (`# Core Principle`), where artifacts live, how to build, the contract (`# Rule`), verification (`# Check list`); a shared vocabulary gets its own anchored section.
+
+### No machine-local paths
+Never use an absolute file-system path or a URL that depends on the local machine.
+- Risk: a path that resolves only on the author's checkout is broken for every other agent or contributor.
+- Fix: use paths relative to the skill file or the repository root.
 
 ## MAY
-- Add diagrams, templates, or ADRs inside the skill folder when they make the skill easier to apply.
+
+### Supporting files welcome
+Add diagrams, templates, or ADRs inside the skill folder when they make the skill easier to apply.
 
 # Check list
-- [ ] The skill is written with the agent's understanding and convenience as the primary measure of quality.
-- [ ] If a domain-specific skill/template is used, the baseline requirements of this skill are still satisfied.
-- [ ] The skill uses the correct format (Human Flat or Human Dir).
-- [ ] The skill file name and folder name match the `name` in the front matter.
-- [ ] `whenToUse` clearly states when the skill should be applied.
-- [ ] All rules are actionable for an AI agent.
-- [ ] All links are relative to the skill file or repository root and use markdown or wikilink syntax.
-- [ ] All supporting files are inside the skill folder (for Human Dir).
-- [ ] Template hints and example blocks are removed from the final skill.
-- [ ] `# Check list` is filled; there is no separate `# Anti-patterns` section and no `## MUST NOT`/`## SHOULD NOT` heading anywhere.
-- [ ] Every `## MUST` bullet carries a nested `Risk` and `Fix` (`Violation` optional); `## SHOULD` carries them only where non-obvious; `## MAY` carries none.
-- [ ] Examples referenced by this skill live in this skill's own `examples/` folder, not in another skill.
-- [ ] The skill contains exactly one `# Rule` and one `# Check list` section, each at a consistent heading depth.
-- [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately"; if it does, the skill has been split.
-- [ ] No inline code block or table exceeds ~15 lines unless it defines part of the rule/contract itself; longer illustrative examples live in `examples/`/`templates/` with a one-line pointer.
-- [ ] Tags follow the facet vocabulary in [facet-vocabulary.md](./facet-vocabulary.md): at least one `concern/*`, a `stack/*` value or the bare `stack` tag, no two facets chained in one `/`-path, and the parent tag duplicated alongside any nested value.
-- [ ] Every architecture decision made while writing this skill is recorded as an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md) and linked from the skill body.
+- [ ] The skill uses the correct format (Human Flat or Human Dir); folder and main-file names both match `name`.
+- [ ] Frontmatter is filled: concrete `whenToUse`, `updated: YYYYMMDD` present and bumped this change.
+- [ ] Exactly one `# Goal`, `# Core Principle`, `# Rule`, and `# Check list`; none repeated or nested; `## MUST`/`## SHOULD`/`## MAY` are the only `##` under `# Rule`.
+- [ ] Any extra top-level section is one of at most one `# Scope`, `# Workflow`, `# Example`, each within its constraints; no other top-level section exists.
+- [ ] No `## MUST NOT`/`## SHOULD NOT` heading and no `# Anti-patterns` section anywhere; prohibitions are negative bullets inside MUST/SHOULD.
+- [ ] All links resolve from the skill file or repository root; one link syntax used throughout.
+- [ ] All supporting files are inside the skill folder (Human Dir); a Human Flat skill has none.
+- [ ] Every cross-skill link is an input, a required sub-step, an applied standard/template, or an active prohibition — an agent could not finish this skill's artifact without it; no link to a later pipeline stage, a consumer, or an out-of-scope topic.
+- [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
+- [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
+- [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
+- [ ] [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]]'s `# Check list` passes for this skill's prose.
+- [ ] [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]'s `# Check list` passes for this skill's tags.

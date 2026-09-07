@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-The application needs a reliable, single source of truth for "are we online" — used to show an offline banner, decide whether to attempt a request at all, and (in the future "Синхронизация offline-данных" solution) trigger a retry of queued mutations. The browser's `navigator.onLine` property and its `online`/`offline` events only reflect whether a network interface is active (e.g. Wi-Fi connected), not whether the backend is actually reachable — a device can report `navigator.onLine === true` while sitting behind a captive portal or while the backend itself is down.
+The application needs a reliable, single source of truth for "are we online" — used to show an offline banner, decide whether to attempt a request at all, and (in the future `solution-offline-sync`) trigger a retry of queued mutations. The browser's `navigator.onLine` property and its `online`/`offline` events only reflect whether a network interface is active (e.g. Wi-Fi connected), not whether the backend is actually reachable — a device can report `navigator.onLine === true` while sitting behind a captive portal or while the backend itself is down.
 
 # Selected variant
 

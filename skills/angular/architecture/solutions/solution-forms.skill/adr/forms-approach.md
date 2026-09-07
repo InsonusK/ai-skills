@@ -37,7 +37,7 @@ Every new form is built with `form()`/`FieldTree` from `@angular/forms/signals`.
 
 ### Costs
 
-- Requires the workspace to run Angular 22 or newer (the current workspace, per solution #1, is on Angular 21 at the time this ADR is written — an upgrade is a prerequisite)
+- Requires the workspace to run Angular 22 or newer (the current workspace, per `solution-repository-structure`, is on Angular 21 at the time this ADR is written — an upgrade is a prerequisite)
 - Team must learn a new mental model (`FieldTree`, `form()`) distinct from the `FormGroup`/`FormControl` tree many engineers already know
 - Fewer years of production battle-testing than Reactive Forms, even though it is now officially stable
 - Large, heavily customized forms with many third-party `ControlValueAccessor` components may take more effort to migrate if ever ported from existing Reactive Forms code — though this cost only applies to migration, not to new forms
@@ -56,7 +56,7 @@ Keep Reactive Forms as the standard for all new forms for now; revisit Signal Fo
 
 ### Costs
 
-- Leaves forms as the one major piece of the architecture still built on RxJS-based, imperative patterns (manual `valueChanges` subscriptions, manual cleanup) while state management (solution #3) has already moved to Signals — an inconsistency in the overall reactive model
+- Leaves forms as the one major piece of the architecture still built on RxJS-based, imperative patterns (manual `valueChanges` subscriptions, manual cleanup) while state management (`solution-app-routing`) has already moved to Signals — an inconsistency in the overall reactive model
 - Delays capturing the boilerplate and fine-grained-reactivity benefits Signal Forms already provides today, for no concrete blocking reason beyond caution
 - "Revisit later" decisions without a trigger condition tend to persist indefinitely
 

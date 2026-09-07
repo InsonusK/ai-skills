@@ -1,0 +1,18 @@
+// The single mat.theme() definition for the design system.
+// One fixed brand palette; light/dark handled by native light-dark() (no JS toggle).
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark; // follow OS preference
+
+  @include mat.theme(
+    (
+      color: (
+        theme-type: color-scheme,
+        primary: mat.$violet-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}

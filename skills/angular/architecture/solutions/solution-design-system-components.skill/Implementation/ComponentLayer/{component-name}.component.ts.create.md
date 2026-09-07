@@ -6,7 +6,7 @@ element_kind: component
 change_kind: create
 tags:
   - solution/design-system-components
-  - element/component-name-component-ts
+  - element/ds-component-ts
 ---
 
 # How this generic file is used
@@ -26,7 +26,7 @@ This is not tied to one concrete component. Any component added to the design sy
 
 # Implementation changes
 
-Worked example — a button component whose API is organized around this application's real usage axes, not Material's own button categorization, per [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy]]:
+Worked example — a button component whose API is organized around this application's real usage axes, not Material's own button categorization, per [[skills/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]:
 
 ```typescript
 // ds-button.component.ts
@@ -64,19 +64,20 @@ Internally, `DsButtonComponent` may render Angular Material's `<button mat-butto
 # Rule changes
 
 ## MUST
-- The component's inputs/outputs MUST be named and organized around real usage concepts (as in the `variant`/`size`/`color`/`action`/`dropdown` example above), never mirrored from an underlying Material component's own input names.
-- If this component wraps a Material component internally, no Material type/enum MUST leak into this component's own input/output types.
-- If this component is a form control, it MUST implement `ControlValueAccessor`.
+- Inputs/outputs are named around real usage concepts (`variant`/`size`/`color`/`action`/`dropdown`), never mirrored from the underlying Material component's input names.
+  - Risk: an input named and enumerated like Material's own forces a parallel change here on every Material API bump — encapsulation in name only.
+  - Fix: design each input around this app's usage; map to Material inside the template.
+- If this component wraps a Material component, no Material type/enum leaks into its input/output types — or into any `protected`/`public` field that reaches the emitted `.d.ts`.
+  - Risk: `matAppearance: MatButtonAppearance` on a `protected` field appears in `dist/**/types/*.d.ts` and couples consumers to Material.
+  - Fix: local literal types (`type MatAppearance = 'filled' | 'outlined' | 'text'`); verify against the packed `.d.ts`.
+- If this component is a form control, it implements `ControlValueAccessor`.
+  - Risk: without CVA it cannot bind to Signal Forms `formField`.
+  - Fix: implement `ControlValueAccessor`; test a `formField` binding.
 
 ## SHOULD
-- The internal implementation SHOULD default to delegating to Angular Material where it fully satisfies the requirement, and SHOULD only be built fully custom when a specific, identified gap justifies it (as in a large-dataset tree needing different performance characteristics than Material's own tree component).
+- The internal implementation should default to delegating to Angular Material where it fully satisfies the requirement, and should only be built fully custom when a specific, identified gap justifies it (as in a large-dataset tree needing different performance characteristics than Material's own tree component).
 
-# Anti-patterns
-
-- **Naming an input identically to Material's own corresponding input, with the same enum of values**
-  - Consequence: even without directly re-exporting Material's type, this mirrors Material's categorization closely enough that any change to Material's own API will likely force a parallel change here — the encapsulation exists in name only
-  - Instead: design the input around this application's own real usage, as the button's `variant`/`action`/`dropdown` example does
-
+- **Naming an input identically to Material's own corresponding input, with the same enum of values** — Consequence: even without directly re-exporting Material's type, this mirrors Material's categorization closely enough that any change to Material's own API will likely force a parallel change here — the encapsulation exists in name only — Instead: design the input around this application's own real usage, as the button's `variant`/`action`/`dropdown` example does
 # Check list
 
 - [ ] The component's API reads naturally in this application's own vocabulary, not Material's

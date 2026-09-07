@@ -27,7 +27,7 @@ tags:
 - A master-push run reports on one specific commit. If a second push to `master` lands before the first run finishes, the first run's eventual report would describe code that is no longer on `master` — so the superseded run must be cancelled, not left to finish and publish stale numbers.
 - Report publishing is not free CI time, so it must not run on every push to `master` — only when the push actually changed something the reports could reflect (source code, tests/specs, or the CI/report tooling itself).
 
-# Workflow structure
+# Workflow
 
 ## PR-gate workflow (`pull_request` → `master`)
 - A `unit-test` job runs `make unit-test` (no coverage).

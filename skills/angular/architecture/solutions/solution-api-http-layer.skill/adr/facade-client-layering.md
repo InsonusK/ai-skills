@@ -17,7 +17,7 @@ The pattern in use before this solution was: UI calls a **Facade** that validate
 
 **Selected variant:** [[#Signal Store calls Facade directly; Client is an internal transport detail]]
 
-For feature-level operations, the Signal Store method itself (see the "State management" solution) is the orchestration point: it calls a **Facade** (business validation/orchestration, public API of the `data-access` lib) which calls an internal **Client** (DTO mapping + `HttpClient` + error normalization, not exported outside the `data-access` lib). No Action, Reducer, or Effect is introduced for feature-scoped operations. Classical NgRx (action/reducer/effect calling the same Facade→Client layering) remains exactly as already established for global/cross-cutting state (auth, notifications, offline-sync) in the "State management" and "Аутентификация" solutions — this decision does not change that.
+For feature-level operations, the Signal Store method itself (see the "State management" solution) is the orchestration point: it calls a **Facade** (business validation/orchestration, public API of the `data-access` lib) which calls an internal **Client** (DTO mapping + `HttpClient` + error normalization, not exported outside the `data-access` lib). No Action, Reducer, or Effect is introduced for feature-scoped operations. Classical NgRx (action/reducer/effect calling the same Facade→Client layering) remains exactly as already established for global/cross-cutting state (auth, notifications, offline-sync) in the "State management" and `solution-authentication`s — this decision does not change that.
 
 # Searched variants
 
@@ -32,13 +32,13 @@ For feature-level operations, the Signal Store method itself (see the "State man
 ### Benefits
 
 - Removes a layer of indirection that no longer serves a purpose once Signal Store owns feature-level state orchestration — one mechanism for "receive command → do work → update state," not two competing ones
-- Matches the layering already used (if inconsistently named) in the "State management" and "Аутентификация" solutions' code examples — no architectural rewrite of those solutions is required, only a naming clarification
+- Matches the layering already used (if inconsistently named) in the "State management" and `solution-authentication`s' code examples — no architectural rewrite of those solutions is required, only a naming clarification
 - Business validation (Facade) stays clearly separated from transport/mapping (Client), preserving the useful part of the original design
 - Global/cross-cutting state keeps its classical NgRx chain exactly as already decided, so the audit-log/effect-based-retry benefits chosen in "State management" are unaffected
 
 ### Costs
 
-- Requires renaming/re-labeling the existing code examples in the "State management" and "Аутентификация" solutions' Facade references to make clear they call an internal Client — a documentation clarification, not a functional rewrite
+- Requires renaming/re-labeling the existing code examples in the "State management" and `solution-authentication`s' Facade references to make clear they call an internal Client — a documentation clarification, not a functional rewrite
 - Anyone previously familiar with the original Facade→Action→Reducer→Effect→Client flow needs to unlearn it for feature-level operations specifically (it remains correct for global state)
 
 ## Keep Action/Reducer/Effect at the feature level too
@@ -73,4 +73,4 @@ Drop the Facade/Client distinction entirely; a single `data-access` service does
 
 - Business validation and transport/mapping concerns end up mixed in the same class, which is exactly the coupling the original two-layer design (Facade doing business logic, Client doing transport) was set up to avoid
 - Harder to unit test business rules in isolation from HTTP/DTO concerns, since they live in the same class
-- Loses the reusable internal Client shape that the future "Синхронизация offline-данных" solution is likely to need to intercept independently of business validation
+- Loses the reusable internal Client shape that the future `solution-offline-sync` is likely to need to intercept independently of business validation

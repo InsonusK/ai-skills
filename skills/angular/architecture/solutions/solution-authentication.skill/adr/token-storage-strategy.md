@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-The platform runs federated embeddable apps (see the "Встраиваемость платформы" solution) built and deployed by separate teams, sharing the same JS runtime and Angular instance as the host. Any token storage mechanism reachable from JavaScript is, by construction, reachable by that third-party code too — and by any XSS payload that manages to execute. We need a token storage strategy that minimizes what an XSS payload (first-party bug or, worst case, a misbehaving/compromised remote) can steal, without breaking the ability of the UI to know "am I logged in" and "what can I do" synchronously.
+The platform runs federated embeddable apps (see `solution-platform-embeddability`) built and deployed by separate teams, sharing the same JS runtime and Angular instance as the host. Any token storage mechanism reachable from JavaScript is, by construction, reachable by that third-party code too — and by any XSS payload that manages to execute. We need a token storage strategy that minimizes what an XSS payload (first-party bug or, worst case, a misbehaving/compromised remote) can steal, without breaking the ability of the UI to know "am I logged in" and "what can I do" synchronously.
 
 # Selected variant
 
@@ -25,7 +25,7 @@ The access token is held only in an in-memory Signal inside `libs/shared/state`'
 
 ### Description
 
-Access token lives only as an in-memory Signal (part of the `shared-state` auth slice from the "State management" solution), lost on full page reload by design. Refresh token lives in an `HttpOnly`/`Secure`/`SameSite` cookie, never touched by JS. On bootstrap and on 401 responses, the app calls a refresh endpoint; the browser attaches the refresh cookie automatically, and the response body contains a new access token that is stored back into memory.
+Access token lives only as an in-memory Signal (part of the `shared-state` auth slice from `solution-global-store`), lost on full page reload by design. Refresh token lives in an `HttpOnly`/`Secure`/`SameSite` cookie, never touched by JS. On bootstrap and on 401 responses, the app calls a refresh endpoint; the browser attaches the refresh cookie automatically, and the response body contains a new access token that is stored back into memory.
 
 ### Benefits
 

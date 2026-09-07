@@ -1,5 +1,5 @@
 ---
-description: Extend the generic Client pattern from the API/HTTP-слой solution to distinguish a network-level (offline) failure from a genuine server-side error response
+description: Extend the generic Client pattern from `solution-api-http-layer` to distinguish a network-level (offline) failure from a genuine server-side error response
 project_name: "{Feature}"
 name: "{feature}"
 element_kind: service
@@ -10,11 +10,11 @@ tags:
 ---
 
 # How this generic file is used
-This extends [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create]] applied to any feature's `{feature}.client.ts`.
+This extends [[skills/angular/architecture/solutions/solution-api-http-layer.skill/Implementation/DataAccess/{Feature}.project.create/{feature}.client.ts.create.md]] applied to any feature's `{feature}.client.ts`.
 
 # Goals
 
-- Let the Facade (and, eventually, the future "Синхронизация offline-данных" solution) distinguish "this failed because we're offline" from "the server rejected this request" — a distinction the base `{feature}.client.ts` pattern did not need to make
+- Let the Facade (and, eventually, the future `solution-offline-sync`) distinguish "this failed because we're offline" from "the server rejected this request" — a distinction the base `{feature}.client.ts` pattern did not need to make
 
 # Implementation changes
 
@@ -39,14 +39,15 @@ try {
 # Rule changes
 
 ## MUST
-- Every Client method's error handling MUST check for a network-level failure (an `HttpErrorResponse` with `status === 0`, indicating no response was ever received) before checking for any specific server status code, and throw `OfflineTransportError` in that case instead of a feature-specific domain error.
-- `OfflineTransportError` MUST be a single, shared error type (defined once in `libs/shared/http-core`, not redefined per feature) so callers across every feature can catch it uniformly.
+- Every Client method checks for a network-level failure (`HttpErrorResponse` with `status === 0`) **before** any server status code, and throws `OfflineTransportError` for it.
+  - Risk: a `status === 0` handled by a generic `500`/`4xx` branch surfaces "offline" as "the server rejected this", so a future write queue cannot tell them apart.
+  - Fix: `if (e instanceof HttpErrorResponse && e.status === 0) throw new OfflineTransportError(...)` as the first check in `catchError`.
+- `OfflineTransportError` is a single shared type, defined once in `libs/shared/http-core`.
+  - Risk: a per-feature copy means callers `instanceof`-check the wrong class and miss offline errors from other features.
+  - Fix: one export from `libs/shared/http-core`; every feature's Client imports it.
 
-# Anti-patterns
-
-- **Treating a `status === 0` failure the same as any other server error**
-  - Consequence: the Facade (and the future sync-queue solution) has no reliable way to tell "we're offline, this is retryable later" apart from "the server actively rejected this," which is exactly the distinction this extension exists to provide
-  - Instead: always check for the network-level failure first and throw the shared `OfflineTransportError`
+## SHOULD
+- **Treating a `status === 0` failure the same as any other server error** — Consequence: the Facade (and the future sync-queue solution) has no reliable way to tell "we're offline, this is retryable later" apart from "the server actively rejected this," which is exactly the distinction this extension exists to provide — Instead: always check for the network-level failure first and throw the shared `OfflineTransportError`
 
 # Check list
 
@@ -58,4 +59,4 @@ try {
 - [ ] WHEN a Client method's HTTP call fails with no response received (network unreachable) THEN
   - [ ] it throws the shared `OfflineTransportError`, not that feature's own domain error
 - [ ] WHEN a Client method's HTTP call fails with an actual server response (e.g. 409, 500) THEN
-  - [ ] it throws that feature's own typed domain error, exactly as established in the "API/HTTP-слой" solution — unaffected by this extension
+  - [ ] it throws that feature's own typed domain error, exactly as established in `solution-api-http-layer` — unaffected by this extension

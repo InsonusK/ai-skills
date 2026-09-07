@@ -1,0 +1,15 @@
+import { Component } from '@angular/core';
+import { OrderFormComponent, OrdersStore } from '@org/orders-feature';
+import { OrdersFacade } from '@org/orders-data-access';
+
+// Static, hardcoded data only — no real Facade, HTTP, or backend-wired store.
+const stubFacade = { list: async () => [], addOrder: async () => { throw new Error('preview'); } };
+
+@Component({
+  selector: 'preview-order-form',
+  standalone: true,
+  imports: [OrderFormComponent],
+  providers: [OrdersStore, { provide: OrdersFacade, useValue: stubFacade }],
+  template: '<orders-order-form />',
+})
+export class OrderFormPreview {}

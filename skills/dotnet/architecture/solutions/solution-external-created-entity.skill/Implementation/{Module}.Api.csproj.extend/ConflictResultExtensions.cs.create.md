@@ -1,0 +1,123 @@
+---
+description: Maps ConflictResult<T> to HTTP 409 with existing entity result body
+project_name: "{Module}.Api"
+name: "ConflictResultExtensions.cs"
+element_kind: class
+change_kind: create
+tags:
+  - solution/external-created-entity
+  - element/conflictresultextensions-cs
+---
+
+# Goals
+- Provide a controller helper that maps `Result<Create{Entity}Result>` from an external-created create command to the correct HTTP response
+- Return 201 Created with the entity result and `Location` header on success
+- Return 409 Conflict with the existing entity result body when the command short-circuited on a duplicate Guid
+- Delegate validation and error statuses to the existing ProblemDetails helpers
+
+# Core Principles
+- Thin adapter — no business logic, no domain rules
+- `ConflictResult<Create{Entity}Result>` is detected by type so the response status is 409
+- Both 201 and 409 return the same response type (`Create{Entity}Result`) — the API contract is symmetric
+- All other statuses use the standard ProblemDetails mapping from solution-http-api-publication.skill
+
+# Naming convention
+| use case | class name pattern | class name | file name pattern | file name |
+| --- | --- | --- | --- | --- |
+| Conflict result extensions | `ConflictResultExtensions` | `ConflictResultExtensions` | `ConflictResultExtensions.cs` | `ConflictResultExtensions.cs` |
+
+# Implementation changes
+
+```csharp
+// {Module}.Api/Extensions/ConflictResultExtensions.cs
+using Ardalis.Result;
+using Microsoft.AspNetCore.Mvc;
+using Shared.Results;
+
+namespace {Module}.Api.Extensions;
+
+public static class ConflictResultExtensions
+{
+    public static ActionResult<Create{Entity}Result> ToCreatedOrConflictResult(
+        this Result<Create{Entity}Result> result,
+        ControllerBase controller,
+        string actionName,
+        string controllerName)
+    {
+        return result.Status switch
+        {
+            ResultStatus.Created => controller.CreatedAtAction(
+                actionName,
+                controllerName,
+                new { id = result.Value.Id },
+                result.Value),
+
+            ResultStatus.Conflict when result is ConflictResult<Create{Entity}Result>
+                => controller.Conflict(result.Value),
+
+            ResultStatus.Invalid => controller.BadRequest(
+                ResultExtensions.ToProblemDetails(result.ValidationErrors)),
+
+            ResultStatus.Error => controller.StatusCode(
+                StatusCodes.Status500InternalServerError,
+                ResultExtensions.ToProblemDetails(result.Errors)),
+
+            _ => throw new InvalidOperationException(
+                $"Unexpected result status '{result.Status}' for external-created command.")
+        };
+    }
+}
+```
+
+Example usage in `{Entity}Controller`:
+
+```csharp
+[HttpPost]
+[ProducesResponseType(typeof(Create{Entity}Result), StatusCodes.Status201Created)]
+[ProducesResponseType(typeof(Create{Entity}Result), StatusCodes.Status409Conflict)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+public async Task<ActionResult<Create{Entity}Result>> Create(
+    [FromBody] Create{Entity}Command command,
+    CancellationToken ct)
+{
+    var result = await _sender.Send(command, ct);
+
+    return result.ToCreatedOrConflictResult(
+        this,
+        nameof(Single{Entity}Controller.Get),
+        "Single{Entity}");
+}
+```
+
+# Rule changes
+
+## MUST
+- Detect `ConflictResult<Create{Entity}Result>` by type and return 409 with the result body
+- Return 201 Created with entity result and `Location` header on `ResultStatus.Created`
+- Return 400/500 ProblemDetails for `Invalid` and `Error` statuses
+- Throw `InvalidOperationException` for unexpected `ResultStatus` values
+- `Create{Entity}Result` contains only the entity Id
+- Never return ProblemDetails for `ConflictResult<Create{Entity}Result>`
+- Never contain business logic or domain rules
+- Never allow `Create{Entity}Result` to carry fields beyond the entity Id for external-created entities
+- Never per-controller handling for Guid conflicts — conflict is expressed as `Result<T>` and mapped by the API layer
+
+## SHOULD
+- Avoid mapping `ConflictResult<T>` to ProblemDetails — breaks the idempotent create contract
+- Avoid duplicating this mapping in every external-created controller action
+- Avoid `Create{Entity}Result` with fields beyond `Id` for external-created entities — violates "server returns only Id"
+
+# Check list
+- [ ] `ConflictResultExtensions` defined in `{Module}.Api/Extensions/ConflictResultExtensions.cs`
+- [ ] `ConflictResult<Create{Entity}Result>` detected by type
+- [ ] 409 response body contains the existing `Create{Entity}Result`
+- [ ] 201 response uses `CreatedAtAction`
+
+# Unittest TestCases
+- [ ] WHEN applied THEN ResultStatus.Created returns 201 with entity result and Location header
+- [ ] WHEN applied THEN ConflictResult<Create{Entity}Result> returns 409 with the existing result body
+- [ ] WHEN applied THEN ResultStatus.Invalid returns 400 ProblemDetails
+- [ ] WHEN applied THEN ResultStatus.Error returns 500 ProblemDetails
+- [ ] WHEN applied THEN Unexpected ResultStatus throws InvalidOperationException
+- [ ] WHEN naming 'Conflict result extensions' THEN pattern matches convention

@@ -11,13 +11,13 @@ tags:
 
 # Problem
 
-The routing tree spans three levels that were established by earlier solutions: the platform shell (`apps/platform-shell`), an optional embeddable module mounted via Native Federation (see the "Встраиваемость платформы" solution), and individual features (`libs/{feature}/feature`, see the "Структура репозитория" solution). We need to decide where the routes for a feature are defined — centrally in the shell, or inside the feature itself — and, given the multi-level structure, how routing responsibility is split across all three levels without letting a lower level reach outside its own boundary or a higher level reach into a lower level's internals.
+The routing tree spans three levels that were established by earlier solutions: the platform shell (`apps/platform-shell`), an optional embeddable module mounted via Native Federation (see `solution-federation-host`), and individual features (`libs/{feature}/feature`, see `solution-repository-structure`). We need to decide where the routes for a feature are defined — centrally in the shell, or inside the feature itself — and, given the multi-level structure, how routing responsibility is split across all three levels without letting a lower level reach outside its own boundary or a higher level reach into a lower level's internals.
 
 # Selected variant
 
 **Selected variant:** [[#Hierarchical route ownership inside each owning project]]
 
-Each level defines routes strictly relative to its own root segment and exposes them through its public API (`index.ts`), the same boundary mechanism already used for code in the "Структура репозитория" solution. The platform shell knows only the root segment under which an embeddable module or a feature is mounted (e.g. `module1/`); an embeddable module knows only the root segments of the features it contains (e.g. `feature1/`, `feature-map/feature2`); a feature knows only paths relative to its own root (e.g. `page`). No level can define or override a path outside the segment it owns.
+Each level defines routes strictly relative to its own root segment and exposes them through its public API (`index.ts`), the same boundary mechanism already used for code in `solution-repository-structure`. The platform shell knows only the root segment under which an embeddable module or a feature is mounted (e.g. `module1/`); an embeddable module knows only the root segments of the features it contains (e.g. `feature1/`, `feature-map/feature2`); a feature knows only paths relative to its own root (e.g. `page`). No level can define or override a path outside the segment it owns.
 
 # Searched variants
 
@@ -32,7 +32,7 @@ Routes are defined at the same level as the code that serves them, and each leve
 
 ### Benefits
 
-- Mirrors the module-boundary principle from the "Структура репозитория" solution: a project only has authority over what is below it, never over what sits above or beside it
+- Mirrors the module-boundary principle from `solution-repository-structure`: a project only has authority over what is below it, never over what sits above or beside it
 - A feature (or embeddable module) can be freely reorganized internally — renamed sub-pages, added sub-routes — without touching any project above it, keeping `nx affected` scoped correctly
 - Composes cleanly with lazy loading (`loadChildren`) at every level, since each level already only exposes a self-contained routes array through its public API
 - Composes cleanly with the platform-embeddability solution: an embeddable module is, from the shell's point of view, exactly the same kind of "root segment with routes below it" as a directly-owned feature — one mounting mechanism for both
@@ -56,7 +56,7 @@ Routes are defined at the same level as the code that serves them, and each leve
 
 ### Costs
 
-- Directly violates the module-boundary principle from the "Структура репозитория" solution: the shell would need to know a feature's internal component structure, not just its public API
+- Directly violates the module-boundary principle from `solution-repository-structure`: the shell would need to know a feature's internal component structure, not just its public API
 - Any internal navigation change inside a feature requires editing `apps/platform-shell`, which makes `nx affected` treat the shell as touched by almost every change — defeating the affected-based CI benefit that motivated choosing Nx in the first place
 - Does not extend cleanly to the platform-embeddability solution, where an embeddable module's internals are, by design, not visible to the shell at build time at all
 - Does not scale as the number of features grows — a single ever-growing routing file becomes a bottleneck and a merge-conflict hotspot across teams
