@@ -3,11 +3,15 @@ name: release-versioning-strategy
 description: How the design system's version bumps and changelog are determined and published
 problem: The design system is consumed by the platform and by every independently deployed embeddable app; a manual, discipline-dependent versioning process risks an incorrectly classified breaking change reaching multiple independent teams simultaneously
 decision: Use Changesets
+tags:
+  - solution/design-system-structure
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
 
-Every release of the design system needs a correctly classified semver bump (patch/minor/major) and an accurate changelog entry. Because the package is consumed by several independently deployed codebases at once (the platform monorepo, and every embeddable app's own repository, per the "Встраиваемость платформы" solution), a misclassified release — especially a breaking change shipped as a minor or patch — has a wide, simultaneous blast radius across teams that don't coordinate deploys with each other.
+Every release of the design system needs a correctly classified semver bump (patch/minor/major) and an accurate changelog entry. Because the package is consumed by several independently deployed codebases at once (the platform monorepo, and every embeddable app's own repository, per `solution-federation-host`), a misclassified release — especially a breaking change shipped as a minor or patch — has a wide, simultaneous blast radius across teams that don't coordinate deploys with each other.
 
 # Selected variant
 

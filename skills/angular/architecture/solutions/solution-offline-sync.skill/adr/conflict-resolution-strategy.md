@@ -3,6 +3,10 @@ name: conflict-resolution-strategy
 description: How conflicts are detected and surfaced when a queued mutation replays against an entity that changed on the server while the client was offline
 problem: A queued mutation may target an entity whose server-side state has changed since the mutation was queued; we need a default resolution behavior, a way to inform the user specifically what differed, and a designed extension seam for smarter per-operation conflict logic later, without over-building that logic now
 decision: Server wins by default; the queued command's own touched fields are compared against the current server values (returned by the backend on conflict) to show the user exactly what didn't apply — no full entity snapshot is stored client-side. Per-operation custom conflict resolution is an explicit, designed extension point for a future solution, not built now.
+tags:
+  - solution/offline-sync
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

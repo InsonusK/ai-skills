@@ -23,9 +23,14 @@ Read [[skills/common-workflow/architecture/design/plateau-create-by-solutions.sk
 - `Implementation/` file patterns per stack:
   - .NET: `Repository.create.md`, `{Project}.csproj.create.md`, `{Project}.csproj.extend.md`, class files
   - Python: `Repository.create.md`, `{App}.create.md`, `{App}.extend.md`, class/functions/init files
-- project/package and class/module name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`; `{App}` → `package-app`, `{App}.cli.py` → `module-cli`)
+  - Angular/TypeScript: `Repository.create.md`/`.extend.md`, `{project}.project.create.md`/`.extend.md` (plus a project-level `.federation.extend.md` or bare `.extend.md`), and per-artifact `{name}.{artifact-type}.ts.create.md`/`.extend.md` (component/service/directive/pipe/guard/interceptor/resolver/store/module), `{name}.spec.ts.create.md`, `{name}.scss.create.md` — topic subfolders (`GlobalStore/`, `Testing/`, ...) are organizational only, ignored when normalizing
+- project/package and class/module name normalization (`{Module}.Api` → `csproj-module-api`, `ICommand.cs` → `class-i-command`; `{App}` → `package-app`, `{App}.cli.py` → `module-cli`; Angular `libs/{feature}/feature` → `project-feature-feature`, `auth.store.ts` → `class-auth-store`)
 - `.create.md` vs `.extend.md` semantics
 - `{Module}`/`{App}` placeholders become generic templates
+
+Also read [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]. The same plateau-level ADR rules from plateau-create-by-solutions' [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill#recording-plateau-level-decisions|Recording plateau-level decisions]] apply during an update: any conflict resolved, or solution removed, gets recorded as an ADR in the plateau's own `adr/` folder.
+
+Be aware of [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] too. If {solution} is actually a Plateau Component (an optional, cross-cutting capability like logging or tracing that never touches a module and wires in only at the composition root), this workflow does not apply — a Component is attached to an already-composed service separately, never added to a plateau's `created_by` or `structure/`.
 
 # Input parameters
 
@@ -37,15 +42,16 @@ Read [[skills/common-workflow/architecture/design/plateau-create-by-solutions.sk
 # How to identify affected structural skills
 
 1. Open the plateau root skill: `{output}/plateau-{plateau-name}.skill.md`
-2. Scan `{output}/structure/` for existing skills that already reference {solution} in `created_by` or `__Applied solutions__`
+2. Scan `{output}/structure/` for existing skills that already reference {solution} in `created_by` or `__Applied solutions:__`
 3. Scan `Implementation/` folder inside {solution} to discover all files:
    - `Repository.create.md` / `Repository.extend.md`
    - .NET: `{Project}.csproj.create.md` / `.extend.md` and nested `{Class}.cs.create.md` / `.extend.md`
    - Python: `{App}.create.md` / `.extend.md` (`element_kind: project`) and nested class/functions/init files
+   - Angular/TypeScript: `{project}.project.create.md` / `.extend.md` (`element_kind: project`, plus any `.federation.extend.md` / project-level `.extend.md`) and every `{name}.{artifact-type}.ts` / `.ts` / `.spec.ts` / `.scss` `.create.md` / `.extend.md`, flattening topic subfolders
 4. Map each discovered implementation file to a structural skill using the normalization rules from plateau-create-by-solutions.skill:
-   - `Repository.create.md`/`.extend.md` → `sln-{plateau-name}.skill.md` (.NET) or `repo-{plateau-name}.skill.md` (Python)
-   - `{Project}.csproj.create/.extend.md` → `csproj-{normalized}.skill.md`; `{App}.create/.extend.md` → `package-{normalized}.skill.md`
-   - `{Class}.cs.create/.extend.md` → `class-{normalized}.skill.md`; python class/functions/init files → `module-{normalized}.skill.md`
+   - `Repository.create.md`/`.extend.md` → `sln-{plateau-name}.skill.md` (.NET), `repo-{plateau-name}.skill.md` (Python/Angular)
+   - `{Project}.csproj.create/.extend.md` → `csproj-{normalized}.skill.md`; `{App}.create/.extend.md` → `package-{normalized}.skill.md`; Angular `{project}.project.create/.extend.md` → `project-{normalized}.skill.md`
+   - `{Class}.cs.create/.extend.md` → `class-{normalized}.skill.md`; python class/functions/init files → `module-{normalized}.skill.md`; Angular `{name}.{artifact-type}.ts`/`.ts`/`.spec.ts`/`.scss` → `class-{normalized}.skill.md` (`artifact_type` set per plateau-create-by-solutions' mapping)
 5. The union of (2) and (4) is the set of skills that must be created or updated
 
 # Rules
@@ -53,21 +59,23 @@ Read [[skills/common-workflow/architecture/design/plateau-create-by-solutions.sk
 ## Adding a new solution
 
 MUST:
-- Update the plateau root skill: `description`, `created_by`, `Core Principles`, `Capabilities`, `Use cases`, `__Applied solutions__`
+- Confirm {solution} is actually a Solution and not a Plateau Component before running this workflow — see [Prerequisites](#prerequisites).
+- Update the plateau root skill: `description`, `created_by`, `Core Principles`, `Capabilities`, `Use cases`, `__Applied solutions:__`
 - Create any structural skill that does not yet exist but is required by the new solution's `.create.md` files
 - Update any existing structural skill that is targeted by the new solution's `.extend.md` files
 - Add the solution to `created_by` of every affected skill
-- Add/update `__Applied solutions__` links in every affected skill
+- Add/update `__Applied solutions:__` links in every affected skill
 - Bump `version` of every changed structural skill
 - Bump `version` of the plateau root skill
+- If merging the new solution required resolving a conflict (see [.create vs .extend during update](#create-vs-extend-during-update)), record the resolution as a plateau-level ADR in the plateau's own `adr/` folder, following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]
 
 ## Updating an existing solution
 
 MUST:
-- Find every structural skill that references the solution in `created_by` or `__Applied solutions__`
+- Find every structural skill that references the solution in `created_by` or `__Applied solutions:__`
 - Re-scan the solution's `Implementation/` folder for changes
 - Update affected structural skills to reflect the new implementation state
-- Update `__Applied solutions__` links if implementation file names changed
+- Update `__Applied solutions:__` links if implementation file names changed
 - Bump `version` of every changed structural skill
 - Bump `version` of the plateau root skill
 
@@ -90,17 +98,34 @@ MUST:
 MUST NOT:
 - Remove other solutions from `created_by` unless explicitly instructed
 
+## Propagating through child plateaus
+
+A plateau can compose one or more others via its `parent_plateaus` list (see [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill#how-to-build-a-plateau|plateau-create-by-solutions]], step 12, and [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] for merge semantics). When {plateau-name} has children, a change to a solution it shares with those children must reach them too — a child's structural skills were assembled from the same solution and go stale otherwise.
+
+MUST:
+- After updating {plateau-name} itself, search every `plateau-*.skill.md` under `skills/{stack}/architecture/plateau/**` whose `parent_plateaus` list contains {plateau-name}
+- For each child plateau found, repeat this same workflow (add/update/remove) for {solution} against that child, using the child's own `{output}` folder
+- Recurse: a child can itself be a parent to a grandchild plateau — keep following `parent_plateaus` links outward until no plateau references the one just updated
+- Skip a child plateau only if its own `created_by` never included {solution} to begin with (the change does not reach it) — do not skip a child solely because propagating looks like extra work
+- When a child plateau composes {plateau-name} alongside another parent, and the update to {solution} now conflicts with that other parent's content, stop and ask the user, then record the resolution as a plateau-level ADR on the child, per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]]
+- Record which plateaus were updated in this pass as part of the plateau-level ADR required by [Adding a new solution](#adding-a-new-solution) / [Removing a solution](#removing-a-solution-from-a-plateau), so the decision trail shows the full propagation, not just the root plateau
+
+MUST NOT:
+- Stop at the first plateau updated when child plateaus reference it via `parent_plateaus`
+- Assume a plateau has no children without searching for `parent_plateaus` links first
+
 ## Removing a solution from a plateau
 
 If a solution is removed from the plateau:
 
 - Remove the solution from `created_by` of the plateau root skill
-- Remove the solution's `__Applied solutions__` bullets from the plateau root skill
+- Remove the solution's `__Applied solutions:__` bullets from the plateau root skill
 - For each affected structural skill:
   - Remove content that came only from that solution
   - Remove the solution from `created_by`
   - If the skill becomes empty of content and `created_by`, consider deleting it or ask the user
 - Bump `version` of every changed skill
+- Record the removal, and any decision to delete or keep an emptied structural skill, as a plateau-level ADR in the plateau's own `adr/` folder, following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]
 
 # Workflow
 
@@ -110,7 +135,7 @@ If a solution is removed from the plateau:
 4. For each affected structural skill:
    - Apply the correct `.create` / `.extend` action
    - Add/update goals, core principles, rules, anti-patterns, check lists, and applied solutions
-   - Update `created_by` and `__Applied solutions__`
+   - Update `created_by` and `__Applied solutions:__`
    - Bump `version`
 5. Update the plateau root skill:
    - `description`
@@ -118,9 +143,10 @@ If a solution is removed from the plateau:
    - `Core Principles`
    - `Capabilities`
    - `Use cases`
-   - `__Applied solutions__`
+   - `__Applied solutions:__`
 6. Bump the plateau root skill `version`
-7. Verify that no `hint`, `example`, or `# How Apply this template` blocks remain in updated skills
+7. Search for plateaus whose `parent_plateaus` list contains {plateau-name}; for each one found, repeat steps 1-6 against that child (see [Propagating through child plateaus](#propagating-through-child-plateaus)), recursing into grandchildren the same way
+8. Verify that no `hint`, `example`, or `# How Apply this template` blocks remain in updated skills
 
 
 # Examples
@@ -128,17 +154,20 @@ If a solution is removed from the plateau:
 - [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/examples/example-add-solution|Adding a new solution to a .NET plateau]] — based on commit `8d4766e539b2ff9bcc2ec030f767497a20b39307` (`solution-entity-edit-timestamp` added to `plateau-default`)
 - [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/examples/example-update-solution|Updating an existing solution in a .NET plateau]] — based on commit `3b76d75bf299ce547c23a29821d6612545cbf265` (`solution-command-integration` refactored)
 
-> Both examples below use the .NET file patterns and skill names (`sln-*`, `csproj-*`, `class-*`). For a Python plateau, apply the exact same workflow and rules, substituting the Python file patterns and skill names from [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] (`repo-*`, `package-*`, `module-*`).
+> Both examples below use the .NET file patterns and skill names (`sln-*`, `csproj-*`, `class-*`). For a Python or Angular plateau, apply the exact same workflow and rules, substituting that stack's file patterns and skill names from [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] (Python: `repo-*`, `package-*`, `module-*`; Angular: `repo-*`, `project-*`, `class-*`).
 
 # Check list
 
+- [ ] {solution} was confirmed to be a Solution, not a Plateau Component, before this workflow was applied.
 - [ ] `plateau-create-by-solutions.skill` mapping rules were applied for the plateau's {stack}
 - [ ] Plateau root skill references the new/updated solution in `created_by`
 - [ ] Plateau root skill describes the solution in `Core Principles` or `Capabilities`
-- [ ] Plateau root skill includes the solution in the correct `__Applied solutions__` list
-- [ ] Every structural skill affected by the solution has been identified using `created_by`, `__Applied solutions__`, and the solution's `Implementation/` folder
+- [ ] Plateau root skill includes the solution in the correct `__Applied solutions:__` list
+- [ ] Every structural skill affected by the solution has been identified using `created_by`, `__Applied solutions:__`, and the solution's `Implementation/` folder
 - [ ] New skills were created for `.create.md` files that had no matching skill
 - [ ] Existing skills were updated for `.extend.md` files
 - [ ] `created_by` of every affected skill is up to date and has no duplicates
 - [ ] `version` timestamps are updated in the plateau root skill and all changed structural skills
 - [ ] No `hint` or `example` blocks remain in rewritten skills
+- [ ] Any conflict resolution, solution exclusion, or solution-removal decision made during this update is recorded as a plateau-level ADR in the plateau's own `adr/` folder, following adr-create, and listed in the plateau root skill's `adr:` property
+- [ ] Searched for plateaus whose `parent_plateaus` list contains {plateau-name}, and repeated this workflow for every child (and grandchild) found that includes {solution} in its `created_by`

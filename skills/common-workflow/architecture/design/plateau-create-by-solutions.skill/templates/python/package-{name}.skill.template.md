@@ -1,5 +1,5 @@
 ---
-name: package-name
+name: plateau-{plateau-name}--package-{name}
 description: Describe which plateau package/app does skill describe
 whenToUse: One concrete sentence — which task must make the agent open this skill
   # MUST name a concrete situation: creating or editing a module inside this package/app, deciding whether new code belongs here, or checking its allowed dependencies/PyPI packages. MUST NOT be vague ("when relevant").
@@ -26,7 +26,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Goals conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:
@@ -48,7 +48,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Core Principles conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:
@@ -82,7 +82,7 @@ MUST:
 - For package structure block:
   - use link to files which define module
 - For Applied solutions block:
-	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+	- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 ```
 ```example
 - /{App}
@@ -103,7 +103,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Directory and module skills conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:
@@ -132,7 +132,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If Directory and module skills conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:
@@ -159,7 +159,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "What Does NOT Belong Here" conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:
@@ -181,7 +181,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Allowed dependencies" conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:
@@ -197,13 +197,13 @@ __Applied solutions:__
 
 # Rules
 ```hint
-Define MUST, SHOULD, SHOULD NOT, MUST NOT rules. Summarize all "Rules" from all finded project-level implementation files.
+Define MUST, SHOULD, MAY rules only — never `## MUST NOT`/`## SHOULD NOT` headings and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)). Summarize all "Rules"/"Anti-patterns" from all finded project-level implementation files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `MUST`/`SHOULD` at whichever strength it carries, and fold any anti-pattern's worked "wrong way" example into the same bullet instead of keeping a separate section.
 
 At the end of block writes list to all used templates to build block. 
 
 MUST:
 - If Rules conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:
@@ -213,40 +213,17 @@ RECOMENDATION:
 ```example
 MUST:
 	- ...
+	- Never place all code in a single script
+	- Never ... (a prohibition, phrased positively as "never X", not as a separate MUST NOT heading)
 SHOULD:
 	- ...
-SHOULD NOT:
-	- ...
-MUST NOT:
-	- ...
+	- Never ... (a softer prohibition, phrased positively inside SHOULD)
 	  
 __Applied solutions:__
 - [[Solution link]] - [[implementation file link]]
 ```
-MUST NOT:
-- extended_by solution modify Allowed Dependencies without explicit user confirmation
-
-# Anti-patterns
-```hint
-Define What mean that skill applyed wrong. Summarize all "Anti-patterns" from all finded project-level implementation files.
-
-At the end of block writes list to all used templates to build block. 
-
 MUST:
-- If "Anti-patterns" conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
-- Keep only package-level content here. Do not include repository-level or module-level details.
-
-RECOMENDATION:
-- Prefer bullet list
-- Prefer pure copy with out changing
-```
-```example
-- Place all code in a single script
-
-__Applied solutions:__
-- [[Solution link]] - [[implementation file link]]
-```
+- Never let an `extended_by` solution modify Allowed Dependencies without explicit user confirmation
 
 # Check list
 ```hint
@@ -256,7 +233,7 @@ At the end of block writes list to all used templates to build block.
 
 MUST:
 - If "Check list" conflicted to each other as user to solve the problem
-- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-build SKILL.md "Applied solutions list format")
+- Each bullet must be `<solution skill link> - <implementation file link>` (see plateau-create-by-solutions.skill.md "Applied solutions list format")
 - Keep only package-level content here. Do not include repository-level or module-level details.
 
 RECOMENDATION:

@@ -1,6 +1,6 @@
 {
   "collapse-filter": false,
-  "search": "tag: #angular",
+  "search": "tag: #skill/architecture/solution stack/dotnet",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
@@ -32,6 +32,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 1.9655560456566858,
+  "scale": 0.5087618855792647,
   "close": false
 }

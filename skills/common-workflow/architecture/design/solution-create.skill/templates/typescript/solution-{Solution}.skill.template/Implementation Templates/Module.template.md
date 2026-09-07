@@ -6,6 +6,12 @@ element_kind: module
 change_kind: # create | extend
 # - create if solution creates a new functions module. Name of the module/file must be added into the `creates` property in the header of the solution.
 # - extend if solution extends an existing functions module. Link to the module/file must be added into the `extends` property in the header of the solution.
+tags:
+  - solution/{solution-name}
+  - element/{element-name}
+  # solution/{solution-name}: the owning solution name without the `solution-` prefix, kebab-case.
+  # element/{element-name}: the module file name in kebab-case, no braces or dots
+  # (e.g. is-valid-email.ts -> element/is-valid-email-ts, {module-name}.ts -> element/module-name-ts).
 ---
 
 # How Apply this template
@@ -65,9 +71,13 @@ export function isValidEmail(value: string): boolean {
 
 # Rule changes
 ```hint
-Define how solution EXTENDS module MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Only add a subblock for categories where this solution introduces new rules.
-If a category has no new rules, skip it — do not write an empty subblock.
+Define how solution EXTENDS module rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never add a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet carries a nested `Risk:` and `Fix:` (`Violation:` is optional); ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Only add a subblock for categories where this solution introduces new rules.
+- If a category has no new rules, skip it — do not write an empty subblock.
 
 MUST:
 - show all added Rules
@@ -76,6 +86,11 @@ MUST:
 ## MUST
 ```example
 - Functions must be pure and side-effect free
+  - Risk: hidden side effects make behavior order-dependent and untestable.
+  - Fix: take all inputs as parameters and return results instead of touching external state.
+- Never duplicate the validation rule inside a Cucumber step definition instead of calling this module.
+  - Risk: the scenario can pass even after this module's real behavior is broken.
+  - Fix: import and call the exported function directly from the step definition.
 ```
 
 ## SHOULD
@@ -86,32 +101,6 @@ MUST:
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to implement this module and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-```
-```example
-- **Duplicate the validation rule inside a Cucumber step definition instead of calling this module**
-  - Consequence: the scenario can pass even after this module's real behavior is broken
-  - Instead: import and call the exported function directly from the step definition
 ```
 
 # Check list

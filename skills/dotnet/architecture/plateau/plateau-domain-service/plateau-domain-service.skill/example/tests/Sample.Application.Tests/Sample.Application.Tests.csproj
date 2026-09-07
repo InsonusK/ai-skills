@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Reqnroll.xunit.v3" />
+    <PackageReference Include="coverlet.collector" />
+    <!-- test doubles for the persistence seam — the same packages Application itself may use -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Sample\Sample.Application\Sample.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Sample\Sample.Domain\Sample.Domain.csproj" />
+  </ItemGroup>
+</Project>

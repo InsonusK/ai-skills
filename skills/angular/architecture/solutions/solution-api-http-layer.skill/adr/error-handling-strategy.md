@@ -3,11 +3,15 @@ name: error-handling-strategy
 description: How errors flow from the Client (HTTP/DTO layer) through the Facade to the caller (Signal Store method or NgRx effect)
 problem: Whether errors should be communicated as a Result<T,E> discriminated union, as thrown/rejected raw errors, or as thrown/rejected typed domain errors
 decision: The Client always catches transport-level errors and rethrows a typed domain error; it never lets a raw HttpErrorResponse escape. The Facade may add business context but preserves the throw/reject channel.
+tags:
+  - solution/api-http-layer
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
 
-Once an HTTP call fails, something has to decide how that failure is represented to the code that called the Facade — a feature's Signal Store method (via `try/catch`, per the "State management" solution's examples) or a global NgRx effect (via `catchError`, per the "State management" and "Аутентификация" solutions' examples). We need one convention that both existing call-site styles can use without rework, while giving callers something more useful than a raw, untyped HTTP error.
+Once an HTTP call fails, something has to decide how that failure is represented to the code that called the Facade — a feature's Signal Store method (via `try/catch`, per the "State management" solution's examples) or a global NgRx effect (via `catchError`, per the "State management" and `solution-authentication`s' examples). We need one convention that both existing call-site styles can use without rework, while giving callers something more useful than a raw, untyped HTTP error.
 
 # Selected variant
 
@@ -25,9 +29,9 @@ The Client is the only place a raw `HttpErrorResponse` is ever caught. It is alw
 
 ### Benefits
 
-- Compatible with both call-site styles already used elsewhere in the architecture (`try/catch` in Signal Store methods, `catchError` in NgRx effects) — no rework needed in the "State management" or "Аутентификация" solutions
+- Compatible with both call-site styles already used elsewhere in the architecture (`try/catch` in Signal Store methods, `catchError` in NgRx effects) — no rework needed in the "State management" or `solution-authentication`s
 - Callers get a strongly-typed, predictable error shape instead of a raw `HttpErrorResponse` with transport-specific fields (status codes, response bodies) leaking into feature/business code
-- Keeps the door open for the future "Синхронизация offline-данных" solution to distinguish "offline, retry later" from "server rejected this request" using the same typed error shape
+- Keeps the door open for the future `solution-offline-sync` to distinguish "offline, retry later" from "server rejected this request" using the same typed error shape
 - Minimal conceptual overhead: still "throw an error," just always a well-defined one
 
 ### Costs
@@ -48,7 +52,7 @@ Every Client/Facade method returns `{ ok: true; value: T } | { ok: false; error:
 
 ### Costs
 
-- Does not compose naturally with RxJS's `catchError`, which is built around the error channel — the NgRx effects already written in the "State management" and "Аутентификация" solutions would need to be rewritten to check `.ok` instead of using `catchError`
+- Does not compose naturally with RxJS's `catchError`, which is built around the error channel — the NgRx effects already written in the "State management" and `solution-authentication`s would need to be rewritten to check `.ok` instead of using `catchError`
 - Does not compose naturally with plain `try/catch` either — call sites would still need to unwrap the `Result` after the `await`, so the ergonomic benefit over a typed thrown error is smaller in an async/await-heavy codebase than in a purely synchronous one
 
 ## Client lets raw transport errors propagate unmapped

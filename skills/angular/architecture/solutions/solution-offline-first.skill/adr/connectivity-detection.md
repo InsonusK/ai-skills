@@ -3,11 +3,15 @@ name: connectivity-detection
 description: How the application determines whether it is currently online, for UI purposes (offline banners, disabling actions) and as the future basis for triggering sync
 problem: navigator.onLine only reflects whether a network interface is active, not whether the backend is actually reachable, which can misrepresent the application's real connectivity state
 decision: Combine navigator.onLine events with a periodic lightweight health-check request, exposed as a global connectivity slice in shared-state
+tags:
+  - solution/offline-first
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
 
-The application needs a reliable, single source of truth for "are we online" — used to show an offline banner, decide whether to attempt a request at all, and (in the future "Синхронизация offline-данных" solution) trigger a retry of queued mutations. The browser's `navigator.onLine` property and its `online`/`offline` events only reflect whether a network interface is active (e.g. Wi-Fi connected), not whether the backend is actually reachable — a device can report `navigator.onLine === true` while sitting behind a captive portal or while the backend itself is down.
+The application needs a reliable, single source of truth for "are we online" — used to show an offline banner, decide whether to attempt a request at all, and (in the future `solution-offline-sync`) trigger a retry of queued mutations. The browser's `navigator.onLine` property and its `online`/`offline` events only reflect whether a network interface is active (e.g. Wi-Fi connected), not whether the backend is actually reachable — a device can report `navigator.onLine === true` while sitting behind a captive portal or while the backend itself is down.
 
 # Selected variant
 

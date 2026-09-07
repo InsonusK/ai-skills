@@ -6,6 +6,12 @@ element_kind: init
 change_kind: # create | extend
 # - create if solution creates a new package. The package must be added into the `creates` property in the header of the solution.
 # - extend if solution extends an existing package, for example by adding re-exports. Link to the package must be added into the `extends` property in the header of the solution.
+tags:
+  - solution/{solution-name}
+  - element/{element-name}
+  # solution/{solution-name}: the owning solution name without the `solution-` prefix, kebab-case.
+  # element/{element-name}: the package init file path in kebab-case, no braces or dots
+  # (e.g. {App}/cli/__init__.py -> element/app-cli-init-py).
 ---
 
 # How Apply this template
@@ -68,9 +74,13 @@ __all__ = ["BackupResult"]
 
 # Rule changes
 ```hint
-Define how solution EXTENDS package MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Only add a subblock for categories where this solution introduces new rules.
-If a category has no new rules, skip it — do not write an empty subblock.
+Define how solution EXTENDS package rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never add a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet carries a nested `Risk:` and `Fix:` (`Violation:` is optional); ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Only add a subblock for categories where this solution introduces new rules.
+- If a category has no new rules, skip it — do not write an empty subblock.
 
 MUST:
 - show all added Rules
@@ -79,6 +89,11 @@ MUST:
 ## MUST
 ```example
 - `__init__.py` must exist in every package directory
+  - Risk: package discovery becomes fragile and tooling may fail.
+  - Fix: add an explicit `__init__.py` to every package directory.
+- Never put business logic in `__init__.py`.
+  - Risk: import-time side effects and blurred package responsibilities.
+  - Fix: keep `__init__.py` to imports and re-exports only.
 ```
 
 ## SHOULD
@@ -89,32 +104,6 @@ MUST:
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- Put business logic in `__init__.py`
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to implement this package init and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-```
-```example
-- **Omit `__init__.py` to rely on implicit namespace packages**
-  - Consequence: package discovery becomes fragile and tooling may fail
-  - Instead: add an explicit `__init__.py` to every package directory
 ```
 
 # Check list

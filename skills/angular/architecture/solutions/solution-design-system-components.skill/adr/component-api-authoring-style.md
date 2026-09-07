@@ -3,11 +3,15 @@ name: component-api-authoring-style
 description: How component inputs, outputs, and two-way bindings are declared
 problem: Angular now offers a signal-based, function-based API (input(), output(), model()) as a full replacement for the decorator-based @Input()/@Output() + EventEmitter approach; the design system should commit to one consistent style rather than mixing both
 decision: Use signal-based input(), output(), and model() exclusively — no @Input()/@Output() decorators, no EventEmitter
+tags:
+  - solution/design-system-components
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
 
-Angular's component-authoring API has evolved from decorator-based `@Input()`/`@Output()` (with `EventEmitter`) to a function-based, signal-aligned API: `input()` (stable since Angular 17.1), `output()` (introduced in Angular 17.3, stable in the versions this workspace targets), and `model()` for two-way binding. Both styles remain supported — Angular has not deprecated the decorators — but the whole platform (per the "State management" and "Формы" solutions) is already built around Signals as the primary reactivity primitive. The design system needs one consistent authoring convention, not a mix of both styles across components.
+Angular's component-authoring API has evolved from decorator-based `@Input()`/`@Output()` (with `EventEmitter`) to a function-based, signal-aligned API: `input()` (stable since Angular 17.1), `output()` (introduced in Angular 17.3, stable in the versions this workspace targets), and `model()` for two-way binding. Both styles remain supported — Angular has not deprecated the decorators — but the whole platform (per the "State management" and `solution-forms`s) is already built around Signals as the primary reactivity primitive. The design system needs one consistent authoring convention, not a mix of both styles across components.
 
 # Selected variant
 

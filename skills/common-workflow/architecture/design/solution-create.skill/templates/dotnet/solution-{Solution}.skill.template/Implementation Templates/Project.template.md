@@ -5,6 +5,12 @@ element_kind: # repository | project | class
 change_kind: # create | extend
 # - create if solution creates a new project template. Name of the project must be added into the `creates` property in the header of the solution.
 # - extend if solution extends an existing project template. Link to the project must be added into the `extends` property in the header of the solution.
+tags:
+  - solution/{solution-name}
+  - element/{element-name}
+  # solution/{solution-name}: the owning solution name without the `solution-` prefix, kebab-case.
+  # element/{element-name}: the project name in kebab-case, no braces or dots
+  # (e.g. Shared.csproj -> element/shared-csproj, {Module}.Domain.csproj -> element/module-domain-csproj).
 ---
 
 # How Apply this template
@@ -100,9 +106,13 @@ ATTENTION:
 
 # Rules
 ```hint
-Define how solution EXTENDS project MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Only add a subblock for categories where this solution introduces new rules.
-If a category has no new rules, skip it — do not write an empty subblock.
+Define how solution EXTENDS project rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never add a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet carries a nested `Risk:` and `Fix:` (`Violation:` is optional); ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Only add a subblock for categories where this solution introduces new rules.
+- If a category has no new rules, skip it — do not write an empty subblock.
 
 MUST:
 - show all added Rules
@@ -110,7 +120,9 @@ MUST:
 
 ## MUST
 ```example
-- ...
+- Never reference DbContext directly from Application.
+  - Risk: couples orchestration to persistence and breaks testability.
+  - Fix: use `IRepository<T>` from Shared.
 ```
 
 ## SHOULD
@@ -121,32 +133,6 @@ MUST:
 ## MAY
 ```example
 - ...
-```
-
-## SHOULD NOT
-```example
-- ...
-```
-
-## MUST NOT
-```example
-- ...
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the solution to this project and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-```
-```example
-- **Reference DbContext directly from Application**
-  - Consequence: couples orchestration to persistence and breaks testability
-  - Instead: use `IRepository<T>` from Shared
 ```
 
 # Check list

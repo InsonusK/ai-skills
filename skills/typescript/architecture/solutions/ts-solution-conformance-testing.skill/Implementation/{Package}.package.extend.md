@@ -51,7 +51,7 @@ change_kind: extend
 
 ## MUST
 - Add `test`, `coverage`, and `mutation` scripts to `package.json` that run Vitest and `cucumber-js`/Stryker respectively.
-  - Risk: without these scripts, `make cucumber-test`/`make mutation-test` (implemented by `Repository.extend`'s scripts) have no consistent npm entry point to invoke.
+  - Risk: without these scripts, `make unit-test`/`make mutation-test` (implemented by `Repository.extend`'s scripts) have no consistent npm entry point to invoke.
   - Fix: define `test`, `coverage`, and `mutation` scripts in `package.json` that wrap Vitest and `cucumber-js`/Stryker respectively.
 - Configure `cucumber.mjs` to load `.ts` step definitions (e.g. via `ts-node/esm` or `tsx`).
   - Risk: without a TypeScript loader configured, `cucumber-js` cannot import `.steps.ts` files and every scenario fails to run.

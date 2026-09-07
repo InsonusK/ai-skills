@@ -59,24 +59,12 @@ MUST:
 
 ## MUST
 ```hint
-Actionable rules an agent must follow when using {library-name} in general, or when deciding whether a new capability belongs in this root skill or a new child skill.
+Actionable rules an agent must follow when using {library-name} in general, or when deciding whether a new capability belongs in this root skill or a new child skill. Never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)) — phrase every prohibition as a negatively-worded bullet ("Never...") inside `MUST`/`SHOULD` instead. At minimum, keep: never duplicate installation instructions inside a child skill; never add a method directly here once the skill has grown into a skill group — add it to the right child skill instead. Concrete wrong ways to use or extend this skill (see documentation-for-ai-agents.skill.md's own Rule for the two shape-level ones — monolithic skill for a large API, one skill per method) fold in here too, as their own "Never..." bullets with the consequence stated inline — do not repeat those two unless {library-name} has a domain-specific variant.
 ```
 
 ## SHOULD
 
 ## MAY
-
-## SHOULD NOT
-
-## MUST NOT
-```hint
-At minimum, keep: never duplicate installation instructions inside a child skill; never add a method directly here once the skill has grown into a skill group — add it to the right child skill instead.
-```
-
-# Anti-patterns
-```hint
-Concrete wrong ways to use or extend this skill and their consequences. See documentation-for-ai-agents.skill.md's own Anti-patterns for the two shape-level ones (monolithic skill for a large API; one skill per method) — do not repeat those here unless {library-name} has a domain-specific variant.
-```
 
 # Check list
 - [ ] Installation/access is documented once in `installation.md` and linked from here (and from every child skill, if any).

@@ -22,15 +22,13 @@ These requirements apply to every function, command, endpoint, or class method t
   - what causes each error,
   - how the agent should handle or retry.
 - Provide at least one minimal working example that can be executed after installation.
+- Never describe behavior without showing the exact call.
+- Never skip parameter types or default values.
+- Never skip error handling.
 
 ## SHOULD
 - Show the example input and the expected output side by side.
 - Mention performance or rate limits if they affect how the agent calls the method.
-
-## MUST NOT
-- Describe behavior without showing the exact call.
-- Skip parameter types or default values.
-- Skip error handling.
 
 ## Worked examples
 See the single-skill example at [examples/simple_skill/mylib.skill/](../examples/simple_skill/mylib.skill/) (`process_data` — required parameter, list return; `fetch_records` — optional/nullable parameters, dict return with pagination) and the skill-group examples at [examples/complex_skill/](../examples/complex_skill/) for fully worked applications of these rules. Do not re-derive a separate example here; extend those examples or add a new method fragment in the same format instead.

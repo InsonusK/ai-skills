@@ -3,6 +3,10 @@ name: component-encapsulation-strategy
 description: How design system components relate to the Angular Material components they may be built on top of
 problem: Application developers should never need to know Angular Material's own API or category model to use a design system component, and should be insulated from Material's own breaking changes across versions; a thin passthrough wrapper does not achieve this
 decision: Full API encapsulation — every design system component has its own selector and its own, independently designed API (inputs/outputs organized around this application's actual usage axes, not Material's categorization). Internally, a component may delegate to Angular Material's implementation, or be fully custom-built, decided per component based on whether Material's own implementation satisfies the real functional/performance requirements.
+tags:
+  - solution/design-system-components
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

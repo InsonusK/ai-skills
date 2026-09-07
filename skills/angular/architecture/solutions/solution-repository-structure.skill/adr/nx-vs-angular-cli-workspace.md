@@ -3,11 +3,15 @@ name: nx-vs-angular-cli-workspace
 description: Choice of tooling for the base Angular workspace layout
 problem: Whether to use a plain Angular CLI multi-project workspace or Nx as the workspace tool for the base repository structure
 decision: Use Nx as the workspace tool
+tags:
+  - solution/repository-structure
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
 
-The repository will host, from the start, more than one deployable unit (platform shell + embeddable applications, see the "Встраиваемость платформы" solution) and a growing number of shared/feature libraries. We need to pick the workspace tooling that will host `apps/` and `libs/` before any project-level or file-level conventions can be defined, since it determines what a "project" even is (`angular.json` entry vs `project.json` + Nx graph node) and what tooling is available for enforcing boundaries and scaling CI.
+The repository will host, from the start, more than one deployable unit (platform shell + embeddable applications, see `solution-federation-host`) and a growing number of shared/feature libraries. We need to pick the workspace tooling that will host `apps/` and `libs/` before any project-level or file-level conventions can be defined, since it determines what a "project" even is (`angular.json` entry vs `project.json` + Nx graph node) and what tooling is available for enforcing boundaries and scaling CI.
 
 # Selected variant
 

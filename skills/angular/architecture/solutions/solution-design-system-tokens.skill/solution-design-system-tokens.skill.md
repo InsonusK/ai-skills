@@ -3,31 +3,29 @@ name: solution-design-system-tokens
 description: Hybrid token consumption — Angular Material's own M3 --mat-sys-* system tokens consumed directly, with a small custom --ds-* layer only for domain-specific gaps (semantic status/priority colors, spacing, radius); light/dark via native CSS light-dark(); a single fixed brand palette for now
 domain: skill
 type: architecture
-version: 1
+version: 20260902000000
 tags:
   - skill/architecture/solution
   - stack/typescript
   - design-system
-  - angular-material
+  - framework/angular-material
   - design-tokens
   - framework/angular
   - concern/architecture
+  - solution/design-system-tokens
 
-triggers:
-  - Deciding what token a new custom component should consume for a color/typography/spacing decision
-  - Adding a new domain-specific semantic color (a new status, priority, or category)
-  - Reviewing whether light/dark mode behaves correctly for a token
+whenToUse: when deciding what token a component should consume for a color/typography/spacing decision, adding a domain-specific semantic color, or reviewing light/dark behaviour for a token
 creates:
   - projects/design-system/src/styles/theme.scss
   - projects/design-system/src/styles/custom-tokens.scss
 extends:
-  - "projects/design-system (from the Дизайн-система: структура solution)"
+  - "projects/design-system (from `solution-design-system-structure`)"
 depends_on:
-  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
 adr:
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/token-consumption-strategy]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/light-dark-mode-strategy]]"
-  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/token-consumption-strategy.md|token-consumption-strategy]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/light-dark-mode-strategy.md|light-dark-mode-strategy]]"
+  - "[[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]]"
 ---
 
 # Goal
@@ -54,17 +52,23 @@ adr:
 
 # Adr
 
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/token-consumption-strategy|Hybrid: --mat-sys-* directly + custom --ds-* tokens for gaps only, instead of a full custom semantic layer]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/token-consumption-strategy.md|Hybrid: --mat-sys-* directly + custom --ds-* tokens for gaps only, instead of a full custom semantic layer]]
   - Selected variant: hybrid — chosen because Material's M3 tokens are already a semantic layer, and aliasing them again would add indirection with no naming benefit
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/light-dark-mode-strategy|color-scheme + light-dark() instead of a hand-maintained parallel dark theme]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/light-dark-mode-strategy.md|color-scheme + light-dark() instead of a hand-maintained parallel dark theme]]
   - Selected variant: native `light-dark()` — chosen for consistency with how Material's own tokens are already implemented, and because it requires no JavaScript for the common case
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope|Single fixed brand palette, multi-tenant deferred, instead of building swappable theming now]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|Single fixed brand palette, multi-tenant deferred, instead of building swappable theming now]]
   - Selected variant: single palette — chosen to avoid speculative complexity against a requirement that isn't concrete yet
+
+# Boundaries
+- `design-system` catalog, `HybridDesignTokens` (common). Assumes `solution-design-system-structure` (theme/token files live in `projects/design-system`).
+- Consumes Angular Material's own `--mat-sys-*` M3 tokens directly; a small `--ds-*` layer covers only genuine gaps (domain semantic colors, spacing, radius).
+- A **single fixed brand palette** — multi-brand / per-tenant theming is deferred to `solution-design-system-multi-tenant-theming` (the catalog's aspirational VP1), which would generalize this feature.
+- Token values change only through Material's Sass override mixins, never by hand-setting `--mat-*` in raw CSS.
 
 # Requirements
 
 SOLUTION:
-- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|Дизайн-система: структура]]
+- [[skills/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]
   - Theme and token files live inside `projects/design-system`, the publishable library project established by that solution
 
 NPM:
@@ -74,11 +78,11 @@ NPM:
 # Template Skill Mutations
 
 REPOSITORY:
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend|Repository]] - extend - add `theme.scss` and `custom-tokens.scss` to `projects/design-system`, establish the token-consumption and override-only rules
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|Repository]] - extend - add `theme.scss` and `custom-tokens.scss` to `projects/design-system`, establish the token-consumption and override-only rules
 
 Artifact-level:
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|theme.scss]] - create - the single `mat.theme()` definition, applied at the root selector
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create|custom-tokens.scss]] - create - `--ds-*` tokens for semantic status/priority colors, spacing, radius
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create.md|theme.scss]] - create - the single `mat.theme()` definition, applied at the root selector
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|custom-tokens.scss]] - create - `--ds-*` tokens for semantic status/priority colors, spacing, radius
 
 # Workflow
 
@@ -111,24 +115,20 @@ sequenceDiagram
 ## Attempting to hand-set a Material token (anti-pattern, caught in review)
 
 1. A developer, needing a one-off visual tweak, writes `button { --mat-sys-primary: #ff0000; }` directly in a component's stylesheet.
-2. This is flagged against [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend#MUST]] — token values must only be changed through Angular Material's Sass override mixins.
+2. This is flagged against [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md#MUST]] — token values must only be changed through Angular Material's Sass override mixins.
 3. Fix: use `mat.theme-overrides` or the relevant component-specific override mixin instead, which validates the token name and preserves forward compatibility.
 
 # Rules
 
 ## MUST
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create#MUST|Tokens/theme.scss.create]]
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create#MUST|Tokens/custom-tokens.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create.md#MUST|Tokens/theme.scss.create]]
+- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md#MUST|Tokens/custom-tokens.scss.create]]
 
-## MUST NOT
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend#MUST NOT|Repository]]
-
-# Anti-patterns
-
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend|See Repository.extend.md]] — aliasing an already-semantic Material token; hand-setting `--mat-*` in raw CSS.
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create|See theme.scss.create.md]] — applying the theme below the root selector.
-- [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create|See custom-tokens.scss.create.md]] — adding a `--ds-*` token for a concept Material's palette already covers.
+## SHOULD
+- Avoid — [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Repository.extend.md|See Repository.extend.md]] — aliasing an already-semantic Material token; hand-setting `--mat-*` in raw CSS.
+- Avoid — [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/theme.scss.create.md|See theme.scss.create.md]] — applying the theme below the root selector.
+- Avoid — [[skills/angular/architecture/solutions/solution-design-system-tokens.skill/Implementation/Tokens/custom-tokens.scss.create.md|See custom-tokens.scss.create.md]] — adding a `--ds-*` token for a concept Material's palette already covers.
 
 # Check list
 

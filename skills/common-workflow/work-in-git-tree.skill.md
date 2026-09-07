@@ -63,29 +63,21 @@ tags:
 # Rule
 ## MUST
 - The AI agent modifies files only inside its own worktree (`./.ai-worktree/{task-name}`).
-- The AI agent commits only inside its own worktree, on the dedicated task branch.
+  - Risk: modifying files in the main repository risks merge conflicts, lost changes, and an inability to create a clean pull request, since the user may be editing the same files at the same time.
+- The AI agent commits only inside its own worktree, on the dedicated task branch — never directly to the base branch (for example, `develop`).
+  - Risk: committing directly to the base branch bypasses code review and may break the shared branch if the changes have not been validated.
+- Base decisions only on the state of the agent's own worktree, never on the main repository or another user's worktree.
+  - Risk: the user can change the state of the main repository at any time; deciding based on it risks acting on stale data and causing implementation errors.
+- Always create a dedicated task branch when creating a worktree.
+  - Risk: without a separate branch, all changes end up on the base branch, defeating the purpose of isolation and increasing the risk of conflicts.
 - At the end of the work, a pull request must be created into the base branch the task branch was created from.
+
 ## SHOULD
 - The branch and worktree name should be unique and descriptive, so they are not confused with the user's branches.
 - The agent should verify that the base branch exists and is up to date before creating the worktree.
 
 ## MAY
 - Multiple worktrees may be created if several branches need to be available at once (for example, for parallel tasks or experiments).
-## MUST NOT
-- The agent must not modify files in the main repository or in another user's worktree.
-
-# Anti-patterns
-- **Modifying files in the main repository instead of the worktree**
-  - The user may be editing the same files at the same time. This leads to merge conflicts, lost changes, and an inability to create a clean pull request.
-  
-- **Relying on data from the main repository or another worktree**
-  - The user can change the state of the main repository at any time. The agent may make decisions based on stale data, which causes implementation errors.
-  
-- **Committing directly to the base branch (for example, `develop`) from the worktree**
-  - This bypasses code review and may break the shared branch if the changes have not been validated.
-  
-- **Creating a worktree without a dedicated branch**
-  - Without a separate branch, all changes end up on the base branch, defeating the purpose of isolation and increasing the risk of conflicts.
 
 # Check list
 - [ ] `./.ai-worktree` is added to the main repository's `.gitignore`

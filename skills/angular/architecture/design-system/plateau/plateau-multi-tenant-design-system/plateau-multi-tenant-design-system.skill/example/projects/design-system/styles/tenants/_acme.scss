@@ -1,0 +1,13 @@
+// Tenant: acme. Matches DsTenant 'acme' and DS_TENANTS.
+@use '@angular/material' as mat;
+@use './tenant-theme' as tenant;
+
+:root[data-tenant='acme'] {
+  @include tenant.ds-tenant-theme(
+    mat.$violet-palette,
+    (
+      // acme keeps the base status colours — only the palette shifts here
+      --ds-color-status-in-progress: light-dark(#1565c0, #90caf9),
+    )
+  );
+}

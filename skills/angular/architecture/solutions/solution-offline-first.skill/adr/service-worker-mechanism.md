@@ -3,11 +3,15 @@ name: service-worker-mechanism
 description: Which service worker tooling to use for offline resilience
 problem: Angular's own built-in Service Worker (ngsw) is now feature-frozen and the Angular team itself recommends alternatives for advanced caching needs; we need a mechanism capable of per-content-type caching strategies and runtime caching of dynamically-resolved federated remote chunks
 decision: Use Workbox instead of Angular's built-in Service Worker (ngsw) or a fully hand-written service worker
+tags:
+  - solution/offline-first
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
 
-The application needs a service worker to make the app shell load offline and to apply different caching strategies to different kinds of requests (app shell, static assets, API reads, federated remote chunks, and auth/mutation endpoints that must never be cached). Angular ships its own `@angular/service-worker` (ngsw), but Angular's own documentation now describes it as a basic utility with a limited feature set for simple offline support, explicitly stating that only security fixes will be accepted going forward and recommending native browser APIs for more advanced caching and offline capabilities. Given this workspace's needs — multiple distinct caching strategies, and runtime caching of remote chunks whose URLs are only known at runtime (per the "Встраиваемость платформы" solution's Dynamic Federation) — we need to decide what replaces or supplements ngsw.
+The application needs a service worker to make the app shell load offline and to apply different caching strategies to different kinds of requests (app shell, static assets, API reads, federated remote chunks, and auth/mutation endpoints that must never be cached). Angular ships its own `@angular/service-worker` (ngsw), but Angular's own documentation now describes it as a basic utility with a limited feature set for simple offline support, explicitly stating that only security fixes will be accepted going forward and recommending native browser APIs for more advanced caching and offline capabilities. Given this workspace's needs — multiple distinct caching strategies, and runtime caching of remote chunks whose URLs are only known at runtime (per `solution-federation-host`'s Dynamic Federation) — we need to decide what replaces or supplements ngsw.
 
 # Selected variant
 

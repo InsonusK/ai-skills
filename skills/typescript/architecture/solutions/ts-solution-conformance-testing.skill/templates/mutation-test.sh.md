@@ -1,6 +1,6 @@
 # scripts/mutation-test.sh
 
-StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates `ONLY_DELTA` itself by limiting `--mutate` to the files `git diff` reports as changed. See [bdd-coverage-mutation-testing](skills/common-workflow/test/bdd-coverage-mutation-testing.skill/bdd-coverage-mutation-testing.skill.md#make-command-contract) for the target contract.
+StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates `ONLY_DELTA` itself by limiting `--mutate` to the files `git diff` reports as changed. See [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) for the target contract.
 
 ```bash
 #!/usr/bin/env bash

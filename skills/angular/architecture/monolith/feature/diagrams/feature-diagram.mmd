@@ -1,0 +1,44 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph Row1[" "]
+            direction LR
+            APP["App<br/>(root of the family)"]
+        end
+        subgraph Row2[" "]
+            direction LR
+            NX["NxWorkspaceStructure"]
+            ROUTE["HierarchicalRouting"]
+            TIER["StateTieringPolicy"]
+        end
+        subgraph Row3[" "]
+            direction LR
+            FORMS["SignalForms"]
+            LOG["ConsoleLogging"]
+        end
+        subgraph Testing[" "]
+            direction LR
+            BLT["BusinessLayerTesting"]
+            CT["ComponentTesting"]
+        end
+    end
+    style Row1 fill:none,stroke:none
+    style Row2 fill:none,stroke:none
+    style Row3 fill:none,stroke:none
+    style Testing fill:none,stroke:none
+
+    Common -->|Optional| PTR["PerformanceTunedRouting"]
+    Common -->|Optional| GS["GlobalStore"]
+    Common -->|Optional| BDA["BackendDataAccess"]
+
+    GS -->|Optional| PST["PersistedState"]
+
+    BDA -->|Optional| ORR["OfflineReadResilience"]
+    BDA -->|Optional| BLD["BackendLogDelivery"]
+    BDA -->|Optional| AUTH["Authentication"]
+
+    ORR -->|Optional| OWQ["OfflineWriteQueue<br/>(per feature)"]
+
+    ORR -. "Requires" .-> GS
+    AUTH -. "Requires" .-> GS
+    BLD -. "Requires" .-> LOG

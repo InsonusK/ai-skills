@@ -3,6 +3,10 @@ name: queue-partitioning-and-ordering
 description: How the mutation queue is ordered and partitioned when replaying after connectivity is restored
 problem: A single global FIFO queue means one stuck or slow operation (e.g. a struggling geolocation-dependent feature) blocks every other feature's pending mutations from syncing; a fully per-entity queue solves this precisely but adds real complexity (tracking dependencies between entities, cross-feature entity relationships)
 decision: Partition the queue by feature — FIFO ordering within each feature's own partition, replayed in parallel across features
+tags:
+  - solution/offline-sync
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
@@ -13,7 +17,7 @@ When connectivity is restored, queued mutations need to be replayed in some orde
 
 **Selected variant:** [[#Partition by feature]]
 
-The queue is partitioned by feature (matching the `scope:*` tag from the "Структура репозитория" solution's Nx taxonomy). Within a single feature's partition, mutations replay strictly FIFO — preserving intra-feature ordering (e.g. create-then-update on the same entity, which normally happens within one feature). Different features' partitions replay independently and in parallel, so a stuck or slow partition does not block the others.
+The queue is partitioned by feature (matching the `scope:*` tag from `solution-repository-structure`'s Nx taxonomy). Within a single feature's partition, mutations replay strictly FIFO — preserving intra-feature ordering (e.g. create-then-update on the same entity, which normally happens within one feature). Different features' partitions replay independently and in parallel, so a stuck or slow partition does not block the others.
 
 # Searched variants
 
@@ -21,7 +25,7 @@ The queue is partitioned by feature (matching the `scope:*` tag from the "Стр
 
 ### Description
 
-Each feature (`libs/{feature}/data-access`) gets its own FIFO queue partition, identified by the feature's `scope` tag. The replay orchestrator processes all partitions concurrently; within a partition, it processes entries strictly in enqueue order, stopping that partition's replay on a failure (same "stop on first failure per cycle" pattern as the retry queue in the "Логирование (глобальное)" solution) without affecting other partitions.
+Each feature (`libs/{feature}/data-access`) gets its own FIFO queue partition, identified by the feature's `scope` tag. The replay orchestrator processes all partitions concurrently; within a partition, it processes entries strictly in enqueue order, stopping that partition's replay on a failure (same "stop on first failure per cycle" pattern as the retry queue in `solution-logging-global`) without affecting other partitions.
 
 ### Benefits
 

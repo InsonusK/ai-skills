@@ -48,55 +48,22 @@ This skill does not define test naming/folder structure for a specific stack or 
 - Assert a specific error type/code/status in negative and error-path tests — not just "an exception was thrown" or "it's not successful".
 - Mark a scenario 🔧 "needs clarification" in the matrix and explicitly ask the user when the expected behavior is unclear.
 - Call out any reduction of an existing test's strictness (removed assert, raised timeout, added `Skip`/`xfail`/`.only`) as an explicit, justified point in the PR description.
+- Never consider "tests written" done, or merge a PR, while the trace matrix has ❌ for a happy/negative/error scenario without an explicit justification comment on that row.
+- Never lower an existing test's strictness to make it pass without calling it out explicitly.
+- Never assert only `NotNull` / "did not throw" when a concrete value or state can be checked instead — e.g. `Assert.NotNull(result)` on a response whose exact `Id`/`Status`/fields are known ahead of time stays green even if the returned value is completely wrong, as long as it is not null.
+- Never force a mock to always return a success response inside a test whose stated purpose is to exercise an error path — a test named `Create_Returns503_WhenExternalServiceUnavailable` with a client mock still stubbed to succeed cannot fail for the reason its name claims to test.
+- Never use `Assert.True(true)` / `expect(x).toBeTruthy()`-style assertions without checking a concrete result structure — the assertion cannot fail regardless of what the code under test does.
+- Never swallow an exception with try/catch inside a test instead of using the framework's dedicated throw-assertion (`Assert.Throws`, `pytest.raises`, `expect().toThrow()`) — a bare `try { act(); } catch { }` passes whether or not the right exception was thrown.
+- Never rely on a snapshot test as the only check of complex business logic — a snapshot diff shows *that* something changed, not whether the new output is *correct*, and wrong output gets silently accepted by re-recording the snapshot.
 
 ## SHOULD
-- Prefer parametrized tests over near-duplicate copy-pasted tests, but still record each data variation as its own scenario row when it exercises a distinct behavior — parametrization shortens the file, not the matrix.
+- Prefer parametrized tests over near-duplicate copy-pasted tests, but still record each data variation as its own scenario row when it exercises a distinct behavior — parametrization shortens the file, not the matrix. Five near-duplicate tests differing only in one input/output create an illusion of scenario coverage without adding real diversity, and multiply maintenance cost.
 - Run mutation testing on business-logic modules where the project has it configured, and treat a drop in mutation score on changed files as a review trigger.
-
-## MUST NOT
-- Consider "tests written" done, or merge a PR, while the trace matrix has ❌ for a happy/negative/error scenario without an explicit justification comment on that row.
-- Lower an existing test's strictness to make it pass without calling it out explicitly.
-- Assert only `NotNull` / "did not throw" when a concrete value or state can be checked instead.
-- Force a mock to always return a success response inside a test whose stated purpose is to exercise an error path.
-- Use `Assert.True(true)` / `expect(x).toBeTruthy()`-style assertions without checking a concrete result structure.
-- Swallow an exception with try/catch inside a test instead of using the framework's dedicated throw-assertion (`Assert.Throws`, `pytest.raises`, `expect().toThrow()`).
-- Rely on a snapshot test as the only check of complex business logic.
-
-# Anti-patterns
-- **`NotNull`-only assertion where a concrete value is checkable**
-  - Example: `Assert.NotNull(result)` on a response whose exact `Id`/`Status`/fields are known ahead of time.
-  - Consequence: the test stays green even if the returned value is completely wrong, as long as it is not null.
-  - Instead: assert the concrete expected value or structure.
-
-- **Mock forced to succeed inside an error-path test**
-  - Example: a test named `Create_Returns503_WhenExternalServiceUnavailable` where the mocked client is still stubbed to return success.
-  - Consequence: the test cannot fail for the reason its name claims to test.
-  - Instead: stub the mock to produce the exact failure the scenario describes, then assert the resulting error handling.
-
-- **Truthy-only assertion**
-  - Example: `Assert.True(true)`, `expect(result).toBeTruthy()` with no check of `result`'s actual shape.
-  - Consequence: the assertion cannot fail regardless of what the code under test does.
-  - Instead: assert specific fields/values of `result`.
-
-- **Copy-pasted near-duplicate tests instead of parametrization**
-  - Example: five tests differing only in one input value and expected output.
-  - Consequence: creates an illusion of scenario coverage without adding real scenario diversity, and multiplies maintenance cost.
-  - Instead: parametrize, but keep one trace-matrix row per distinct scenario the parametrized cases cover.
-
-- **try/catch swallowing the exception instead of a throw-assertion**
-  - Example: `try { act(); } catch { }` with no assertion on the caught exception.
-  - Consequence: the test passes whether or not an exception was thrown, or whether the right one was.
-  - Instead: use `Assert.Throws<T>`, `pytest.raises(T, match=...)`, or `expect(fn).toThrow(...)`.
-
-- **Snapshot test as the only check of complex business logic**
-  - Example: a single snapshot assertion covering a pricing calculation with several branches.
-  - Consequence: a snapshot diff shows *that* something changed, not whether the new output is *correct*; wrong output gets accepted by re-recording the snapshot.
-  - Instead: assert the specific expected values for each business rule, and use the snapshot (if at all) as a supplementary check.
 
 # Check list
 - [ ] Every scenario identified before writing tests appears in the trace matrix with status ✅/⚠️/❌ (not left at 🔧 without reason).
 - [ ] Every ❌ row for happy/negative/error has an explicit justification comment.
-- [ ] No test in this change matches a pattern from `# Anti-patterns`.
+- [ ] No test in this change asserts only `NotNull`/truthy, forces a mock to succeed in an error-path test, swallows an exception instead of asserting it, or relies solely on a snapshot for complex logic.
 - [ ] Negative/error tests assert a specific error type/code, not just "something went wrong".
 - [ ] The "Function → Test" reverse table is filled for every changed public method.
 - [ ] Mutation testing (where configured) showed no new surviving mutants in changed files without an explanation.

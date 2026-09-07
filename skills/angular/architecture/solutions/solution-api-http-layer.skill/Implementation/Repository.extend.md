@@ -2,6 +2,9 @@
 description: Add libs/shared/http-core (base HTTP service with common concerns) and formalize the Facade/Client/Mapper structure inside every feature's data-access lib
 element_kind: repository
 change_kind: extend
+tags:
+  - solution/api-http-layer
+  - element/monolith-repository
 ---
 
 # Structure
@@ -54,36 +57,35 @@ libs/{feature}/data-access/src/lib
 | /libs/{feature}/data-access/src/lib/facade/{feature}_N.facade.ts | Same as above, used when a feature has multiple distinct data facets. Exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/{feature}.client.ts | Internal: DTO mapping via the Mapper, calls `libs/shared/http-core`, catches `HttpErrorResponse` and throws a typed domain error from `{feature}.errors.ts`. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/client/{feature}_N.client.ts | Same as above, used when a feature has multiple distinct data facets. Never exported from `index.ts`. |
-| /libs/{feature}/data-access/src/lib/{feature}.mapper.ts | Internal: hand-written `dtoToModel`/`modelToDto` functions, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy]]. Never exported from `index.ts`. |
+| /libs/{feature}/data-access/src/lib/{feature}.mapper.ts | Internal: hand-written `dtoToModel`/`modelToDto` functions, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|dto-mapping-strategy]]. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/mapper/{feature}_N.mapper.ts | Same as above, used when a feature has multiple distinct data facets. Never exported from `index.ts`. |
 | /libs/{feature}/data-access/src/lib/{feature}.errors.ts | Domain error types for this feature's operations. The Facade may re-export these from `index.ts` so callers can narrow on them. |
 
 # Nx tag taxonomy — extension
 
-No new tag values are introduced; `libs/shared/http-core` uses the existing `type:util`/`scope:shared` combination. The `@nx/enforce-module-boundaries` allow-list from solution #1 already permits `type:data-access` to depend on `type:util` with `scope:shared`, which covers this addition without further changes.
+No new tag values are introduced; `libs/shared/http-core` uses the existing `type:util`/`scope:shared` combination. The `@nx/enforce-module-boundaries` allow-list from `solution-repository-structure` already permits `type:data-access` to depend on `type:util` with `scope:shared`, which covers this addition without further changes.
 
 # Rules
 
 ## MUST
-- A feature's `{feature}.client.ts` MUST NOT be exported from that feature's `index.ts` — only the Facade (and, if useful, the feature's domain error types) is part of the public API.
-- When a feature has multiple distinct data facets, each facet's files MUST be grouped under `facade/`, `client/`, and `mapper/` with names `{feature}_N.{kind}.ts`; every Facade is exported from `index.ts`, but no Client or Mapper is exported.
-- Every Client MUST build its HTTP calls on top of `libs/shared/http-core`'s base service, never call `HttpClient` directly.
-- A Client MUST catch every `HttpErrorResponse` it can produce and rethrow a typed domain error from that feature's `{feature}.errors.ts`, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy]] — a raw `HttpErrorResponse` MUST NOT escape the Client.
-- For feature-scoped operations, the calling Signal Store method MUST call the Facade directly — no Action/Reducer/Effect is introduced for feature-level data operations, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering]]. This does not apply to global/cross-cutting state, which keeps its existing classical NgRx chain (Effect → Facade → Client) from the "State management" and "Аутентификация" solutions.
-
-## MUST NOT
-- A component or Signal Store method MUST NOT import a feature's Client directly, bypassing the Facade — business validation would be skipped.
-
-# Anti-patterns
-
-- **A Signal Store method calling the feature's Client directly, skipping the Facade**
-  - Consequence: bypasses business-rule validation the Facade exists to enforce, and duplicates that validation elsewhere or omits it entirely
-  - Instead: the store always goes through the Facade; only the Facade calls the Client
-
-- **A Client method letting a raw `HttpErrorResponse` propagate uncaught**
-  - Consequence: feature/business code ends up branching on HTTP status codes instead of a meaningful domain error, coupling it to backend transport details (see [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy]])
-  - Instead: catch every possible transport error inside the Client and rethrow the feature's typed domain error
-
+- A feature's `{feature}.client.ts` is never exported from that feature's `index.ts` — only the Facade (and its domain error types) is public.
+  - Risk: an exported Client lets a consumer skip the Facade and its business validation.
+  - Fix: `index.ts` re-exports the Facade + errors only; the Client is an internal file.
+- A feature with multiple data facets groups files under `facade/`, `client/`, `mapper/` as `{feature}_N.{kind}.ts`; every Facade is exported, no Client or Mapper is.
+  - Risk: a flat pile of `orders.client.ts`, `orders2.client.ts` … is unnavigable and blurs which Facade owns which Client.
+  - Fix: one folder per layer, numbered files per facet, a barrel that exports only the Facades.
+- Every Client builds its HTTP calls on `libs/shared/http-core`'s base service — never `HttpClient` directly.
+  - Risk: base-URL, auth, and retry policy get re-implemented (inconsistently) per feature.
+  - Fix: `inject(BaseHttpService)` and call its verbs.
+- A Client catches every `HttpErrorResponse` it can produce and rethrows a typed domain error from `{feature}.errors.ts` — a raw `HttpErrorResponse` never escapes.
+  - Risk: transport-shaped errors reach the store/component, which then branch on HTTP status codes far from the request.
+  - Fix: `catchError` in the Client maps status → a `{Feature}...Error`; per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]].
+- For feature-scoped operations the calling Signal Store method calls the Facade directly — no Action/Reducer/Effect for feature-level data.
+  - Risk: classical NgRx boilerplate for state only one feature ever reads, per [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|facade-client-layering]].
+  - Fix: `store` method → `Facade` → `Client`. Global/cross-cutting state keeps its Effect → Facade → Client chain.
+- A component or Signal Store method never imports a feature's Client directly, bypassing the Facade.
+  - Risk: the Facade's business-rule validation is skipped entirely.
+  - Fix: always route through the Facade; only the Facade constructs a Client call.
 # Unittest TestCases
 
 - [ ] WHEN a feature's `index.ts` is inspected THEN
@@ -92,3 +94,7 @@ No new tag values are introduced; `libs/shared/http-core` uses the existing `typ
   - [ ] the Client rethrows a typed domain error, never the original `HttpErrorResponse`
 - [ ] WHEN a feature-scoped operation is inspected THEN
   - [ ] no Action, Reducer, or Effect exists for it — only a Signal Store method calling the Facade
+
+## SHOULD
+- **A Signal Store method calling the feature's Client directly, skipping the Facade** — Consequence: bypasses business-rule validation the Facade exists to enforce, and duplicates that validation elsewhere or omits it entirely — Instead: the store always goes through the Facade; only the Facade calls the Client
+- **A Client method letting a raw `HttpErrorResponse` propagate uncaught** — Consequence: feature/business code ends up branching on HTTP status codes instead of a meaningful domain error, coupling it to backend transport details (see [[skills/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|error-handling-strategy]]) — Instead: catch every possible transport error inside the Client and rethrow the feature's typed domain error

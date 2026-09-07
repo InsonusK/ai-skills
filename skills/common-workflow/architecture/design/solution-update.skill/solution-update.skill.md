@@ -37,8 +37,8 @@ tags:
    - Search other solution skills for references to {solution} (in `created_by`, dependency statements, or applied-solutions lists).
    - Update each dependent solution to reflect the change, recording its own ADR per step 3 when the change alters a decision.
 5. Update every plateau that applies any of the changed solutions following [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill|plateau-update-by-solutions]]:
-   - Search `skills/*/architecture/plateau/**` for plateaus whose `created_by` or `__Applied solutions__` references a changed solution.
-   - For each affected plateau, run the plateau-update-by-solutions workflow with the changed solution as input, including propagation through child plateaus via `parent_plateau`.
+   - Search `skills/*/architecture/plateau/**` for plateaus whose `created_by` or `__Applied solutions:__` references a changed solution.
+   - For each affected plateau, run the plateau-update-by-solutions workflow with the changed solution as input, including propagation through child plateaus via `parent_plateaus`.
 6. Verify the result with the [check list](#check-list).
 
 # Rule
@@ -57,7 +57,7 @@ tags:
 - Refresh every plateau that applies the changed solution (or a dependent solution changed in this pass) via [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill|plateau-update-by-solutions]] — even when the change "looks small", because a small rule change still makes plateau structural skills stale.
   - Violation: the solution is updated, but plateaus still reference the old behavior.
   - Risk: plateau root skills and structural skills go stale, so projects generated from the plateau miss the change.
-  - Fix: run plateau-update-by-solutions for every affected plateau, including child plateaus linked via `parent_plateau`.
+  - Fix: run plateau-update-by-solutions for every affected plateau, including child plateaus linked via `parent_plateaus`.
 - Bump `version` of the updated solution skill and of every skill changed during propagation.
   - Risk: consumers cannot tell whether they hold the old or the new version of the skill.
   - Fix: bump `version` on every skill file touched in this pass.
@@ -71,4 +71,4 @@ tags:
 - [ ] An ADR for the change is created in the solution's `adr/` folder, registered in `adr:`, and linked from the skill body (per adr-create)
 - [ ] Facet tags and `whenToUse` still follow solution-create rules; no `hint`/`example` blocks remain
 - [ ] All solutions depending on the updated solution are found and updated (with their own ADRs when decisions change)
-- [ ] plateau-update-by-solutions is executed for every plateau applying a changed solution, including child plateaus via `parent_plateau`
+- [ ] plateau-update-by-solutions is executed for every plateau applying a changed solution, including child plateaus via `parent_plateaus`

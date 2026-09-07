@@ -3,6 +3,10 @@ name: component-preview-tooling
 description: How components are previewed and visually reviewed during development
 problem: Storybook is the conventional choice for component preview/documentation, but prior hands-on experience with it produced significant friction; a plain Angular demo application is a workable, lower-friction alternative
 decision: Use a self-built demo Angular application, not Storybook
+tags:
+  - solution/design-system-structure
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

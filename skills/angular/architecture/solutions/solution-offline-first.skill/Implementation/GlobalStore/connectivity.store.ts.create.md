@@ -4,6 +4,9 @@ project_name: shared-state
 name: connectivity
 element_kind: store
 change_kind: create
+tags:
+  - solution/offline-first
+  - element/connectivity-store-ts
 ---
 
 # Goals
@@ -64,15 +67,18 @@ interface ConnectivityState {
 # Rule changes
 
 ## MUST
-- `selectIsOnline` MUST require both the browser's own online signal and the most recent health-check result to agree — either one reporting offline is enough to mark the app as offline.
-- The health-check interval MUST back off (check less frequently) while already known to be offline, to avoid flooding the network with pointless requests during an outage.
-- The health-check endpoint MUST be a lightweight, unauthenticated `HEAD` request — it MUST NOT go through `authInterceptor` or require a valid session, since connectivity should be checkable even for a logged-out user.
+- `selectIsOnline` requires both the browser online signal and the most recent health-check to agree — either one reporting offline marks the app offline.
+  - Risk: `navigator.onLine` alone misreports a captive portal or a backend outage as "online".
+  - Fix: `extraSelectors` computes `browserOnline && lastHealthCheckOk`.
+- The health-check interval backs off while already known to be offline.
+  - Risk: a fixed short interval floods the network with failing requests for the whole duration of an outage.
+  - Fix: a longer interval (or exponential-ish backoff) once `isOnline` is false; back to normal cadence once a check succeeds.
+- The health-check is a lightweight unauthenticated `HEAD` request — never through `authInterceptor`, never requiring a session.
+  - Risk: routing it through the interceptor makes connectivity un-checkable for a logged-out user and can trigger a spurious silent-refresh on its 401.
+  - Fix: a bare `fetch('/health', { method: 'HEAD' })` (or an `HttpClient` call on a context that skips the interceptor).
 
-# Anti-patterns
-
-- **Relying on `browserOnline` alone without factoring in the health-check result**
-  - Consequence: the application can report itself as online while the backend is actually unreachable (captive portal, backend outage), per [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection]]
-  - Instead: `isOnline` always requires both signals to agree
+## SHOULD
+- **Relying on `browserOnline` alone without factoring in the health-check result** — Consequence: the application can report itself as online while the backend is actually unreachable (captive portal, backend outage), per [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection.md|connectivity-detection]] — Instead: `isOnline` always requires both signals to agree
 
 # Check list
 

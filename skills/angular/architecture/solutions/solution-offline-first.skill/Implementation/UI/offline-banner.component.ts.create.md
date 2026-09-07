@@ -4,6 +4,9 @@ project_name: shared-ui
 name: offline-banner
 element_kind: component
 change_kind: create
+tags:
+  - solution/offline-first
+  - element/offline-banner-component-ts
 ---
 
 # Goals
@@ -20,7 +23,7 @@ change_kind: create
 
 ```typescript
 @Component({
-  selector: 'app-offline-banner',
+  selector: 'ui-offline-banner',
   template: `
     @if (!isOnline()) {
       <div role="status" class="offline-banner">You're offline. Showing the latest available data.</div>
@@ -28,21 +31,23 @@ change_kind: create
   `,
 })
 export class OfflineBannerComponent {
-  protected readonly isOnline = inject(Store).selectSignal(selectIsOnline);
+  // presentational — the shell reads selectIsOnline and feeds it in
+  readonly isOnline = input.required<boolean>();
 }
 ```
 
 # Rule changes
 
 ## MUST
-- The banner MUST read `isOnline` from the shared `connectivity` slice — it MUST NOT read `navigator.onLine` directly, to stay consistent with the more accurate combined signal from [[skills/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection]].
-- The banner MUST be mounted once, in `apps/platform-shell`, so it is visible regardless of which feature or embeddable module is currently active.
+- The banner is presentational: it takes an `isOnline` input; the shell reads `selectIsOnline` and feeds it.
+  - Risk: injecting `Store` into a `libs/shared/ui` component adds a `type:ui → type:store` boundary dependency.
+  - Fix: `input.required<boolean>('isOnline')`; `apps/platform-shell` does `<ui-offline-banner [isOnline]="isOnline()">`.
+- The banner is mounted once, in `apps/platform-shell`.
+  - Risk: a feature mounting its own banner means duplicate banners, or a gap when that feature is not active.
+  - Fix: mount it once in the shell template so it is visible regardless of the active feature/remote.
 
-# Anti-patterns
-
-- **A feature implementing its own local offline indicator instead of using this shared component**
-  - Consequence: inconsistent messaging and duplicated logic across features
-  - Instead: mount `OfflineBannerComponent` once at the shell level; features do not need their own
+## SHOULD
+- **A feature implementing its own local offline indicator instead of using this shared component** — Consequence: inconsistent messaging and duplicated logic across features — Instead: mount `OfflineBannerComponent` once at the shell level; features do not need their own
 
 # Check list
 

@@ -10,7 +10,10 @@ type: architecture
 version: 
 tags:
   - skill/architecture/solution
-  # any other tags
+  - solution/{solution-name}
+  # solution/{solution-name}: the solution name without the `solution-` prefix, kebab-case
+  # (e.g. folder solution-sln-structure.skill -> solution/sln-structure).
+  # Plus facet tags required by skill-design.skill.md: at least one concern/* and one stack/<value>.
 creates:
   # List of classes or project which created by this solution
   # Project fill {ProjectName}.csproj
@@ -31,6 +34,11 @@ extends:
   # - "{Module}.Domain.Entities.{EntityName}.cs"
 depends_on:
   # List of other architecture solutions which is used by this solution and must be implemented before this solution
+  # Example:
+  # - "<Link>"
+built_on_plateau:
+  # Optional, at most one: the plateau this solution assumes already exists and builds on top of.
+  # Distinct from depends_on (sibling solutions) — see solution-plateau-hierarchy.skill.md.
   # Example:
   # - "<Link>"
 adr:
@@ -83,16 +91,23 @@ RECOMMENDATION:
 - Entities define consistency.
 ```
 
+# Boundaries
+```hint
+List what this solution's Rules assume exists elsewhere but that this solution does not itself implement and does not require via a named `depends_on` solution.
+Use this section only when such an assumption exists — skip it entirely when the solution is fully self-contained.
+RECOMMENDATION:
+- Prefer bullet list
+- State the gap itself, not who is responsible for it. Name a specific solution only informationally, when one reliably closes the gap in the current catalog today — never as a `depends_on` requirement, since the gap must remain true even if that solution is absent.
+- Do not use this section for a dependency that has a concrete Implementation-file link — that is a real dependency and belongs in `# Requirements` instead.
+```
+```example
+- `DomainException` thrown by this solution's constructor is not caught here — some global exception-handling mechanism is expected to catch it. `solution-mediator-exception-handler` currently does this when applied, but this solution does not require it.
+```
+
 # Adr
 ```hint
 Use this section only if an architecture decision was made while building or editing the solution.
-1. Create an `adr/` folder inside the solution skill folder.
-2. Add an ADR record using [[./adr/adr.template.md|adr.template.md]].
-3. List created ADRs in the `adr:` property of the YAML header.
-4. In the skill body, briefly summarize the decision and link to the ADR.
-5. The ADR itself must contain `# Selected variant` and `# Searched variants` sections. The selected variant must be clearly marked and linked from `# Searched variants`.
-
-See also a complete example: [[./adr/example.adr.md|example.adr.md]].
+Record every such decision as an ADR following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md|adr-create]]: create ADR files from its template in an `adr/` folder inside the solution skill folder, list them in the `adr:` property of the YAML header, and briefly summarize each decision in the skill body with a link to its ADR.
 RECOMMENDATION:
 - Prefer bullet list
 ```
@@ -241,12 +256,17 @@ sequenceDiagram
 ```
 ````
 
-# Rules
+# Rule
 ```hint
-Define MUST, SHOULD, MAY, SHOULD NOT, MUST NOT rules.
-Show links to same subblock in implementation files.
-Only add a subblock for categories that contain at least one implementation-file link or rule.
-If a category has no links and no rules, skip it — do not write an empty subblock.
+Define MUST, SHOULD, MAY rules. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+- Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
+- Express a prohibition as a negatively-phrased bullet ("Never ...", "Do not ...") inside ## MUST or ## SHOULD, at whichever strength it actually carries.
+- Never keep a separate # Anti-patterns section: convert each would-be anti-pattern into a negative bullet with nested `Risk:` (the consequence) and `Fix:` (the correct alternative).
+- Every ## MUST bullet that states a rule carries a nested `Risk:` and `Fix:` (`Violation:` is optional); pure link bullets that aggregate implementation-file rules carry none.
+- ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
+- Show links to the same subblock in implementation files.
+- Only add a subblock for categories that contain at least one implementation-file link or rule.
+- If a category has no links and no rules, skip it — do not write an empty subblock.
 
 MUST:
 - Contain link to same subblock in implementation template
@@ -262,15 +282,18 @@ SHOULD:
   - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST|IQuery.cs.create]]
 - Interfaces.csproj.extend
   - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST|{Dto}.cs.create]]
-- [[./Implementation/App.Host.csproj.extend.md#MUST|App.Host.csproj.extend]]
+- Validate input at the transport boundary before the handler runs.
+  - Risk: the service may fail during request execution or save invalid data.
+  - Fix: validate every command with a validator registered in the pipeline.
+- Never place business rules in handlers.
+  - Risk: logic leaks out of the domain, making the system hard to test and evolve.
+  - Fix: delegate all business decisions to entities and domain services.
 ```
 
 ## SHOULD
 ```example
 - [[./Implementation/Shared.csproj.extend.md#SHOULD|Shared.csproj.extend]]
   - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#SHOULD|App.Host.csproj.extend]]
 ```
 
@@ -278,51 +301,7 @@ SHOULD:
 ```example
 - [[./Implementation/Shared.csproj.extend.md#MAY|Shared.csproj.extend]]
   - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MAY|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MAY|{Dto}.cs.create]]
 - [[./Implementation/App.Host.csproj.extend.md#MAY|App.Host.csproj.extend]]
-```
-
-## SHOULD NOT
-```example
-- [[./Implementation/Shared.csproj.extend.md#SHOULD NOT|Shared.csproj.extend]]
-  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#SHOULD NOT|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#SHOULD NOT|{Dto}.cs.create]]
-- [[./Implementation/App.Host.csproj.extend.md#SHOULD NOT|App.Host.csproj.extend]]
-```
-
-## MUST NOT
-```example
-- [[./Implementation/Shared.csproj.extend.md#MUST NOT|Shared.csproj.extend]]
-  - [[./Implementation/Shared.csproj.extend/IQuery.cs.create.md#MUST NOT|IQuery.cs.create]]
-- Interfaces.csproj.extend
-  - [[./Implementation/Interfaces.csproj.extend/{Dto}.cs.create.md#MUST NOT|{Dto}.cs.create]]
-- [[./Implementation/App.Host.csproj.extend.md#MUST NOT|App.Host.csproj.extend]]
-```
-
-# Anti-patterns
-```hint
-Describe concrete wrong ways to apply the solution and their consequences.
-Each item must tell the agent what NOT to do, why it is harmful, and what to do instead.
-
-Format:
-- **{What NOT to do}**
-  - Consequence: {negative consequence}
-  - Instead: {correct alternative}
-
-RECOMMENDATION:
-- Prefer bullet list
-- Be specific to the solution context
-```
-```example
-- **Skip validation**
-  - Consequence: service may fail during request execution or save invalid data
-  - Instead: validate input at the transport boundary before the handler runs
-
-- **Business rule in handler**
-  - Consequence: logic leaks out of the domain, making the system hard to test and evolve
-  - Instead: delegate all business decisions to entities and domain services
 ```
 
 # Check list

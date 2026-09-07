@@ -55,36 +55,18 @@ Test-first is not required:
 
 ## MUST
 - Classify the task as new behavior, large-scale refactor, or local/mechanical change before deciding the testing approach.
-- For new behavior: write a failing test for a case before writing the implementation that satisfies it.
-- For a large-scale refactor: keep the full test suite green throughout; only change test expectations where the refactor intentionally changes an observable contract.
+- For new behavior: write a failing test for a case before writing the implementation that satisfies it — a test written after the implementation as a coverage exercise mirrors what the code does rather than what it must do, missing cases the implementation never considered and passing trivially.
+- For a large-scale refactor: keep the full test suite green throughout; only change test expectations where the refactor intentionally changes an observable contract. Confirm the suite is green before starting structural changes — if a test fails mid-refactor with no green baseline to compare against, nobody can tell whether it's pre-existing or a regression.
 - For a local/mechanical change: run tests before and after the change.
 - Add a regression test when a local fix addresses a bug that had no covering test.
+- Never refactor structure and change behavior in the same step without a green baseline separating them.
+- Never write implementation for multiple uncovered test cases before any of their tests exist.
 
 ## SHOULD
 - Drive red-green cycles in the order test cases appear in the unit's `usecases_list.md` entry.
 - Keep each red-green cycle to one test case at a time; do not batch several cases into one implementation pass.
-
-## SHOULD NOT
-- Treat "no time for TDD" as a reason to skip writing any test for new business logic — write it after implementation instead of skipping entirely, but prefer before.
-
-## MUST NOT
-- Force full red-green-refactor ceremony on a trivial local/mechanical change.
-- Refactor structure and change behavior in the same step without a green baseline separating them.
-- Write implementation for multiple uncovered test cases before any of their tests exist.
-
-# Anti-patterns
-- **Tests written after the implementation as a coverage exercise**
-  - Consequence: tests mirror what the code does rather than what it must do; they miss cases the implementation never considered and pass trivially.
-  - Instead: for new behavior, write the failing test from the unit's test case list before the implementation.
-
-- **Full TDD ceremony on a one-line fix**
-  - Example: writing a new test class, fixtures, and a red-green cycle to fix a typo in a log message.
-  - Consequence: wastes time without reducing risk, since there was no design decision to pressure-test.
-  - Instead: treat it as a local/mechanical change — run tests before/after, add a regression test only if a real gap was found.
-
-- **Refactoring without a green baseline**
-  - Consequence: when a test fails mid-refactor, nobody can tell whether it is a pre-existing issue or a regression introduced by the refactor.
-  - Instead: confirm the full suite is green before starting structural changes, and keep it green after every step.
+- Never force full red-green-refactor ceremony on a trivial local/mechanical change — e.g. writing a new test class, fixtures, and a red-green cycle to fix a typo in a log message wastes time without reducing risk, since there was no design decision to pressure-test; treat it as a local/mechanical change instead (run tests before/after, add a regression test only if a real gap was found).
+- Never treat "no time for TDD" as a reason to skip writing any test for new business logic — write it after implementation instead of skipping entirely, but prefer before.
 
 # Check list
 - [ ] The task was classified as new behavior, large-scale refactor, or local/mechanical change before choosing the approach.

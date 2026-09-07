@@ -4,6 +4,9 @@ project_name: "{Feature}"
 name: "{form-name}"
 element_kind: component
 change_kind: extend
+tags:
+  - solution/forms
+  - element/component-name-component-ts
 ---
 
 # How this generic file is used
@@ -69,24 +72,22 @@ export class OrderFormComponent {
 # Rule changes
 
 ## MUST
-- A form's submission MUST go through `submitForm()`, not a manually wired `(ngSubmit)` handler that bypasses the form's own validation/state.
-- Any HTTP call triggered by form submission MUST go through the owning feature's `data-access` facade (see the future "API/HTTP-слой" solution), never call `HttpClient` directly from the form component.
-- A custom, design-system-provided form control used inside a Signal Form MUST implement `ControlValueAccessor` so it is compatible with `formField` binding (see the "Применение дизайн-системы" solution for where this contract is defined).
+- A form's submission goes through `submitForm()`, not a hand-wired `(ngSubmit)` handler.
+  - Risk: a manual handler bypasses the form's own validity/touched/error state and can submit an invalid form.
+  - Fix: `await submitForm(this.form, async (value) => { ... })`; field-level errors reflect the outcome automatically.
+- Any HTTP call triggered by form submission goes through the owning feature's `data-access` Facade — never `HttpClient` from the form component.
+  - Risk: transport logic in a form component is untestable without mocking HTTP and duplicates the Facade's validation.
+  - Fix: the `submitForm()` callback calls a store method or the Facade.
+- A custom design-system form control used inside a Signal Form implements `ControlValueAccessor`.
+  - Risk: without CVA the control is not compatible with `formField` binding — value/validity never sync.
+  - Fix: implement `writeValue` / `registerOnChange` / `registerOnTouched` / `setDisabledState` and provide `NG_VALUE_ACCESSOR`.
 
 ## SHOULD
-- Field schema/validators SHOULD stay inline in the component for simple forms (a handful of fields, no cross-field logic), and SHOULD be extracted into a `{form-name}.form.ts` file once cross-field validation (`when`) or the number of validators makes the component harder to read.
-- Async validation (e.g. "is this email already taken") SHOULD use `validateHttp()` with its built-in debounce, rather than a hand-rolled debounced subscription.
+- Field schema/validators should stay inline in the component for simple forms (a handful of fields, no cross-field logic), and should be extracted into a `{form-name}.form.ts` file once cross-field validation (`when`) or the number of validators makes the component harder to read.
+- Async validation (e.g. "is this email already taken") should use `validateHttp()` with its built-in debounce, rather than a hand-rolled debounced subscription.
 
-# Anti-patterns
-
-- **Manually subscribing to a signal-based field's changes to imperatively trigger side effects**
-  - Consequence: reintroduces the subscription-management problem Signal Forms exists to avoid, and can desynchronize from the form's own reactivity
-  - Instead: read the field's Signal directly in a computed value or an effect scoped to the component's lifecycle
-
-- **Wiring a raw `HttpClient` call directly inside a form component's submit handler**
-  - Consequence: bypasses the feature's data-access facade, duplicating error handling and mapping logic that belongs in one place
-  - Instead: call through the feature's facade from inside `submitForm()`'s callback
-
+- **Manually subscribing to a signal-based field's changes to imperatively trigger side effects** — Consequence: reintroduces the subscription-management problem Signal Forms exists to avoid, and can desynchronize from the form's own reactivity — Instead: read the field's Signal directly in a computed value or an effect scoped to the component's lifecycle
+- **Wiring a raw `HttpClient` call directly inside a form component's submit handler** — Consequence: bypasses the feature's data-access facade, duplicating error handling and mapping logic that belongs in one place — Instead: call through the feature's facade from inside `submitForm()`'s callback
 # Check list
 
 - [ ] The form is built with `form()`/`FieldTree`, not `FormGroup`/`FormControl`

@@ -1,0 +1,134 @@
+# monolith plateaus
+
+Six plateaus, built by `plateau-create-by-solutions` from the catalogue in `../../solutions/`.
+**Flat lineage** — a single chain, each `standalone: true`, each `parent_plateaus` entry the single
+previous plateau. Capabilities are **cumulative**: everything the parent has, plus its own delta.
+
+## Plateau × VP matrix
+
+Rows = plateaus, columns = the 8 monolith Variation Points. ✅ = the VP is realized at that plateau,
+❌ = it is not. Answers are **cumulative** down the chain — a plateau has every VP its parent has,
+plus its own. Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a
+plateau's complete VP set.
+
+| Plateau | VP1 | VP2 | VP3 | VP4 | VP5 | VP6 | VP7 | VP8 |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| plateau-online-monolith        | ❌  | ✅ | ✅ | ❌  | ❌  | ❌  | ❌  | ❌  |
+| plateau-async-monolith         | ✅ | ✅ | ✅ | ❌  | ❌  | ❌  | ❌  | ❌  |
+| plateau-offline-read-monolith  | ✅ | ✅ | ✅ | ✅ | ❌  | ❌  | ❌  | ❌  |
+| plateau-offline-full-monolith  | ✅ | ✅ | ✅ | ✅ | ✅ | ❌  | ❌  | ❌  |
+| plateau-multiuser-monolith     | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌  |
+| plateau-persisted-state-monolith | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+Column legend — VP1 PerformanceTunedRouting · VP2 GlobalStore · VP3 BackendDataAccess ·
+VP4 OfflineReadResilience · VP5 OfflineWriteQueue · VP6 BackendLogDelivery · VP7 Authentication ·
+VP8 PersistedState. Full descriptions, the solution that realizes each VP, and the constraints
+between VPs are in [`../variability-map.md`](../variability-map.md) — the single source of truth;
+this table is only the plateau-oriented view of the same answers.
+
+### Shape notes
+
+- **VP5 (OfflineWriteQueue) is per feature.** ✅ means the plateau ships the queue mechanism and at
+  least one feature opts a mutation into it — not that every feature is queued. See the
+  [map](../variability-map.md).
+
+## Lineage & new solutions
+
+| # | Plateau | Parent | New solutions in its `created_by` (on top of the parent chain) |
+|---|---------|--------|-----------------------------------|
+| 1 | **plateau-online-monolith** | — (from scratch) | `solution-repository-structure`, `solution-app-routing`, `solution-state-tiering`, `solution-global-store`, `solution-forms`, `solution-api-http-layer`, `solution-logging-base`, `solution-app-testing`, `solution-ui-testing` |
+| 2 | **plateau-async-monolith** | online-monolith | `solution-performance-tuned-routing` |
+| 3 | **plateau-offline-read-monolith** | async-monolith | `solution-offline-first` |
+| 4 | **plateau-offline-full-monolith** | offline-read-monolith | `solution-offline-sync` — *owner's current app* |
+| 5 | **plateau-multiuser-monolith** | offline-full-monolith | `solution-logging-global`, `solution-authentication` — *`plateau-platform-host`'s parent* |
+| 6 | **plateau-persisted-state-monolith** | multiuser-monolith | `solution-persisted-state` — no new Nx project |
+
+Build scaffolding (anchor contract, mechanical check, decisions log) is in [`../../agent/`](../../agent/) —
+run `bash skills/angular/architecture/v3.1/agent/check.sh` after any change.
+
+## Reference: the V1 plateau chain → v3.1 VP answers
+
+The V1 main chain (`online-monolith → async-monolith → offline-monolith → monitored-app →
+multiuser-app`) realizes a staged subset of this VP space. V1 always materialized `GlobalStore` and
+`BackendDataAccess` from its first plateau, so its `online-monolith` already answers VP2, VP3.
+
+| V1 plateau | v3.1 monolith VPs added | Notes |
+|---|---|---|
+| `plateau-online-monolith` | VP2, VP3 | v3.1 also allows a thinner plateau below this (VP2=No, VP3=No — a local-only app) that V1 has no equivalent for |
+| `plateau-async-monolith` | + VP1, VP4 | preloading/budgets + read resilience |
+| `plateau-offline-monolith` | + VP5 (per feature) | durable write queue |
+| `plateau-monitored-app` | + VP6 | *(V1 also adds the whole platform-host layer here — now [`../../platform-host/plateau/plateau-repository.md`](../../platform-host/plateau/plateau-repository.md))* |
+| `plateau-multiuser-app` | + VP7 | *(V1's final chain plateau; the federation/session parts are `platform-host/` + `embeddable-app/`)* |
+
+Every V1 row satisfies every Constraint in the [map](../variability-map.md): no row sets
+VP4/VP5/VP7 without VP2+VP3, VP5 without VP4, or VP6 without VP3.
+
+## Coverage: legitimate VP combinations with no named plateau
+
+The chain names one plateau per useful cumulative point. Combinations it does **not** name a plateau
+for, all legal under the map's Constraints:
+
+- **VP2=No, VP3=No** — a purely local app (tools, calculators, offline-only editors). The chain
+  starts at `plateau-online-monolith`, which already has both.
+- **VP3=Yes, VP2=No** — a backend-connected app with only component + feature-level state, no
+  cross-cutting store.
+- **VP4+ without VP1** — read resilience without the preloading/budget discipline; the chain bundles
+  VP1 into `plateau-async-monolith` ahead of VP4.
+
+`plateau-multiuser-monolith` already covers "VP7=Yes outside a platform host" and
+`plateau-persisted-state-monolith` covers VP8 — neither had a V1 equivalent.
+
+## What each plateau folder holds
+
+```
+plateau-{name}/
+  plateau-{name}.skill/
+    plateau-{name}.skill.md      the plateau summary an agent reads before writing code
+    example/                     a runnable Nx workspace — vitest + nx lint + prod build (+ build-sw) green
+  structure/                     one skill per project + per class (prefix `plateau-{name}--`)
+  registry/                      delta-conflict-detection ordering records (per plateau)
+```
+
+| Plateau | structure skills | registry | example gates |
+|---|---|---|---|
+| plateau-online-monolith | 27 | 3 | vitest, `nx lint` (10 projects), prod build |
+| plateau-async-monolith | 28 | 1 | + `order-report` emitted as its own lazy chunk |
+| plateau-offline-read-monolith | 31 | 2 | + `nx build-sw` (`dist/.../sw.js`) |
+| plateau-offline-full-monolith | 36 | 1 | vitest 20 files / 70 tests, `nx lint` (11), prod build 446 kB, build-sw |
+| plateau-multiuser-monolith | 44 | 4 | vitest 28 files / 98 tests, `nx lint` (12), prod build 454 kB, build-sw |
+| plateau-persisted-state-monolith | 48 | 1 | vitest 31 files / 115 tests, `nx lint` (12), prod build 458 kB, build-sw; e2e typechecks |
+
+The example evolves **one Nx workspace** down the chain — each plateau's `example/` is a snapshot of
+that workspace grown by that plateau's solutions (living workspace at `/tmp/ng-ex/online-monolith`
+where this was built). Playwright specs are written and configured throughout but were not executed
+in the build sandbox.
+
+## `registry/` — DOP step 6
+
+When two or more solutions modify the same code element and the interaction is only about **ordering**
+or is a **benign N≥3 bucket** (not a real semantic conflict), `delta-conflict-detection` records a
+per-element file in the `registry/` folder of the shallowest plateau where all the intersecting
+solutions coexist. Every Angular v3.1 group is **canonical — zero resolver solutions**.
+
+**Convention for groups that grow down the chain.** A group whose membership increases plateau by
+plateau (`shared-state-project`: N 2 → 5 across `offline-read` / `multiuser` / `persisted-state`;
+`feature-routes-ts`: N 2 → 4 across `async` / `multiuser`) is recorded as a **cumulative snapshot** at
+each plateau that carries an entry — the file lists the solutions present *at that plateau*, links
+the deeper snapshot, and the deepest one is the canonical full-group entry. Intermediate plateaus
+where a member joins but no new classification question arises (e.g. `offline-full` for
+`shared-state-project`) inherit the parent's entry rather than duplicating it. This is a deliberate
+variant of the skill's "one file per element" — it keeps each plateau's `registry/` a complete local
+picture. Highlights:
+
+- **`monolith-repository`** / **`platform-shell-project`** — repo- and composition-root buckets; every
+  feature adds one distinct tag / allow-list row / bootstrap wiring. `source: ordering-only`, N≥3 benign.
+- **`shared-state-project`** — the `store.config.ts` slice seam: `global-store` `.create` + `offline-first`
+  / `offline-sync` / `authentication` / `persisted-state` `.extend` (one distinct slice each; VP8 also
+  adds a feature-local persistence metaReducer on `preferences`). `TMN`, `source: constraint`
+  (every slice-adding VP requires VP2). N = 4 at `plateau-multiuser-monolith`, **N = 5** at
+  `plateau-persisted-state-monolith`. Closes delta-conflict **Finding 4**.
+- **`feature-facade-ts`** / **`feature-routes-ts`** — a feature's Facade / routes array as the natural
+  attachment point for `api-http-layer` + `offline-sync` (queueing branch) / `performance-tuned-routing`
+  + `offline-sync` (route providers) + `authentication` (guard). `TMN` / `FMN`, member-disjoint.
+
+Full classification: [`../../delta-conflict-analysis.md`](../../delta-conflict-analysis.md).

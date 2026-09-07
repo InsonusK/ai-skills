@@ -1,0 +1,14 @@
+graph TD
+    A["Container already has this<br/>as one property (a SoftVO)"] -->|Format| W
+    B["Assembled on the spot from<br/>the container's OWN other fields"] -->|Semantic| W
+    L["Load from a related Entity<br/>or via a repository"] --> D["Assembled from<br/>the loaded values"]
+    D -->|Domain| W
+
+    W[["Wrapper: named SoftVO<br/>or anonymous tuple"]]
+    W --> IV["IsValid(this Wrapper) : bool"]
+    IV --> RB["IRuleBuilder extension:<br/>Must + WithErrorCode + WithMessage + WithState"]
+    RB --> CK["Check(this Wrapper) : ValidationResult"]
+    CK --> VOE["VO / Entity constructor:<br/>throw on first Error-severity failure"]
+    CK --> DTV["DtoValidator / CommandValidator:<br/>collect every failure"]
+
+    style W stroke:#333,stroke-width:2px
