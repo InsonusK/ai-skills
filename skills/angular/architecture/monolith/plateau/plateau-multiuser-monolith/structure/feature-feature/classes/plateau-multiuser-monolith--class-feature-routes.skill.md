@@ -1,9 +1,9 @@
 ---
 name: plateau-multiuser-monolith--class-feature-routes
-description: Generic pattern for a feature's own root-relative Routes array — applies to any {Feature}/feature lib. VP1 adds loadComponent sub-splitting for heavy/rare sub-routes plus a per-chunk bundle budget; VP5 a parent route with `providers: [provide{Feature}OfflineSync()]`; VP7 `canActivate: [requirePermission('...')]` on a protected sub-route. — multiuser-monolith plateau
+description: "Generic pattern for a feature's own root-relative Routes array — applies to any {Feature}/feature lib. VP1 adds loadComponent sub-splitting for heavy/rare sub-routes plus a per-chunk bundle budget; VP5 a parent route with `providers: [provide{Feature}OfflineSync()]`; VP7 `canActivate: [requirePermission('...')]` on a protected sub-route. — multiuser-monolith plateau"
 domain: skill
 type: template
-whenToUse: when writing or reviewing a feature's {feature}.routes.ts — root-relative paths, loadComponent splits, route-level providers, permission guards
+whenToUse: "when writing or reviewing a feature's {feature}.routes.ts — root-relative paths, loadComponent splits, route-level providers, permission guards"
 plateau: multiuser-monolith
 artifact_type: module
 version: 20260903150000
@@ -18,7 +18,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > Generic pattern, not tied to one concrete feature. `solution-forms` and `solution-api-http-layer` don't touch a feature's routes; `solution-performance-tuned-routing` (VP1) adds the `loadComponent` sub-splitting rule; `solution-offline-sync` (VP5) wraps the feature's routes in a parent route whose `providers` carry `provide{Feature}OfflineSync()`; `solution-authentication` (VP7) attaches `requirePermission('...')` as a `canActivate` / `canMatch` guard on any route the feature wants to protect — the guard factory itself lives in `libs/shared/auth-ui`, only its attachment is here.
 
 # Goal

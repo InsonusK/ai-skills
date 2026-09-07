@@ -16,7 +16,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-
+---
 > Generic pattern, not tied to one concrete feature — any feature's own `{feature}.client.ts` follows this, substituting `{Feature}`/`{feature}` with the real feature name. VP4 adds the `status === 0` → `OfflineTransportError` branch.
 
 # Goal

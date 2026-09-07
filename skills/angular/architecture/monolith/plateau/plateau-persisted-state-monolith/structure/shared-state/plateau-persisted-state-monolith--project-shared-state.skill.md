@@ -19,7 +19,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
   - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
-
+---
 > This plateau ships `libs/shared/state` with four concrete slices — `connectivity` (VP4, `selectIsOnline`), `notifications` (VP5, `selectNotifications`), `auth` (VP7, `selectCurrentUser` / `selectAccessToken` / `selectPermissions` / `selectIsLoggedIn`), and `preferences` (VP8, `selectTheme` / `selectDensity` / `selectLastFeatureTab` — persisted to `localStorage`). The `auth/` folder also holds `AuthFacade` and `authInterceptor`. The new `persistence/` folder holds the VP8 mechanism: `persistKeys()` (a per-feature `MetaReducer`), `withPersistedDraft()` (a feature-tier `signalStoreFeature`), `SENSITIVE_STATE_KEYS`, and `assertPersistable()`. The root store itself is still empty. **`auth` is never given a persistence metaReducer.**
 
 # Goal

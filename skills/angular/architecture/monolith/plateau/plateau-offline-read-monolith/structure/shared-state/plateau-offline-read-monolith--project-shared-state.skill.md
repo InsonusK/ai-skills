@@ -16,7 +16,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-
+---
 > This plateau ships `libs/shared/state` with its first concrete slice — `connectivity` (VP4 / `solution-offline-first`), exposing `selectIsOnline`. The root store itself is still empty; `notifications` (VP5) and `auth` (VP7) arrive further down the chain.
 
 # Goal

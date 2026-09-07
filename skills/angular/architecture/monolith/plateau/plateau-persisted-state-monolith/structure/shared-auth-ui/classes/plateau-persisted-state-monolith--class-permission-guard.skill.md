@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > `libs/shared/auth-ui/src/lib/permission.guard.ts`. The factory is shared; the **attachment** is per-feature — inside `{feature}.routes.ts`, never in the shell. This is where the auth guards `solution-app-routing` deferred are formally defined.
 
 # Goal

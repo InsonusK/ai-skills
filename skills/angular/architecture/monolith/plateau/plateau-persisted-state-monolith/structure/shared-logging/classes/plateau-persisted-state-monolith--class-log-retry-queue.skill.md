@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-
+---
 > `libs/shared/logging/src/lib/log-retry-queue.ts`. Used by `BackendLogSink` when a batch send fails. Backed by Dexie/IndexedDB (dev-tested with `fake-indexeddb`).
 
 # Goal

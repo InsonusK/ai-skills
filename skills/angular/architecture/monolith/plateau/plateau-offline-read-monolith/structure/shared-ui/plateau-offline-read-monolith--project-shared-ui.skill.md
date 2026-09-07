@@ -16,7 +16,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-
+---
 > The bare project is established implicitly by [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/plateau-offline-read-monolith--repo-offline-read-monolith.skill.md|repo-offline-read-monolith]]'s `Repository.create` directory table. `solution-offline-first` (VP4) adds `OfflineBannerComponent` — a presentational component the shell feeds with `isOnline` from the `connectivity` slice.
 
 # Goal

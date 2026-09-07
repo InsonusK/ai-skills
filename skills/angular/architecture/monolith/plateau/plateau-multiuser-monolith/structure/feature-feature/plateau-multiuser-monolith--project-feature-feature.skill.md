@@ -21,7 +21,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > Generic pattern, not tied to one concrete feature — every business feature added to the workspace gets its own `libs/{feature}/feature` project following this template, substituting `{Feature}`/`{feature}` with the real feature name. VP5 adds `{feature}.offline-sync.ts` (the replay handler, registered in the feature's route `providers`, wiring `onReplayStart` / `onReplayResult`), a per-row `syncStatus` (`queued → sending → synced | failed | conflict`) + `setSyncStatus` + `hydratePending` on the feature Signal Store, and a derived `pendingSyncCount`. VP7 adds `canActivate: [requirePermission('...')]` on any route the feature restricts, and `*hasPermission="'...'"` to gate a control in a component — both consume permission strings from `@org/shared-auth-ui`, never role names.
 
 # Goal

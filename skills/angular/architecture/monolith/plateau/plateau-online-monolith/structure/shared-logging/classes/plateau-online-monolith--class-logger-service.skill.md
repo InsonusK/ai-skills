@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
-
+---
 # Goal
 
 - Give every part of the application a single logging entry point, with structured entries and environment-based level filtering

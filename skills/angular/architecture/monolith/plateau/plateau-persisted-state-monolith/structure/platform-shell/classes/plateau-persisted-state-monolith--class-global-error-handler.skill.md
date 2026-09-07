@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-
+---
 > `apps/platform-shell/src/app/global-error-handler.ts`. Registered once as `{ provide: ErrorHandler, useClass: GlobalErrorHandler }` in `app.config.ts`.
 
 # Goal

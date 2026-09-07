@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
-
+---
 > `libs/shared/state/src/lib/preferences/`. Registered via `provideGlobalStore()` with a `persistKeys` metaReducer whose allow-list equals every field. The reference persisted slice — flat, all-scalar, no effects.
 
 # Goal

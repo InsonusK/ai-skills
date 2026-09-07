@@ -17,7 +17,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > The bare project is established implicitly by [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/plateau-persisted-state-monolith--repo-persisted-state-monolith.skill.md|repo-persisted-state-monolith]]'s `Repository.create` directory table. VP4 adds `OfflineBannerComponent` (`isOnline` input, shell-mounted); VP5 adds `PendingSyncIndicatorComponent` (`count` input, mounted per feature). Both presentational — the owning host wires the store/queue.
 
 # Goal

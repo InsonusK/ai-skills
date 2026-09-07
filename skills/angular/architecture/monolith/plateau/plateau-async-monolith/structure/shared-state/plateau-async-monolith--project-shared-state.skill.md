@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
-
+---
 > This plateau ships `libs/shared/state` empty-but-wired — the classical NgRx root store with no concrete slice yet. Slices arrive with their features: `connectivity` (offline-read), `notifications` (offline-full), `auth` (multiuser).
 
 # Goal

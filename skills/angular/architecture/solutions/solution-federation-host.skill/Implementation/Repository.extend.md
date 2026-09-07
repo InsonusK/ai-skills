@@ -24,7 +24,7 @@ No new top-level directories are added to the base layout from [[skills/angular/
 | Package | Version constraint | Purpose |
 | ------- | ------------------- | ------- |
 | @angular-architects/native-federation | pinned minor, matching the Angular major version in use | Native Federation host/remote runtime and build plugin |
-| @platform/contracts | semver range, published from a separate repository (see [[../../adr/embedding-mechanism.md|ADR]]) | Shared, versioned contract for cross-app state/events (EventBus interface, shared DTOs). Marked as a `singleton` shared dependency in the federation config so host and every remote resolve to the exact same runtime instance. |
+| @platform/contracts | semver range, published from a separate repository (see [[../adr/embedding-mechanism.md|ADR]]) | Shared, versioned contract for cross-app state/events (EventBus interface, shared DTOs). Marked as a `singleton` shared dependency in the federation config so host and every remote resolve to the exact same runtime instance. |
 
 # Rules
 

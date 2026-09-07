@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > NEW at this plateau (VP5). Tagged `type:store`, `scope:shared` — it holds durable cross-cutting state (the queue) and a store-triggered orchestrator, sibling to `libs/shared/state`. The V1 `solution-offline-sync` Repository.extend tags it `type:util`; that cannot hold — the lib reads the `connectivity`/`notifications` slices and is imported by feature Facades. See the [example README](../../plateau-offline-full-monolith.skill/example/README.md).
 
 # Goal

@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > `libs/shared/state/src/lib/auth/`. Registered via `provideGlobalStore()` alongside `connectivity` / `notifications`. The `AuthFacade` (HTTP) lives beside it; the `authInterceptor` too.
 >
 > **Catalog correction (fed back from the example):** `solution-authentication`'s `auth.store.ts.create` sketch gives `Login Succeeded` the props `{ user }` only — but a login response must also deliver the initial `accessToken` and `permissions`, exactly as `Silent Refresh Succeeded` does. This plateau uses `Login Succeeded` = `{ user, accessToken, permissions }`.

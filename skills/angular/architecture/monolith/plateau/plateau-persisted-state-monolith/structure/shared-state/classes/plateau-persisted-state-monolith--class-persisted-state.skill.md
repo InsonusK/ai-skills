@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
-
+---
 > `libs/shared/state/src/lib/persistence/persisted-state.ts`. Mechanism only — the `key` / `keys` config for any slice lives at the `store.config.ts` call site, never here.
 
 # Goal

@@ -28,7 +28,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
   - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
   - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
-
+---
 > **Sixth and last plateau of the monolith chain.** Composes [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/plateau-multiuser-monolith--repo-multiuser-monolith.skill.md|plateau-multiuser-monolith]] (online + VP1 + VP4 + VP5 + VP6 + VP7) and adds **one** solution: [[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]] (**VP8 — PersistedState**). VP1–VP8 = Yes. **No new Nx project.** VP8 adds a `persistence/` folder to `libs/shared/state` (the `persistKeys()` metaReducer factory + `SENSITIVE_STATE_KEYS` guard + `assertPersistable()` + the `withPersistedDraft()` signal-store feature) and a persisted `preferences` slice (theme / density / last feature tab → `localStorage`, rehydrated synchronously). A feature may add an opt-in `{Feature}DraftStore` (`signalStore` + `withPersistedDraft`) so an in-progress form survives a reload. The `auth` slice is **never** given a persistence metaReducer — the in-memory token rule (VP7) stands. Still one deployable unit, no Module Federation (that is `platform-host`). The [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] npm package remains a plain dependency of `apps/platform-shell`.
 
 # Structure

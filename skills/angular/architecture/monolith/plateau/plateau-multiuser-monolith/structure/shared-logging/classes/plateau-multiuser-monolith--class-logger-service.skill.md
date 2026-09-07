@@ -16,7 +16,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-
+---
 > VP6: `LogLevel` gains `'report'`; the `LOG_SINKS` factory now returns `[ConsoleLogSink, BackendLogSink]`; `report()` bypasses `MIN_LOG_LEVEL` (it is a routing marker, not a severity).
 
 # Goal

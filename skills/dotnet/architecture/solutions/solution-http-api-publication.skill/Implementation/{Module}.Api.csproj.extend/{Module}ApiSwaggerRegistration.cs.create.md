@@ -30,7 +30,7 @@ public static class TaskModuleApiSwaggerRegistration
 }
 ```
 
-Consumed from `App.Host`'s `ApiRegistration` — see [[skills/dotnet/architecture/v3.1/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create.md|ApiRegistration.cs]] for the `AddSwaggerGen`/`UseSwaggerUI` wiring that reads `DocumentName`/`Title`/`Version`/`MatchesRoute` from every module's registration class.
+Consumed from `App.Host`'s `ApiRegistration` — see [[skills/dotnet/architecture/solutions/solution-http-api-publication.skill/Implementation/App.Host.csproj.extend/HttpApiRegistration.cs.create.md|ApiRegistration.cs]] for the `AddSwaggerGen`/`UseSwaggerUI` wiring that reads `DocumentName`/`Title`/`Version`/`MatchesRoute` from every module's registration class.
 
 # Rule changes
 

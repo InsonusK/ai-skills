@@ -96,7 +96,7 @@ MUST:
 - Keep the dependency arrows: `{Module}.Application → {Module}.Interfaces, Shared, BuildingBlocks`; `{Module}.Interfaces → Shared`; `BuildingBlocks → Shared`; `App.Host → every {Module}.Application, BuildingBlocks`; `Shared → nothing`. Across modules, reference only `{Module-B}.Interfaces`.
 - Declare every NuGet version once in `Directory.Packages.props` with `ManagePackageVersionsCentrally` true; keep every `<PackageReference>` versionless. Add the central `<PackageVersion>` in the same change as the reference.
 - Give every production project that has one exactly one dedicated test project mirroring its Allowed Dependencies — never one combined test project per module, never a test project reaching wider than its production counterpart.
-- Expose `unit-test`, `mutation-test`, `test-report`, and `test-and-report` `make` targets at the repository root that behave exactly as [[../../../../../../common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] defines; never call `dotnet test` / `dotnet-stryker` directly from CI or scripts.
+- Expose `unit-test`, `mutation-test`, `test-report`, and `test-and-report` `make` targets at the repository root that behave exactly as [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] defines; never call `dotnet test` / `dotnet-stryker` directly from CI or scripts.
 - Never let `Shared` take a project reference, and never let a cross-module reference target anything but `{Module}.Interfaces`.
 MAY:
 - A pattern solution may add a project to a module (e.g. `{Module}.Domain.Rules`) when it needs isolation the base projects cannot give.

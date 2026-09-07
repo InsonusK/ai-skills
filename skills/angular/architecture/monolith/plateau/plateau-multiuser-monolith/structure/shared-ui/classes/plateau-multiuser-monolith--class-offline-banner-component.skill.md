@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-
+---
 > Lives at `libs/shared/ui/src/lib/offline-banner/`. Presentational: it takes `isOnline` as an input; the shell owns the `Store` and passes `selectIsOnline`. This keeps `libs/shared/ui` free of a `type:store` dependency (the solution's original sketch injected `Store` in the component — this plateau moves that wiring to the shell).
 
 # Goal

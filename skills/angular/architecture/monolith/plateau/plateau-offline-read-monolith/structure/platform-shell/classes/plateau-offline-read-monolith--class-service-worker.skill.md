@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-
+---
 > Three files in `apps/platform-shell/src/`: `sw-src.ts` (Workbox runtime, WebWorker context, compiled with `tsconfig.sw.json`, excluded from the app build), `sw-routes.ts` (pure content-type predicates, unit-tested), `sw-build.mjs` (Nx `build-sw` step — esbuild-bundles `sw-src.ts` then `workbox-build`'s `injectManifest`).
 
 # Goal

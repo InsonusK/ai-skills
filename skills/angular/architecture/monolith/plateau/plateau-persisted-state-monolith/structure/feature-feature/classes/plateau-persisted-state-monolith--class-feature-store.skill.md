@@ -16,7 +16,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > Generic pattern, not tied to one concrete feature — any feature's own `{feature}.store.ts` follows this, substituting `{Feature}`/`{feature}` with the real feature name. **VP5**: rows carry a per-entity `syncStatus` — see `# Offline-sync: per-entity syncStatus` below.
 
 # Goal

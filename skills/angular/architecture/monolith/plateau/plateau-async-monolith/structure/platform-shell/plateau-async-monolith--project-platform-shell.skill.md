@@ -18,7 +18,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
   - "[[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
   - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
-
+---
 > `solution-app-testing` does not extend this project directly — its content lives in the sibling [[skills/angular/architecture/monolith/plateau/plateau-async-monolith/structure/platform-shell-e2e/plateau-async-monolith--project-platform-shell-e2e.skill.md|platform-shell-e2e]] project and in each feature's own test specs. Also depends on the `design-system` npm package (see the NPM Packages table below) — plain, non-federated consumption only.
 
 # Goal

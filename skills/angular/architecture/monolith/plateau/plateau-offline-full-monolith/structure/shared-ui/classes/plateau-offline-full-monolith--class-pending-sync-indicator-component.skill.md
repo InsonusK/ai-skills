@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > `libs/shared/ui/src/lib/pending-sync-indicator/`. Presentational: it takes `count` as an input; the owning feature feeds it from `MutationQueueService.pendingForFeature$(...)` (via its feature Signal Store). This keeps `libs/shared/ui` free of a `type:store` dependency — same call the plateau made for `OfflineBannerComponent`.
 
 # Goal

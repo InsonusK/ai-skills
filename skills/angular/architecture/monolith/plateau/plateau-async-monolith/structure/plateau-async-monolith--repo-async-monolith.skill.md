@@ -23,7 +23,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
   - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
   - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
-
+---
 > **Second plateau in the monolith chain.** Composes [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill.md|plateau-online-monolith]]'s workspace unchanged and adds exactly one solution — [[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]] (monolith VP1). No new project is created: the change is a `SelectivePreloadingStrategy` inside `apps/platform-shell`, a `loadComponent` rule inside each feature's own routes, and `error`-level bundle budgets on the app build. Everything else — offline support, Module Federation, backend log delivery, authentication — still arrives further down the chain ([[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|multiuser-monolith]] is the last), and every user is still implicitly trusted here. The [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] npm package remains a plain, non-federated dependency of `apps/platform-shell`.
 
 # Structure

@@ -17,7 +17,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template. `solution-api-http-layer` fills in the Facade/Client/Mapper/Errors structure; VP4 adds the `status === 0` → `OfflineTransportError` branch to the Client; VP5 adds the `OfflineTransportError` → enqueue branch to the Facade (which now depends on `libs/shared/offline-sync`, `type:store`).
 
 # Goal

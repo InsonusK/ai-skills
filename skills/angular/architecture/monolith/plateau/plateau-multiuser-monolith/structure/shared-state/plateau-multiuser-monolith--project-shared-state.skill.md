@@ -18,7 +18,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > This plateau ships `libs/shared/state` with three concrete slices — `connectivity` (VP4, `selectIsOnline`), `notifications` (VP5, `selectNotifications`), and `auth` (VP7, `selectCurrentUser` / `selectAccessToken` / `selectPermissions` / `selectIsLoggedIn`). The `auth/` folder also holds `AuthFacade` (the login/refresh/logout HTTP) and `authInterceptor`. The root store itself is still empty. VP8 (PersistedState) is aspirational.
 
 # Goal

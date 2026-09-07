@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-
+---
 > Generic pattern, not tied to one concrete feature — covers two small, related files every feature's `data-access` project has: `{feature}.mapper.ts` and `{feature}.errors.ts`.
 
 # Goal

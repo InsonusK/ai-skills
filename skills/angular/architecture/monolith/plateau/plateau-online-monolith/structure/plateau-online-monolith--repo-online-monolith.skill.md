@@ -22,7 +22,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
   - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
   - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
-
+---
 > First plateau in the main application's chain (no parent) — the **"online-monolith" milestone**: a single deployable Nx application with structure, state, routing, forms, an HTTP data layer, console logging, and enforced test coverage. No lazy-loading yet (that's [[skills/angular/architecture/monolith/plateau/plateau-async-monolith/plateau-async-monolith.skill/plateau-async-monolith.skill.md|async-monolith]]), no offline support, no Module Federation, no backend log delivery, and no authentication (that's [[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md|multiuser-monolith]], the last plateau in the chain) — every user is implicitly trusted at this stage. The [[skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md|design-system]] npm package is already a real, plain dependency of `apps/platform-shell` (see `platform-shell`'s own project skill's NPM Packages table).
 
 # Structure

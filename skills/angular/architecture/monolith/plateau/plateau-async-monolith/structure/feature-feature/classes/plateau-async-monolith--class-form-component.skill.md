@@ -16,7 +16,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
-
+---
 > Generic pattern, not tied to one concrete form — every component that renders a form inside `libs/{feature}/feature` follows this, substituting `{form-name}` with the real form's name.
 
 # Goal

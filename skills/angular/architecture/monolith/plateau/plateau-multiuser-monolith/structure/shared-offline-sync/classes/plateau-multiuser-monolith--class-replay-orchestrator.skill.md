@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > `libs/shared/offline-sync/src/lib/replay-orchestrator.ts`. Registered + eagerly instantiated by `provideOfflineSync()` at the shell so its connectivity effect is live from bootstrap.
 
 # Goal

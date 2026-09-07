@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-performance-tuned-routing.skill/solution-performance-tuned-routing.skill.md|solution-performance-tuned-routing]]"
-
+---
 > Lives in `apps/platform-shell/src/app/preloading/`. Registered once, in `app.config.ts`, via `provideRouter(appRoutes, withPreloading(SelectivePreloadingStrategy))`.
 
 # Goal

@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > NEW at this plateau (VP7). Tagged `type:store`, `scope:shared` — its directive/guard read the `auth` slice (`selectPermissions`) directly. The V1 `solution-authentication` Repository.extend tags it `type:util`; that cannot hold — a `type:util` lib may not depend on `type:store`. See the [example README](../../plateau-persisted-state-monolith.skill/example/README.md).
 
 # Goal

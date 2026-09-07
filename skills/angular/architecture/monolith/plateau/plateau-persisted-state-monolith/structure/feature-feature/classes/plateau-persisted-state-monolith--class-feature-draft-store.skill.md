@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
-
+---
 > `libs/{feature}/feature/src/lib/{feature}-draft.store.ts`. A dedicated store — never `withPersistedDraft` on the feature's main list/detail store.
 
 # Goal

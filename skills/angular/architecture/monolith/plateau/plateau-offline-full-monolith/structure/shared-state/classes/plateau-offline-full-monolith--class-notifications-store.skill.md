@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > `libs/shared/state/src/lib/notifications/`. Registered via `provideGlobalStore()` alongside `connectivity`. Same classical-NgRx shape as `connectivity` and the future `auth` slice.
 
 # Goal

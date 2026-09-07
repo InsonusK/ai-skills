@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
-
+---
 > No solution produced a dedicated `shared-util.project.create.md` file — this project is established implicitly by [[skills/angular/architecture/monolith/plateau/plateau-offline-full-monolith/structure/plateau-offline-full-monolith--repo-offline-full-monolith.skill.md|repo-offline-full-monolith]]'s `Repository.create` directory table.
 
 # Goal

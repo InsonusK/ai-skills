@@ -1,9 +1,9 @@
 ---
-name: plateau-online-monolith
-description: The base connected Angular application of the monolith catalog — an Nx workspace with hierarchical routing, the state-tiering rule plus a classical NgRx global store, Signal Forms, a Facade/Client HTTP data-access layer with optimistic Signal-Store orchestration, console logging, and enforced Vitest/Playwright coverage across the business layer and the UI layer. One deployable unit, online-only: no offline resilience, no federation, no authentication.
+name: "plateau-online-monolith"
+description: "The base connected Angular application of the monolith catalog — an Nx workspace with hierarchical routing, the state-tiering rule plus a classical NgRx global store, Signal Forms, a Facade/Client HTTP data-access layer with optimistic Signal-Store orchestration, console logging, and enforced Vitest/Playwright coverage across the business layer and the UI layer. One deployable unit, online-only: no offline resilience, no federation, no authentication."
 domain: skill
 type: template
-whenToUse: when scaffolding a new feature (feature + data-access lib), wiring routing/state/forms/data-access, or reviewing whether a change follows the online-monolith conventions
+whenToUse: "when scaffolding a new feature (feature + data-access lib), wiring routing/state/forms/data-access, or reviewing whether a change follows the online-monolith conventions"
 version: 20260902000000
 tags:
   - skill/template/plateau

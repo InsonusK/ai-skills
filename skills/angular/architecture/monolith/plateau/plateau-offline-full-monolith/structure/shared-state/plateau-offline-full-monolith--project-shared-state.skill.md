@@ -17,7 +17,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > This plateau ships `libs/shared/state` with two concrete slices — `connectivity` (VP4 / `solution-offline-first`, `selectIsOnline`) and `notifications` (VP5 / `solution-offline-sync`, `selectNotifications`). The root store itself is still empty; `auth` (VP7) arrives further down the chain.
 
 # Goal

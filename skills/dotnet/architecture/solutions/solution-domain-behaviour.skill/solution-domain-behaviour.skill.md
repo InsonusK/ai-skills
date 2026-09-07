@@ -1,7 +1,7 @@
 ---
-name: solution-domain-behaviour
-description: Introduces a module's domain layer (VP1 DomainLogic) — creates {Module}.Domain with its first entity, and defines how entities change state: every method or setter that mutates validates via its own local predicate first and throws DomainException, with bulky logic extracted to static domain services.
-whenToUse: when a module first needs a real domain layer (entities with guarded state transitions), when adding or changing an Entity method that mutates state, or when entity behavior logic outgrows the entity and needs a domain service
+name: "solution-domain-behaviour"
+description: "Introduces a module's domain layer (VP1 DomainLogic) — creates {Module}.Domain with its first entity, and defines how entities change state: every method or setter that mutates validates via its own local predicate first and throws DomainException, with bulky logic extracted to static domain services."
+whenToUse: "when a module first needs a real domain layer (entities with guarded state transitions), when adding or changing an Entity method that mutates state, or when entity behavior logic outgrows the entity and needs a domain service"
 domain: skill
 type: architecture
 version: 20260901000000
@@ -24,8 +24,8 @@ extends:
   - "{Module}.Domain.Entities.{EntityName}.cs"
   - Shared.csproj
 depends_on:
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
-  - "[[skills/dotnet/architecture/v3.1/solutions/solution-soft-value-objects.skill/solution-soft-value-objects.skill.md|solution-soft-value-objects]]"
+  - "[[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill.md|solution-sln-structure]]"
+  - "[[skills/dotnet/architecture/solutions/solution-soft-value-objects.skill/solution-soft-value-objects.skill.md|solution-soft-value-objects]]"
 built_on_plateau:
 ---
 

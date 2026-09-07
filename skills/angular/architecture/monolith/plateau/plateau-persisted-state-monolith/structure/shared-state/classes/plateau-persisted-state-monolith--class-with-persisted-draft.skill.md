@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
-
+---
 > `libs/shared/state/src/lib/persistence/with-persisted-draft.ts`. The feature-tier counterpart of [[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/structure/shared-state/classes/plateau-persisted-state-monolith--class-persisted-state.skill.md|persistKeys()]] — same guard, same "before first read" rehydration, for `@ngrx/signals` stores.
 
 # Goal

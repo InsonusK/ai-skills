@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
-
+---
 > Generic pattern, not tied to one concrete feature — every business feature's `libs/{feature}/data-access` project follows this template, substituting `{Feature}`/`{feature}` with the real feature name. The bare project placeholder already exists by [[skills/angular/architecture/monolith/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill.md|repo-async-monolith]]'s repository layout; `solution-api-http-layer` is the first solution to fill in its internal structure.
 
 # Goal

@@ -20,7 +20,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > `solution-app-testing` does not extend this project directly — its content lives in the sibling [[skills/angular/architecture/monolith/plateau/plateau-offline-full-monolith/structure/platform-shell-e2e/plateau-offline-full-monolith--project-platform-shell-e2e.skill.md|platform-shell-e2e]] project and in each feature's own test specs. Also depends on the `design-system` npm package (see the NPM Packages table below) — plain, non-federated consumption only.
 
 # Goal

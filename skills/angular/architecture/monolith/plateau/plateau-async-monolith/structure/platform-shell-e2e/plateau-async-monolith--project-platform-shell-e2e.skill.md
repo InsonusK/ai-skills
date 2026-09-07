@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
-
+---
 # Goal
 
 - Provide a dedicated project for cross-cutting, browser-based end-to-end tests of the platform shell and its integrated features

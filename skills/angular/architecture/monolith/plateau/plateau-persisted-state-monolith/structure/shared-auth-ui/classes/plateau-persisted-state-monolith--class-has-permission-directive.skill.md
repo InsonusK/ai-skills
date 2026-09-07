@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > `libs/shared/auth-ui/src/lib/has-permission.directive.ts`. Reads `selectPermissions` from the `auth` slice.
 
 # Goal

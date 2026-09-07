@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
-
+---
 > Lives at `libs/shared/state/src/lib/connectivity/`. Registered via `provideGlobalStore()` in `store.config.ts`. Follows the same classical-NgRx shape the future `notifications` / `auth` slices will use.
 
 # Goal

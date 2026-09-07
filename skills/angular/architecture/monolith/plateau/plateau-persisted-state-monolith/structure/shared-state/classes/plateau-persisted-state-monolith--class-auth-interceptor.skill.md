@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > `libs/shared/state/src/lib/auth/auth.interceptor.ts`. Registered once at the shell via `provideHttpClient(withFetch(), withInterceptors([authInterceptor]))`.
 
 # Goal

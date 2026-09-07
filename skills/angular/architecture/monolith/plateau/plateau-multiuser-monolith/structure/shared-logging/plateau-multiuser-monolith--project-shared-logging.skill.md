@@ -16,7 +16,7 @@ tags:
 created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-
+---
 > VP6 (`solution-logging-global`) adds `BackendLogSink` on the same `LOG_SINKS` multi-provider seam as `ConsoleLogSink` — no existing `LoggerService` call site changes — plus a bounded IndexedDB `LogRetryQueue` and `LoggerService.report()`. `GlobalErrorHandler` lives in `apps/platform-shell`.
 
 # Goal

@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
-
+---
 > Generic pattern, not tied to one concrete scenario — every Playwright spec added to `apps/platform-shell-e2e` follows this.
 
 # Goal

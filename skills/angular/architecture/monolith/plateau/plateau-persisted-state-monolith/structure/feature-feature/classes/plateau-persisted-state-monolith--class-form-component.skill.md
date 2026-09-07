@@ -17,7 +17,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
   - "[[skills/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
-
+---
 > Generic pattern, not tied to one concrete form — every component that renders a form inside `libs/{feature}/feature` follows this, substituting `{form-name}` with the real form's name. VP7: a control that only some users may use is wrapped in `*hasPermission="'<permission-string>'"` (from `@org/shared-auth-ui`) — never shown/hidden by a hand-rolled `permissions().includes(...)` check in the component.
 
 # Goal

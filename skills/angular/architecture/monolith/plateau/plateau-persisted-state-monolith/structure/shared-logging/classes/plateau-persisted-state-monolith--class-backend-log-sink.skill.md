@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
-
+---
 > `libs/shared/logging/src/lib/backend-log-sink.ts`. Registered on the existing `LOG_SINKS` multi-provider seam alongside `ConsoleLogSink` — no existing `LoggerService` call site changes.
 
 # Goal

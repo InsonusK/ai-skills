@@ -15,7 +15,7 @@ tags:
 
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]]"
-
+---
 > `libs/shared/offline-sync/src/lib/mutation-queue.{db,service}.ts`. Dexie is a storage/reactivity layer only.
 
 # Goal
