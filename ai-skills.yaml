@@ -9,6 +9,7 @@ sources:
       - skills/common-workflow/documentation/documentation-for-concept.skill
       - skills/common-workflow/documentation/documentation-for-human.skill
       - skills/common-workflow/skill-design.skill
+      - skills/common-workflow/skill-validation.skill
   - path: https://github.com/InsonusK/ai-skill-graph-draw.git
     type: github
     tree: master
@@ -29,3 +30,4 @@ settings:
   remove_orphans: true
   on_conflict: error
   dry_run: false
+  add_relations: true
