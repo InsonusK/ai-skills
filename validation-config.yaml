@@ -9,20 +9,42 @@
 # validation-skill: reference standard; must carry `updated: YYYYMMDD` in its
 #   frontmatter, bumped on every change.
 rules:
+  # Tooling-generated skills are NOT validated against the generic
+  # skill-design / skill-content / skill-tags standards, because they carry
+  # their own section set (# Capabilities, # Template Skill Mutations, ...) and
+  # the reserved skill/*, plateau/* tags. They are maintained by the
+  # solution-create / plateau-create-by-solutions tooling instead:
+  #   - ./**/plateau/**                        plateau templates
+  #   - ./**/architecture/solutions/**         solution skills (per-catalog)
+  #   - ./**/architecture/core/**              cross-catalog solution skills
+  #   - ./**/test/solution-*conformance-testing.skill/**  conformance solution skills
+  #   - ./**/examples/**                       illustration fixtures inside other skills
   - name: skill-design
     filter: "./**/*.skill.md"
     exclude:
-      - "./**/plateau/**/structure/**"
+      - "./**/plateau/**"
+      - "./**/architecture/solutions/**"
+      - "./**/architecture/core/**"
+      - "./**/test/solution-*conformance-testing.skill/**"
+      - "./**/examples/**"
     validation-skill: skill-design
   - name: skill-content
     filter: "./**/*.skill.md"
     exclude:
-      - "./**/plateau/**/structure/**"
+      - "./**/plateau/**"
+      - "./**/architecture/solutions/**"
+      - "./**/architecture/core/**"
+      - "./**/test/solution-*conformance-testing.skill/**"
+      - "./**/examples/**"
     validation-skill: skill-content
   - name: skill-tags
     filter: "./**/*.skill.md"
     exclude:
-      - "./**/plateau/**/structure/**"
+      - "./**/plateau/**"
+      - "./**/architecture/solutions/**"
+      - "./**/architecture/core/**"
+      - "./**/test/solution-*conformance-testing.skill/**"
+      - "./**/examples/**"
     validation-skill: skill-tags
   # Example of a second rule with its own standard:
   # - name: plateau-structure
