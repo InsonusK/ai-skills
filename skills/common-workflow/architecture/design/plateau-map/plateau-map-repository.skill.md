@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goal
-Maintain `{catalog}/plateau/plateau-repository.md` as a derived, checkable view over the catalog's Variability Map. Concretely:
+- **Maintained repository file** - `{catalog}/plateau/plateau-repository.md` kept as a derived, checkable view over the catalog's Variability Map.
 - **Complete matrix** - One row per plateau folder on disk, one column per Variation Point in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map.md]] — no stale rows, no missing columns.
 - **Cumulative lineage** - Each plateau's VP set equals its parent chain's set plus its own delta, matching `parent_plateaus`.
 - **Constraint-checked rows** - Every plateau's VP set verified against every Constraint in the map; violations surfaced, never silently kept.
@@ -20,7 +20,9 @@ Maintain `{catalog}/plateau/plateau-repository.md` as a derived, checkable view 
 - **Derived, never remembered** - Every ✅/❌ is computed from the plateau's actual `created_by`/`parent_plateaus` mapped through the map's Realized-by column — not from what a plateau is "about".
 - **Two triggers, one owner** - Plateau changes (create/update) and VP changes (map edits) both terminate here; no other file carries the plateau↔VP matrix.
 
-# What the repository holds
+# Workflow
+
+## What the repository holds
 `{catalog}/plateau/plateau-repository.md` — a human-facing index (not a skill) containing:
 - **Plateau × VP matrix**: rows = plateaus, columns = VP IDs, ✅/❌ cells; answers cumulative down the lineage (a plateau has every VP its parent has, plus its own).
 - **Column legend**: one line per VP ID with its name, pointing at the map for full descriptions.
@@ -29,7 +31,7 @@ Maintain `{catalog}/plateau/plateau-repository.md` as a derived, checkable view 
 
 Worked example: [[skills/dotnet/architecture/plateau/plateau-repository.md|skills/dotnet/architecture/plateau/plateau-repository.md]].
 
-# How to update
+## How to update
 1. Read `{catalog}/variability-map.md` fresh: VP IDs, Constraints, Realized by.
 2. Enumerate the plateau folders on disk (`{catalog}/plateau/plateau-*/`); compute each plateau's VP set from its `created_by` (plus `parent_plateaus` transitively), mapped through the map's Realized-by column.
 3. Cross-check every plateau's VP set against every Constraint in the map (see [Constraint check on every update](#constraint-check-on-every-update)).
@@ -88,4 +90,4 @@ Add sections beyond the matrix — folder contents, registry notes, counts, hist
 - [ ] Every row cross-checked against every Constraint in the map; violations raised as plateau-level ADRs.
 - [ ] The legend names every VP in one line and links the map as the source of truth.
 - [ ] Per-entity and skeleton/draft VPs are annotated, not presented as plain ✅/❌.
-- [ ] Facet tags follow [[skills/common-workflow/skill-design.skill/facet-vocabulary.md|facet-vocabulary]]: `concern/architecture`, bare `stack`.
+- [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.

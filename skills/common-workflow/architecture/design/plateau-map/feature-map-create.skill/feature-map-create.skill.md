@@ -22,7 +22,9 @@ Produce a [[skills/common-workflow/architecture/design/plateau-map/feature-map-c
 - **Small reviewed steps** - Build the model in increments confirmed with the Program Family's owner; a judgment call made in one unreviewed pass surfaces only when someone looks closely.
 - **Scope ends at the split** - Grouping variable features into [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/variation-point|Variation Points]], mapping [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/realized-by|Realized by]], and resolving conflicts are downstream steps, not part of this skill's output.
 
-# Where the model lives
+# Workflow
+
+## Where the model lives
 `{output}/feature/` — a sibling of the catalog's `plateau/`/`solutions/` folders (e.g. `skills/dotnet/architecture/v3.1/feature/`):
 ```
 feature/
@@ -31,7 +33,7 @@ feature/
     feature-diagram.mmd
 ```
 
-# How to build a Feature Model
+## How to build a Feature Model
 1. Identify {output} — the catalog root (existing or new).
 2. **Write out the concrete baseline structure first** — the literal project/folder layout of a family member with nothing but common features (real names: `App.Host`, `{Module}.Application`, `Shared`, `BuildingBlocks`, ...). Every later step tests candidates against it. Derive the baseline from first principles — what the simplest legitimate family member needs to function at all — then check an existing catalog against it, never the other way round.
 3. Enumerate candidate features from every source: an existing catalog's solutions, and fresh requirements not yet built anywhere. Mark aspirational candidates (no `Realized by` target exists yet) — the model describes the intended Program Family, not only what is already implemented.
@@ -44,7 +46,7 @@ feature/
 8. Build `feature-model.md` from [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/feature-model.template.md|templates/feature-model.template.md]]: the baseline structure (step 2), the root/product explanation, the `@import`ed diagram, the AND/OR logic of any parallel constraint edges, the Features table, a note on anything deliberately excluded from the table, any flagged/unconfirmed constraints, and the `Out of scope` section. Remove every `hint` block and the template's "How Apply this template" section before saving.
 9. Confirm each materially new or changed part (a new feature, a rename, a constraint, a common/variable verdict) with the family's owner before building further on it.
 
-# The diagram
+## The diagram
 Follow [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]]: a diagram past ~5 elements is a separate `.mmd` file under `diagrams/`, embedded via `@import "./diagrams/feature-diagram.mmd" {as="mermaid"}` — never a plain fenced ```mermaid block at this size.
 
 - **Root**: the family's product, named explicitly (e.g. `Module`); never a variability question, never a row in the Features table.
@@ -53,7 +55,7 @@ Follow [[skills/common-workflow/mermaid-diagram.skill.md|mermaid-diagram]]: a di
 
 For the edge labels themselves, see [# Edge kind](#edge-kind).
 
-# Edge kind
+## Edge kind
 Every edge carries exactly one label from this closed list — never leave a relation to be inferred from a node's own text:
 
 - `Mandatory` — the child is unconditionally present whenever the parent is present.
