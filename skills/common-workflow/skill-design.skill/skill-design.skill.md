@@ -2,7 +2,7 @@
 name: skill-design
 description: How a skill file is organized so an AI agent can find, load, and follow it — Human Flat vs Dir, folder and file naming, the top-level section set, cross-skill links, supporting files, and ADRs; the entry point that also requires skill-content and skill-tags
 whenToUse: when you create a new skill, or change how one is organized — its Human Flat/Dir format, file and folder layout, top-level sections, cross-skill links, or ADRs
-updated: 20260907
+updated: 20260913
 tags:
   - skill/core
   - stack
@@ -10,6 +10,7 @@ tags:
 adr:
   - adr/cross-skill-links-scope.md
   - adr/allow-extra-top-level-sections.md
+  - adr/stack-specific-links-direction.md
 ---
 
 # Goal
@@ -125,6 +126,12 @@ Link a skill this one needs to finish its own artifact — an input it reads, a 
 - Risk: the skill loader pulls every linked skill into the agent's context, so a link to a later stage or a "not my job" pointer inflates every load while buying nothing the current task needs; non-goals are unbounded, so each new neighbour adds another.
 - Fix: keep links for inputs, required sub-steps, and applied standards; name a later stage or an out-of-scope boundary in plain words.
 
+### Stack-agnostic skills never link their stack-specialized extensions
+A stack-agnostic skill (bare `stack` tag) never wikilinks/markdown-links a stack-specialized skill that extends it (one `stack/<value>` tag) — name it only as plain backticked text, and recommend asking the user which one to load for the stack in use. A stack-specialized skill still links back to the stack-agnostic base it extends, per [Link what the artifact needs, not what comes after it](#link-what-the-artifact-needs-not-what-comes-after-it). Decision recorded in [[./adr/stack-specific-links-direction.md|stack-specific-links-direction]].
+- Violation: `cucmber-testing`'s `# Scope` linking `[[skills/go/testing/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]`, `-in-dotnet`, `-in-python`, and `-in-typescript`.
+- Risk: `ai-skill-manager` resolves every link a loaded skill carries, so linking all stack-specialized extensions from the agnostic skill pulls every other stack's skill into a project that only uses one of them.
+- Fix: write `` `cucmber-testing-in-go`, `cucmber-testing-in-dotnet`, `cucmber-testing-in-python`, `cucmber-testing-in-typescript` `` as plain text, and add a rule/note telling the agent to ask the user which one to load for the project's stack.
+
 ### Record decisions as ADRs
 When a choice between considered variants — each with real benefits and costs — is made while writing or updating a skill, record it as an ADR following [adr-create.skill.md](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), inside the skill folder that owns the decision.
 - Violation: choosing between approaches during the session and moving on without an ADR file, leaving the reasoning only in conversation history.
@@ -163,6 +170,7 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] All links resolve from the skill file or repository root; one link syntax used throughout.
 - [ ] All supporting files are inside the skill folder (Human Dir); a Human Flat skill has none.
 - [ ] Every cross-skill link is an input, a required sub-step, an applied standard/template, or an active prohibition — an agent could not finish this skill's artifact without it; no link to a later pipeline stage, a consumer, or an out-of-scope topic.
+- [ ] A stack-agnostic skill names its stack-specialized extensions only as plain backticked text, never a link; a stack-specialized skill still links its stack-agnostic base.
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
 - [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
