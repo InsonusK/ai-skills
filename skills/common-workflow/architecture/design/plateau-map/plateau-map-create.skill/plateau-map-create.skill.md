@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goal
-Maintain `{catalog}/plateau/plateau-repository.md` as a derived, checkable view over the catalog's Variability Map. Concretely:
+- **Maintained repository file** - `{catalog}/plateau/plateau-repository.md` kept as a derived, checkable view over the catalog's Variability Map.
 - **Complete matrix** - One row per plateau folder on disk, one column per Variation Point in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map.md]] — no stale rows, no missing columns.
 - **Cumulative lineage** - Each plateau's VP set equals its parent chain's set plus its own delta, matching `parent_plateaus`.
 - **Constraint-checked rows** - Every plateau's VP set verified against every Constraint in the map; violations surfaced, never silently kept.
@@ -21,7 +21,9 @@ Maintain `{catalog}/plateau/plateau-repository.md` as a derived, checkable view 
 - **Two triggers, one owner** - Plateau changes (create/update) and VP changes (map edits) both terminate here; no other file carries the plateau↔VP matrix.
 - **Starts from a finished map and existing plateaus** - This skill reads a Variability Map whose every column, `Realized by` included, is already filled, and plateau folders already created by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]]. It never authors solutions or plateaus.
 
-# What the repository holds
+# Workflow
+
+## What the repository holds
 `{catalog}/plateau/plateau-repository.md` — a human-facing index (not a skill) containing:
 - **Plateau × VP matrix**: rows = plateaus, columns = VP IDs, ✅/❌ cells; answers cumulative down the lineage (a plateau has every VP its parent has, plus its own).
 - **Column legend**: one line per VP ID with its name, pointing at the map for full descriptions.
@@ -30,7 +32,7 @@ Maintain `{catalog}/plateau/plateau-repository.md` as a derived, checkable view 
 
 Worked example: [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/examples/plateau-repository.example|examples/plateau-repository.example.md]].
 
-# How to update
+## How to update
 1. Read `{catalog}/variability-map.md` fresh: VP IDs, Constraints, Realized by. Confirm every column is filled — if `Realized by` has gaps, stop and finish the map first (see [Precondition: a fully-filled map](#precondition-a-fully-filled-map)).
 2. Enumerate the plateau folders on disk (`{catalog}/plateau/plateau-*/`); compute each plateau's VP set from its `created_by` (plus `parent_plateaus` transitively), mapped through the map's Realized-by column.
 3. Cross-check every plateau's VP set against every Constraint in the map (see [Constraint check on every update](#constraint-check-on-every-update)).

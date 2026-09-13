@@ -12,7 +12,6 @@ adr:
 ---
 
 # Goal
-Fill the `Realized by` column of the catalog's Variability Map and record the classification of every solution intersection it produces. Concretely:
 - **Filled Realized by column** - Every VP row of `{catalog}/variability-map.md` has `Realized by` pointing at the solution skill(s) that realize it — authored via [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] (draft contract when none exists yet) or reused from the catalog.
 - **Classified intersections** - Every group of 2+ solutions sharing an `element/{element-name}` classified with the fixed three-axis code (Constraint x Category x Kind).
 - **Resolvers where needed** - A separate resolver solution for every `TMC`/`FMC`/`FDC` group — never folded into an original solution — with the detection pass iterated to a fixed point.
@@ -56,7 +55,9 @@ When the constraint defines a finite number of legal combinations (`N x required
 ## The `TD-`/degenerate footnote
 A solution that "looks different depending on which VP called it" is never a new row in this table — check first whether only the DI substitution differs (then it is ordinary `TD-`/`FDN`, the solution stays one) or whether the code's own structure differs (then two solutions were mistakenly bundled under one name and must be honestly split, each with its own realization — an `FMN`/`TMN` case). Never write "if called from VP1 do X, if from VP2 do Y" conditional logic inside one delta as a substitute for this split.
 
-# The 5-step workflow
+# Workflow
+
+## The 5-step workflow
 1. **Core module** — the catalog's shared baseline, the same starting point [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] later assembles from.
 2. **Unconstrained deltas** — for every VP with no Constraint against another VP in the Variability Map, author or reuse the realizing solution as an ordinary, independent one via [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] (a draft contract when none exists yet), and write its wikilink into that VP's `Realized by` cell.
 3. **Constrained deltas** — for every VP with a Constraint, author the realizing solution via [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] accounting for it: DI substitution (`TD-`) or independent code change (`TMN`), both canonical, ordering already guaranteed by the constraint itself. When the intersection is conflicting and the constraint defines a finite combination set, follow [TMC handling](#tmc-handling). Write each solution's wikilink into its VP's `Realized by` cell.
@@ -68,7 +69,7 @@ A solution that "looks different depending on which VP called it" is never a new
 
 Finish with two outputs: every VP row of `{catalog}/variability-map.md` now has its `Realized by` cell filled (including any resolver solutions built in steps 4–5); and a summary of one row per intersecting group, its classification code, and its resolution (canonical / resolver link / core change) — the latter is the content of the plateau's `registry/` folder, not a separate document.
 
-# Where a Registry entry lives
+## Where a Registry entry lives
 Record an intersection at the **shallowest plateau** where every intersecting solution is simultaneously present in `created_by` (directly, or transitively via `parent_plateaus`) — the same placement logic [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md#Recording plateau-level decisions|plateau-create-by-solutions already uses for conflict ADRs]]. One file per element, in a `registry/` folder sibling to that plateau's `adr/` and `structure/`, using [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/templates/registry-entry.template|templates/registry-entry.template.md]]. List every registry file in the plateau root skill's `registry:` YAML property, mirroring how `adr:` is already listed. See [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/adr/intersection-registry-design|adr/intersection-registry-design]] for why this format was chosen over one shared document.
 
 A Registry entry's **Ordering** field states whether the ordering it records comes from a real Feature-Model constraint (`source: constraint` — already free, since `depends_on` had to carry it anyway) or exists purely so a resolver has something deterministic to build on (`source: ordering-only` — the resolver's own `depends_on` is the *only* place this ordering is recorded at all). See [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/constraint-vs-ordering-columns|variability-map-create's ADR]] for why this distinction never becomes a `depends_on` schema change.

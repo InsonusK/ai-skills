@@ -14,7 +14,7 @@ adr:
 ---
 
 # Goal
-Produce `{catalog}/variability-map.md` — the binding between the catalog's Variation Points and the solutions that realize them, with every column filled. Concretely:
+- **Variability Map file** - `{catalog}/variability-map.md` produced as the binding between the catalog's Variation Points and the solutions that realize them, with every column filled.
 - **Variation Point table** - One row per axis on which two teams building on this catalog could legitimately answer differently, with Variants, Constraint, Realization depends on, and Migration filled directly by this skill — so an agent deciding what a new plateau contains reads one table instead of reverse-engineering intent from `created_by`/`depends_on` lists.
 - **Completed Realized by column** - The `Realized by` column filled by the [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] sub-step, which walks each VP, authors or selects its realizing solution(s), and classifies their intersections — the map is not finished until this runs.
 - **Surfaced missing edges** - Every requirement found in prose or in the Feature Model but absent from a solution's `depends_on` raised as a fix proposal, not left as an unencoded assumption.
@@ -25,10 +25,12 @@ Produce `{catalog}/variability-map.md` — the binding between the catalog's Var
 - **Runs after the Feature Model** - The catalog's Feature Model feeds this skill its candidate features.
 - **Realized by is a sub-step, not a later stage** - Filling `Realized by` — authoring each VP's realizing solution(s) and classifying where two of them touch the same code element — is done by [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]], run to complete this map. Assembling plateaus from the finished map is a separate stage this skill does not describe.
 
-# Where the map lives
+# Workflow
+
+## Where the map lives
 One Variability Map per catalog, at `{catalog}/variability-map.md` — a sibling of the catalog's `plateau/` and `solutions/` folders (e.g. `skills/dotnet/architecture/v3/variability-map.md`). Not one per plateau: a plateau is one *point* in the combination space the map describes, not a separate space of its own — splitting the map per plateau would duplicate the same VP row into every plateau that happens to touch it. See [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/one-map-per-catalog|adr/one-map-per-catalog]].
 
-# How to build a Variability Map
+## How to build a Variability Map
 1. Identify {catalog} — the folder holding the plateau/solution tree (e.g. `skills/dotnet/architecture/v3/`).
 2. Read `{catalog}/feature/feature-model.md` when it exists (the previous pipeline step): its non-common features are the primary candidate list. Merge it with every solution reachable through any plateau's `created_by` (directly or via `parent_plateaus`) across the whole catalog — the union is the candidate pool.
 3. For each candidate (or tight group of candidates answering one question), apply the Core Principle's test: would two teams legitimately answer differently? Discard candidates that appear on every existing and every reasonable future path — they are core, not variability.
