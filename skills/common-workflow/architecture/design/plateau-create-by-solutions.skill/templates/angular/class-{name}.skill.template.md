@@ -14,7 +14,7 @@ tags:
 created_by:
 ---
 # How Apply this template
-- Fill `whenToUse` with the concrete class/artifact-level situations that require this skill (creating/editing this artifact, or creating another artifact with the same role). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
+- Fill `whenToUse` with the concrete class/artifact-level situations that require this skill (creating/editing this artifact, or creating another artifact with the same role). See [skill-design](skills/design/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by the artifact-level implementation file (`{name}.{artifact-type}.ts.create.md` / `{name}.{artifact-type}.ts.extend.md`)
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`
@@ -123,7 +123,7 @@ __Applied solutions:__
 
 # Rules
 ```hint
-Define MUST, SHOULD, MAY rules of the class/artifact only — never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)). Summarize all "Rule changes"/"Anti-patterns" from all finded artifact-level implementation files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `## MUST`/`## SHOULD` at whichever strength it carries — fold an anti-pattern's worked "wrong way" example and its consequence into the same bullet instead of keeping a separate section. Always include a bullet against applying several plateau templates per class/artifact.
+Define MUST, SHOULD, MAY rules of the class/artifact only — never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/design/skill-design.skill/skill-design.skill.md)). Summarize all "Rule changes"/"Anti-patterns" from all finded artifact-level implementation files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `## MUST`/`## SHOULD` at whichever strength it carries — fold an anti-pattern's worked "wrong way" example and its consequence into the same bullet instead of keeping a separate section. Always include a bullet against applying several plateau templates per class/artifact.
 
 At the end of block writes list to all used templates to build block.
 

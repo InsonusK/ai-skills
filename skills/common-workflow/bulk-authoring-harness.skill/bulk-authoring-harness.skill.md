@@ -20,7 +20,7 @@ tags:
 - **Objective checks over human reading** - A cross-reference either resolves or it does not; a format rule is either followed or not; a build either passes or not. Prefer a check that answers yes/no over asking the user to notice a problem.
 - **Fresh eyes per batch, not per file** - A reviewer (subagent or separate pass) that did not author the batch catches drift the author is blind to. Run it once per batch against the anchor document and the relevant design skills — not once per file.
 - **Block only on real forks** - Most work is execution against the anchor document. Record every choice in a decisions log; interrupt the user only for entries that are genuine architectural forks with real trade-offs, marked distinctly.
-- **Harness is additive to the design skills** - This skill governs how the work is organised and verified; it does not replace the design skills that govern each artifact's content (e.g. [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]], [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]]).
+- **Harness is additive to the design skills** - This skill governs how the work is organised and verified; it does not replace the design skills that govern each artifact's content (e.g. [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]], [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]]).
 
 # Workflow
 1. **Scope and plan.** List every artifact to produce, classify each (copy-as-is / copy-and-modify / new), and group them into batches ("waves") small enough to review as a diff. Write the plan to a status document in the target tree.

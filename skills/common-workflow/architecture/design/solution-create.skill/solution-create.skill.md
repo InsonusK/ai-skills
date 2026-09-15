@@ -56,7 +56,7 @@ Follow the `# How Apply this template` rules defined in the selected template, s
 - Fix: read the template's `# How Apply this template` section first and apply it as you fill each section.
 
 ### Write one concrete whenToUse sentence
-Write `whenToUse` as one concrete sentence naming the task types or situations that must make an agent apply this solution, per the [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) baseline — decidable from that sentence alone.
+Write `whenToUse` as one concrete sentence naming the task types or situations that must make an agent apply this solution, per the [skill-design](skills/design/skill-design.skill/skill-design.skill.md) baseline — decidable from that sentence alone.
 - Violation: a `triggers:` list of loose keywords with no `whenToUse` sentence.
 - Risk: the agent cannot decide whether the solution applies and either skips it or applies it blindly.
 - Fix: write one `whenToUse` sentence naming the concrete tasks (e.g. "when implementing a command/write-operation handler, or adding a new feature to an existing module").
@@ -102,7 +102,7 @@ Document every term, library, technology, or pattern a reader may not know insid
 - Fix: add a concept page per unfamiliar term under `glossary/` and link it where the term is used; keep the glossary inside the skill folder so the solution stays portable.
 
 ### Fill the facet tags
-Tag the solution skill and its supporting files with the facet tags required by [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md): the solution file carries `solution/{solution-name}`; every `Implementation/` file carries `solution/{solution-name}` and `element/{element-name}`; every ADR carries `solution/{solution-name}`, `concern/documentation`, and `concern/documentation/adr`.
+Tag the solution skill and its supporting files with the facet tags required by [skill-design](skills/design/skill-design.skill/skill-design.skill.md): the solution file carries `solution/{solution-name}`; every `Implementation/` file carries `solution/{solution-name}` and `element/{element-name}`; every ADR carries `solution/{solution-name}`, `concern/documentation`, and `concern/documentation/adr`.
 - Risk: tag-expression queries cannot resolve which files belong to the solution, so they are invisible to agents building a solution-scoped skillset.
 - Fix: fill the `tags:` blocks as shown in the templates when creating each file.
 

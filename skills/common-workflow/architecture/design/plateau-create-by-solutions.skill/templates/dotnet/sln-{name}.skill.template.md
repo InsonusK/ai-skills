@@ -13,7 +13,7 @@ tags:
 created_by:
 ---
 # How Apply this template
-- Fill `whenToUse` with the concrete repository-level situations that require this skill (adding/removing a project, deciding where new code belongs, reviewing the top-level layout). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
+- Fill `whenToUse` with the concrete repository-level situations that require this skill (adding/removing a project, deciding where new code belongs, reviewing the top-level layout). See [skill-design](skills/design/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from created_by files made by Repository.template.md
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`

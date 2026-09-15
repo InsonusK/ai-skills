@@ -67,7 +67,7 @@ Give every plateau element skill a file name starting with `plateau-{plateau-nam
 ### Write concrete whenToUse for every skill
 Write `whenToUse` in the plateau root skill and in every element skill as one concrete sentence stating when the agent must open that specific skill — which file/folder is being created or edited, or which task needs that level of the plateau.
 - Violation: the same generic sentence ("when working in the {plateau-name} plateau") copied across every element skill.
-- Risk: the agent cannot decide from the sentence alone whether to open the skill, defeating the [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]] `whenToUse` baseline.
+- Risk: the agent cannot decide from the sentence alone whether to open the skill, defeating the [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]] `whenToUse` baseline.
 - Fix: name the concrete file, folder, or task for each skill.
 
 ### Recognize the solution Implementation file patterns

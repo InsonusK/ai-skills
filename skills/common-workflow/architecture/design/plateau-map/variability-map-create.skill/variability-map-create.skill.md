@@ -78,7 +78,7 @@ Do not derive a plateau↔VP matrix or plateau consistency checks inside `variab
 - Fix: keep the artifact to the VP↔solution binding; the decision and where the view went are recorded in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/no-plateau-view-in-variability-map|adr/no-plateau-view-in-variability-map]].
 
 ### Follow the skill-design baseline
-Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
+Follow [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
 - Risk: this skill's rules cover the Variability Map's content, not the mechanics every skill must follow — skipping the shared baseline produces a technically-correct map workflow in a non-conforming skill file.
 - Fix: apply `skill-design.skill.md` in addition to, never instead of, the rules above.
 
@@ -105,4 +105,4 @@ Leave **Migration** at `No` for a VP that has never yet needed to change after a
 - [ ] No solution skill's `depends_on` field was changed in shape to carry a constraint/ordering annotation.
 - [ ] The map contains no plateau↔VP derivation — that view belongs to `plateau-map-create`.
 - [ ] All `hint`/`example` blocks removed from the final `variability-map.md` (none should have been copied from the template in the first place).
-- [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
+- [ ] Facet tags follow [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.

@@ -89,7 +89,7 @@ public sealed class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior
 
 # Rule changes
 ```hint
-Define rules for this class. Follow the Rule-section baseline in [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]:
+Define rules for this class. Follow the Rule-section baseline in [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]]:
 - Use only ## MUST, ## SHOULD, ## MAY subblocks — never ## MUST NOT/## SHOULD NOT headings.
 - Every ## MUST bullet carries a nested `Risk:` and `Fix:` (`Violation:` is optional); ## SHOULD bullets carry the elaboration only when the rule is non-obvious; ## MAY bullets never carry it.
 - Only add a subblock for categories where this class introduces new rules.

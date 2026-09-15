@@ -91,7 +91,7 @@ Remove all `hint`, `example`, and `code example` blocks, and the `# How Apply th
 - Fix: delete every `hint`/`example`/`code example` fenced block and the `# How Apply this template` section before committing.
 
 ### Fill the facet tags
-Tag the component skill and its Implementation files with the facet tags required by [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md): the component file carries `component/{component-name}`; every file under `Implementation/` carries `component/{component-name}` and `element/{element-name}`.
+Tag the component skill and its Implementation files with the facet tags required by [skill-design](skills/design/skill-design.skill/skill-design.skill.md): the component file carries `component/{component-name}`; every file under `Implementation/` carries `component/{component-name}` and `element/{element-name}`.
 - Risk: tag-expression queries cannot resolve which files belong to the component.
 - Fix: fill the `tags:` block as shown in the templates.
 
