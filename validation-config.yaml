@@ -1,4 +1,4 @@
-# Configuration for the skill-validation pass (see skills/common-workflow/skill-validation.skill/).
+# Configuration for the skill-validation pass (see skills/design/skill-validation.skill/).
 #
 # log-dir: optional, defaults to ./.validation — holds one flat log file per
 #   reference standard: {validation-skill}-log.yaml.

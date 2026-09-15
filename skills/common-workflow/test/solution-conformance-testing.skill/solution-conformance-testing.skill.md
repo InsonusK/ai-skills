@@ -5,6 +5,7 @@ whenToUse: when setting up or reviewing a project's testing strategy, when decid
 domain: skill
 type: architecture
 version: 1
+updated: 20260913
 tags:
   - skill/architecture/solution
   - solution/conformance-testing
@@ -36,9 +37,7 @@ adr:
 # Core Principles
 - Every test run produces a report describing covered test cases in a readable form.
 - Mutation testing verifies testing quality — coverage alone only proves a code path executed, not that its result was checked.
-- Cucumber is used to write every test case:
-  - A business scenario is written as a matrix of input values and expected results.
-  - A technical or architectural concern gets its own `.feature` file describing what is being tested, kept separate from business scenarios.
+- Every test case — business and technical/architectural alike — is written as a Cucumber scenario; see [[skills/common-workflow/test/cucmber-testing.skill/cucmber-testing.skill.md|cucmber-testing]] for how to author and organize scenarios and step definitions.
 - Code coverage is always collected — never optional.
 - The mutation-testing tool is chosen per stack, not per project: Stryker for C#/.NET and for Angular/TypeScript, Mutmut for Python — see [[./adr/mutation-tool-per-stack.md|ADR]].
 - The project root exposes exactly four `make` targets: `unit-test`, `mutation-test`, `test-report`, `test-and-report`.
@@ -77,25 +76,40 @@ REPOSITORY:
 # Rule
 
 ## MUST
-- [[./Implementation/Repository.create.md#MUST|Repository]]
-- Write a business scenario as a matrix of input values and expected results, not a narrative walkthrough.
-  - Risk: a narrative-style scenario hides which specific input/output pairs are actually being proven, making it easy to think a case is covered when it is not.
-  - Fix: structure the scenario (or its `Examples:` table) as explicit input-value/expected-result rows.
-- Keep a technical or architectural concern in its own `.feature` file, separate from business scenarios.
-  - Risk: mixing the two makes the report unreadable as "which business functions are covered" — the thing this approach exists to make visible.
-  - Fix: one `.feature` file per business capability, a separate one per technical/architectural concern.
-- Always collect coverage as part of `unit-test` — never make it optional or skip it on any run.
-  - Risk: a run without coverage gives mutation testing nothing to scope against and leaves "was this even executed" unanswered.
-- Have `test-report` (or anything downstream of it) read only the normalized `tmp/result/*.json` files defined in [# Report contract](#report-contract) — never parse a tool's native report format directly.
-  - Risk: switching the underlying tool later breaks every consumer that learned to parse its specific native format.
-- Propagate the underlying mutation tool's own exit code after writing `tmp/result/mutation-test.json` — never let a `mutation-test` run swallow it while normalizing its result.
-  - Risk: a real mutation-testing failure gets hidden, and CI reports success on a run that actually found unkilled mutants.
-- Keep `report-template/index.html` at that path, copied by `test-report` — never generated, never placed under `.github/`.
-  - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern.
+
+### Apply the Repository Implementation
+Apply every MUST in [[./Implementation/Repository.create.md#MUST|Repository]].
+- Risk: skipping the Implementation file's own rules leaves the Makefile/report-template contract only partially built.
+- Fix: follow [[./Implementation/Repository.create.md#MUST|Repository]] in full.
+
+### Delegate Cucumber authoring to cucmber-testing
+Follow [[skills/common-workflow/test/cucmber-testing.skill/cucmber-testing.skill.md|cucmber-testing]] for how to structure scenarios and step definitions whenever writing a business or technical/architectural test case.
+- Violation: writing a scenario as a narrative walkthrough, or mixing a technical/architectural concern into a business `.feature` file, instead of following cucmber-testing's rules.
+- Risk: without a single authoring standard, the resulting report is unreadable as "which business functions are covered" — the thing this approach exists to make visible.
+- Fix: write every scenario per [[skills/common-workflow/test/cucmber-testing.skill/cucmber-testing.skill.md|cucmber-testing]]'s rules.
+
+### Always collect coverage
+Collect coverage as part of every `unit-test` run — never make it optional or skip it.
+- Risk: a run without coverage gives mutation testing nothing to scope against and leaves "was this even executed" unanswered.
+- Fix: wire coverage collection into `unit-test` unconditionally.
+
+### Read only the normalized result files
+Have `test-report` (or anything downstream of it) read only the normalized `tmp/result/*.json` files defined in [# Report contract](#report-contract) — never parse a tool's native report format directly.
+- Risk: switching the underlying tool later breaks every consumer that learned to parse its specific native format.
+- Fix: read `tmp/result/*.json` only; treat `tmp/report/<kind>/` as opaque, human-facing output.
+
+### Propagate the mutation tool's exit code
+Propagate the underlying mutation tool's own exit code after writing `tmp/result/mutation-test.json` — never let a `mutation-test` run swallow it while normalizing its result.
+- Risk: a real mutation-testing failure gets hidden, and CI reports success on a run that actually found unkilled mutants.
+- Fix: exit with the underlying tool's code after the normalized result is written.
+
+### Keep report-template/index.html in place
+Keep `report-template/index.html` at that path, copied verbatim by `test-report` — never generated, never placed under `.github/`.
+- Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern.
+- Fix: keep the file at `report-template/index.html` and have `test-report` copy it as-is.
 
 # Check list
-- [ ] Every business scenario is structured as input/expected-result pairs.
-- [ ] Every technical/architectural `.feature` file is separate from business scenario files.
+- [ ] Every scenario follows [[skills/common-workflow/test/cucmber-testing.skill/cucmber-testing.skill.md|cucmber-testing]]'s check list.
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` all exist and work as documented in [[./Implementation/Repository.create.md|Repository]].
 - [ ] Coverage is collected on every `unit-test` run.
 - [ ] `tmp/result/*.json` follows the schema in [# Report contract](#report-contract); `tmp/report/<kind>/` holds each tool's native report.

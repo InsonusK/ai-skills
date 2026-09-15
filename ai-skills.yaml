@@ -8,8 +8,8 @@ sources:
       - skills/common-workflow/architecture/design
       - skills/common-workflow/documentation/documentation-for-concept.skill
       - skills/common-workflow/documentation/documentation-for-human.skill
-      - skills/common-workflow/skill-design.skill
-      - skills/common-workflow/skill-validation.skill
+      - skills/design/skill-design.skill
+      - skills/design/skill-validation.skill
   - path: https://github.com/InsonusK/ai-skill-graph-draw.git
     type: github
     tree: master

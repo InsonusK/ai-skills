@@ -139,7 +139,7 @@ Confirm each materially new or changed part of the model with the family's owner
 - Fix: present one change at a time and get confirmation before the next.
 
 ### Follow the skill-design baseline
-Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
+Follow [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
 - Risk: this skill's rules cover the Feature Model's content, not the mechanics every skill must follow — skipping the shared baseline produces a technically-correct model in a non-conforming skill file.
 - Fix: apply `skill-design.skill.md` in addition to, never instead of, the rules above.
 
@@ -171,6 +171,6 @@ Leave the reserved relation type (`Alternative (group name)`) unused in the diag
 - [ ] The diagram lives at `diagrams/feature-diagram.mmd` and is embedded via `@import`, per `mermaid-diagram.skill.md`.
 - [ ] `Out of scope` is filled with real content covering fixed infrastructure, Plateau Components, existing-catalog-vs-intended-family scope, unverified constraints, and the judgment-call nature of `IsCommon`.
 - [ ] Each material change was confirmed with the family's owner before the next was built on top of it.
-- [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
+- [ ] Facet tags follow [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
 
 
