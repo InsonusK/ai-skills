@@ -33,6 +33,12 @@ tags:
 
 ## MUST
 
+### Implement from the linked example, not from prose memory
+Open and copy [Pull-request workflow example](./templates/pull-request.example.md) before writing `.github/workflows/pull-request.yml` — never reconstruct the YAML from this skill's prose alone. If a real improvement is needed beyond what the example shows, propose it to the user and get it confirmed before shipping it; once confirmed, fold the fix back into the example file.
+- Violation: an agent writes the workflow from memory of `# Goal`/`# Core Principle`/`# Rule` without opening the example, and silently drops a mechanical detail the prose only implies, or silently adds its own fix without flagging it.
+- Risk: prose is a summary, not a spec — it cannot carry every quoting/escaping/gating detail the working example encodes; an unflagged improvisation might be correct or might be a workaround for a misunderstanding, and nobody reviewing the PR can tell which without asking.
+- Fix: read the example first, copy it as the starting point, and treat any deviation as a proposal to confirm with the user — not a silent decision.
+
 ### Call the reusable check-changes/check-version actions, never inline logic
 Implement change detection and version comparison as `uses: ./.github/actions/check-changes` and `uses: ./.github/actions/check-version`, not as inline `dorny/paths-filter`/parsing steps in this workflow.
 - Violation: a `paths-filter` step or a hand-rolled version-parsing script pasted directly into `pull-request.yml`.
@@ -77,6 +83,7 @@ Always work in a separate branch and open a PR; if a separate branch cannot be c
 See [Pull-request workflow example](./templates/pull-request.example.md).
 
 # Check list
+- [ ] The workflow was implemented by copying [Pull-request workflow example](./templates/pull-request.example.md), not reconstructed from prose; any deviation was confirmed with the user and folded back into the example.
 - [ ] The workflow triggers on `pull_request` to `develop` and `master` (or `main`).
 - [ ] `changes` and `version-check` call `./.github/actions/check-changes`/`./.github/actions/check-version` — no inline path-filter or version-parsing logic.
 - [ ] `version-check` runs only for PRs to `master` when code, workflow, or Dockerfile changed.

@@ -45,9 +45,12 @@ jobs:
           body="Version ${version}"
 
           if [ -n "$(git ls-files Dockerfile)" ]; then
+            # Must match the lowercased image ref devops-github-wf-docker-release-publish
+            # actually pushed - github.repository preserves case, Docker refs don't.
+            image="ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
             body="${body}
 
-          - Docker: \`ghcr.io/${{ github.repository }}:${version}\`"
+          - Docker: \`${image}:${version}\`"
           fi
 
           if [ "${{ needs.check-version.outputs.publishable }}" = "true" ]; then

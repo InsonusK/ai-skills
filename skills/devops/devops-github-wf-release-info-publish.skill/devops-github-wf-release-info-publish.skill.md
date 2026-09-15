@@ -39,6 +39,12 @@ Built directly from `current` (the version) and `github.repository`/the package 
 
 ## MUST
 
+### Implement from the linked example, not from prose memory
+Open and copy [Release-info-publish workflow example](./templates/release-info-publish.example.md) before writing the workflow file — never reconstruct the YAML from this skill's prose alone. If a real improvement is needed beyond what the example shows, propose it to the user and get it confirmed before shipping it; once confirmed, fold the fix back into the example file.
+- Violation: an agent writes the workflow from memory of `# Goal`/`# Core Principle`/`# Rule` without opening the example, and silently drops a mechanical detail the prose only implies, or silently adds its own fix without flagging it.
+- Risk: prose is a summary, not a spec — it cannot carry every quoting/escaping/gating detail the working example encodes; an unflagged improvisation might be correct or might be a workaround for a misunderstanding, and nobody reviewing the PR can tell which without asking.
+- Fix: read the example first, copy it as the starting point, and treat any deviation as a proposal to confirm with the user — not a silent decision.
+
 ### Reuse the shared check-version job body unmodified
 Copy the `check-version` job from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] verbatim, including its unused `timestamp` output — do not trim it down to only `current`/`bumped`/`publishable`.
 - Violation: writing a leaner `check-version` job here that drops the `timestamp` output since this workflow never reads it.
@@ -57,6 +63,11 @@ Build the Docker/package links in the release body directly from `current`, `git
 - Risk: querying adds a dependency on registry availability and auth to a workflow that has no other reason to need registry credentials; it also introduces a race, since [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] and [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] are separate workflows that may not have finished publishing yet.
 - Fix: construct the URL string directly from the version and the tag convention documented in [# Package link patterns](#package-link-patterns) — the link is correct by construction, because both publishing workflows are contractually required to use that exact convention on `master`.
 
+### Lowercase the repository name in the Docker link, matching what was actually pushed
+When constructing the Docker link, lowercase `github.repository` with `tr '[:upper:]' '[:lower:]'` exactly as [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] does before pushing — never interpolate `github.repository` as-is into the link.
+- Risk: [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] pushes under the lowercased image ref (Docker/OCI requires it); linking the un-lowercased `github.repository` for a repo with any uppercase letter points to an image reference that was never pushed, so the link 404s.
+- Fix: lowercase it the same way, as shown in [example](./templates/release-info-publish.example.md).
+
 ### Only link artifacts the project actually has
 Append the Docker link only when `hashFiles('Dockerfile') != ''`; append the package link only when `needs.check-version.outputs.publishable == 'true'`.
 - Risk: an unconditional link to a nonexistent image/package leads readers of the Release notes to a 404.
@@ -74,7 +85,9 @@ Create the Release with tag `v{version}` and `generate_release_notes: true`.
 See [Release-info-publish workflow example](./templates/release-info-publish.example.md).
 
 # Check list
+- [ ] The workflow was implemented by copying [Release-info-publish workflow example](./templates/release-info-publish.example.md), not reconstructed from prose; any deviation was confirmed with the user and folded back into the example.
 - [ ] `check-version` is copied from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified, including its unused `timestamp` output.
+- [ ] The Docker link lowercases `github.repository`, matching the actual pushed tag.
 - [ ] The workflow triggers only on `push` to `master`, plus `workflow_dispatch` — never `develop`.
 - [ ] `github-release` runs only when `needs.check-version.outputs.bumped == 'true'`.
 - [ ] Docker/package links are constructed from `current`/the tag convention, never by querying a registry.
