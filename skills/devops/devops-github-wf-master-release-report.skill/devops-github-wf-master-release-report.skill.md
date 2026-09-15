@@ -39,6 +39,12 @@ tags:
 
 ## MUST
 
+### Implement from the linked example, not from prose memory
+Open and copy [Master-release-report workflow example](./templates/master-release-report.example.md) before writing the workflow file — never reconstruct the YAML from this skill's prose alone. If a real improvement is needed beyond what the example shows, propose it to the user and get it confirmed before shipping it; once confirmed, fold the fix back into the example file.
+- Violation: an agent writes the workflow from memory of `# Goal`/`# Core Principle`/`# Rule` without opening the example, and silently drops a mechanical detail the prose only implies, or silently adds its own fix without flagging it.
+- Risk: prose is a summary, not a spec — it cannot carry every quoting/escaping/gating detail the working example encodes; an unflagged improvisation might be correct or might be a workaround for a misunderstanding, and nobody reviewing the PR can tell which without asking.
+- Fix: read the example first, copy it as the starting point, and treat any deviation as a proposal to confirm with the user — not a silent decision.
+
 ### Reuse check-changes, never a second path-filter implementation
 Gate this workflow's jobs on `./.github/actions/check-changes`'s output — the same composite action [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] calls.
 - Risk: a second, hand-written filter drifts from the first over time, so the same push is treated as "relevant" by one workflow and "irrelevant" by the other.
@@ -84,6 +90,7 @@ Publish README badges as shields.io endpoint badges reading the `*-badge.json` f
 See [Master-release-report workflow example](./templates/master-release-report.example.md).
 
 # Check list
+- [ ] The workflow was implemented by copying [Master-release-report workflow example](./templates/master-release-report.example.md), not reconstructed from prose; any deviation was confirmed with the user and folded back into the example.
 - [ ] `changes` calls `./.github/actions/check-changes` — the same composite action the PR workflow uses.
 - [ ] Every CI job calls the project's `make unit-test`/`make mutation-test`/`make test-report` — never a stack's native CLI directly.
 - [ ] `unit-test` always runs with `WITH_CODE_COVERAGE=true`.

@@ -35,6 +35,18 @@ tags:
 
 ## MUST
 
+### Implement from the linked example, not from prose memory
+Open and copy [Docker-release-publish workflow example](./templates/docker-release-publish.example.md) and [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] before writing the workflow file — never reconstruct the YAML from this skill's prose alone. If a real improvement is needed beyond what the example shows (a missing edge case, a genuine bug in the example), propose it to the user and get it confirmed before shipping it; once confirmed, fold the fix back into the example file itself so the next agent starts from the corrected version instead of rediscovering the same gap.
+- Violation: an agent writes `.github/workflows/docker-release-publish.yml` from memory of this skill's `# Goal`/`# Core Principle`/`# Rule` text without opening `./templates/docker-release-publish.example.md`, and silently drops a mechanical detail the prose only implies (e.g. the `hashFiles('Dockerfile') != ''` gate, or the multi-line `GITHUB_OUTPUT` heredoc syntax for the `tags` output) — or silently adds its own fix (e.g. lowercasing the image reference) without flagging it.
+- Risk: prose is a summary, not a spec — it cannot carry every quoting/escaping/gating detail the working example encodes; reconstructing from memory reliably drops exactly this class of thing. An unflagged improvisation is worse: it might be correct (as the lowercase fix below is) or might be a workaround for a misunderstanding, and nobody reviewing the PR can tell which without asking.
+- Fix: read the example file(s) first, copy them as the starting point, and treat any deviation as a proposal to confirm with the user — not a silent decision.
+
+### Lowercase the repository name in the image reference
+Compute the image reference as `ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')`, never `ghcr.io/${{ github.repository }}` directly.
+- Violation: interpolating `github.repository` straight into the image tag.
+- Risk: `github.repository` preserves the repo's actual case (e.g. `Org/My-Repo`), but Docker/OCI image references must be all-lowercase — an uppercase letter anywhere in the owner or repo name makes `docker/build-push-action` reject the tag outright, failing the job on any repository whose name isn't already all-lowercase.
+- Fix: lowercase it explicitly with `tr '[:upper:]' '[:lower:]'` (or an equivalent), as shown in [example](./templates/docker-release-publish.example.md) — never assume the repository name happens to be lowercase.
+
 ### Start from the shared changes/check-version base, unmodified
 Copy the `changes` and `check-version` jobs from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] verbatim; add only the `docker-publish` job on top.
 - Violation: pre-combining `check-changes`' raw outputs into a workflow-specific `relevant` boolean inside the `changes` job, or dropping one of `check-version`'s four outputs because this workflow doesn't read all of them.
@@ -76,6 +88,8 @@ Compute the shared `YYYYMMDDhhmmss` UTC timestamp inside the `check-version` job
 See [Docker-release-publish workflow example](./templates/docker-release-publish.example.md) for the `docker-publish` job. Its `changes`/`check-version` jobs are [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]], copied unmodified.
 
 # Check list
+- [ ] The workflow was implemented by copying [Docker-release-publish workflow example](./templates/docker-release-publish.example.md)/[[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]], not reconstructed from prose; any deviation was confirmed with the user and folded back into the example.
+- [ ] The image reference is lowercased (`tr '[:upper:]' '[:lower:]'` on `github.repository`), never interpolated as-is.
 - [ ] The workflow triggers on `push` to both `master` and `develop`, plus `workflow_dispatch`.
 - [ ] `changes` and `check-version` are copied from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
 - [ ] `docker-publish` is gated on `check-changes` (`code`/`workflow`/`docker`) — never on `check-version`'s `bumped`.

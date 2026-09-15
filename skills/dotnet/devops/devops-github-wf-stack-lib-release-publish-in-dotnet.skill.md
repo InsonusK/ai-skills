@@ -24,7 +24,7 @@ This skill adds .NET-specific mechanics on top of [[skills/devops/devops-github-
 ## MUST
 
 ### Start from the shared base, then add this publish job
-Copy `.github/workflows/stack-lib-release-publish.yml`'s `on:` trigger and `changes`/`check-version` jobs verbatim from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]]; add only the `publish` job below.
+Open [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
 ```yaml
   publish:
     needs: [changes, check-version]
