@@ -63,6 +63,12 @@ Publish a `master` build to the stack's public registry; publish a `develop` bui
 - Risk: publishing every `develop` snapshot to the public registry pollutes it with disposable, timestamp-tagged versions nobody is meant to depend on.
 - Fix: see each stack's own skill for the exact registry URLs and credentials.
 
+### List contents: read explicitly whenever the publish job declares permissions
+If a stack's `publish` job needs any job-level `permissions:` block at all (e.g. TypeScript's `id-token: write` for npm provenance), list `contents: read` in that same block, even though `actions/checkout` would otherwise get it from the default token permissions.
+- Violation: `permissions: { id-token: write }` with no `contents: read` alongside it.
+- Risk: a job-level `permissions:` block *replaces* the default token permissions entirely rather than adding to them — anything not listed becomes `none`. Without `contents: read`, `actions/checkout` in that job fails, and GitHub reports it as "Repository not found" rather than a permissions error, so the real cause is easy to miss.
+- Fix: list `contents: read` alongside every other permission the job needs — see `devops-github-wf-stack-lib-release-publish-in-typescript` for the corrected example. A stack whose `publish` job declares no `permissions:` block at all (python, dotnet, currently) is unaffected — this only applies once any block is added.
+
 ## SHOULD
 - Prefer OIDC/trusted publishing over a long-lived API-token secret where the target registry supports it.
 
@@ -73,6 +79,7 @@ See [base-jobs.example.md](./templates/base-jobs.example.md) for the shared `cha
 - [ ] The workflow was implemented by copying its stack's linked example, not reconstructed from prose; any deviation was confirmed with the user and folded back into the example.
 - [ ] The stack's implementation triggers on `push` to both `master` and `develop`, plus `workflow_dispatch`.
 - [ ] `changes` and `check-version` are copied from [base-jobs.example.md](./templates/base-jobs.example.md) unmodified — no pre-combined `relevant` output, no dropped `check-version` output.
+- [ ] If the `publish` job declares any `permissions:` block, it lists `contents: read` explicitly alongside every other permission.
 - [ ] The whole workflow is gated on `publishable == 'true'`; each run is additionally gated on `code`/`workflow` changing — never on `bumped`.
 - [ ] `master` publishes the plain `{version}`; `develop` publishes `{version}-{timestamp}` using the shared timestamp.
 - [ ] `master` targets the stack's public registry; `develop` targets GitHub's own registry for that ecosystem, or TestPyPI for Python.

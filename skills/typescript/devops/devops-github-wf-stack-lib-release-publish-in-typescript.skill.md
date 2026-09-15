@@ -32,7 +32,13 @@ Open [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/
       (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true')
       && needs.check-version.outputs.publishable == 'true'
     runs-on: ubuntu-latest
+    # A job-level `permissions:` block replaces the default token permissions
+    # entirely, not adds to them - anything not listed here becomes `none`.
+    # `contents: read` must be listed explicitly, or actions/checkout below
+    # fails to fetch the repo (GitHub reports that as "Repository not found"
+    # rather than a permissions error, to avoid leaking a private repo's existence).
     permissions:
+      contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
@@ -84,3 +90,4 @@ Set the version with `npm version --no-git-tag-version --allow-same-version` bef
 - [ ] `master` publishes to `registry.npmjs.org` tagged `latest`, plain `{version}`; `develop` publishes to `npm.pkg.github.com` tagged `snapshot`, `{version}-{timestamp}`.
 - [ ] The version is set via `npm version --no-git-tag-version`, never a manual `package.json` edit.
 - [ ] `NPM_TOKEN` comes from repository secrets, never hardcoded.
+- [ ] `publish`'s `permissions:` block lists `contents: read` explicitly, alongside `id-token: write`.

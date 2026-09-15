@@ -7,9 +7,7 @@ Start from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/temp
 ```yaml
   docker-publish:
     needs: [changes, check-version]
-    if: >-
-      (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true' || needs.changes.outputs.docker == 'true')
-      && hashFiles('Dockerfile') != ''
+    if: needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true' || needs.changes.outputs.docker == 'true'
     runs-on: ubuntu-latest
     # A job-level `permissions:` block replaces the default token permissions
     # entirely, not adds to them - anything not listed here becomes `none`.
