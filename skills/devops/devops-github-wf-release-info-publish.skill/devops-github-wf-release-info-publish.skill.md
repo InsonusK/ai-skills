@@ -18,14 +18,15 @@ tags:
 
 # Core Principle
 - This is the only one of the three release-publish workflows gated on an actual version bump (`needs.check-version.outputs.bumped == 'true'`) — a GitHub Release is inherently a versioned record, unlike the Docker/package artifacts, which republish at the current version on every relevant push regardless of whether that specific push was the one that bumped it.
-- This workflow never builds or queries the Docker image or the package it links to. Because [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] always tags a `master` image `ghcr.io/{owner}/{repo}:{version}`, and [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] always publishes a `master` package under the plain `{version}`, this workflow can construct both URLs directly from `current` and known facts (`hashFiles('Dockerfile')`, `publishable`) — it never waits on or calls into either of those workflows.
+- This workflow never builds or queries the Docker image or the package it links to. Because [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] always tags a `master` image `ghcr.io/{owner}/{repo}:{version}`, and [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] always publishes a `master` package under the plain `{version}`, this workflow can construct both URLs directly from `current` and known facts (whether `Dockerfile` is tracked in the repo, `publishable`) — it never waits on or calls into either of those workflows.
+- The `Dockerfile`-presence check here is a **step-level** `git ls-files Dockerfile` (after this job's own checkout), never a job-level `hashFiles('Dockerfile')` condition — see [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md#only-create-this-workflow-for-a-project-that-already-has-a-dockerfile|devops-github-wf-docker-release-publish's note]] on why a job-level `hashFiles()` check silently never works (it evaluates before checkout). Unlike that workflow, this one legitimately needs a *runtime* check — this workflow exists regardless of whether the project has a `Dockerfile`, since it always creates the GitHub Release; only the optional Docker line in the release body depends on the file's presence.
 - Only `master` triggers this workflow — `develop`'s snapshot builds are disposable by design and never get a Release record.
 - Stack-specific parts, if any, are limited to the package-registry URL pattern (PyPI/nuget.org/npmjs.org each shape package URLs differently) — see [# Package link patterns](#package-link-patterns). Everything else in this workflow is generic.
 - This workflow's `check-version` job is the exact same job body used in [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] (all four outputs: `current`, `bumped`, `publishable`, `timestamp`), even though `timestamp` goes unused here — one identical job body across every release-publish workflow beats a trimmed-down variant that only exposes what this particular consumer reads. This workflow has no `changes` job at all, unlike [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]]/`stack-lib-release-publish-in-{stack}` — it gates solely on `bumped`, never on what changed.
 
 # Workflow
 1. `check-version` job calls `./.github/actions/check-version`; everything below runs only when `github.ref_name == 'master'` and `bumped == 'true'`.
-2. `github-release` job builds the release body: always includes the version; appends a Docker link when `hashFiles('Dockerfile') != ''`; appends a package link when `publishable == 'true'`, using [# Package link patterns](#package-link-patterns) for the stack in use.
+2. `github-release` job builds the release body: always includes the version; appends a Docker link when `git ls-files Dockerfile` (run after checkout) reports the file tracked; appends a package link when `publishable == 'true'`, using [# Package link patterns](#package-link-patterns) for the stack in use.
 3. `softprops/action-gh-release@v2` creates the Release, tag `v{version}`, `generate_release_notes: true`, with the assembled body prepended.
 
 # Package link patterns
@@ -69,9 +70,10 @@ When constructing the Docker link, lowercase `github.repository` with `tr '[:upp
 - Fix: lowercase it the same way, as shown in [example](./templates/release-info-publish.example.md).
 
 ### Only link artifacts the project actually has
-Append the Docker link only when `hashFiles('Dockerfile') != ''`; append the package link only when `needs.check-version.outputs.publishable == 'true'`.
-- Risk: an unconditional link to a nonexistent image/package leads readers of the Release notes to a 404.
-- Fix: gate each link's inclusion on the same conditions [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]]/[[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] gate their own publish job on.
+Append the Docker link only when a step-level `git ls-files Dockerfile` (run after this job's own checkout) reports the file tracked; append the package link only when `needs.check-version.outputs.publishable == 'true'`.
+- Violation: using a job-level `if: hashFiles('Dockerfile') != ''` for this, or any other job-level condition that depends on repo contents.
+- Risk: an unconditional link to a nonexistent image/package leads readers of the Release notes to a 404; a job-level `hashFiles()` check would silently always evaluate as "file doesn't exist" regardless of reality, since job-level `if:` conditions run before that job's own checkout (see [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md#only-create-this-workflow-for-a-project-that-already-has-a-dockerfile|devops-github-wf-docker-release-publish's note]]).
+- Fix: check `Dockerfile`'s presence with a plain shell step (`git ls-files Dockerfile`), after checkout, inside the `github-release` job itself — not as that job's `if:` condition, and not via `hashFiles()`.
 
 ### Tag the release v{version}, with generated notes
 Create the Release with tag `v{version}` and `generate_release_notes: true`.
@@ -91,5 +93,5 @@ See [Release-info-publish workflow example](./templates/release-info-publish.exa
 - [ ] The workflow triggers only on `push` to `master`, plus `workflow_dispatch` — never `develop`.
 - [ ] `github-release` runs only when `needs.check-version.outputs.bumped == 'true'`.
 - [ ] Docker/package links are constructed from `current`/the tag convention, never by querying a registry.
-- [ ] The Docker link appears only when `hashFiles('Dockerfile') != ''`; the package link only when `publishable == 'true'`.
+- [ ] The Docker link appears only when a step-level `git ls-files Dockerfile` (after checkout) reports the file tracked — never a job-level `hashFiles()` condition; the package link only when `publishable == 'true'`.
 - [ ] The Release is tagged `v{version}` with `generate_release_notes: true`.

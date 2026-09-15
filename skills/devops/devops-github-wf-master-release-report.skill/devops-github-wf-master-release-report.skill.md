@@ -61,9 +61,10 @@ Run `unit-test` with `WITH_CODE_COVERAGE=true` unconditionally in this workflow.
 - Fix: collect it here; keep it off the PR-gate workflow for speed.
 
 ### Keep the mutation-test job report-only
-Never let `mutation-test`'s score fail or block this workflow.
-- Risk: a threshold already enforced pre-merge now blocks the trunk itself, with no PR left to fix it in response.
-- Fix: let the job upload its report and score without gating anything; the PR-gate workflow already enforced the threshold.
+Set `continue-on-error: true` on the `Run mutation tests` step (`make mutation-test`) — never let its exit code fail the job or block this workflow.
+- Violation: running `make mutation-test` with no `continue-on-error`, relying on the surrounding prose/intent alone to keep it "report-only."
+- Risk: `make mutation-test` exits with the underlying mutation tool's own exit code — non-zero the moment one mutant survives, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#propagate-the-mutation-tools-exit-code|solution-conformance-testing's contract]]. Without `continue-on-error`, that failure fails the `mutation-test` job itself — and since `test-report`'s `needs` has no `if: always()`, GitHub cascade-skips `test-report`/`deploy` entirely instead of merely reporting a low score, so one surviving mutant silently stops the whole report/Pages pipeline from publishing anything, coverage included.
+- Fix: add `continue-on-error: true` to the mutation-test step itself, as shown in [example](./templates/master-release-report.example.md); the job still uploads its report and normalized score artifact regardless of the tool's exit code, and the PR-gate workflow already enforced the threshold pre-merge.
 
 ### Cancel a superseded run
 Set `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` at the workflow level.
@@ -94,7 +95,7 @@ See [Master-release-report workflow example](./templates/master-release-report.e
 - [ ] `changes` calls `./.github/actions/check-changes` — the same composite action the PR workflow uses.
 - [ ] Every CI job calls the project's `make unit-test`/`make mutation-test`/`make test-report` — never a stack's native CLI directly.
 - [ ] `unit-test` always runs with `WITH_CODE_COVERAGE=true`.
-- [ ] `mutation-test` runs the full, unscoped run and never fails the workflow on score.
+- [ ] `mutation-test` runs the full, unscoped run and never fails the workflow on score — its `Run mutation tests` step has `continue-on-error: true`.
 - [ ] `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` is set.
 - [ ] `unit-test`/`mutation-test` are gated on the path filter; `test-report`/`deploy` cascade-skip rather than repeat the condition.
 - [ ] README badges are shields.io endpoint badges sourced only from this workflow's published `public/`.

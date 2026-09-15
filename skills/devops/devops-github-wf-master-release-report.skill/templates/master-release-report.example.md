@@ -69,8 +69,14 @@ jobs:
       # Full run (no ONLY_DELTA): this workflow only runs on master, where there's no PR
       # base branch to diff against, so the whole project is mutated. It never gates -
       # devops-github-wf-pull-request's mutation-test job already enforced the threshold.
+      # continue-on-error is what actually makes that true: make mutation-test exits
+      # with the underlying tool's own exit code (non-zero on a surviving mutant, per
+      # solution-conformance-testing's contract) - without this, that failure would
+      # fail the job and, since test-report's `needs` has no `if: always()`, cascade
+      # into skipping test-report/deploy entirely instead of just reporting the score.
       - name: Run mutation tests
         run: make mutation-test
+        continue-on-error: true
 
       - uses: actions/upload-artifact@v4
         with:
