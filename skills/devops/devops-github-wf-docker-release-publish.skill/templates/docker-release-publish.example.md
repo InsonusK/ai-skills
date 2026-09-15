@@ -11,7 +11,13 @@ Start from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/temp
       (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true' || needs.changes.outputs.docker == 'true')
       && hashFiles('Dockerfile') != ''
     runs-on: ubuntu-latest
+    # A job-level `permissions:` block replaces the default token permissions
+    # entirely, not adds to them - anything not listed here becomes `none`.
+    # `contents: read` must be listed explicitly, or actions/checkout below
+    # fails to fetch the repo (GitHub reports that as "Repository not found"
+    # rather than a permissions error, to avoid leaking a private repo's existence).
     permissions:
+      contents: read
       packages: write
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +28,11 @@ Start from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/temp
           password: ${{ secrets.GITHUB_TOKEN }}
       - id: tags
         run: |
-          image=ghcr.io/${{ github.repository }}
+          # ghcr.io/Docker requires an all-lowercase image reference, but
+          # github.repository preserves the repo's actual case (e.g. "Org/My-Repo"
+          # is a valid GitHub repo but an invalid Docker image ref) - lowercase it
+          # explicitly rather than assuming the repository name is already lowercase.
+          image="ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
           if [ "${{ github.ref_name }}" = "master" ]; then
             tags="${image}:${{ needs.check-version.outputs.current }}
           ${image}:latest"

@@ -29,6 +29,12 @@ This skill states the trigger, gating, and tag/version rules every stack's `stac
 
 ## MUST
 
+### Implement from the linked example, not from prose memory
+Every `stack-lib-release-publish-in-{stack}` skill is implemented by opening and copying its own linked example — never reconstructed from this skill's or that stack skill's prose alone. If a real improvement is needed beyond what an example shows, propose it to the user and get it confirmed before shipping it; once confirmed, fold the fix back into the example file.
+- Violation: an agent writes the workflow from memory of the prose without opening the linked example(s), and silently drops a mechanical detail the prose only implies, or silently adds its own fix without flagging it.
+- Risk: prose is a summary, not a spec — it cannot carry every quoting/escaping/gating detail a working example encodes; an unflagged improvisation might be correct or might be a workaround for a misunderstanding, and nobody reviewing the PR can tell which without asking.
+- Fix: read the example first, copy it as the starting point, and treat any deviation as a proposal to confirm with the user — not a silent decision.
+
 ### Start from the shared changes/check-version base, unmodified
 Copy the `changes` and `check-version` jobs from [base-jobs.example.md](./templates/base-jobs.example.md) verbatim into every stack's workflow file — [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] and every `stack-lib-release-publish-in-{stack}` implementation share these two jobs byte-for-byte; only the final job (`docker-publish` vs. `publish`) differs.
 - Violation: pre-combining `check-changes`' raw outputs into a workflow-specific `relevant` boolean inside the `changes` job itself, or dropping/renaming one of `check-version`'s four outputs because this particular consumer doesn't need it.
@@ -64,6 +70,7 @@ Publish a `master` build to the stack's public registry; publish a `develop` bui
 See [base-jobs.example.md](./templates/base-jobs.example.md) for the shared `changes`/`check-version` jobs every stack's implementation starts from. Each stack's own skill (`devops-github-wf-stack-lib-release-publish-in-{stack}`) shows only the `publish` job it adds on top.
 
 # Check list
+- [ ] The workflow was implemented by copying its stack's linked example, not reconstructed from prose; any deviation was confirmed with the user and folded back into the example.
 - [ ] The stack's implementation triggers on `push` to both `master` and `develop`, plus `workflow_dispatch`.
 - [ ] `changes` and `check-version` are copied from [base-jobs.example.md](./templates/base-jobs.example.md) unmodified — no pre-combined `relevant` output, no dropped `check-version` output.
 - [ ] The whole workflow is gated on `publishable == 'true'`; each run is additionally gated on `code`/`workflow` changing — never on `bumped`.
