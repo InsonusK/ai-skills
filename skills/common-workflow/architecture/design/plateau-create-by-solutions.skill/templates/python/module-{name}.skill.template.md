@@ -13,7 +13,7 @@ tags:
 created_by:
 ---
 # How Apply this template
-- Fill `whenToUse` with the concrete class/module-level situations that require this skill (creating/editing this module, or creating another module with the same role). See [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md) for the baseline rules.
+- Fill `whenToUse` with the concrete class/module-level situations that require this skill (creating/editing this module, or creating another module with the same role). See [skill-design](skills/design/skill-design.skill/skill-design.skill.md) for the baseline rules.
 - Find in all solutions from `created_by` files made by `Class.template.md`, `functions.template.md` or `{Package}/__init__.py.template.md` (any file with `element_kind: class`, `functions` or `init`)
 - Replace all ```hint``` and ```example``` blocks with real content. Do not keep them in the final skill file.
 - add to header properties `tags` tag `plateau/{plateau-name}`
@@ -125,7 +125,7 @@ __Applied solutions:__
 
 # Rules
 ```hint
-Define MUST, SHOULD, MAY rules of the class/function/module only — never `## MUST NOT`/`## SHOULD NOT` headings and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)). Summarize all "Rule changes"/"Anti-patterns" from all finded class/functions/init implementation files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `MUST`/`SHOULD` at whichever strength it carries, and fold any anti-pattern's worked "wrong way" example into the same bullet instead of keeping a separate section. Always include a bullet against applying several plateau templates per class/module.
+Define MUST, SHOULD, MAY rules of the class/function/module only — never `## MUST NOT`/`## SHOULD NOT` headings and never a separate `# Anti-patterns` section (see [skill-design](skills/design/skill-design.skill/skill-design.skill.md)). Summarize all "Rule changes"/"Anti-patterns" from all finded class/functions/init implementation files, phrasing every prohibition as a negatively-worded bullet ("Never...") inside `MUST`/`SHOULD` at whichever strength it carries, and fold any anti-pattern's worked "wrong way" example into the same bullet instead of keeping a separate section. Always include a bullet against applying several plateau templates per class/module.
 
 At the end of block writes list to all used templates to build block.
 

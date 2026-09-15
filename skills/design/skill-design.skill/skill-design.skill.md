@@ -15,16 +15,16 @@ adr:
 
 # Goal
 - A skill in the correct format (Human Flat or Human Dir) whose folder and main-file names both match the `name` field.
-- Frontmatter carrying a concrete `whenToUse`, `updated: YYYYMMDD`, and — per [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] — facet tags.
+- Frontmatter carrying a concrete `whenToUse`, `updated: YYYYMMDD`, and — per [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]] — facet tags.
 - Exactly one `# Goal`, `# Core Principle`, `# Rule`, and `# Check list` — plus at most one optional `# Scope`, `# Workflow`, and `# Example`; `# Rule` using only `## MUST`/`## SHOULD`/`## MAY`.
 - Every cross-skill link an input, a required sub-step, an applied standard/template, or an active prohibition — nothing that only runs after this skill's artifact is done.
 - Every decision made while writing the skill recorded as an ADR in the owning skill's `adr/` folder.
-- The `# Check list`s of [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] also passed.
+- The `# Check list`s of [[skills/design/skill-content.skill/skill-content.skill.md|skill-content]] and [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]] also passed.
 
 # Core Principle
 - **Instructions you could execute** - Write every skill as the instructions you would need to do the task yourself; if `whenToUse` alone does not tell you when the skill applies, it is not clear enough.
 - **Reader is an agent** - Agent clarity and convenience are the measure — a skill that forces the agent to guess, or is too large to skim, is rewritten or split.
-- **Three skills, one baseline** - Every skill-writing task satisfies this skill (organization), [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] (how the text reads), and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] (frontmatter tags); a domain-specific skill or template exempts none of the three.
+- **Three skills, one baseline** - Every skill-writing task satisfies this skill (organization), [[skills/design/skill-content.skill/skill-content.skill.md|skill-content]] (how the text reads), and [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]] (frontmatter tags); a domain-specific skill or template exempts none of the three.
 - **Fixed top-level section set** - The allowed top-level sections are `# Goal`, `# Core Principle`, `# Rule`, `# Check list`, plus at most one optional `# Scope`, `# Workflow`, and `# Example` — see [ADR: allow-extra-top-level-sections](./adr/allow-extra-top-level-sections.md) for the trade-offs.
 - Write skills in English.
 
@@ -33,7 +33,7 @@ adr:
 ## MUST
 
 ### Also satisfy skill-content and skill-tags
-Apply [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]] and [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]] on every skill you create or change, and run their `# Check list`s alongside this one.
+Apply [[skills/design/skill-content.skill/skill-content.skill.md|skill-content]] and [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]] on every skill you create or change, and run their `# Check list`s alongside this one.
 - Risk: a skill can pass this skill's structural checks while its prose is padded and unscannable, or its tags leave it invisible to the queries that should surface it.
 - Fix: treat the three as one baseline — organization here, prose in skill-content, tags in skill-tags.
 
@@ -174,5 +174,5 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
 - [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
-- [ ] [[skills/common-workflow/skill-content.skill/skill-content.skill.md|skill-content]]'s `# Check list` passes for this skill's prose.
-- [ ] [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]'s `# Check list` passes for this skill's tags.
+- [ ] [[skills/design/skill-content.skill/skill-content.skill.md|skill-content]]'s `# Check list` passes for this skill's prose.
+- [ ] [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]]'s `# Check list` passes for this skill's tags.

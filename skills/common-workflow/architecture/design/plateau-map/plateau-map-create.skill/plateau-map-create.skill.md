@@ -75,7 +75,7 @@ Update `plateau-repository.md` when a plateau is created or its solution set cha
 - Fix: run the update after either event; the map's change log entry is a trigger, not only plateau work.
 
 ### Follow the skill-design baseline
-Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
+Follow [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
 - Risk: this skill's rules cover the repository file's content, not the mechanics every skill must follow — skipping the shared baseline produces a technically-correct workflow in a non-conforming skill file.
 - Fix: apply `skill-design.skill.md` in addition to, never instead of, the rules above.
 
@@ -103,4 +103,4 @@ Add sections beyond the matrix — folder contents, registry notes, counts, hist
 - [ ] Every row cross-checked against every Constraint in the map; violations raised as plateau-level ADRs.
 - [ ] The legend names every VP in one line and links the map as the source of truth.
 - [ ] Per-entity and skeleton/draft VPs are annotated, not presented as plain ✅/❌.
-- [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
+- [ ] Facet tags follow [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.

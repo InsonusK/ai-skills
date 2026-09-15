@@ -21,7 +21,7 @@ log files of standards no longer referenced by any rule.
 The script sits at <skill folder>/scripts/, which is always four levels below
 the repository root — deployed (.agents/skills/skill-validation/,
 .claude/skills/skill-validation/) and in-repo
-(skills/common-workflow/skill-validation.skill/) alike. All dates use the
+(skills/design/skill-validation.skill/) alike. All dates use the
 compact YYYYMMDD format. Standard library only — no pip dependencies.
 """
 

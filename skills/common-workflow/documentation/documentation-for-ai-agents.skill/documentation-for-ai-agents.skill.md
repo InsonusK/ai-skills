@@ -92,7 +92,7 @@ This skill is split into focused sections. Read them in order when writing a new
 # Rule
 
 ## MUST
-- Write the documentation as a skill following [skill-design.skill](skills/common-workflow/skill-design.skill/skill-design.skill.md).
+- Write the documentation as a skill following [skill-design.skill](skills/design/skill-design.skill/skill-design.skill.md).
 - Save the skill in the `docs/skills/` directory under the correct domain (for example, `docs/skills/python/`, `docs/skills/dotnet/`, `docs/skills/devops/`, or `docs/skills/common-workflow/` if it is cross-domain).
 - Decide between a single skill and a skill group using [# One skill or a skill group?](#one-skill-or-a-skill-group) before writing any content.
 - Write `whenToUse` as concrete trigger conditions, not as a generic description. In a skill group, make each child skill's `whenToUse` specific to its own domain so it does not overlap with sibling skills.
@@ -116,7 +116,7 @@ This skill is split into focused sections. Read them in order when writing a new
 - Create documentation only in skill format — never any other format.
 
 ## SHOULD
-- Use [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md) for the root/overview skill and [templates/method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md) for each domain child skill; fall back to the generic [skill.template.md](skills/common-workflow/skill-design.skill/templates/skill.template.md) only if neither fits.
+- Use [templates/library.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/library.skill.template.md) for the root/overview skill and [templates/method-group.skill.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-group.skill.template.md) for each domain child skill; fall back to the generic [skill.template.md](skills/design/skill-design.skill/templates/skill.template.md) only if neither fits.
 - Keep one skill focused on one library, tool, or API — or, for a skill group, one skill focused on one domain within that library, tool, or API.
 - Add tags that help other agents discover the skill.
 - Link to official human-readable documentation only as supplementary context; do not rely on it as the primary instruction source.
@@ -134,4 +134,4 @@ This skill is split into focused sections. Read them in order when writing a new
 - [ ] Every method follows the general requirements in [templates/method-calls.template.md](skills/common-workflow/documentation/documentation-for-ai-agents.skill/templates/method-calls.template.md).
 - [ ] Examples show exact code, commands, or requests, not only descriptions.
 - [ ] No human-oriented marketing or conceptual-only text remains.
-- [ ] The skill follows [skill-design.skill](skills/common-workflow/skill-design.skill/skill-design.skill.md).
+- [ ] The skill follows [skill-design.skill](skills/design/skill-design.skill/skill-design.skill.md).

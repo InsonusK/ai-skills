@@ -57,7 +57,7 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
 - `unit-test`, `mutation-test`, `test-report`, and `test-and-report` targets must exist and behave exactly as documented in [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] — this `Makefile` is the TypeScript implementation of that contract, not a variation of it.
   - Violation: a CI workflow or a developer runs `stryker run`/`vitest`/`cucumber-js` directly instead of through `make mutation-test`/`make unit-test`.
   - Risk: the workflow now needs TypeScript-specific knowledge, and switching or reconfiguring Stryker later becomes a breaking change for every CI file that calls it directly.
-  - Fix: every caller (CI or a developer) goes through the `Makefile`; the CI workflow itself is defined once, stack-agnostically, in [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md).
+  - Fix: every caller (CI or a developer) goes through the `Makefile`; the CI workflows themselves are defined once, stack-agnostically, in [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md) (PR-gate) and [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) (master-push report).
 - `scripts/unit-test.sh` and `scripts/mutation-test.sh` must write their normalized JSON into `tmp/result/` and keep the native HTML report under `tmp/report/<kind>/`, per the same contract.
   - Risk: without the normalized JSON, `make test-report` and badge generation have nothing stack-independent to read.
   - Fix: write both outputs exactly as [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] specifies.
@@ -74,7 +74,7 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
   - Risk: every caller (CI workflow, developer, script) now needs TypeScript-specific knowledge to invoke the targets correctly, defeating the point of the uniform contract this `Makefile` implements.
   - Fix: keep the `make` interface limited to the toggles [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] defines; anything TypeScript-specific stays inside the `Makefile`/scripts.
 - Never let `report-template/index.html` live under `.github/`.
-  - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern owned by [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md).
+  - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern owned by [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md).
   - Fix: keep it at `report-template/index.html`, copied by `test-report.sh` — never generated, never placed under `.github/`.
 
 # Unittest TestCases

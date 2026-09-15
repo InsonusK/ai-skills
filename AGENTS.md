@@ -10,7 +10,7 @@ The following skills MUST be applied to all work in this project:
 
 ## General rules
 
-- `skills/` is the source of truth for every skill in this repository. Always edit a skill under `skills/` (e.g. `skills/common-workflow/skill-design.skill/skill-design.skill.md`). Never hand-edit a skill under `.claude/skills/` or `.agents/skill/` — those are local, generated copies that `ai-skill-manager sync` regenerates from `skills/`; an edit made there is silently overwritten (or drifts unnoticed) on the next sync.
+- `skills/` is the source of truth for every skill in this repository. Always edit a skill under `skills/` (e.g. `skills/design/skill-design.skill/skill-design.skill.md`). Never hand-edit a skill under `.claude/skills/` or `.agents/skill/` — those are local, generated copies that `ai-skill-manager sync` regenerates from `skills/`; an edit made there is silently overwritten (or drifts unnoticed) on the next sync.
 - Apply all mandatory skills before starting any task.
 - Prefer referencing skills over duplicating their content.
 - When a task will produce or migrate more interdependent artifacts than the user can review file-by-file (a skill/solution catalog, a plateau tree, a large doc set, a wide code migration), apply [bulk-authoring-harness](.agents/skills/bulk-authoring-harness/SKILL.md) — an anchor document, a mechanical check script, per-wave fresh-eyes audits and commits, and a decisions log that gates only real forks — instead of handing the whole batch to the user for review.

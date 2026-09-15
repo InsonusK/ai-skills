@@ -121,7 +121,7 @@ Record an architectural-signal note on any Registry entry whose group reaches N�
 - Fix: add the note explicitly in the Registry entry, per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/templates/registry-entry.template|templates/registry-entry.template.md]].
 
 ### Follow the skill-design baseline
-Follow [[skills/common-workflow/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
+Follow [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
 - Risk: this skill's rules cover conflict detection's content, not the mechanics every skill must follow — skipping the shared baseline produces a technically-correct workflow in a non-conforming skill file.
 - Fix: apply `skill-design.skill.md` in addition to, never instead of, the rules above.
 
@@ -148,4 +148,4 @@ Skip writing a Registry entry for an `-N-` group when the catalog's scale makes 
 - [ ] Any group reaching N≥3 carries the architectural-signal note.
 - [ ] Two-or-more-`.create`-on-one-element cases were fixed by converting one to `.extend`, never by writing a resolver.
 - [ ] The plateau root skill's `registry:` YAML property lists every Registry file created for that plateau.
-- [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
+- [ ] Facet tags follow [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.

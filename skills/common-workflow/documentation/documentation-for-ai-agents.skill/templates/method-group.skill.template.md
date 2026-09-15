@@ -43,7 +43,7 @@ Repeat this subsection for every method in the domain. Follow the exact structur
 
 ## MUST
 ```hint
-Rules specific to calling this domain's methods correctly (ordering constraints between methods, required headers, token refresh behavior, etc.). Never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/common-workflow/skill-design.skill/skill-design.skill.md)) — phrase every prohibition, including concrete wrong ways to call or document this domain's methods and their consequences, as a negatively-worded bullet ("Never...") inside `MUST`/`SHOULD` instead. At minimum, keep: never document installation/access here; never add a method from a different domain to this skill.
+Rules specific to calling this domain's methods correctly (ordering constraints between methods, required headers, token refresh behavior, etc.). Never `## MUST NOT`/`## SHOULD NOT` subsections and never a separate `# Anti-patterns` section (see [skill-design](skills/design/skill-design.skill/skill-design.skill.md)) — phrase every prohibition, including concrete wrong ways to call or document this domain's methods and their consequences, as a negatively-worded bullet ("Never...") inside `MUST`/`SHOULD` instead. At minimum, keep: never document installation/access here; never add a method from a different domain to this skill.
 ```
 
 ## SHOULD

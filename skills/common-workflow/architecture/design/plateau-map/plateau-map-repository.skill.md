@@ -90,4 +90,4 @@ Add sections beyond the matrix — folder contents, registry notes, counts, hist
 - [ ] Every row cross-checked against every Constraint in the map; violations raised as plateau-level ADRs.
 - [ ] The legend names every VP in one line and links the map as the source of truth.
 - [ ] Per-entity and skeleton/draft VPs are annotated, not presented as plain ✅/❌.
-- [ ] Facet tags follow [[skills/common-workflow/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
+- [ ] Facet tags follow [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]]: `concern/architecture`, bare `stack`.
