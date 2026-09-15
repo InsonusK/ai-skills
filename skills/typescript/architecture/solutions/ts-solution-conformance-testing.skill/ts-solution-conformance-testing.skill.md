@@ -1,6 +1,6 @@
 ---
 name: ts-solution-conformance-testing
-description: Sets up the TypeScript side of the Cucumber/coverage/mutation quality gate — @cucumber/cucumber for Gherkin scenarios, Vitest coverage for coverage, Stryker for mutation testing, and the make unit-test/mutation-test/test-report/test-and-report contract that devops-github-wf-bdd-report-publish's workflows consume
+description: Sets up the TypeScript side of the Cucumber/coverage/mutation quality gate — @cucumber/cucumber for Gherkin scenarios, Vitest coverage for coverage, Stryker for mutation testing, and the make unit-test/mutation-test/test-report/test-and-report contract that devops-github-wf-pull-request's and devops-github-wf-master-release-report's workflows consume
 whenToUse: Set up or review the test suite of a framework-agnostic TypeScript package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing TypeScript package, or wire coverage and mutation testing into a TypeScript package's `make`/CI pipeline.
 domain: skill
 type: architecture
@@ -24,14 +24,15 @@ extends:
   - README.md
 depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
-  - "[[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]"
+  - "[[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]"
+  - "[[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]"
 adr:
   - "[[skills/typescript/architecture/solutions/ts-solution-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]"
 ---
 
 # Goal
 - Give a framework-agnostic TypeScript package the concrete tooling to run the three-layer gate defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md): Gherkin scenarios, code coverage, mutation testing.
-- Expose that tooling behind the `make unit-test`/`make mutation-test`/`make test-report`/`make test-and-report` contract so [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md) can wire CI without knowing anything TypeScript-specific.
+- Expose that tooling behind the `make unit-test`/`make mutation-test`/`make test-report`/`make test-and-report` contract so [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md) and [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) can wire CI without knowing anything TypeScript-specific.
 - This solution targets plain, framework-agnostic TypeScript packages (a validation library consumed by any frontend). A UI framework's own component/e2e testing (e.g. Angular's Vitest/Playwright setup) is a separate concern — see that framework's own testing solution instead.
 
 # Capabilities
@@ -52,8 +53,8 @@ adr:
 SOLUTION:
 - [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
   - Defines the `make` command contract and normalized report format this solution implements concretely for TypeScript.
-- [[skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md|devops-github-wf-bdd-report-publish]]
-  - Owns the actual CI workflows (PR-gate and master-push) that call this solution's `Makefile`; this solution does not define any `.github/workflows/*.yml` file itself.
+- [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]
+  - Own the actual CI workflows (PR-gate and master-push report, respectively) that call this solution's `Makefile`; this solution does not define any `.github/workflows/*.yml` file itself.
 
 NPM:
 - @cucumber/cucumber
@@ -80,12 +81,12 @@ PACKAGE:
 3. `make unit-test` runs `vitest run --coverage` and `cucumber-js` (both feeding the same coverage provider's output when `WITH_CODE_COVERAGE=true`), and normalizes the result into `tmp/result/unit-test.json` (plus `tmp/result/coverage-test.json`).
 4. `make mutation-test` runs `stryker run` — scoped to changed files via Stryker's incremental/since mode when called with `ONLY_DELTA=true DELTA_BASE=<ref>`, or across the whole package otherwise — and normalizes the result into `tmp/result/mutation-test.json`.
 5. `make test-report` assembles `public/` from `tmp/result/*.json` and `tmp/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
-6. Which of these `make` targets run on which trigger, and how `public/` gets published to GitHub Pages, is owned by [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md) — not by this solution.
+6. Which of these `make` targets run on which trigger, and how `public/` gets published to GitHub Pages, is owned by [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md) (unit tests only, PR-gate) and [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) (full unit-test and mutation-test run, master-push report) — not by this solution.
 
-## Surviving mutant found (failure path)
-1. `make mutation-test` reports a mutant that survived in changed code.
-2. The CI job calling it (per [devops-github-wf-bdd-report-publish](skills/devops/devops-github-wf-bdd-report-publish.skill/devops-github-wf-bdd-report-publish.skill.md)) fails.
-3. Reviewer either strengthens the assertion in the corresponding scenario/step definition, or the PR description explicitly justifies the survivor per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
+## Surviving mutant found (report path)
+1. `make mutation-test` reports a mutant that survived, as part of [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md)'s post-merge, report-only run — mutation testing never blocks a PR (it does not run there at all).
+2. The mutation report published to GitHub Pages shows the survivor; it does not fail the workflow or block anything.
+3. Whoever notices the survivor (via the report or the README's mutation-score badge) either strengthens the assertion in the corresponding scenario/step definition in a follow-up PR, or explicitly accepts it per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
 
 # Rules
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
