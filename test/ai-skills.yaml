@@ -3,8 +3,7 @@ sources:
     type: local
     subpath:
       - skills/python
-      - skills/dotnet/testing
-      - skills/dotnet/architecture/draft
+      - skills/dotnet
       - skills/devops
       - skills/common-workflow
       - skills/angular
