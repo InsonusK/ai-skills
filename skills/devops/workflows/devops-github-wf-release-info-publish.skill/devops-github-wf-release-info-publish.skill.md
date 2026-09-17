@@ -1,6 +1,6 @@
 ---
 name: devops-github-wf-release-info-publish
-description: Stack-agnostic GitHub Actions workflow that creates the GitHub Release record on master when the version bumped — tag v{version}, generated release notes, plus links to the Docker image and/or package this same push published, built from the known master tag/version convention rather than queried
+description: Stack-agnostic GitHub Actions workflow that creates the GitHub Release record on master when the version bumped — tag v{version}, generated release notes, links to the Docker image and/or package this same push published (built from the known master tag/version convention rather than queried), plus any release binaries a stack's own devops-github-wf-release-info-publish-in-{stack} skill builds and attaches within this same job
 whenToUse: when you need to create or update `.github/workflows/release-info-publish.yml` to record a GitHub Release whenever the project's version changes on master
 updated: 20260915
 tags:
@@ -14,6 +14,7 @@ tags:
 # Goal
 - Create exactly one GitHub Release per version bump on `master`, tagged `v{version}`, with generated release notes.
 - When the same `master` push also published a Docker image ([[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]]) or a package ([[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]), append a link to each into the release body — computed from the known `master` tag convention, never by querying the registry.
+- When the stack in use has its own release binaries to ship (e.g. a Go application's cross-compiled executables), build and attach them as `files:` on the same `softprops/action-gh-release@v2` call this workflow already makes — never as a second workflow that also tries to create or update the same Release.
 - Never create a Release for `develop`, and never create a duplicate Release for a push that did not bump the version.
 
 # Core Principle
@@ -21,20 +22,27 @@ tags:
 - This workflow never builds or queries the Docker image or the package it links to. Because [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] always tags a `master` image `ghcr.io/{owner}/{repo}:{version}`, and [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] always publishes a `master` package under the plain `{version}`, this workflow can construct both URLs directly from `current` and known facts (whether `Dockerfile` is tracked in the repo, `publishable`) — it never waits on or calls into either of those workflows.
 - The `Dockerfile`-presence check here is a **step-level** `git ls-files Dockerfile` (after this job's own checkout), never a job-level `hashFiles('Dockerfile')` condition — see [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md#only-create-this-workflow-for-a-project-that-already-has-a-dockerfile|devops-github-wf-docker-release-publish's note]] on why a job-level `hashFiles()` check silently never works (it evaluates before checkout). Unlike that workflow, this one legitimately needs a *runtime* check — this workflow exists regardless of whether the project has a `Dockerfile`, since it always creates the GitHub Release; only the optional Docker line in the release body depends on the file's presence.
 - Only `master` triggers this workflow — `develop`'s snapshot builds are disposable by design and never get a Release record.
-- Stack-specific parts, if any, are limited to the package-registry URL pattern (PyPI/nuget.org/npmjs.org each shape package URLs differently) — see [# Package link patterns](#package-link-patterns). Everything else in this workflow is generic.
+- Stack-specific parts are limited to two things: the package-registry URL pattern (PyPI/nuget.org/npmjs.org each shape package URLs differently — see [# Package link patterns](#package-link-patterns)), and, for a stack whose deliverable includes standalone release binaries, the build steps that produce them (see [# Release binaries](#release-binaries)). Everything else in this workflow is generic.
 - This workflow's `check-version` job is the exact same job body used in [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] (all four outputs: `current`, `bumped`, `publishable`, `timestamp`), even though `timestamp` goes unused here — one identical job body across every release-publish workflow beats a trimmed-down variant that only exposes what this particular consumer reads. This workflow has no `changes` job at all, unlike [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]]/`stack-lib-release-publish-in-{stack}` — it gates solely on `bumped`, never on what changed.
+- A GitHub Release has exactly one owner: this workflow's `github-release` job. Docker images and packages are external artifacts in other registries, so they only need a *computed link* — no coordination required. Release binaries are different: they are assets *on the Release object itself*, so a stack that has them adds its build steps inside this same job, before the `softprops/action-gh-release@v2` step, and extends that one call's `files:` — it never runs a second workflow that also calls `softprops/action-gh-release@v2` for the same `v{version}` tag, which would race this job's own call for control of the same Release.
 
 # Workflow
 1. `check-version` job calls `./.github/actions/check-version`; everything below runs only when `github.ref_name == 'master'` and `bumped == 'true'`.
 2. `github-release` job builds the release body: always includes the version; appends a Docker link when `git ls-files Dockerfile` (run after checkout) reports the file tracked; appends a package link when `publishable == 'true'`, using [# Package link patterns](#package-link-patterns) for the stack in use.
-3. `softprops/action-gh-release@v2` creates the Release, tag `v{version}`, `generate_release_notes: true`, with the assembled body prepended.
+3. If the stack has release binaries, `github-release` builds them next, in the same job, per [# Release binaries](#release-binaries) for the stack in use.
+4. `softprops/action-gh-release@v2` creates the Release, tag `v{version}`, `generate_release_notes: true`, with the assembled body prepended and (when step 3 applies) `files:` pointing at the built binaries.
 
 # Package link patterns
 Built directly from `current` (the version) and `github.repository`/the package name — never queried from the registry, since the tag/version convention is already fully known from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s own MUST rule that a `master` publish always uses the plain `{version}`, never a suffixed one:
 - Python (PyPI): `https://pypi.org/project/{package-name}/{version}/`
 - .NET (NuGet): `https://www.nuget.org/packages/{package-name}/{version}`
 - TypeScript (npm): `https://www.npmjs.com/package/{package-name}/v/{version}`
-- Go: no package link — Go has no `stack-lib-release-publish` implementation; only the Docker link (if any) and the module's own `pkg.go.dev/{module}@v{version}` page apply, and the latter needs no publish step of its own (`pkg.go.dev` indexes the pushed tag automatically).
+- Go: no package link — Go has no `stack-lib-release-publish` implementation; only the Docker link (if any) and the module's own `pkg.go.dev/{module}@v{version}` page apply, and the latter needs no publish step of its own (`pkg.go.dev` indexes the pushed tag automatically). A Go *application* (as opposed to a library module) instead has [# Release binaries](#release-binaries).
+
+# Release binaries
+For a stack whose deliverable includes a standalone executable, built inside the `github-release` job itself, before the `softprops/action-gh-release@v2` step, and passed via that step's `files:` — never in a separate workflow:
+- Go, application projects only (never a library module or a web/network service): cross-compiled `linux`/`windows`/`darwin` binaries — see that stack's own `devops-github-wf-release-info-publish-in-go` skill.
+- Every other stack currently in this catalog: no release binaries — the package link (or the Docker link) is the release artifact.
 
 # Rule
 
@@ -80,6 +88,12 @@ Create the Release with tag `v{version}` and `generate_release_notes: true`.
 - Risk: a hand-written changelog drifts from what actually merged; a tag without the `v` prefix breaks the convention every other stack-specific skill in this catalog assumes when it says "the `v{version}` git tag."
 - Fix: use `softprops/action-gh-release@v2` with `tag_name: v${{ needs.check-version.outputs.current }}` and `generate_release_notes: true`.
 
+### Release binaries are built inside this job, never a second workflow
+When the stack in use has release binaries (see [# Release binaries](#release-binaries)), build them as steps inside `github-release`, before the `softprops/action-gh-release@v2` step, and list them in that same call's `files:` — never create a second workflow file that also calls `softprops/action-gh-release@v2` (or any other release-creating action) for the same `v{version}` tag.
+- Violation: a separate `.github/workflows/app-release-publish.yml` with its own `check-version`/trigger, ending in its own `softprops/action-gh-release@v2` call for the same tag this workflow already creates.
+- Risk: two workflows independently calling `softprops/action-gh-release@v2` for the same tag race each other — whichever runs second either overwrites the first's `body`/`generate_release_notes` output or, if it also omits those, still depends on run order for which one actually creates the Release versus updates it; either way the Release becomes a product of unpredictable timing between two unrelated CI runs instead of one job's single, deterministic call.
+- Fix: keep exactly one call to `softprops/action-gh-release@v2` in the whole project, inside this workflow's `github-release` job; a stack that needs binaries adds build steps ahead of it and extends its `files:`, exactly as `devops-github-wf-release-info-publish-in-go` does for Go.
+
 ## SHOULD
 - Prepend the artifact links before GitHub's auto-generated notes, so a reader sees "where to get this release" before the commit list.
 
@@ -95,3 +109,4 @@ See [Release-info-publish workflow example](./templates/release-info-publish.exa
 - [ ] Docker/package links are constructed from `current`/the tag convention, never by querying a registry.
 - [ ] The Docker link appears only when a step-level `git ls-files Dockerfile` (after checkout) reports the file tracked — never a job-level `hashFiles()` condition; the package link only when `publishable == 'true'`.
 - [ ] The Release is tagged `v{version}` with `generate_release_notes: true`.
+- [ ] If the stack has release binaries, they are built inside `github-release` and passed via the same `softprops/action-gh-release@v2` call's `files:` — no second workflow also calls a release-creating action for the same tag.

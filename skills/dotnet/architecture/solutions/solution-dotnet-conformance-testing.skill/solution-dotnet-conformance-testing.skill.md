@@ -1,6 +1,6 @@
 ---
 name: solution-dotnet-conformance-testing
-description: The .NET implementation of [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] — one test project per production project (mirroring its Allowed Dependencies exactly), Reqnroll for Gherkin scenarios, coverlet + ReportGenerator for coverage, Stryker.NET for mutation testing, and the make unit-test/mutation-test/test-report/test-and-report contract that devops-github-wf-pull-request's and devops-github-wf-release-test-report's workflows consume
+description: The .NET implementation of [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] — one test project per production project (mirroring its Allowed Dependencies exactly), Reqnroll for Gherkin scenarios, coverlet + ReportGenerator for coverage, Stryker.NET for mutation testing, and the make unit-test/mutation-test/test-report/test-and-report contract that downstream CI consumes
 whenToUse: Set up or review the test suite of a .NET library/project that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing .NET project, or wire coverage and mutation testing into a .NET project's `make`/CI pipeline.
 domain: skill
 type: architecture
@@ -27,8 +27,6 @@ extends:
   - README.md
 depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
-  - "[[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]"
-  - "[[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]"
 built_on_plateau:
 adr:
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]"
@@ -64,8 +62,6 @@ SOLUTION:
   - This solution's `Makefile` and scripts implement its `make unit-test`/`mutation-test`/`test-report`/`test-and-report` target names and `tmp/result/*.json` schema exactly — aggregated across whichever test projects exist.
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
   - Defines the production projects (`{Module}.Domain`, `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`) and their Allowed Dependencies, which each test project here mirrors.
-- [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]
-  - This solution's `Makefile` is what those CI workflows call; this solution does not itself create any `.github/workflows/*.yml` file.
 
 NUGET:
 - Reqnroll.xUnit
@@ -101,10 +97,10 @@ PROJECT:
 4. `make unit-test` runs `dotnet test` across every test project, executing both the plain unit tests and the Reqnroll scenarios, and normalizes the aggregated result into `tmp/result/unit-test.json` (plus `tmp/result/coverage-test.json` when `WITH_CODE_COVERAGE=true`).
 5. `make mutation-test` runs `dotnet-stryker` — scoped to changed files when called with `ONLY_DELTA=true DELTA_BASE=<ref>`, or across every project otherwise — and normalizes the result into `tmp/result/mutation-test.json`.
 6. `make test-report` assembles `public/` from `tmp/result/*.json` and `tmp/report/*`, ready to publish.
-7. This solution does not decide which `make` targets run on which trigger, or how `public/` gets published to GitHub Pages — see [devops-github-wf-pull-request](skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md) (unit tests only, PR-gate) and [devops-github-wf-release-test-report](skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md) (full unit-test and mutation-test run, master-push report) for that.
+7. This solution does not decide which `make` targets run on which trigger, or how `public/` gets published — that's owned by the project's own CI configuration.
 
 ## Surviving mutant found (report path)
-1. `make mutation-test` reports a mutant that survived, as part of [devops-github-wf-release-test-report](skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md)'s post-merge, report-only run — mutation testing never blocks a PR (it does not run there at all).
+1. `make mutation-test` reports a mutant that survived, as part of a post-merge, report-only CI run — mutation testing is not expected to block a pull request.
 2. The mutation report published to GitHub Pages shows the survivor; it does not fail the workflow or block anything.
 3. Whoever notices the survivor (via the report or the README's mutation-score badge) either strengthens the assertion in the corresponding scenario/step definition in a follow-up PR, or explicitly accepts it per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must|solution-conformance-testing]].
 

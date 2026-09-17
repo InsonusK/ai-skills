@@ -25,7 +25,7 @@ Use `behave` for Gherkin scenarios (the most widely used Python Cucumber impleme
 
 ### Costs
 - `behave`'s step-matching (regex/parse-based) is less type-safe than a typed alternative, so a step definition can silently fail to match a new scenario phrasing.
-- `mutmut` mutation runs are slow on large packages; `make mutation-test` still supports `ONLY_DELTA`/`DELTA_BASE` for a fast local/manual run, even though no CI workflow currently calls it that way — [devops-github-wf-release-test-report](skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md) runs the full, unscoped command, and mutation testing never runs on the PR-gate workflow at all (see [devops-github-wf-pull-request](skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md)).
+- `mutmut` mutation runs are slow on large packages; `make mutation-test` still supports `ONLY_DELTA`/`DELTA_BASE` for a fast local/manual run, even though no CI workflow currently calls it that way — the full, unscoped command is expected to run only on a post-merge report, never on a PR-gate.
 
 ## pytest-bdd instead of behave
 
