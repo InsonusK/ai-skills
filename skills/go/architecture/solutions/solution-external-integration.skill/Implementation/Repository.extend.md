@@ -1,5 +1,5 @@
 ---
-description: Add proto/{external}/v1/{external}.proto (the external service's own contract) and its buf codegen config
+description: Add proto/{external}/{external}.proto (the external service's own contract) and its buf codegen config
 element_kind: repository
 change_kind: extend
 tags:
@@ -13,8 +13,7 @@ tags:
 ```
 proto/
   {external}/
-    v1/
-      {external}.proto
+    {external}.proto
 buf/
   {external}.gen.yaml
 gen/
@@ -24,11 +23,11 @@ Makefile                   (extended)
 
 # Implementation changes
 
-`proto/{external}/v1/{external}.proto` — this is the **external** service's own contract, owned by that service, vendored/copied here only to generate a client from:
+`proto/{external}/{external}.proto` — this is the **external** service's own contract, owned by that service, vendored/copied here only to generate a client from. No version subdirectory in the proto path — see [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/Repository.extend.md#MUST|solution-grpc-api's own Rule]] on why a `v1/` path segment and a flat `go_package` option disagree on the resulting Go import path:
 ```protobuf
 syntax = "proto3";
 
-package {external}.v1;
+package {external};
 
 option go_package = "{module-path}/gen/{external}";
 
@@ -37,14 +36,14 @@ service {External}Service {
 }
 ```
 
-`buf/{external}.gen.yaml`:
+`buf/{external}.gen.yaml` — local plugins, not `buf.build` remote plugins (same reasoning as [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/Repository.extend.md|solution-grpc-api's own buf.gen.yaml]]):
 ```yaml
 version: v2
 plugins:
-  - remote: buf.build/protocolbuffers/go
+  - local: protoc-gen-go
     out: gen/{external}
     opt: paths=source_relative
-  - remote: buf.build/grpc/go
+  - local: protoc-gen-go-grpc
     out: gen/{external}
     opt: paths=source_relative
 ```
