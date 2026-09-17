@@ -108,3 +108,35 @@ architectural fork that needs the owner's sign-off; everything else is execution
   (`mutation-test` target), not invented. This is a shared cross-stack file outside
   `skills/go/architecture/` — the same kind of carve-out INVARIANTS.md will record (mirrors
   dotnet's INVARIANTS.md §4 carve-out for its own two allowed external `depends_on` targets).
+
+**All 14 solutions authored** (commits `d3365f5b`, `45de25c1`, `d2784c06`, `00f6127b`): the 5
+common-baseline + `solution-go-domain-ports` (shared prereq) + `solution-grpc-api` (VP1) +
+`solution-external-integration` (VP2) + `solution-cached-db` (VP6) + `solution-persistent-db`
+(VP7) full; `solution-messaging-infrastructure` + `solution-kafka-producer` (VP3) +
+`solution-transactional-outbox` (VP4) + `solution-kafka-consumer` (VP5) skeletons. Every
+`variability-map.md` VP row's `Realized by` cell now points at a real solution.
+
+**Delta-conflict-detection classification pass DONE** — grouped every `Implementation/` file by its
+`element/*` tag (44 files, mechanical `grep` pass, not eyeballed). Four real (2+ solution) groups,
+all **canonical FMN** (no constraint between the intersecting VPs, independent additive code
+changes) — **no resolver solutions needed anywhere in this catalog**:
+- `cmd-service-main-go` (N=7: go-app-logging, go-http-api, grpc-api, external-integration,
+  cached-db, persistent-db, kafka-consumer) — each solution appends its own construct/wire/defer
+  block to `run()`; the final `services.New{Service}(...)` call must combine every applied port
+  solution's argument, which is assembly-time judgment (matching dotnet's `pipelineregistration-cs`
+  N≥5 canonical precedent), not a mechanical conflict.
+- `internal-config-config-go` (N=7, same solutions) — each appends its own `Config` field(s); field
+  order in a Go struct literal is not order-sensitive, so this is the easiest of the four groups.
+- `internal-domain-services-service-go` (N=4: go-domain-logic[create] + external-integration +
+  cached-db + persistent-db) — each appends a constructor parameter; already explicitly
+  cross-referenced between the three `.extend.md` files' own MUST rules at authoring time.
+- `repo-root` (N=4: go-repository-structure[create] + go-conformance-testing + grpc-api +
+  external-integration) — mostly disjoint additions (proto/buf dirs vs. Makefile testing targets),
+  except `Makefile`'s `proto-gen` target specifically, which `solution-external-integration`'s own
+  Rule already handles ("if the target already exists, extend its recipe body, never redeclare it").
+- Every other `element/*` tag has exactly one solution touching it (`-N-`, no shared artifact).
+- **No `.create` double-authors any element** — checked as part of the same pass.
+- Per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]]'s own placement rule, **Registry entries are not written yet** — a Registry entry lives at "the shallowest plateau where every intersecting solution is simultaneously present," and no plateau exists yet. All four groups reach N≥3, so each will carry the architectural-signal note once written. Write them during Stage 4, per solution combination, not here.
+
+**Stage 3 COMPLETE.** Next: `agent/INVARIANTS.md` + `check.sh` (the harness anchor — the VP→
+solution mapping is now final), then Stage 4 (5 plateaus).
