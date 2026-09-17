@@ -140,3 +140,67 @@ changes) — **no resolver solutions needed anywhere in this catalog**:
 
 **Stage 3 COMPLETE.** Next: `agent/INVARIANTS.md` + `check.sh` (the harness anchor — the VP→
 solution mapping is now final), then Stage 4 (5 plateaus).
+
+**Stage 4 COMPLETE — all 5 plateaus built, each ground-truth verified, one Go module
+(`github.com/example/linkcheck-service`) grown incrementally rather than rewritten per plateau**:
+- `plateau-http-service` (base, commit `de69fd2a`), `plateau-dual-api-service` (+VP1, `ed8557f3`),
+  `plateau-integrated-service` (+VP2, `3f3f79e9`), `plateau-cached-service` (+VP6, `cb4a93df`),
+  `plateau-persistent-service` (+VP7, `93640fa1`) — matching the owner's own specified sequence
+  exactly ("база + 1 → +1+2 → +1+2+5 → +1+2+5+6"), Kafka (VP3/VP4/VP5) deliberately excluded from
+  this batch per the owner's own scoping message.
+- Real bugs found and fixed **upstream in the catalog**, not just worked around locally, while
+  ground-truth building (every one required actually running `go build`/`go vet`/`make unit-test`/
+  `make mutation-test`/a real network smoke test — none would have surfaced from reading the
+  solution skills alone):
+  1. `godog.Options` needs an explicit `Format: "pretty"` — fixed in
+     `skills/go/testing/cucmber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
+     in this build), since its own documented example carried the same latent bug.
+  2. `solution-go-repository-structure`'s `main.go` was bundled into the repo-tier
+     `Repository.create.md` while every solution that extends it expects a file-tier
+     `Functions.extend.md` target — split `main.go` into its own file-tier
+     `Implementation/cmd/{service}/main.go.create.md`.
+  3. A `proto/{service}/v1/{service}.proto` path combined with a flat `go_package` breaks
+     `buf generate`'s import path — fixed by keeping the proto flat in both
+     `solution-grpc-api`/`solution-external-integration`, and switched `buf.gen.yaml` to `local:`
+     plugins for no network dependency.
+  4. `solution-external-integration` extended the domain result type but never told an agent to
+     extend the HTTP/gRPC adapters to surface the new fields — added both
+     `internal/api/{http,grpc}/server.go.extend.md` files.
+  5. The exact same class of gap as #4, found again in `solution-persistent-db` while building
+     `plateau-persistent-service`: no adapter-extension files at all, and `{service}.go.extend.md`
+     never showed the `RecentChecks` read method its own prose already promised. Fixed the same way
+     — added both adapter extend files and the missing domain-service method.
+  6. A catalog-wide `grep` for every `element/*` tag (done while building plateau 5, prompted by
+     adding persistent-db's new adapter-extension files and wanting to place its registry entry
+     correctly) found `internal-api-http-server-go`/`internal-api-grpc-server-go` had already
+     reached N=2 (create + `external-integration` extend) back at `plateau-integrated-service` with
+     **no registry entry at all** — a real miss in this build's own earlier Stage-4 work, not a new
+     regression. Fixed retroactively: two registry entries added at their real shallowest plateau
+     (`plateau-integrated-service`), that plateau's root skill updated (`registry:` property +
+     "# Registry" section, "Four intersections" → "Six"), before writing plateau 5's own N=3
+     versions of the same two entries.
+- Registry findings worth keeping past this build: `{external-integration, cached-db}` on
+  `internal-domain-services-service-go` is a borderline `FMC` defused by explicit cross-solution
+  documentation rather than a `depends_on` edge (recorded at `plateau-cached-service`); the same
+  element's `{*, persistent-db}` pairing was **confirmed, not assumed**, to stay plain `FMN` by
+  reading `Check`'s actual body — `history.Record` runs strictly after the cache-aside call
+  returns, a pure append, never a wrap. General rule extracted for future solutions touching this
+  element: a solution that **reads an already-computed value and appends independent work** stays
+  `FMN` regardless of how many accumulate; only a solution that **wraps or relocates** an existing
+  call risks the borderline case.
+- `skills/go/architecture/plateau/plateau-repository.md` (Stage 5, `plateau-map-create`) built from
+  the finished `variability-map.md` and all 5 plateaus' `created_by`/`parent_plateaus`: 5×7 matrix,
+  all `standalone: true`, one linear lineage chain. Constraint check clean (VP4's `requires VP3 AND
+  VP7` is vacuously satisfied — no plateau realizes VP4). Recorded three concrete
+  legal-but-unbuilt combinations for future work: any VP3/VP4/VP5 (Kafka, out of scope this batch),
+  `VP1=No` with any of VP2/VP6/VP7 (no plateau branches off `plateau-http-service` directly), and
+  `VP7` without `VP6` (this catalog's chain only ever adds `PersistentDb` on top of `CachedDb`,
+  never alone — unlike the reference `tmp/tg-bot-service`, which the owner described as having a DB
+  that is cached **and** persistent simultaneously, matching `plateau-persistent-service` exactly).
+- No top-level `skills/go/architecture/README.md` added — checked the dotnet catalog for precedent
+  first; it has no catalog-root README either, only `agent/README.md` (the harness's own
+  scaffolding readme), which this catalog already has.
+
+**Stages 4–5 COMPLETE. Pipeline finished for this build's scope** (base + VP1 + VP2 + VP6 + VP7,
+5 plateaus). Remaining, deliberately out of scope for this batch per the owner's own message:
+VP3/VP4/VP5 (Kafka publish/consume + outbox) stay skeleton solutions with no realizing plateau.
