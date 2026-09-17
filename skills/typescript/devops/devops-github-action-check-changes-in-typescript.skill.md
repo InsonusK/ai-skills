@@ -11,7 +11,7 @@ tags:
 ---
 
 # Scope
-This skill adds TypeScript-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
+This skill adds TypeScript-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
 - The filter patterns reflect [ts-solution-conformance-testing](skills/typescript/architecture/solutions/ts-solution-conformance-testing.skill/ts-solution-conformance-testing.skill.md)'s layout (`src/`, `features/` for Cucumber, `*.spec.ts` for Vitest) — never a generic guess at TypeScript project structure.

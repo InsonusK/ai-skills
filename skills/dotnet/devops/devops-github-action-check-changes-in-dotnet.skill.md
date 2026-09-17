@@ -11,7 +11,7 @@ tags:
 ---
 
 # Scope
-This skill adds .NET-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
+This skill adds .NET-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
 - Test projects follow [solution-dotnet-conformance-testing](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md): one `*.Tests` project per production project, carrying both plain unit tests and Reqnroll `.feature` files — so "code changed" and "test changed" are split by project-name suffix, not by folder alone.

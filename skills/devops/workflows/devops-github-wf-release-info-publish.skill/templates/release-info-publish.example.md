@@ -2,7 +2,7 @@
 
 Project: any stack with `.github/actions/check-version` implemented. `PACKAGE_URL_PATTERN`/`PACKAGE_NAME` below are the only stack-specific pieces — see [# Package link patterns](../devops-github-wf-release-info-publish.skill.md#package-link-patterns) for the four patterns, and read the package name from wherever the stack's manifest keeps it (`pyproject.toml`'s `project.name`, `package.json`'s `name`, the `.csproj`'s `<PackageId>`).
 
-The `check-version` job below is copied verbatim from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] — including its `timestamp` output, unused here — so it stays byte-for-byte identical to the same job in every other release-publish workflow. This workflow has no `changes` job; it gates solely on `bumped`.
+The `check-version` job below is copied verbatim from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] — including its `timestamp` output, unused here — so it stays byte-for-byte identical to the same job in every other release-publish workflow. This workflow has no `changes` job; it gates solely on `bumped`.
 
 ```yaml
 name: Release info publish

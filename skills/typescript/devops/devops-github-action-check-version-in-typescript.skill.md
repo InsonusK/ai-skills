@@ -11,7 +11,7 @@ tags:
 ---
 
 # Scope
-This skill adds TypeScript-specific mechanics on top of the `check-version` composite action consumed by [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]], [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]], [[skills/devops/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]], and [[skills/typescript/devops/devops-github-wf-stack-lib-release-publish-in-typescript.skill.md|devops-github-wf-stack-lib-release-publish-in-typescript]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
+This skill adds TypeScript-specific mechanics on top of the `check-version` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]], [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]], [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]], and [[skills/typescript/devops/devops-github-wf-stack-lib-release-publish-in-typescript.skill.md|devops-github-wf-stack-lib-release-publish-in-typescript]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
 - `package.json`'s `version` field is the single source of truth — never a separate `VERSION` file or a git tag.

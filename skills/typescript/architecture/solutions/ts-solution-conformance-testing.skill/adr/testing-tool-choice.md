@@ -25,7 +25,7 @@ Use `@cucumber/cucumber` (the official JS/TS Cucumber implementation) for Gherki
 
 ### Costs
 - `@cucumber/cucumber` runs as a separate process from Vitest, so combining their coverage output requires configuring both to write to the same coverage provider/output directory.
-- Stryker's mutation runs are slow on large packages; `make mutation-test` still supports `ONLY_DELTA`/`DELTA_BASE` for a fast local/manual run, even though no CI workflow currently calls it that way — [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) runs the full, unscoped command, and mutation testing never runs on the PR-gate workflow at all (see [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md)).
+- Stryker's mutation runs are slow on large packages; `make mutation-test` still supports `ONLY_DELTA`/`DELTA_BASE` for a fast local/manual run, even though no CI workflow currently calls it that way — [devops-github-wf-release-test-report](skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md) runs the full, unscoped command, and mutation testing never runs on the PR-gate workflow at all (see [devops-github-wf-pull-request](skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md)).
 
 ## jest-cucumber instead of @cucumber/cucumber
 

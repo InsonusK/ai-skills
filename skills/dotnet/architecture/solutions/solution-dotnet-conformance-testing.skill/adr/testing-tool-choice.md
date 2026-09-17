@@ -30,7 +30,7 @@ Use Reqnroll (the actively maintained successor to SpecFlow) with the xUnit runn
 
 ### Costs
 - Reqnroll is a relatively young rename (2024); existing SpecFlow-based projects need a migration.
-- Stryker.NET mutation runs are slow on large modules; `make mutation-test` still supports `ONLY_DELTA`/`DELTA_BASE` for a fast local/manual run, even though no CI workflow currently calls it that way — [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) runs the full, unscoped command, and mutation testing never runs on the PR-gate workflow at all (see [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md)).
+- Stryker.NET mutation runs are slow on large modules; `make mutation-test` still supports `ONLY_DELTA`/`DELTA_BASE` for a fast local/manual run, even though no CI workflow currently calls it that way — [devops-github-wf-release-test-report](skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md) runs the full, unscoped command, and mutation testing never runs on the PR-gate workflow at all (see [devops-github-wf-pull-request](skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md)).
 
 ## SpecFlow xUnit coverlet Stryker.NET
 

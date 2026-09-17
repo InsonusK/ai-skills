@@ -13,7 +13,7 @@ adr:
 ---
 
 # Scope
-This skill adds Go-specific mechanics on top of the `check-version` composite action consumed by [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]], [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]], and [[skills/devops/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]] — Go has no `stack-lib-release-publish` implementation (see [# Core Principle](#core-principle)). It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
+This skill adds Go-specific mechanics on top of the `check-version` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]], [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]], and [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]] — Go has no `stack-lib-release-publish` implementation (see [# Core Principle](#core-principle)). It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
 - A root `VERSION` plain-text file is the single source of truth for a Go project's version — `go.mod` has no version field of its own. See [[./adr/version-source-file.md|Version source file]] for why this convention was chosen over a bare git tag or a `version.go` constant.
@@ -76,8 +76,8 @@ runs:
 ### Always report publishable=false
 Hardcode `publishable=false` in this action's output — never wire it to a real check.
 - Violation: adding logic that tries to detect "is this Go module meant to be published," and wiring a `stack-lib-release-publish-in-go` workflow to it.
-- Risk: there is no `devops-github-wf-stack-lib-release-publish-in-go` skill and no such workflow exists (see [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s `# Scope`) — a `true` here would make [[skills/devops/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]] link to a package that was never published.
-- Fix: keep `publishable` hardcoded `false`; a Go module's only release artifact is the git tag [[skills/devops/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]] already creates, which `pkg.go.dev`/the Go module proxy picks up on its own.
+- Risk: there is no `devops-github-wf-stack-lib-release-publish-in-go` skill and no such workflow exists (see [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s `# Scope`) — a `true` here would make [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]] link to a package that was never published.
+- Fix: keep `publishable` hardcoded `false`; a Go module's only release artifact is the git tag [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]] already creates, which `pkg.go.dev`/the Go module proxy picks up on its own.
 
 # Check list
 - [ ] `.github/actions/check-version/action.yml` exists, reads the root `VERSION` file from the current and base ref.
