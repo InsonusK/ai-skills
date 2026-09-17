@@ -34,7 +34,7 @@ tags:
 
 ### Costs
 
-- Smaller community and slower release cadence than Stryker or Mutmut — this solution's `tools/normalize_mutation` reads gremlins' report defensively (see its own file's prose) because the exact JSON field names are more likely to shift between versions than a more mature tool's would.
+- Smaller community and slower release cadence than Stryker or Mutmut, so its report schema is more likely to shift between versions than a more mature tool's would — `tools/normalize_mutation` pins its parsing to `gremlins@v0.6.0`'s actual schema (verified by running `gremlins unleash --output` for real against this catalog's own `plateau-http-service` example: a nested `files[].mutations[].status` list, with `"KILLED"`/`"LIVED"`/`"NOT COVERED"`/`"TIMED OUT"` as the status strings — notably `"LIVED"`, not `"SURVIVED"` as an unverified guess first assumed), and needs re-checking on a version bump.
 
 ## go-mutesting
 

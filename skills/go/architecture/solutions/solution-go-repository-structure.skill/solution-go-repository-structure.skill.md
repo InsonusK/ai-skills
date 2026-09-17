@@ -39,11 +39,12 @@ adr:
 # Requirements
 GO MODULES / STANDARD LIBRARY:
 - `log/slog` (standard library) — `main()`'s own fatal-error report; the process-wide logging convention itself belongs to [[skills/go/architecture/solutions/solution-go-app-logging.skill/solution-go-app-logging.skill.md|solution-go-app-logging]], not this solution.
-- `os`, `os/signal`, `syscall` (standard library) — process exit code and `SIGINT`/`SIGTERM`-triggered shutdown context.
+- `os` (standard library) — the process exit code on a fatal error. `os/signal`/`syscall`-based shutdown is introduced by the first solution that starts a long-running server ([[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]]), not this one — this solution's own `run()` returns before anything would need to listen for a shutdown signal.
 
 # Template Skill Mutations
 FILES:
-- [[./Implementation/Repository.create.md|Repository]] - create - `go.mod`, `Makefile` (`build`/`run`/`lint` targets), `cmd/{service}/main.go`, `.gitignore`
+- [[./Implementation/Repository.create.md|Repository]] - create - `go.mod`, `Makefile` (`build`/`run`/`lint` targets), `.gitignore`
+- [[./Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]] - create - composition root, loads config and returns
 - [[./Implementation/internal/config/config.go.create.md|internal/config/config.go]] - create - env-var `Config` loader, starting with zero `Config` fields
 - [[./Implementation/internal/version/version.go.create.md|internal/version/version.go]] - create - build-time version variable
 
@@ -64,6 +65,7 @@ FILES:
 
 ## MUST
 - [[./Implementation/Repository.create.md#MUST|Repository]]
+- [[./Implementation/cmd/{service}/main.go.create.md#MUST|cmd/{service}/main.go]]
 - [[./Implementation/internal/config/config.go.create.md#MUST|internal/config/config.go]]
 - [[./Implementation/internal/version/version.go.create.md#MUST|internal/version/version.go]]
 

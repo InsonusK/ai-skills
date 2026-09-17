@@ -23,13 +23,11 @@ tags:
 // the parent solution-conformance-testing report contract defines, plus a
 // small human-readable tmp/report/mutation/index.html table.
 //
-// gremlins' exact field names are version-dependent; this program reads a
-// flat list of per-mutant statuses (Mutants []struct{Status string}) and
-// case-insensitively maps each status to one of the four buckets. Verify
-// this mapping against the gremlins version actually installed
-// (`gremlins unleash --output <path>` and inspect the result) before
-// relying on it, and adjust the struct tags here if a newer gremlins
-// renames or restructures the report.
+// gremlins v0.6.0's report nests per-mutation status under files[].mutations
+// (not a flat top-level list), and its status strings are "KILLED",
+// "LIVED", "NOT COVERED", and "TIMED OUT" — verified against a real
+// `gremlins unleash --output <path>` run (see this solution's own ADR),
+// not assumed. Re-check this shape if the pinned gremlins version changes.
 package main
 
 import (
@@ -40,9 +38,11 @@ import (
 )
 
 type gremlinsReport struct {
-	Mutants []struct {
-		Status string `json:"status"`
-	} `json:"mutants"`
+	Files []struct {
+		Mutations []struct {
+			Status string `json:"status"`
+		} `json:"mutations"`
+	} `json:"files"`
 }
 
 type normalized struct {
@@ -75,16 +75,18 @@ func run(reportPath string) error {
 	}
 
 	n := normalized{}
-	for _, m := range report.Mutants {
-		switch strings.ToUpper(m.Status) {
-		case "KILLED":
-			n.Killed++
-		case "SURVIVED":
-			n.Survived++
-		case "TIMED OUT", "TIMEDOUT", "TIMED_OUT":
-			n.TimedOut++
-		case "NOT COVERED", "NOTCOVERED", "NOT_COVERED", "NO COVERAGE":
-			n.NoCoverage++
+	for _, f := range report.Files {
+		for _, m := range f.Mutations {
+			switch strings.ToUpper(m.Status) {
+			case "KILLED":
+				n.Killed++
+			case "LIVED", "SURVIVED":
+				n.Survived++
+			case "TIMED OUT", "TIMEDOUT", "TIMED_OUT":
+				n.TimedOut++
+			case "NOT COVERED", "NOTCOVERED", "NOT_COVERED", "NO COVERAGE":
+				n.NoCoverage++
+			}
 		}
 	}
 
