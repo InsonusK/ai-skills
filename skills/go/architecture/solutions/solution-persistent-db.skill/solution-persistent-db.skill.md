@@ -17,6 +17,8 @@ extends:
   - "internal/domain/services/{service}.go"
   - "cmd/{service}/main.go"
   - "internal/config/config.go"
+  - "internal/api/http/server.go"
+  - "internal/api/grpc/server.go"
 depends_on:
   - "[[skills/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]]"
 built_on_plateau:
@@ -30,6 +32,7 @@ adr:
 # Capabilities
 - Data the module owns survives a process restart or redeploy.
 - The persistence technology stays fully swappable — nothing outside `internal/infrastructure/{store}` depends on PostgreSQL or `pgx` directly.
+- The durably-stored data is readable back out through every applied inbound transport (HTTP; gRPC when `solution-grpc-api` is applied), not only writable — see this solution's own `internal/api/*/server.go.extend.md` files.
 
 # Core Principles
 - The port is named for the business record it stores (e.g. `LinkHistory`), never generically (`Repository<T>`) — same reasoning as [[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]]'s own ADR, applied here.
@@ -58,6 +61,8 @@ FILES:
 - [[./Implementation/internal/infrastructure/{store}/store.go.create.md|store.go]] - create - `Store` struct implementing the port
 - [[./Implementation/cmd/{service}/main.go.extend.md|cmd/{service}/main.go]] - extend - construct the connection pool and pass it to the domain service
 - [[./Implementation/internal/config/config.go.extend.md|internal/config/config.go]] - extend - add the database DSN
+- [[./Implementation/internal/api/http/server.go.extend.md|internal/api/http/server.go]] - extend - expose the port's read side over HTTP
+- [[./Implementation/internal/api/grpc/server.go.extend.md|internal/api/grpc/server.go]] - extend - expose the port's read side over gRPC (conditional on `solution-grpc-api`)
 
 # Workflow
 
@@ -71,7 +76,11 @@ FILES:
 ## MUST
 - [[./Implementation/internal/domain/interfaces/{store-port}.go.create.md#MUST|internal/domain/interfaces/{store-port}.go]]
 - [[./Implementation/internal/infrastructure/{store}/store.go.create.md#MUST|store.go]]
+- [[./Implementation/internal/domain/services/{service}.go.extend.md#MUST|internal/domain/services/{service}.go]]
+- [[./Implementation/internal/api/http/server.go.extend.md#MUST|internal/api/http/server.go]]
+- [[./Implementation/internal/api/grpc/server.go.extend.md#MUST|internal/api/grpc/server.go]]
 
 # Check list
 - [ ] `internal/domain/services` never imports `github.com/jackc/pgx/v5` directly.
 - [ ] The adapter's table survives and is reloadable across a process restart (verified against a real PostgreSQL instance, not just compiled).
+- [ ] The port's read side (`Recent`) is reachable from every applied inbound transport, not only writable.

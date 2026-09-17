@@ -19,6 +19,8 @@ registry:
   - "[[registry/internal-config-config-go.md|internal-config-config-go]]"
   - "[[registry/repo-root.md|repo-root]]"
   - "[[registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
+  - "[[registry/internal-api-http-server-go.md|internal-api-http-server-go]]"
+  - "[[registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]]"
 ---
 
 # Goal
@@ -83,11 +85,13 @@ See `structure/` — everything from the parent, union'd with:
 - Unchanged from the parent: `package-domain-services`, `package-api-http`, `package-api-grpc`, `file-version-version`, `file-logging-logger`.
 
 # Registry
-Four intersections, all canonical — see `registry/`:
+Six intersections, all canonical — see `registry/`:
 - [[registry/cmd-service-main-go.md|cmd-service-main-go]] (N=5; `external-integration` inserts before construction, no second restructuring — confirms the prediction from `plateau-dual-api-service`)
 - [[registry/internal-config-config-go.md|internal-config-config-go]] (N=5, stayed purely additive across three plateaus running)
 - [[registry/repo-root.md|repo-root]] (N=4; the `{grpc-api, external-integration}` `proto-gen`-sharing collision predicted at `plateau-dual-api-service` happened exactly as anticipated, resolved exactly as `external-integration`'s own Rule specified)
 - [[registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (new at this plateau, N=2 — `solution-cached-db`/`solution-persistent-db` are expected to grow this further, per the catalog-level prediction)
+- [[registry/internal-api-http-server-go.md|internal-api-http-server-go]] (new at this plateau, N=2 — written retroactively during `plateau-persistent-service`'s build, after a catalog-wide grep found this element had reached N≥2 here without a registry entry)
+- [[registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (new at this plateau, N=2, same retroactive discovery as above — conditional on `solution-grpc-api` being applied)
 
 # Ground truth
 `example/` evolved from `plateau-dual-api-service`'s, verified:
