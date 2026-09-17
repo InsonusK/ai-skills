@@ -1,0 +1,50 @@
+services:
+  {service-name}:
+    image: "{registry}/{service-name}:{version}"
+    ports:
+      - "${SERVICE_PORT:-8080}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - LOG_LEVEL=${LOG_LEVEL:-Information}
+      # Secret values are never passed as plain environment variables here.
+      # Point the *_FILE variant at the Swarm secret mount instead (see the
+      # docker-entrypoint.sh convention that resolves {NAME}_FILE -> {NAME}).
+      - CONNECTION_STRING_FILE=/run/secrets/connection_string
+    secrets:
+      - connection_string
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health-check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      update_config:
+        order: start-first
+        failure_action: rollback
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    volumes:
+      - {service-name}-data:/app/data
+    networks:
+      - {service-name}-network
+
+volumes:
+  {service-name}-data:
+
+networks:
+  {service-name}-network:
+    driver: overlay
+
+secrets:
+  connection_string:
+    external: true
+    # Create it once per environment before the first deploy:
+    #   printf '%s' "$REAL_CONNECTION_STRING" | docker secret create connection_string -

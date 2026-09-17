@@ -1,7 +1,7 @@
 ---
 name: deploy-{service-name}
-description: Deploy {service-name} with Docker Compose and Kubernetes.
-whenToUse: when you need to deploy, update, or troubleshoot {service-name} in Docker Compose or Kubernetes.
+description: Deploy {service-name} with Docker Compose, Docker Stack (Swarm), and Kubernetes.
+whenToUse: when you need to deploy, update, or troubleshoot {service-name} in Docker Compose, Docker Stack, or Kubernetes.
 tags:
   - stack
   - app-type/service
@@ -9,6 +9,7 @@ tags:
   - concern/documentation
   - docker
   - docker-compose
+  - docker-stack
   - kubernetes
   - k8s
   - deployment
@@ -16,14 +17,17 @@ tags:
 ---
 
 # Goal
-- Deploy {service-name} consistently on a single host with Docker Compose.
+- Deploy {service-name} for local development with Docker Compose.
+- Deploy {service-name} consistently on a single/multi-host with Docker Stack (Swarm).
 - Deploy {service-name} consistently in a Kubernetes cluster.
 - Provide reusable configuration templates and concrete command examples.
 
 # Core Principle
 - The service is deployed as a container built from the repository's Dockerfile.
-- Configuration is injected through environment variables and mounted files; secrets are never baked into the image.
-- Docker Compose is used for single-host / development / staging deployments; Kubernetes is used for replicated production deployments.
+- Configuration is injected through environment variables and mounted files; secrets are never baked into the image or passed as plain environment variables — every variable supports the `{NAME}_FILE` convention (see [`docker-entrypoint.example.sh`](./templates/docker/docker-entrypoint.example.sh)).
+- Docker Compose is used for local development; Docker Stack (Swarm) is used for single/multi-host production without a Kubernetes cluster; Kubernetes is used for cluster-scale replicated production.
+- The repository root's `.env.example` (gitignored `.env`) is the devcontainer's configuration contract; it is separate from this skill's own `.env.example` used for Compose/Stack.
+- Templates are grouped by what applies them, not dumped flat: `templates/docker/compose/`, `templates/docker/stack/`, `templates/docker/` (shared Docker files), and `templates/k8s/`.
 
 # Rule
 
@@ -32,18 +36,37 @@ tags:
   - Violation: deploying without building, or deploying an image built from stale source.
   - Risk: the running container does not match the current code, causing unpredictable failures or silent regressions.
   - Fix: run `docker build` or `docker compose build` from the repository root and verify the produced image tag before starting the deployment.
+- Implement a `/health-check` endpoint in the service, and wire every deployment path's health check / probe to it.
+  - Violation: the service has no `/health-check` route, or a Compose `healthcheck`, Stack `healthcheck`, or Kubernetes `livenessProbe`/`readinessProbe` is missing or points at a different path.
+  - Risk: without it, Compose's restart policy, Swarm's rolling update, and Kubernetes' rolling update all lose the only signal that tells them a replica is actually ready — a hung or half-started process gets treated as healthy.
+  - Fix: return 200 from `/health-check` once the process and its dependencies are ready, and point `docker-compose.yml`'s `healthcheck`, `docker-stack.example.yml`'s `healthcheck`, and `k8s-deployment.example.yml`'s `livenessProbe`/`readinessProbe` at it.
 - Provide a `docker-compose.yml` with the service, health check, restart policy, and required dependencies.
   - Violation: the Docker Compose file is missing, lacks a health check, or omits a dependency.
   - Risk: the service starts without required dependencies, crashes silently, or cannot be restarted automatically after a failure.
   - Fix: include every dependency, a restart policy, and a health check endpoint in `docker-compose.yml`.
+- Provide a `docker-stack.example.yml` (or equivalent) with a `deploy:` block and Swarm secrets, distinct from the Compose file.
+  - Violation: reusing `docker-compose.yml` as the stack file — `docker stack deploy` silently ignores `build`, `env_file`, `restart`, and `network_mode`.
+  - Fix: give the stack manifest its own `deploy:` policy and `secrets:` block, and its own `docker stack deploy` / `docker service update` / `docker stack rm` command sequence.
 - Provide Kubernetes manifests: Deployment, Service, ConfigMap, Secret.
   - Violation: the Kubernetes manifests are incomplete or missing one of the required resources.
   - Risk: the workload cannot be scheduled, reached, or configured correctly in the cluster.
   - Fix: create Deployment, Service, ConfigMap, and Secret manifests tuned for this service; add Ingress or HPA when the service is exposed or scaled.
-- Document every environment variable and its source.
-  - Violation: environment variables, secrets, or volume mounts are undocumented or only described informally.
-  - Risk: operators deploy the service with missing configuration and it fails at runtime, or secrets are guessed and mishandled.
-  - Fix: list every variable, its purpose, default value if any, and whether it comes from a ConfigMap or Secret.
+- Document every environment variable and its source, marking secrets explicitly.
+  - Violation: environment variables, secrets, or volume mounts are undocumented, only described informally, or a secret is listed the same way as a non-secret value.
+  - Risk: operators deploy the service with missing configuration and it fails at runtime, or a secret is mishandled the same as ordinary config.
+  - Fix: list every variable, its purpose, default value if any, whether it comes from a ConfigMap or Secret, and — in `.env.example` — group secret variables under a `# --- SECRET ---` marker consumed via `{NAME}_FILE`.
+- Support the `{NAME}_FILE` convention for every environment variable, resolved in the entrypoint before the process starts.
+  - Violation: the service only reads plain environment variables, with no file-based alternative.
+  - Fix: copy [`docker-entrypoint.example.sh`](./templates/docker/docker-entrypoint.example.sh) into the service repository and wire it into the Dockerfile as shown in [`dockerfile-snippet.example.md`](./templates/docker/dockerfile-snippet.example.md).
+- Provide a repository-root `.env.example` for the devcontainer, and gitignore the root `.env`.
+  - Violation: the devcontainer has no documented configuration contract, or a filled `.env` is committed.
+  - Fix: keep [`root-env.example`](./templates/root-env.example) at the repository root in sync with the devcontainer's expected variables, and add `.env` to the root `.gitignore`.
+- Link the README to this skill, and set the Dockerfile's `LABEL org.opencontainers.image.description` to the same pointer.
+  - Violation: the deploy skill exists but nothing in the README or the built image points to it.
+  - Fix: add the link to the repository's root `README.md` and the `LABEL` line from [`dockerfile-snippet.example.md`](./templates/docker/dockerfile-snippet.example.md) to the Dockerfile.
+- Group `templates/` by what applies them: `templates/docker/` for Docker (with `compose/` and `stack/` subfolders when their examples differ) and `templates/k8s/` for Kubernetes.
+  - Violation: `docker-compose.example.yml`, `docker-stack.example.yml`, and `k8s-deployment.example.yml` all sitting flat in `templates/`.
+  - Fix: lay out `templates/docker/compose/`, `templates/docker/stack/`, `templates/docker/` (shared: `env.example`, `docker-entrypoint.example.sh`, `dockerfile-snippet.example.md`), and `templates/k8s/`.
 
 ## SHOULD
 - Include health checks and restart policies in the Docker Compose template.
@@ -59,12 +82,21 @@ tags:
 - Provide a `skaffold.yaml` for local Kubernetes development.
 
 # Example
-- Configuration templates: [`docker-compose.example.yml`](./docker-compose.example.yml), [`k8s-deployment.example.yml`](./k8s-deployment.example.yml), [`k8s-service.example.yml`](./k8s-service.example.yml), [`k8s-configmap.example.yml`](./k8s-configmap.example.yml), [`k8s-secret.example.yml`](./k8s-secret.example.yml), [`k8s-ingress.example.yml`](./k8s-ingress.example.yml).
-- Deployment guides: [Docker Compose deploy guide](./docker-compose-deploy.example.md), [Kubernetes deploy guide](./k8s-deploy.example.md).
+- `templates/docker/compose/`: [`docker-compose.example.yml`](./templates/docker/compose/docker-compose.example.yml), [Docker Compose deploy guide](./templates/docker/compose/docker-compose-deploy.example.md).
+- `templates/docker/stack/`: [`docker-stack.example.yml`](./templates/docker/stack/docker-stack.example.yml), [Docker Stack deploy guide](./templates/docker/stack/docker-stack-deploy.example.md).
+- `templates/docker/` (shared): [`env.example`](./templates/docker/env.example), [`docker-entrypoint.example.sh`](./templates/docker/docker-entrypoint.example.sh), [`dockerfile-snippet.example.md`](./templates/docker/dockerfile-snippet.example.md).
+- `templates/k8s/`: [`k8s-deployment.example.yml`](./templates/k8s/k8s-deployment.example.yml), [`k8s-service.example.yml`](./templates/k8s/k8s-service.example.yml), [`k8s-configmap.example.yml`](./templates/k8s/k8s-configmap.example.yml), [`k8s-secret.example.yml`](./templates/k8s/k8s-secret.example.yml), [`k8s-ingress.example.yml`](./templates/k8s/k8s-ingress.example.yml), [Kubernetes deploy guide](./templates/k8s/k8s-deploy.example.md).
+- Devcontainer contract: [`root-env.example`](./templates/root-env.example) (copied to the repository root).
 
 # Check list
 - [ ] Image is built from the repository Dockerfile.
+- [ ] The service implements `/health-check`, and every Compose `healthcheck`, Stack `healthcheck`, and Kubernetes `livenessProbe`/`readinessProbe` calls it.
+- [ ] `templates/` is grouped as `templates/docker/compose/`, `templates/docker/stack/`, `templates/docker/` (shared), and `templates/k8s/`.
 - [ ] Docker Compose file exists and starts the service.
+- [ ] Docker Stack manifest exists, has its own `deploy:`/`secrets:` block, and `docker stack deploy` applies cleanly.
 - [ ] Kubernetes manifests exist and apply cleanly.
-- [ ] All environment variables are documented.
+- [ ] All environment variables are documented, with secrets marked in `.env.example`.
+- [ ] Repository-root `.env.example` exists for the devcontainer, and root `.env` is gitignored.
+- [ ] Every environment variable supports the `{NAME}_FILE` convention.
+- [ ] Root `README.md` links to this skill; Dockerfile sets `LABEL org.opencontainers.image.description` to the same pointer.
 - [ ] No real secret values are committed in examples.
