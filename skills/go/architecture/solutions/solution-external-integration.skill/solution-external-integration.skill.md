@@ -13,9 +13,11 @@ tags:
 creates:
   - "internal/domain/interfaces/{port}.go"
   - "internal/infrastructure/{adapter}/"
-  - "proto/{external}/v1/{external}.proto"
+  - "proto/{external}/{external}.proto"
 extends:
   - "internal/domain/services/{service}.go"
+  - "internal/api/http/server.go"
+  - "internal/api/grpc/server.go"
   - "cmd/{service}/main.go"
   - "internal/config/config.go"
   - "Makefile"
@@ -50,11 +52,13 @@ GO MODULES:
 
 # Template Skill Mutations
 FILES:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - `proto/{external}/v1/{external}.proto`, buf codegen config, `Makefile`'s `proto-gen` target
+- [[./Implementation/Repository.extend.md|Repository]] - extend - `proto/{external}/{external}.proto`, buf codegen config, `Makefile`'s `proto-gen` target
 - [[./Implementation/internal/domain/interfaces/{port}.go.create.md|internal/domain/interfaces/{port}.go]] - create - the outbound port
 - [[./Implementation/internal/domain/services/{service}.go.extend.md|internal/domain/services/{service}.go]] - extend - the domain service depends on the new port
 - [[./Implementation/internal/infrastructure/{adapter}/Package.create.md|internal/infrastructure/{adapter}]] - create - the gRPC-client adapter package
 - [[./Implementation/internal/infrastructure/{adapter}/client.go.create.md|client.go]] - create - `Client` struct implementing the port
+- [[./Implementation/internal/api/http/server.go.extend.md|internal/api/http/server.go]] - extend - surface the port's result in the HTTP response, map its unavailable sentinel to `502`
+- [[./Implementation/internal/api/grpc/server.go.extend.md|internal/api/grpc/server.go]] - extend - the same, for gRPC, **only when [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] is also applied**
 - [[./Implementation/cmd/{service}/main.go.extend.md|cmd/{service}/main.go]] - extend - construct the client and pass it to the domain service
 - [[./Implementation/internal/config/config.go.extend.md|internal/config/config.go]] - extend - add the external service's host/port/TLS settings
 
@@ -77,8 +81,11 @@ FILES:
 - [[./Implementation/internal/domain/interfaces/{port}.go.create.md#MUST|internal/domain/interfaces/{port}.go]]
 - [[./Implementation/internal/infrastructure/{adapter}/Package.create.md#MUST|internal/infrastructure/{adapter}]]
 - [[./Implementation/internal/infrastructure/{adapter}/client.go.create.md#MUST|client.go]]
+- [[./Implementation/internal/api/http/server.go.extend.md#MUST|internal/api/http/server.go]]
+- [[./Implementation/internal/api/grpc/server.go.extend.md#MUST|internal/api/grpc/server.go]]
 
 # Check list
 - [ ] `internal/domain/services` imports the new port's interface, never the adapter package or a `google.golang.org/grpc` type.
 - [ ] The adapter translates every distinguishable failure mode it knows about into a port-declared sentinel error.
 - [ ] `main.go` constructs the client once and passes it to the domain service as the port's interface type.
+- [ ] Every field the port adds to the domain result is reachable through every inbound adapter present on the plateau (HTTP always; gRPC when `solution-grpc-api` is also applied) — not just computed and then dropped before it reaches a caller.
