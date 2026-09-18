@@ -20,6 +20,7 @@ tags:
 - **Derived, never remembered** - Every ✅/❌ is computed from the plateau's actual `created_by`/`parent_plateaus` mapped through the map's Realized-by column — not from what a plateau is "about".
 - **Two triggers, one owner** - Plateau changes (create/update) and VP changes (map edits) both terminate here; no other file carries the plateau↔VP matrix.
 - **Starts from a finished map and existing plateaus** - This skill reads a Variability Map built by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]] (its `Realized by` column filled by that skill's own [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] sub-step) whose every column is already filled, and plateau folders already created by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]]. It never authors solutions, plateaus, or the map itself.
+- **Plateaus are self-contained** - A plateau's own skill file and its `structure/` files never link to another plateau's skill file in their body — a plateau links only to its own `structure/` files, the solutions in its `created_by`, and its own `registry/`/`adr/` entries. Only the `parent_plateaus`/`created_by` YAML properties name another plateau or solution, and those are read by tooling (this skill, `plateau-create-by-solutions`), never followed as a narrative link an agent must load to understand the plateau.
 
 # Workflow
 
@@ -48,6 +49,12 @@ Start only from a `{catalog}/variability-map.md` built via [[skills/common-workf
 - Violation: running this skill against a map with empty `Realized by` cells, against a map (or a hand-written table shaped like one) that `variability-map-create` did not produce, or inventing plateau folders here.
 - Risk: a matrix derived from an incomplete or improvised map has columns that cannot be mapped to solutions, so its cells are guesses; authoring plateaus here duplicates work this skill only reads.
 - Fix: build or finish the map via `variability-map-create` (its `Realized by` column filled by that skill's own [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] sub-step) and create/update plateaus via their own skills before building the repository file.
+
+### Precondition: plateaus are self-contained, never cross-plateau links
+A plateau's own skill file and its `structure/` files must never link to another plateau's skill file in their body — a plateau links only to its own `structure/` files, the solutions named in its `created_by`, and its own `registry/`/`adr/` entries. Cross-plateau relationships are expressed only through the `parent_plateaus`/`created_by` YAML properties, which tooling reads directly without needing to load the target plateau's full content.
+- Violation: a Goal section reading "Everything `[[plateau-integrated-service]]` has, plus a Redis-backed cache..." or a Structure section reading "See `structure/` — everything from the parent, union'd with: ..." with a wikilink into another plateau's own skill file.
+- Risk: an agent asked to build or understand one plateau follows the link into its parent, which links into its own parent, cascading through the entire lineage chain — instead of loading only the one plateau it actually needs.
+- Fix: state each plateau's content cumulatively and completely in its own file — restate inherited Goal/Capabilities/Structure entries directly rather than pointing at the parent plateau to find them; reserve `parent_plateaus`/`created_by` for the YAML metadata this skill and `plateau-create-by-solutions` already read.
 
 ### Derived from the map, never restating it
 State no VP fact in `plateau-repository.md` that the Variability Map does not state — constraints, realizations, and variants live there; the file links back.
@@ -98,6 +105,7 @@ Add sections beyond the matrix — folder contents, registry notes, counts, hist
 
 # Check list
 - [ ] `{catalog}/variability-map.md` has every column filled (`Realized by` included) before this skill ran.
+- [ ] No plateau skill file or `structure/` file links to another plateau's skill file in its body — cross-plateau relationships are expressed only via `parent_plateaus`/`created_by` YAML metadata.
 - [ ] Matrix rows match the plateau folders on disk; columns match the VP IDs in the current `variability-map.md`.
 - [ ] Every row's ✅ set verified against the plateau's actual `created_by` + transitive `parent_plateaus`.
 - [ ] Every row cross-checked against every Constraint in the map; violations raised as plateau-level ADRs.

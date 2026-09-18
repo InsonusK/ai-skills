@@ -21,20 +21,43 @@ registry:
 ---
 
 # Goal
-Everything [[skills/go/architecture/plateau/plateau-http-service/plateau-http-service.skill/plateau-http-service.skill.md|plateau-http-service]] has, plus a second inbound entry point over gRPC — the same `LinkCheckService.Check` reachable over both transports from one composition root.
+A Go web-service with no database, a real domain layer, structured logging, and the full godog/coverage/mutation conformance gate — with two inbound entry points, HTTP and gRPC, both reaching the same `LinkCheckService.Check` from one composition root.
 
 # Core Principles
-Union of the parent's principles, plus:
+- Ports-and-adapters: outbound dependencies (once any exist) are interfaces the domain declares; inbound adapters call the domain service's concrete type directly. At this plateau there are still no outbound dependencies at all — `LinkCheckService` is pure computation.
+- `cmd/linkcheck/main.go` is the single composition root; reading it alone tells a reader everything the service does, including which inbound servers it runs.
+- Every business rule is a Cucumber (godog) scenario, co-located with the package it tests — never a plain `_test.go` masquerading as the spec.
 - `internal/api/grpc` is exactly as thin as `internal/api/http` — no business logic, only decode/call/encode.
-- Two or more concurrent long-running servers in `run()` are run via `errgroup.Group` — the parent's single blocking `httpServer.ListenAndServe()` call is restructured the moment gRPC is added, not left as a second sequential blocker.
+- Two or more concurrent long-running servers in `run()` are run via `errgroup.Group` — never a single blocking `ListenAndServe()` call once a second server exists.
 - This module's own exposed contract (`proto/linkcheck/linkcheck.proto` → `gen/api`) stays in its own flat, unversioned path — a `v1/` path segment under a flat `go_package` produces a Go import-path mismatch (verified, not hypothetical — see [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]]'s own Rule).
 
 # Capabilities
-Union of the parent's capabilities, plus:
 - api
-  - The same `Check` operation, now callable via `linkcheck.LinkCheckService/Check` (gRPC) in addition to `POST /v1/links/check` (HTTP) — identical validation/normalization behavior, verified identical by construction (one domain-service instance, two thin adapters).
+  - `GET /health` (liveness/readiness), `POST /v1/links/check` (HTTP), and `linkcheck.LinkCheckService/Check` (gRPC) — all thin translations over the same `LinkCheckService` instance, identical validation/normalization behavior by construction (one domain-service instance, two thin adapters).
+- domain
+  - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged; rejects everything else via `ErrInvalidURL`.
+- testing
+  - `make unit-test`/`mutation-test`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `public/` report site.
 
 # Usecases
+
+## Check a URL over HTTP
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client
+    participant srv as Server (http)
+    participant svc as LinkCheckService
+
+    Client->>srv: POST /v1/links/check {"url": "HTTPS://Example.com/Foo"}
+    activate srv
+    srv->>svc: Check(ctx, "HTTPS://Example.com/Foo")
+    activate svc
+    svc-->>srv: Result{Normalized: "https://example.com/Foo"}
+    deactivate svc
+    srv-->>Client: 200 {"url": "...", "normalized": "https://example.com/Foo"}
+    deactivate srv
+```
 
 ## Check a URL over gRPC
 ```mermaid
@@ -53,16 +76,20 @@ sequenceDiagram
     srv-->>Client: {url: "...", normalized: "https://example.com/Foo"}
     deactivate srv
 ```
+
+## Invalid URL
+`Check` returns `ErrInvalidURL` for anything that fails to parse, has no host, or uses a scheme other than `http`/`https`; the HTTP adapter maps it to `400`, the gRPC adapter maps it to `codes.InvalidArgument` — both with the same underlying domain error.
+
 An invalid URL maps to `codes.InvalidArgument` (gRPC) the same way it maps to `400` (HTTP) — see `internal/api/grpc/server.go`'s `toStatus`.
 
 # Structure
-See `structure/` — everything from [[skills/go/architecture/plateau/plateau-http-service/plateau-http-service.skill/plateau-http-service.skill.md|plateau-http-service]]'s structure, union'd with:
+See `structure/` — this plateau's own copy of every file:
 - [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--repo-dual-api-service.skill.md|repo-dual-api-service]] (extended: `proto/`, `buf/`, `gen/api/`, `proto-gen` target)
 - [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--package-api-grpc.skill.md|package-api-grpc]] (new)
 - [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-api-grpc-server.skill.md|file-api-grpc-server]] (new)
 - [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: `errgroup.Group`)
 - [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-config-config.skill.md|file-config-config]] (extended: `GRPCListenPort`)
-- Unchanged from the parent: `package-domain-services`, `package-api-http`, `file-domain-services-linkcheck`, `file-version-version`, `file-logging-logger`, `file-api-http-server`.
+- Unchanged since `plateau-http-service`: [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--package-domain-services.skill.md|package-domain-services]], [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--package-api-http.skill.md|package-api-http]], [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]], [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-version-version.skill.md|file-version-version]], [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-logging-logger.skill.md|file-logging-logger]], [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-api-http-server.skill.md|file-api-http-server]].
 
 # Registry
 Three intersections, all still canonical (no resolver) but two grew from the parent — see `registry/`:
