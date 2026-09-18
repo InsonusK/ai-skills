@@ -24,23 +24,52 @@ registry:
 ---
 
 # Goal
-Everything [[skills/go/architecture/plateau/plateau-dual-api-service/plateau-dual-api-service.skill/plateau-dual-api-service.skill.md|plateau-dual-api-service]] has, plus an outbound call to an external reputation service — `LinkCheckService.Check` now validates, normalizes, *and* asks whether the URL is flagged, over both HTTP and gRPC.
+A Go web-service with no database, a real domain layer, structured logging, the full godog/coverage/mutation conformance gate, two inbound entry points (HTTP and gRPC), and an outbound call to an external reputation service — `LinkCheckService.Check` validates, normalizes, *and* asks whether the URL is flagged, over both transports.
 
 # Core Principles
-Union of the parent's principles, plus:
+- Ports-and-adapters: outbound dependencies are interfaces the domain declares; inbound adapters call the domain service's concrete type directly.
+- `cmd/linkcheck/main.go` is the single composition root; reading it alone tells a reader everything the service does, including which inbound servers it runs and which outbound adapters it dials.
+- Every business rule is a Cucumber (godog) scenario, co-located with the package it tests — never a plain `_test.go` masquerading as the spec.
+- `internal/api/grpc` is exactly as thin as `internal/api/http` — no business logic, only decode/call/encode.
+- Two or more concurrent long-running servers in `run()` are run via `errgroup.Group`.
+- This module's own exposed contract (`proto/linkcheck/linkcheck.proto` → `gen/api`) stays in its own flat, unversioned path (verified, not hypothetical — see [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]]'s own Rule).
 - `internal/domain/interfaces` exists for the first time at this plateau (created by [[skills/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]], a shared prerequisite) — the domain depends on `ReputationChecker`, never on `internal/infrastructure/reputationclient` or any `google.golang.org/grpc` type directly.
 - Validation happens before the external call — an invalid URL never reaches the reputation service.
 - Every field a port adds to the domain result must reach every inbound adapter present on the plateau — not computed and then silently dropped by one transport.
 - This module's own exposed contract (`gen/api`) and an external service's contract this module calls (`gen/reputation`) are always generated into separate Go packages, never merged.
 
 # Capabilities
-Union of the parent's capabilities, plus:
+- api
+  - `GET /health` (liveness/readiness). `POST /v1/links/check` (HTTP) and `linkcheck.LinkCheckService/Check` (gRPC) both return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `502` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
+- domain
+  - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged, rejects everything else via `ErrInvalidURL` — then asks `ReputationChecker` whether the normalized URL is flagged.
 - integration
   - `ReputationChecker` port + `reputationclient.Client` gRPC adapter, translating `codes.Unavailable` into the domain's `ErrUnavailable` sentinel.
-- api
-  - Both `POST /v1/links/check` and gRPC `Check` now return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `502` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
+- testing
+  - `make unit-test`/`mutation-test`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `public/` report site.
 
 # Usecases
+
+## Check a URL over HTTP or gRPC
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client
+    participant srv as Server (http or grpc)
+    participant svc as LinkCheckService
+
+    Client->>srv: Check("HTTPS://Example.com/Foo")
+    activate srv
+    srv->>svc: Check(ctx, "HTTPS://Example.com/Foo")
+    activate svc
+    svc-->>srv: Result{Normalized: "https://example.com/Foo"}
+    deactivate svc
+    srv-->>Client: {url: "...", normalized: "https://example.com/Foo"}
+    deactivate srv
+```
+
+## Invalid URL
+`Check` returns `ErrInvalidURL` for anything that fails to parse, has no host, or uses a scheme other than `http`/`https`, before the reputation service is ever called; the HTTP adapter maps it to `400`, the gRPC adapter maps it to `codes.InvalidArgument`.
 
 ## A flagged URL
 ```mermaid
@@ -71,7 +100,7 @@ sequenceDiagram
 `reputationclient.Client.CheckReputation` translates a gRPC `Unavailable` status into `interfaces.ErrUnavailable`; `LinkCheckService.Check` returns it unwrapped in kind; `internal/api/http` maps it to `502`, `internal/api/grpc` maps it to `codes.Unavailable` — both distinct from the `400`/`codes.InvalidArgument` an actually-malformed URL produces.
 
 # Structure
-See `structure/` — everything from the parent, union'd with:
+See `structure/` — this plateau's own copy of every file:
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--repo-integrated-service.skill.md|repo-integrated-service]] (extended: `proto/reputation/`, `gen/reputation/`, second `proto-gen` line)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-domain-interfaces.skill.md|package-domain-interfaces]] (new)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-domain-interfaces-reputation.skill.md|file-domain-interfaces-reputation]] (new)
@@ -82,7 +111,7 @@ See `structure/` — everything from the parent, union'd with:
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-config-config.skill.md|file-config-config]] (extended: `ReputationAddr`)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-api-http-server.skill.md|file-api-http-server]] (extended: `flagged`/`reason`, `502` mapping)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-api-grpc-server.skill.md|file-api-grpc-server]] (extended: `flagged`/`reason`, `codes.Unavailable` mapping)
-- Unchanged from the parent: `package-domain-services`, `package-api-http`, `package-api-grpc`, `file-version-version`, `file-logging-logger`.
+- Unchanged since `plateau-dual-api-service`: [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-domain-services.skill.md|package-domain-services]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-api-http.skill.md|package-api-http]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-api-grpc.skill.md|package-api-grpc]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-version-version.skill.md|file-version-version]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-logging-logger.skill.md|file-logging-logger]].
 
 # Registry
 Six intersections, all canonical — see `registry/`:
