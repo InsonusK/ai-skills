@@ -44,7 +44,7 @@ Worked example: [[skills/common-workflow/architecture/design/plateau-map/plateau
 ## MUST
 
 ### Precondition: a fully-filled map
-Start only from a `{catalog}/variability-map.md` whose every column is filled — `Realized by` included — and from plateau folders already built by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]].
+Start only from a `{catalog}/variability-map.md`  made by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create.skill]] whose every column is filled — `Realized by` included — and from plateau folders already built by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]].
 - Violation: running this skill against a map with empty `Realized by` cells, or inventing plateau folders here.
 - Risk: a matrix derived from an incomplete map has columns that cannot be mapped to solutions, so its cells are guesses; authoring plateaus here duplicates work this skill only reads.
 - Fix: finish the map via [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] and create/update plateaus via their own skills before building the repository file.

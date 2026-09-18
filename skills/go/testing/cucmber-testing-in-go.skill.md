@@ -2,7 +2,7 @@
 name: cucmber-testing-in-go
 description: Go/godog-specific rules for Cucumber testing — the single TestFeatures runner, stdout step logging, step-file layout, and VSCode glue configuration
 whenToUse: when writing or reviewing godog scenarios or step definitions in a Go project
-updated: 20260913
+updated: 20260917
 tags:
   - stack/go
   - concern/testing/bdd
@@ -40,7 +40,10 @@ Keep `"go.testFlags": ["-v"]` in `.vscode/settings.json`, and use `go test ... -
 - Fix: set `go.testFlags: ["-v"]` in the repository's `.vscode/settings.json`, and pass `-v` when running from the terminal (e.g. `go test ./client/eaxmi/test/ -v -run 'TestFeatures/<name>'` to target one scenario).
 
 ### One TestFeatures runner per test package
-Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Paths: []string{"../features"}, Tags: "~@todo", Strict: true, TestingT: t}`, and no other `func TestXxx` in that package.
+Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Format: "pretty", Paths: []string{"../features"}, Tags: "~@todo", Strict: true, TestingT: t}`, and no other `func TestXxx` in that package.
+- Violation: omitting `Format` from `godog.Options`.
+- Risk: godog has no default formatter — an omitted `Format` fails every run with `unregistered formatter name: ""` before a single step executes, regardless of whether the scenarios themselves are correct (verified against a real `godog v0.16.0` run, not assumed).
+- Fix: always set `Format: "pretty"` explicitly (or another registered formatter — `cucumber`, `events`, `junit`, `progress` — if the suite specifically needs one of those).
 - Risk: a second plain Go test in the same package duplicates what a scenario should express, and a missing `Tags: "~@todo"` runs scenarios meant to stay excluded per [Tag unrunnable scenarios @todo and verify exclusion](../../common-workflow/test/cucmber-testing.skill/cucmber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion).
 - Fix: keep `TestFeatures` as the package's only test function; set `Strict: true` so an undefined/pending step fails the build instead of passing silently.
 
@@ -83,7 +86,7 @@ For a codec or serializer, write the scenario in-memory, `WriteFile`, reopen, an
 
 # Check list
 - [ ] Exactly one `TestFeatures` per test package; no other `func TestXxx` alongside it.
-- [ ] `godog.Options` sets `Tags: "~@todo"`, `Strict: true`, `TestingT: t`.
+- [ ] `godog.Options` sets `Format: "pretty"` (or another registered formatter), `Tags: "~@todo"`, `Strict: true`, `TestingT: t`.
 - [ ] No step returns `godog.ErrSkip` to mean "not implemented yet" — such scenarios are tagged `@todo` instead.
 - [ ] Every step log goes through a `fmt.Printf`-based helper, never `godog.T(ctx).Logf`.
 - [ ] `.vscode/settings.json` sets `"go.testFlags": ["-v"]`.

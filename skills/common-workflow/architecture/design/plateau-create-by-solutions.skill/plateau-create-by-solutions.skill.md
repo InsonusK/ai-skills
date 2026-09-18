@@ -25,7 +25,7 @@ tags:
 - **A Component is not a Solution** - A Plateau Component (an optional cross-cutting capability like logging or tracing) never appears in `{solutions}`, `created_by`, or `structure/`; verify a suspicious input against [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] before assembling it.
 
 # Scope
-Covers building the plateau skill files (root, repository, project/package, class/module) from a set of solution skills, for the `dotnet`, `python`, and `typescript`/`angular` stacks. Does not cover writing the solution skills themselves ([[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]]), the plateau-map / variability-map catalog views, or attaching a Plateau Component to an already-composed service.
+Covers building the plateau skill files (root, repository, project/package, class/module) from a set of solution skills, for the `dotnet`, `python`, `go`, and `typescript`/`angular` stacks. Does not cover writing the solution skills themselves ([[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]]), the plateau-map / variability-map catalog views, or attaching a Plateau Component to an already-composed service.
 
 # Workflow
 
@@ -34,7 +34,7 @@ Inputs:
 - `{solutions}` — list of solutions to implement in the plateau.
 - `{parent_plateaus}` — optional list of existing plateaus this plateau composes in addition to `{solutions}`; empty when built from scratch. Merge semantics: [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]].
 - `{standalone}` — whether the plateau is usable/deployable on its own (`true`) or exists only to be composed (`false`). Ask the user if unclear.
-- `{stack}` — target language/stack (`dotnet`, `python`, `typescript`, …). Detect from `{solutions}` (`domain`/`tags` headers) or ask.
+- `{stack}` — target language/stack (`dotnet`, `python`, `go`, `typescript`, …). Detect from `{solutions}` (`domain`/`tags` headers) or ask.
 - `{output}` — folder for the created skills. Default `skills/{stack}/architecture/plateau`.
 
 Before starting, read [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] and [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]; read [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] when `{parent_plateaus}` is non-empty; check any composition-root-only candidate against [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]].
@@ -62,7 +62,7 @@ Before starting, read [[skills/common-workflow/architecture/design/solution-crea
 Give every plateau element skill a file name starting with `plateau-{plateau-name}--`, a `name` header equal to that file name minus `.skill.md`, and a `description` that states which plateau the element belongs to.
 - Violation: `name: class-entity` or `name: csproj-shared` — the bare element name.
 - Risk: different plateaus routinely define overlapping elements (a shared parent's `structure/` is copied into every plateau that composes it; independent plateaus at the same depth need the same class/project), so every copy collides on the same `name` and breaks any tool that indexes skills by `name`.
-- Fix: use the full `plateau-{plateau-name}--{element-name}` value for both the file name and the `name` header — e.g. `plateau-{plateau-name}--class-{name}.skill.md`, `plateau-{plateau-name}--csproj-{name}.skill.md`, `plateau-{plateau-name}--package-{name}.skill.md`, `plateau-{plateau-name}--sln-{plateau-name}.skill.md` (.NET) / `plateau-{plateau-name}--repo-{plateau-name}.skill.md` (Python/Angular).
+- Fix: use the full `plateau-{plateau-name}--{element-name}` value for both the file name and the `name` header — e.g. `plateau-{plateau-name}--class-{name}.skill.md`, `plateau-{plateau-name}--csproj-{name}.skill.md`, `plateau-{plateau-name}--package-{name}.skill.md`, `plateau-{plateau-name}--file-{name}.skill.md` (Go), `plateau-{plateau-name}--sln-{plateau-name}.skill.md` (.NET) / `plateau-{plateau-name}--repo-{plateau-name}.skill.md` (Python/Go/Angular).
 
 ### Write concrete whenToUse for every skill
 Write `whenToUse` in the plateau root skill and in every element skill as one concrete sentence stating when the agent must open that specific skill — which file/folder is being created or edited, or which task needs that level of the plateau.
@@ -98,6 +98,16 @@ Python (`stack: python`):
 | `Implementation/{App}.{dotted.path}.__init__.py.create.md` (`element_kind: init`) | One `plateau-{plateau-name}--module-{normalized}.skill.md` |
 | `Implementation/{App}.{dotted.path}.__init__.py.extend.md` | Merged into the same `plateau-{plateau-name}--module-{normalized}.skill.md` |
 
+Go (`stack: go`):
+
+| File pattern | Becomes |
+| --- | --- |
+| `Implementation/Repository.create.md` / `.extend.md` (`element_kind: repository`) | Content for `plateau-{plateau-name}--repo-{plateau-name}.skill.md` (go.mod, Makefile, cmd/, top-level layout) |
+| `Implementation/{package-path}/Package.create.md` (`element_kind: package`) | One `plateau-{plateau-name}--package-{normalized}.skill.md` |
+| `Implementation/{package-path}/Package.extend.md` (`element_kind: package`) | Merged into the same `plateau-{plateau-name}--package-{normalized}.skill.md` |
+| `Implementation/{package-path}/{file}.go.create.md` (`element_kind: struct`\|`functions`) | One `plateau-{plateau-name}--file-{normalized}.skill.md` |
+| `Implementation/{package-path}/{file}.go.extend.md` | Merged into the same `plateau-{plateau-name}--file-{normalized}.skill.md` |
+
 Angular / TypeScript (`stack: typescript`, `framework: angular`) — `Implementation/` files may sit directly under `Implementation/` or one level deep in a purely organizational topic subfolder (`GlobalStore/`, `Testing/`, …); ignore the subfolder when normalizing, use only the base name and the `element_kind`/`change_kind` frontmatter:
 
 | File pattern | Becomes |
@@ -114,7 +124,7 @@ Angular / TypeScript (`stack: typescript`, `framework: angular`) — `Implementa
 | `Implementation/**/{project}.project.extend/{class}...create.md` / `.extend.md` | One `plateau-{plateau-name}--class-{normalized}.skill.md` |
 
 ### Detect the stack before choosing templates
-Detect `{stack}` before selecting a template folder, and use the `templates/{stack}/` folder that matches it (`templates/dotnet/`, `templates/python/`, `templates/angular/`).
+Detect `{stack}` before selecting a template folder, and use the `templates/{stack}/` folder that matches it (`templates/dotnet/`, `templates/python/`, `templates/go/`, `templates/angular/`).
 - Risk: a mismatched template produces skill files in the wrong shape for the stack.
 - Fix: resolve `{stack}` from the solutions' headers or the user first, then pick the template folder.
 
@@ -135,6 +145,10 @@ Python modules — drop the `{App}.` prefix and the trailing `.py`/`.__init__.py
 Angular projects — drop the leading `apps/`/`libs/`/`projects/`, keep a deliberate repeated role segment (`libs/{feature}/feature` → `feature-feature`), replace `/` and `.` with `-`, kebab-case; `{Feature}` → `feature`, `{Module}` → `module`: `apps/platform-shell` → `project-platform-shell`, `libs/shared/http-core` → `project-shared-http-core`, `libs/{feature}/data-access` → `project-feature-data-access`, `projects/design-system` → `project-design-system`.
 
 Angular classes/artifacts — drop the topic subfolder and the trailing `.{artifact-type}.ts`/`.ts`/`.spec.ts`/`.scss` and `.create`/`.extend`; keep the `.{artifact-type}` word only when it disambiguates; replace `.` and `/` with `-`; kebab-case; `{feature}`/`{component-name}` → `feature`/`component-name`: `GlobalStore/auth.store.ts` → `class-auth-store` (`store`), `UI/has-permission.directive.ts` → `class-has-permission-directive` (`directive`), `Logging/backend-log-sink.ts` → `class-backend-log-sink` (`module`), `Testing/{component-name}.visual.spec.ts` → `class-component-name-visual-spec` (`spec`), `Tokens/theme.scss` → `class-theme-style` (`style`).
+
+Go packages — kebab-case the package path, dropping a leading `cmd/`/`internal/`: `internal/api/grpc` → `package-api-grpc`, `internal/infrastructure/{adapter}` → `package-infrastructure-adapter`, `cmd/{service}` → `package-cmd-service` (the composition-root package keeps its `cmd/` segment since it is the one package this convention would otherwise collide on).
+
+Go files — kebab-case the package path plus file name, dropping a leading `cmd/`/`internal/` and the trailing `.go`, replacing `/` and `_` with `-`: `internal/api/grpc/server.go` → `file-api-grpc-server`, `internal/domain/interfaces/quiz.go` → `file-domain-interfaces-quiz`, `cmd/{service}/main.go` → `file-cmd-service-main`.
 
 ### Merge .create.md and .extend.md into one skill
 Merge the `.create.md` and every `.extend.md` for the same project/package/class/module into a single skill file, grouping content by section (Goal, Core Principles, Structure, Rules, Anti-patterns, Check list).

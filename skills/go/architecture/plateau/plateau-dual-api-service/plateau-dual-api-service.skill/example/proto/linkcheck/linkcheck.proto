@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package linkcheck;
+
+option go_package = "github.com/example/linkcheck-service/gen/api";
+
+service LinkCheckService {
+  rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {
+  string url = 1;
+}
+
+message CheckResponse {
+  string url = 1;
+  string normalized = 2;
+}
