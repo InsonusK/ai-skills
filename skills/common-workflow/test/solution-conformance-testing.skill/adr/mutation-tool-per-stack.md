@@ -24,7 +24,7 @@ Mutation testing (see the parent solution's Core Principles) needs a concrete to
 
 ### Description
 
-Standardize on Stryker Mutator for both C#/.NET (`dotnet-stryker`) and Angular/TypeScript (`@stryker-mutator/core`), since Stryker's core engine and reporting are shared across both. Python uses Mutmut, a separate, Python-native mutation-testing tool, since Stryker does not support Python. Go uses Gremlins (`github.com/go-gremlins/gremlins`), a Go-native tool, for the same reason — see [[skills/go/architecture/solutions/solution-go-conformance-testing.skill/adr/mutation-tool-choice.md|the Go stack's own ADR]] for the alternatives considered.
+Standardize on Stryker Mutator for both C#/.NET (`dotnet-stryker`) and Angular/TypeScript (`@stryker-mutator/core`), since Stryker's core engine and reporting are shared across both. Python uses Mutmut, a separate, Python-native mutation-testing tool, since Stryker does not support Python. Go uses Gremlins (`github.com/go-gremlins/gremlins`).
 
 ### Benefits
 
