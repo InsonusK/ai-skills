@@ -28,3 +28,8 @@ The retag from the shared `element/repository` `.create` conflation is recorded 
 
 # Architectural signal
 N = 3. **Benign.** A contract-conformant remote repo touched by its own common + VP solutions is the correct design, not a mis-drawn variation point. Recorded per the delta-conflict-detection N≥3 rule.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-embeddable-app` | 3 | First (and, so far, only) plateau — `solution-federation-remote` (create) + `solution-session-consumption` (VP1) + `solution-remote-design-system-consumption` (VP2) | `ng build` emits `remoteEntry.json` exposing `./Routes` and sharing `@platform/contracts` as a strict singleton; `ng test` covers `requirePermission` + the not-authenticated state |

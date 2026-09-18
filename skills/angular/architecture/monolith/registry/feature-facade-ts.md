@@ -1,6 +1,6 @@
 ---
 name: registry-feature-facade-ts
-description: Conflict Detection result for the `feature-facade-ts` element in the plateau-offline-full-monolith plateau
+description: Conflict Detection result for the `feature-facade-ts` element
 tags:
   - concern/architecture
   - stack/typescript
@@ -22,3 +22,8 @@ tags:
 
 # Resolution
 **Canonical — no resolver.** Single-direction refine of a method the `.create` owns. The offline error is caught *before* any feature status-code branch (mirroring the `feature-client-ts` group). The `plateau-offline-full-monolith` example's `orders.facade.spec.ts` pins: validation fails without enqueue, `OfflineTransportError` → enqueue + `{ queued: true }`, a genuine server error re-throws without enqueue.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-offline-full-monolith` | 2 | First (and, so far, only) plateau where both solutions are simultaneously present | `orders.facade.spec.ts` covers all three cases |

@@ -1,6 +1,6 @@
 ---
 name: registry-component-name-component-ts
-description: Conflict Detection result for the `component-name-component-ts` element in the plateau-online-monolith plateau
+description: Conflict Detection result for the `component-name-component-ts` element
 tags:
   - concern/architecture
   - stack/typescript
@@ -22,3 +22,8 @@ tags:
 
 # Resolution
 **Canonical — resolved by convention, no resolver solution.** Each solution's `.extend` adds a distinct member. The `plateau-online-monolith` example demonstrates it: `order-form.component.ts` carries the Signal Forms `[(ngModel)]` form and its `submit()` handler (from `solution-forms`); a component that also needs view-only local state would add a `signal()` per `solution-state-tiering` without either touching the other's code.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-online-monolith` | 2 | First real: `solution-forms` + `solution-state-tiering`, both common baseline conventions present from the root plateau | `order-form.component.ts` demonstrates both concerns member-disjoint |

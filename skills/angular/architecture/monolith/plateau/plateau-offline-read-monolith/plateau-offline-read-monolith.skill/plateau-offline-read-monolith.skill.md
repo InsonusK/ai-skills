@@ -17,8 +17,8 @@ standalone: true
 created_by:
   - "[[skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md|solution-offline-first]]"
 registry:
-  - "[[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/registry/feature-client-ts.md|feature-client-ts]]"
-  - "[[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/registry/shared-state-project.md|shared-state-project]]"
+  - "[[skills/angular/architecture/monolith/registry/feature-client-ts.md|feature-client-ts]]"
+  - "[[skills/angular/architecture/monolith/registry/shared-state-project.md|shared-state-project]]"
 ---
 
 > **Third plateau of the `monolith` catalog.** Composes [`plateau-async-monolith`](skills/angular/architecture/monolith/plateau/plateau-async-monolith/plateau-async-monolith.skill/plateau-async-monolith.skill.md) (which already carries `plateau-online-monolith` + VP1) and adds exactly one solution — [`solution-offline-first`](skills/angular/architecture/solutions/solution-offline-first.skill/solution-offline-first.skill.md) — realizing **VP4 (OfflineReadResilience) = Yes** of the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md). VP1–VP4 = Yes; VP5–VP8 = No. Next in the chain: `plateau-offline-full-monolith` (VP5 — the durable write queue). Scope here is **read resilience only**: the shell always loads, API GETs fall back to last-known data; a mutation attempted offline still **fails immediately** with `OfflineTransportError` — this plateau only prepares that hook. No new Nx project.

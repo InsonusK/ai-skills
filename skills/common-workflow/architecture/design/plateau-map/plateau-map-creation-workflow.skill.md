@@ -23,7 +23,7 @@ tags:
 ## The five steps
 1. **[[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]]** — write the Program Family's common/mandatory baseline vs. its variable feature set as a FODA-style diagram + table, grounded in a concrete baseline project structure. Output: `{catalog}/feature/feature-model.md`.
 2. **[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]]** — group the Feature Model's non-common features into Variation Points and fill each row's VP, Variants, Constraint, Realization-depends-on, and Migration columns. Output: `{catalog}/variability-map.md`. The `Realized by` column is filled by step 3, run as a required sub-step of this one.
-3. **[[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]]** — fill the Variability Map's `Realized by` column: walk each VP, author or reuse the solution(s) that realize it, then classify every group of solutions that touch the same code element (`Constraint x Category x Kind`) and build a resolver only for the codes that need one. Output: the finished `Realized by` column, plus per-element files in the plateau's own `registry/` folder. Runs as the last step of step 2 — the map is not finished without it.
+3. **[[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]]** — fill the Variability Map's `Realized by` column: walk each VP, author or reuse the solution(s) that realize it, then classify every group of solutions that touch the same code element (`Constraint x Category x Kind`) and build a resolver only for the codes that need one. Output: the finished `Realized by` column, plus one per-element file per intersection in the catalog root's own `registry/` folder. Runs as the last step of step 2 — the map is not finished without it.
 4. **Assemble the plateaus** — via `plateau-create-by-solutions` (a new plateau, from a Variability Map row's Realized-by combination) or `plateau-update-by-solutions` (an existing plateau gains or loses a solution). Not a skill of this pipeline's own folder — it runs repeatedly against the catalog, not only once per pipeline pass. Output: `{catalog}/plateau/plateau-{name}/`.
 5. **[[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md|plateau-map-create]]** — maintain the plateau↔VP view: recompute `{catalog}/plateau/plateau-repository.md` (the Plateau × VP matrix and lineage) whenever a plateau changes (step 4) or a VP changes (step 2), cross-checking every plateau's VP set against the map's Constraints. Assumes a fully-filled `variability-map.md`. Output: `{catalog}/plateau/plateau-repository.md`.
 
@@ -34,6 +34,8 @@ tags:
     feature-model.md          ← step 1
     diagrams/feature-diagram.mmd
   variability-map.md          ← step 2 (Realized by column filled by step 3)
+  registry/
+    {element-name}.md          ← step 3's output, one file per intersecting element, cumulative across every plateau that touches it
   solutions/
     solution-{name}.skill/    ← step 3, one per Realized-by entry
   plateau/
@@ -43,7 +45,6 @@ tags:
         plateau-{name}.skill.md
         example/
       structure/
-      registry/                ← step 3's output, placed at the shallowest plateau where it's real
       adr/
 ```
 

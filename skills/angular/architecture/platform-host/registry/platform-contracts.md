@@ -27,3 +27,8 @@ Both coexist at this plateau — VP2 `SessionSharing` requires the package `solu
 
 # Architectural signal
 N = 2. **Benign.** Not a case for reconsidering VP boundaries — a shared contract package is meant to grow one shape at a time.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-platform-host` | 2 | First (and, so far, only) plateau where both solutions are simultaneously present | `example/` vendors `@platform/contracts`; host and remote both consume it as a strict federation singleton |

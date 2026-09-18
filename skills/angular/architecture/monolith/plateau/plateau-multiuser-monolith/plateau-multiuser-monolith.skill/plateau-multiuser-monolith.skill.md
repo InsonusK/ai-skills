@@ -18,10 +18,10 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md|solution-logging-global]]"
   - "[[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]]"
 registry:
-  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/shared-state-project.md|shared-state-project]]"
-  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/shared-logging-project.md|shared-logging-project]]"
-  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/platform-shell-project.md|platform-shell-project]]"
-  - "[[skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/registry/feature-routes-ts.md|feature-routes-ts]]"
+  - "[[skills/angular/architecture/monolith/registry/shared-state-project.md|shared-state-project]]"
+  - "[[skills/angular/architecture/monolith/registry/shared-logging-project.md|shared-logging-project]]"
+  - "[[skills/angular/architecture/monolith/registry/platform-shell-project.md|platform-shell-project]]"
+  - "[[skills/angular/architecture/monolith/registry/feature-routes-ts.md|feature-routes-ts]]"
 ---
 
 > **Fifth and last plateau of the `monolith` catalog — and [`plateau-platform-host`](skills/angular/architecture/platform-host/variability-map.md)'s parent.** Composes [`plateau-offline-full-monolith`](skills/angular/architecture/monolith/plateau/plateau-offline-full-monolith/plateau-offline-full-monolith.skill/plateau-offline-full-monolith.skill.md) (online + VP1 + VP4 + VP5) and adds **two** solutions — [`solution-logging-global`](skills/angular/architecture/solutions/solution-logging-global.skill/solution-logging-global.skill.md) (**VP6 — BackendLogDelivery**) and [`solution-authentication`](skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md) (**VP7 — Authentication**) of the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md). VP1–VP7 = Yes; VP8 (PersistedState) is aspirational. Still one deployable unit — Module Federation is `platform-host`, not here.

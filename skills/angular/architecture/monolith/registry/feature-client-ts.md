@@ -1,6 +1,6 @@
 ---
 name: registry-feature-client-ts
-description: Conflict Detection result for the `feature-client-ts` element in the plateau-offline-read-monolith plateau
+description: Conflict Detection result for the `feature-client-ts` element
 tags:
   - concern/architecture
   - stack/typescript
@@ -22,3 +22,8 @@ tags:
 
 # Resolution
 **Canonical — no resolver.** The `.extend` is a single-direction refine of a method the `.create` owns. `OfflineTransportError` is defined once, in `libs/shared/http-core`, never per feature. The `plateau-offline-read-monolith` example's `orders.client.spec.ts` pins all four cases: mapped DTO, 409 → `OrdersConflictError`, `status 0` → `OfflineTransportError`, 500 → `OrdersTransportError` (not the offline error).
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-offline-read-monolith` | 2 | First (and, so far, only) plateau where both solutions are simultaneously present | `orders.client.spec.ts` covers all four cases |

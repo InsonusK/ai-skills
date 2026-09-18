@@ -19,7 +19,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-session-consumption.skill/solution-session-consumption.skill.md|solution-session-consumption]]"
   - "[[skills/angular/architecture/solutions/solution-remote-design-system-consumption.skill/solution-remote-design-system-consumption.skill.md|solution-remote-design-system-consumption]]"
 registry:
-  - "[[skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/registry/embeddable-repository.md|embeddable-repository]]"
+  - "[[skills/angular/architecture/embeddable-app/registry/embeddable-repository.md|embeddable-repository]]"
 ---
 
 > **The `embeddable-app` catalog's single plateau — built from scratch (`parent_plateaus: []`).** A remote is not a continuation of the platform chain: its own internal architecture is unconstrained (the aspirational `RemoteInternalArchitecture` VP would `parent_plateaus` a monolith plateau; not built). This plateau prescribes the common `FederationRemoteContract` plus VP1 `RemoteSessionConsumption` = Yes and VP2 `RemoteDesignSystemConsumption` = Yes (both "near-universal but optional" — the [embeddable-app variability map](skills/angular/architecture/embeddable-app/variability-map.md)). A **separate repository**, any tooling — a plain Angular CLI workspace is enough.
