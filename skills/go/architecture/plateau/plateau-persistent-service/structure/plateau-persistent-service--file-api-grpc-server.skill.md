@@ -14,7 +14,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]]"
   - "[[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]"
 registry:
-  - "[[../registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]]"
+  - "[[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]]"
 ---
 
 # Goal

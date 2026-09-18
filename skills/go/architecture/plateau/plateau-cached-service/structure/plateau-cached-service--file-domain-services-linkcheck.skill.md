@@ -14,7 +14,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]]"
   - "[[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]]"
 registry:
-  - "[[../registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
+  - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
 ---
 
 # Goal

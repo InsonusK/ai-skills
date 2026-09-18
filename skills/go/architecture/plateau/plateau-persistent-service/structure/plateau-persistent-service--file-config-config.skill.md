@@ -18,7 +18,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]]"
   - "[[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]"
 registry:
-  - "[[../registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
 ---
 
 # Goal

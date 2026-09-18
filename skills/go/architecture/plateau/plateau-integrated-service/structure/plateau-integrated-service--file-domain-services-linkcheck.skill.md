@@ -13,7 +13,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]]"
   - "[[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]]"
 registry:
-  - "[[../registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
+  - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
 ---
 
 # Goal

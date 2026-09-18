@@ -15,12 +15,12 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]"
 standalone: true
 registry:
-  - "[[registry/cmd-service-main-go.md|cmd-service-main-go]]"
-  - "[[registry/internal-config-config-go.md|internal-config-config-go]]"
-  - "[[registry/repo-root.md|repo-root]]"
-  - "[[registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
-  - "[[registry/internal-api-http-server-go.md|internal-api-http-server-go]]"
-  - "[[registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]]"
+  - "[[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"
+  - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[skills/go/architecture/registry/repo-root.md|repo-root]]"
+  - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
+  - "[[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]]"
+  - "[[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]]"
 ---
 
 # Goal
@@ -30,7 +30,7 @@ Everything [[skills/go/architecture/plateau/plateau-cached-service/plateau-cache
 Union of the parent's principles, plus:
 - The persistence port (`LinkHistory`) is narrow and business-named, exactly like `ReputationChecker`/`ReputationCache` (see [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]'s own ADR).
 - A history-record failure **fails the request** — the opposite of a cache-store failure. The caller asked for a durable record; silently dropping it would be a correctness bug, not a degraded optimization.
-- Recording history is a pure append to `Check`'s existing body — it reads the already-computed reputation result and writes afterward, never wrapping or relocating the cache-aside logic `plateau-cached-service` introduced. See [[registry/internal-domain-services-service-go.md|the registry entry]] for why this stays canonical `FMN`, unlike the borderline `{external-integration, cached-db}` pairing one plateau back.
+- Recording history is a pure append to `Check`'s existing body — it reads the already-computed reputation result and writes afterward, never wrapping or relocating the cache-aside logic `plateau-cached-service` introduced. See [[skills/go/architecture/registry/internal-domain-services-service-go.md|the registry entry]] for why this stays canonical `FMN`, unlike the borderline `{external-integration, cached-db}` pairing one plateau back.
 - A solution that adds new domain data must expose it through every applied inbound adapter, not just compute it — the same principle `external-integration` established for `Flagged`/`Reason`, now applied to the entire read-history capability (`GET /v1/links/recent` over HTTP, `RecentChecks` over gRPC).
 
 # Capabilities
@@ -86,12 +86,12 @@ See `structure/` — everything from the parent, union'd with:
 
 # Registry
 Six intersections — see `registry/`. Four canonical without further note; two carry a genuine architectural-signal finding:
-- [[registry/cmd-service-main-go.md|cmd-service-main-go]] (N=7; `persistent-db` inserts before construction like `external-integration`/`cached-db` did, confirming the prediction from `plateau-cached-service` — every VP-realizing solution this catalog fully authored now extends this element)
-- [[registry/internal-config-config-go.md|internal-config-config-go]] (N=7, stayed purely additive across five plateaus running)
-- [[registry/repo-root.md|repo-root]] (N=4, unchanged from the previous two plateaus — `solution-persistent-db` contributes no `Repository` delta, same as `solution-cached-db`)
-- [[registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=4; confirms — by actually reading `Check`'s body, not assuming — that `persistent-db`'s append-only delta stays plain `FMN`, unlike the borderline `{external-integration, cached-db}` pairing recorded one plateau back)
-- [[registry/internal-api-http-server-go.md|internal-api-http-server-go]] (N=3, **new element for the registry, written retroactively**: a catalog-wide grep found this element had already reached N=2 at `plateau-integrated-service` with no registry entry, so that omission was fixed at its own shallowest plateau before this plateau's N=3 entry was written — see that plateau's own registry folder)
-- [[registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (N=3, same retroactive-discovery story as above, conditional on `solution-grpc-api`)
+- [[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]] (N=7; `persistent-db` inserts before construction like `external-integration`/`cached-db` did, confirming the prediction from `plateau-cached-service` — every VP-realizing solution this catalog fully authored now extends this element)
+- [[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]] (N=7, stayed purely additive across five plateaus running)
+- [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=4, unchanged from the previous two plateaus — `solution-persistent-db` contributes no `Repository` delta, same as `solution-cached-db`)
+- [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=4; confirms — by actually reading `Check`'s body, not assuming — that `persistent-db`'s append-only delta stays plain `FMN`, unlike the borderline `{external-integration, cached-db}` pairing recorded one plateau back)
+- [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]] (N=3, **new element for the registry, written retroactively**: a catalog-wide grep found this element had already reached N=2 at `plateau-integrated-service` with no registry entry, so that omission was fixed at its own shallowest plateau before this plateau's N=3 entry was written — see that plateau's own registry folder)
+- [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (N=3, same retroactive-discovery story as above, conditional on `solution-grpc-api`)
 
 # Ground truth
 `example/` evolved from `plateau-cached-service`'s, verified:

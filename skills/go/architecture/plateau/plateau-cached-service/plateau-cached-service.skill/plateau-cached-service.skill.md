@@ -15,10 +15,10 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]]"
 standalone: true
 registry:
-  - "[[registry/cmd-service-main-go.md|cmd-service-main-go]]"
-  - "[[registry/internal-config-config-go.md|internal-config-config-go]]"
-  - "[[registry/repo-root.md|repo-root]]"
-  - "[[registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
+  - "[[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"
+  - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[skills/go/architecture/registry/repo-root.md|repo-root]]"
+  - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
 ---
 
 # Goal
@@ -75,10 +75,10 @@ See `structure/` — everything from the parent, union'd with:
 
 # Registry
 Four intersections — see `registry/`. Three canonical without qualification; one genuinely interesting:
-- [[registry/cmd-service-main-go.md|cmd-service-main-go]] (N=6; `cached-db` inserts before construction like `external-integration` did, no new restructuring)
-- [[registry/internal-config-config-go.md|internal-config-config-go]] (N=6, purely additive across four plateaus running)
-- [[registry/repo-root.md|repo-root]] (N=4, unchanged — `solution-cached-db` contributes no `Repository` delta)
-- [[registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=3; the `{external-integration, cached-db}` pairing is **borderline-`FMC`, defused not by a `depends_on` edge but by `solution-cached-db`'s own Implementation file explicitly naming `solution-external-integration` and stating the merge rule** — read this entry, it's the most interesting registry finding in this catalog so far)
+- [[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]] (N=6; `cached-db` inserts before construction like `external-integration` did, no new restructuring)
+- [[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]] (N=6, purely additive across four plateaus running)
+- [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=4, unchanged — `solution-cached-db` contributes no `Repository` delta)
+- [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=3; the `{external-integration, cached-db}` pairing is **borderline-`FMC`, defused not by a `depends_on` edge but by `solution-cached-db`'s own Implementation file explicitly naming `solution-external-integration` and stating the merge rule** — read this entry, it's the most interesting registry finding in this catalog so far)
 
 # Ground truth
 `example/` evolved from `plateau-integrated-service`'s, verified:

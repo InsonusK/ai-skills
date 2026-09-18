@@ -15,7 +15,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]]"
   - "[[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]"
 registry:
-  - "[[../registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
+  - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
 ---
 
 # Goal
@@ -32,7 +32,7 @@ __Applied solutions:__
 - Validation happens before the cache, the reputation call, or the history record.
 - A cache-store failure (not a miss) degrades to computing the value normally — never fails the request.
 - A history-record failure **does** fail the request (unlike the cache) — the caller asked for a durable record; silently dropping it would be a correctness bug, not a degraded optimization.
-- `history.Record` runs strictly after the reputation/cache result is known — it is a pure append to `Check`'s existing body, never a wrap of the cache-aside logic (`reputationWithCache` stays untouched by this solution; see [[../registry/internal-domain-services-service-go.md|the registry entry]] for why this stays canonical `FMN` rather than the borderline case `{external-integration, cached-db}` needed).
+- `history.Record` runs strictly after the reputation/cache result is known — it is a pure append to `Check`'s existing body, never a wrap of the cache-aside logic (`reputationWithCache` stays untouched by this solution; see [[skills/go/architecture/registry/internal-domain-services-service-go.md|the registry entry]] for why this stays canonical `FMN` rather than the borderline case `{external-integration, cached-db}` needed).
 
 # Implementation
 ```go

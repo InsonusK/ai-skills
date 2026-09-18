@@ -14,7 +14,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-go-app-logging.skill/solution-go-app-logging.skill.md|solution-go-app-logging]]"
   - "[[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]]"
 registry:
-  - "[[../registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
 ---
 
 # Goal

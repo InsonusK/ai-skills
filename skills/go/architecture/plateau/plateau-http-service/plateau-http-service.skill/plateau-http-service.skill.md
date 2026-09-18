@@ -18,9 +18,9 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-go-conformance-testing.skill/solution-go-conformance-testing.skill.md|solution-go-conformance-testing]]"
 standalone: true
 registry:
-  - "[[registry/cmd-service-main-go.md|cmd-service-main-go]]"
-  - "[[registry/internal-config-config-go.md|internal-config-config-go]]"
-  - "[[registry/repo-root.md|repo-root]]"
+  - "[[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"
+  - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[skills/go/architecture/registry/repo-root.md|repo-root]]"
 ---
 
 # Goal
@@ -76,9 +76,9 @@ See `structure/`:
 
 # Registry
 Three intersections found at this plateau (all canonical `FMN`, no resolver) — see `registry/`:
-- [[registry/cmd-service-main-go.md|cmd-service-main-go]] (N=3, architectural signal noted)
-- [[registry/internal-config-config-go.md|internal-config-config-go]] (N=3, architectural signal noted)
-- [[registry/repo-root.md|repo-root]] (N=2)
+- [[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]] (N=3, architectural signal noted)
+- [[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]] (N=3, architectural signal noted)
+- [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=2)
 
 # Ground truth
 `example/` is a real, runnable Go module (`github.com/example/linkcheck-service`), verified:

@@ -15,9 +15,9 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]]"
 standalone: true
 registry:
-  - "[[registry/cmd-service-main-go.md|cmd-service-main-go]]"
-  - "[[registry/internal-config-config-go.md|internal-config-config-go]]"
-  - "[[registry/repo-root.md|repo-root]]"
+  - "[[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"
+  - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[skills/go/architecture/registry/repo-root.md|repo-root]]"
 ---
 
 # Goal
@@ -66,9 +66,9 @@ See `structure/` — everything from [[skills/go/architecture/plateau/plateau-ht
 
 # Registry
 Three intersections, all still canonical (no resolver) but two grew from the parent — see `registry/`:
-- [[registry/cmd-service-main-go.md|cmd-service-main-go]] (N=4; `grpc-api` genuinely *restructures* `http-api`'s contribution via its own `depends_on` edge — `TMN`, not `FMN`, for that specific pairing; still canonical)
-- [[registry/internal-config-config-go.md|internal-config-config-go]] (N=4, stayed purely additive)
-- [[registry/repo-root.md|repo-root]] (N=3, crosses the architectural-signal threshold for the first time; flagged to re-check once `solution-external-integration` also extends the same `proto-gen` target)
+- [[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]] (N=4; `grpc-api` genuinely *restructures* `http-api`'s contribution via its own `depends_on` edge — `TMN`, not `FMN`, for that specific pairing; still canonical)
+- [[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]] (N=4, stayed purely additive)
+- [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=3, crosses the architectural-signal threshold for the first time; flagged to re-check once `solution-external-integration` also extends the same `proto-gen` target)
 
 # Ground truth
 `example/` evolved from `plateau-http-service`'s (copied forward, then extended), verified:

@@ -16,7 +16,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]]"
   - "[[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]]"
 registry:
-  - "[[../registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
 ---
 
 # Goal

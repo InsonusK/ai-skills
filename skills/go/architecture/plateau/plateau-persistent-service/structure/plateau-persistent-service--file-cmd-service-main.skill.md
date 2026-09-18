@@ -18,11 +18,11 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]]"
   - "[[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]"
 registry:
-  - "[[../registry/cmd-service-main-go.md|cmd-service-main-go]]"
+  - "[[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"
 ---
 
 # Goal
-The composition root: load config, initialize logging, dial the reputation client, the Redis cache, and the PostgreSQL connection pool, construct the domain service, and start both the gRPC and HTTP servers concurrently via an `errgroup.Group`, stopping both cleanly on `SIGINT`/`SIGTERM`. See [[../registry/cmd-service-main-go.md|the registry entry]] for how the seven contributing solutions' deltas combine.
+The composition root: load config, initialize logging, dial the reputation client, the Redis cache, and the PostgreSQL connection pool, construct the domain service, and start both the gRPC and HTTP servers concurrently via an `errgroup.Group`, stopping both cleanly on `SIGINT`/`SIGTERM`. See [[skills/go/architecture/registry/cmd-service-main-go.md|the registry entry]] for how the seven contributing solutions' deltas combine.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]]
