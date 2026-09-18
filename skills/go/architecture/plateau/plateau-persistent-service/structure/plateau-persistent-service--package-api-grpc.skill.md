@@ -38,7 +38,7 @@ internal/api/grpc/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| server.go | `Server`: implements the generated `LinkCheckServiceServer`, two RPCs (`Check`, `RecentChecks`) | [[plateau-persistent-service--file-api-grpc-server.skill.md]] |
+| server.go | `Server`: implements the generated `LinkCheckServiceServer`, two RPCs (`Check`, `RecentChecks`) | [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-api-grpc-server.skill.md]] |
 
 # Go Dependencies
 | Module | Version constraint | Purpose |

@@ -64,15 +64,15 @@ sequenceDiagram
 
 # Structure
 See `structure/`:
-- [[structure/plateau-http-service--repo-http-service.skill.md|repo-http-service]]
-- [[structure/plateau-http-service--package-domain-services.skill.md|package-domain-services]]
-- [[structure/plateau-http-service--package-api-http.skill.md|package-api-http]]
-- [[structure/plateau-http-service--file-cmd-service-main.skill.md|file-cmd-service-main]]
-- [[structure/plateau-http-service--file-config-config.skill.md|file-config-config]]
-- [[structure/plateau-http-service--file-version-version.skill.md|file-version-version]]
-- [[structure/plateau-http-service--file-logging-logger.skill.md|file-logging-logger]]
-- [[structure/plateau-http-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]]
-- [[structure/plateau-http-service--file-api-http-server.skill.md|file-api-http-server]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--repo-http-service.skill.md|repo-http-service]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-domain-services.skill.md|package-domain-services]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-api-http.skill.md|package-api-http]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-cmd-service-main.skill.md|file-cmd-service-main]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-config-config.skill.md|file-config-config]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-version-version.skill.md|file-version-version]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-logging-logger.skill.md|file-logging-logger]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-api-http-server.skill.md|file-api-http-server]]
 
 # Registry
 Three intersections found at this plateau (all canonical `FMN`, no resolver) — see `registry/`:

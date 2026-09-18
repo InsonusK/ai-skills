@@ -23,7 +23,7 @@ depends_on:
   - "[[skills/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]]"
 built_on_plateau:
 adr:
-  - "[[adr/postgres-via-pgx.md|PostgreSQL via pgx]]"
+  - "[[skills/go/architecture/solutions/solution-persistent-db.skill/adr/postgres-via-pgx.md|PostgreSQL via pgx]]"
 ---
 
 # Goal
@@ -42,7 +42,7 @@ adr:
 - Schema migration tooling is out of scope — this solution's adapter creates its table with `CREATE TABLE IF NOT EXISTS` on construction, adequate for this catalog's own runnable examples; a production consumer of this catalog is expected to replace that with real migration tooling of its own choosing.
 
 # Adr
-- [[adr/postgres-via-pgx.md|PostgreSQL via pgx]]
+- [[skills/go/architecture/solutions/solution-persistent-db.skill/adr/postgres-via-pgx.md|PostgreSQL via pgx]]
   - Selected variant: PostgreSQL, accessed via `github.com/jackc/pgx/v5/pgxpool` directly (not `database/sql`)
 
 # Requirements

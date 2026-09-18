@@ -46,9 +46,9 @@ internal/domain/interfaces/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| reputation.go | `ReputationChecker` port + `Reputation` value type + `ErrUnavailable` | [[plateau-persistent-service--file-domain-interfaces-reputation.skill.md]] |
-| reputation_cache.go | `ReputationCache` port | [[plateau-persistent-service--file-domain-interfaces-reputation-cache.skill.md]] |
-| link_history.go | `LinkHistory` port + `LinkHistoryEntry` value type | [[plateau-persistent-service--file-domain-interfaces-link-history.skill.md]] |
+| reputation.go | `ReputationChecker` port + `Reputation` value type + `ErrUnavailable` | [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-domain-interfaces-reputation.skill.md]] |
+| reputation_cache.go | `ReputationCache` port | [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-domain-interfaces-reputation-cache.skill.md]] |
+| link_history.go | `LinkHistory` port + `LinkHistoryEntry` value type | [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-domain-interfaces-link-history.skill.md]] |
 
 # What Does NOT Belong Here
 - Any concrete type from an infrastructure library — belongs to the adapter package that implements the port.

@@ -57,11 +57,11 @@ An invalid URL maps to `codes.InvalidArgument` (gRPC) the same way it maps to `4
 
 # Structure
 See `structure/` — everything from [[skills/go/architecture/plateau/plateau-http-service/plateau-http-service.skill/plateau-http-service.skill.md|plateau-http-service]]'s structure, union'd with:
-- [[structure/plateau-dual-api-service--repo-dual-api-service.skill.md|repo-dual-api-service]] (extended: `proto/`, `buf/`, `gen/api/`, `proto-gen` target)
-- [[structure/plateau-dual-api-service--package-api-grpc.skill.md|package-api-grpc]] (new)
-- [[structure/plateau-dual-api-service--file-api-grpc-server.skill.md|file-api-grpc-server]] (new)
-- [[structure/plateau-dual-api-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: `errgroup.Group`)
-- [[structure/plateau-dual-api-service--file-config-config.skill.md|file-config-config]] (extended: `GRPCListenPort`)
+- [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--repo-dual-api-service.skill.md|repo-dual-api-service]] (extended: `proto/`, `buf/`, `gen/api/`, `proto-gen` target)
+- [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--package-api-grpc.skill.md|package-api-grpc]] (new)
+- [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-api-grpc-server.skill.md|file-api-grpc-server]] (new)
+- [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: `errgroup.Group`)
+- [[skills/go/architecture/plateau/plateau-dual-api-service/structure/plateau-dual-api-service--file-config-config.skill.md|file-config-config]] (extended: `GRPCListenPort`)
 - Unchanged from the parent: `package-domain-services`, `package-api-http`, `file-domain-services-linkcheck`, `file-version-version`, `file-logging-logger`, `file-api-http-server`.
 
 # Registry

@@ -39,7 +39,7 @@ internal/infrastructure/linkstore/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| store.go | `Store` implementing `LinkHistory` via `github.com/jackc/pgx/v5/pgxpool` | [[plateau-persistent-service--file-infrastructure-linkstore-store.skill.md]] |
+| store.go | `Store` implementing `LinkHistory` via `github.com/jackc/pgx/v5/pgxpool` | [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-infrastructure-linkstore-store.skill.md]] |
 
 # Go Dependencies
 | Module | Version constraint | Purpose |

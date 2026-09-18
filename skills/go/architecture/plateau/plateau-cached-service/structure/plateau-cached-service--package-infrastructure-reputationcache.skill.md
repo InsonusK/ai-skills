@@ -38,7 +38,7 @@ internal/infrastructure/reputationcache/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| store.go | `Store` implementing `ReputationCache` via `github.com/redis/go-redis/v9` | [[plateau-cached-service--file-infrastructure-reputationcache-store.skill.md]] |
+| store.go | `Store` implementing `ReputationCache` via `github.com/redis/go-redis/v9` | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-infrastructure-reputationcache-store.skill.md]] |
 
 # Go Dependencies
 | Module | Version constraint | Purpose |

@@ -16,7 +16,7 @@ extends:
 depends_on:
 built_on_plateau:
 adr:
-  - "[[adr/shared-prerequisite-not-common-baseline.md|Shared prerequisite, not part of the common baseline]]"
+  - "[[skills/go/architecture/solutions/solution-go-domain-ports.skill/adr/shared-prerequisite-not-common-baseline.md|Shared prerequisite, not part of the common baseline]]"
 ---
 
 # Goal
@@ -33,7 +33,7 @@ adr:
 - This solution creates the package itself but declares no interface in it — the first solution applied on top (`solution-external-integration`, `solution-cached-db`, or `solution-persistent-db`) adds its own port as a new file in this package.
 
 # Adr
-- [[adr/shared-prerequisite-not-common-baseline.md|Shared prerequisite, not part of the common baseline]]
+- [[skills/go/architecture/solutions/solution-go-domain-ports.skill/adr/shared-prerequisite-not-common-baseline.md|Shared prerequisite, not part of the common baseline]]
   - Selected variant: a shared prerequisite three VP-realizing solutions `depends_on`, not a common-baseline solution every plateau applies
 
 # Template Skill Mutations

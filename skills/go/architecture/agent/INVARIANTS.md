@@ -57,9 +57,9 @@ tools/
 | --- | --- | --- |
 | VP1 GrpcApi | `solution-grpc-api` | — |
 | VP2 ExternalIntegration | `solution-external-integration` (`depends_on` `solution-go-domain-ports`) | — |
-| VP3 AsyncOutboundApi | `solution-messaging-infrastructure` + `solution-kafka-producer` *(skeleton)* | — |
-| VP4 OutboxPattern | `solution-transactional-outbox` *(skeleton)* | requires VP3 AND VP7 |
-| VP5 AsyncInboundApi | `solution-messaging-infrastructure` + `solution-kafka-consumer` *(skeleton)* | — |
+| VP3 AsyncOutboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-producer` *(skeleton)* | — |
+| VP4 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP3 AND VP7 |
+| VP5 AsyncInboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-consumer` *(skeleton)* | — |
 | VP6 CachedDb | `solution-cached-db` (`depends_on` `solution-go-domain-ports`) | — |
 | VP7 PersistentDb | `solution-persistent-db` (`depends_on` `solution-go-domain-ports`) | — |
 

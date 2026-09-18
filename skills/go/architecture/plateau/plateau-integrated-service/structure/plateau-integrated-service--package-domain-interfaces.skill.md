@@ -40,7 +40,7 @@ internal/domain/interfaces/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| reputation.go | `ReputationChecker` port + `Reputation` value type + `ErrUnavailable` | [[plateau-integrated-service--file-domain-interfaces-reputation.skill.md]] |
+| reputation.go | `ReputationChecker` port + `Reputation` value type + `ErrUnavailable` | [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-domain-interfaces-reputation.skill.md]] |
 
 # What Does NOT Belong Here
 - Any concrete type from an infrastructure library — belongs to the adapter package that implements the port.

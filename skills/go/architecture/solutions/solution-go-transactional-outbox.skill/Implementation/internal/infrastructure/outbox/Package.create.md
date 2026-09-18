@@ -19,7 +19,7 @@ tags:
 ```
 internal/infrastructure/outbox/
   outbox.go   (table access: insert-within-transaction, select-pending)
-  relay.go    (polls the table, calls solution-kafka-producer's publish port, marks relayed)
+  relay.go    (polls the table, calls solution-go-kafka-producer's publish port, marks relayed)
 ```
 
 # What Does NOT Belong Here

@@ -8,6 +8,7 @@ sources:
       - skills/common-workflow
       - skills/angular
       - skills/typescript
+      - skills/go
       - skills/design
 
 settings:

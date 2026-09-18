@@ -1,6 +1,6 @@
 ---
-name: solution-messaging-infrastructure
-description: Shared Kafka connection/config plumbing that solution-kafka-producer and solution-kafka-consumer both depend on
+name: solution-go-messaging-infrastructure
+description: Shared Kafka connection/config plumbing that solution-go-kafka-producer and solution-go-kafka-consumer both depend on
 whenToUse: when a Go web-service needs to publish or consume Kafka messages for the first time and no shared broker configuration exists yet
 domain: skill
 type: architecture
@@ -20,8 +20,8 @@ adr:
 ---
 
 > Draft contract — no consumer yet. No plateau in this catalog's first build composes
-> [[skills/go/architecture/solutions/solution-kafka-producer.skill/solution-kafka-producer.skill.md|solution-kafka-producer]] or
-> [[skills/go/architecture/solutions/solution-kafka-consumer.skill/solution-kafka-consumer.skill.md|solution-kafka-consumer]]
+> [[skills/go/architecture/solutions/solution-go-kafka-producer.skill/solution-go-kafka-producer.skill.md|solution-go-kafka-producer]] or
+> [[skills/go/architecture/solutions/solution-go-kafka-consumer.skill/solution-go-kafka-consumer.skill.md|solution-go-kafka-consumer]]
 > yet (see `skills/go/architecture/variability-map.md` VP3/VP5). This solution's shape is
 > plausible, not verified against a runnable example — treat it as a starting point, not a
 > finished contract, until a real plateau consumes it.

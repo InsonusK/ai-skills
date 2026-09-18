@@ -38,7 +38,7 @@ internal/api/grpc/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| server.go | `Server`: implements the generated `LinkCheckServiceServer`, one RPC (`Check`) | [[plateau-cached-service--file-api-grpc-server.skill.md]] |
+| server.go | `Server`: implements the generated `LinkCheckServiceServer`, one RPC (`Check`) | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-api-grpc-server.skill.md]] |
 
 # Go Dependencies
 | Module | Version constraint | Purpose |

@@ -25,7 +25,7 @@ depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 built_on_plateau:
 adr:
-  - "[[adr/mutation-tool-choice.md|Mutation-testing tool for Go]]"
+  - "[[skills/go/architecture/solutions/solution-go-conformance-testing.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]"
 ---
 
 # Goal
@@ -43,7 +43,7 @@ adr:
 - `mutation-test` always exits with the underlying `gremlins` exit code after writing its normalized result, per the parent solution's contract.
 
 # Adr
-- [[adr/mutation-tool-choice.md|Mutation-testing tool for Go]]
+- [[skills/go/architecture/solutions/solution-go-conformance-testing.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]
   - Selected variant: `gremlins` (`github.com/go-gremlins/gremlins`)
 
 # Requirements

@@ -50,8 +50,8 @@ __Applied solutions:__
 ## Directory and package skills
 | Directory \| file | template link | Description |
 | ----------------- | -------------- | ------------ |
-| internal/domain/services | [[plateau-http-service--package-domain-services.skill.md]] | Business logic |
-| internal/api/http | [[plateau-http-service--package-api-http.skill.md]] | Inbound HTTP adapter |
+| internal/domain/services | [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-domain-services.skill.md]] | Business logic |
+| internal/api/http | [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-api-http.skill.md]] | Inbound HTTP adapter |
 
 # Rules
 
