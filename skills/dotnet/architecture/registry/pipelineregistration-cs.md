@@ -1,6 +1,6 @@
 ---
 name: registry-pipelineregistration-cs
-description: Conflict Detection result for the `pipelineregistration-cs` element in the plateau-offline-sync-service plateau
+description: Conflict Detection result for the `pipelineregistration-cs` element
 tags:
   - concern/architecture
   - stack/dotnet
@@ -33,7 +33,12 @@ tags:
 | 5 | `UnitOfWorkBehavior` | unit-of-work (VP2) | last — commits only a fully-guarded, non-stale, non-duplicate handler's staged changes |
 
 # Resolution
-**Canonical — no resolver.** Each solution's `PipelineRegistration.cs.extend.md` states its own position relative to the others in prose; `GuidResolvingBehavior`'s "after `ConcurrencyBehavior` when VP5 is applied, else after validation" is a conditional both solutions already document. The plateau-offline-sync-service `class-pipeline-registration` structure skill records the composed order, and the example's `PipelineRegistration.AddPipeline()` realises it.
+**Canonical — no resolver.** Each solution's `PipelineRegistration.cs.extend.md` states its own position relative to the others in prose; `GuidResolvingBehavior`'s "after `ConcurrencyBehavior` when VP5 is applied, else after validation" is a conditional both solutions already document. The `plateau-offline-sync-service` `class-pipeline-registration` structure skill records the composed order, and the example's `PipelineRegistration.AddPipeline()` realises it.
 
 # Architectural signal
 Six solutions register into this one method (N≥3). But the group is `FMN`, not `TMC`/`FMC`/`FDC` — the delta-conflict-detection architectural-signal note applies only to the conflicting codes. Each behaviour is a disjoint, position-documented insertion; no VP-boundary reconsideration is warranted.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-offline-sync-service` | 6 | First (and, so far, only) plateau where all six contributing solutions are simultaneously present | Confirmed against the plateau's own example: `PipelineRegistration.AddPipeline()`'s generated order matches the table above exactly |

@@ -1,6 +1,6 @@
 ---
 name: registry-feature-routes-ts
-description: Conflict Detection result for the `feature-routes-ts` element at plateau-multiuser-monolith — a feature's own Routes array, now also carrying a VP5 parent-route provider and a VP7 permission guard
+description: Conflict Detection result for the `feature-routes-ts` element
 tags:
   - concern/architecture
   - stack/typescript
@@ -16,8 +16,6 @@ tags:
 - [[skills/angular/architecture/solutions/solution-offline-sync.skill/solution-offline-sync.skill.md|solution-offline-sync]] (VP5, `.extend` — `Repository.extend` — wraps the feature's routes in a parent route whose `providers: [provide{Feature}OfflineSync()]` registers the feature's replay handler in a route-level env injector)
 - [[skills/angular/architecture/solutions/solution-authentication.skill/solution-authentication.skill.md|solution-authentication]] (VP7, `.extend` — `Routing/{feature}.guard.ts.create` — attaches `canActivate: [requirePermission('...')]` / `canMatch` on a route the feature restricts; the `requirePermission` factory itself lives in `libs/shared/auth-ui`)
 
-This is the shallowest plateau where all four coexist — VP1 landed at `plateau-async-monolith`, VP5 at `plateau-offline-full-monolith`, VP7 is first Yes here.
-
 # Classification
 `FMN` / `TMN` — single-direction refine. Category `M` (code changes to the routes array). Kind `N` (independent):
 - `performance-tuned-routing` only changes the *loading mechanism* of one sub-route (`component` → `loadComponent`).
@@ -30,7 +28,13 @@ No two write the same route object property. Each of `performance-tuned-routing`
 `source: ordering-only` — `HierarchicalRouting` is a common baseline feature, not a VP, so there is no VP↔VP Feature-Model constraint here. The create-then-extend order lives solely in each extending solution's `depends_on`.
 
 # Resolution
-**Canonical — no resolver.** The example's `orders.routes.ts` demonstrates all four: a parent route with `providers: [provideOrdersOfflineSync()]` (VP5) and `children` holding the main path (`component:` from `solution-app-routing`), a `report` sub-route split via `loadComponent` (VP1), and an `archive` sub-route with `canActivate: [requirePermission('orders.archive')]` (VP7). `orders.routes.spec.ts` guards that no route self-sets `data.preload`, that the split sub-route is `loadComponent`, that the offline-sync provider is registered, and that the guarded route redirects to `/forbidden` without the permission.
+**Canonical — no resolver.** The `plateau-multiuser-monolith` example's `orders.routes.ts` demonstrates all four: a parent route with `providers: [provideOrdersOfflineSync()]` (VP5) and `children` holding the main path (`component:` from `solution-app-routing`), a `report` sub-route split via `loadComponent` (VP1), and an `archive` sub-route with `canActivate: [requirePermission('orders.archive')]` (VP7). `orders.routes.spec.ts` guards that no route self-sets `data.preload`, that the split sub-route is `loadComponent`, that the offline-sync provider is registered, and that the guarded route redirects to `/forbidden` without the permission.
 
 # Architectural signal
 N = 4. **Benign.** A feature's routes array is the natural attachment point for per-route concerns (lazy split, route-scoped providers, guards) — each solution adds a distinct, non-overlapping property. Not a mis-drawn VP.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-async-monolith` | 2 | First real: `solution-app-routing` + `solution-performance-tuned-routing` (VP1) | `orders.routes.ts` keeps the base path and adds a `loadComponent`-split `report` sub-route; production build confirms the sub-route is its own lazy chunk |
+| `plateau-multiuser-monolith` | 4 | `solution-offline-sync` (VP5) and `solution-authentication` (VP7) join | `orders.routes.ts` adds the offline-sync provider wrapper and a guarded `archive` sub-route; `orders.routes.spec.ts` covers all four concerns |

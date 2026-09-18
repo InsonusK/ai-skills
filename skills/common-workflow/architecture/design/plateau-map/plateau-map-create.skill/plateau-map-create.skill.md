@@ -2,7 +2,7 @@
 name: plateau-map-create
 description: Define how to build and maintain a catalog's plateau repository — {catalog}/plateau/plateau-repository.md with the Plateau × VP matrix and lineage — as a derived, checkable view over a fully-filled Variability Map, updated whenever a plateau or a Variation Point changes
 whenToUse: when a plateau is created or its solution set changes (via plateau-create-by-solutions/plateau-update-by-solutions), when a Variation Point is added, changed, or removed in the catalog's variability-map.md, or when reviewing whether the catalog's named plateaus still cover every legitimate VP combination teams actually choose between
-updated: 20260906
+updated: 20260918
 tags:
   - skill/architecture/variability/design
   - stack
@@ -19,7 +19,7 @@ tags:
 - **The map is the source of truth** - The repository file never states VP facts (constraints, realizations, variants) the Variability Map does not state; it re-presents the map plateau-oriented and links back to it.
 - **Derived, never remembered** - Every ✅/❌ is computed from the plateau's actual `created_by`/`parent_plateaus` mapped through the map's Realized-by column — not from what a plateau is "about".
 - **Two triggers, one owner** - Plateau changes (create/update) and VP changes (map edits) both terminate here; no other file carries the plateau↔VP matrix.
-- **Starts from a finished map and existing plateaus** - This skill reads a Variability Map whose every column, `Realized by` included, is already filled, and plateau folders already created by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]]. It never authors solutions or plateaus.
+- **Starts from a finished map and existing plateaus** - This skill reads a Variability Map built by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]] (its `Realized by` column filled by that skill's own [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] sub-step) whose every column is already filled, and plateau folders already created by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]]. It never authors solutions, plateaus, or the map itself.
 
 # Workflow
 
@@ -44,10 +44,10 @@ Worked example: [[skills/common-workflow/architecture/design/plateau-map/plateau
 ## MUST
 
 ### Precondition: a fully-filled map
-Start only from a `{catalog}/variability-map.md`  made by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create.skill]] whose every column is filled — `Realized by` included — and from plateau folders already built by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]].
-- Violation: running this skill against a map with empty `Realized by` cells, or inventing plateau folders here.
-- Risk: a matrix derived from an incomplete map has columns that cannot be mapped to solutions, so its cells are guesses; authoring plateaus here duplicates work this skill only reads.
-- Fix: finish the map via [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] and create/update plateaus via their own skills before building the repository file.
+Start only from a `{catalog}/variability-map.md` built via [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md|variability-map-create]] with every column filled — `Realized by` included — and from plateau folders already built by [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] or changed by [[skills/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill.md|plateau-update-by-solutions]].
+- Violation: running this skill against a map with empty `Realized by` cells, against a map (or a hand-written table shaped like one) that `variability-map-create` did not produce, or inventing plateau folders here.
+- Risk: a matrix derived from an incomplete or improvised map has columns that cannot be mapped to solutions, so its cells are guesses; authoring plateaus here duplicates work this skill only reads.
+- Fix: build or finish the map via `variability-map-create` (its `Realized by` column filled by that skill's own [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] sub-step) and create/update plateaus via their own skills before building the repository file.
 
 ### Derived from the map, never restating it
 State no VP fact in `plateau-repository.md` that the Variability Map does not state — constraints, realizations, and variants live there; the file links back.

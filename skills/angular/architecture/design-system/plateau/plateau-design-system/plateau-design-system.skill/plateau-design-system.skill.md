@@ -19,7 +19,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-design-system-components.skill/solution-design-system-components.skill.md|solution-design-system-components]]"
   - "[[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]]"
 registry:
-  - "[[skills/angular/architecture/design-system/plateau/plateau-design-system/registry/design-system-repository.md|design-system-repository]]"
+  - "[[skills/angular/architecture/design-system/registry/design-system-repository.md|design-system-repository]]"
 ---
 
 > **The single plateau of the `design-system` catalog** — built from scratch, composing all four common solutions (`solution-design-system-structure`, `-tokens`, `-components`, `-ui-testing`). No VPs ([variability map](skills/angular/architecture/design-system/variability-map.md)); VP1 `MultiTenantTheming` is aspirational. This lives in **its own repository**, separate from the Nx platform monorepo — it is a standalone product (an npm package), not a stage the monolith chain passes through. `plateau-online-monolith` onward, `plateau-platform-host`, and `plateau-embeddable-app` all consume the package produced here.

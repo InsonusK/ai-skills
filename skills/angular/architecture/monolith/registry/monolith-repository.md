@@ -27,5 +27,11 @@ tags:
 # Resolution
 **Canonical — resolved by design, no resolver.** This is the intended shape: the workspace root is a shared surface that every feature extends by one entry. `check.sh` and `nx run-many -t lint` enforce that the accumulated allow-list stays consistent.
 
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-online-monolith` | 6 | First real: `solution-repository-structure` (create) + `app-routing`, `api-http-layer`, `global-store`, `logging-base`, `app-testing`, `ui-testing` | `nx run-many -t lint` clean on the baseline workspace |
+| (each deeper monolith plateau) | grows by 1 per VP-realizing solution added | `performance-tuned-routing`, `offline-first`, `offline-sync`, `logging-global`, `authentication` each add one entry as they land; `solution-federation-host` (a different catalog, `platform-host`) adds a further one on top | `check.sh` / `nx run-many -t lint` stay clean at every plateau |
+
 # Architectural signal
 N ≥ 3 (eventually 13 solutions). **Benign.** This is not a case for reconsidering VP boundaries — a repository root touched by nearly every feature is the correct design for an Nx monorepo, not a symptom of a mis-drawn variation point. The note is recorded per the delta-conflict-detection N≥3 rule only to make the "we looked at this and it is fine" explicit.

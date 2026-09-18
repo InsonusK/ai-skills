@@ -17,8 +17,8 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/solution-external-created-entity.skill/solution-external-created-entity.skill|solution-external-created-entity]]"
   - "[[skills/dotnet/architecture/solutions/solution-entity-classification.skill/solution-entity-classification.skill|solution-entity-classification]]"
 registry:
-  - "[[skills/dotnet/architecture/plateau/plateau-offline-sync-service/registry/command-cs|registry-command-cs]]"
-  - "[[skills/dotnet/architecture/plateau/plateau-offline-sync-service/registry/pipelineregistration-cs|registry-pipelineregistration-cs]]"
+  - "[[skills/dotnet/architecture/registry/command-cs|registry-command-cs]]"
+  - "[[skills/dotnet/architecture/registry/pipelineregistration-cs|registry-pipelineregistration-cs]]"
 standalone: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: registry-shared-logging-project
-description: Conflict Detection result for the `shared-logging-project` element at plateau-multiuser-monolith — the LOG_SINKS seam, created by solution-logging-base and extended by solution-logging-global with a second sink
+description: Conflict Detection result for the `shared-logging-project` element — the LOG_SINKS seam, created by solution-logging-base and extended by solution-logging-global with a second sink
 tags:
   - concern/architecture
   - stack/typescript
@@ -24,6 +24,11 @@ This is the shallowest plateau where both coexist — `solution-logging-base` is
 
 # Resolution
 **Canonical — no resolver.** The `LOG_SINKS` multi-provider token exists specifically to be extended with more sinks; adding `BackendLogSink` needs zero changes at any `LoggerService` call site. The example's `logger.service.spec.ts` asserts `report()` reaches the backend sink regardless of `MIN_LOG_LEVEL`, and `backend-log-sink.spec.ts` / `log-retry-queue.spec.ts` cover batching, `sendBeacon`, and bounded eviction.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-multiuser-monolith` | 2 | First (and, so far, only) plateau where both solutions are simultaneously present | `logger.service.spec.ts`, `backend-log-sink.spec.ts`, `log-retry-queue.spec.ts` all green |
 
 # Architectural signal
 N = 2. **Benign.** A pluggable-sinks logger extended with a second sink is the design intent — the exact analogue of the `store.config.ts` slice seam. Not a mis-drawn VP.
