@@ -12,23 +12,32 @@ tags:
 ---
 
 # Scope
-This skill adds TypeScript-specific mechanics on top of [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] — apply both together; this skill only covers what publishing an npm package adds to that shared shape.
+This skill adds TypeScript-specific mechanics on top of [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] — apply both together; this skill only covers what publishing an npm package adds to that shared shape.
 
 # Core Principle
 - npm has a real `latest` dist-tag, unlike NuGet/PyPI — the `master` publish sets it explicitly; the `develop` publish must explicitly avoid it (tag `snapshot` instead).
 - `package.json`'s `version` must equal the string being published before `npm publish` runs — npm refuses to publish a version that doesn't match the manifest.
-- Both `master` and `develop` reuse `./.github/actions/check-changes`/`./.github/actions/check-version` exactly as [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] does, including its shared timestamp.
+- Both `master` and `develop` reuse `./.github/actions/check-changes`/`./.github/actions/check-version` exactly as [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] does, including its shared timestamp.
 
 # Rule
 
 ## MUST
 
 ### Start from the shared base, then add this publish job
-Open [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
+Open [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version`/`unit-test` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
 ```yaml
   publish:
-    needs: [changes, check-version]
+    needs: [changes, check-version, unit-test]
+    # always() is required because unit-test is conditionally skipped (no
+    # code/test change) - GitHub's default needs-gating treats a skipped
+    # upstream job the same as a failed one, which would wrongly cascade-skip
+    # this job. unit-test.result != 'failure' accepts both success and
+    # skipped, only an actual test failure blocks publishing.
     if: >-
+      always() &&
+      needs.changes.result == 'success' &&
+      needs.check-version.result == 'success' &&
+      needs.unit-test.result != 'failure' &&
       (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true')
       && needs.check-version.outputs.publishable == 'true'
     runs-on: ubuntu-latest
@@ -79,14 +88,15 @@ Open [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/
 ### Set the version with npm version, never a manual edit
 Set the version with `npm version --no-git-tag-version --allow-same-version` before publishing — never hand-edit `package.json`'s `version` field.
 - Risk: `npm publish` refuses to publish a version that doesn't exactly match `package.json`; a hand-edit is more error-prone than npm's own command.
-- Fix: use `npm version` as shown, with `--no-git-tag-version` since this workflow must not create a git tag itself (that already happens via [[skills/devops/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]], for `master` only).
+- Fix: use `npm version` as shown, with `--no-git-tag-version` since this workflow must not create a git tag itself (that already happens via [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]], for `master` only).
 
 ## SHOULD
 - Publish with `--provenance` (npm's build-provenance attestation) on the `master` publish, given the job's `id-token: write` permission.
 
 # Check list
-- [ ] `.github/workflows/stack-lib-release-publish.yml` exists, following [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s shared trigger/gating rules.
-- [ ] `changes`/`check-version` are copied from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
+- [ ] `.github/workflows/stack-lib-release-publish.yml` exists, following [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s shared trigger/gating rules.
+- [ ] `changes`/`check-version`/`unit-test` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
+- [ ] `publish` also `needs: unit-test` and uses the `always()`-based condition (`unit-test.result != 'failure'`), never a plain `if:`.
 - [ ] `master` publishes to `registry.npmjs.org` tagged `latest`, plain `{version}`; `develop` publishes to `npm.pkg.github.com` tagged `snapshot`, `{version}-{timestamp}`.
 - [ ] The version is set via `npm version --no-git-tag-version`, never a manual `package.json` edit.
 - [ ] `NPM_TOKEN` comes from repository secrets, never hardcoded.

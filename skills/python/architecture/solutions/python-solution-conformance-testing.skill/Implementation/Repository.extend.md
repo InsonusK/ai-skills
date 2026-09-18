@@ -53,7 +53,7 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
 - `unit-test`, `mutation-test`, `test-report`, and `test-and-report` targets must exist and behave exactly as documented in [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] — this `Makefile` is the Python implementation of that contract, not a variation of it.
   - Violation: a CI workflow or a developer runs `mutmut`/`behave` directly instead of through `make mutation-test`/`make unit-test`.
   - Risk: the workflow now needs Python-specific knowledge, and switching or reconfiguring `mutmut` later becomes a breaking change for every CI file that calls it directly.
-  - Fix: every caller (CI or a developer) goes through the `Makefile`; the CI workflows themselves are defined once, stack-agnostically, in [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md) (PR-gate) and [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) (master-push report).
+  - Fix: every caller (CI or a developer) goes through the `Makefile`; the project's own CI workflows call these targets stack-agnostically instead of the underlying tools directly.
 - `scripts/unit-test.sh` and `scripts/mutation-test.sh` must write their normalized JSON into `tmp/result/` and keep the native HTML report under `tmp/report/<kind>/`, per the same contract.
   - Risk: without the normalized JSON, `make test-report` and badge generation have nothing stack-independent to read.
   - Fix: write both outputs exactly as [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] specifies.
@@ -73,7 +73,7 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
   - Risk: every caller (CI workflow, developer, script) now needs Python-specific knowledge to invoke the targets correctly, defeating the point of the uniform contract this `Makefile` implements.
   - Fix: keep the `make` interface limited to the toggles [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] defines; anything Python-specific stays inside the `Makefile`/scripts.
 - Never let `report-template/index.html` live under `.github/`.
-  - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern owned by [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md).
+  - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or publishing configuration it does not — the actual publishing step is a separate, layered CI concern this solution never owns.
   - Fix: keep it at `report-template/index.html`, copied by `test-report.sh` — never generated, never placed under `.github/`.
 
 # Unittest TestCases

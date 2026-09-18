@@ -11,7 +11,7 @@ tags:
 ---
 
 # Scope
-This skill adds Go-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
+This skill adds Go-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
 - Go's own convention splits a package's `*_test.go` files from its production `.go` files in the same directory — "code" vs. "test" is a filename-suffix distinction, not a separate folder tree.

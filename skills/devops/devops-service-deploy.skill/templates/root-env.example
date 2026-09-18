@@ -1,0 +1,15 @@
+# Repository-root .env.example — base settings for running {service-name}
+# inside the devcontainer. Copy to .env (gitignored) and fill in local
+# values; devcontainer.json's postCreateCommand / docker-compose reads it.
+#
+# This file carries only development defaults — never a production or
+# staging secret. A devcontainer is a single-developer trusted environment,
+# so dev-only placeholder secrets are acceptable here; anything that would
+# be a real secret in staging/production still goes through the
+# {NAME}_FILE convention when the same variable is used outside the
+# devcontainer (see deploy skill: skills/devops/deploy-{service-name}.skill/).
+
+ASPNETCORE_ENVIRONMENT=Development
+SERVICE_PORT=8080
+LOG_LEVEL=Debug
+CONNECTION_STRING=Host=localhost;Database={service-name}_dev;Username=dev;Password=dev

@@ -11,7 +11,7 @@ tags:
 ---
 
 # Scope
-This skill adds Python-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
+This skill adds Python-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
 - The filter patterns reflect the Python layout used by [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) (`src/`, `test/`) and [python-solution-conformance-testing](skills/python/architecture/solutions/python-solution-conformance-testing.skill/python-solution-conformance-testing.skill.md) (`features/` for Gherkin) — never a generic guess at Python project structure.
@@ -63,7 +63,7 @@ runs:
 - Fix: match the paths those two skills actually produce, not an assumed convention.
 
 ### Composite outputs match the consumer's contract
-Expose exactly `code`, `test`, `workflow`, `docker`, `docs` as this action's outputs, named identically to what [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]] read from `needs.changes.outputs.*`.
+Expose exactly `code`, `test`, `workflow`, `docker`, `docs` as this action's outputs, named identically to what [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]] read from `needs.changes.outputs.*`.
 - Risk: a renamed or missing output breaks every consumer workflow's `if:` conditions silently (an unset output evaluates as an empty string, which is falsy — the job just never runs, with no error).
 - Fix: keep the output names exactly as listed above.
 

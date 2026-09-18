@@ -20,7 +20,7 @@ tags:
 # Core Principle
 - This workflow calls two reusable composite actions — `./.github/actions/check-changes` and `./.github/actions/check-version` — never inline `dorny/paths-filter`/version-parsing logic. Their stack-specific mechanics live in a companion skill named `devops-github-action-check-changes-in-{stack}` / `devops-github-action-check-version-in-{stack}`; ask the user which stack to load rather than loading all of them.
 - Every PR to `develop` or `master` runs unit tests; a PR to `master` that touches code, the workflow, or the Dockerfile must also strictly increase the project's version.
-- This workflow only ever runs blocking checks — it never includes mutation testing. Mutation testing is a report-only signal, not a per-PR gate; it only ever runs on the master-push report workflow (see [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]) for a project following [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]].
+- This workflow only ever runs blocking checks — it never includes mutation testing. Mutation testing is a report-only signal, not a per-PR gate; it only ever runs on the master-push report workflow (see [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]) for a project following [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]].
 - The AI agent never pushes directly to `master` or `develop`; it always opens a PR from a separate branch, or does not push at all.
 
 # Workflow
@@ -42,7 +42,7 @@ Open and copy [Pull-request workflow example](./templates/pull-request.example.m
 ### Call the reusable check-changes/check-version actions, never inline logic
 Implement change detection and version comparison as `uses: ./.github/actions/check-changes` and `uses: ./.github/actions/check-version`, not as inline `dorny/paths-filter`/parsing steps in this workflow.
 - Violation: a `paths-filter` step or a hand-rolled version-parsing script pasted directly into `pull-request.yml`.
-- Risk: the same logic is duplicated (and drifts) across every workflow that needs change detection or version comparison (this one, `docker-release-publish`, `stack-lib-release-publish`, `release-info-publish`, `master-release-report`).
+- Risk: the same logic is duplicated (and drifts) across every workflow that needs change detection or version comparison (this one, `docker-release-publish`, `stack-lib-release-publish`, `release-info-publish`, `release-test-report`).
 - Fix: create `.github/actions/check-changes/action.yml` and `.github/actions/check-version/action.yml` per the matching `devops-github-action-check-changes-in-{stack}`/`devops-github-action-check-version-in-{stack}` skill, and call them from every workflow that needs them.
 
 ### Aggregate job wraps every conditional job
@@ -61,7 +61,7 @@ Run `version-check` only when `github.base_ref == 'master'` (or `main`) and `che
 Never add a mutation-testing job to this workflow, and never require one in branch protection.
 - Violation: a `mutation-test` job with `ONLY_DELTA=true` wired into this workflow's aggregate `report:` job, or required directly in branch protection.
 - Risk: mutation testing is a quality *signal*, not a correctness gate the way unit tests are — blocking merge on it trains the team to treat surviving mutants as a merge obstacle to route around (loosen assertions, mark scenarios `@todo`) rather than a report to act on deliberately; it also slows down every PR with a run whose only consumer is a report nobody reads synchronously.
-- Fix: let mutation testing run exclusively on [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]'s unscoped, report-only job after merge.
+- Fix: let mutation testing run exclusively on [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]'s unscoped, report-only job after merge.
 
 ### Never push directly to a protected branch
 Always work in a separate branch and open a PR; if a separate branch cannot be created, do not push the change at all.

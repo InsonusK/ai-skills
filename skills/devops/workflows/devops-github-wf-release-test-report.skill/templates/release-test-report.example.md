@@ -1,9 +1,9 @@
-# Master-release-report workflow example
+# Release-test-report workflow example
 
 Project: any stack that implements the [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] `make` contract and has `.github/actions/check-changes` implemented (see `devops-github-action-check-changes-in-{stack}`). Only the `Set up {stack}` step below changes between stacks — everything else is identical because the workflow only ever calls `make` targets.
 
 ```yaml
-name: Master release report
+name: Release test report
 
 on:
   push:

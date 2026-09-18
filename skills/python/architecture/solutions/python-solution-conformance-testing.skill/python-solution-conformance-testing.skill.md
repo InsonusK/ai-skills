@@ -1,6 +1,6 @@
 ---
 name: python-solution-conformance-testing
-description: Sets up the Python side of the Cucumber/coverage/mutation quality gate — behave for Gherkin scenarios, coverage.py for coverage, mutmut for mutation testing, and the make unit-test/mutation-test/test-report/test-and-report contract that devops-github-wf-pull-request's and devops-github-wf-master-release-report's workflows consume
+description: Sets up the Python side of the Cucumber/coverage/mutation quality gate — behave for Gherkin scenarios, coverage.py for coverage, mutmut for mutation testing, and the make unit-test/mutation-test/test-report/test-and-report contract that downstream CI consumes
 whenToUse: Set up or review the test suite of a Python package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing Python project, or wire coverage and mutation testing into a Python project's `make`/CI pipeline.
 domain: python
 type: architecture
@@ -24,8 +24,6 @@ extends:
 depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
   - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
-  - "[[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]"
-  - "[[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]"
 adr:
   - "[[skills/python/architecture/solutions/python-solution-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]"
 ---
@@ -33,7 +31,7 @@ adr:
 # Goal
 - Give a Python package the concrete tooling to run the three-layer gate defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md): Gherkin scenarios, code coverage, mutation testing.
 - Add this on top of the plain unit-test structure defined by [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md), without changing that structure.
-- Expose that tooling behind the `make unit-test`/`make mutation-test`/`make test-report`/`make test-and-report` contract so [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md) and [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) can wire CI without knowing anything Python-specific.
+- Expose that tooling behind the `make unit-test`/`make mutation-test`/`make test-report`/`make test-and-report` contract so any CI workflow can wire it in without knowing anything Python-specific.
 
 # Capabilities
 - Gherkin `.feature` files execute against the package's real public functions/classes via `behave` step definitions.
@@ -55,8 +53,6 @@ SOLUTION:
   - Defines the `make` command contract and normalized report format this solution implements concretely for Python.
 - [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
   - Defines the `test/` structure for this package's plain unit tests; this solution adds `features/` alongside it, unchanged.
-- [[skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md|devops-github-wf-master-release-report]]
-  - Own the actual CI workflows (PR-gate and master-push report, respectively) that call this solution's `Makefile`; this solution does not define any `.github/workflows/*.yml` file itself.
 
 PYPI:
 - behave
@@ -82,10 +78,10 @@ REPOSITORY:
 3. `make unit-test` runs `coverage run -m behave` and `coverage run -a -m pytest` (or `unittest`) into the same `.coverage` data file, and normalizes the result into `tmp/result/unit-test.json` (plus `tmp/result/coverage-test.json` when `WITH_CODE_COVERAGE=true`).
 4. `make mutation-test` runs `mutmut run` — scoped to changed files when called with `ONLY_DELTA=true DELTA_BASE=<ref>`, or across the whole package otherwise — and normalizes the result into `tmp/result/mutation-test.json`.
 5. `make test-report` assembles `public/` from `tmp/result/*.json` and `tmp/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
-6. Which of these `make` targets run on which trigger, and how `public/` gets published to GitHub Pages, is owned by [devops-github-wf-pull-request](skills/devops/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md) (unit tests only, PR-gate) and [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md) (full unit-test and mutation-test run, master-push report) — not by this solution.
+6. Which of these `make` targets run on which trigger, and how `public/` gets published, is decided by the project's own CI configuration — not by this solution.
 
 ## Surviving mutant found (report path)
-1. `make mutation-test` reports a mutant that survived, as part of [devops-github-wf-master-release-report](skills/devops/devops-github-wf-master-release-report.skill/devops-github-wf-master-release-report.skill.md)'s post-merge, report-only run — mutation testing never blocks a PR (it does not run there at all).
+1. `make mutation-test` reports a mutant that survived, as part of a post-merge, report-only CI run — mutation testing is not expected to block a pull request.
 2. The mutation report published to GitHub Pages shows the survivor; it does not fail the workflow or block anything.
 3. Whoever notices the survivor (via the report or the README's mutation-score badge) either strengthens the assertion in the corresponding scenario/step definition in a follow-up PR, or explicitly accepts it per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
 

@@ -2,12 +2,23 @@
 
 Project: any stack with a `Dockerfile` and `.github/actions/check-changes`/`.github/actions/check-version` implemented (see the matching `devops-github-action-check-changes-in-{stack}`/`devops-github-action-check-version-in-{stack}` skills). This workflow needs no stack-specific companion skill of its own.
 
-Start from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] (the `on:` trigger plus the `changes`/`check-version` jobs, copied unmodified), then add:
+Start from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] (the `on:` trigger plus the `changes`/`check-version`/`unit-test` jobs, copied unmodified), then add:
 
 ```yaml
   docker-publish:
-    needs: [changes, check-version]
-    if: needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true' || needs.changes.outputs.docker == 'true'
+    needs: [changes, check-version, unit-test]
+    # `always()` is required because `unit-test` is conditionally skipped (no
+    # code/test change) - GitHub's default needs-gating treats a skipped
+    # upstream job the same as a failed one, which would wrongly cascade-skip
+    # this job on a push that only touched the Dockerfile. `unit-test.result
+    # != 'failure'` accepts both `success` and `skipped`, only an actual test
+    # failure blocks the image build - see base-jobs.example.md.
+    if: >-
+      always() &&
+      needs.changes.result == 'success' &&
+      needs.check-version.result == 'success' &&
+      needs.unit-test.result != 'failure' &&
+      (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true' || needs.changes.outputs.docker == 'true')
     runs-on: ubuntu-latest
     # A job-level `permissions:` block replaces the default token permissions
     # entirely, not adds to them - anything not listed here becomes `none`.
@@ -48,4 +59,4 @@ Start from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/temp
           tags: ${{ steps.tags.outputs.value }}
 ```
 
-Add `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` at the workflow level (see [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md#should|SHOULD]]).
+Add `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` at the workflow level (see [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md#should|SHOULD]]).

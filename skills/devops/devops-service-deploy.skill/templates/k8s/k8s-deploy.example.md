@@ -32,7 +32,7 @@ kubectl apply -f deploy/k8s/ingress.yml
 kubectl get pods -n {namespace}
 kubectl logs -n {namespace} -l app={service-name} --tail=50
 kubectl port-forward -n {namespace} svc/{service-name} {host-port}:80
-curl http://localhost:{host-port}/health
+curl http://localhost:{host-port}/health-check
 ```
 
 ## Update to a new version

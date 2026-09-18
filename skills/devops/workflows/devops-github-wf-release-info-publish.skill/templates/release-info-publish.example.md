@@ -1,8 +1,8 @@
 # Release-info-publish workflow example
 
-Project: any stack with `.github/actions/check-version` implemented. `PACKAGE_URL_PATTERN`/`PACKAGE_NAME` below are the only stack-specific pieces — see [# Package link patterns](../devops-github-wf-release-info-publish.skill.md#package-link-patterns) for the four patterns, and read the package name from wherever the stack's manifest keeps it (`pyproject.toml`'s `project.name`, `package.json`'s `name`, the `.csproj`'s `<PackageId>`).
+Project: any stack with `.github/actions/check-version` implemented. `PACKAGE_URL_PATTERN`/`PACKAGE_NAME` below are stack-specific — see [# Package link patterns](../devops-github-wf-release-info-publish.skill.md#package-link-patterns) for the four patterns, and read the package name from wherever the stack's manifest keeps it (`pyproject.toml`'s `project.name`, `package.json`'s `name`, the `.csproj`'s `<PackageId>`). The commented-out `# --- build release binaries ---` block is the other stack-specific extension point — see [# Release binaries](../devops-github-wf-release-info-publish.skill.md#release-binaries); a stack with none (everything except a Go application) deletes it rather than leaving it commented out.
 
-The `check-version` job below is copied verbatim from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] — including its `timestamp` output, unused here — so it stays byte-for-byte identical to the same job in every other release-publish workflow. This workflow has no `changes` job; it gates solely on `bumped`.
+The `check-version` job below is copied verbatim from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] — including its `timestamp` output, unused here — so it stays byte-for-byte identical to the same job in every other release-publish workflow. This workflow has no `changes` job; it gates solely on `bumped`.
 
 ```yaml
 name: Release info publish
@@ -69,9 +69,17 @@ jobs:
         env:
           PACKAGE_NAME: my-package
 
+      # --- build release binaries ---
+      # Only for a stack whose deliverable includes a standalone executable
+      # (see "Release binaries" - currently only a Go application). Every
+      # other stack deletes this block entirely; it never stays as a no-op.
+      # See devops-github-wf-release-info-publish-in-go's own example for the
+      # actual Go build steps that replace this comment.
+
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.check-version.outputs.current }}
           generate_release_notes: true
           body: ${{ steps.body.outputs.value }}
+          # files: dist/* - only when the "build release binaries" block above produced any.
 ```

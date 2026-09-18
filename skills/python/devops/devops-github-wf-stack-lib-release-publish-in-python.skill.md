@@ -12,22 +12,31 @@ tags:
 ---
 
 # Scope
-This skill adds Python-specific mechanics on top of [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] — apply both together; this skill only covers what publishing a Python package adds to that shared shape.
+This skill adds Python-specific mechanics on top of [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]] — apply both together; this skill only covers what publishing a Python package adds to that shared shape.
 
 # Core Principle
 - **GitHub Packages has no PyPI-compatible index** — unlike .NET (`nuget.pkg.github.com`) and TypeScript (`npm.pkg.github.com`), there is no `pypi.pkg.github.com`. A `develop` snapshot build therefore targets **TestPyPI** instead, a deliberate deviation from the other two stacks' "same registry, different feed" pattern — not an oversight.
-- Both `master` and `develop` reuse `./.github/actions/check-changes`/`./.github/actions/check-version` exactly as [[skills/devops/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] does, including its shared timestamp.
+- Both `master` and `develop` reuse `./.github/actions/check-changes`/`./.github/actions/check-version` exactly as [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md|devops-github-wf-docker-release-publish]] does, including its shared timestamp.
 
 # Rule
 
 ## MUST
 
 ### Start from the shared base, then add this publish job
-Open [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
+Open [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version`/`unit-test` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
 ```yaml
   publish:
-    needs: [changes, check-version]
+    needs: [changes, check-version, unit-test]
+    # always() is required because unit-test is conditionally skipped (no
+    # code/test change) - GitHub's default needs-gating treats a skipped
+    # upstream job the same as a failed one, which would wrongly cascade-skip
+    # this job. unit-test.result != 'failure' accepts both success and
+    # skipped, only an actual test failure blocks publishing.
     if: >-
+      always() &&
+      needs.changes.result == 'success' &&
+      needs.check-version.result == 'success' &&
+      needs.unit-test.result != 'failure' &&
       (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true')
       && needs.check-version.outputs.publishable == 'true'
     runs-on: ubuntu-latest
@@ -77,8 +86,9 @@ Overwrite `pyproject.toml`'s `project.version` with the computed publish version
 - Use PyPI/TestPyPI trusted publishing (`pypa/gh-action-pypi-publish` with OIDC) instead of a static API-token secret, once the project's PyPI/TestPyPI entry is configured for it.
 
 # Check list
-- [ ] `.github/workflows/stack-lib-release-publish.yml` exists, following [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s shared trigger/gating rules.
-- [ ] `changes`/`check-version` are copied from [[skills/devops/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
+- [ ] `.github/workflows/stack-lib-release-publish.yml` exists, following [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s shared trigger/gating rules.
+- [ ] `changes`/`check-version`/`unit-test` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
+- [ ] `publish` also `needs: unit-test` and uses the `always()`-based condition (`unit-test.result != 'failure'`), never a plain `if:`.
 - [ ] `master` uploads to PyPI under the plain `{version}`; `develop` uploads to TestPyPI under `{version}-{timestamp}`.
 - [ ] `pyproject.toml`'s version is overwritten with the exact publish version before `python -m build`.
 - [ ] `PYPI_API_TOKEN`/`TEST_PYPI_API_TOKEN` come from repository secrets, never hardcoded.

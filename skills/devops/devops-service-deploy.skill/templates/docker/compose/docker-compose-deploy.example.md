@@ -22,7 +22,7 @@ docker compose up -d
 ```bash
 docker compose ps
 docker compose logs --tail=50 {service-name}
-curl http://localhost:{host-port}/health
+curl http://localhost:{host-port}/health-check
 ```
 
 ## Update to a new version
