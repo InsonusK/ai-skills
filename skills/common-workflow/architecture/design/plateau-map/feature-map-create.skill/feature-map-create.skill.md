@@ -60,9 +60,11 @@ Every edge carries exactly one label from this closed list — never leave a rel
 
 - `Mandatory` — the child is unconditionally present whenever the parent is present.
 - `Optional` — the child is independently selectable under its parent.
-- `Optional (at least one)` — selecting the parent requires one or more of its children (this repository's name for what FODA calls an "Or" group; use this exact phrase, not "Or").
+- `At least one (group name)` — selecting the parent requires one or more of its children (this repository's name for what FODA calls an "Or" group; use this exact phrase, not "Or").
 - `Alternative (group name)` — exactly one of the children (reserved: not yet used in any model built with this skill, keep it available).
 - `Requires` — a cross-tree constraint, not a parent-child edge (drawn dotted). When two or more `Requires` edges point at the same target, state their AND/OR logic in `feature-model.md` prose — edge labels cannot express this.
+
+`At least one (group name)` and `Alternative (group name)` both contain a space and parentheses, which mermaid's edge-label syntax cannot parse unquoted — wrap the whole label in double quotes or the diagram fails to render, e.g. `In -->|"At least one kind (kind)"| Sync["Sync"]`.
 
 # Rule
 
@@ -149,7 +151,7 @@ Follow [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]]'s
 Rename or merge features once a deeper technical read reveals they are the same mechanism, rather than keeping both for historical reasons.
 
 ### No self-invented synonyms
-Reuse vocabulary the family's owner has already stated a preference for (e.g. `Optional (at least one)`) instead of a self-invented synonym for the same relation.
+Reuse vocabulary the family's owner has already stated a preference for (e.g. `At least one (group name)`) instead of a self-invented synonym for the same relation.
 
 ## MAY
 
@@ -161,7 +163,7 @@ Leave the reserved relation type (`Alternative (group name)`) unused in the diag
 - [ ] The diagram's root is named explicitly, grouped inside `Common`, and absent from the Features table.
 - [ ] Every top-level variable feature connects to the `Common` block itself, not to the root individually.
 - [ ] Any block with more than ~4 members is arranged as a row matrix, with cosmetic row borders hidden and real sub-feature group borders visible.
-- [ ] Every edge in the diagram carries an explicit relation label (`Mandatory`/`Optional`/`Optional (at least one)`/`Alternative (group name)`/`Requires`).
+- [ ] Every edge in the diagram carries an explicit relation label (`Mandatory`/`Optional`/`At least one (group name)`/`Alternative (group name)`/`Requires`), with `At least one (group name)` and `Alternative (group name)` quoted in the mermaid source.
 - [ ] Any parallel `Requires` edges into one target have their AND/OR logic stated in prose.
 - [ ] No two features model the same underlying technical mechanism under different names.
 - [ ] Every fixed-seeming capability excluded as "infrastructure" was checked with the family's owner first.
