@@ -17,7 +17,7 @@ standalone: true
 created_by:
   - "[[skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md|solution-design-system-multi-tenant-theming]]"
 registry:
-  - "[[skills/angular/architecture/design-system/plateau/plateau-multi-tenant-design-system/registry/design-system-repository.md|design-system-repository]]"
+  - "[[skills/angular/architecture/design-system/registry/design-system-repository.md|design-system-repository]]"
 ---
 
 > **The `design-system` catalog's `MultiTenantTheming` plateau (VP1 = Yes).** Composes [`plateau-design-system`](skills/angular/architecture/design-system/plateau/plateau-design-system/plateau-design-system.skill/plateau-design-system.skill.md) (all four common solutions) and adds **one** solution — [`solution-design-system-multi-tenant-theming`](skills/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/solution-design-system-multi-tenant-theming.skill.md) of the [design-system Variability Map](skills/angular/architecture/design-system/variability-map.md). **No new project.** Still a separate repository — a plain Angular CLI multi-project workspace, published as an independently versioned npm package.

@@ -21,8 +21,8 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]]"
   - "[[skills/angular/architecture/solutions/solution-host-design-system-consumption.skill/solution-host-design-system-consumption.skill.md|solution-host-design-system-consumption]]"
 registry:
-  - "[[skills/angular/architecture/platform-host/plateau/plateau-platform-host/registry/platform-shell-project.md|platform-shell-project]]"
-  - "[[skills/angular/architecture/platform-host/plateau/plateau-platform-host/registry/platform-contracts.md|platform-contracts]]"
+  - "[[skills/angular/architecture/platform-host/registry/platform-shell-project.md|platform-shell-project]]"
+  - "[[skills/angular/architecture/platform-host/registry/platform-contracts.md|platform-contracts]]"
 ---
 
 > **The `platform-host` catalog's single plateau.** Composes [`plateau-multiuser-monolith`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md) **cross-catalog** via `parent_plateaus` — every monolith VP (VP1–VP7) is answered by that plateau. This plateau adds **only the federation delta**: the two common `platform-host` features (`RuntimeRemoteFederation`, `PlatformContracts`) plus all three `platform-host` VPs = Yes (VP1 `HostDesignSystemConsumption`, VP2 `SessionSharing` — satisfiable because monolith VP7 = Yes, VP3 `FederatedReadResilience` — because monolith VP4 = Yes). See the [platform-host variability map](skills/angular/architecture/platform-host/variability-map.md).

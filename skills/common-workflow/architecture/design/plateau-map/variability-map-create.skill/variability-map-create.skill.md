@@ -2,7 +2,7 @@
 name: variability-map-create
 description: Define how to build and maintain a Variability Map — one table binding every Variation Point of a plateau/solution catalog to the solutions that realize it (Variants, Constraint, Realized by, Realization depends on, Migration)
 whenToUse: when a plateau/solution catalog needs its variability made explicit as a table instead of tribal knowledge — when grouping a Feature Model's non-common features into Variation Points, or when a new optional/alternative solution is added to the catalog
-updated: 20260906
+updated: 20260918
 tags:
   - skill/architecture/variability/design
   - stack
@@ -22,7 +22,7 @@ adr:
 # Core Principle
 - **Two teams, two answers** - A [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/variation-point|Variation Point]] exists only where two teams building on this catalog could legitimately answer differently. If every path through the catalog includes a solution, it is shared core (see [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/program-families|Program Families]]) — it does not get a row.
 - **The table is the artifact** - A plateau never re-describes its own variability separately from the map. [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/realized-by|Realized by]] always points at solutions that exist — this skill never re-authors solution content.
-- **Runs after the Feature Model** - The catalog's Feature Model feeds this skill its candidate features.
+- **Runs after the Feature Model** - This skill starts from a catalog Feature Model built by [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]], whose non-common features feed this skill its candidate pool (see [Precondition: a finished Feature Model](#precondition-a-finished-feature-model)).
 - **Realized by is a sub-step, not a later stage** - Filling `Realized by` — authoring each VP's realizing solution(s) and classifying where two of them touch the same code element — is done by [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]], run to complete this map. Assembling plateaus from the finished map is a separate stage this skill does not describe.
 
 # Workflow
@@ -32,7 +32,7 @@ One Variability Map per catalog, at `{catalog}/variability-map.md` — a sibling
 
 ## How to build a Variability Map
 1. Identify {catalog} — the folder holding the plateau/solution tree (e.g. `skills/dotnet/architecture/v3/`).
-2. Read `{catalog}/feature/feature-model.md` when it exists (the previous pipeline step): its non-common features are the primary candidate list. Merge it with every solution reachable through any plateau's `created_by` (directly or via `parent_plateaus`) across the whole catalog — the union is the candidate pool.
+2. Read `{catalog}/feature/feature-model.md`, built by `feature-map-create` (see [Precondition: a finished Feature Model](#precondition-a-finished-feature-model)): its non-common features are the primary candidate list. Merge it with every solution reachable through any plateau's `created_by` (directly or via `parent_plateaus`) across the whole catalog — the union is the candidate pool.
 3. For each candidate (or tight group of candidates answering one question), apply the Core Principle's test: would two teams legitimately answer differently? Discard candidates that appear on every existing and every reasonable future path — they are core, not variability.
 4. Decide each VP's Variant shape per [Alternatives share a VP, combinables split](#alternatives-share-a-vp-combinables-split); use [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/variability-map.template|templates/variability-map.template.md]]'s worked entity-kind row as the model for a categorical VP.
 5. Fill **Constraint** from evidence, not invention (see [Constraints from evidence only](#constraints-from-evidence-only)). When prose states a requirement absent from the solution's `depends_on`, treat this as a defect: raise a proposal to add the missing `depends_on` entry to that solution, rather than only noting the gap in the table.
@@ -46,6 +46,12 @@ Use [[skills/common-workflow/architecture/design/plateau-map/variability-map-cre
 # Rule
 
 ## MUST
+
+### Precondition: a finished Feature Model
+Start only from a `{catalog}/feature/feature-model.md` built via [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]], with every candidate's `IsCommon` verdict decided. When a catalog genuinely has no Feature Model yet (an existing catalog being retrofitted, never a new one), treat that absence as a decision to confirm with the catalog's owner before proceeding — never a default to fall into silently.
+- Violation: building a Variability Map straight from a solution list or from prose, with no Feature Model behind it and no owner confirmation that skipping one is deliberate.
+- Risk: without a Feature Model, "would two teams answer differently" gets judged against whatever the current solution set happens to contain rather than against a deliberately reasoned common/variable split, so the map inherits any gap the Feature Model step exists to catch.
+- Fix: build the Feature Model via `feature-map-create` first for a new catalog; for an existing catalog with none, get the owner to confirm proceeding without one before treating the map as final.
 
 ### A row only for a real decision
 Create a VP row only for an axis where two teams could legitimately answer differently; never materialize a row for something every path through the catalog already includes.
@@ -98,8 +104,9 @@ Prefer reusing an existing VP's Variant set over introducing a near-duplicate VP
 Leave **Migration** at `No` for a VP that has never yet needed to change after a service was already composed on this catalog.
 
 # Check list
+- [ ] `{catalog}/feature/feature-model.md` exists and is built via `feature-map-create` before this skill runs — or its absence was confirmed with the catalog's owner as deliberate.
 - [ ] Every VP row passed the "would two teams legitimately answer differently" test before being added.
-- [ ] The candidate pool included the Feature Model's non-common features when the catalog has `{catalog}/feature/feature-model.md`.
+- [ ] The candidate pool included the Feature Model's non-common features.
 - [ ] The **Realized by** column was filled by running `delta-conflict-detection`, not ad hoc; every entry is a wikilink to an existing solution skill (a draft-marked skeleton counts), not inlined content.
 - [ ] Every **Constraint** entry is traceable to a real `depends_on`/`built_on_plateau` edge, a solution's own stated prose requirement, or an owner-confirmed Feature-Model `Requires` edge.
 - [ ] No solution skill's `depends_on` field was changed in shape to carry a constraint/ordering annotation.

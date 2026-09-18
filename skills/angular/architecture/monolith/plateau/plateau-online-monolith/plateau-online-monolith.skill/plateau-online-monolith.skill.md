@@ -24,9 +24,9 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-app-testing.skill/solution-app-testing.skill.md|solution-app-testing]]"
   - "[[skills/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]]"
 registry:
-  - "[[skills/angular/architecture/monolith/plateau/plateau-online-monolith/registry/component-name-component-ts.md|component-name-component-ts]]"
-  - "[[skills/angular/architecture/monolith/plateau/plateau-online-monolith/registry/monolith-repository.md|monolith-repository]]"
-  - "[[skills/angular/architecture/monolith/plateau/plateau-online-monolith/registry/platform-shell-project.md|platform-shell-project]]"
+  - "[[skills/angular/architecture/monolith/registry/component-name-component-ts.md|component-name-component-ts]]"
+  - "[[skills/angular/architecture/monolith/registry/monolith-repository.md|monolith-repository]]"
+  - "[[skills/angular/architecture/monolith/registry/platform-shell-project.md|platform-shell-project]]"
 ---
 
 > **First plateau of the `monolith` catalog** — built from scratch, `standalone: true`. It fixes the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md) at **VP2 (GlobalStore) = Yes, VP3 (BackendDataAccess) = Yes**; VP1, VP4–VP8 = No. Next in the chain: `plateau-async-monolith` (VP1). This is "everything the app needs to run online, end to end, as one deployable unit". No lazy-loading tuning, no offline resilience, no federation, and — deliberately — no authentication (every user implicitly trusted until `plateau-multiuser-monolith`).

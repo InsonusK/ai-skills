@@ -1,0 +1,33 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph CommonRow1[" "]
+            direction LR
+            Svc["Service<br/>(root of the family)"]
+            DL["DomainLogic"]
+            HA["HttpApi"]
+            LOG["AppLogging"]
+        end
+        subgraph TC["TestConformance"]
+            direction LR
+            CUC["Cucumber Test"]
+            COV["Code Coverage Test"]
+            MUT["Mutation Test"]
+            REP["Test Reports"]
+        end
+    end
+    style CommonRow1 fill:none,stroke:none
+
+    Common -->|Optional| GA["GrpcApi"]
+    Common -->|Optional| EI["ExternalIntegration"]
+    Common -->|Optional| CDB["CachedDb"]
+    Common -->|Optional| PDB["PersistentDb"]
+
+    Common -->|Optional| AIA["AsyncInboundApi"]
+    AIA -->|Mandatory| KC["KafkaConsumer"]
+
+    Common -->|Optional| AOA["AsyncOutboundApi"]
+    AOA -->|Mandatory| KP["KafkaProducer"]
+    AOA -->|Optional| OP["OutboxPattern"]
+
+    OP -. "Requires" .-> PDB

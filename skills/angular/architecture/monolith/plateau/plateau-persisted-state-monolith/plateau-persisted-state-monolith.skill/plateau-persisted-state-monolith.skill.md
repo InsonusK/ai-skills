@@ -17,7 +17,7 @@ standalone: true
 created_by:
   - "[[skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md|solution-persisted-state]]"
 registry:
-  - "[[skills/angular/architecture/monolith/plateau/plateau-persisted-state-monolith/registry/shared-state-project.md|shared-state-project]]"
+  - "[[skills/angular/architecture/monolith/registry/shared-state-project.md|shared-state-project]]"
 ---
 
 > **Sixth and last plateau of the `monolith` catalog.** Composes [`plateau-multiuser-monolith`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/plateau-multiuser-monolith.skill/plateau-multiuser-monolith.skill.md) (online + VP1 + VP4 + VP5 + VP6 + VP7) and adds **one** solution — [`solution-persisted-state`](skills/angular/architecture/solutions/solution-persisted-state.skill/solution-persisted-state.skill.md) (**VP8 — PersistedState**) of the [monolith Variability Map](skills/angular/architecture/monolith/variability-map.md). VP1–VP8 = Yes. **No new Nx project.** Still one deployable unit — Module Federation is `platform-host`, not here.
