@@ -63,14 +63,14 @@ Verified for real: 3 HTTP requests for the same URL produced exactly one call to
 
 # Structure
 See `structure/` — everything from the parent, union'd with:
-- [[structure/plateau-cached-service--package-domain-interfaces.skill.md|package-domain-interfaces]] (extended: `reputation_cache.go`)
-- [[structure/plateau-cached-service--file-domain-interfaces-reputation-cache.skill.md|file-domain-interfaces-reputation-cache]] (new)
-- [[structure/plateau-cached-service--package-infrastructure-reputationcache.skill.md|package-infrastructure-reputationcache]] (new)
-- [[structure/plateau-cached-service--file-infrastructure-reputationcache-store.skill.md|file-infrastructure-reputationcache-store]] (new)
-- [[structure/plateau-cached-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]] (extended: cache-aside wrapping + 2 new godog scenarios)
-- [[structure/plateau-cached-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: dial the Redis cache)
-- [[structure/plateau-cached-service--file-config-config.skill.md|file-config-config]] (extended: `RedisHost`/`RedisPort`/`RedisPassword`/`RedisDB`)
-- [[structure/plateau-cached-service--repo-cached-service.skill.md|repo-cached-service]] (structure-table update only — `solution-cached-db` adds no `Repository` content of its own)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-domain-interfaces.skill.md|package-domain-interfaces]] (extended: `reputation_cache.go`)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-domain-interfaces-reputation-cache.skill.md|file-domain-interfaces-reputation-cache]] (new)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-infrastructure-reputationcache.skill.md|package-infrastructure-reputationcache]] (new)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-infrastructure-reputationcache-store.skill.md|file-infrastructure-reputationcache-store]] (new)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]] (extended: cache-aside wrapping + 2 new godog scenarios)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: dial the Redis cache)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-config-config.skill.md|file-config-config]] (extended: `RedisHost`/`RedisPort`/`RedisPassword`/`RedisDB`)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--repo-cached-service.skill.md|repo-cached-service]] (structure-table update only — `solution-cached-db` adds no `Repository` content of its own)
 - Unchanged: `package-domain-services`, `package-api-http`, `package-api-grpc`, `package-infrastructure-reputationclient`, `file-domain-interfaces-reputation`, `file-infrastructure-reputationclient-client`, `file-api-http-server`, `file-api-grpc-server`, `file-version-version`, `file-logging-logger`.
 
 # Registry

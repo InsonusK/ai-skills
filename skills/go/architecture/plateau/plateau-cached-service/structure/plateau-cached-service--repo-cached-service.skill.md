@@ -71,12 +71,12 @@ __Applied solutions:__
 ## Directory and package skills
 | Directory \| file | template link | Description |
 | ----------------- | -------------- | ------------ |
-| internal/domain/interfaces | [[plateau-cached-service--package-domain-interfaces.skill.md]] | Outbound ports |
-| internal/domain/services | [[plateau-cached-service--package-domain-services.skill.md]] | Business logic |
-| internal/api/http | [[plateau-cached-service--package-api-http.skill.md]] | Inbound HTTP adapter |
-| internal/api/grpc | [[plateau-cached-service--package-api-grpc.skill.md]] | Inbound gRPC adapter |
-| internal/infrastructure/reputationclient | [[plateau-cached-service--package-infrastructure-reputationclient.skill.md]] | Outbound gRPC-client adapter |
-| internal/infrastructure/reputationcache | [[plateau-cached-service--package-infrastructure-reputationcache.skill.md]] | Outbound Redis-backed cache adapter |
+| internal/domain/interfaces | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-domain-interfaces.skill.md]] | Outbound ports |
+| internal/domain/services | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-domain-services.skill.md]] | Business logic |
+| internal/api/http | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-api-http.skill.md]] | Inbound HTTP adapter |
+| internal/api/grpc | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-api-grpc.skill.md]] | Inbound gRPC adapter |
+| internal/infrastructure/reputationclient | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-infrastructure-reputationclient.skill.md]] | Outbound gRPC-client adapter |
+| internal/infrastructure/reputationcache | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-infrastructure-reputationcache.skill.md]] | Outbound Redis-backed cache adapter |
 
 # Rules
 

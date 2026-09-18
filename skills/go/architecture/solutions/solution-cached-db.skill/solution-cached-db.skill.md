@@ -21,7 +21,7 @@ depends_on:
   - "[[skills/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]]"
 built_on_plateau:
 adr:
-  - "[[adr/business-named-port-not-generic-cache.md|A business-named port, not a generic Cache interface]]"
+  - "[[skills/go/architecture/solutions/solution-cached-db.skill/adr/business-named-port-not-generic-cache.md|A business-named port, not a generic Cache interface]]"
 ---
 
 # Goal
@@ -37,7 +37,7 @@ adr:
 - Nothing about the port implies a durability guarantee — a caller that needs data to survive a restart depends on [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]'s port instead, or in addition.
 
 # Adr
-- [[adr/business-named-port-not-generic-cache.md|A business-named port, not a generic Cache interface]]
+- [[skills/go/architecture/solutions/solution-cached-db.skill/adr/business-named-port-not-generic-cache.md|A business-named port, not a generic Cache interface]]
   - Selected variant: a narrow, business-purpose-named port (`ReputationCache`), matching the reference implementation's own `ChatStore` shape
 
 # Requirements

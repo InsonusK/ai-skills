@@ -39,7 +39,7 @@ internal/infrastructure/reputationclient/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| client.go | `Client` implementing `ReputationChecker` via `gen/reputation` | [[plateau-persistent-service--file-infrastructure-reputationclient-client.skill.md]] |
+| client.go | `Client` implementing `ReputationChecker` via `gen/reputation` | [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-infrastructure-reputationclient-client.skill.md]] |
 
 # Go Dependencies
 | Module | Version constraint | Purpose |

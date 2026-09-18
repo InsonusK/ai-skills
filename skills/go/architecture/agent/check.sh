@@ -12,7 +12,7 @@ section() { printf '\n== %s ==\n' "$1"; }
 
 # Solutions named in INVARIANTS.md that are skeletons by design — a link to
 # one of these is a warning, not a failure.
-PLANNED='solution-messaging-infrastructure solution-kafka-producer solution-kafka-consumer solution-transactional-outbox'
+PLANNED='solution-go-messaging-infrastructure solution-go-kafka-producer solution-go-kafka-consumer solution-go-transactional-outbox'
 PLANNED=" $(printf '%s' "$PLANNED" | tr -s '[:space:]' ' ') "
 is_planned() { case "$PLANNED" in *" $1 "*) return 0;; *) return 1;; esac; }
 
@@ -78,7 +78,7 @@ section "7. Feature / VP coverage (WARNING only — expected incomplete mid-buil
 : > /tmp/go_cov.txt
 for s in go-repository-structure go-domain-ports go-domain-logic go-http-api go-app-logging \
          go-conformance-testing grpc-api external-integration cached-db persistent-db \
-         messaging-infrastructure kafka-producer kafka-consumer transactional-outbox; do
+         go-messaging-infrastructure go-kafka-producer go-kafka-consumer go-transactional-outbox; do
   [ -d "$SOL/solution-$s.skill" ] || echo "    not yet: solution-$s" >> /tmp/go_cov.txt
 done
 if [ -s /tmp/go_cov.txt ]; then cat /tmp/go_cov.txt; else note "ok — all 14 catalog solutions present"; fi

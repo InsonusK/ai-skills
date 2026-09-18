@@ -70,11 +70,11 @@ __Applied solutions:__
 ## Directory and package skills
 | Directory \| file | template link | Description |
 | ----------------- | -------------- | ------------ |
-| internal/domain/interfaces | [[plateau-integrated-service--package-domain-interfaces.skill.md]] | Outbound ports |
-| internal/domain/services | [[plateau-integrated-service--package-domain-services.skill.md]] | Business logic |
-| internal/api/http | [[plateau-integrated-service--package-api-http.skill.md]] | Inbound HTTP adapter |
-| internal/api/grpc | [[plateau-integrated-service--package-api-grpc.skill.md]] | Inbound gRPC adapter |
-| internal/infrastructure/reputationclient | [[plateau-integrated-service--package-infrastructure-reputationclient.skill.md]] | Outbound gRPC-client adapter |
+| internal/domain/interfaces | [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-domain-interfaces.skill.md]] | Outbound ports |
+| internal/domain/services | [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-domain-services.skill.md]] | Business logic |
+| internal/api/http | [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-api-http.skill.md]] | Inbound HTTP adapter |
+| internal/api/grpc | [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-api-grpc.skill.md]] | Inbound gRPC adapter |
+| internal/infrastructure/reputationclient | [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-infrastructure-reputationclient.skill.md]] | Outbound gRPC-client adapter |
 
 # Rules
 

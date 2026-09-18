@@ -1,6 +1,6 @@
 ---
 name: devops-github-wf-release-info-publish-in-go
-description: Go implementation of release-info-publish's "Release binaries" extension point — cross-compiles the application to linux/windows/darwin inside the same github-release job, before its softprops/action-gh-release@v2 step, and lists them in that one call's files: — only for a Go project whose deliverable is a standalone executable, never a network service
+description: Go implementation of release-info-publish's "Release binaries" extension point — cross-compiles the application to linux/windows/darwin inside the same github-release job, before its softprops/action-gh-release@v2 step, and lists them in that one call's files — only for a Go project whose deliverable is a standalone executable, never a network service
 whenToUse: when creating or updating `.github/workflows/release-info-publish.yml` in a Go project whose deliverable is a CLI or desktop application (not a web/API service)
 updated: 20260917
 tags:
@@ -8,7 +8,6 @@ tags:
   - concern/ci
   - github-actions
   - release
-
 ---
 
 # Scope

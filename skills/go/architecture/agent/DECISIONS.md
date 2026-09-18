@@ -96,9 +96,9 @@ architectural fork that needs the owner's sign-off; everything else is execution
   `solution-go-conformance-testing` (extends the shared
   `skills/common-workflow/test/solution-conformance-testing.skill`, mirroring the
   `ts`/`python`/`dotnet` per-stack extensions). VP-realizing: `solution-grpc-api` (VP1),
-  `solution-external-integration` (VP2), `solution-messaging-infrastructure` +
-  `solution-kafka-producer` (VP3, skeleton), `solution-transactional-outbox` (VP4, skeleton),
-  `solution-kafka-consumer` (VP5, skeleton), `solution-cached-db` (VP6), `solution-persistent-db`
+  `solution-external-integration` (VP2), `solution-go-messaging-infrastructure` +
+  `solution-go-kafka-producer` (VP3, skeleton), `solution-go-transactional-outbox` (VP4, skeleton),
+  `solution-go-kafka-consumer` (VP5, skeleton), `solution-cached-db` (VP6), `solution-persistent-db`
   (VP7). Expect most intersections to classify `-N-` (disjoint `internal/` packages per solution) —
   confirm once actually authored, and iterate delta-conflict-detection's grouping pass for real
   before treating any VP's `Realized by` cell as final.
@@ -112,8 +112,8 @@ architectural fork that needs the owner's sign-off; everything else is execution
 **All 14 solutions authored** (commits `d3365f5b`, `45de25c1`, `d2784c06`, `00f6127b`): the 5
 common-baseline + `solution-go-domain-ports` (shared prereq) + `solution-grpc-api` (VP1) +
 `solution-external-integration` (VP2) + `solution-cached-db` (VP6) + `solution-persistent-db`
-(VP7) full; `solution-messaging-infrastructure` + `solution-kafka-producer` (VP3) +
-`solution-transactional-outbox` (VP4) + `solution-kafka-consumer` (VP5) skeletons. Every
+(VP7) full; `solution-go-messaging-infrastructure` + `solution-go-kafka-producer` (VP3) +
+`solution-go-transactional-outbox` (VP4) + `solution-go-kafka-consumer` (VP5) skeletons. Every
 `variability-map.md` VP row's `Realized by` cell now points at a real solution.
 
 **Delta-conflict-detection classification pass DONE** — grouped every `Implementation/` file by its

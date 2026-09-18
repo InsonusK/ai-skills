@@ -1,5 +1,5 @@
 ---
-name: solution-kafka-consumer
+name: solution-go-kafka-consumer
 description: Reacts to asynchronous Kafka messages from other services — the AsyncInboundApi (VP5) realization, running as a long-running loop alongside any inbound API server
 whenToUse: when a Go web-service needs to react to messages another service publishes to a Kafka topic
 domain: skill
@@ -15,7 +15,7 @@ creates:
 extends:
   - "cmd/{service}/main.go"
 depends_on:
-  - "[[skills/go/architecture/solutions/solution-messaging-infrastructure.skill/solution-messaging-infrastructure.skill.md|solution-messaging-infrastructure]]"
+  - "[[skills/go/architecture/solutions/solution-go-messaging-infrastructure.skill/solution-go-messaging-infrastructure.skill.md|solution-go-messaging-infrastructure]]"
 built_on_plateau:
 adr:
 ---
@@ -36,4 +36,4 @@ FILES:
 - [[./Implementation/cmd/{service}/main.go.extend.md|cmd/{service}/main.go]] - extend - add the consumer loop to the `errgroup.Group`, shape only
 
 # Check list
-- [ ] Before real authoring: confirm the Kafka client library via [[skills/go/architecture/solutions/solution-messaging-infrastructure.skill/solution-messaging-infrastructure.skill.md|solution-messaging-infrastructure]]'s own open Boundary.
+- [ ] Before real authoring: confirm the Kafka client library via [[skills/go/architecture/solutions/solution-go-messaging-infrastructure.skill/solution-go-messaging-infrastructure.skill.md|solution-go-messaging-infrastructure]]'s own open Boundary.

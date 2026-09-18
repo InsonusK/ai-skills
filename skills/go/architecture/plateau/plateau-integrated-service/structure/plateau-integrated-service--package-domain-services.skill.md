@@ -44,7 +44,7 @@ internal/domain/services/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| linkcheck.go | `LinkCheckService`: validates and normalizes a URL | [[plateau-integrated-service--file-domain-services-linkcheck.skill.md]] |
+| linkcheck.go | `LinkCheckService`: validates and normalizes a URL | [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-domain-services-linkcheck.skill.md]] |
 
 # What Does NOT Belong Here
 - Request/response DTOs for any specific transport.

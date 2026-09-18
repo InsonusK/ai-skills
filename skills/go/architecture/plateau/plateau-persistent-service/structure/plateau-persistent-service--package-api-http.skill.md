@@ -38,7 +38,7 @@ internal/api/http/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| server.go | `Server`: `GET /health`, `POST /v1/links/check`, `GET /v1/links/recent` | [[plateau-persistent-service--file-api-http-server.skill.md]] |
+| server.go | `Server`: `GET /health`, `POST /v1/links/check`, `GET /v1/links/recent` | [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-api-http-server.skill.md]] |
 
 # Allowed Dependencies
 - `internal/domain/services`
