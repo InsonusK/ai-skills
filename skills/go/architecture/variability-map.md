@@ -22,7 +22,7 @@ Each row is one axis on which two Go web-services built on this family could leg
 | VP4 | **OutboxPattern** — write outgoing messages to a transactional outbox in the same transaction as the persisted business change, then relay them, instead of publishing directly? | Yes / No | **Yes requires (VP3=Yes AND VP7=Yes)** — jointly AND — see [note](#vp4s-constraint--the-owners-own-rule) | **skeleton** → [solution-go-transactional-outbox](skills/go/architecture/solutions/solution-go-transactional-outbox.skill/solution-go-transactional-outbox.skill) (draft) | Cross-feature interaction with VP3: changes *how* the message is written (staged in the persistent store first, relayed by a background process), not whether VP3 is legal | No |
 | VP5 | **AsyncInboundApi** — does the module react to asynchronous messages from other services? | Yes / No | — | **skeleton** → `solution-go-messaging-infrastructure` + [solution-go-kafka-consumer](skills/go/architecture/solutions/solution-go-kafka-consumer.skill/solution-go-kafka-consumer.skill) (draft) | Mandatory sub-feature: `solution-go-messaging-infrastructure` (shared with VP3) | No |
 | VP6 | **CachedDb** — does the module depend on a narrow, business-named outbound port backed by a cache-capable store? | Yes / No | — | Yes → [solution-cached-db](skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill) | — | No |
-| VP7 | **PersistentDb** — does the module depend on a narrow, business-named outbound port backed by a durable system-of-record store? | Yes / No | — (gates VP4) | Yes → [solution-persistent-db](skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill) | — | No |
+| VP7 | **PersistentDb** — does the module depend on a narrow, business-named outbound port backed by a durable system-of-record store? | Yes / No | — (gates VP4) | Yes → [solution-persistent-db](skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill), optionally paired with [solution-go-db-migrations](skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill) for versioned, migration-managed schema instead of inline `CREATE TABLE IF NOT EXISTS` | `solution-go-db-migrations` is a mandatory sub-choice *within* VP7 when taken, not a separate VP — see [note](#solution-go-db-migrations-is-part-of-vp7-not-a-new-vp) | No |
 
 ### VP4's constraint — the owner's own rule
 
@@ -31,6 +31,26 @@ The Feature Model draws a single `Requires` edge, `OutboxPattern -> PersistentDb
 This catalog's owner stated the rule directly, not as architectural inference: *"если есть БД и публикация связана с изменением данных в БД, то делается через pattern outbox"* — if the module has a persistent DB **and** the publication is tied to a change in that DB's data, it is done via the outbox pattern. Two things follow that the Constraint column's Yes/No shape cannot express on its own:
 - The precondition is **VP3=Yes AND VP7=Yes**, exactly as stated in the table.
 - Once both hold, whether a *specific* publication uses the outbox is not itself a further catalog-level choice — it is **required** for any publication that is triggered by a persisted-data change (direct `solution-go-kafka-producer` publish is still legal for a publication that is not tied to a persisted change, e.g. a pure computed/derived event). `solution-go-transactional-outbox`'s own Boundaries state this precisely; the Variability Map records only the legality gate.
+
+### solution-go-db-migrations is part of VP7, not a new VP
+
+`solution-persistent-db`'s own `# Boundaries` names a real gap: its adapter ensures its table with a
+bare `CREATE TABLE IF NOT EXISTS`, adequate only for this catalog's own runnable examples, with no
+versioning and no way to run schema changes independently of starting the service.
+`solution-go-db-migrations` (`depends_on` `solution-persistent-db`; see its own ADR for the
+goose-based tool choice) closes that gap. It is **not** modeled as its own Variation Point: it
+answers no question a team could legitimately decide independently of VP7 itself — it only exists,
+and only makes sense, once `PersistentDb` is already `Yes`. It is recorded directly in VP7's own
+`Realized by` cell instead, the same way VP3's row names two solutions (`solution-go-messaging-
+infrastructure` + `solution-go-kafka-producer`) without splitting into two rows.
+
+Unlike VP3's pairing, `solution-go-db-migrations` is not *mandatory* whenever VP7 is `Yes` —
+`plateau-persistent-service` (built before this solution existed) composes `solution-persistent-db`
+alone and remains a legal, correct realization of VP7; a team wanting versioned migrations applies
+`solution-go-db-migrations` on top. This asymmetry is deliberate: forcing it mandatory would make
+the map disagree with `plateau-persistent-service`'s own already-verified `created_by`, which
+`plateau/plateau-repository.md`'s Constraint check would then have to flag as a real violation
+instead of a legal, simply-uncomposed combination.
 
 ### Why AsyncInboundApi/AsyncOutboundApi are single rows
 
@@ -49,3 +69,4 @@ The plateau↔VP matrix lives in [plateau/plateau-repository.md](skills/go/archi
 - **Migration is `No` everywhere** — this is a brand-new catalog; no service built on it has yet been observed changing a VP answer after being composed. Per the parent skill, `Migration` is set `Yes` only on a real observed transition, never speculatively.
 - **The plateau↔VP view lives outside this map** — see [plateau/plateau-repository.md](skills/go/architecture/plateau/plateau-repository.md); this file intentionally ends at the VP↔solution binding.
 - **No categorical (multi-variant) VP in this catalog** — every row is boolean (Yes/No). Nothing in the current feature set is a mutually-exclusive-alternatives choice; if a second realization of `GrpcApi`-shaped inbound or `AsyncInboundApi`-shaped consumption is added later, revisit whether it stays a boolean addition to `Realized by` or needs a categorical Variant split.
+- **`solution-go-db-migrations` was added to VP7's `Realized by` after this build's five plateaus were already composed.** It is fully authored (not a skeleton) and ground-truth-checked at the solution level (its `Migrate` code compiles and vets against the real `github.com/pressly/goose/v3 v3.28.0` release), but no existing plateau has been retrofitted to compose it alongside `solution-persistent-db` — see [solution-go-db-migrations is part of VP7, not a new VP](#solution-go-db-migrations-is-part-of-vp7-not-a-new-vp) above.

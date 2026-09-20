@@ -17,6 +17,10 @@ docker compose build
 ```bash
 docker compose up -d
 ```
+If [`docker-compose.example.yml`](./docker-compose.example.yml) defines a `migrate` service, Compose
+runs it to completion first — `{service-name}`'s `depends_on: migrate: condition:
+service_completed_successfully` blocks it from starting until `migrate` exits `0`. No separate step
+needed; unlike Docker Stack and Kubernetes, Compose enforces this ordering natively.
 
 ### 3. Verify the deployment
 ```bash

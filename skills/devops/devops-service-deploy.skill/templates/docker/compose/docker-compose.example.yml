@@ -1,10 +1,26 @@
 services:
+  # Present only when the service has its own schema migration step. Runs
+  # once, to completion, before {service-name} starts — never call a
+  # migration routine from inside the app's own startup path instead of
+  # this service (see this skill's own "migration step" MUST rule).
+  migrate:
+    image: "{registry}/{service-name}:{version}"
+    command: ["/app/migrate"]
+    environment:
+      - ConnectionStrings__Default=${CONNECTION_STRING}
+    env_file:
+      - .env
+    restart: "no"
+
   {service-name}:
     build:
       context: ..
       dockerfile: Dockerfile
     image: "{registry}/{service-name}:{version}"
     container_name: {service-name}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "${SERVICE_PORT:-8080}:8080"
     environment:

@@ -1,7 +1,7 @@
 ---
 name: devops-service-deploy
-description: Require every service repository to contain a deploy skill that describes how to deploy the service with Docker Compose, Docker Stack (Swarm), and Kubernetes, including configuration templates, secret handling, devcontainer setup, and deployment examples.
-whenToUse: when you are creating or updating a service and need to produce deployment documentation and artifacts for Docker Compose, Docker Stack, and Kubernetes.
+description: Require every service repository to contain a deploy skill that describes how to deploy the service with Docker Compose, Docker Stack (Swarm), and Kubernetes (plain manifests or a Helm chart), including configuration templates, secret handling, devcontainer setup, and deployment examples.
+whenToUse: when you are creating or updating a service and need to produce deployment documentation and artifacts for Docker Compose, Docker Stack, Kubernetes, or a Helm chart.
 tags:
   - stack
   - app-type/service
@@ -10,13 +10,14 @@ tags:
   - docker
   - kubernetes
   - k8s
+  - helm
 adr:
   - adr/use-concern-devops-tag.md
 ---
 
 # Goal
 - Every service repository must contain its own deployment skill so that any agent or operator can deploy the service consistently.
-- The deployment skill must cover Docker Compose (local dev), Docker Stack / Swarm (single/multi-host production), and Kubernetes (cluster) deployment paths.
+- The deployment skill must cover Docker Compose (local dev), Docker Stack / Swarm (single/multi-host production), and Kubernetes (cluster) deployment paths — Kubernetes itself via either plain manifests or a Helm chart, whichever the service actually uses (see "Kubernetes coverage").
 - It must provide ready-to-use configuration templates, a documented secrets contract, and concrete deployment examples.
 - The service repository itself must be devcontainer-ready and support supplying any configuration value as a secret file, independent of this skill's own templates.
 - The service must expose a `/health-check` endpoint, and every deployment path must use it.
@@ -35,17 +36,18 @@ adr:
 - **Local deploy skill** - When creating or modifying a service, create or update the deployment skill at `skills/devops/deploy-{service-name}.skill/deploy-{service-name}.skill.md` in the service repository.
   - Risk: without a local deploy skill, every future deployment depends on implicit knowledge and ad-hoc commands.
   - Fix: keep the skill next to the service code and update it whenever deployment-relevant facts change.
-- **Templates grouped by application, not dumped flat** - Inside the deploy skill's `templates/` folder, group example files by what applies them: `templates/docker/` for everything Docker reads, `templates/k8s/` for everything `kubectl`/Kubernetes reads. Inside `templates/docker/`, give Docker Compose and Docker Stack their own subfolders (`templates/docker/compose/`, `templates/docker/stack/`) whenever their examples differ — which they always do, since a stack manifest and a compose file are never the same file (see "Docker Stack coverage").
-  - Violation: `templates/docker-compose.example.yml`, `templates/docker-stack.example.yml`, and `templates/k8s-deployment.example.yml` all sitting flat in the same `templates/` folder.
-  - Risk: a flat folder mixing Compose, Stack, and Kubernetes files forces an operator to read every filename to figure out which platform an example belongs to, and makes it easy to apply a Stack manifest with `docker compose` (or vice versa) by grabbing the wrong file.
+- **Templates grouped by application, not dumped flat** - Inside the deploy skill's `templates/` folder, group example files by what applies them: `templates/docker/` for everything Docker reads, `templates/k8s/` for everything plain `kubectl` reads, `templates/helm/` for a Helm chart. Inside `templates/docker/`, give Docker Compose and Docker Stack their own subfolders (`templates/docker/compose/`, `templates/docker/stack/`) whenever their examples differ — which they always do, since a stack manifest and a compose file are never the same file (see "Docker Stack coverage"). `templates/k8s/` and `templates/helm/` are alternatives for the same platform (see "Kubernetes coverage"), not both required — populate whichever one the service actually deploys with.
+  - Violation: `templates/docker-compose.example.yml`, `templates/docker-stack.example.yml`, and `templates/k8s-deployment.example.yml` all sitting flat in the same `templates/` folder; a Helm chart's files sitting directly under `templates/k8s/` instead of their own `templates/helm/`.
+  - Risk: a flat folder mixing Compose, Stack, and Kubernetes files forces an operator to read every filename to figure out which platform an example belongs to, and makes it easy to apply a Stack manifest with `docker compose` (or vice versa) by grabbing the wrong file; a Helm chart mixed into `templates/k8s/` looks like a second, competing set of plain manifests instead of the chart it actually is.
   - Fix: lay out `templates/` as:
     ```
     templates/
       docker/
         compose/   # docker-compose.example.yml, docker-compose-deploy.example.md
-        stack/     # docker-stack.example.yml, docker-stack-deploy.example.md
+        stack/     # docker-stack.example.yml, docker-stack-migrate.example.yml, docker-stack-deploy.example.md
         env.example, docker-entrypoint.example.sh, dockerfile-snippet.example.md
-      k8s/         # k8s-*.example.yml, k8s-deploy.example.md
+      k8s/         # k8s-*.example.yml, k8s-deploy.example.md — plain-manifest path
+      helm/        # chart-example/ (Chart.yaml, values.yaml, templates/), helm-deploy.example.md — Helm path
     ```
     Files that apply to Docker generally (the shared `.env.example`, the entrypoint script, the Dockerfile snippet) live directly under `templates/docker/`, not inside `compose/` or `stack/`.
 - **`/health-check` endpoint is mandatory** - The service must implement an HTTP `/health-check` endpoint, and every deployment path (Docker Compose `healthcheck`, Docker Stack `healthcheck`, Kubernetes `livenessProbe`/`readinessProbe`) must be wired to call it.
@@ -58,9 +60,22 @@ adr:
 - **Docker Stack coverage** - The deployment skill must also contain a Docker Stack (Swarm) manifest and deployment example, distinct from the Docker Compose one.
   - Risk: `docker stack deploy` silently ignores keys that plain `docker compose` honors (`build`, `env_file`, `restart`, `network_mode`, ...); reusing the Compose example as-is produces a stack file that deploys with the wrong configuration and no error.
   - Fix: provide a stack-specific compose file with a `deploy:` block (replicas, restart/update policy, resources) and Swarm secrets, plus a `docker stack deploy` / `docker service update` / `docker stack rm` command sequence.
-- **Kubernetes coverage** - The deployment skill must contain Kubernetes manifests or a Helm chart for the service.
-  - Risk: cluster deployments are inconsistent or require manual recreation of resources.
-  - Fix: provide Deployment, Service, ConfigMap, and Secret manifests (and Ingress / HPA when applicable).
+- **Kubernetes coverage — plain manifests or a Helm chart, never both for the same service** - The deployment skill must contain either plain Kubernetes manifests or a Helm chart, whichever the service actually deploys with — pick one path, don't maintain both for the same service.
+  - Risk: cluster deployments are inconsistent or require manual recreation of resources; maintaining both a manifest set and a chart for one service means they drift the moment only one gets updated.
+  - Fix, plain manifests: provide Deployment, Service, ConfigMap, and Secret manifests (and Ingress / HPA when applicable) — see `templates/k8s/`.
+  - Fix, Helm chart: provide a real, installable chart (`Chart.yaml`, `values.yaml`, `templates/` with Deployment/Service/ConfigMap/Secret/Ingress) — see [`templates/helm/chart-example/`](./templates/helm/chart-example/) and its own [`helm-deploy.example.md`](./templates/helm/helm-deploy.example.md). Prefer this path whenever the service already deploys via Helm: a migration Job wired as a `pre-install,pre-upgrade` hook blocks the release natively, with no extra deploy-script step the plain-manifest path needs (see the "migration step" rule below).
+- **A migration step runs as a one-shot job, OR at the app's own startup guarded by a single-instance condition — never both, and never unconditionally at startup** - When the service has a database schema migration step, exactly one of two modes applies it: **Job mode** (a one-shot container/Job that completes before the app (re)starts) or **MigrateOnStart mode** (the app calls it once at its own startup, behind an explicit config flag). MigrateOnStart mode is permitted **only** when at most one instance of the migrating process can ever run concurrently for that deployment — the moment more than one replica/instance is possible, Job mode is required.
+  - Violation: the application calls its own migration routine unconditionally (not behind a flag), or with the flag left at whatever a multi-replica deployment happens to default to; a Compose/Stack/Kubernetes manifest starts the app with no documented migration step ahead of it; or both a Job step *and* an app-startup call are wired for the same deployment "as a safety net."
+  - Risk: migrating from the app's own startup path on anything but a genuinely single-instance deployment means every replica attempts it concurrently on every restart — not only deploys, also crashes, OOM-kills, node evictions, and autoscaler scale-outs — undermining autoscaling specifically by adding a database round-trip and lock attempt to every new replica exactly when it's least wanted. Wiring both a Job **and** a startup call "for safety" does not corrupt data (a session lock still serializes concurrent attempts) but silently masks a broken/misconfigured deploy pipeline — the Job step being accidentally skipped stops failing loudly and instead gets quietly "self-healed" by the app, removing the only signal that the pipeline has drifted — and re-couples migration failure to the app's own crash-loop instead of the pipeline's pass/fail signal for that path. See `skills/go/architecture/solutions/solution-go-db-migrations.skill/adr/migration-mode-per-platform.md` for the full reasoning and a worked example of choosing between the two per platform.
+  - Fix: default to Job mode; only switch a specific deployment to MigrateOnStart when that deployment's own topology genuinely guarantees a single instance (state this explicitly in that service's own deploy skill, e.g. a Docker Stack service pinned to `deploy.replicas: 1` — the generic templates below default to `replicas: 2` and therefore default to Job mode too), and never wire both modes for the same deployment. Per platform:
+    - **Docker Compose**: always Job mode — a `migrate` service (`restart: "no"`); the app service's `depends_on` names it with `condition: service_completed_successfully` (Compose v2.20+/Engine 25+) — see [`docker-compose.example.yml`](./templates/docker/compose/docker-compose.example.yml). Already free, native, and safe regardless of replica count; there is no reason to ever choose MigrateOnStart here.
+    - **Docker Stack (Swarm)**: Job mode — a `migrate` service with `deploy.mode: replicated-job` — **but `docker stack deploy` silently ignores `depends_on` entirely** (the same limitation this skill already documents for `env_file`), so ordering cannot live in one manifest applied in one command. Deploy it first, targeting the *same* stack name the app deploys to (this stays one stack, not two — `docker stack deploy` only removes a service absent from the file you're applying when you pass `--prune`, which this never does), wait until `docker service ps` reports it `Complete`, then deploy the app on top — see [`docker-stack-migrate.example.yml`](./templates/docker/stack/docker-stack-migrate.example.yml) and the wait step in [`docker-stack-deploy.example.md`](./templates/docker/stack/docker-stack-deploy.example.md). MigrateOnStart is an option here **only** for a service explicitly pinned to a single replica — skip the Job manifest entirely and set the app's own `MIGRATE_ON_START=true` instead.
+    - **Kubernetes, plain manifests (no Helm)**: Job mode — a `Job` manifest, applied and waited on (`kubectl wait --for=condition=complete`) before the Deployment is applied. See [`k8s-migrate-job.example.yml`](./templates/k8s/k8s-migrate-job.example.yml) and [`k8s-deploy.example.md`](./templates/k8s/k8s-deploy.example.md).
+    - **Kubernetes via Helm**: see [Helm chart coverage](#helm-chart-coverage-if-the-service-deploys-with-helm) below — Job mode there is wired as a chart-native `pre-install,pre-upgrade` hook, not a manual manifest.
+- **Helm chart coverage (if the service deploys with Helm)** - A Helm-based deployment skill must be a complete, `helm lint`-clean chart under `templates/helm/`, and its migration step (if any) must be the chart's own hook-driven Job, gated by one values key that also controls the Deployment's `MIGRATE_ON_START` — never two independently-set values that could drift apart.
+  - Violation: a values-driven flag for the migration mode that isn't the *same* value the Job's rendering condition and the Deployment's env var both read; a chart with no migrate Job at all for a service that has a migration step; a chart that hasn't been run through `helm lint`/`helm template` at least once.
+  - Risk: two independent toggles (one deciding whether the Job renders, another setting `MIGRATE_ON_START` on the Deployment) can be set inconsistently by a values override, silently reintroducing "both modes wired at once" — the exact problem a single derived value exists to make structurally impossible, not just documented against.
+  - Fix: follow [`templates/helm/chart-example/`](./templates/helm/chart-example/) exactly — `values.yaml`'s `migrate.mode` (`"job"` default or `"onStart"`) is the one source of truth; `templates/migrate-job.yaml` renders only `{{- if eq .Values.migrate.mode "job" }}`, and `templates/deployment.yaml`'s `MIGRATE_ON_START` env var is derived from that same key (`{{ eq .Values.migrate.mode "onStart" | ternary "true" "false" }}`), never set independently. Run `helm lint .` and `helm template .` (in both modes) before considering the chart done — see [`helm-deploy.example.md`](./templates/helm/helm-deploy.example.md).
 - **Configuration contract** - The deployment skill must document the exact environment variables, secrets, and volume mounts the service needs.
   - Risk: the service starts with missing configuration and fails at runtime.
   - Fix: list every variable, its purpose, default value (if any), and whether it comes from a Secret or ConfigMap.
@@ -110,26 +125,30 @@ adr:
 - Pin image tags explicitly instead of using `latest`.
 
 ## MAY
-- Provide a Helm chart in addition to plain manifests.
+- Provide both a Helm chart and plain manifests for the same service when a real migration between
+  them is in progress — a transitional state, not the steady state "Kubernetes coverage" expects.
 - Provide a Kustomize overlay.
 - Provide a `skaffold.yaml` for local Kubernetes development.
 
 # Example
 See the templates in [./templates](./templates), grouped the same way the produced deploy skill must group them:
 - [`service-deploy-skill-template.md`](./templates/service-deploy-skill-template.md) — skeleton for the deployment skill the agent must create in the service repository.
-- `templates/docker/compose/`: [`docker-compose.example.yml`](./templates/docker/compose/docker-compose.example.yml) — Docker Compose template for a generic service; [`docker-compose-deploy.example.md`](./templates/docker/compose/docker-compose-deploy.example.md) — step-by-step Docker Compose deploy guide.
-- `templates/docker/stack/`: [`docker-stack.example.yml`](./templates/docker/stack/docker-stack.example.yml) — Docker Stack (Swarm) manifest with `deploy:` policy and Swarm secrets; [`docker-stack-deploy.example.md`](./templates/docker/stack/docker-stack-deploy.example.md) — step-by-step Docker Stack deploy guide.
+- `templates/docker/compose/`: [`docker-compose.example.yml`](./templates/docker/compose/docker-compose.example.yml) — Docker Compose template for a generic service, including an optional `migrate` service wired via `depends_on: condition: service_completed_successfully`; [`docker-compose-deploy.example.md`](./templates/docker/compose/docker-compose-deploy.example.md) — step-by-step Docker Compose deploy guide.
+- `templates/docker/stack/`: [`docker-stack.example.yml`](./templates/docker/stack/docker-stack.example.yml) — Docker Stack (Swarm) manifest with `deploy:` policy and Swarm secrets; [`docker-stack-migrate.example.yml`](./templates/docker/stack/docker-stack-migrate.example.yml) — the `replicated-job` migration service, deployed to the *same* stack name one step ahead of it and waited on, since Swarm ignores `depends_on`; [`docker-stack-deploy.example.md`](./templates/docker/stack/docker-stack-deploy.example.md) — step-by-step Docker Stack deploy guide, including the migration-job wait step.
 - `templates/docker/` (shared): [`env.example`](./templates/docker/env.example) — `.env.example` for Compose/Stack with secret variables clearly marked; [`docker-entrypoint.example.sh`](./templates/docker/docker-entrypoint.example.sh) — entrypoint script resolving the `{NAME}_FILE` convention; [`dockerfile-snippet.example.md`](./templates/docker/dockerfile-snippet.example.md) — Dockerfile snippet wiring in the entrypoint and the image description label.
 - [`root-env.example`](./templates/root-env.example) — repository-root `.env.example` used by the devcontainer (not Docker- or Kubernetes-specific, so it stays outside both groups).
-- `templates/k8s/`: [`k8s-deployment.example.yml`](./templates/k8s/k8s-deployment.example.yml) — Deployment template; [`k8s-service.example.yml`](./templates/k8s/k8s-service.example.yml) — Service template; [`k8s-configmap.example.yml`](./templates/k8s/k8s-configmap.example.yml) — ConfigMap template; [`k8s-secret.example.yml`](./templates/k8s/k8s-secret.example.yml) — Secret template; [`k8s-ingress.example.yml`](./templates/k8s/k8s-ingress.example.yml) — Ingress template; [`k8s-deploy.example.md`](./templates/k8s/k8s-deploy.example.md) — step-by-step Kubernetes deploy guide.
+- `templates/k8s/` (plain-manifest path): [`k8s-deployment.example.yml`](./templates/k8s/k8s-deployment.example.yml) — Deployment template; [`k8s-service.example.yml`](./templates/k8s/k8s-service.example.yml) — Service template; [`k8s-configmap.example.yml`](./templates/k8s/k8s-configmap.example.yml) — ConfigMap template; [`k8s-secret.example.yml`](./templates/k8s/k8s-secret.example.yml) — Secret template; [`k8s-ingress.example.yml`](./templates/k8s/k8s-ingress.example.yml) — Ingress template; [`k8s-migrate-job.example.yml`](./templates/k8s/k8s-migrate-job.example.yml) — Job template for the migration step; [`k8s-deploy.example.md`](./templates/k8s/k8s-deploy.example.md) — step-by-step Kubernetes deploy guide, including the `kubectl wait` step.
+- `templates/helm/` (Helm path — use instead of `templates/k8s/`, not alongside it): [`chart-example/`](./templates/helm/chart-example/) — a complete, `helm lint`-clean chart (`Chart.yaml`, `values.yaml`, `.helmignore`, `templates/_helpers.tpl`/`deployment.yaml`/`service.yaml`/`configmap.yaml`/`secret.yaml`/`ingress.yaml`/`migrate-job.yaml`); [`helm-deploy.example.md`](./templates/helm/helm-deploy.example.md) — step-by-step `helm install`/`upgrade`/`rollback`/`uninstall` guide. `values.yaml`'s `migrate.mode` (`job` default / `onStart`) is the single source of truth both `migrate-job.yaml`'s rendering condition and `deployment.yaml`'s `MIGRATE_ON_START` env var derive from — see the "Helm chart coverage" rule above for why that matters.
 
 # Check list
 - [ ] A deployment skill exists at `skills/devops/deploy-{service-name}.skill/deploy-{service-name}.skill.md`.
 - [ ] The service implements `/health-check`, and every Compose `healthcheck`, Stack `healthcheck`, and Kubernetes `livenessProbe`/`readinessProbe` calls it.
-- [ ] `templates/` is grouped as `templates/docker/compose/`, `templates/docker/stack/`, `templates/docker/` (shared Docker files), and `templates/k8s/` — never a flat folder mixing Compose, Stack, and Kubernetes files.
+- [ ] `templates/` is grouped as `templates/docker/compose/`, `templates/docker/stack/`, `templates/docker/` (shared Docker files), and either `templates/k8s/` or `templates/helm/` — never a flat folder mixing them, and never both `k8s/` and `helm/` for the same service outside a deliberate, temporary migration between the two.
 - [ ] The skill contains a Docker Compose configuration template and a deployment example.
 - [ ] The skill contains a Docker Stack (Swarm) manifest, distinct from the Compose file, and a `docker stack deploy` example.
-- [ ] The skill contains Kubernetes manifests (Deployment, Service, ConfigMap, Secret) and a deployment example.
+- [ ] The skill contains either Kubernetes manifests (Deployment, Service, ConfigMap, Secret) with a deployment example, or a `helm lint`-clean chart (see `templates/helm/chart-example/`) with a `helm install`/`upgrade` example.
+- [ ] If the service has a migration step, exactly one mode applies it per deployment — Job mode (Compose `depends_on: condition: service_completed_successfully`; Stack `replicated-job` deployed and waited on separately; Kubernetes `Job` waited on via `kubectl wait`, or — on a Helm chart — the chart's own `pre-install,pre-upgrade` hook) or MigrateOnStart mode — never both, and MigrateOnStart only where that deployment is explicitly documented as single-instance.
+- [ ] On a Helm chart with a migration step: `migrate-job.yaml`'s rendering condition and the Deployment's `MIGRATE_ON_START` env var are both derived from the *same* `values.yaml` key — never two independently-settable values.
 - [ ] Environment variables, secrets, and volume mounts are documented, with secret variables visibly marked in the `.env.example`.
 - [ ] The repository root contains a `.env.example` with devcontainer base settings, and root `.env` is gitignored.
 - [ ] The service supports the `{NAME}_FILE` convention for every environment variable (entrypoint resolves it before the app starts).

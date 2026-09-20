@@ -1,0 +1,53 @@
+image:
+  repository: "{registry}/{service-name}"
+  tag: "{version}"
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+service:
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: false
+  className: nginx
+  host: "{service-name}.example.com"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+config:
+  logLevel: Information
+
+# Real values are never committed here — this key only names which Secret
+# key the Deployment reads; the Secret itself is created out-of-band (see
+# helm-deploy.example.md) or supplied via `--set-file`/an external secrets
+# operator, never checked into this values.yaml.
+secret:
+  name: "{service-name}-secrets"
+  connectionStringKey: connection-string
+
+# Present only when this service has its own schema migration step — delete
+# this whole key and templates/migrate-job.yaml if it doesn't.
+#
+# This is the ONE switch selecting between this catalog's two migration
+# modes — see solution-go-db-migrations.skill/adr/migration-mode-per-platform.md.
+# The chart enforces "never both": migrate-job.yaml only renders when mode
+# is "job", and the Deployment's own MIGRATE_ON_START env var is derived
+# from this same value, never set independently — so there is no second
+# place a values override could accidentally enable both at once.
+migrate:
+  # "job" (default) — templates/migrate-job.yaml renders as a Helm
+  #   pre-install/pre-upgrade hook; `helm upgrade`/`helm install` blocks on
+  #   it natively. Safe at any replicaCount.
+  # "onStart" — migrate-job.yaml does not render at all; the Deployment's
+  #   own MIGRATE_ON_START is set to "true" instead. Only ever safe when
+  #   replicaCount is 1 — see the ADR above. Never set this to "onStart"
+  #   while replicaCount is greater than 1.
+  mode: job
