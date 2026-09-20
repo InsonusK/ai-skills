@@ -39,7 +39,7 @@ adr:
 - Independent of `solution-cached-db` — this catalog's `CachedDb` and `PersistentDb` VPs carry no constraint between them; a module may have either, neither, or both.
 
 # Boundaries
-- Schema migration tooling is out of scope — this solution's adapter creates its table with `CREATE TABLE IF NOT EXISTS` on construction, adequate for this catalog's own runnable examples; a production consumer of this catalog is expected to replace that with real migration tooling of its own choosing.
+- Schema migration tooling is out of scope for this solution itself — its own adapter creates its table with `CREATE TABLE IF NOT EXISTS` on construction, adequate only for this catalog's own runnable examples. A team wanting versioned, migration-managed schema instead applies [[skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] on top — recorded directly in `variability-map.md`'s VP7 row, not a separate Variation Point, and not a `depends_on` requirement of this solution.
 
 # Adr
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/adr/postgres-via-pgx.md|PostgreSQL via pgx]]

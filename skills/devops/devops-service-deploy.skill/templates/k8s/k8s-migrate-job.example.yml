@@ -1,0 +1,55 @@
+# This is Job mode: present only when the service has its own schema
+# migration step — see the "migration step" MUST rule in
+# devops-service-deploy.skill.md. (MigrateOnStart mode is also an option
+# here, but only for a Deployment explicitly pinned to replicas: 1 — skip
+# this file and set the app's own MIGRATE_ON_START=true instead in that
+# case; Job mode stays the default for any other replica count.)
+#
+# Plain manifest path (no Helm): applied and waited on (kubectl wait
+# --for=condition=complete) before k8s-deployment.example.yml, per
+# k8s-deploy.example.md — this is scripted, not a native Kubernetes
+# primitive; plain Job + Deployment resources have no ordering relationship
+# to each other on their own.
+#
+# Helm-chart path (preferred whenever the chart uses Helm, regardless of
+# replica count — it costs nothing extra): uncomment the two annotations
+# below. Helm's own hook runner applies a pre-install/pre-upgrade hook
+# resource, WAITS for it to reach Complete, and fails (and can roll back)
+# the whole release if it doesn't — genuinely blocking the Deployment,
+# natively, with no kubectl wait step of your own. Do not use both paths at
+# once, and set MIGRATE_ON_START=false explicitly in the chart's values
+# either way.
+#   annotations:
+#     "helm.sh/hook": pre-install,pre-upgrade
+#     "helm.sh/hook-weight": "-5"
+#     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {service-name}-migrate
+  namespace: {namespace}
+  labels:
+    app: {service-name}
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        app: {service-name}
+        role: migrate
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: "{registry}/{service-name}:{version}"
+          command: ["/app/migrate"]
+          envFrom:
+            - configMapRef:
+                name: {service-name}-config
+          env:
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: {service-name}-secrets
+                  key: connection-string
