@@ -43,12 +43,12 @@ graph TD
     VO -. "Requires" .-> DL
 
     Common -->|Optional| SIA["SyncInboundApi"]
-    SIA -->|"Optional (at least one)"| HAC["HttpApiController"]
-    SIA -->|"Optional (at least one)"| GAC["GrpcApiController"]
+    SIA -->|"At least one (protocol)"| HAC["HttpApiController"]
+    SIA -->|"At least one (protocol)"| GAC["GrpcApiController"]
 
     Common -->|Optional| SOA["SyncOutboundApi"]
-    SOA -->|"Optional (at least one)"| HACL["HttpApiClient"]
-    SOA -->|"Optional (at least one)"| GACL["GrpcApiClient"]
+    SOA -->|"At least one (protocol)"| HACL["HttpApiClient"]
+    SOA -->|"At least one (protocol)"| GACL["GrpcApiClient"]
 
     Common -->|Optional| AIA["AsyncInboundApi"]
     AIA -->|Mandatory| KC["KafkaConsumer"]

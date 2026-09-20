@@ -36,14 +36,14 @@ feature/
 ## How to build a Feature Model
 1. Identify {output} — the catalog root (existing or new).
 2. **Write out the concrete baseline structure first** — the literal project/folder layout of a family member with nothing but common features (real names: `App.Host`, `{Module}.Application`, `Shared`, `BuildingBlocks`, ...). Every later step tests candidates against it. Derive the baseline from first principles — what the simplest legitimate family member needs to function at all — then check an existing catalog against it, never the other way round.
-3. Enumerate candidate features from every source: an existing catalog's solutions, and fresh requirements not yet built anywhere. Mark aspirational candidates (no `Realized by` target exists yet) — the model describes the intended Program Family, not only what is already implemented.
+3. Enumerate candidate features from every source: an existing catalog's solutions, fresh requirements not yet built anywhere, and — for a backend web-service family — the stack-agnostic starting menu in [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/web-service-common-features/web-service-common-features|templates/web-service-common-features]] (a candidate list, not a ready verdict — every `IsCommon` call still runs against this catalog's own baseline). Mark aspirational candidates (no `Realized by` target exists yet) — the model describes the intended Program Family, not only what is already implemented.
 4. Test each candidate against the baseline: requires anything beyond the baseline as written → variable; the baseline cannot function at all without it → common. Two traps, each governed by its own rule: dismissing a fixed-seeming capability as "infrastructure" ([Infrastructure is the owner's call](#infrastructure-is-the-owners-call)) and modeling one mechanism under two different names ([One mechanism, one feature](#one-mechanism-one-feature)).
 5. Decide each feature's shape:
    - **Leaf** — no further decomposition.
    - **Group with further features** — bundled children nest in the parent's block; independently selectable children sit outside, connected by a labeled edge (see [Bundled children nest, optional children don't](#bundled-children-nest-optional-children-dont)).
 6. Identify cross-tree constraints — these become `Requires` edges (see [# Edge kind](#edge-kind)). Verify each against an existing solution/pattern when possible; flag reasoning-only ones as unconfirmed (see [Reasoning-only constraints stay provisional](#reasoning-only-constraints-stay-provisional)).
 7. Build `diagrams/feature-diagram.mmd` per [# The diagram](#the-diagram) and [# Edge kind](#edge-kind), starting from [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/feature-diagram.template.mmd|templates/feature-diagram.template.mmd]].
-8. Build `feature-model.md` from [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/feature-model.template.md|templates/feature-model.template.md]]: the baseline structure (step 2), the root/product explanation, the `@import`ed diagram, the AND/OR logic of any parallel constraint edges, the Features table, a note on anything deliberately excluded from the table, any flagged/unconfirmed constraints, and the `Out of scope` section. Remove every `hint` block and the template's "How Apply this template" section before saving.
+8. Build `feature-model.md` from [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/feature-model.template.md|templates/feature-model.template.md]]: the baseline structure (step 2), the root/product explanation, the `@import`ed diagram (with any OR-grouped `Requires` edges already labeled `Requires (any of {group})` per [# Edge kind](#edge-kind) — not left to prose), the Features table, a note on anything deliberately excluded from the table, any flagged/unconfirmed constraints, and the `Out of scope` section. Remove every `hint` block and the template's "How Apply this template" section before saving.
 9. Confirm each materially new or changed part (a new feature, a rename, a constraint, a common/variable verdict) with the family's owner before building further on it.
 
 ## The diagram
@@ -60,11 +60,11 @@ Every edge carries exactly one label from this closed list — never leave a rel
 
 - `Mandatory` — the child is unconditionally present whenever the parent is present.
 - `Optional` — the child is independently selectable under its parent.
-- `At least one (group name)` — selecting the parent requires one or more of its children (this repository's name for what FODA calls an "Or" group; use this exact phrase, not "Or").
-- `Alternative (group name)` — exactly one of the children (reserved: not yet used in any model built with this skill, keep it available).
-- `Requires` — a cross-tree constraint, not a parent-child edge (drawn dotted). When two or more `Requires` edges point at the same target, state their AND/OR logic in `feature-model.md` prose — edge labels cannot express this.
+- `At least one (group name)` — selecting the parent requires one or more of its children (this repository's name for what FODA calls an "Or" group; use this exact phrase, not "Or"). A parent may carry more than one `At least one` grouping among different subsets of its children — give each grouping its own `{group name}` so they read as separate decisions (e.g. `At least one (protocol)` for a transport choice and `At least one (kind)` for an orthogonal choice under the same parent).
+- `Alternative (group name)` — exactly one of the children.
+- `Requires` — a cross-tree constraint, not a parent-child edge (drawn dotted). Use bare `Requires` when a target depends on exactly one source, or when every `Requires` edge into the same target must all hold (AND — the default, needs no further marking). Use `Requires (any of {group})` on every edge in a set when the target needs only one of several `Requires`-linked sources (OR) — the same `{group name}` on each edge in that set is what ties them together as one OR group, replacing the need to hunt for the logic in prose.
 
-`At least one (group name)` and `Alternative (group name)` both contain a space and parentheses, which mermaid's edge-label syntax cannot parse unquoted — wrap the whole label in double quotes or the diagram fails to render, e.g. `In -->|"At least one kind (kind)"| Sync["Sync"]`.
+`At least one (group name)`, `Alternative (group name)`, and `Requires (any of {group})` all contain a space and parentheses, which mermaid's edge-label syntax cannot parse unquoted — wrap the whole label in double quotes or the diagram fails to render, e.g. `In -->|"At least one (protocol)"| Http["HTTP"]`.
 
 # Rule
 
@@ -95,10 +95,11 @@ Label every edge with its exact relation type from the closed list in [# Edge ki
 - Risk: a relation implied only by a node's own text is easy to miss and cannot be checked mechanically later.
 - Fix: use mermaid's edge-label syntax on every single edge, no exceptions.
 
-### Spell out parallel-Requires logic
-State the AND/OR relationship in prose whenever two or more `Requires` edges point at the same target.
-- Risk: two parallel dotted edges look identical whether the real rule is AND or OR; nothing in the diagram disambiguates.
-- Fix: add one sentence naming the exact logic.
+### Mark OR-grouped Requires edges, never leave them to prose alone
+When two or more `Requires` edges point at the same target and only one of them needs to hold, label every edge in that set `Requires (any of {group})` with a shared `{group name}` — never leave an OR relationship to be inferred, and never invent a different ad hoc label for it. Plain `Requires` on parallel edges into the same target always means AND.
+- Violation: two parallel `Requires` edges into one target, both left as bare `Requires`, with the real OR relationship stated only in `feature-model.md` prose (or not stated at all).
+- Risk: two parallel dotted edges look identical whether the real rule is AND or OR; a reader of the diagram alone cannot tell, and prose separated from the diagram is easy to miss or fall out of sync with it.
+- Fix: label every edge in an OR set `Requires (any of {group})`; leave bare `Requires` only for AND (the default) or a single source.
 
 ### One mechanism, one feature
 Verify two candidate features are not the same technical mechanism under different names before modeling them separately.
@@ -163,8 +164,8 @@ Leave the reserved relation type (`Alternative (group name)`) unused in the diag
 - [ ] The diagram's root is named explicitly, grouped inside `Common`, and absent from the Features table.
 - [ ] Every top-level variable feature connects to the `Common` block itself, not to the root individually.
 - [ ] Any block with more than ~4 members is arranged as a row matrix, with cosmetic row borders hidden and real sub-feature group borders visible.
-- [ ] Every edge in the diagram carries an explicit relation label (`Mandatory`/`Optional`/`At least one (group name)`/`Alternative (group name)`/`Requires`), with `At least one (group name)` and `Alternative (group name)` quoted in the mermaid source.
-- [ ] Any parallel `Requires` edges into one target have their AND/OR logic stated in prose.
+- [ ] Every edge in the diagram carries an explicit relation label (`Mandatory`/`Optional`/`At least one (group name)`/`Alternative (group name)`/`Requires`/`Requires (any of {group})`), with every parenthesized label quoted in the mermaid source.
+- [ ] Any parallel `Requires` edges into one target that are OR, not AND, are all labeled `Requires (any of {group})` with a shared group name — never left to prose alone.
 - [ ] No two features model the same underlying technical mechanism under different names.
 - [ ] Every fixed-seeming capability excluded as "infrastructure" was checked with the family's owner first.
 - [ ] Every unconfirmed cross-tree constraint is flagged distinctly, not presented as settled.

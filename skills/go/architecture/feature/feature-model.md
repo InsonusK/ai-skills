@@ -42,13 +42,13 @@ No `internal/domain/interfaces/` exists at this baseline — the domain layer ha
 
 ## Feature diagram
 
-@import "./diagrams/feature-diagram.mmd" {as="mermaid"}
+@import "/skills/go/architecture/feature/diagrams/feature-diagram.mmd" {as="mermaid"}
 
 No parallel `Requires` edges point at the same target in this model — the single `Requires` edge (`OutboxPattern -> PersistentDb`) has no sibling to state AND/OR logic against.
 
 ## Modeling choices specific to this family (vs. the dotnet/angular catalogs)
 
-- **`HttpApi` is common, not a "SyncInboundApi" umbrella of independently-optional transports.** The family's own base case (stated by the family's owner) always exposes HTTP; `GrpcApi` is purely an *additional* inbound surface on top of it, not one of two alternatives where at least one is required. There is accordingly no `Optional (at least one)` group on the inbound side, unlike the dotnet catalog's `SyncInboundApi`.
+- **`HttpApi` is common, not a "SyncInboundApi" umbrella of independently-optional transports.** The family's own base case (stated by the family's owner) always exposes HTTP; `GrpcApi` is purely an *additional* inbound surface on top of it, not one of two alternatives where at least one is required. There is accordingly no `At least one (protocol)` group on the inbound side, unlike the dotnet catalog's `SyncInboundApi`.
 - **`ExternalIntegration` is one feature, not a transport-split umbrella.** The family owner named it as a single option ("внешних интеграций"), realized in the reference implementation over gRPC (`quizclient`, calling an external quiz-agent service) but not committed to that transport — the port a consumer declares in `internal/domain/interfaces` is business-named (e.g. `QuizAgent`), and which transport backs its adapter is an implementation choice, not a further catalog split. A future second transport realization is a change to this one feature's `Realized by`, not a new sibling feature — deliberately simpler than the dotnet catalog's `SyncOutboundApi` split, because the family owner did not ask for that split here.
 - **`CachedDb` and `PersistentDb` are independent, not an "at least one" pair.** Either, neither, or both may be selected — the reference implementation demonstrates only a partial `CachedDb` (a Redis-backed mapping store), with no `PersistentDb` yet. Neither requires the other.
 - **`AsyncInboundApi`/`AsyncOutboundApi` keep the dotnet catalog's two-level shape** (umbrella feature + a `Mandatory` `KafkaConsumer`/`KafkaProducer` child) even though Kafka is, today, this family's only realization of each — this leaves room for a second broker later as a change to the child set, not a re-model of the umbrella, and reuses vocabulary already established in this repository.
