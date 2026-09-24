@@ -17,7 +17,7 @@ rules:
   #   - ./**/plateau/**                        plateau templates
   #   - ./**/architecture/solutions/**         solution skills (per-catalog)
   #   - ./**/architecture/core/**              cross-catalog solution skills
-  #   - ./**/test/solution-*conformance-testing.skill/**  conformance solution skills
+  #   - ./**/test*/solution-*conformance-testing*.skill/**  conformance solution skills
   #   - ./**/examples/**                       illustration fixtures inside other skills
   - name: skill-design
     filter: "./**/*.skill.md"
@@ -25,7 +25,7 @@ rules:
       - "./**/plateau/**"
       - "./**/architecture/solutions/**"
       - "./**/architecture/core/**"
-      - "./**/test/solution-*conformance-testing.skill/**"
+      - "./**/test*/solution-*conformance-testing*.skill/**"
       - "./**/examples/**"
     validation-skill: skill-design
   - name: skill-content
@@ -34,7 +34,7 @@ rules:
       - "./**/plateau/**"
       - "./**/architecture/solutions/**"
       - "./**/architecture/core/**"
-      - "./**/test/solution-*conformance-testing.skill/**"
+      - "./**/test*/solution-*conformance-testing*.skill/**"
       - "./**/examples/**"
     validation-skill: skill-content
   - name: skill-tags
@@ -43,7 +43,7 @@ rules:
       - "./**/plateau/**"
       - "./**/architecture/solutions/**"
       - "./**/architecture/core/**"
-      - "./**/test/solution-*conformance-testing.skill/**"
+      - "./**/test*/solution-*conformance-testing*.skill/**"
       - "./**/examples/**"
     validation-skill: skill-tags
   # Example of a second rule with its own standard:

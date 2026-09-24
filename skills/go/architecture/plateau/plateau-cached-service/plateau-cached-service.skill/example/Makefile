@@ -18,7 +18,7 @@ run: build
 lint:
 	go vet ./...
 
-# --- solution-go-conformance-testing: unified test/coverage/mutation contract ---
+# --- solution-conformance-testing-in-go: unified test/coverage/mutation contract ---
 # Caller-facing flags are WITH_CODE_COVERAGE, ONLY_DELTA and DELTA_BASE only.
 
 GREMLINS_VERSION := v0.6.0
