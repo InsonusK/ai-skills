@@ -31,7 +31,7 @@ Column legend — VP1 GrpcApi · VP2 ExternalIntegration · VP3 AsyncOutboundApi
 
 | # | Plateau | `standalone` | Parent | New solutions in its `created_by` (on top of the parent chain) |
 |---|---------|--------------|--------|---------------------------------------------------------------|
-| 1 | **plateau-http-service** | `true` | — | `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, `solution-go-app-logging`, `solution-go-conformance-testing` (none VP-realizing — this is the common baseline every other plateau builds on) |
+| 1 | **plateau-http-service** | `true` | — | `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, `solution-go-app-logging`, `solution-conformance-testing-in-go` (none VP-realizing — this is the common baseline every other plateau builds on) |
 | 2 | **plateau-dual-api-service** | `true` | plateau-http-service | VP1 `solution-grpc-api` |
 | 3 | **plateau-integrated-service** | `true` | plateau-dual-api-service | VP2 `solution-external-integration` |
 | 4 | **plateau-cached-service** | `true` | plateau-integrated-service | VP6 `solution-cached-db` |

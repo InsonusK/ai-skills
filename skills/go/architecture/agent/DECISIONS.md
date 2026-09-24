@@ -93,7 +93,7 @@ architectural fork that needs the owner's sign-off; everything else is execution
     made to this skill (see `[[v31-angular-plateau-build]]` memory, commit `0e2be8cd`).
 - **Planned solutions (12), not yet all authored** — common baseline: `solution-go-repository-structure`,
   `solution-go-domain-logic`, `solution-go-http-api`, `solution-go-app-logging`,
-  `solution-go-conformance-testing` (extends the shared
+  `solution-conformance-testing-in-go` (extends the shared
   `skills/common-workflow/test/solution-conformance-testing.skill`, mirroring the
   `ts`/`python`/`dotnet` per-stack extensions). VP-realizing: `solution-grpc-api` (VP1),
   `solution-external-integration` (VP2), `solution-go-messaging-infrastructure` +

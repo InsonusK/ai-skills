@@ -60,7 +60,7 @@ lint:
 # Rule
 
 ## MUST
-- The `unit-test`/`mutation-test`/`test-report`/`test-and-report` Makefile targets are never defined here — [[skills/go/architecture/solutions/solution-go-conformance-testing.skill/solution-go-conformance-testing.skill.md|solution-go-conformance-testing]] extends this `Makefile` with the full four-target testing contract; this solution only establishes `build`/`run`/`lint`.
+- The `unit-test`/`mutation-test`/`test-report`/`test-and-report` Makefile targets are never defined here — [[skills/go/testing/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]] extends this `Makefile` with the full four-target testing contract; this solution only establishes `build`/`run`/`lint`.
   - Risk: duplicating or pre-guessing the testing targets here would drift from the shared `solution-conformance-testing` contract the moment that solution defines them for real.
   - Fix: leave testing entirely to the extending solution; this Makefile stays lifecycle-only.
 
