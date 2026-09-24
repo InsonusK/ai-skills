@@ -15,7 +15,7 @@ tags:
 
 # Core Principles
 - References `{Module}.Domain.Rules` only — mirrors `{Module}.Domain.Rules.csproj`'s own zero project references (plus FluentValidation/`{Module}.Interfaces`, already transitive through it)
-- Takes `.feature` files from two sources: its own `/Rules` folder (rule-only edge cases no other layer needs to prove) and, linked in via `<None Include>`, every file under `{Module}.Domain.Rules.Spec` — the shared scenarios also proven by `{Module}.Domain.Tests`/`{Module}.Application.Tests`
+- Takes `.feature` files from two sources: its own `/Rules` folder (rule-only edge cases no other layer needs to prove) and, linked in as `<ReqnrollFeatureFiles>`, every file under every classification folder of `{Module}.Domain.Rules.Spec` — the shared scenarios also proven by `{Module}.Domain.Tests`/`{Module}.Application.Tests`
 - Step definitions here call the rule's own `Check()` (or the raw `IsValid()` for a pure-predicate scenario) directly — never a VO constructor, an Entity method, or a validator; those adapters are proven in their own test projects
 
 # Implementation changes
@@ -34,7 +34,7 @@ tags:
 
 ```xml
 <ItemGroup>
-  <None Include="..\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
+  <ReqnrollFeatureFiles Include="..\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
 </ItemGroup>
 
 <ItemGroup>
@@ -42,18 +42,18 @@ tags:
 </ItemGroup>
 ```
 
-Reqnroll generates a fixture from every linked `.feature` file the same way it would for one physically inside the project — the `Link` metadata only changes where Solution Explorer shows it, not how the build treats it. Every scenario, regardless of tag, is in scope here — this project proves the rule itself, not one adapter.
+Reqnroll generates a fixture only for `ReqnrollFeatureFiles` items — a file linked as `<None>` builds cleanly but produces no test, so its scenarios silently never run. The `Link` metadata only changes where the file shows up in the project, not how the build treats it. Every scenario, regardless of tag, is in scope here — this project proves the rule itself, not one adapter.
 
 # Rule changes
 
 ## MUST
 - Reference `{Module}.Domain.Rules` and nothing else
-- Link the entire `{Module}.Domain.Rules.Spec` directory in via `<None Include>`, not copy scenario text into this project's own `.feature` files
+- Link the entire `{Module}.Domain.Rules.Spec` directory in as `<ReqnrollFeatureFiles Include>` — never `<None Include>`, which generates no test — not copy scenario text into this project's own `.feature` files
 - Step definitions call `{Rule}.Check()`/`.IsValid()` directly, never a VO/Entity/validator adapter
 - Never add a project reference to `{Module}.Domain`, `{Module}.Application`, or any other module project
 - Never duplicate a scenario already present in `{Module}.Domain.Rules.Spec` inside this project's own `/Rules` folder
 
 # Check list
 - [ ] `{Module}.Domain.Rules.Tests.csproj` references `{Module}.Domain.Rules` only
-- [ ] `{Module}.Domain.Rules.Spec/**/*.feature` is linked in via `<None Include>`
+- [ ] `{Module}.Domain.Rules.Spec/**/*.feature` is linked in as `<ReqnrollFeatureFiles Include>`, and the scenario report lists none of its scenarios as `missing`
 - [ ] Every scenario in the linked spec has a passing step-definition binding here, regardless of classification tag

@@ -11,8 +11,9 @@
     <PackageReference Include="coverlet.collector" />
   </ItemGroup>
   <ItemGroup>
-    <!-- Shared Gherkin source: linked in, never copied. Every scenario is proven here against the rule's own Check(), regardless of tag. -->
-    <None Include="..\..\src\Modules\Sample\Sample.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- Shared Gherkin source: linked in, never copied. Every classification folder (format/semantic/domain) is proven here against the rule's own Check().
+         ReqnrollFeatureFiles, not None: Reqnroll generates tests only for its own feature items. -->
+    <ReqnrollFeatureFiles Include="..\..\src\Modules\Sample\Sample.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Sample\Sample.Domain.Rules\Sample.Domain.Rules.csproj" />

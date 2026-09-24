@@ -39,7 +39,8 @@ created_by:
     /[{ModuleName}.Api](./{Module}.Api/plateau-offline-sync-service--csproj-module-api.skill.md)                   — VP8/VP9
     /[{ModuleName}.Domain.Rules](./{Module}.Domain.Rules/plateau-offline-sync-service--csproj-module-domain-rules.skill.md)   — VP4 (portable rule project)
     /{ModuleName}.Domain.Rules.Spec              — .feature files only, shared Gherkin source (not a project)
-      {Rule}.feature                            — one per rule, scenarios tagged @format/@semantic/@domain, linked into each proving test project
+      /format, /semantic, /domain               — one folder per classification, linked by folder into each proving test project
+        {Rule}.feature                          — one per rule per classification, scenarios tagged to match the folder
   /App
     /[App.Host](./App.Host/plateau-offline-sync-service--csproj-app-host.skill.md)
     /[App.Infrastructure](./App.Infrastructure/plateau-offline-sync-service--csproj-app-infrastructure.skill.md)   — VP2 / VP5 / VP11

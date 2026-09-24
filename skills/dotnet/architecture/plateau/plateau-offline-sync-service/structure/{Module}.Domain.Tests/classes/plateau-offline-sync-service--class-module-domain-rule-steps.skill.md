@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Domain.Tests feature
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/class
   - plateau/offline-sync-service
@@ -25,7 +25,7 @@ __Applied solutions:__
 - Validator-shaped: construct the entity / VO, invoke the real method, capture the outcome; on a failure scenario assert `DomainException.Code`.
 - `Record.Exception(() => ...) as DomainException` is the idiom for a throw expectation.
 - References `{Module}.Domain` only.
-- Two feature sources, two binding classes: this project's own `/Rules/{Rule}.feature` (entity/domain-service/strict-VO invariants, `Then a domain error "..." is raised`) and, with VP4, the linked `@format` scenarios from `{Module}.Domain.Rules.Spec` (`Then the check fails with error code "..."`) re-proven through the VO constructor. The Gherkin wording of the shared file is fixed by `solution-domain-shared-rules` — bind to it exactly, never reword.
+- Two feature sources, two binding classes: this project's own `/Rules/{Rule}.feature` (entity/domain-service/strict-VO invariants, `Then a domain error "..." is raised`) and, with VP4, the linked `format/` scenarios from `{Module}.Domain.Rules.Spec` (`Then the check fails with error code "..."`) re-proven through the VO constructor. The Gherkin wording of the shared file is fixed by `solution-domain-shared-rules` — bind to it exactly, never reword.
 
 # Implementation
 ```csharp
