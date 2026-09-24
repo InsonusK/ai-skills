@@ -27,7 +27,7 @@ extends:
 depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 adr:
-  - "[[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/adr/testing-tool-choice|Testing tool choice]]"
+  - "[[skills/typescript/test/solution-conformance-testing-in-typescript.skill/adr/testing-tool-choice|Testing tool choice]]"
 ---
 
 # Goal
@@ -47,7 +47,7 @@ adr:
 - Coverage and mutation testing both run against the combined suite (Vitest unit tests plus Cucumber scenarios), not against either alone.
 
 # Adr
-- [[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/adr/testing-tool-choice|Testing tool choice]]
+- [[skills/typescript/test/solution-conformance-testing-in-typescript.skill/adr/testing-tool-choice|Testing tool choice]]
   - Selected variant: `@cucumber/cucumber` (Gherkin runner) + Vitest coverage (coverage) + Stryker (mutation testing)
 
 # Requirements
@@ -67,11 +67,11 @@ NPM:
 
 # Template Skill Mutations
 REPOSITORY:
-- [[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile` and normalization scripts implementing the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract
+- [[skills/typescript/test/solution-conformance-testing-in-typescript.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile` and normalization scripts implementing the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract
 
 PACKAGE:
-- [[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend|{Package}]] - extend - add Cucumber/Vitest/Stryker scripts and config
-  - [[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend/{rule}.steps.ts.create|{rule}.steps.ts]] - create - step definitions binding a `.feature` file to the package's real API
+- [[skills/typescript/test/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend|{Package}]] - extend - add Cucumber/Vitest/Stryker scripts and config
+  - [[skills/typescript/test/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend/{rule}.steps.ts.create|{rule}.steps.ts]] - create - step definitions binding a `.feature` file to the package's real API
 
 # Workflow
 ## Add conformance coverage for a new validation rule (happy path)
@@ -91,9 +91,9 @@ PACKAGE:
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
 
 ## MUST
-- [[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/Implementation/Repository.extend#MUST|Repository]]
-- [[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend#MUST|{Package}]]
-  - [[skills/typescript/testing/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend/{rule}.steps.ts.create#MUST|{rule}.steps.ts]]
+- [[skills/typescript/test/solution-conformance-testing-in-typescript.skill/Implementation/Repository.extend#MUST|Repository]]
+- [[skills/typescript/test/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend#MUST|{Package}]]
+  - [[skills/typescript/test/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend/{rule}.steps.ts.create#MUST|{rule}.steps.ts]]
 
 # Check list
 - [ ] `package.json` declares `test`, `coverage`, and `mutation` scripts backed by Vitest, Vitest coverage, and Stryker.

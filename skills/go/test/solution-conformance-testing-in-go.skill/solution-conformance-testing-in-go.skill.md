@@ -26,12 +26,12 @@ depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 built_on_plateau:
 adr:
-  - "[[skills/go/testing/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]"
+  - "[[skills/go/test/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]"
 ---
 
 # Goal
 - Give a Go module the concrete tooling to run the gate [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] defines: Cucumber (godog) scenarios, code coverage, mutation testing — behind the same `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract every stack in this repository exposes.
-- Keep godog scenarios co-located with the package they test (per [[skills/go/testing/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]'s own convention), never centralized in one repository-root `features/` tree.
+- Keep godog scenarios co-located with the package they test (per [[skills/go/test/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]'s own convention), never centralized in one repository-root `features/` tree.
 
 # Capabilities
 - `go test -json ./...` runs godog scenarios and plain Go tests in one invocation; a normalizer collapses godog's parent/subtest duplication so a scenario is counted once.
@@ -40,12 +40,12 @@ adr:
 - `make test-report` assembles a stack-independent `public/` site from the normalized results, matching the parent solution's report contract exactly — nothing downstream needs to know this is a Go module.
 
 # Core Principles
-- Every scenario is authored per [[skills/go/testing/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]] — this solution wires the `make`/report machinery around that authoring standard, it does not restate it.
+- Every scenario is authored per [[skills/go/test/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]] — this solution wires the `make`/report machinery around that authoring standard, it does not restate it.
 - `go test -coverpkg` excludes `gen/` (generated protobuf/gRPC code) and `tools/` (this solution's own reporting tools) — neither has product logic to cover.
 - `mutation-test` always exits with the underlying `gremlins` exit code after writing its normalized result, per the parent solution's contract.
 
 # Adr
-- [[skills/go/testing/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]
+- [[skills/go/test/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]
   - Selected variant: `gremlins` (`github.com/go-gremlins/gremlins`)
 
 # Requirements
@@ -55,7 +55,7 @@ SOLUTION:
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]]
   - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/Repository.create.md|Repository]] - the `Makefile` this solution extends with the testing targets
 GO MODULES / STANDARD LIBRARY:
-- `github.com/cucumber/godog` — runs `.feature` files against step definitions; see [[skills/go/testing/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]] for authoring rules.
+- `github.com/cucumber/godog` — runs `.feature` files against step definitions; see [[skills/go/test/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]] for authoring rules.
 - `github.com/cucumber/gherkin/go/v42` + `github.com/cucumber/messages/go/v34` — the `.feature` parser godog itself uses; `tools/normalize_scenarios` imports it to build the scenario inventory.
 - `github.com/go-gremlins/gremlins` (installed as a CLI, not imported) — mutation testing.
 - `go test`'s own `-json`/`-coverprofile`/`-coverpkg` flags (standard toolchain) — no third-party coverage library.
@@ -71,7 +71,7 @@ FILES:
 # Workflow
 
 ## Add conformance coverage for a new rule (happy path)
-1. A `.feature` file is added next to the package it exercises (e.g. `internal/domain/services/features/{rule}.feature`), per [[skills/go/testing/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]].
+1. A `.feature` file is added next to the package it exercises (e.g. `internal/domain/services/features/{rule}.feature`), per [[skills/go/test/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]].
 2. Step definitions in that package's `test/` folder bind the scenario to the package's real exported API.
 3. `make unit-test` runs `go test -json -coverpkg=$(COVERPKG) -coverprofile=... ./...`, piping JSON events through `tools/normalize_unittest` into `tmp/result/unit-test.json`, then runs `tools/normalize_scenarios` to write `tmp/result/scenarios.json` — also when a test failed (plus `tmp/result/coverage-test.json` when `WITH_CODE_COVERAGE=true`).
 4. `make mutation-test` runs `gremlins unleash` (scoped to changed files with `ONLY_DELTA=true DELTA_BASE=<ref>`, or across the whole module otherwise), normalizing its report into `tmp/result/mutation-test.json` via `tools/normalize_mutation`.
@@ -94,4 +94,4 @@ FILES:
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` all exist and match [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|the parent solution's report contract]].
 - [ ] `COVERPKG` excludes `gen/` and `tools/`.
 - [ ] `tmp/result/scenarios.json` is written on every `make unit-test` run and `public/scenarios/index.html` is rendered from it.
-- [ ] Every `.feature` file's scenarios follow [[skills/go/testing/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]'s check list.
+- [ ] Every `.feature` file's scenarios follow [[skills/go/test/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]'s check list.

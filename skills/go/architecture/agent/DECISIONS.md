@@ -153,7 +153,7 @@ solution mapping is now final), then Stage 4 (5 plateaus).
   `make mutation-test`/a real network smoke test — none would have surfaced from reading the
   solution skills alone):
   1. `godog.Options` needs an explicit `Format: "pretty"` — fixed in
-     `skills/go/testing/cucmber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
+     `skills/go/test/cucmber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
      in this build), since its own documented example carried the same latent bug.
   2. `solution-go-repository-structure`'s `main.go` was bundled into the repo-tier
      `Repository.create.md` while every solution that extends it expects a file-tier

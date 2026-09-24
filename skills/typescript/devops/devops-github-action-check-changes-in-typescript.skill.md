@@ -14,7 +14,7 @@ tags:
 This skill adds TypeScript-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
-- The filter patterns reflect [solution-conformance-testing-in-typescript](skills/typescript/testing/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md)'s layout (`src/`, `features/` for Cucumber, `*.spec.ts` for Vitest) — never a generic guess at TypeScript project structure.
+- The filter patterns reflect [solution-conformance-testing-in-typescript](skills/typescript/test/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md)'s layout (`src/`, `features/` for Cucumber, `*.spec.ts` for Vitest) — never a generic guess at TypeScript project structure.
 
 # Rule
 
@@ -60,7 +60,7 @@ runs:
             - 'docs/**'
             - '*.md'
 ```
-- Violation: filtering only `src/**` for `test`, missing `features/**` (Cucumber) or `*.spec.ts`/`*.test.ts` (Vitest) — the two suites [solution-conformance-testing-in-typescript](skills/typescript/testing/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md) actually runs.
+- Violation: filtering only `src/**` for `test`, missing `features/**` (Cucumber) or `*.spec.ts`/`*.test.ts` (Vitest) — the two suites [solution-conformance-testing-in-typescript](skills/typescript/test/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md) actually runs.
 - Risk: a change to a Gherkin scenario or a Vitest spec silently fails to trigger `unit-test`/`mutation-test`, so a broken scenario merges undetected.
 - Fix: match the paths that skill actually creates, not an assumed convention.
 

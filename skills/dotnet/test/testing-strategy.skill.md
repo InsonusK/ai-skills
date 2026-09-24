@@ -13,7 +13,7 @@ tags:
 - Define which .NET classes and workflows must have their own dedicated unit test, and which may be covered indirectly through another component's test.
 
 # Scope
-This skill defines test *scope and isolation* — which classes/workflows need a dedicated test, and where mocking sub-components is allowed. It does not define assertion strength, coverage tooling, or which scenario types (happy/boundary/negative/error/...) to enumerate — see [no-test-theater](skills/common-workflow/test/no-test-theater.skill/no-test-theater.skill.md) and [no-test-theater-dotnet](skills/dotnet/testing/no-test-theater-dotnet.skill.md) for that.
+This skill defines test *scope and isolation* — which classes/workflows need a dedicated test, and where mocking sub-components is allowed. It does not define assertion strength, coverage tooling, or which scenario types (happy/boundary/negative/error/...) to enumerate — see [no-test-theater](skills/common-workflow/test/no-test-theater.skill/no-test-theater.skill.md) and [no-test-theater-dotnet](skills/dotnet/test/no-test-theater-dotnet.skill.md) for that.
 
 # Core Principle
 - Validators, ValueObjects, and Entities own their validation logic and must be proven correct in their own test, not only as a side effect of another component's test.
@@ -24,7 +24,7 @@ This skill defines test *scope and isolation* — which classes/workflows need a
 ## MUST
 - Give every Validator, ValueObject, and Entity its own dedicated test class — do not rely on another component's test to exercise its validation logic.
 - In each Validator/ValueObject/Entity test, assert every distinct value or combination of values that changes behavior, not just one representative valid case and one representative invalid case. Use [no-test-theater](skills/common-workflow/test/no-test-theater.skill/no-test-theater.skill.md) to decide which scenario types (happy/boundary/negative/...) apply.
-- Give every usecase (inbound sync call, inbound async message, cron job) its own complex test covering the main success case and the most important invalid cases. See [no-test-theater-dotnet](skills/dotnet/testing/no-test-theater-dotnet.skill.md) for how such a test must assert the response and orchestration call order.
+- Give every usecase (inbound sync call, inbound async message, cron job) its own complex test covering the main success case and the most important invalid cases. See [no-test-theater-dotnet](skills/dotnet/test/no-test-theater-dotnet.skill.md) for how such a test must assert the response and orchestration call order.
 - Cover other components (not Validators/ValueObjects/Entities/usecases) the same as any other unit: main cases and edge cases.
 
 ## MAY

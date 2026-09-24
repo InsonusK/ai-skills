@@ -43,19 +43,19 @@ Which test projects exist, and what each one references, is decided by the archi
 | / | Makefile | Exposes the `unit-test`/`mutation-test`/`test-report`/`test-and-report` targets required by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] |
 
 ## Makefile
-See [templates/Makefile.md](skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/templates/Makefile.md) for the full content.
+See [templates/Makefile.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/Makefile.md) for the full content.
 
 ## scripts/unit-test.sh
-Runs `dotnet test` against the whole solution — which picks up every test project at once, `@todo` scenarios excluded — then merges their TRX counters, Reqnroll messages, and coverage files into one normalized result. See [templates/unit-test.sh.md](skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/templates/unit-test.sh.md) for the full script and the required `reqnroll.json` formatter config (one per test project).
+Runs `dotnet test` against the whole solution — which picks up every test project at once, `@todo` scenarios excluded — then merges their TRX counters, Reqnroll messages, and coverage files into one normalized result. See [templates/unit-test.sh.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/unit-test.sh.md) for the full script and the required `reqnroll.json` formatter config (one per test project).
 
 ## scripts/normalize-scenarios.sh, scripts/messages-results.jq
-Build `tmp/result/scenarios.json` per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]. See [templates/normalize-scenarios.sh.md](skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/templates/normalize-scenarios.sh.md) and [templates/messages-results.jq.md](skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/templates/messages-results.jq.md).
+Build `tmp/result/scenarios.json` per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]. See [templates/normalize-scenarios.sh.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/normalize-scenarios.sh.md) and [templates/messages-results.jq.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/messages-results.jq.md).
 
 ## scripts/mutation-test.sh
-Runs Stryker.NET against the whole solution — its native `--since` mode covers `ONLY_DELTA`/`DELTA_BASE` directly, so this script does not need to compute the diff itself, and Stryker's own solution-wide run already covers every test project together. See [templates/mutation-test.sh.md](skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/templates/mutation-test.sh.md) for the full script.
+Runs Stryker.NET against the whole solution — its native `--since` mode covers `ONLY_DELTA`/`DELTA_BASE` directly, so this script does not need to compute the diff itself, and Stryker's own solution-wide run already covers every test project together. See [templates/mutation-test.sh.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/mutation-test.sh.md) for the full script.
 
 ## scripts/test-report.sh
-Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodified) also works for the Python and TypeScript variants of this solution. See [templates/test-report.sh.md](skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/templates/test-report.sh.md) for the full script.
+Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodified) also works for the Python and TypeScript variants of this solution. See [templates/test-report.sh.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/test-report.sh.md) for the full script.
 
 # Rules
 

@@ -65,7 +65,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create|{Module}.Domain.csproj]]
 - [[skills/dotnet/architecture/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]] - [[skills/dotnet/architecture/solutions/solution-infrastructure-project.skill/Implementation/App.Infrastructure.csproj.create|App.Infrastructure.csproj]]
 - [[skills/dotnet/architecture/solutions/solution-api-project.skill/solution-api-project.skill|solution-api-project]] - [[skills/dotnet/architecture/solutions/solution-api-project.skill/Implementation/{Module}.Api.csproj.create|{Module}.Api.csproj]]
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
 
 ## Directory and class skills
 | `Directory\|file` | template link | Description |
@@ -89,7 +89,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
 
 ## NuGet Packages
 Every version is declared once in `Directory.Packages.props`; every `<PackageReference>` is versionless. On top of plateau-core's set (MediatR, FluentValidation, Ardalis.Result, Hosting, Logging, test packages):

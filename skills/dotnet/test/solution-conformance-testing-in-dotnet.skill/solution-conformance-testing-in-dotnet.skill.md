@@ -28,7 +28,7 @@ depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 built_on_plateau:
 adr:
-  - "[[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/adr/testing-tool-choice|Testing tool choice]]"
+  - "[[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/testing-tool-choice|Testing tool choice]]"
 ---
 
 # Goal
@@ -40,12 +40,12 @@ adr:
 - `make test-report` assembles a stack-independent `public/` site — badges, native reports, and the scenario report — from the normalized results only.
 
 # Core Principles
-- Every scenario is authored per [[skills/dotnet/testing/cucmber-testing-in-dotnet.skill.md|cucmber-testing-in-dotnet]] — this solution wires the `make`/report machinery around that authoring standard, it does not restate it.
+- Every scenario is authored per [[skills/dotnet/test/cucmber-testing-in-dotnet.skill.md|cucmber-testing-in-dotnet]] — this solution wires the `make`/report machinery around that authoring standard, it does not restate it.
 - How the solution splits into test projects is not decided here; a catalog's own architecture solution decides it (e.g. [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] for the dotnet plateau catalog). This solution only requires that every test project is part of the solution `dotnet test` runs.
 - `mutation-test` always exits with Stryker.NET's own exit code after writing its normalized result, per the parent solution's contract.
 
 # Adr
-- [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/adr/testing-tool-choice|Testing tool choice]]
+- [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/testing-tool-choice|Testing tool choice]]
   - Selected variant: Reqnroll (Gherkin runner) + coverlet/ReportGenerator (coverage) + Stryker.NET (mutation testing)
 
 # Requirements
@@ -65,7 +65,7 @@ NUGET:
 
 # Template Skill Mutations
 REPOSITORY:
-- [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile`, the normalization scripts, one `reqnroll.json` per test project, and `report-template/index.html`
+- [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile`, the normalization scripts, one `reqnroll.json` per test project, and `report-template/index.html`
 
 # Workflow
 ## Run the gate
@@ -82,7 +82,7 @@ REPOSITORY:
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
 
 ## MUST
-- [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend#MUST|Repository]]
+- [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend#MUST|Repository]]
 
 # Check list
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` exist at the repository root, run across every test project, and support the toggles defined by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].

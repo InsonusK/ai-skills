@@ -54,7 +54,7 @@ Because there is no `{ModuleName}.Domain`, there is no `{ModuleName}.Domain.Test
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
 - [[skills/dotnet/architecture/solutions/solution-central-package-management.skill/solution-central-package-management.skill|solution-central-package-management]] - [[skills/dotnet/architecture/solutions/solution-central-package-management.skill/Implementation/Directory.Packages.props.create|Directory.Packages.props]]
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
 
 ## Directory and class skills
 | `Directory\|file` | template link | Description |
@@ -71,7 +71,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
 
 ## NuGet Packages
 Every version is declared once in `Directory.Packages.props`; every `<PackageReference>` in every csproj is versionless.
@@ -104,7 +104,7 @@ MAY:
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
 - [[skills/dotnet/architecture/solutions/solution-central-package-management.skill/solution-central-package-management.skill|solution-central-package-management]] - [[skills/dotnet/architecture/solutions/solution-central-package-management.skill/Implementation/Directory.Packages.props.create|Directory.Packages.props]]
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/testing/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
 
 # Check list
 - [ ] `Directory.Packages.props` at the root, `ManagePackageVersionsCentrally` true, every referenced package has a `<PackageVersion>`, no csproj carries a `Version=` on a `<PackageReference>`.

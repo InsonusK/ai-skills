@@ -128,7 +128,7 @@ Link a skill this one needs to finish its own artifact — an input it reads, a 
 
 ### Stack-agnostic skills never link their stack-specialized extensions
 A stack-agnostic skill (bare `stack` tag) never wikilinks/markdown-links a stack-specialized skill that extends it (one `stack/<value>` tag) — name it only as plain backticked text, and recommend asking the user which one to load for the stack in use. A stack-specialized skill still links back to the stack-agnostic base it extends, per [Link what the artifact needs, not what comes after it](#link-what-the-artifact-needs-not-what-comes-after-it). Decision recorded in [[./adr/stack-specific-links-direction.md|stack-specific-links-direction]].
-- Violation: `cucmber-testing`'s `# Scope` linking `[[skills/go/testing/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]`, `-in-dotnet`, `-in-python`, and `-in-typescript`.
+- Violation: `cucmber-testing`'s `# Scope` linking `[[skills/go/test/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]`, `-in-dotnet`, `-in-python`, and `-in-typescript`.
 - Risk: `ai-skill-manager` resolves every link a loaded skill carries, so linking all stack-specialized extensions from the agnostic skill pulls every other stack's skill into a project that only uses one of them.
 - Fix: write `` `cucmber-testing-in-go`, `cucmber-testing-in-dotnet`, `cucmber-testing-in-python`, `cucmber-testing-in-typescript` `` as plain text, and add a rule/note telling the agent to ask the user which one to load for the project's stack.
 

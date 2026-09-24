@@ -26,7 +26,7 @@ depends_on:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
   - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
 adr:
-  - "[[skills/python/testing/solution-conformance-testing-in-python.skill/adr/testing-tool-choice|Testing tool choice]]"
+  - "[[skills/python/test/solution-conformance-testing-in-python.skill/adr/testing-tool-choice|Testing tool choice]]"
 ---
 
 # Goal
@@ -46,7 +46,7 @@ adr:
 - Coverage and mutation testing both run against the combined suite (`unittest`/`pytest` tests plus `behave` scenarios), not against either alone.
 
 # Adr
-- [[skills/python/testing/solution-conformance-testing-in-python.skill/adr/testing-tool-choice|Testing tool choice]]
+- [[skills/python/test/solution-conformance-testing-in-python.skill/adr/testing-tool-choice|Testing tool choice]]
   - Selected variant: `behave` (Gherkin runner) + `coverage.py` (coverage) + `mutmut` (mutation testing)
 
 # Requirements
@@ -66,12 +66,12 @@ PYPI:
 
 # Template Skill Mutations
 PROJECT:
-- [[skills/python/testing/solution-conformance-testing-in-python.skill/Implementation/pyproject.toml.extend|pyproject.toml]] - extend - declare `behave`, `coverage`, `mutmut` as dev dependencies and configure `coverage` to include `features/`
-- [[skills/python/testing/solution-conformance-testing-in-python.skill/Implementation/features.{rule}.feature.create|features/{rule}.feature]] - create - Gherkin scenarios for one business rule
-- [[skills/python/testing/solution-conformance-testing-in-python.skill/Implementation/features.steps.{rule}_steps.py.create|features/steps/{rule}_steps.py]] - create - step definitions calling the package's real API
+- [[skills/python/test/solution-conformance-testing-in-python.skill/Implementation/pyproject.toml.extend|pyproject.toml]] - extend - declare `behave`, `coverage`, `mutmut` as dev dependencies and configure `coverage` to include `features/`
+- [[skills/python/test/solution-conformance-testing-in-python.skill/Implementation/features.{rule}.feature.create|features/{rule}.feature]] - create - Gherkin scenarios for one business rule
+- [[skills/python/test/solution-conformance-testing-in-python.skill/Implementation/features.steps.{rule}_steps.py.create|features/steps/{rule}_steps.py]] - create - step definitions calling the package's real API
 
 REPOSITORY:
-- [[skills/python/testing/solution-conformance-testing-in-python.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile` and normalization scripts implementing the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract
+- [[skills/python/test/solution-conformance-testing-in-python.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile` and normalization scripts implementing the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract
 
 # Workflow
 ## Add conformance coverage for a new validation rule (happy path)
@@ -91,8 +91,8 @@ REPOSITORY:
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
 
 ## MUST
-- [[skills/python/testing/solution-conformance-testing-in-python.skill/Implementation/pyproject.toml.extend#MUST|pyproject.toml]]
-- [[skills/python/testing/solution-conformance-testing-in-python.skill/Implementation/features.steps.{rule}_steps.py.create#MUST|features/steps/{rule}_steps.py]]
+- [[skills/python/test/solution-conformance-testing-in-python.skill/Implementation/pyproject.toml.extend#MUST|pyproject.toml]]
+- [[skills/python/test/solution-conformance-testing-in-python.skill/Implementation/features.steps.{rule}_steps.py.create#MUST|features/steps/{rule}_steps.py]]
 
 # Check list
 - [ ] `pyproject.toml` lists `behave`, `coverage`, `mutmut` as dev dependencies.
