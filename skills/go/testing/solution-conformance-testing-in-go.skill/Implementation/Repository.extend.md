@@ -1,5 +1,5 @@
 ---
-description: Add the unit-test/mutation-test/test-report/test-and-report Makefile targets and report-template/index.html
+description: Add the unit-test/mutation-test/test-report/test-and-report Makefile targets, report-template/index.html, and the gherkin parser requirement in go.mod
 element_kind: repository
 change_kind: extend
 tags:
@@ -12,10 +12,12 @@ tags:
 ## Repository Structure
 ```
 Makefile            (extended)
+go.mod              (extended)
 report-template/
   index.html
 tools/
   normalize_unittest/
+  normalize_scenarios/
   normalize_mutation/
   test_report/
 ```
@@ -24,8 +26,9 @@ tools/
 | Directory | file | Description |
 | --------- | ---- | ----------- |
 | tools/normalize_unittest | main.go | `go test -json` → `tmp/result/unit-test.json` |
+| tools/normalize_scenarios | main.go | `.feature` files + `go test -json` → `tmp/result/scenarios.json` |
 | tools/normalize_mutation | main.go | `gremlins` report → `tmp/result/mutation-test.json` |
-| tools/test_report | main.go | `tmp/result/*.json` → `public/` |
+| tools/test_report | main.go | `tmp/result/*.json` → `public/` (badges, report copies, `scenarios/`) |
 | report-template | index.html | Static landing page, copied verbatim into `public/` |
 
 # Implementation changes
@@ -52,14 +55,17 @@ COVERPKG := $(shell go list ./... | grep -Ev '/(gen|tools)(/|$$)' | tr '\n' ',' 
 # when WITH_CODE_COVERAGE=true.
 unit-test:
 	@mkdir -p tmp/result tmp/report/tests tmp/report/coverage
+	@status=0; \
 	set -o pipefail; go test -json -coverpkg=$(COVERPKG) -coverprofile=tmp/report/coverage/coverage.out ./... \
 		| tee tmp/report/tests/go-test.json \
-		| go run ./tools/normalize_unittest
-	@if [ "$(WITH_CODE_COVERAGE)" = "true" ]; then \
+		| go run ./tools/normalize_unittest || status=$$?; \
+	go run ./tools/normalize_scenarios tmp/report/tests/go-test.json || status=$$?; \
+	if [ "$(WITH_CODE_COVERAGE)" = "true" ]; then \
 		go tool cover -html=tmp/report/coverage/coverage.out -o tmp/report/coverage/index.html; \
 		pct=$$(go tool cover -func=tmp/report/coverage/coverage.out | tail -1 | awk '{print $$3}' | tr -d '%'); \
 		echo "{\"linePct\": $$pct}" > tmp/result/coverage-test.json; \
-	fi
+	fi; \
+	exit $$status
 
 # mutation-test runs gremlins over the whole module (or, with
 # ONLY_DELTA=true, only files changed since DELTA_BASE) and exits with
@@ -87,6 +93,15 @@ test-and-report:
 	exit $$mut_status
 ```
 
+`go.mod` — the parser `tools/normalize_scenarios` uses, promoted from godog's indirect requirements to direct ones (same versions godog pulls in; `go mod tidy` keeps them in sync):
+```
+require (
+	github.com/cucumber/godog v0.16.0
+	github.com/cucumber/gherkin/go/v42 v42.0.0
+	github.com/cucumber/messages/go/v34 v34.2.0
+)
+```
+
 `report-template/index.html`:
 ```html
 <!doctype html>
@@ -98,6 +113,7 @@ test-and-report:
 <body>
   <h1>{service} — test report</h1>
   <ul>
+    <li><a href="scenarios/">Scenarios</a></li>
     <li><a href="tests/">Tests</a></li>
     <li><a href="coverage/">Coverage</a></li>
     <li><a href="mutation/">Mutation</a></li>
@@ -112,6 +128,9 @@ test-and-report:
 - `unit-test` must gather coverage on every run, and normalize/report it only behind `WITH_CODE_COVERAGE=true` — never make gathering itself conditional.
   - Risk: making coverage collection itself conditional (rather than just its reporting) means a delta-scoped mutation run has no coverage data to scope against on a run where the flag was left off.
   - Fix: always pass `-coverpkg`/`-coverprofile` to `go test`; gate only the `go tool cover`/`tmp/result/coverage-test.json` steps on the flag.
+- `unit-test` must run `tools/normalize_scenarios` after `go test` whether or not a test failed, and exit with the test run's own status afterwards.
+  - Risk: with `set -o pipefail` a failing `go test` ends the recipe line, so `tmp/result/scenarios.json` would be missing or stale exactly on the red run it should describe.
+  - Fix: capture the pipeline's status with `|| status=$$?`, run the scenario normalizer and the coverage step in the same shell, then `exit $$status`.
 - `mutation-test` must `exit $$code` with `gremlins`' own exit status after `tools/normalize_mutation` has written its normalized result — never swallow it.
   - Risk: swallowing the exit code turns a real mutation-testing failure into a silently green CI step.
   - Fix: capture `gremlins`' exit code before running the normalizer, and `exit` with it at the end of the target.
@@ -120,7 +139,7 @@ test-and-report:
   - Fix: keep the `grep -Ev '/(gen|tools)(/|$$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`.
 
 # Check list
-- [ ] `make unit-test` produces `tmp/result/unit-test.json` on every run.
+- [ ] `make unit-test` produces `tmp/result/unit-test.json` and `tmp/result/scenarios.json` on every run, green or red, and exits non-zero when a test failed.
 - [ ] `make unit-test WITH_CODE_COVERAGE=true` additionally produces `tmp/result/coverage-test.json` and `tmp/report/coverage/index.html`.
 - [ ] `make mutation-test` installs `gremlins` on first use and exits non-zero when a mutant survives.
-- [ ] `make test-report` produces `public/index.html`, `public/{tests,coverage,mutation}/`, and the three `*-badge.json` files.
+- [ ] `make test-report` produces `public/index.html`, `public/{tests,coverage,mutation,scenarios}/`, and the three `*-badge.json` files.
