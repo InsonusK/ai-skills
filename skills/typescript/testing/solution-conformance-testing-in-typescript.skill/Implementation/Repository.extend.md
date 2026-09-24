@@ -23,6 +23,8 @@ This `Makefile`/`scripts/` pair assumes a single-package repository, where the r
   index.html
 /scripts
   unit-test.sh
+  normalize-scenarios.sh
+  messages-results.jq
   mutation-test.sh
   test-report.sh
 Makefile
@@ -35,10 +37,12 @@ README.md
 ## Directory and class skills
 | Directory | file | Description |
 | ----------------- | ----------- |
-| /report-template | index.html | Static landing page `test-report.sh` copies into `public/`; links to `tests/`, `coverage/`, `mutation/`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
+| /report-template | index.html | Static landing page `test-report.sh` copies into `public/`; links to `scenarios/`, `tests/`, `coverage/`, `mutation/`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | /scripts | unit-test.sh | Runs `cucumber-js` (wrapped in `c8` when `WITH_CODE_COVERAGE=true`), normalizes results into `tmp/result/unit-test.json` (+ `coverage-test.json`), keeps the native report under `tmp/report/tests` (+ `tmp/report/coverage`) |
+| /scripts | normalize-scenarios.sh | `.feature` inventory + per-scenario results → `tmp/result/scenarios.json`; identical across the .NET/Python/TypeScript variants |
+| /scripts | messages-results.jq | cucumber-js's Cucumber Messages → `[{uri, line, status}]` for `normalize-scenarios.sh` |
 | /scripts | mutation-test.sh | Runs `stryker run` against a `stryker.conf.json`-derived config (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
-| /scripts | test-report.sh | Assembles `public/` from `tmp/result/*.json` + `tmp/report/*` — no test/build tooling involved |
+| /scripts | test-report.sh | Assembles `public/` — `scenarios/` included — from `tmp/result/*.json` + `tmp/report/*`; no test/build tooling involved |
 | / | stryker.conf.json | Base Stryker config; `mutation-test.sh` patches its `reporters`/`thresholds`/reporter file paths per run, never edits it in place |
 | / | Makefile | Exposes the `unit-test`/`mutation-test`/`test-report`/`test-and-report` targets required by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] |
 
@@ -47,6 +51,9 @@ See [templates/Makefile.md](../templates/Makefile.md) for the full content.
 
 ## scripts/unit-test.sh
 Runs `cucumber-js` (and, when `WITH_CODE_COVERAGE=true`, wraps it with `c8` for coverage), then normalizes the result. See [templates/unit-test.sh.md](../templates/unit-test.sh.md) for the full script.
+
+## scripts/normalize-scenarios.sh
+Builds `tmp/result/scenarios.json` per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]; `scripts/messages-results.jq` reduces cucumber-js's Cucumber Messages to `[{uri, line, status}]`. See [templates/normalize-scenarios.sh.md](../templates/normalize-scenarios.sh.md) and [templates/messages-results.jq.md](../templates/messages-results.jq.md).
 
 ## scripts/mutation-test.sh
 StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates `ONLY_DELTA` itself by limiting `--mutate` to the files `git diff` reports as changed. See [templates/mutation-test.sh.md](../templates/mutation-test.sh.md) for the full script.
@@ -70,6 +77,12 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
 - `scripts/mutation-test.sh` must still exit with `stryker run`'s own exit code after writing `tmp/result/mutation-test.json` — normalizing the result must never swallow a real mutation-testing failure.
   - Risk: a real mutation-testing failure gets swallowed by the normalization step, and CI reports success on a run that actually found unkilled mutants.
   - Fix: propagate `stryker run`'s exit code from the script after it finishes writing the normalized result.
+- `scripts/unit-test.sh` must exclude `@todo` scenarios from the run, write `tmp/result/scenarios.json` through `scripts/normalize-scenarios.sh` on every run — including a red one — and only then exit with the runner's own code.
+  - Risk: under `set -e` a failing runner ends the script before the scenario report is written, so the report is missing or stale exactly on the red run it should describe.
+  - Fix: wrap the runner in `set +e`/`set -e`, keep its exit code, normalize, then `exit` with it.
+- `scripts/normalize-scenarios.sh` must stay byte-identical across the .NET, Python, and TypeScript variants of this solution, like `scripts/test-report.sh`.
+  - Risk: a stack-local tweak to the inventory scan makes the same `.feature` file produce different entries per stack, and the report stops being comparable.
+  - Fix: change it in all three variants together, or not at all.
 - `test-and-report` must run `unit-test` (with coverage), `mutation-test`, and `test-report`, in that order.
   - Risk: running them out of order, or omitting one, produces a report built from stale or missing results.
   - Fix: declare `test-and-report`'s prerequisites as `unit-test mutation-test test-report`, forwarding `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` to the targets that accept them.
@@ -83,6 +96,8 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
 # Unittest TestCases
 - [ ] WHEN `make unit-test` runs THEN `tmp/result/unit-test.json` and `tmp/report/tests/` exist.
 - [ ] WHEN `make unit-test WITH_CODE_COVERAGE=true` runs THEN `tmp/result/coverage-test.json` and `tmp/report/coverage/` also exist.
+- [ ] WHEN `make unit-test` runs and a scenario fails THEN `tmp/result/scenarios.json` still lists every `.feature` entry, `@todo` ones with status `todo`, and the target exits non-zero.
+- [ ] WHEN `make test-report` runs THEN `public/scenarios/index.html` shows the type × status table and every entry.
 - [ ] WHEN `make mutation-test ONLY_DELTA=true DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated.
 - [ ] WHEN `make test-report` runs after both `*-test` targets THEN `public/` contains the badge JSON files and copies of the native reports.
 - [ ] WHEN `make test-and-report` runs THEN it produces the same end state as running `unit-test`, `mutation-test`, and `test-report` in sequence by hand.

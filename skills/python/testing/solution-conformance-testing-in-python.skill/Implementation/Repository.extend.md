@@ -21,6 +21,7 @@ tags:
   index.html
 /scripts
   unit-test.sh
+  normalize-scenarios.sh
   mutation-test.sh
   test-report.sh
 Makefile
@@ -32,10 +33,11 @@ README.md
 | Directory | file | Description |
 | ----------------- | ----------- |
 | /features | {rule}.feature, steps/{rule}_steps.py | Gherkin scenarios and their bindings |
-| /report-template | index.html | Static landing page `test-report.sh` copies into `public/`; links to `tests/`, `coverage/`, `mutation/`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
+| /report-template | index.html | Static landing page `test-report.sh` copies into `public/`; links to `scenarios/`, `tests/`, `coverage/`, `mutation/`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | /scripts | unit-test.sh | Runs `behave`/`pytest` under `coverage`, normalizes results into `tmp/result/unit-test.json` (+ `coverage-test.json` when `WITH_CODE_COVERAGE=true`), keeps the native report under `tmp/report/tests` (+ `tmp/report/coverage`) |
+| /scripts | normalize-scenarios.sh | `.feature` inventory + per-scenario results → `tmp/result/scenarios.json`; identical across the .NET/Python/TypeScript variants |
 | /scripts | mutation-test.sh | Runs `mutmut run` (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
-| /scripts | test-report.sh | Assembles `public/` from `tmp/result/*.json` + `tmp/report/*` — no test/build tooling involved |
+| /scripts | test-report.sh | Assembles `public/` — `scenarios/` included — from `tmp/result/*.json` + `tmp/report/*`; no test/build tooling involved |
 | / | Makefile | Exposes the `unit-test`/`mutation-test`/`test-report`/`test-and-report` targets required by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] |
 
 ## Makefile
@@ -43,6 +45,9 @@ See [templates/Makefile.md](../templates/Makefile.md) for the full content.
 
 ## scripts/unit-test.sh
 Runs `behave` and the plain `test/` suite under `coverage`, then normalizes the result. The JSON parsing (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin. See [templates/unit-test.sh.md](../templates/unit-test.sh.md) for the full script.
+
+## scripts/normalize-scenarios.sh
+Builds `tmp/result/scenarios.json` per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]; The runner's JSON `location` already gives `uri:line`. See [templates/normalize-scenarios.sh.md](../templates/normalize-scenarios.sh.md).
 
 ## scripts/mutation-test.sh
 `mutmut`'s CLI for CI-friendly result export and for scoping a run to specific changed files has moved between major versions more than Stryker.NET/StrykerJS have — every `mutmut` line in the template is a sketch to verify against the version this project pins, not a copy-paste command. See [templates/mutation-test.sh.md](../templates/mutation-test.sh.md) for the full script and its `VERIFY`/`TODO` markers.
@@ -69,6 +74,12 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
 - Pick and pin one behave HTML formatter plugin (or an equivalent conversion of the JSON output) so `tmp/report/tests/index.html` exists — `scripts/unit-test.sh`'s `TODO` must be resolved before this solution is considered applied.
   - Risk: without a resolved HTML formatter, `tmp/report/tests/index.html` never gets created, so `make unit-test`'s native report is missing even though the normalized JSON exists.
   - Fix: pick and pin a behave HTML formatter (or convert the JSON output) and resolve the script's `TODO` before treating the solution as applied.
+- `scripts/unit-test.sh` must exclude `@todo` scenarios from the run, write `tmp/result/scenarios.json` through `scripts/normalize-scenarios.sh` on every run — including a red one — and only then exit with the runner's own code.
+  - Risk: under `set -e` a failing runner ends the script before the scenario report is written, so the report is missing or stale exactly on the red run it should describe.
+  - Fix: wrap the runner in `set +e`/`set -e`, keep its exit code, normalize, then `exit` with it.
+- `scripts/normalize-scenarios.sh` must stay byte-identical across the .NET, Python, and TypeScript variants of this solution, like `scripts/test-report.sh`.
+  - Risk: a stack-local tweak to the inventory scan makes the same `.feature` file produce different entries per stack, and the report stops being comparable.
+  - Fix: change it in all three variants together, or not at all.
 - `test-and-report` must run `unit-test` (with coverage), `mutation-test`, and `test-report`, in that order.
   - Risk: running them out of order, or omitting one, produces a report built from stale or missing results.
   - Fix: declare `test-and-report`'s prerequisites as `unit-test mutation-test test-report`, forwarding `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` to the targets that accept them.
@@ -82,6 +93,8 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
 # Unittest TestCases
 - [ ] WHEN `make unit-test` runs THEN `tmp/result/unit-test.json` and `tmp/report/tests/` exist.
 - [ ] WHEN `make unit-test WITH_CODE_COVERAGE=true` runs THEN `tmp/result/coverage-test.json` and `tmp/report/coverage/` also exist.
+- [ ] WHEN `make unit-test` runs and a scenario fails THEN `tmp/result/scenarios.json` still lists every `.feature` entry, `@todo` ones with status `todo`, and the target exits non-zero.
+- [ ] WHEN `make test-report` runs THEN `public/scenarios/index.html` shows the type × status table and every entry.
 - [ ] WHEN `make mutation-test ONLY_DELTA=true DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated.
 - [ ] WHEN `make test-report` runs after both `*-test` targets THEN `public/` contains the badge JSON files and copies of the native reports.
 - [ ] WHEN `make test-and-report` runs THEN it produces the same end state as running `unit-test`, `mutation-test`, and `test-report` in sequence by hand.

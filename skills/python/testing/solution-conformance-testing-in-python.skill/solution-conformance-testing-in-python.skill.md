@@ -4,7 +4,7 @@ description: Sets up the Python side of the Cucumber/coverage/mutation quality g
 whenToUse: Set up or review the test suite of a Python package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing Python project, or wire coverage and mutation testing into a Python project's `make`/CI pipeline.
 domain: python
 type: architecture
-version: 1
+version: 2
 tags:
   - solution/conformance-testing-in-python
   - skill/architecture/solution
@@ -18,6 +18,7 @@ creates:
   - features/{rule}.feature
   - features/steps/{rule}_steps.py
   - Makefile
+  - scripts/normalize-scenarios.sh
 extends:
   - pyproject.toml
   - README.md
@@ -37,6 +38,7 @@ adr:
 - Gherkin `.feature` files execute against the package's real public functions/classes via `behave` step definitions.
 - `make mutation-test ONLY_DELTA=true DELTA_BASE=<ref>` fails fast on a changed line's surviving mutant, without paying for a full-package mutation run on every call.
 - `make unit-test WITH_CODE_COVERAGE=true` and `make test-report` give `master` an up-to-date coverage/mutation-score report and the data the README badges are generated from.
+- `make unit-test` also writes `tmp/result/scenarios.json` — every `.feature` entry with its type tag, status, and `@todo` reason — and `make test-report` renders it as `public/scenarios/`, per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report).
 
 # Core Principles
 - `behave`'s own convention (`features/` at the repository root, with `features/steps/` for step definitions) is used as-is; it is a separate root from `test/`, not folded into the mirrored structure [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) defines for plain unit tests.
@@ -75,9 +77,9 @@ REPOSITORY:
 ## Add conformance coverage for a new validation rule (happy path)
 1. A `.feature` file describing the rule (e.g. `features/{rule}.feature`) is added or extended with `Given/When/Then` scenarios.
 2. `features/steps/{rule}_steps.py` is created with `@given`/`@when`/`@then` bindings that call the package's real function/class.
-3. `make unit-test` runs `coverage run -m behave` and `coverage run -a -m pytest` (or `unittest`) into the same `.coverage` data file, and normalizes the result into `tmp/result/unit-test.json` (plus `tmp/result/coverage-test.json` when `WITH_CODE_COVERAGE=true`).
+3. `make unit-test` runs `coverage run -m behave` and `coverage run -a -m pytest` (or `unittest`) into the same `.coverage` data file, and normalizes the result into `tmp/result/unit-test.json` and `tmp/result/scenarios.json` (plus `tmp/result/coverage-test.json` when `WITH_CODE_COVERAGE=true`).
 4. `make mutation-test` runs `mutmut run` — scoped to changed files when called with `ONLY_DELTA=true DELTA_BASE=<ref>`, or across the whole package otherwise — and normalizes the result into `tmp/result/mutation-test.json`.
-5. `make test-report` assembles `public/` from `tmp/result/*.json` and `tmp/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
+5. `make test-report` assembles `public/` — `scenarios/` included — from `tmp/result/*.json` and `tmp/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
 6. Which of these `make` targets run on which trigger, and how `public/` gets published, is decided by the project's own CI configuration — not by this solution.
 
 ## Surviving mutant found (report path)
@@ -97,4 +99,5 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] Every `.feature` scenario has a matching step definition that calls the package's real API.
 - [ ] `coverage` combines results from both `test/` and `features/` runs before reporting.
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` exist at the repository root and support the toggles defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
-- [ ] `tmp/result/*.json` and `tmp/report/<kind>/` follow that same contract's schema.
+- [ ] `tmp/result/*.json` — `scenarios.json` included, written on a red run too — and `tmp/report/<kind>/` follow that same contract's schema.
+- [ ] `@todo` scenarios are excluded from the run and listed as `todo` in `public/scenarios/`.

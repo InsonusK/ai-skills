@@ -1,6 +1,6 @@
 # scripts/unit-test.sh
 
-Runs `behave` and the plain `test/` suite under `coverage`, then normalizes the result into `tmp/result/*.json`, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment.
+Runs `behave` (`@todo` scenarios excluded) and the plain `test/` suite under `coverage`, then normalizes the result into `tmp/result/*.json` — `scenarios.json` included, on a red run too — and exits with the first failing runner's own code, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment. Verified with behave 1.3.3, coverage.py, pytest.
 
 ```bash
 #!/usr/bin/env bash
@@ -27,21 +27,38 @@ trap 'rm -f "$BEHAVE_JSON"' EXIT
 # behave-html-formatter, allure-behave) and pin it in pyproject.toml; verify its exact
 # `--format`/`--outfile` invocation against the version you pin, this line is a sketch.
 # The json.pretty line below is behave's own built-in formatter and is not a guess.
+# behave pairs each --outfile with the --format before it, so json.pretty comes first.
+# @todo scenarios are excluded (behave reports them as "skipped"). Exit codes are kept,
+# not acted on yet, so the normalized results below are written on a red run too.
+set +e
 coverage run -m behave \
-  --format progress \
-  --format json.pretty --outfile "$BEHAVE_JSON"
+  --tags=-todo \
+  --format json.pretty --outfile "$BEHAVE_JSON" \
+  --format progress
+BEHAVE_EXIT=$?
 # TODO: also run behave with the chosen HTML formatter (or convert $BEHAVE_JSON with
 # a template) so tmp/report/tests/index.html exists before test-report.sh runs.
 
 coverage run -a -m pytest test/
+PYTEST_EXIT=$?
+set -e
 
 # behave's JSON formatter output is modeled after Cucumber's own JSON schema: a list of
 # features, each with "elements" (scenarios), each with "steps" carrying a
 # "result.status". Verify this against the behave version this project pins.
-TOTAL=$(jq '[.[].elements[]] | length' "$BEHAVE_JSON")
-PASSED=$(jq '[.[].elements[] | select(all(.steps[]; .result.status == "passed"))] | length' "$BEHAVE_JSON")
+# Scenarios excluded by --tags=-todo appear with status "skipped" and are not counted.
+TOTAL=$(jq -s '[.[][]?.elements[]? | select(.status == "passed" or .status == "failed")] | length' "$BEHAVE_JSON")
+PASSED=$(jq -s '[.[][]?.elements[]? | select(.status == "passed")] | length' "$BEHAVE_JSON")
 FAILED=$((TOTAL - PASSED))
 printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/unit-test.json"
+
+# Scenario report: behave's "location" is "<uri>:<line>" - the Scenario line, or the
+# Examples row line for a Scenario Outline row.
+SCENARIO_RESULTS="$(mktemp)"
+trap 'rm -f "$BEHAVE_JSON" "$SCENARIO_RESULTS"' EXIT
+jq -s '[.[][]?.elements[]? | (.location | split(":")) as [$uri, $line] | {uri: $uri, line: ($line | tonumber), status}]' \
+  "$BEHAVE_JSON" > "$SCENARIO_RESULTS"
+scripts/normalize-scenarios.sh "$SCENARIO_RESULTS"
 
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   coverage html -d "$REPORT_DIR/coverage"
@@ -50,4 +67,7 @@ if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   rm "$REPORT_DIR/coverage/coverage.json"
   printf '{"linePct":%s}' "$LINE_PCT" > "$RESULT_DIR/coverage-test.json"
 fi
+
+if [ "$BEHAVE_EXIT" -ne 0 ]; then exit "$BEHAVE_EXIT"; fi
+exit "$PYTEST_EXIT"
 ```

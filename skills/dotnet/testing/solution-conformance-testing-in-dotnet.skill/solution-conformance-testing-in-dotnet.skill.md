@@ -16,6 +16,8 @@ tags:
 creates:
   - Makefile
   - scripts/unit-test.sh
+  - scripts/normalize-scenarios.sh
+  - scripts/messages-results.jq
   - scripts/mutation-test.sh
   - scripts/test-report.sh
   - "{TestProject}/reqnroll.json"

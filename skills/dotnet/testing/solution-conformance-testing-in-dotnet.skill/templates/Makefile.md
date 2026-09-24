@@ -1,9 +1,9 @@
 # Makefile
 
-Exposes the `unit-test`/`mutation-test`/`test-report`/`test-and-report` targets required by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Runs against the whole solution, so all five test projects (`{Module}.Domain.Tests`, `{Module}.Application.Tests`, `{Module}.Interfaces.Tests`, `Shared.Tests`, `BuildingBlocks.Tests`) are covered by one invocation — no per-project target.
+Exposes the `unit-test`/`mutation-test`/`test-report`/`test-and-report` targets required by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Runs against the whole solution, so every test project is covered by one invocation — no per-project target.
 
 ```makefile
-SOLUTION := {Module}.slnx
+SOLUTION := {Solution}.slnx
 CONFIGURATION := Release
 
 .PHONY: restore build test unit-test mutation-test test-report test-and-report clean

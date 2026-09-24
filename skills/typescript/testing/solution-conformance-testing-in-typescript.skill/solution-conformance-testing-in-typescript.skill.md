@@ -4,7 +4,7 @@ description: Sets up the TypeScript side of the Cucumber/coverage/mutation quali
 whenToUse: Set up or review the test suite of a framework-agnostic TypeScript package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing TypeScript package, or wire coverage and mutation testing into a TypeScript package's `make`/CI pipeline.
 domain: skill
 type: architecture
-version: 1
+version: 2
 tags:
   - solution/conformance-testing-in-typescript
   - skill/architecture/solution
@@ -19,6 +19,8 @@ creates:
   - "{Package}/features/{rule}.feature"
   - "{Package}/features/step-definitions/{rule}.steps.ts"
   - Makefile
+  - scripts/normalize-scenarios.sh
+  - scripts/messages-results.jq
 extends:
   - "{Package}/package.json"
   - README.md
@@ -37,6 +39,7 @@ adr:
 - Gherkin `.feature` files execute against the package's real exported functions/classes via `@cucumber/cucumber` step definitions.
 - `make mutation-test ONLY_DELTA=true DELTA_BASE=<ref>` fails fast on a changed line's surviving mutant, without paying for a full-package mutation run on every call.
 - `make unit-test WITH_CODE_COVERAGE=true` and `make test-report` give `master` an up-to-date coverage/mutation-score report and the data the README badges are generated from.
+- `make unit-test` also writes `tmp/result/scenarios.json` — every `.feature` entry with its type tag, status, and `@todo` reason — and `make test-report` renders it as `public/scenarios/`, per [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report).
 
 # Core Principles
 - Step definitions import from the package's `src/index.ts` public API, never from an internal module path directly.
@@ -74,9 +77,9 @@ PACKAGE:
 ## Add conformance coverage for a new validation rule (happy path)
 1. A `.feature` file describing the rule (e.g. `features/{rule}.feature`) is added or extended with `Given/When/Then` scenarios.
 2. `features/step-definitions/{rule}.steps.ts` is created with `Given`/`When`/`Then` bindings that import from `src/index.ts` and call the real exported function/class.
-3. `make unit-test` runs `vitest run --coverage` and `cucumber-js` (both feeding the same coverage provider's output when `WITH_CODE_COVERAGE=true`), and normalizes the result into `tmp/result/unit-test.json` (plus `tmp/result/coverage-test.json`).
+3. `make unit-test` runs `vitest run --coverage` and `cucumber-js` (both feeding the same coverage provider's output when `WITH_CODE_COVERAGE=true`), and normalizes the result into `tmp/result/unit-test.json` and `tmp/result/scenarios.json` (plus `tmp/result/coverage-test.json`).
 4. `make mutation-test` runs `stryker run` — scoped to changed files via Stryker's incremental/since mode when called with `ONLY_DELTA=true DELTA_BASE=<ref>`, or across the whole package otherwise — and normalizes the result into `tmp/result/mutation-test.json`.
-5. `make test-report` assembles `public/` from `tmp/result/*.json` and `tmp/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
+5. `make test-report` assembles `public/` — `scenarios/` included — from `tmp/result/*.json` and `tmp/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
 6. Which of these `make` targets run on which trigger, and how `public/` gets published, is decided by the project's own CI configuration — not by this solution.
 
 ## Surviving mutant found (report path)
@@ -96,4 +99,5 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] `package.json` declares `test`, `coverage`, and `mutation` scripts backed by Vitest, Vitest coverage, and Stryker.
 - [ ] Every `.feature` scenario has a matching step definition that imports from `src/index.ts` and calls production code.
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` exist at the repository root and support the toggles defined by [solution-conformance-testing](skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
-- [ ] `tmp/result/*.json` and `tmp/report/<kind>/` follow that same contract's schema.
+- [ ] `tmp/result/*.json` — `scenarios.json` included, written on a red run too — and `tmp/report/<kind>/` follow that same contract's schema.
+- [ ] `@todo` scenarios are excluded from the run and listed as `todo` in `public/scenarios/`.
