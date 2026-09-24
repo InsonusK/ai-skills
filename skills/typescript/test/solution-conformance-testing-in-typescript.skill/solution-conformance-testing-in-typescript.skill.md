@@ -62,7 +62,7 @@ NPM:
   - Runs unit tests and produces the coverage report (`--coverage`, v8 provider).
 - @stryker-mutator/core
   - Runs mutation testing against the package and reports a mutation score.
-- ts-node (or tsx)
+- tsx
   - Lets `@cucumber/cucumber` load TypeScript step definitions directly.
 
 # Template Skill Mutations

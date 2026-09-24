@@ -1,6 +1,6 @@
 # scripts/unit-test.sh
 
-Runs `cucumber-js` (`@todo` scenarios excluded; wrapped with `c8` for coverage when `WITH_CODE_COVERAGE=true`), then normalizes the result into `tmp/result/*.json` — `scenarios.json` included, on a red run too — and exits with `cucumber-js`'s own code, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Verified with `@cucumber/cucumber` 13, `ts-node` 10 + TypeScript 5 (ts-node does not load under TypeScript 6+).
+Runs `cucumber-js` (`@todo` scenarios excluded; wrapped with `c8` for coverage when `WITH_CODE_COVERAGE=true`), then normalizes the result into `tmp/result/*.json` — `scenarios.json` included, on a red run too — and exits with `cucumber-js`'s own code, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Verified with `@cucumber/cucumber` 13, `tsx` 4, TypeScript 7. `tsx` transpiles through esbuild, so it does not depend on the TypeScript compiler's version — unlike `ts-node`, which fails to load under TypeScript 6+.
 
 ```bash
 #!/usr/bin/env bash
@@ -27,7 +27,7 @@ trap 'rm -f "$CUCUMBER_JSON" "$CUCUMBER_MESSAGES" "$SCENARIO_RESULTS"' EXIT
 
 CUCUMBER_ARGS=(
   'features/**/*.feature'
-  --require-module ts-node/register
+  --require-module tsx/cjs
   --require 'features/step-definitions/**/*.ts'
   --tags 'not @todo'
   --format progress
