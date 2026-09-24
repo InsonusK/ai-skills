@@ -3,7 +3,9 @@ module github.com/example/linkcheck-service
 go 1.26.0
 
 require (
+	github.com/cucumber/gherkin/go/v42 v42.0.0
 	github.com/cucumber/godog v0.16.0
+	github.com/cucumber/messages/go/v34 v34.2.0
 	github.com/redis/go-redis/v9 v9.22.0
 	golang.org/x/sync v0.23.0
 	google.golang.org/grpc v1.83.2
@@ -12,8 +14,6 @@ require (
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/cucumber/gherkin/go/v42 v42.0.0 // indirect
-	github.com/cucumber/messages/go/v34 v34.2.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.5 // indirect

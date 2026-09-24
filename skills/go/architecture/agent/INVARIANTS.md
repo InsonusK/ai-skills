@@ -32,6 +32,7 @@ internal/
       server.go                   ← solution-go-http-api
 tools/
   normalize_unittest/main.go      ← solution-conformance-testing-in-go
+  normalize_scenarios/main.go     ← solution-conformance-testing-in-go
   normalize_mutation/main.go      ← solution-conformance-testing-in-go
   test_report/main.go             ← solution-conformance-testing-in-go
 ```

@@ -4,7 +4,7 @@ description: plateau-dual-api-service plus an outbound port/adapter to an extern
 whenToUse: when a Go web-service needs to call another service to do its job, or reviewing whether new domain data reaches every inbound adapter instead of being silently dropped
 domain: skill
 type: template
-version: 20260917020000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/plateau-integrated-service

@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level package under this p
 domain: skill
 type: template
 plateau: plateau-integrated-service
-version: 20260917020000
+version: 20260924000000
 tags:
   - skill/template/repo
   - plateau/plateau-integrated-service
@@ -57,6 +57,7 @@ internal/
     reputationclient/             ← package tier, see plateau-integrated-service--package-infrastructure-reputationclient.skill.md
 tools/
   normalize_unittest/main.go
+  normalize_scenarios/main.go
   normalize_mutation/main.go
   test_report/main.go
 ```
@@ -81,6 +82,7 @@ __Applied solutions:__
 MUST:
 - `unit-test`/`mutation-test`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint`/`proto-gen` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
 - `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `public/index.html` — never generated.
+- `make unit-test` writes `tmp/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
 - `proto/linkcheck/linkcheck.proto` stays flat (no version subdirectory) — its path must match `go_package`'s flat `gen/api` exactly, or `buf generate` emits code at a different Go import path than every hand-written file expects (verified — this is the actual, observed failure mode, not a hypothetical). `buf/buf.gen.yaml` uses `local:` plugins (`protoc-gen-go`, `protoc-gen-go-grpc`, both `go install`ed), not `buf.build` remote plugins.
 - `proto/reputation/reputation.proto` (the external service's own contract) is generated into its own `gen/reputation` via its own `buf/reputation.gen.yaml` — never merged with `gen/api`. Its `buf generate` call was added as a second line inside the existing `proto-gen` target, not a second target declaration.
 

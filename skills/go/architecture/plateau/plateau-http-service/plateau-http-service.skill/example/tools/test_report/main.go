@@ -6,9 +6,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type unitResult struct {
@@ -61,6 +63,9 @@ func run() error {
 		return err
 	}
 	if err := writeMutationBadge(); err != nil {
+		return err
+	}
+	if err := writeScenariosPage(); err != nil {
 		return err
 	}
 
@@ -170,4 +175,100 @@ func copyDir(src, dst string) error {
 		_, err = io.Copy(out, in)
 		return err
 	})
+}
+
+type scenarioEntry struct {
+	Feature  string `json:"feature"`
+	Scenario string `json:"scenario"`
+	Examples string `json:"examples"`
+	URI      string `json:"uri"`
+	Line     int    `json:"line"`
+	Type     string `json:"type"`
+	Status   string `json:"status"`
+	Note     string `json:"note"`
+}
+
+var (
+	scenarioTypes    = []string{"happy", "boundary", "negative", "error", "concurrency", "security", "regression", "untyped"}
+	scenarioStatuses = []string{"passed", "failed", "todo", "missing"}
+)
+
+// writeScenariosPage renders public/scenarios/index.html from
+// tmp/result/scenarios.json: a type x status table, then every entry grouped
+// by feature. Rows needing attention are marked "attention".
+func writeScenariosPage() error {
+	data, err := os.ReadFile(filepath.Join("tmp", "result", "scenarios.json"))
+	if err != nil {
+		return nil // unit-test has not run yet
+	}
+	var r struct {
+		Scenarios []scenarioEntry `json:"scenarios"`
+	}
+	if err := json.Unmarshal(data, &r); err != nil {
+		return err
+	}
+
+	counts := map[string]map[string]int{}
+	for _, s := range r.Scenarios {
+		if counts[s.Type] == nil {
+			counts[s.Type] = map[string]int{}
+		}
+		counts[s.Type][s.Status]++
+	}
+
+	var b strings.Builder
+	b.WriteString(`<!doctype html><html><head><meta charset="utf-8"><title>Scenarios</title>
+<style>td,th{border:1px solid #999;padding:2px 6px}table{border-collapse:collapse}.attention{background:#fdd}</style></head><body>
+<h1>Scenarios</h1><h2>By type</h2><table><tr><th>type</th>`)
+	for _, st := range scenarioStatuses {
+		fmt.Fprintf(&b, "<th>%s</th>", st)
+	}
+	b.WriteString("</tr>")
+	for _, ty := range scenarioTypes {
+		fmt.Fprintf(&b, "<tr><td>%s</td>", ty)
+		for _, st := range scenarioStatuses {
+			fmt.Fprintf(&b, "<td>%d</td>", counts[ty][st])
+		}
+		b.WriteString("</tr>")
+	}
+	b.WriteString("</table>")
+
+	feature := "\x00"
+	for _, s := range r.Scenarios {
+		if s.Feature != feature {
+			if feature != "\x00" {
+				b.WriteString("</table>")
+			}
+			feature = s.Feature
+			fmt.Fprintf(&b, "<h2>%s</h2><table><tr><th>scenario</th><th>examples</th><th>type</th><th>status</th><th>location</th><th>note</th></tr>", html.EscapeString(feature))
+		}
+		class := ""
+		if needsAttention(s) {
+			class = ` class="attention"`
+		}
+		fmt.Fprintf(&b, "<tr%s><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s:%d</td><td>%s</td></tr>",
+			class, html.EscapeString(s.Scenario), html.EscapeString(s.Examples), s.Type, s.Status,
+			html.EscapeString(s.URI), s.Line, html.EscapeString(s.Note))
+	}
+	if feature != "\x00" {
+		b.WriteString("</table>")
+	}
+	b.WriteString("</body></html>")
+
+	if err := os.MkdirAll(filepath.Join("public", "scenarios"), 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join("public", "scenarios", "index.html"), []byte(b.String()), 0o644)
+}
+
+// needsAttention follows the parent contract: untyped, missing, failed, and
+// todo happy/negative/error entries without a note.
+func needsAttention(s scenarioEntry) bool {
+	switch {
+	case s.Type == "untyped", s.Status == "missing", s.Status == "failed":
+		return true
+	case s.Status == "todo" && s.Note == "" && (s.Type == "happy" || s.Type == "negative" || s.Type == "error"):
+		return true
+	}
+	return false
 }
