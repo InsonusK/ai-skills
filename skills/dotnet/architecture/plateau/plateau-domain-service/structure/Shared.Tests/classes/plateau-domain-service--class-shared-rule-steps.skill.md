@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a Shared.Tests feature file, or
 domain: skill
 type: template
 plateau: domain-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/class
   - plateau/domain-service
@@ -24,7 +24,7 @@ __Applied solutions:__
 - `[Binding] sealed class {Rule}Steps` — Reqnroll bindings, Cucumber-expression steps (`{string}`, `{int}`).
 - Value-shaped: given one or more primitive values, prove how they compare/combine — never "is this input valid" (a module concern).
 - Asserts against the real declared type from `Shared`, never a hand-written stand-in.
-- xunit.v3 `Assert`; runs on Microsoft.Testing.Platform.
+- xUnit v2 `Assert`; runs on the VSTest runner.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |

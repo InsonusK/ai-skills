@@ -18,6 +18,7 @@ tags:
     reqnroll.json
 /report-template
   index.html
+stryker-config.json
 /scripts
   unit-test.sh
   normalize-scenarios.sh
@@ -38,6 +39,7 @@ Which test projects exist, and what each one references, is decided by the archi
 | /scripts | unit-test.sh | Runs `dotnet test` across every test project (`@todo` excluded), normalizes the aggregated result into `tmp/result/unit-test.json` and `tmp/result/scenarios.json` (+ `coverage-test.json` when `WITH_CODE_COVERAGE=true`), keeps the merged native report under `tmp/report/tests` (+ `tmp/report/coverage`) |
 | /scripts | normalize-scenarios.sh | `.feature` inventory + per-scenario results → `tmp/result/scenarios.json`; identical across the .NET/Python/TypeScript variants |
 | /scripts | messages-results.jq | Reqnroll's Cucumber Messages → `[{uri, line, status}]` for `normalize-scenarios.sh` |
+| / | stryker-config.json | `solution` + `test-case-filter: Category!=todo`, so Stryker.NET's own test runs skip `@todo` scenarios |
 | /scripts | mutation-test.sh | Runs `dotnet-stryker` against the whole solution (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
 | /scripts | test-report.sh | Assembles `public/` — `scenarios/` included — from `tmp/result/*.json` + `tmp/report/*`; no test/build tooling involved |
 | / | Makefile | Exposes the `unit-test`/`mutation-test`/`test-report`/`test-and-report` targets required by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] |
@@ -53,6 +55,16 @@ Build `tmp/result/scenarios.json` per [[skills/common-workflow/test/solution-con
 
 ## scripts/mutation-test.sh
 Runs Stryker.NET against the whole solution — its native `--since` mode covers `ONLY_DELTA`/`DELTA_BASE` directly, so this script does not need to compute the diff itself, and Stryker's own solution-wide run already covers every test project together. See [templates/mutation-test.sh.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/mutation-test.sh.md) for the full script.
+
+## stryker-config.json
+```json
+{
+  "stryker-config": {
+    "solution": "{Solution}.slnx",
+    "test-case-filter": "Category!=todo"
+  }
+}
+```
 
 ## scripts/test-report.sh
 Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodified) also works for the Python and TypeScript variants of this solution. See [templates/test-report.sh.md](skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/templates/test-report.sh.md) for the full script.
@@ -79,6 +91,12 @@ Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodi
 - `scripts/normalize-scenarios.sh` must stay byte-identical across the .NET, Python, and TypeScript variants of this solution, like `scripts/test-report.sh`.
   - Risk: a stack-local tweak to the inventory scan makes the same `.feature` file produce different entries per stack, and the report stops being comparable.
   - Fix: change it in all three variants together, or not at all.
+- `stryker-config.json` must set `test-case-filter` to `Category!=todo`.
+  - Risk: Stryker.NET runs its own test pass, ignoring `dotnet test`'s filter; a `@todo` scenario with an undefined step fails the initial run and aborts every mutation run.
+  - Fix: keep the filter in `stryker-config.json`, which Stryker.NET reads from the repository root.
+- Test projects must reference xUnit v2 (`xunit`, `xunit.runner.visualstudio` 3.x, `Reqnroll.xUnit`) on the VSTest runner — never `xunit.v3`/`Reqnroll.xunit.v3` or a Microsoft.Testing.Platform opt-in — until `recheck/stryker-xunit-v3.sh` reports `SUPPORTED`.
+  - Risk: Stryker.NET 4.16 reports every mutant as survived on xunit.v3/MTP — a silent, false 0% mutation score.
+  - Fix: see [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|the ADR]]; re-run the recheck script on each Stryker.NET release.
 - `scripts/mutation-test.sh` must still exit with `dotnet-stryker`'s own exit code after writing `tmp/result/mutation-test.json` — normalizing the result must never swallow a real mutation-testing failure.
   - Risk: a real mutation-testing failure gets swallowed by the normalization step, and CI reports success on a run that actually found unkilled mutants.
   - Fix: propagate `dotnet-stryker`'s exit code from the script after it finishes writing the normalized result.

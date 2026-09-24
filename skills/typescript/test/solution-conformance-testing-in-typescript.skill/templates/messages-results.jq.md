@@ -4,7 +4,12 @@ Reduces cucumber-js's `message` formatter output (Cucumber Messages, ndjson, rea
 
 ```jq
 # Cucumber Messages (ndjson, slurped with -s) -> [{uri, line, status}], one per test case.
-# $prefix is prepended to each pickle uri to make it repo-relative.
+# $prefix is prepended to each pickle uri to make it repo-relative; "dir/.." segments are
+# collapsed, since a feature file linked into a project is reported as "../../src/...".
+def normpath: split("/") | reduce .[] as $s ([];
+  if $s == ".." and length > 0 and .[-1] != ".." then .[:-1]
+  elif $s == "." or $s == "" then .
+  else . + [$s] end) | join("/");
 (map(select(.gherkinDocument) | .gherkinDocument.feature
      | [.. | objects | select(.id? and .location?) | {key: .id, value: .location.line}]
      | from_entries) | add // {}) as $lines
@@ -17,7 +22,7 @@ Reduces cucumber-js's `message` formatter output (Cucumber Messages, ndjson, rea
     ($pickles[$cases[$started[.[0].testCaseStartedId]]]) as $p
     | [.[].testStepResult.status] as $s
     | {
-        uri: ($prefix + $p.uri),
+        uri: ($prefix + $p.uri | normpath),
         line: $lines[$p.astNodeIds[-1]],
         status: (if all($s[]; . == "PASSED") then "passed"
                  elif any($s[]; . == "FAILED" or . == "UNDEFINED" or . == "AMBIGUOUS" or . == "PENDING") then "failed"

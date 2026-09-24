@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test for an entity invariant, 
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -25,7 +25,7 @@ __Applied solutions:__
 # Core Principles
 - Scenarios are validator-shaped: an input goes in, valid/invalid comes out — proven against the real entity method / VO constructor, asserting the `DomainException` code on failure.
 - References `{Module}.Domain` only — never `{Module}.Application`, never infrastructure.
-- Unit tests and Gherkin scenarios live together in this one project; runs on Microsoft.Testing.Platform.
+- Unit tests and Gherkin scenarios live together in this one project; runs on the VSTest runner (xUnit v2).
 
 # Structure
 
@@ -57,7 +57,7 @@ __Applied solutions:__
 ## NuGet Packages
 | Package | Purpose |
 | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit.v3 / xunit.runner.visualstudio / Reqnroll.xunit.v3 / coverlet.collector | test host, assertions, Gherkin, coverage |
+| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | test host, assertions, Gherkin, coverage |
 
 ## What Does NOT Belong Here
 - Handler/orchestration scenarios — belong to `{Module}.Application.Tests`.

@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level project in a plateau
 domain: skill
 type: template
 plateau: domain-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/sln
   - plateau/domain-service
@@ -27,7 +27,6 @@ created_by:
 / (repository root)
   Directory.Packages.props        — every NuGet version, pinned once (ManagePackageVersionsCentrally)
   Directory.Build.props           — net10.0, ImplicitUsings, Nullable, TreatWarningsAsErrors
-  global.json                     — test.runner = Microsoft.Testing.Platform
   {Solution}.slnx
   Makefile
 /src

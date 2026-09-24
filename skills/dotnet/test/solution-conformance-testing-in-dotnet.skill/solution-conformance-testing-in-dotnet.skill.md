@@ -4,7 +4,7 @@ description: The .NET implementation of [[skills/common-workflow/test/solution-c
 whenToUse: Set up or review the test tooling of a .NET solution that must prove conformance to a Cucumber/Gherkin spec, or wire coverage, mutation testing, and the scenario report into a .NET solution's `make`/CI pipeline.
 domain: skill
 type: architecture
-version: 1
+version: 2
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-dotnet
@@ -21,6 +21,7 @@ creates:
   - scripts/mutation-test.sh
   - scripts/test-report.sh
   - "{TestProject}/reqnroll.json"
+  - stryker-config.json
   - report-template/index.html
 extends:
   - README.md
@@ -29,6 +30,7 @@ depends_on:
 built_on_plateau:
 adr:
   - "[[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/testing-tool-choice|Testing tool choice]]"
+  - "[[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|xUnit v2 on VSTest until Stryker.NET supports xunit.v3]]"
 ---
 
 # Goal
@@ -43,10 +45,13 @@ adr:
 - Every scenario is authored per [[skills/dotnet/test/cucmber-testing-in-dotnet.skill.md|cucmber-testing-in-dotnet]] — this solution wires the `make`/report machinery around that authoring standard, it does not restate it.
 - How the solution splits into test projects is not decided here; a catalog's own architecture solution decides it (e.g. [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md|solution-dotnet-conformance-testing]] for the dotnet plateau catalog). This solution only requires that every test project is part of the solution `dotnet test` runs.
 - `mutation-test` always exits with Stryker.NET's own exit code after writing its normalized result, per the parent solution's contract.
+- Test projects run xUnit v2 on the VSTest runner, never xunit.v3 on Microsoft.Testing.Platform: Stryker.NET 4.16 reports a false 0% score there. Re-check with `recheck/stryker-xunit-v3.sh` before any move — see [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|xUnit v2 on VSTest until Stryker.NET supports xunit.v3]].
 
 # Adr
 - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/testing-tool-choice|Testing tool choice]]
   - Selected variant: Reqnroll (Gherkin runner) + coverlet/ReportGenerator (coverage) + Stryker.NET (mutation testing)
+- [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|xUnit v2 on VSTest until Stryker.NET supports xunit.v3]]
+  - Selected variant: xUnit v2 + Reqnroll.xUnit on VSTest until `recheck/stryker-xunit-v3.sh` reports `SUPPORTED`
 
 # Requirements
 SOLUTION:
@@ -54,8 +59,8 @@ SOLUTION:
   - Defines the `make` target names, the `tmp/result/*.json` schema, and the `public/` layout this solution implements for .NET.
 
 NUGET:
-- Reqnroll.xUnit
-  - Executes `.feature` files against step definitions using xUnit as the runner; its `message` formatter feeds the scenario report.
+- xunit (2.9.x), xunit.runner.visualstudio (3.x), Reqnroll.xUnit, Microsoft.NET.Test.Sdk
+  - Execute `.feature` files and plain tests on the VSTest runner; Reqnroll's `message` formatter feeds the scenario report. Not xunit.v3 — see [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|xUnit v2 on VSTest until Stryker.NET supports xunit.v3]].
 - coverlet.collector
   - Collects line/branch coverage during `dotnet test`.
 - ReportGenerator (dotnet tool)
@@ -87,4 +92,6 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 # Check list
 - [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` exist at the repository root, run across every test project, and support the toggles defined by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
 - [ ] `tmp/result/*.json` — including `scenarios.json` — and `tmp/report/<kind>/` aggregate every test project present and follow that same contract's schema.
+- [ ] No test project references `xunit.v3`/`Reqnroll.xunit.v3`, and no `global.json` opts `dotnet test` into Microsoft.Testing.Platform.
+- [ ] `stryker-config.json` sets `test-case-filter` to `Category!=todo`.
 - [ ] `public/` follows [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#public-site-output|solution-conformance-testing's Public site output]] contract, and `report-template/index.html` exists at the repository root (not under `.github/`).

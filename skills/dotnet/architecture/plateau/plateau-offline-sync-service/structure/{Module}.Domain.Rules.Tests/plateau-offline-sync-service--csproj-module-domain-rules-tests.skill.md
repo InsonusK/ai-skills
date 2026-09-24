@@ -5,7 +5,7 @@ whenToUse: when adding a scenario proving a Rule's own Check() / IsValid() / IRu
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -57,7 +57,7 @@ The whole spec directory is linked (this project proves every scenario regardles
 ## NuGet Packages
 | Package | Purpose |
 | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit.v3 / xunit.runner.visualstudio / Reqnroll.xunit.v3 / coverlet.collector | test host, assertions, Gherkin, coverage |
+| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | test host, assertions, Gherkin, coverage |
 
 ## What Does NOT Belong Here
 - The VO/entity fail-fast adapter proof — that is `{Module}.Domain.Tests`.

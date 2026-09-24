@@ -43,3 +43,27 @@ fi
 SCORE=$(jq '.score' "$RESULT_DIR/mutation-test.json")
 printf '{"schemaVersion":1,"label":"mutation score","message":"%s%%","color":"%s"}' \
   "$SCORE" "$(score_color "$SCORE")" > "$PUBLIC_DIR/mutation-badge.json"
+
+# scenarios.json -> public/scenarios/index.html: type x status table, then every entry
+# grouped by feature. "attention" marks untyped, missing, failed, and todo
+# happy/negative/error entries without a note.
+if [ -f "$RESULT_DIR/scenarios.json" ]; then
+  mkdir -p "$PUBLIC_DIR/scenarios"
+  jq -r '
+    ["happy","boundary","negative","error","concurrency","security","regression","untyped"] as $types
+    | ["passed","failed","todo","missing"] as $statuses
+    | .scenarios as $all
+    | def attention: .type == "untyped" or .status == "missing" or .status == "failed"
+        or (.status == "todo" and .note == "" and (.type == "happy" or .type == "negative" or .type == "error"));
+    "<!doctype html><html><head><meta charset=\"utf-8\"><title>Scenarios</title>",
+    "<style>td,th{border:1px solid #999;padding:2px 6px}table{border-collapse:collapse}.attention{background:#fdd}</style></head><body>",
+    "<h1>Scenarios</h1><h2>By type</h2><table><tr><th>type</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
+    ($types[] as $t | "<tr><td>\($t)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(.type == $t and .status == $s)] | length)</td>") | join("")) + "</tr>"),
+    "</table>",
+    ($all | group_by(.feature)[] |
+      "<h2>\(.[0].feature | @html)</h2><table><tr><th>scenario</th><th>examples</th><th>type</th><th>status</th><th>location</th><th>note</th></tr>",
+      (.[] | "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.type)</td><td>\(.status)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
+      "</table>"),
+    "</body></html>"
+  ' "$RESULT_DIR/scenarios.json" > "$PUBLIC_DIR/scenarios/index.html"
+fi
