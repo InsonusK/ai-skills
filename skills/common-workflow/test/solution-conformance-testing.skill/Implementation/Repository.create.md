@@ -31,6 +31,7 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 | --- | --- | --- |
 | `tmp/result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit-test` |
 | `tmp/result/coverage-test.json` | `{ "linePct": <number> }` | `unit-test` (only with `WITH_CODE_COVERAGE=true`) |
+| `tmp/result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "status", "note" } ] }` — see [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit-test` (every run, also when a test failed) |
 | `tmp/result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation-test` |
 | `tmp/report/tests/` | tool's native test report | `unit-test` |
 | `tmp/report/coverage/` | tool's native coverage report | `unit-test` (only with `WITH_CODE_COVERAGE=true`) |
@@ -44,10 +45,11 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 | File | Content | Source |
 | --- | --- | --- |
 | `public/<kind>/` | copy of `tmp/report/<kind>/`, for each kind present | `tmp/report/tests`, `tmp/report/coverage`, `tmp/report/mutation` |
+| `public/scenarios/index.html` | type × status table, then every scenario entry grouped by feature | rendered from `tmp/result/scenarios.json` |
 | `public/tests-badge.json`, `public/coverage-badge.json`, `public/mutation-badge.json` | shields.io endpoint-badge schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` | computed from `tmp/result/*.json` |
 | `public/index.html` | copied verbatim, never generated | `report-template/index.html` |
 
-`report-template/index.html` is a small static landing page the project owns (links to `tests/`, `coverage/`, `mutation/`) — it lives at the repository root, never under `.github/`, since this solution owns no `.github/workflows/*` file.
+`report-template/index.html` is a small static landing page the project owns (links to `scenarios/`, `tests/`, `coverage/`, `mutation/`) — it lives at the repository root, never under `.github/`, since this solution owns no `.github/workflows/*` file.
 
 # Rule
 
@@ -64,6 +66,9 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 - Write both the normalized `tmp/result/<name>.json` and the tool's native report under `tmp/report/<kind>/` for every `*-test` target, per [## Report output](#report-output).
   - Risk: without the normalized file, `test-report` and any downstream badge generation have no stack-independent data to read.
   - Fix: write the JSON schema from [## Report output](#report-output) alongside the native report on every run.
+- Write `tmp/result/scenarios.json` on every `unit-test` run — also when a test failed — listing every `.feature` entry, `@todo` ones included.
+  - Risk: a report built only from executed scenarios, or skipped on a red run, hides planned-but-missing cases and the run that failed.
+  - Fix: build the inventory from the `.feature` files, join the runner's result onto it, write the file, then exit with the runner's own exit code.
 - Exit `mutation-test` with the underlying mutation tool's own exit code after writing `tmp/result/mutation-test.json`.
   - Risk: a real mutation-testing failure gets swallowed by the normalization step, and CI reports success on a run with unkilled mutants.
   - Fix: propagate the tool's exit code from the script after it finishes writing the normalized result.
@@ -81,5 +86,7 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 - [ ] No target accepts a flag outside `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE`.
 - [ ] `tmp/result/unit-test.json`, `tmp/result/coverage-test.json` (when coverage is on), and `tmp/result/mutation-test.json` all follow the schema in [## Report output](#report-output).
 - [ ] `tmp/report/tests/`, `tmp/report/coverage/`, and `tmp/report/mutation/` hold each tool's native report.
+- [ ] `tmp/result/scenarios.json` exists after every `unit-test` run (green or red) and includes `@todo` entries.
+- [ ] `public/scenarios/index.html` is rendered from `tmp/result/scenarios.json`, and `report-template/index.html` links `scenarios/`.
 - [ ] `mutation-test` exits with the underlying tool's own exit code.
 - [ ] `test-report` assembles `public/` per [## Public site output](#public-site-output), and `report-template/index.html` exists at the repository root (not under `.github/`).

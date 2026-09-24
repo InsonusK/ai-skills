@@ -2,7 +2,7 @@
 name: cucmber-testing
 description: Language-independent rules for writing and organizing Cucumber/Gherkin scenarios and their step definitions — generic comparators, expected-data placement, ordering, logging, and BDD editor setup
 whenToUse: when writing or reviewing a `.feature` file or its step definitions, when deciding whether an assertion step is reusable across scenarios, or when configuring an editor/devcontainer for Cucumber
-updated: 20260913
+updated: 20260924
 tags:
   - stack
   - concern/testing/bdd
@@ -14,7 +14,8 @@ tags:
 # Goal
 - Every `.feature` scenario written as an explicit input/expected-result matrix, never a narrative walkthrough.
 - Every assertion step implemented as a generic comparator that reads its expected data from the feature file, reused across scenarios instead of duplicated per domain object.
-- A scenario that cannot run yet tagged `@todo` and excluded from the executed suite, never reported as a fake pass.
+- A scenario that cannot run yet tagged `@todo` with its reason, and excluded from the executed suite, never reported as a fake pass.
+- Every scenario classified by exactly one type tag, so the test report shows which kinds of behavior are covered and which are missing.
 - A VSCode workspace with the Cucumber extension declared in the devcontainer and `cucumber.glue`/`cucumber.features` set in `.vscode/settings.json`.
 
 # Scope
@@ -43,10 +44,34 @@ Delete code that cannot be reached through the public API rather than writing a 
 - Fix: remove the unreachable code; if it later becomes reachable, add its scenario then.
 
 ### Tag unrunnable scenarios @todo and verify exclusion
-Tag a scenario that cannot run yet (missing fixture or dependency) `@todo`, exclude `@todo` from the executed run, and confirm the runner reports it as excluded rather than passed.
-- Violation: leaving an unimplemented scenario in the executed run where a runner treats "skipped" as "passed".
-- Risk: a fake-green scenario hides that the case is not actually verified, and nobody investigates it again.
-- Fix: tag it `@todo`, filter `@todo` out of the run, and check the stack-specific skill for how that runner reports exclusion versus a pass.
+Tag a scenario that cannot run yet (missing fixture or dependency, or planned but not implemented) `@todo`, put its reason in a `# todo: <reason>` comment on the line directly above its tags, exclude `@todo` from the executed run, and confirm the runner reports it as excluded rather than passed.
+- Violation: leaving an unimplemented scenario in the executed run where a runner treats "skipped" as "passed"; or a bare `@todo` with no `# todo:` reason.
+- Risk: a fake-green scenario hides that the case is not actually verified, and nobody investigates it again; a `@todo` without a reason cannot be told apart from a forgotten case in the report.
+- Fix: tag it `@todo` with a `# todo:` reason, filter `@todo` out of the run, and check the stack-specific skill for how that runner reports exclusion versus a pass.
+```gherkin
+  # todo: needs a fake clock to trigger the expiry
+  @todo @error
+  Scenario: Expired token is rejected
+```
+
+### One type tag per scenario
+Give every scenario exactly one type tag — `@happy`, `@boundary`, `@negative`, `@error`, `@concurrency`, `@security`, or `@regression` — on the scenario itself or inherited from its `Feature`/`Rule`; in a `Scenario Outline` whose rows exercise different types, split the rows into separately tagged `Examples:` blocks.
+- Violation: an untagged scenario, a scenario with both `@happy` and `@negative`, or one `Examples:` table mixing valid and invalid inputs under a single tag.
+- Risk: the test report cannot show that, for example, a feature has only happy-path scenarios — the gap stays invisible until a bug finds it.
+- Fix: tag each scenario (or each `Examples:` block) with the one type it exercises; the report lists anything without exactly one type tag as `untyped`.
+```gherkin
+  Scenario Outline: Check a URL
+    ...
+    @happy
+    Examples: well-formed
+      | input              | outcome |
+      | https://a.example  | valid   |
+
+    @negative
+    Examples: malformed
+      | input      | outcome |
+      | not-a-url  | invalid |
+```
 
 ### Generic comparator steps
 Implement an assertion step as a generic comparator — it reads the actual result and compares it against expected data supplied by the scenario (a data table, `Scenario Outline` parameter, or argument), never against a value baked into the step's code.
@@ -126,7 +151,8 @@ Use the runner's own step-listing/generation facility, when it has one, instead 
 - [ ] Every scenario is structured as an input/expected-result matrix (data table or `Examples:`), not a narrative.
 - [ ] No unit-test-framework test duplicates what a `.feature` scenario could express, other than the one runner entry point.
 - [ ] No test exists solely to cover code unreachable through the public API.
-- [ ] Every not-yet-runnable scenario is tagged `@todo`, filtered out of the executed run, and confirmed excluded rather than reported as passing.
+- [ ] Every not-yet-runnable scenario is tagged `@todo` with a `# todo:` reason, filtered out of the executed run, and confirmed excluded rather than reported as passing.
+- [ ] Every scenario (or `Examples:` block) carries exactly one type tag: `@happy`, `@boundary`, `@negative`, `@error`, `@concurrency`, `@security`, `@regression`.
 - [ ] Every assertion step is a generic comparator reading expected data from the feature file — no domain-specific hardcoded step.
 - [ ] No expected value is hardcoded in step-definition code.
 - [ ] Structured responses are asserted via deserialization, never substring matching.

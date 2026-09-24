@@ -29,7 +29,7 @@ This skill extends [no-test-theater](skills/common-workflow/test/no-test-theater
 - For CLI applications, maintain a dedicated negative-input test category: bad file paths, malformed YAML/JSON, missing required fields. This is the case most often skipped.
 
 ## SHOULD
-- Use `@pytest.mark.parametrize` instead of copy-pasting near-duplicate tests with different data — this shortens the file, not the number of scenarios that must appear in the trace matrix (see [no-test-theater](skills/common-workflow/test/no-test-theater.skill/no-test-theater.skill.md)).
+- Use `@pytest.mark.parametrize` instead of copy-pasting near-duplicate tests with different data — this shortens the file, but each data variation of a distinct behavior type still needs its own tagged scenario (see [no-test-theater](skills/common-workflow/test/no-test-theater.skill/no-test-theater.skill.md)).
 - Run mutation testing (`mutmut` or `cosmic-ray`) on modules with business logic — parsing/validation branches are the highest-value targets.
 
 # Anti-patterns
