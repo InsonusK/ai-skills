@@ -50,8 +50,8 @@ func Load() (*Config, error) {
 ```
 
 `MigrateOnStart` selects between this solution's two mutually exclusive modes — see
-[[../../../../solution-go-db-migrations.skill.md#Core%20Principles|this solution's own Core
-Principles]] and [[../../../../adr/migration-mode-per-platform.md|adr/migration-mode-per-platform.md]]
+[[../../../solution-go-db-migrations.skill.md#Core%20Principles|this solution's own Core
+Principles]] and [[../../../adr/migration-mode-per-platform.md|adr/migration-mode-per-platform.md]]
 for which platform sets it to which value and why. It defaults to `false` (Job mode) — a
 deployment must opt into startup-run explicitly, never fall into it by leaving the variable unset.
 
