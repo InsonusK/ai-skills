@@ -80,7 +80,7 @@ adr:
 - This solution authors the `.feature` scenarios and proves them from every .NET layer; it does not own the step definitions of an external consumer that imports the spec into another repo or language — that consumer writes and maintains its own bindings.
 - The Try/Confirm saga orchestration is illustrated, not created here — the actual wiring follows the `solution-mediator-integration` pattern (and, for the durable relay, `solution-transactional-outbox`).
 - Structural guarantees over the rule mechanism ("is every `Check()` called", "is `DomainException` thrown only from the right layer", "are rejection codes unique") are [[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/solution-cecil-architecture-tests.skill|solution-cecil-architecture-tests]]'s job — its mandatory companion, whose applicable check subset depends on which of VP1/VP3 are present.
-- A Domain-classified rule's `Load` step needs a repository — it becomes real only once `solution-repository-integration` (VP2) is applied. Format- and Semantic-classified rules need no persistence.
+- A Domain-classified rule's `Load` step needs a repository — it becomes real only once `solution-repository-integration` (VP-C001) is applied. Format- and Semantic-classified rules need no persistence.
 
 # Adr
 - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rule-as-irulebuilder-extension|Rule as bool primitive + IRuleBuilder extension]]

@@ -1,8 +1,8 @@
 ---
 name: defer-feature-check-loading-to-persistence-solution
 description: Why {Feature}Check.cs.create.md leaves Load unimplemented instead of showing a concrete IReadRepository<T> example, and why the concrete realization is deferred to solution-repository-integration's own .extend.md on the same class.
-problem: {Feature}Check's worked example previously injected IReadRepository<T>, a type that does not exist at the common baseline (before persistence, VP2). The example was illustrative only, but nothing distinguished it from a real, applicable pattern, and a plateau that composes solution-dto-property-validators without solution-repository-integration would carry the same forward reference into its own structural skill.
-decision: Leave Load unimplemented (throwing) in solution-dto-property-validators's own {Feature}Check.cs.create.md. Let solution-repository-integration — the solution that actually introduces IReadRepository<T> (VP2) — supply the concrete Load body via its own {Feature}Check.cs.extend.md, targeting the same class, merged in by plateau-create-by-solutions wherever both solutions are composed together (in v3.1, from plateau-domain-service onward).
+problem: {Feature}Check's worked example previously injected IReadRepository<T>, a type that does not exist at the common baseline (before persistence, VP-C001). The example was illustrative only, but nothing distinguished it from a real, applicable pattern, and a plateau that composes solution-dto-property-validators without solution-repository-integration would carry the same forward reference into its own structural skill.
+decision: Leave Load unimplemented (throwing) in solution-dto-property-validators's own {Feature}Check.cs.create.md. Let solution-repository-integration — the solution that actually introduces IReadRepository<T> (VP-C001) — supply the concrete Load body via its own {Feature}Check.cs.extend.md, targeting the same class, merged in by plateau-create-by-solutions wherever both solutions are composed together (in v3.1, from plateau-domain-service onward).
 tags:
   - solution/dto-property-validators
   - concern/documentation
@@ -14,7 +14,7 @@ tags:
 
 `{Feature}Check` is a DI-injected async wrapper that preloads data for a cross-aggregate validator condition. Its worked example needs *some* data-loading call to be concrete and useful — but `solution-dto-property-validators` is a common-baseline solution (it is composed into `plateau-core`), and the common baseline has no repository or any other data-loading abstraction at all. Per this catalog's `built_on_plateau` policy, the assumed baseline lives in `# Boundaries` prose, not a frontmatter field.
 
-The previous version of `{Feature}Check.cs.create.md` injected `IReadRepository<T>` (from `solution-repository-integration`, VP2) directly in its worked example, with a prose caveat that the type "does not exist until `solution-repository-integration` is composed." This produced two problems:
+The previous version of `{Feature}Check.cs.create.md` injected `IReadRepository<T>` (from `solution-repository-integration`, VP-C001) directly in its worked example, with a prose caveat that the type "does not exist until `solution-repository-integration` is composed." This produced two problems:
 
 - A plateau that composes `solution-dto-property-validators` without also composing `solution-repository-integration` — `plateau-core` itself, and any future plateau that adds validation but not persistence — would copy this same forward reference into its own class skill, describing a type its own lineage does not provide.
 - The caveat was prose only. Nothing in the class's actual shape signaled "not real yet" — an agent applying the solution to a genuinely stateless module could copy the worked example verbatim and produce code that does not compile.

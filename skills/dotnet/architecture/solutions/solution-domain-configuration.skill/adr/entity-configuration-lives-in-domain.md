@@ -1,7 +1,7 @@
 ---
 name: entity-configuration-lives-in-domain
 description: Why EF Core IEntityTypeConfiguration<T> classes live in {Module}.Domain/Configurations, adding a Microsoft.EntityFrameworkCore reference to a project VP1 otherwise keeps infrastructure-free
-problem: solution-domain-behaviour (VP1) establishes {Module}.Domain as referencing only Shared + {Module}.Interfaces, with no EF Core. solution-domain-configuration (VP2) needs one IEntityTypeConfiguration<T> per entity somewhere. Placing it in {Module}.Domain contradicts that rule; placing it outside Domain splits an entity's mapping away from the entity.
+problem: solution-domain-behaviour (VP1) establishes {Module}.Domain as referencing only Shared + {Module}.Interfaces, with no EF Core. solution-domain-configuration (VP-C001) needs one IEntityTypeConfiguration<T> per entity somewhere. Placing it in {Module}.Domain contradicts that rule; placing it outside Domain splits an entity's mapping away from the entity.
 decision: Put the configuration classes in {Module}.Domain/Configurations and let {Module}.Domain take a package reference to Microsoft.EntityFrameworkCore for the IEntityTypeConfiguration<T> / EntityTypeBuilder<T> abstractions only — no provider, no DbContext. solution-domain-behaviour's "no EF Core" rule is scoped to allow this one abstractions-only reference. Cross-module foreign-key configs still live in App.Infrastructure.
 tags:
   - solution/domain-configuration
@@ -13,9 +13,9 @@ tags:
 
 # Problem
 
-`solution-domain-behaviour` (VP1) creates `{Module}.Domain.csproj` with a deliberately narrow dependency set — `Shared` + `{Module}.Interfaces`, and explicitly **no EF Core** (persistence is VP2, a later and separately-gated concern). The domain project holds entities and value objects expressed in plain C#, with zero persistence attributes.
+`solution-domain-behaviour` (VP1) creates `{Module}.Domain.csproj` with a deliberately narrow dependency set — `Shared` + `{Module}.Interfaces`, and explicitly **no EF Core** (persistence is VP-C001, a later and separately-gated concern). The domain project holds entities and value objects expressed in plain C#, with zero persistence attributes.
 
-`solution-domain-configuration` (VP2) introduces the EF Core mapping layer: one `IEntityTypeConfiguration<T>` per entity, owning table names, indexes, constraint-name constants, relations, concurrency-token mapping, and `OwnsOne` value-object mappings. That configuration has to live in some project. Two forces pull against each other:
+`solution-domain-configuration` (VP-C001) introduces the EF Core mapping layer: one `IEntityTypeConfiguration<T>` per entity, owning table names, indexes, constraint-name constants, relations, concurrency-token mapping, and `OwnsOne` value-object mappings. That configuration has to live in some project. Two forces pull against each other:
 
 - An entity and its mapping change together (add a property → map its column; add an invariant that needs a unique index → name and configure that index). Keeping them in the same project and folder tree keeps that edit local and reviewable as one unit.
 - `{Module}.Domain` was defined as infrastructure-free. `IEntityTypeConfiguration<T>` and `EntityTypeBuilder<T>` come from `Microsoft.EntityFrameworkCore`, so hosting the config there means the domain project references an ORM package.

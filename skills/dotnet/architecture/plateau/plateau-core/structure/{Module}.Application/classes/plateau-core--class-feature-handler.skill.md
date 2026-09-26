@@ -23,7 +23,7 @@ __Applied solutions:__
 # Core Principles
 - Apply ONE plateau template per class.
 - Implements `IRequestHandler<TRequest, Result<T>>`.
-- Fixed shape: `guard → (dispatch | read | shape) → return Result<T>`. `load`/`stage` via `IRepository<T>` appear only once VP2 is applied.
+- Fixed shape: `guard → (dispatch | read | shape) → return Result<T>`. `load`/`stage` via `IRepository<T>` appear only once VP-C001 is applied.
 - Never `DbContext`, never inline LINQ, never `SaveChangesAsync`.
 - Cross-module interaction is `ISender.Send` / `IPublisher.Publish` against another module's `Interfaces` — never a direct call.
 - Result status: `Created` for a new entity, `Success` for update/read, `NotFound` after a failed load-guard, `Conflict` for a failed cross-request precondition, `Error` for a failed sub-request.
@@ -73,7 +73,7 @@ __Applied solutions:__
 # Rules
 MUST:
 - Implement `IRequestHandler<TRequest, Result<T>>`; follow `guard → (dispatch | read | shape) → return`.
-- Add `load`/`stage` (via `IRepository<T>`/`IReadRepository<T>` + named specs) only when the request touches stored state (VP2).
+- Add `load`/`stage` (via `IRepository<T>`/`IReadRepository<T>` + named specs) only when the request touches stored state (VP-C001).
 - Never inject `DbContext`, never write inline LINQ, never call `SaveChangesAsync`.
 - Never contain a business rule; dispatch cross-module only via `ISender`/`IPublisher`.
 - Live in `/Features/{FeatureName}/{FeatureName}.Handler.cs`, class `{FeatureName}Handler`.

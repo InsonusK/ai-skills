@@ -15,7 +15,7 @@ tags:
 # Core Principles
 - `Shared` holds interfaces, marker types, and small value primitives — no implementations, no behaviors, no entities.
 - Any project at any layer may reference `Shared`; `Shared` references nothing.
-- Later solutions add their own folders here (`/MediatR` markers from `solution-mediator-integration`, `/Exceptions` from `solution-domain-behaviour`, concurrency/outbox contracts from VP2/VP14) — this solution creates the empty project and the `Result` reference only.
+- Later solutions add their own folders here (`/MediatR` markers from `solution-mediator-integration`, `/Exceptions` from `solution-domain-behaviour`, concurrency/outbox contracts from VP-C001/VP14) — this solution creates the empty project and the `Result` reference only.
 
 # Structure
 
@@ -27,7 +27,7 @@ tags:
 At the v3.1 baseline `Shared` is an almost-empty project. Folders appear as their owning solution is applied:
 - `/MediatR` — `ICommand.cs`, `IQuery.cs`, `INotificationEvent.cs` (solution-mediator-integration)
 - `/Exceptions` — `DomainException.cs` (solution-domain-behaviour), `EntityNotLoadedException.cs` (solution-domain-shared-rules)
-- `/Repositories`, `/UnitOfWork`, `/Concurrency`, `/Timestamps` (VP2 / VP5 / VP7 solutions)
+- `/Repositories`, `/UnitOfWork`, `/Concurrency`, `/Timestamps` (VP-C001 / VP5 / VP7 solutions)
 
 ## Directory and class skills
 | `Directory\|file` | Description |

@@ -9,7 +9,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | A | VP statuses (💡/📐/⛔, ⏳/✅) + staged admission; candidates moved into the common map; Storage 📐 (VP-C001 PersistentStore, VP-C002 TransientStore), ⏳ rows in go/dotnet | done |
 | B | `plateau-map-create`: plateau codes, letter registry, shared common-plateau registry (empty), plateau statuses, matrix Code/Title columns, ADR `plateau-code-by-combination`; `plateau-create-by-solutions` takes the code as `{plateau-name}` | done |
 | C | Storage ✅ in Go: rows detailed, VP7→VP-C001, VP6→VP-C002 re-ID, plateau-repository recoded (GW001.000 … GW003.002), registry rows 001–003 | done |
-| D | Storage ✅ in dotnet: rows detailed, VP2→VP-C001 re-ID (~50 files), plateau-repository recoded, registry | next |
+| D | Storage ✅ in dotnet: rows detailed (VP-C001 Refined: requires VP1), VP2→VP-C001 re-ID (46 files), plateau-repository recoded (DW001.000, DW004.001, DW004.002), registry row 004 | done |
+| next | Discuss the next candidate with the owner (TaskBox is first in the list) | waiting on owner |
 
 ## Follow-ups (outside this PR)
 

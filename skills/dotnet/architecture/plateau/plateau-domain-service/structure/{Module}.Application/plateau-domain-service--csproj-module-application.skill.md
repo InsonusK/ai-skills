@@ -30,7 +30,7 @@ __Applied solutions:__
 - One feature folder per operation under `/Features/{FeatureName}` — the handler (`{FeatureName}.Handler.cs`) and its per-feature validator (`{FeatureName}.Validator.cs`) co-located.
 - Handler shape at this plateau: `guard → load → domain call → stage → return Result<T>` — a persisted command loads via a named spec + `IRepository<T>`, calls the entity's guarded method, and stages with `UpdateAsync`/`AddAsync`. It never calls `SaveChangesAsync` (that is `UnitOfWorkBehavior`'s job).
 - Per-feature validators enforce transport correctness only and compose the reusable property/DTO validators via `SetValidator` — they never re-state a condition.
-- Reusable validators live under `/Validators`: `Property/{ValueObject}PropertyValidator` (`AbstractValidator<Soft{ValueObject}>`), `Model/{Dto}Validator`, `Async/{Feature}Check` (its `Load` is an unimplemented seam until VP2).
+- Reusable validators live under `/Validators`: `Property/{ValueObject}PropertyValidator` (`AbstractValidator<Soft{ValueObject}>`), `Model/{Dto}Validator`, `Async/{Feature}Check` (its `Load` is an unimplemented seam until VP-C001).
 - Handlers and validators self-register by assembly scan in `{Module}ApplicationRegistration.Register{ModuleName}Module()` — `AddMediatR` + `AddValidatorsFromAssembly`. Pipeline behaviors are **not** registered here.
 - Cross-module interaction is `ISender.Send` / `IPublisher.Publish` against another module's `Interfaces` — never a direct call.
 
@@ -55,9 +55,9 @@ __Applied solutions:__
   - /Validators
     - /Property/[{ValueObject}PropertyValidator.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-value-object-property-validator.skill.md)
     - /Model/[{Dto}.Validator.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-dto-validator.skill.md)
-    - /Async/[{Feature}Check.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-feature-check.skill.md) — `Load` throws until VP2
+    - /Async/[{Feature}Check.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-feature-check.skill.md) — `Load` throws until VP-C001
   - /Specifications
-    - [{Entity}ByIdSpec.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-entity-byidspec.skill.md) — named load-by-Id spec (VP2)
+    - [{Entity}ByIdSpec.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-entity-byidspec.skill.md) — named load-by-Id spec (VP-C001)
   - /Concurrency
     - [{Entity}VersionResolver.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-entity-version-resolver.skill.md) — per-entity `IEntityVersionResolver` (VP5)
   - [{ModuleName}ApplicationRegistration.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Application/classes/plateau-domain-service--class-module-application-registration.skill.md)
@@ -88,7 +88,7 @@ __Applied solutions:__
 ## What Does NOT Belong Here
 - Business rules — belong to `{Module}.Domain` (does not exist at plateau-core); model them as guards on cross-request facts until it does.
 - Pipeline behaviors and their registration — belong to [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/App.Host/plateau-domain-service--csproj-app-host.skill|App.Host]].
-- `DbContext`, repositories, `SaveChangesAsync` — arrive with VP2.
+- `DbContext`, repositories, `SaveChangesAsync` — arrive with VP-C001.
 - Cross-module JOIN specs — belong to `App.Queries` (does not exist at plateau-core).
 
 ## Allowed Dependencies

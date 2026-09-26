@@ -30,7 +30,7 @@ __Applied solutions:__
 - Any project at any layer may reference `Shared`; `Shared` references nothing.
 - The three request markers pass straight through to MediatR's `IRequest<T>` / `INotification`; a command declares its `Result<T>` explicitly as the type argument.
 - `LogEvents` is a `static class` of `EventId` constants only — no logging logic; the `ILogger<T>` call stays at the call site.
-- Later features add their own folders here (`/Exceptions` from VP1, `/Repositories` + `/UnitOfWork` from VP2, `/Concurrency` from VP5, `/Timestamps` from VP7) — none exist at plateau-core.
+- Later features add their own folders here (`/Exceptions` from VP1, `/Repositories` + `/UnitOfWork` from VP-C001, `/Concurrency` from VP5, `/Timestamps` from VP7) — none exist at plateau-core.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/Shared.csproj.create|Shared.csproj]]

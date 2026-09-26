@@ -64,11 +64,11 @@ adr:
 - A handler never calls `SaveChangesAsync` — committing is the unit-of-work behavior's job (once persistence exists).
 - Handlers and validators are registered by assembly scan, never one by one.
 - A validator enforces transport correctness only (presence, length, format, range); business invariants belong in the entity. Command/Query validators reuse `IValidator<Soft{ValueObject}>` / `IValidator<{Dto}>` from [[skills/dotnet/architecture/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] instead of re-declaring cross-module rules.
-- A Query with no persistence yet answers from in-memory/pass-through data or delegates to another module; its repository-backed form arrives with [[skills/dotnet/architecture/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] (VP2).
+- A Query with no persistence yet answers from in-memory/pass-through data or delegates to another module; its repository-backed form arrives with [[skills/dotnet/architecture/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] (VP-C001).
 
 # Boundaries
 - The domain layer a Command handler delegates to (`{Module}.Domain` entity methods, domain services) is **not** created by this solution — it is [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] (VP1). A module with no domain layer still uses this solution fully: its handlers orchestrate and shape data. This solution does **not** `depends_on solution-domain-behaviour`.
-- Persisted-entity access (`IRepository<T>`/`IReadRepository<T>`) and repository-backed query handlers are `solution-repository-integration` / `solution-query-integration` (VP2), applied separately. `ICommand`/`IQuery`/`INotificationEvent`, the handler/validator structure, and DI wiring are all usable with no persistence.
+- Persisted-entity access (`IRepository<T>`/`IReadRepository<T>`) and repository-backed query handlers are `solution-repository-integration` / `solution-query-integration` (VP-C001), applied separately. `ICommand`/`IQuery`/`INotificationEvent`, the handler/validator structure, and DI wiring are all usable with no persistence.
 - The pipeline behaviors that the markers activate (`ValidationBehavior`, `ExceptionHandlingBehavior`) are owned by their own solutions; this solution only ensures a request implements a marker `IRequest<T>`/`INotification`.
 
 # Requirements
