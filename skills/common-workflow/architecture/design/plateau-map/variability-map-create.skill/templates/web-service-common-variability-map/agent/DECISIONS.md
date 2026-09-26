@@ -12,6 +12,10 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - **States:** Inherited / Refined / `Fixed: {Variant}` (replaces the earlier `N/A`, which could not express "always Yes").
 - **HTTP inbound is mandatory for every backend service** → common baseline, not a VP; gRPC is optional. Applied at backlog item 4 (dotnet's `Module`-level VP8 is the open point there).
 
+- **Storage admitted as two categorical VPs** (2026-09-26): VP-C001 PersistentStore `None / PostgreSQL / SQLite`, VP-C002 TransientStore `None / Redis / InMemory`. "Transient", not "Cache": Redis is the primary home of temporary, non-critical data, not only a cache in front of PostgreSQL. SQLite and InMemory stay — used for single-pod services.
+- **Storage realizations** (agreed): Go SQLite → `modernc.org/sqlite` behind the persistent-db port; Go InMemory → stdlib `map` + `sync.RWMutex` with TTL; dotnet SQLite → EF Core `Microsoft.EntityFrameworkCore.Sqlite` provider swap; dotnet Redis → `StackExchange.Redis` behind a narrow port (not `IDistributedCache`); dotnet InMemory → `IMemoryCache` behind a narrow port.
+- Go's `postgres-via-pgx` ADR rejected SQLite for multi-instance reasons; the owner's single-pod use makes SQLite a legitimate Go variant → Go VP-C001 SQLite is realized/deferred, not Refined-unsupported.
+
 ## Agent decisions
 
 - New folder `web-service-common-variability-map`, symmetric with `feature-map-create`'s `web-service-common-features`.

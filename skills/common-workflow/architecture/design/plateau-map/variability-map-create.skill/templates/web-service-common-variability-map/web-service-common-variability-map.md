@@ -8,6 +8,24 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 
 | ID | VP | Variants | Constraint | Realization depends on |
 | --- | --- | --- | --- | --- |
+| VP-C001 | **PersistentStore** — where does the service keep data it must never lose? | None / PostgreSQL / SQLite | — | — |
+| VP-C002 | **TransientStore** — where does the service keep data it can survive losing? | None / Redis / InMemory | — | — |
+
+### VP-C001 PersistentStore
+The system of record: data that survives restarts and redeploys and is never deliberately discarded. Business changes are written in transactions, which later VPs (TaskBox, Outbox) rely on to stay atomic with the change they report.
+- **None** — the service owns no durable state (stateless, or delegates state to other services).
+- **PostgreSQL** — a separate database server; fits any number of service instances.
+- **SQLite** — an embedded database file; binds the service to a single instance (one writer), for deployments that do not scale out.
+- One store kind per service: the Variants are alternatives, so a service with durable state picks exactly one.
+- Boundary with VP-C002: the test is whether losing the data is acceptable, not which technology holds it.
+
+### VP-C002 TransientStore
+Data the service can survive losing — temporary state, short-lived sessions, derived or recomputable values, and caches in front of slower sources. For some data this is the **primary** home, not a copy of VP-C001 data: a cache is one use of this store, not its definition.
+- **None** — no transient state beyond a single request.
+- **Redis** — a separate server; shared across service instances; loses data only on failover or eviction.
+- **InMemory** — inside the service process; per instance, lost on every restart; binds any state that must be shared across requests to a single instance.
+- One store kind per service, for the same reason as VP-C001.
+- Independent of VP-C001: a service may have either, both, or neither.
 
 ## Bound stack maps
 

@@ -58,6 +58,7 @@ Order follows references: a VP comes after every common VP it names.
 | 7 | DomainLogic | dotnet VP1; Go baseline | Common VP with Go `Fixed: Yes`, or dotnet-local? |
 | 8 | Metric | old VP17 (stub) | Admit now or when a stack needs it? |
 | 9 | Domain-modelling (ValueObjects, SharedRules, concurrency, external identity, audit timestamps) | dotnet VP3–VP7 | Stay dotnet-local until a second stack needs one? |
+| 10 | Deployment: SingleInstance / MultiInstance | SQLite (VP-C001) and InMemory (VP-C002) bind a service to one instance; the owner has single-pod services | **Discuss with the owner first** — is this a real VP (a Constraint forbidding SQLite/InMemory under MultiInstance) or only a consequence already stated in the VP-C001/VP-C002 concepts? Not admitted until the owner decides it is needed. |
 
 ## 6. Framework wave (before any VP)
 
