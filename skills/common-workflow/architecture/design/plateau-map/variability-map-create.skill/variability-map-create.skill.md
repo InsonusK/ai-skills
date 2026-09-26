@@ -36,14 +36,13 @@ One Variability Map per catalog, at `{catalog}/variability-map.md` — a sibling
 A backend web-service catalog's map holds two tables: `## Common Variation Points` (every common VP, inherited — see [Common Variation Points](#common-variation-points)) and `## Stack Variation Points` (this family's own VPs, full column set).
 
 ## Common Variation Points
-The [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]] defines each VP shared by every backend web-service stack — question, Variants, Constraint, Realization depends on, and a concept section — under a `VP-C###` ID, and lists the bound stack maps. A bound stack map carries each common VP as one row: ID (linking the common concept section), VP name, State, Stack delta, Realized by, Migration — governed by [Carry every common VP](#carry-every-common-vp) through [Common IDs are permanent](#common-ids-are-permanent). Decision recorded in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/common-vps-inherited-by-id|adr/common-vps-inherited-by-id]].
+The [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]] defines each VP shared by every backend web-service stack — question, Variants, Constraint, Realization depends on, and a concept section — under a `VP-C###` ID, lists candidate VPs not yet agreed, and lists the bound stack maps. A bound stack map carries each agreed common VP as one row: ID (linking the common concept section), VP name, Status, State, Stack delta, Realized by, Migration — governed by [Track VP status](#track-vp-status) through [Common IDs are permanent](#common-ids-are-permanent). Decision recorded in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/common-vps-inherited-by-id|adr/common-vps-inherited-by-id]].
 
 ## How to admit a common Variation Point
-One VP — or a tight group that only makes sense together — per change:
-1. Agree the question, Variants, Constraint, Realization depends on, and the boundary with neighbouring VPs with the owner.
-2. Add the common map's table row and a `### VP-C### {Name}` concept section; reference only already-admitted common VPs.
-3. For every bound stack map, decide the State, the concrete realization (library or own implementation, and why), and what is narrowed; add the row. Where the stack has no solution skill for it yet, have one authored as a skeleton (`> Draft contract` marker) carrying that decision, through [[skills/common-workflow/architecture/design/solution-create.skill/solution-create.skill.md|solution-create]] — this skill still never writes solution content itself.
-4. Re-ID every stack-local VP the new common VP covers, per [Common IDs are permanent](#common-ids-are-permanent).
+A common VP moves through three stages, each its own change:
+1. **Candidate (💡)** — add a row to the common map's `## Candidate Variation Points` table: the feature group it covers and the open question. No ID yet.
+2. **Concept (📐)** — agree the question, Variants, Constraint, Realization depends on, and the boundary with neighbouring VPs with the owner. Move the candidate into `## Common Variation Points` under the next free `VP-C###` ID with a `### VP-C### {Name}` concept section, referencing only 📐 common VPs, and add a `⏳` row for it to every bound stack map.
+3. **Stack detail (⏳ → ✅)** — per bound stack, while the concept is fresh: decide the State, the concrete realization of every supported Variant (library or own implementation, and why), and what is narrowed. `Realized by` links an existing solution or records `planned — {chosen realization}`; a planned Variant gets its solution when a plateau "existing base plateau + this VP" is built. Re-ID the stack VP the common VP covers in the same change, per [Common IDs are permanent](#common-ids-are-permanent).
 
 ## How to build a Variability Map
 1. Identify {catalog} — the folder holding the plateau/solution tree (e.g. `skills/dotnet/architecture/v3/`).
@@ -98,27 +97,42 @@ Do not derive a plateau↔VP matrix or plateau consistency checks inside `variab
 - Risk: a plateau-oriented section gives the map a second audience and a second trigger (plateau changes), and duplicates whatever the plateau stage maintains.
 - Fix: keep the artifact to the VP↔solution binding; the decision and where the view went are recorded in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/no-plateau-view-in-variability-map|adr/no-plateau-view-in-variability-map]].
 
+### Track VP status
+Mark every common VP with its status in the common map, and every carried row with its detail status in the stack map, using only these icons.
+
+| Where | Status | Meaning |
+| --- | --- | --- |
+| Common map | 💡 Candidate | A feature group is identified as a VP; nothing about it is agreed yet. No ID. |
+| Common map | 📐 Concept | The common definition is agreed with the owner. |
+| Common map | ⛔ Retired | No longer a VP; the row and its ID stay, never reused. |
+| Stack map | ⏳ Pending | The stack carries the 📐 VP but has not decided its realization. |
+| Stack map | ✅ Detailed | State, realization of every supported Variant, and narrowing are decided and recorded. |
+
+- Violation: a stack row marked ✅ whose `Realized by` names neither a solution nor a planned realization, or a candidate given a `VP-C###` ID.
+- Risk: the owner cannot see which VPs are only ideas, which are agreed, and which each stack has actually thought through.
+- Fix: set the status in the same change that moves a VP between stages, per [How to admit a common Variation Point](#how-to-admit-a-common-variation-point).
+
 ### Carry every common VP
-Carry every row of the common map, by its `VP-C###` ID, in a bound catalog's `## Common Variation Points` table — including rows this stack adds nothing to or never varies on.
-- Violation: a stack map omitting a common VP because "this stack has nothing to add", or because every member of the family answers it the same way.
+Carry every 📐 row of the common map, by its `VP-C###` ID, in a bound catalog's `## Common Variation Points` table — including rows this stack adds nothing to or never varies on.
+- Violation: a stack map omitting a 📐 common VP because "this stack has nothing to add", or because every member of the family answers it the same way.
 - Risk: an absent row cannot be told apart from a forgotten one, so the stack silently drifts from the shared definition.
-- Fix: add the row with the State that fits — `Inherited` with `Realized by: deferred — {reason}` when no solution exists yet, `Fixed: {Variant}` when the family never varies.
+- Fix: add the row as `⏳` until the stack decides, then detail it with the State that fits — `Fixed: {Variant}` when the family never varies.
 
 ### Give every common row a State
-Mark each common row in a stack map with exactly one State from this table.
+Give each ✅ row in a stack map exactly one State from this table; a ⏳ row carries `—` in State, Stack delta, and Realized by.
 
 | State | Meaning | Stack delta | Realized by |
 | --- | --- | --- | --- |
-| `Inherited` | Taken as the common map defines it. | `—` | Solution link per Variant, or `deferred — {reason}` (applicable, no solution yet) |
-| `Refined` | Taken with stack-evidenced narrowing: a Variant unsupported, an extra Constraint, a stack-specific realization note. | What is narrowed, and why | Solution link per supported Variant |
+| `Inherited` | Taken as the common map defines it. | `—` | Per Variant: solution link, or `planned — {chosen realization}` |
+| `Refined` | Taken with stack-evidenced narrowing: a Variant unsupported, an extra Constraint, a stack-specific realization note. | What is narrowed, and why | Per supported Variant: solution link, or `planned — {chosen realization}` |
 | `Fixed: {Variant}` | This family's Feature Model makes the answer non-optional; `Fixed: No` = the family never has it. | The reason, with its Feature Model reference | Baseline solution for `Fixed: Yes`; `—` for `Fixed: No` |
 
-- Violation: a `Refined` row with an empty delta, or `Fixed: No` used for "no solution written yet".
-- Risk: a reader cannot tell a deliberate stack decision from a gap, and `deferred` work disappears behind a permanent-looking verdict.
-- Fix: state the narrowing or the Feature Model reason in the delta cell; use `deferred` in `Realized by` for missing solutions.
+- Violation: a `Refined` row with an empty delta, `Fixed: No` used for "no solution written yet", or `planned` without the chosen realization.
+- Risk: a reader cannot tell a deliberate stack decision from a gap, and the realization decided while the concept was fresh is lost.
+- Fix: state the narrowing or the Feature Model reason in the delta cell; record the chosen library or implementation after `planned —`.
 
 ### Restate nothing the common map owns
-Keep a stack's common row to ID, VP name, State, Stack delta, Realized by, and Migration; never copy the question, Variants, Constraint, or Realization depends on into the stack map.
+Keep a stack's common row to ID, VP name, Status, State, Stack delta, Realized by, and Migration; never copy the question, Variants, Constraint, or Realization depends on into the stack map.
 - Violation: a stack row repeating the common question with a slightly different wording, or its own Constraint cell.
 - Risk: the copy diverges from the common definition while still looking authoritative — the drift the common map exists to stop.
 - Fix: link the ID to the common concept section; put only the stack's own narrowing in the delta cell.
@@ -130,16 +144,16 @@ Mark a common Variant unsupported or add a stack-evidenced Constraint in a stack
 - Fix: add a Variant that is not stack-specific to the common map first, through [How to admit a common Variation Point](#how-to-admit-a-common-variation-point); a truly stack-specific axis is a stack VP.
 
 ### Admit a common VP through the common map
-Add a VP to the common map only through [How to admit a common Variation Point](#how-to-admit-a-common-variation-point) — owner-agreed, with every bound stack's row in the same change; never answer a shared question with a stack-local VP.
-- Violation: a common row committed without the bound stacks' rows, or a new stack VP for a question another stack already answers through the common map.
+Make a question common only through [How to admit a common Variation Point](#how-to-admit-a-common-variation-point) — owner-agreed concept, with a row in every bound stack map in the same change; never answer a shared question with a stack-local VP.
+- Violation: a 📐 row committed without the bound stacks' ⏳ rows, or a new stack VP for a question the common map already answers or lists as a 💡 candidate.
 - Risk: the stack maps fail to carry the new VP, or the shared question is re-cut per stack again.
-- Fix: design and add every bound stack's row — with a skeleton solution (`> Draft contract` marker) carrying the realization decision where the stack has none yet — and re-ID any covered stack VP, in the admitting change.
+- Fix: add every bound stack's ⏳ row with the 📐 row; raise a shared question as a 💡 candidate instead of a stack VP.
 
 ### Common IDs are permanent
-Assign a common VP the next free `VP-C###` ID, never renumber or reuse one, and when it covers an existing stack VP, re-ID that VP to the common ID in the stack map and in every reference in that stack's tree.
+Assign a common VP the next free `VP-C###` ID when it reaches 📐, never renumber or reuse one, and when a stack details a common VP that covers one of its stack VPs, re-ID that VP to the common ID in the stack map and in every reference in that stack's tree.
 - Violation: renumbering the common map after a VP is retired, or leaving a stack's plateaus citing `VP4` after `VP4` became a common VP.
 - Risk: references across stack trees silently point at the wrong question.
-- Fix: mark a retired common VP `Retired` in its VP cell and keep its row, drop its row from every stack map, and never hand its ID out again; leave a re-IDed stack VP's old number as a gap.
+- Fix: mark a retired common VP `⛔ Retired` and keep its row, drop its row from every stack map, and never hand its ID out again; leave a re-IDed stack VP's old number as a gap.
 
 ### Follow the skill-design baseline
 Follow [[skills/design/skill-design.skill/skill-design.skill.md|skill-design]]'s baseline (tags, `whenToUse`, link style, no leftover hint/example blocks) in addition to this skill's own rules.
@@ -165,11 +179,12 @@ Leave **Migration** at `No` for a VP that has never yet needed to change after a
 - [ ] `{catalog}/feature/feature-model.md` exists and is built via `feature-map-create` before this skill runs — or its absence was confirmed with the catalog's owner as deliberate.
 - [ ] Every stack VP row passed the "would two teams legitimately answer differently" test before being added.
 - [ ] The candidate pool included the Feature Model's non-common features.
-- [ ] A backend web-service catalog is listed in the common map's `## Bound stack maps` and carries every common VP, by `VP-C###` ID, in `## Common Variation Points`.
-- [ ] Every common row has exactly one State; `Refined`/`Fixed` rows state their narrowing or Feature Model reason; no common row restates the question, Variants, or Constraint.
+- [ ] A backend web-service catalog is listed in the common map's `## Bound stack maps` and carries every 📐 common VP, by `VP-C###` ID, in `## Common Variation Points`.
+- [ ] Every common VP has a status (💡 / 📐 / ⛔) and every carried row a detail status (⏳ / ✅); only 📐 and ⛔ VPs have an ID.
+- [ ] Every ✅ row has exactly one State; `Refined`/`Fixed` rows state their narrowing or Feature Model reason; every `planned` names its chosen realization; no common row restates the question, Variants, or Constraint.
 - [ ] No stack delta adds a Variant or loosens a common Constraint.
-- [ ] A newly admitted common VP has every bound stack's row, and every stack VP it covers is re-IDed across that stack's tree.
-- [ ] The **Realized by** column was filled by running `delta-conflict-detection`, not ad hoc; every entry is a wikilink to an existing solution skill (a draft-marked skeleton counts) — or, on a common row only, `deferred — {reason}` or `—` for `Fixed: No` — never inlined content.
+- [ ] A newly 📐 common VP has a ⏳ row in every bound stack map; every stack VP a ✅ row covers is re-IDed across that stack's tree.
+- [ ] The **Realized by** column was filled by running `delta-conflict-detection`, not ad hoc; every entry is a wikilink to an existing solution skill (a draft-marked skeleton counts) — or, on a common row only, `planned — {chosen realization}`, or `—` for a ⏳ row or `Fixed: No` — never inlined content.
 - [ ] Every **Constraint** entry is traceable to a real `depends_on`/`built_on_plateau` edge, a solution's own stated prose requirement, or an owner-confirmed Feature-Model `Requires` edge.
 - [ ] No solution skill's `depends_on` field was changed in shape to carry a constraint/ordering annotation.
 - [ ] The map contains no plateau↔VP derivation — that view belongs to `plateau-map-create`.

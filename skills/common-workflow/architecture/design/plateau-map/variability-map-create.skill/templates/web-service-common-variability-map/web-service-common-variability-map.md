@@ -2,14 +2,30 @@
 
 The Variation Points every backend web-service catalog shares, whatever its stack. Each one is defined here once — question, Variants, Constraint, Realization depends on, and the concept behind them — and **inherited** by every bound stack map, which adds only its State, its narrowing, and its `Realized by`. Rules: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md#common-variation-points|variability-map-create — Common Variation Points]]. Derived from, and kept consistent with, [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/templates/web-service-common-features/web-service-common-features|web-service-common-features]].
 
-A VP enters this map only through [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md#how-to-admit-a-common-variation-point|admission]]: discussed with the owner and designed on every bound stack in the same change. The map starts empty and grows one VP at a time.
+A VP enters this map only through [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md#how-to-admit-a-common-variation-point|admission]]: 💡 candidate → 📐 concept agreed with the owner → ✅ detailed on each bound stack. Status icons: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill.md#track-vp-status|Track VP status]].
 
 ## Common Variation Points
 
-| ID | VP | Variants | Constraint | Realization depends on |
-| --- | --- | --- | --- | --- |
-| VP-C001 | **PersistentStore** — where does the service keep data it must never lose? | None / PostgreSQL / SQLite | — | — |
-| VP-C002 | **TransientStore** — where does the service keep data it can survive losing? | None / Redis / InMemory | — | — |
+| ID | Status | VP | Variants | Constraint | Realization depends on |
+| --- | --- | --- | --- | --- | --- |
+| VP-C001 | 📐 | **PersistentStore** — where does the service keep data it must never lose? | None / PostgreSQL / SQLite | — | — |
+| VP-C002 | 📐 | **TransientStore** — where does the service keep data it can survive losing? | None / Redis / InMemory | — | — |
+
+## Candidate Variation Points
+
+Identified, not yet agreed — no ID until the concept is agreed. Listed in the order they can be discussed: a candidate comes after every VP its concept will reference.
+
+| Status | Candidate | Covers today | Open question |
+| --- | --- | --- | --- |
+| 💡 | TaskBox | deferred execution: a task is stored, then run by a background worker, in the store that holds its data (PostgreSQL → library with in-transaction enqueue; Redis → shared Redis-Streams contract, enqueue inside the caller's `MULTI`) | Does a Critical/NonCritical guarantee remain a choice, or is it fully determined by the store? |
+| 💡 | Outbox | outbound calls go through TaskBox, enqueued in the same atomic write, in the same store, as the business change; at-least-once + idempotency key | Go VP4 / dotnet VP14 require Kafka today — generalize to any outbound protocol? |
+| 💡 | Inbound protocols | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | dotnet's family is a `Module` — can a module lack HTTP? |
+| 💡 | Outbound protocols | Go VP2 `ExternalIntegration` (gRPC-only realization), dotnet VP10/VP11 | Does Go's transport-agnostic ExternalIntegration become the gRPC VP? |
+| 💡 | Messaging | Kafka/RabbitMQ consume/produce; Go VP3/VP5, dotnet VP12/VP13 | Shared messaging infrastructure as a mandatory sub-feature |
+| 💡 | DomainLogic | dotnet VP1; baseline in Go | Common VP with Go `Fixed: Yes`, or dotnet-only? |
+| 💡 | Metric | observability | Needed now, or when a stack first needs it? |
+| 💡 | Domain modelling | ValueObjects, SharedRules, concurrency control, external identity, audit timestamps — dotnet VP3–VP7 | Stay dotnet-only until a second stack needs one? |
+| 💡 | Deployment | SingleInstance / MultiInstance — SQLite (VP-C001) and InMemory (VP-C002) bind a service to one instance | **Discuss with the owner first:** a real VP with a Constraint, or only the consequence already stated in VP-C001/VP-C002? |
 
 ### VP-C001 PersistentStore
 The system of record: data that survives restarts and redeploys and is never deliberately discarded. Business changes are written in transactions, which later VPs (TaskBox, Outbox) rely on to stay atomic with the change they report.

@@ -2,7 +2,7 @@
 name: common VPs inherited by ID, not copied
 description: How Variation Points shared by every backend web-service catalog reach each stack's Variability Map
 problem: How should a Variation Point that every web-service stack shares be defined once and kept consistent across the stack catalogs' Variability Maps?
-decision: One common map defines each shared VP under a permanent `VP-C###` ID; every bound stack map carries every common VP by that ID with a State (Inherited / Refined / Fixed) and restates nothing the common map owns; VPs are admitted one at a time, designed on every bound stack in the same change.
+decision: One common map defines each shared VP under a permanent `VP-C###` ID; every bound stack map carries every agreed common VP by that ID with a detail status and a State (Inherited / Refined / Fixed) and restates nothing the common map owns; VPs are admitted one at a time — candidate, agreed concept, then detailed on each stack.
 tags:
   - concern/architecture
   - stack
@@ -21,12 +21,12 @@ Backend web-service catalogs on different stacks (Go, dotnet, ...) answer largel
 ## Inherited common map (selected)
 
 ### Description
-One common map (`templates/web-service-common-variability-map/`) owns each shared VP: question, Variants, Constraint, Realization depends on, and a concept section, under a permanent `VP-C###` ID. Every bound stack map carries every common VP in a `## Common Variation Points` table holding only ID, name, State (`Inherited` / `Refined` / `Fixed: {Variant}`), the stack's narrowing, `Realized by`, and `Migration`. A stack narrows, never widens. A VP is admitted only after owner discussion and is designed on every bound stack in the same change; a stack-local VP it covers is re-IDed to the common ID.
+One common map (`templates/web-service-common-variability-map/`) owns each shared VP: question, Variants, Constraint, Realization depends on, and a concept section, under a permanent `VP-C###` ID. Every bound stack map carries every common VP in a `## Common Variation Points` table holding only ID, name, State (`Inherited` / `Refined` / `Fixed: {Variant}`), the stack's narrowing, `Realized by`, and `Migration`. A stack narrows, never widens. A VP moves 💡 candidate → 📐 concept (owner-agreed; every bound stack gets a ⏳ row) → ✅ detailed per stack (State, chosen realization per Variant, narrowing); a stack-local VP it covers is re-IDed to the common ID when that stack details it.
 
 ### Benefits
 - Every shared fact lives in one place; a stack cannot silently re-cut a shared question.
 - An absent row is a mechanical failure, so "forgot it" and "not relevant" can no longer be confused — "not relevant" is an explicit `Fixed: No`.
-- Designing every stack's realization while the concept is being agreed keeps the stack realizations to one concept.
+- Detailing each stack's realization right after the concept is agreed keeps the stack realizations to one concept, and the status icons show the owner which VPs are ideas, agreed, or thought through per stack.
 - The `VP-C` prefix tells a reader of a stack map at a glance which VPs come from the shared definition.
 
 ### Costs

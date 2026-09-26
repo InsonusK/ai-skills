@@ -16,6 +16,12 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - **Storage realizations** (agreed): Go SQLite → `modernc.org/sqlite` behind the persistent-db port; Go InMemory → stdlib `map` + `sync.RWMutex` with TTL; dotnet SQLite → EF Core `Microsoft.EntityFrameworkCore.Sqlite` provider swap; dotnet Redis → `StackExchange.Redis` behind a narrow port (not `IDistributedCache`); dotnet InMemory → `IMemoryCache` behind a narrow port.
 - Go's `postgres-via-pgx` ADR rejected SQLite for multi-instance reasons; the owner's single-pod use makes SQLite a legitimate Go variant → Go VP-C001 SQLite is realized/deferred, not Refined-unsupported.
 
+- **No throwaway builds** (2026-09-26): a VP Variant is verified by building a new plateau = an existing base plateau + that VP, not by a temporary build. Detailing a stack records `planned — {chosen realization}`; the solution is written when that plateau is built.
+- **VP statuses**: 💡 candidate / 📐 concept (common map), ⏳ pending / ✅ detailed (per stack map). Detail status is per stack — one stack may be detailed while another is not. Candidates move from the harness backlog into the common map.
+- **Plateau codes** `{stack}{kind}{common}.{specific}`: letters D/G/P/T for stacks, W/C/A for kinds (web-service, CLI, Angular); `{common}` numbers the common-VP combination in a shared registry kept in `plateau-map-create.skill`; `{specific}` numbers the stack-VP combination (same number = same stack-VP set; `000` = none); the old name becomes the matrix's Title column. Plateau statuses: ✅ built with example, 🔸 built only in another stack, no row = never built.
+- **Rename-on-change**: a code changes with its combination (agent's call, delegated by the owner).
+- **Physical rename of existing plateaus → GitHub issue** (owner); `gh` unauthenticated here, so the issue text goes to the owner and the follow-up is tracked in STATUS.
+
 ## Agent decisions
 
 - New folder `web-service-common-variability-map`, symmetric with `feature-map-create`'s `web-service-common-features`.
@@ -29,3 +35,7 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `check.sh` was mutation-tested against a deliberately broken common map + stack maps (duplicate ID, missing concept section, uncarried VP, unknown VP, bad `Fixed` variant, empty delta, dead link, dead anchor, leftover re-IDed ID) — every case caught, files restored.
 - A retired common VP stays in the common map (ID never reused) and is dropped from stack maps.
 - Admission step 3's skeleton solution is authored through `solution-create`, so `variability-map-create` keeps its "never writes solution content" principle.
+- Detailing no longer authors skeleton solutions (superseded by the plateau-based verification decision); `deferred` renamed `planned — {chosen realization}` so the decided realization is recorded in the map.
+- Candidates carry no `VP-C` ID — a candidate that is merged or split would otherwise burn IDs.
+- Kind letter `A` = Angular app with stack `T` (TypeScript), e.g. `TA001.000`.
+- Plateau code file/folder form replaces the dot with a hyphen (`plateau-GW003-000`): how `ai-skill-manager` parses dotted `*.skill` names could not be verified here.

@@ -12,10 +12,12 @@ Built per [[skills/common-workflow/architecture/design/plateau-map/variability-m
 
 ## Common Variation Points
 
-Inherited from the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]], one row per common VP. No common VP is admitted yet; a row of the table below moves here, re-IDed to its `VP-C###` ID, when the common VP covering it is admitted.
+Inherited from the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]], one row per common VP. A stack VP below moves here, re-IDed to its `VP-C###` ID, when this stack details the common VP covering it.
 
-| ID | VP | State | Stack delta | Realized by | Migration |
-| --- | --- | --- | --- | --- | --- |
+| ID | VP | Status | State | Stack delta | Realized by | Migration |
+| --- | --- | --- | --- | --- | --- | --- |
+| [VP-C001](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c001-persistentstore) | PersistentStore | ⏳ | — | — | — | No |
+| [VP-C002](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c002-transientstore) | TransientStore | ⏳ | — | — | — | No |
 
 ## Stack Variation Points
 

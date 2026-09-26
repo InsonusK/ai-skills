@@ -11,18 +11,19 @@ The plateau↔VP view (which plateau realizes which VPs) is **not** part of this
 
 ## Common Variation Points
 
-| ID | VP | State | Stack delta | Realized by | Migration |
-| --- | --- | --- | --- | --- | --- |
+| ID | VP | Status | State | Stack delta | Realized by | Migration |
+| --- | --- | --- | --- | --- | --- | --- |
 ```hint
-One row per row of the web-service common map — every one, none skipped.
+One row per 📐 row of the web-service common map — every one, none skipped.
 - ID: the common `VP-C###` ID, linked to its concept section in the common map.
 - VP: the common VP's name only — never its question, Variants, or Constraint.
-- State, Stack delta, Realized by: per variability-map-create's "Give every common row a State" table.
+- Status: ⏳ until this stack decides the realization, then ✅ — per variability-map-create's "Track VP status".
+- State, Stack delta, Realized by: per variability-map-create's "Give every common row a State" table; `—` while ⏳.
 ```
 ```example
-| ID | VP | State | Stack delta | Realized by | Migration |
-| --- | --- | --- | --- | --- | --- |
-| [VP-C003](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c003-examplevp) | ExampleVP | Refined | SQLite unsupported — the family's persistence ADR picks PostgreSQL only | PostgreSQL → `solution-persistent-db` | No |
+| ID | VP | Status | State | Stack delta | Realized by | Migration |
+| --- | --- | --- | --- | --- | --- | --- |
+| [VP-C003](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c003-examplevp) | ExampleVP | ✅ | Refined | SQLite unsupported — the family's persistence ADR picks PostgreSQL only | PostgreSQL → `solution-persistent-db` | No |
 ```
 
 ## Stack Variation Points
