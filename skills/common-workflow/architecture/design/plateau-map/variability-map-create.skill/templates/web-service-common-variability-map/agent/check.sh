@@ -137,6 +137,8 @@ if os.path.isfile(idmap):
             for f in fs:
                 if not f.endswith(".md"): continue
                 fp = os.path.join(d, f)
+                # agent/DECISIONS.md and agent/logs/ are historical journals — they keep the IDs of their time
+                if rel(fp).endswith("agent/DECISIONS.md") or "/agent/logs/" in fp: continue
                 for i, l in enumerate(open(fp, encoding="utf-8"), 1):
                     if pat.search(l): fail(f"{rel(fp)}:{i}: leftover {old} (now {new})")
 print(f"  {n} re-ID(s) checked")

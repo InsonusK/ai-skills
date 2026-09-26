@@ -39,3 +39,7 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - Candidates carry no `VP-C` ID — a candidate that is merged or split would otherwise burn IDs.
 - Kind letter `A` = Angular app with stack `T` (TypeScript), e.g. `TA001.000`.
 - Plateau code file/folder form replaces the dot with a hyphen (`plateau-GW003-000`): how `ai-skill-manager` parses dotted `*.skill` names could not be verified here.
+- Registry numbers assigned in the order the stacks were migrated (Go first): 001 (None, None), 002 (None, Redis), 003 (PostgreSQL, Redis).
+- Catalog `agent/DECISIONS.md` and `agent/logs/` are historical journals: they keep the VP IDs of their time (a note at the top points to `id-map.tsv`) and are excluded from the leftover-ID check. Live contracts (`agent/INVARIANTS.md`) are re-IDed.
+- Go VP4's Constraint became `VP3=Yes AND VP-C001 ≠ None` (semantic, not string replace): Outbox needs a transactional store, and both PostgreSQL and SQLite are.
+- **Finding:** Go `agent/check.sh` §7 warns "not yet: solution-go-conformance-testing" — pre-existing, it looks for the old name of `solution-conformance-testing-in-go`. Unrelated to this task; left as is.

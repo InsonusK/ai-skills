@@ -61,9 +61,9 @@ adr:
   config (a replica count, a scaling policy) is what makes it true or false, and
   `devops-service-deploy.skill.md`'s own "migration step" rule states the condition, not a
   platform-unconditional default.
-- Depends on, and always pairs with, `solution-persistent-db` — this is how `PersistentDb` (VP7)
+- Depends on, and always pairs with, `solution-persistent-db` — this is how `PersistentStore` `PostgreSQL` (VP-C001)
   manages its schema once a team wants versioning, not a Variation Point of its own;
-  `variability-map.md`'s VP7 row names this solution alongside `solution-persistent-db` rather than
+  `variability-map.md`'s VP-C001 row names this solution alongside `solution-persistent-db` rather than
   adding a new row.
 - SQL-only, versioned migration files are the schema's single source of truth — no ORM
   auto-migrate, no declarative-diff tool (see the tool-choice ADR's rejected Atlas variant for why).

@@ -8,9 +8,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | W1 | Framework: empty inherited common map, rules + ADR, two-table template, `check.sh` | done `86fa7add` |
 | A | VP statuses (💡/📐/⛔, ⏳/✅) + staged admission; candidates moved into the common map; Storage 📐 (VP-C001 PersistentStore, VP-C002 TransientStore), ⏳ rows in go/dotnet | done |
 | B | `plateau-map-create`: plateau codes, letter registry, shared common-plateau registry (empty), plateau statuses, matrix Code/Title columns, ADR `plateau-code-by-combination`; `plateau-create-by-solutions` takes the code as `{plateau-name}` | done |
-| C | Storage ✅ in Go: rows detailed, VP7→VP-C001, VP6→VP-C002 re-ID, plateau-repository | next |
-| D | Storage ✅ in dotnet: rows detailed, VP2→VP-C001 re-ID (~50 files), plateau-repository | pending |
-| E | Register existing go/dotnet plateaus in the common-plateau registry with codes | pending |
+| C | Storage ✅ in Go: rows detailed, VP7→VP-C001, VP6→VP-C002 re-ID, plateau-repository recoded (GW001.000 … GW003.002), registry rows 001–003 | done |
+| D | Storage ✅ in dotnet: rows detailed, VP2→VP-C001 re-ID (~50 files), plateau-repository recoded, registry | next |
 
 ## Follow-ups (outside this PR)
 

@@ -8,3 +8,6 @@ The `{common}` part of every backend web-service plateau code (`{stack}W{common}
 
 | No. | VP-C001 PersistentStore | VP-C002 TransientStore | Go | dotnet |
 | --- | --- | --- | --- | --- |
+| 001 | None | None | ✅ GW001.000, GW001.001, GW001.002 | 🔸 |
+| 002 | None | Redis | ✅ GW002.002 | 🔸 |
+| 003 | PostgreSQL | Redis | ✅ GW003.002 | 🔸 |
