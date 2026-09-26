@@ -14,7 +14,7 @@ tags:
 This skill adds Python-specific filter patterns on top of the `check-changes` composite action consumed by [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]. It does not cover those workflows' job graphs — only the `action.yml` this skill creates.
 
 # Core Principle
-- The filter patterns reflect the Python layout used by [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) (`src/`, `test/`) and [solution-conformance-testing-in-python](skills/python/testing/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md) (`features/` for Gherkin) — never a generic guess at Python project structure.
+- The filter patterns reflect the Python layout used by [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) (`src/`, `test/`) and [solution-conformance-testing-in-python](skills/python/test/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md) (`features/` for Gherkin) — never a generic guess at Python project structure.
 
 # Rule
 
@@ -58,7 +58,7 @@ runs:
             - 'docs/**'
             - '*.md'
 ```
-- Violation: filtering on `tests/**` (plural) or omitting `features/**`, which drifts from `test/`/`features/` — the paths [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) and [solution-conformance-testing-in-python](skills/python/testing/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md) actually create.
+- Violation: filtering on `tests/**` (plural) or omitting `features/**`, which drifts from `test/`/`features/` — the paths [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) and [solution-conformance-testing-in-python](skills/python/test/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md) actually create.
 - Risk: a change to a Gherkin scenario in `features/` silently fails to trigger `unit-test`/`mutation-test`, so a broken scenario merges undetected.
 - Fix: match the paths those two skills actually produce, not an assumed convention.
 

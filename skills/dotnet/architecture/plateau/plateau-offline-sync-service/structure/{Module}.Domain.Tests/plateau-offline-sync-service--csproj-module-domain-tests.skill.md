@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test for an entity invariant, 
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -25,7 +25,7 @@ __Applied solutions:__
 # Core Principles
 - Scenarios are validator-shaped: an input goes in, valid/invalid comes out — proven against the real entity method / VO constructor, asserting the `DomainException` code on failure.
 - References `{Module}.Domain` only — never `{Module}.Application`, never infrastructure.
-- Unit tests and Gherkin scenarios live together in this one project; runs on Microsoft.Testing.Platform.
+- Unit tests and Gherkin scenarios live together in this one project; runs on the VSTest runner (xUnit v2).
 
 # Structure
 
@@ -37,15 +37,15 @@ __Applied solutions:__
 ## Project Structure
 - /{Module}.Domain.Tests
   - /Rules/{Rule}.feature — entity-invariant / domain-service / strict-VO scenarios owned by this project
-  - /Rules/Shared/*.feature — linked in (`<None Include>`), never copied: `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios, re-proven through the VO constructor (VP4)
+  - /Rules/Shared/**/*.feature — linked in as `<ReqnrollFeatureFiles>`, never copied: `{Module}.Domain.Rules.Spec/format/`, re-proven through the VO constructor (VP4)
   - /StepDefinitions/[{Rule}Steps.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Domain.Tests/classes/plateau-offline-sync-service--class-module-domain-rule-steps.skill.md)
   - /Architecture/[{Module}ArchitectureTests.cs / GuardedPropertyRuleCoverageTests.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Domain.Tests/classes/plateau-offline-sync-service--class-architecture-tests.skill.md) — Cecil exception-scoping + guarded-property-coverage `[Fact]`s (VP4 companion, VP1-gated; the dead-rule / code-uniqueness checks live in `{Module}.Domain.Rules.Tests`)
   - reqnroll.json
   - {Module}.Domain.Tests.csproj
 
-`{Module}.Domain.Rules.Spec` is linked, not referenced as a project. Link one entry per spec file this layer proves — a file whose scenarios are all `@format` — so a later `@semantic`/`@domain` file is not dragged in:
+`{Module}.Domain.Rules.Spec` is linked, not referenced as a project. Link its `format/` folder only, so `semantic/`/`domain/` files — which this project has no step definitions for — are never dragged in. `ReqnrollFeatureFiles`, never `None` — Reqnroll generates no test for a `None` item (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-folders-per-classification|ADR]]):
 ```xml
-<None Include="..\..\src\Modules\{ModuleName}\{ModuleName}.Domain.Rules.Spec\{Rule}.feature" Link="Rules\Shared\{Rule}.feature" />
+<ReqnrollFeatureFiles Include="..\..\src\Modules\{ModuleName}\{ModuleName}.Domain.Rules.Spec\format\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
 ```
 
 ## Directory and class skills
@@ -57,7 +57,7 @@ __Applied solutions:__
 ## NuGet Packages
 | Package | Purpose |
 | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit.v3 / xunit.runner.visualstudio / Reqnroll.xunit.v3 / coverlet.collector | test host, assertions, Gherkin, coverage |
+| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | test host, assertions, Gherkin, coverage |
 
 ## What Does NOT Belong Here
 - Handler/orchestration scenarios — belong to `{Module}.Application.Tests`.

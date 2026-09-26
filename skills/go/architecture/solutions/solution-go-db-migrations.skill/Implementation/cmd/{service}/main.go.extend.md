@@ -50,7 +50,7 @@ func run() error {
 When `cfg.MigrateOnStart` is `false` (this solution's default — see
 [[../../internal/config/config.go.extend.md|config.go]]), `run()` behaves exactly as
 `solution-persistent-db` left it: `{store}.New` connects to a schema `cmd/migrate` already
-migrated. See [[../../../../adr/migration-mode-per-platform.md|adr/migration-mode-per-platform.md]]
+migrated. See [[../../../adr/migration-mode-per-platform.md|adr/migration-mode-per-platform.md]]
 for which deployment platforms set `MIGRATE_ON_START=true` and why.
 
 # Rule changes

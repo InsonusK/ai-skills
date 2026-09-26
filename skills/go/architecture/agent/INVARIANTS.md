@@ -32,6 +32,7 @@ internal/
       server.go                   ← solution-go-http-api
 tools/
   normalize_unittest/main.go      ← solution-conformance-testing-in-go
+  normalize_scenarios/main.go     ← solution-conformance-testing-in-go
   normalize_mutation/main.go      ← solution-conformance-testing-in-go
   test_report/main.go             ← solution-conformance-testing-in-go
 ```
@@ -66,7 +67,7 @@ tools/
 ## 4. Link & path conventions
 
 - Every internal link points inside `skills/go/architecture/` — this catalog has no version-prefixed staging tree (no pre-existing catalog to parallel-build against; see `agent/DECISIONS.md`).
-- **Carve-out:** `solution-conformance-testing-in-go` legitimately `depends_on`/references `skills/common-workflow/test/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/go/testing/cucmber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). `solution-go-db-migrations` legitimately references (body prose only, never `depends_on:` — it is not a `solution-*.skill.md`) `skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md`, whose own "migration step" rule owns the deployment topology that gates `cmd/migrate` ahead of the app on each platform. These are the only allowed external `depends_on`/references in the catalog.
+- **Carve-out:** `solution-conformance-testing-in-go` legitimately `depends_on`/references `skills/common-workflow/test/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/go/test/cucmber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). `solution-go-db-migrations` legitimately references (body prose only, never `depends_on:` — it is not a `solution-*.skill.md`) `skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md`, whose own "migration step" rule owns the deployment topology that gates `cmd/migrate` ahead of the app on each platform. These are the only allowed external `depends_on`/references in the catalog.
 - Wikilink form: `[[skills/go/architecture/solutions/solution-x.skill/solution-x.skill.md|solution-x]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
 - Implementation-file links: `[[.../solution-x.skill/Implementation/{path}/{File}.{kind}.md#SECTION|label]]`.
 - A solution's folder name, its main file name, and its `name:` field are identical: `solution-{name}.skill` / `solution-{name}.skill.md` / `name: solution-{name}`.

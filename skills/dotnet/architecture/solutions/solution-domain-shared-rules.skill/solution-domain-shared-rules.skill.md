@@ -4,7 +4,7 @@ description: Consolidates the scattered, locally-owned conditions already writte
 whenToUse: when the same condition has been duplicated by two or more of solution-value-objects/solution-dto-property-validators/solution-domain-behaviour and needs one shared, reusable, cross-adapter home — or when authoring a brand-new module and choosing to start with shared rules from the beginning.
 domain: skill
 type: architecture
-version: 20260906000000
+version: 20260924000000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -18,7 +18,7 @@ creates:
   - "{Module}.Domain.Rules.csproj"
   - "{Module}.Domain.Rules.Common.ModuleInfo.cs"
   - "{Module}.Domain.Rules.{Rule}.cs"
-  - "{Module}.Domain.Rules.Spec/{Rule}.feature"
+  - "{Module}.Domain.Rules.Spec/{format|semantic|domain}/{Rule}.feature"
   - "{Module}.Domain.Rules.Tests.csproj"
   - "{Module}.Domain.Rules.Tests.StepDefinitions.{Rule}RuleSteps.cs"
   - Shared.Exceptions.EntityNotLoadedException.cs
@@ -41,6 +41,7 @@ adr:
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/format-semantic-domain-unification|Format/Semantic/Domain are one mechanism]]"
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rules-project-references-interfaces-only|Domain.Rules references {Module}.Interfaces only — not gated on DomainLogic]]"
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-as-exported-cross-language-contract|Domain.Rules.Spec is an exported cross-language contract]]"
+  - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-folders-per-classification|Domain.Rules.Spec split into folders per classification]]"
 ---
 
 # Goal
@@ -55,7 +56,7 @@ adr:
 - A default, parameterized error message for every rule, with structured `State` still available to a frontend that wants its own text
 - A documented boundary for when a Domain rule can stay synchronous (same aggregate) versus when it must become a Try/Confirm process (different aggregate or different service)
 - A single point of change: fixing or improving a condition here fixes it everywhere that condition is used, instead of requiring the same fix to be ported to three separately-owned local copies
-- One shared Gherkin source per rule (`{Module}.Domain.Rules.Spec/{Rule}.feature`) proven from every layer that redirects to it — the rule's own logic in `{Module}.Domain.Rules.Tests`, its fail-fast VO/Entity adapter in `{Module}.Domain.Tests`, its collect-all DTO adapter in `{Module}.Application.Tests` — without writing the same scenario text three times
+- One shared Gherkin source per rule and classification (`{Module}.Domain.Rules.Spec/{format|semantic|domain}/{Rule}.feature`) proven from every layer that redirects to it — the rule's own logic in `{Module}.Domain.Rules.Tests`, its fail-fast VO/Entity adapter in `{Module}.Domain.Tests`, its collect-all DTO adapter in `{Module}.Application.Tests` — without writing the same scenario text three times
 - That same `{Module}.Domain.Rules.Spec` `.feature` set doubles as an exportable contract: a frontend (or any non-.NET consumer) that must enforce the same rules copies the files unchanged into its own repo and writes only its own step definitions, keeping its behaviour verifiably aligned with this service's rejection codes and pass/fail cases
 - Mutation testing scoped tightly to `{Module}.Domain.Rules` alone, via `{Module}.Domain.Rules.Tests`'s own dedicated project, isolated from the broader Entity/VO mutation surface of `{Module}.Domain.Tests`
 
@@ -68,7 +69,7 @@ adr:
 - `ErrorCode`, default `Message`, and `State` are declared exactly once, inside the `IRuleBuilder` extension method; every other adapter calls it or forwards its `ValidationResult`, never re-declares `Must`/`WithErrorCode`/`WithMessage`
 - A blocking check reads `result.Errors.Any(e => e.Severity == Severity.Error)` (or `FirstOrDefault` for the exception to throw), never bare `ValidationResult.IsValid`
 - A Domain rule that needs data from another aggregate or another service is not "just read it" — same-aggregate Domain rules stay synchronous; cross-aggregate/cross-service Domain rules become Try/Confirm (see Workflow)
-- `{Module}.Domain.Rules.Spec` holds `.feature` files only, never a `.cs` file — it is a shared Gherkin source, not a project, and is not itself compiled or referenced by anything; every test project that proves a scenario from it links the physical `.feature` file in via its own `.csproj` and generates its own Reqnroll fixture bound to its own step definitions (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create|{Module}.Domain.Rules.Spec]])
+- `{Module}.Domain.Rules.Spec` holds `.feature` files only, never a `.cs` file — it is a shared Gherkin source, not a project, and is not itself compiled or referenced by anything; every test project that proves a scenario from it links the classification folders it proves in via its own `.csproj` as `<ReqnrollFeatureFiles>` — never `<None>`, for which Reqnroll generates no test — and generates its own Reqnroll fixture bound to its own step definitions (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create|{Module}.Domain.Rules.Spec]])
 - Scenario text in `{Module}.Domain.Rules.Spec` is domain language only — no .NET type names, no C#/FluentValidation vocabulary, no reference to which adapter proves it — so the same file binds against a step definition in another language without rewording; the rejection code strings are part of that contract and stay verbatim (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-as-exported-cross-language-contract|adr/spec-as-exported-cross-language-contract]])
 - `{Module}.Domain.Rules.Tests` proves the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension directly — it takes scenarios both from its own project (`{Module}.Domain.Rules.Tests/Rules/*.feature`, for rule-only edge cases no other layer needs) and, linked in, from `{Module}.Domain.Rules.Spec` (the scenarios shared with `{Module}.Domain.Tests`/`{Module}.Application.Tests`)
 
@@ -88,6 +89,8 @@ adr:
   - Selected variant: one mechanism, classified only by where the wrapper's values come from
 - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-as-exported-cross-language-contract|Domain.Rules.Spec is an exported cross-language contract]]
   - Selected variant: the `.feature` set is authored to be copied verbatim into a consumer repo (a frontend, another-language service) that binds it to its own step definitions; this solution owns the scenarios, the consumer owns its bindings
+- [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-folders-per-classification|Domain.Rules.Spec split into folders per classification]]
+  - Selected variant: `format/`, `semantic/`, `domain/` folders, linked by folder as `<ReqnrollFeatureFiles>` — `Domain.Rules.Tests` all, `Domain.Tests` `format/`, `Application.Tests` `semantic/` + `domain/`
 
 # Requirements
 SOLUTION:
@@ -130,9 +133,9 @@ PROJECT:
   - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create/{Rule}.feature.create|{Rule}.feature]] - create - Gherkin scenarios for one rule, tagged by classification (`@format`/`@semantic`/`@domain`)
 - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create|{Module}.Domain.Rules.Tests.csproj]] - create - Dedicated test project for `{Module}.Domain.Rules`, isolating its mutation-testing surface
   - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create|{Rule}RuleSteps.cs]] - create - Step definitions proving the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension
-- [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend|{Module}.Domain.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios in, add a step-definition class proving the VO/Entity fail-fast adapter
+- [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend|{Module}.Domain.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec/format/` in, add a step-definition class proving the VO/Entity fail-fast adapter
   - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - Step definitions calling the VO constructor / Entity method, asserting `DomainException`
-- [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend|{Module}.Application.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec`'s `@semantic`/`@domain`-tagged scenarios in, add a step-definition class proving the DtoValidator collect-all adapter
+- [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend|{Module}.Application.Tests.csproj]] - extend - Link `{Module}.Domain.Rules.Spec/semantic/` and `domain/` in, add a step-definition class proving the DtoValidator collect-all adapter
   - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - Step definitions calling the `{ValueObject}PropertyValidator`/`{Dto}Validator`/`{Feature}Check`, asserting `ValidationResult`
 
 # Workflow
@@ -170,19 +173,21 @@ sequenceDiagram
 
 ## Prove a rule from every layer that redirects to it
 
-1. Write one `.feature` file per rule in `{Module}.Domain.Rules.Spec/{Rule}.feature` — the single Gherkin source for that rule, regardless of how many layers call it.
-2. Tag each scenario by classification: `@format` (proven at the VO/Entity layer), `@semantic`/`@domain` (proven at the DtoValidator/`{Feature}Check` layer). A rule reused by both gets scenarios of both kinds in the same file.
-3. `{Module}.Domain.Rules.Tests` links the whole file in and proves the rule's own `IsValid()`/`Check()` against every scenario, regardless of tag — this is the one place the rule's own correctness is proven in isolation.
-4. `{Module}.Domain.Tests` links in only the `@format`-tagged scenarios and proves them again through the VO constructor / Entity method (fail-fast, `DomainException`).
-5. `{Module}.Application.Tests` links in the `@semantic`/`@domain`-tagged scenarios and proves them again through the `{ValueObject}PropertyValidator`/`{Dto}Validator`/`{Feature}Check` (collect-all, `ValidationResult`).
+1. Write the rule's scenarios into `{Module}.Domain.Rules.Spec/{classification}/{Rule}.feature` — `format/`, `semantic/`, or `domain/`, the folder naming the layer that proves them. A rule reused at two layers gets one file in each folder.
+2. Tag each scenario with the classification of its folder: `@format` (proven at the VO/Entity layer), `@semantic`/`@domain` (proven at the DtoValidator/`{Feature}Check` layer).
+3. `{Module}.Domain.Rules.Tests` links every folder in and proves the rule's own `IsValid()`/`Check()` against every scenario — this is the one place the rule's own correctness is proven in isolation.
+4. `{Module}.Domain.Tests` links in only `format/` and proves those scenarios again through the VO constructor / Entity method (fail-fast, `DomainException`).
+5. `{Module}.Application.Tests` links in `semantic/` and `domain/` and proves them again through the `{ValueObject}PropertyValidator`/`{Dto}Validator`/`{Feature}Check` (collect-all, `ValidationResult`).
+
+The split happens at build time, by folder: Reqnroll generates a test for every scenario of every file it is given, so a project must never receive a file whose scenarios it has no step definitions for — see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-folders-per-classification|adr/spec-folders-per-classification]].
 6. One Gherkin scenario, three independent proofs that the redirection actually holds at every adapter — never three copies of the same scenario text to keep in sync by hand.
 
 ```mermaid
 flowchart LR
-    Spec["{Module}.Domain.Rules.Spec/{Rule}.feature"]
-    Spec -->|all scenarios| RulesTests["{Module}.Domain.Rules.Tests\n(rule itself)"]
-    Spec -->|"@format"| DomainTests["{Module}.Domain.Tests\n(VO/Entity fail-fast)"]
-    Spec -->|"@semantic / @domain"| AppTests["{Module}.Application.Tests\n(DtoValidator collect-all)"]
+    Spec["{Module}.Domain.Rules.Spec/"]
+    Spec -->|"format/ semantic/ domain/"| RulesTests["{Module}.Domain.Rules.Tests\n(rule itself)"]
+    Spec -->|"format/"| DomainTests["{Module}.Domain.Tests\n(VO/Entity fail-fast)"]
+    Spec -->|"semantic/ domain/"| AppTests["{Module}.Application.Tests\n(DtoValidator collect-all)"]
 ```
 
 # Rules

@@ -31,6 +31,7 @@ internal/
     version.go                     — build-time version var, set via -ldflags
 tools/
   normalize_unittest/               — normalizes `go test -json` output into tmp/result/unit-test.json
+  normalize_scenarios/              — .feature files + go test -json into tmp/result/scenarios.json
   normalize_mutation/               — normalizes the mutation tool's report into tmp/result/mutation-test.json
   test_report/                     — assembles public/ from the normalized tmp/result/*.json files
 report-template/

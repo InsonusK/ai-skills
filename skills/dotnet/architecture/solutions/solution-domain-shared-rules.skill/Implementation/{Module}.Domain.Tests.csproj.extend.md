@@ -15,7 +15,7 @@ tags:
 # Rule changes
 
 ## MUST
-- Link `{Module}.Domain.Rules.Spec`'s `@format`-tagged scenarios in via `<None Include>` — never copy their text into a local `.feature` file
+- Link `{Module}.Domain.Rules.Spec/format/**/*.feature` in as `<ReqnrollFeatureFiles Include>` — never `<None Include>`, which generates no test, and never copy the text into a local `.feature` file
 - Add one step-definition class per redirected rule, calling the VO constructor / Entity method, asserting `DomainException` on the invalid path
-- Never also prove an `@semantic`/`@domain`-tagged scenario here — those belong to `{Module}.Application.Tests`
+- Never link `semantic/` or `domain/` here — those belong to `{Module}.Application.Tests`, and this project has no step definitions for them
 

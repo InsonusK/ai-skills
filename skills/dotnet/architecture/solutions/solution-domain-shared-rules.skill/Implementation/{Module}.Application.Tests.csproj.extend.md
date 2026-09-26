@@ -15,7 +15,7 @@ tags:
 # Rule changes
 
 ## MUST
-- Link `{Module}.Domain.Rules.Spec`'s `@semantic`/`@domain`-tagged scenarios in via `<None Include>` — never copy their text into a local `.feature` file
+- Link `{Module}.Domain.Rules.Spec/semantic/**/*.feature` and `domain/**/*.feature` in as `<ReqnrollFeatureFiles Include>` — never `<None Include>`, which generates no test, and never copy the text into a local `.feature` file
 - Add one step-definition class per redirected rule, calling the real validator/`{Feature}Check`, asserting `ValidationResult` on the outcome
-- Never also prove an `@format`-tagged scenario here — those belong to `{Module}.Domain.Tests`
+- Never link `format/` here — those belong to `{Module}.Domain.Tests`, and this project has no step definitions for them
 

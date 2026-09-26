@@ -16,7 +16,7 @@ tags:
 
 # Core Principles
 - This solution's **Job-mode** call site — used on whichever platform
-  [[../../../../adr/migration-mode-per-platform.md|adr/migration-mode-per-platform.md]] designates
+  [[../../../adr/migration-mode-per-platform.md|adr/migration-mode-per-platform.md]] designates
   Job mode for (Kubernetes via Helm, or any platform where more than one instance of the service may
   run concurrently). On a platform designated **MigrateOnStart mode** instead, this binary exists but
   is never wired into the deploy pipeline — `cmd/{service}/main.go`'s own guarded call

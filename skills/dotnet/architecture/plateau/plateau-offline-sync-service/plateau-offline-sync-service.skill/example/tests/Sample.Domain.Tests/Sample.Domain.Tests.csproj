@@ -5,14 +5,15 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="Reqnroll.xunit.v3" />
+    <PackageReference Include="Reqnroll.xUnit" />
     <PackageReference Include="coverlet.collector" />
   </ItemGroup>
   <ItemGroup>
-    <!-- @format scenarios from the shared spec, re-proven fail-fast through the ItemTitle constructor. Linked, never copied. -->
-    <None Include="..\..\src\Modules\Sample\Sample.Domain.Rules.Spec\ItemTitle.feature" Link="Rules\Shared\ItemTitle.feature" />
+    <!-- The shared spec's format/ folder, re-proven fail-fast through the VO constructors. Linked, never copied.
+         ReqnrollFeatureFiles, not None: Reqnroll generates tests only for its own feature items. -->
+    <ReqnrollFeatureFiles Include="..\..\src\Modules\Sample\Sample.Domain.Rules.Spec\format\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modules\Sample\Sample.Domain\Sample.Domain.csproj" />

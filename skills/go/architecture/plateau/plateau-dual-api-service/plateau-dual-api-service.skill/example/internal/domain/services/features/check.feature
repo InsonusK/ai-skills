@@ -9,10 +9,15 @@ Feature: Check a URL
     Then the check should be "<outcome>"
     And the normalized URL should be "<normalized>"
 
-    Examples:
+    @happy
+    Examples: well-formed
       | input                     | outcome | normalized                |
       | https://Example.com/Path  | valid   | https://example.com/Path  |
       | HTTP://EXAMPLE.COM        | valid   | http://example.com        |
+
+    @negative
+    Examples: malformed
+      | input                     | outcome | normalized                |
       | not-a-url                 | invalid |                           |
       | ftp://example.com/file    | invalid |                           |
       |                           | invalid |                           |

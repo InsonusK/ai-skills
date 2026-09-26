@@ -1,6 +1,6 @@
 # Validation log for standard 'skill-content': <repository-root-relative skill path> -> last validation date (YYYYMMDD).
 # Written by 'validation_queue.py mark' / 'queue --dry-run' — never edit by hand (see skill-validation).
-skills/angular/testing/no-test-theater-angular.skill.md: 20260909
+skills/angular/test/no-test-theater-angular.skill.md: 20260909
 skills/ansible/architecture/role/solution/solution-ansible-role-var.skill/solution-ansible-role-var.skill.md: 19700101
 skills/common-workflow/agent-partnership-mindset.skill.md: 20260909
 skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md: 20260909
@@ -44,19 +44,19 @@ skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md: 197001
 skills/dotnet/devops/devops-github-action-check-changes-in-dotnet.skill.md: 19700101
 skills/dotnet/devops/devops-github-action-check-version-in-dotnet.skill.md: 19700101
 skills/dotnet/devops/devops-github-wf-stack-lib-release-publish-in-dotnet.skill.md: 19700101
-skills/dotnet/testing/cucmber-testing-in-dotnet.skill.md: 19700101
-skills/dotnet/testing/dotnet-unittest.skill/dotnet-unittest.skill.md: 19700101
-skills/dotnet/testing/no-test-theater-dotnet.skill.md: 19700101
-skills/dotnet/testing/testing-strategy.skill.md: 19700101
+skills/dotnet/test/cucmber-testing-in-dotnet.skill.md: 19700101
+skills/dotnet/test/dotnet-unittest.skill/dotnet-unittest.skill.md: 19700101
+skills/dotnet/test/no-test-theater-dotnet.skill.md: 19700101
+skills/dotnet/test/testing-strategy.skill.md: 19700101
 skills/go/devops/devops-github-action-check-changes-in-go.skill.md: 19700101
 skills/go/devops/devops-github-action-check-version-in-go.skill/devops-github-action-check-version-in-go.skill.md: 19700101
-skills/go/testing/cucmber-testing-in-go.skill.md: 19700101
+skills/go/test/cucmber-testing-in-go.skill.md: 19700101
 skills/python/devops/devops-github-action-check-changes-in-python.skill.md: 19700101
 skills/python/devops/devops-github-action-check-version-in-python.skill.md: 19700101
 skills/python/devops/devops-github-wf-stack-lib-release-publish-in-python.skill.md: 19700101
-skills/python/testing/cucmber-testing-in-python.skill.md: 19700101
-skills/python/testing/no-test-theater-python.skill.md: 19700101
+skills/python/test/cucmber-testing-in-python.skill.md: 19700101
+skills/python/test/no-test-theater-python.skill.md: 19700101
 skills/typescript/devops/devops-github-action-check-changes-in-typescript.skill.md: 19700101
 skills/typescript/devops/devops-github-action-check-version-in-typescript.skill.md: 19700101
 skills/typescript/devops/devops-github-wf-stack-lib-release-publish-in-typescript.skill.md: 19700101
-skills/typescript/testing/cucmber-testing-in-typescript.skill.md: 19700101
+skills/typescript/test/cucmber-testing-in-typescript.skill.md: 19700101

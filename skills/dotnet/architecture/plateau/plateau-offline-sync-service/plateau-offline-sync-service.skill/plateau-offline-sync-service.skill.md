@@ -4,7 +4,7 @@ description: A domain service built for an offline-first front end — everythin
 whenToUse: when scaffolding or reviewing a service whose entities are created offline by a client and synced later — checking idempotent-create wiring (IHasGuid, GuidResolvingBehavior, the Guid resolver), the {Module}.Domain.Rules project, or the entity classification against this baseline
 domain: skill
 type: template
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/offline-sync-service

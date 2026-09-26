@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test for a Shared primitive/ma
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -23,7 +23,7 @@ __Applied solutions:__
 # Core Principles
 - Scenarios are value-shaped: given one or more primitive values, prove how they compare/combine — never "is this input valid" (a module concern).
 - Unit tests and Gherkin scenarios live together in this one project — never a second project for the scenarios.
-- Runs on Microsoft.Testing.Platform (xunit.v3 + Reqnroll.xunit.v3); `reqnroll.json` points the html formatter at `reqnroll_report.html`.
+- Runs on the VSTest runner (xUnit v2 + Reqnroll.xUnit — not xunit.v3, see [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|ADR]]); `reqnroll.json` points the html formatter at `reqnroll_report.html` and the message formatter at `reqnroll_messages.ndjson`.
 
 # Structure
 
@@ -49,9 +49,9 @@ __Applied solutions:__
 | Package | Version constraint | Purpose |
 | --- | --- | --- |
 | Microsoft.NET.Test.Sdk | central | test host |
-| xunit.v3 | central | assertions + MTP runner |
+| xunit | central | assertions, xUnit v2 on VSTest (see [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|ADR]]) |
 | xunit.runner.visualstudio | central | IDE/CLI discovery |
-| Reqnroll.xunit.v3 | central | Gherkin binding + html report |
+| Reqnroll.xUnit | central | Gherkin binding + html/message reports |
 | coverlet.collector | central | coverage |
 
 ## What Does NOT Belong Here

@@ -4,7 +4,7 @@ description: The v3.1 common baseline — Central Package Management, the two-pr
 whenToUse: when scaffolding a brand-new service repository or a new module before any domain logic, persistence, or API exists; or when reviewing whether a change to the composition root, the MediatR conventions, the validation/exception pipeline, Soft Value Objects, logging, or the test-project layout follows this baseline
 domain: skill
 type: template
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/core
