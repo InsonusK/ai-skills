@@ -150,12 +150,35 @@ for d, _, fs in os.walk(os.path.join(REPO, "skills")):
             if "web-service-variability-map" in open(fp, encoding="utf-8").read():
                 fail(f"{rel(fp)}: still references web-service-variability-map")
 
-print("== 5. Links resolve (touched files) ==")
+print("== 5. Common plateau registry columns follow the common map ==")
+PMC = os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill")
+REGF = os.path.join(PMC, "registry/web-service-common-plateaus.md")
+if not os.path.isfile(REGF): fail("common plateau registry missing")
+else:
+    rhdr, rrows = table_rows(open(REGF, encoding="utf-8").read())
+    want = [c for c in common if not common[c]["retired"]]
+    got = [re.match(r"VP-C\d{3}", h).group(0) for h in rhdr if re.match(r"VP-C\d{3}", h)]
+    if got != want: fail(f"registry VP columns {got} != 📐 common VPs {want}")
+    nstack = len(rhdr) - 1 - len(got)
+    if nstack != len(bound): fail(f"registry has {nstack} stack column(s), {len(bound)} bound stack(s)")
+    nums = [r[0] for r in rrows]
+    if len(set(nums)) != len(nums): fail("registry: duplicate number")
+    for r in rrows:
+        if not re.fullmatch(r"\d{3}", r[0]): fail(f"registry: bad number '{r[0]}'")
+        for c in r[1 + len(got):]:
+            if not (c.startswith("✅") or c == "🔸"): fail(f"registry {r[0]}: stack cell '{c}' is not ✅ {{codes}} / 🔸")
+        if not any(c.startswith("✅") for c in r[1 + len(got):]): fail(f"registry {r[0]}: no stack has built it — drop the row")
+    print(f"  {len(rrows)} registered combination(s)")
+
+print("== 6. Links resolve (touched files) ==")
 # Whole files this task owns; in a bound stack map only its Common Variation Points section
 # (the rest predates the common map and is checked by that catalog's own agent/check.sh).
 files = [(p, None) for p in (COMMON, os.path.join(SKILL, "variability-map-create.skill.md"),
          os.path.join(SKILL, "templates/variability-map.template.md"),
-         os.path.join(SKILL, "adr/common-vps-inherited-by-id.md"))]
+         os.path.join(SKILL, "adr/common-vps-inherited-by-id.md"),
+         os.path.join(PMC, "plateau-map-create.skill.md"), os.path.join(PMC, "examples/plateau-repository.example.md"),
+         os.path.join(PMC, "adr/plateau-code-by-combination.md"), REGF,
+         os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md"))]
 files += [(os.path.join(REPO, b), "Common Variation Points") for b in bound]
 LINK = re.compile(r"\[\[([^\]|#]+)(#[^\]|]*)?(?:\|[^\]]*)?\]\]|\]\(((?:skills/)[^)#\s]*)(#[^)\s]*)?\)|\]\((#[^)\s]+)\)")
 for fp, only in files:
@@ -163,6 +186,7 @@ for fp, only in files:
     text = open(fp, encoding="utf-8").read()
     if only: text = section(text, only) or ""
     text = re.sub(r"```.*?```", "", text, flags=re.S).replace("\\|", "|")
+    text = re.sub(r"`[^`\n]*`", "", text)  # inline code quotes links, it does not make them
     for m in LINK.finditer(text):
         target, frag = (m.group(1), m.group(2)) if m.group(1) else (m.group(3), m.group(4))
         if m.group(5): target, frag = None, m.group(5)
