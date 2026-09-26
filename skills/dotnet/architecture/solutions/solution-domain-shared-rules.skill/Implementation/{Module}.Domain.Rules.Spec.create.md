@@ -18,9 +18,9 @@ tags:
 - This is a plain directory, sibling to `{Module}.Domain.Rules` under `/src/Modules/{ModuleName}/`, not a `.csproj` — it produces no assembly and is never referenced by anything
 - It contains only `.feature` files — no `.cs`, no step definitions, no `csproj`. Step definitions live in whichever test project proves a given scenario, never here
 - Every scenario is written in domain language — no .NET/C#/FluentValidation vocabulary, no type names, no mention of the adapter that proves it — so a consumer in another language binds the same file with its own step definitions without editing the Gherkin. Rejection-code strings are part of the contract and appear verbatim
-- One `.feature` file per rule class, named after the rule (`{Rule}.feature` for `{Rule}Rules`/`{Rule}Rule`)
-- Every scenario carries exactly one classification tag: `@format`, `@semantic`, or `@domain` — the same classification the rule itself already has in `{Module}.Domain.Rules`. A rule reused at more than one layer gets one scenario per layer, not one scenario claimed to cover both
-- A consuming test project links the physical file in via its own `.csproj` (`<None Include="..\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="..." />`), filtered to the tags that project proves — see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create|{Module}.Domain.Rules.Tests.csproj]], [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend|{Module}.Domain.Tests.csproj]], [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend|{Module}.Application.Tests.csproj]]
+- One `.feature` file per rule class and classification, named after the rule (`{Rule}.feature` for `{Rule}Rules`/`{Rule}Rule`), in the folder of its classification: `format/`, `semantic/`, or `domain/`. A rule reused at more than one layer gets one file per folder, not one file with mixed tags
+- Every scenario carries exactly one classification tag — `@format`, `@semantic`, or `@domain` — equal to its folder. The folder is what a consuming project links; the tag keeps the classification visible to a reader and to an external consumer that copies the files
+- A consuming test project links the folders it proves in via its own `.csproj` as `<ReqnrollFeatureFiles Include="..\{ModuleName}.Domain.Rules.Spec\format\**\*.feature" Link="..." />` — never `<None Include>`, for which Reqnroll generates no test at all. Linking by folder is the filter: Reqnroll generates a test for every scenario of every file it is given, so a project never receives a file it has no step definitions for (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-folders-per-classification|ADR]]) — see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create|{Module}.Domain.Rules.Tests.csproj]], [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Tests.csproj.extend|{Module}.Domain.Tests.csproj]], [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Application.Tests.csproj.extend|{Module}.Application.Tests.csproj]]
 
 # Implementation changes
 
@@ -28,7 +28,12 @@ tags:
 /src/Modules/{ModuleName}
   /{ModuleName}.Domain.Rules
   /{ModuleName}.Domain.Rules.Spec
-    {Rule}.feature
+    /format
+      {Rule}.feature
+    /semantic
+      {Rule}.feature
+    /domain
+      {Rule}.feature
   /{ModuleName}.Domain.Rules.Tests
 ```
 
@@ -37,8 +42,8 @@ See [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Im
 # Rule changes
 
 ## MUST
-- Contain only `.feature` files, one per rule class
-- Every scenario carry exactly one of `@format`/`@semantic`/`@domain`
+- Contain only `.feature` files, one per rule class and classification, inside `format/`, `semantic/`, or `domain/`
+- Every scenario carry exactly one of `@format`/`@semantic`/`@domain`, equal to the folder its file is in
 - Every scenario be written in domain language only — no .NET type name, no C#/FluentValidation term, no reference to the adapter that proves it — so the file stays copyable into a consumer repo in another language; rejection codes appear verbatim
 - Live at `/src/Modules/{ModuleName}/{ModuleName}.Domain.Rules.Spec`, as a sibling of `{ModuleName}.Domain.Rules`, not nested inside it
 - Never contain a `.csproj`, a `.cs` file, or any step definition
@@ -46,6 +51,6 @@ See [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Im
 
 # Check list
 - [ ] Directory contains only `.feature` files, no code, no project file
-- [ ] Every scenario has exactly one classification tag
+- [ ] Every scenario has exactly one classification tag, matching its folder
 - [ ] Every scenario is domain language only — no .NET types or adapter references — and stays portable to another language; rejection codes verbatim
-- [ ] File name matches the rule class it describes
+- [ ] File name matches the rule class it describes; the file lives in `format/`, `semantic/`, or `domain/`

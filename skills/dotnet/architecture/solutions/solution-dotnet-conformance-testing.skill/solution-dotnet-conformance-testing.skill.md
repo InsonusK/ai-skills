@@ -1,10 +1,10 @@
 ---
 name: solution-dotnet-conformance-testing
-description: The .NET implementation of [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] — one test project per production project (mirroring its Allowed Dependencies exactly), Reqnroll for Gherkin scenarios, coverlet + ReportGenerator for coverage, Stryker.NET for mutation testing, and the make unit-test/mutation-test/test-report/test-and-report contract that downstream CI consumes
-whenToUse: Set up or review the test suite of a .NET library/project that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing .NET project, or wire coverage and mutation testing into a .NET project's `make`/CI pipeline.
+description: The dotnet plateau catalog's test-project layout — one test project per production project, mirroring its Allowed Dependencies exactly, each holding unit tests, Reqnroll feature files, and step definitions together; the test tooling itself comes from solution-conformance-testing-in-dotnet
+whenToUse: Decide which test project a scenario or unit test belongs in, create the test project for a production project of the dotnet plateau catalog, or review whether a test project's references mirror its production project's Allowed Dependencies.
 domain: skill
 type: architecture
-version: 20260901000000
+version: 20260924000000
 tags:
   - skill/architecture/solution
   - solution/dotnet-conformance-testing
@@ -12,7 +12,6 @@ tags:
   - concern/testing
   - concern/testing/bdd
   - cucumber
-  - concern/testing/mutation
   - concern/architecture
 creates:
   - "{Module}.Domain.Tests.csproj"
@@ -21,62 +20,47 @@ creates:
   - Shared.Tests.csproj
   - BuildingBlocks.Tests.csproj
   - "{TestProject}.StepDefinitions.{Rule}Steps.cs"
-  - Makefile
-  - report-template/index.html
 extends:
-  - README.md
 depends_on:
-  - "[[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
+  - "[[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]"
 built_on_plateau:
 adr:
-  - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]"
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|One test project per production project, not per module]]"
+  - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/tooling-moved-to-stack-testing-skill|Test tooling moved to solution-conformance-testing-in-dotnet]]"
 ---
 
 # Goal
 - Give every testable .NET production project that exists — `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`, plus `{Module}.Domain` once VP1 is applied — its own test project, so a reader can always answer "what does this test project reference and prove" by looking at exactly one production project.
-- Give each of those Gherkin scenarios proven against real production code (Reqnroll), coverage measurement, and mutation testing, exposed behind a uniform `make unit-test`/`make mutation-test`/`make test-report`/`make test-and-report` contract — so CI can drive it without knowing anything .NET-specific.
 
 # Capabilities
 - Every production project's Allowed Dependencies rule (from `solution-sln-structure`) has a matching test project with the same, mirrored dependency: `{Module}.Domain.Tests` references only `{Module}.Domain`, `{Module}.Interfaces.Tests` references only `{Module}.Interfaces`, and so on.
 - Gherkin `.feature` files execute against real production code via Reqnroll step definitions, in whichever test project owns the code being proven.
-- `make mutation-test ONLY_DELTA=true DELTA_BASE=<ref>` fails fast on a changed line's surviving mutant, without paying for a full-project mutation run on every call.
-- `make unit-test WITH_CODE_COVERAGE=true` and `make test-report` give `master` one aggregated coverage/mutation-score report across every test project, and the data the README badges are generated from.
+- Every test project is picked up by the `make unit-test`/`mutation-test`/`test-report` contract of [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]] without any per-project wiring.
 
 # Core Principles
 - One test project per production project **that exists**, never one combined project per module. At the v3.1 baseline that is `{Module}.Application.Tests`, `{Module}.Interfaces.Tests`, `Shared.Tests`, `BuildingBlocks.Tests`. `{Module}.Domain.Tests` appears only when the module has a domain layer (`solution-domain-behaviour`, VP1); `{Module}.Domain.Rules.Tests` only with VP4. `{Module}.Api` has no dedicated test project — it is a thin MediatR adapter with no business logic of its own to prove (see [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|ADR]]).
 - Each test project's Allowed Dependencies mirror its production counterpart's exactly: `{Module}.Application.Tests` may reference `{Module}.Application` and `{Module}.Domain` (the same two `{Module}.Application.csproj` itself is allowed to reference), `BuildingBlocks.Tests` may reference `BuildingBlocks` and `Shared`, and so on. A test project never reaches further than the production project it tests is itself allowed to reach.
 - Every test project contains unit tests, Reqnroll feature files, and their step definitions together — never a separate project split out just for Gherkin scenarios.
 - Step definitions call the tested project's real public API; they never re-implement the rule under test.
-- `make unit-test` runs every test project in one invocation and reports one aggregated result — a caller never invokes an individual test project directly.
+- The `Makefile`, scripts, `reqnroll.json`, and report are owned by [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]; this solution only decides the test-project layout.
 
 # Adr
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/testing-tool-choice|Testing tool choice]]
-  - Selected variant: Reqnroll (Gherkin runner) + coverlet/ReportGenerator (coverage) + Stryker.NET (mutation testing)
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|One test project per production project, not per module]]
   - Selected variant: one test project per production project, mirroring its Allowed Dependencies
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/tooling-moved-to-stack-testing-skill|Test tooling moved to solution-conformance-testing-in-dotnet]]
+  - Selected variant: keep only the test-project layout here; the stack-generic tooling lives in `skills/dotnet/test/`
 
 # Requirements
 SOLUTION:
-- [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
-  - This solution's `Makefile` and scripts implement its `make unit-test`/`mutation-test`/`test-report`/`test-and-report` target names and `tmp/result/*.json` schema exactly — aggregated across whichever test projects exist.
+- [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]
+  - Provides the Reqnroll/coverlet/Stryker.NET tooling and the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract that runs every test project created here.
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
   - Defines the production projects (`{Module}.Domain`, `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`) and their Allowed Dependencies, which each test project here mirrors.
 
 NUGET:
-- Reqnroll.xUnit
-  - Executes `.feature` files against step definitions using xUnit as the runner.
-- coverlet.collector
-  - Collects line/branch coverage during `dotnet test`.
-- ReportGenerator (dotnet tool)
-  - Converts coverlet's Cobertura output into an HTML report and a coverage badge.
-- Stryker.NET (`dotnet-stryker` tool)
-  - Runs mutation testing against the module and produces a mutation score report.
+- Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk — referenced by every test project; chosen in [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]'s own ADR.
 
 # Template Skill Mutations
-REPOSITORY:
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend|Repository]] - extend - add the `Makefile` and normalization scripts implementing the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract across every test project present
-
 PROJECT:
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create|{Module}.Domain.Tests.csproj]] - create - tests `{Module}.Domain` only
   - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]] - create - validator-shaped step definitions: input → valid/invalid + error code
@@ -94,21 +78,12 @@ PROJECT:
 1. Decide which production project owns the rule (e.g. an entity invariant lives in `{Module}.Domain`, a transport check lives in `{Module}.Application`).
 2. A `.feature` file describing the rule (e.g. `Rules/{Rule}.feature`) is added or extended, inside that project's own test project (e.g. `{Module}.Domain.Tests/Rules/{Rule}.feature`), with `Given/When/Then` scenarios.
 3. `{Rule}Steps.cs` is created in that same test project with `[Given]`/`[When]`/`[Then]` bindings that call the real production code.
-4. `make unit-test` runs `dotnet test` across every test project, executing both the plain unit tests and the Reqnroll scenarios, and normalizes the aggregated result into `tmp/result/unit-test.json` (plus `tmp/result/coverage-test.json` when `WITH_CODE_COVERAGE=true`).
-5. `make mutation-test` runs `dotnet-stryker` — scoped to changed files when called with `ONLY_DELTA=true DELTA_BASE=<ref>`, or across every project otherwise — and normalizes the result into `tmp/result/mutation-test.json`.
-6. `make test-report` assembles `public/` from `tmp/result/*.json` and `tmp/report/*`, ready to publish.
-7. This solution does not decide which `make` targets run on which trigger, or how `public/` gets published — that's owned by the project's own CI configuration.
-
-## Surviving mutant found (report path)
-1. `make mutation-test` reports a mutant that survived, as part of a post-merge, report-only CI run — mutation testing is not expected to block a pull request.
-2. The mutation report published to GitHub Pages shows the survivor; it does not fail the workflow or block anything.
-3. Whoever notices the survivor (via the report or the README's mutation-score badge) either strengthens the assertion in the corresponding scenario/step definition in a follow-up PR, or explicitly accepts it per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must|solution-conformance-testing]].
+4. The gate runs as described in [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]'s own Workflow.
 
 # Rules
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
 
 ## MUST
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/Repository.extend#MUST|Repository]]
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create#MUST|{Module}.Domain.Tests.csproj]]
   - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create#MUST|{Rule}Steps.cs]]
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create#MUST|{Module}.Application.Tests.csproj]]
@@ -128,6 +103,4 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] Each test project's references match its production counterpart's Allowed Dependencies exactly — no wider, no narrower.
 - [ ] `{Module}.Api` has no dedicated test project.
 - [ ] Every `.feature` scenario has a matching step definition, in the same test project as the code it proves, that calls production code.
-- [ ] `make unit-test`, `make mutation-test`, `make test-report`, and `make test-and-report` exist at the repository root, run across every test project, and support the toggles defined by [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
-- [ ] `tmp/result/*.json` and `tmp/report/<kind>/` aggregate every test project present and follow that same contract's schema.
-- [ ] `public/` follows [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#public-site-output|solution-conformance-testing's Public site output]] contract, and `report-template/index.html` exists at the repository root (not under `.github/`).
+- [ ] [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]] is applied, so `make unit-test` picks up every test project.

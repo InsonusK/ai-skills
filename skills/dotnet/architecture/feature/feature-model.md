@@ -51,11 +51,11 @@ Two cross-tree `Requires` edges, both single-source (no boolean logic to spell o
 | ExternalIdentity | A specific persisted entity's identity is client-generated and its creation is idempotent — only meaningful once `Persistence` is selected, and only for an externally-created entity | false |
 | AuditTimestamps | A specific persisted entity tracks user/server creation and update timestamps — only meaningful once `Persistence` is selected, and only for a user-initiated entity | false |
 | SyncInboundApi | The module answers synchronous, request-response calls from external callers | false |
-| HttpApiController | Inbound sync entry point: a REST API (Controllers + Minimal API), thin adapter over MediatR — one of an `Optional (at least one)` group under `SyncInboundApi` — at least one of them is required once `SyncInboundApi` is selected | false |
-| GrpcApiController | Inbound sync entry point: a gRPC service, thin adapter over MediatR — the other member of that same `Optional (at least one)` group | false |
+| HttpApiController | Inbound sync entry point: a REST API (Controllers + Minimal API), thin adapter over MediatR — one of an `At least one (protocol)` group under `SyncInboundApi` — at least one of them is required once `SyncInboundApi` is selected | false |
+| GrpcApiController | Inbound sync entry point: a gRPC service, thin adapter over MediatR — the other member of that same `At least one (protocol)` group | false |
 | SyncOutboundApi | The module makes synchronous, request-response calls to another service | false |
-| HttpApiClient | Outbound sync call: this module calls another service over HTTP — one of an `Optional (at least one)` group under `SyncOutboundApi` — at least one of them is required once `SyncOutboundApi` is selected | false |
-| GrpcApiClient | Outbound sync call: this module calls another service over gRPC — the other member of that same `Optional (at least one)` group | false |
+| HttpApiClient | Outbound sync call: this module calls another service over HTTP — one of an `At least one (protocol)` group under `SyncOutboundApi` — at least one of them is required once `SyncOutboundApi` is selected | false |
+| GrpcApiClient | Outbound sync call: this module calls another service over gRPC — the other member of that same `At least one (protocol)` group | false |
 | AsyncInboundApi | The module reacts to asynchronous messages from other services | false |
 | KafkaConsumer | This module's only realization of `AsyncInboundApi` today: consumes messages from a Kafka topic — `Mandatory` once `AsyncInboundApi` is selected, not a choice | false |
 | AsyncOutboundApi | The module publishes asynchronous messages for other services to react to | false |

@@ -18,7 +18,7 @@ run: build
 lint:
 	go vet ./...
 
-# --- solution-go-conformance-testing: unified test/coverage/mutation contract ---
+# --- solution-conformance-testing-in-go: unified test/coverage/mutation contract ---
 # Caller-facing flags are WITH_CODE_COVERAGE, ONLY_DELTA and DELTA_BASE only.
 
 GREMLINS_VERSION := v0.6.0
@@ -35,14 +35,17 @@ COVERPKG := $(shell go list ./... | grep -Ev '/(gen|tools)(/|$$)' | tr '\n' ',' 
 # when WITH_CODE_COVERAGE=true.
 unit-test:
 	@mkdir -p tmp/result tmp/report/tests tmp/report/coverage
+	@status=0; \
 	set -o pipefail; go test -json -coverpkg=$(COVERPKG) -coverprofile=tmp/report/coverage/coverage.out ./... \
 		| tee tmp/report/tests/go-test.json \
-		| go run ./tools/normalize_unittest
-	@if [ "$(WITH_CODE_COVERAGE)" = "true" ]; then \
+		| go run ./tools/normalize_unittest || status=$$?; \
+	go run ./tools/normalize_scenarios tmp/report/tests/go-test.json || status=$$?; \
+	if [ "$(WITH_CODE_COVERAGE)" = "true" ]; then \
 		go tool cover -html=tmp/report/coverage/coverage.out -o tmp/report/coverage/index.html; \
 		pct=$$(go tool cover -func=tmp/report/coverage/coverage.out | tail -1 | awk '{print $$3}' | tr -d '%'); \
 		echo "{\"linePct\": $$pct}" > tmp/result/coverage-test.json; \
-	fi
+	fi; \
+	exit $$status
 
 # mutation-test runs gremlins over the whole module (or, with
 # ONLY_DELTA=true, only files changed since DELTA_BASE) and exits with

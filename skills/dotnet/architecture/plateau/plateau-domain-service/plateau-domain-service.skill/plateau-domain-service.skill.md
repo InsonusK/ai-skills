@@ -4,7 +4,7 @@ description: A standalone domain service on top of plateau-core — a persisted 
 whenToUse: when scaffolding or reviewing a service that owns domain entities in its own database and exposes them over HTTP — checking the domain layer, the persistence stack, optimistic concurrency, timestamping, the API layer, or the outbound gRPC client against this baseline
 domain: skill
 type: template
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/domain-service

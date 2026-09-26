@@ -2,6 +2,9 @@
   "formatters": {
     "html": {
       "outputFilePath": "reqnroll_report.html"
+    },
+    "message": {
+      "outputFilePath": "reqnroll_messages.ndjson"
     }
   }
 }

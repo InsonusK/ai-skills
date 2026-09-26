@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test for a handler or validato
 domain: skill
 type: template
 plateau: domain-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/csproj
   - plateau/domain-service
@@ -49,7 +49,7 @@ __Applied solutions:__
 ## NuGet Packages
 | Package | Version constraint | Purpose |
 | --- | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit.v3 / xunit.runner.visualstudio / Reqnroll.xunit.v3 / coverlet.collector | central | test host, assertions, Gherkin, coverage |
+| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | central | test host, assertions, Gherkin, coverage |
 
 ## What Does NOT Belong Here
 - Contract-shape assertions — belong to `{Module}.Interfaces.Tests`.

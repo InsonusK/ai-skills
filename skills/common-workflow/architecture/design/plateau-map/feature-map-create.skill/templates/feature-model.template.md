@@ -15,11 +15,7 @@ Name the diagram's root explicitly (the family's product) and state that it is g
 
 ## Feature diagram
 
-@import "./diagrams/feature-diagram.mmd" {as="mermaid"}
-
-```hint
-State the AND/OR logic for any parallel `Requires` edges into the same target — the diagram's edge labels can't express this alone.
-```
+@import "./feature-diagram.template.mmd" {as="mermaid"}
 
 ## Features
 

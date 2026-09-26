@@ -9,10 +9,10 @@ Domain analysis needed a compact way to record what all members of a family shar
 During domain analysis, features of the family are captured and drawn as a tree: each parent-child edge carries one of the four relation types, and relations between features not connected by a direct edge are written as separate cross-tree constraints (`A requires B`, `A excludes B`).
 
 ## How it is structured
-This repository keeps FODA's relation semantics but changes the surface notation: relations are drawn as text labels on mermaid edges instead of FODA's graphical markers (filled/empty circles, arcs), and the `Or` group is named `Optional (at least one)`. The closed list of labels is defined in `# Edge kind` of [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]].
+This repository keeps FODA's relation semantics but changes the surface notation: relations are drawn as text labels on mermaid edges instead of FODA's graphical markers (filled/empty circles, arcs), and the `Or` group is named `At least one (group name)`. The closed list of labels is defined in `# Edge kind` of [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]].
 
 ## Example
-`skills/dotnet/architecture/v3.1/feature/diagrams/feature-diagram.mmd` — a feature diagram rendered with mermaid edge labels per this repository's convention.
+`skills/dotnet/architecture/feature/diagrams/feature-diagram.mmd` — a feature diagram rendered with mermaid edge labels per this repository's convention.
 
 ## Related concepts
 - [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/feature-model|Feature Model]]

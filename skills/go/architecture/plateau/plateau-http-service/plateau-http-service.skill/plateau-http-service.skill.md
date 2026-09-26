@@ -4,7 +4,7 @@ description: The base Go web-service plateau — no DB, domain-logic separation,
 whenToUse: when starting a new Go web-service from scratch with no database and no alternative API yet, or reviewing whether a change follows this family's ports-and-adapters/config/logging/testing conventions
 domain: skill
 type: template
-version: 20260917000000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/plateau-http-service
@@ -15,7 +15,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]]"
   - "[[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]]"
   - "[[skills/go/architecture/solutions/solution-go-app-logging.skill/solution-go-app-logging.skill.md|solution-go-app-logging]]"
-  - "[[skills/go/architecture/solutions/solution-go-conformance-testing.skill/solution-go-conformance-testing.skill.md|solution-go-conformance-testing]]"
+  - "[[skills/go/test/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]]"
 standalone: true
 registry:
   - "[[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"

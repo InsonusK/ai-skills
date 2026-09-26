@@ -5,7 +5,7 @@ whenToUse: when adding a scenario proving a Rule's own Check() / IsValid() / IRu
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20260924000000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -37,15 +37,15 @@ __Applied solutions:__
 ## Project Structure
 - /{Module}.Domain.Rules.Tests
   - /Rules/{Rule}.feature — optional: rule-only edge cases no other layer proves (absent when there are none)
-  - /Rules/Shared/*.feature — linked in (`<None Include>`), never copied: every file under `{Module}.Domain.Rules.Spec`, all tags, proven against `Check()`
+  - /Rules/Shared/**/*.feature — linked in as `<ReqnrollFeatureFiles>`, never copied: every classification folder of `{Module}.Domain.Rules.Spec`, proven against `Check()`
   - /StepDefinitions/[{Rule}RuleSteps.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Domain.Rules.Tests/classes/plateau-offline-sync-service--class-rule-steps.skill.md)
   - /Architecture/[{Module}RuleArchitectureTests.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Domain.Tests/classes/plateau-offline-sync-service--class-architecture-tests.skill.md) — Cecil dead-rule + code-uniqueness `[Fact]`s (always run with VP4)
   - reqnroll.json
   - {Module}.Domain.Rules.Tests.csproj
 
-The whole spec directory is linked (this project proves every scenario regardless of tag):
+The whole spec directory is linked (this project proves every scenario regardless of tag). `ReqnrollFeatureFiles`, never `None` — Reqnroll generates no test for a `None` item (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-folders-per-classification|ADR]]):
 ```xml
-<None Include="..\..\src\Modules\{ModuleName}\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
+<ReqnrollFeatureFiles Include="..\..\src\Modules\{ModuleName}\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
 ```
 
 ## Directory and class skills
@@ -57,7 +57,7 @@ The whole spec directory is linked (this project proves every scenario regardles
 ## NuGet Packages
 | Package | Purpose |
 | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit.v3 / xunit.runner.visualstudio / Reqnroll.xunit.v3 / coverlet.collector | test host, assertions, Gherkin, coverage |
+| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | test host, assertions, Gherkin, coverage |
 
 ## What Does NOT Belong Here
 - The VO/entity fail-fast adapter proof — that is `{Module}.Domain.Tests`.

@@ -4,7 +4,7 @@ description: plateau-http-service plus a gRPC inbound API alongside HTTP, sharin
 whenToUse: when a Go web-service needs to expose its capabilities over gRPC in addition to HTTP, or reviewing whether a change follows this family's errgroup-based concurrent-server convention
 domain: skill
 type: template
-version: 20260917010000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/plateau-dual-api-service

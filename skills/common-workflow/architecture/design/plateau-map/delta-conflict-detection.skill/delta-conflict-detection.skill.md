@@ -46,6 +46,12 @@ Three independent axes, one letter each, read in this order:
 
 Only `TMC`, `FMC`, `FDC` are flagged for resolution — every other code is canonical and needs no further action. All three are formulated for **2+** intersecting solutions from the start, never assumed to be exactly a pair.
 
+## FDN never forks the plateau tree
+An `FDN`-classified VP — DI substitution, no constraint, independent — never earns its own plateau, no matter how many Variants it has: swapping one Variant for another only changes which concrete adapter is wired at the composition root (`main.go`/`Program.cs`/...), never the plateau's own structural shape. Two shapes of this: (1) a cross-cutting capability that touches no module-internal file at all — build it as a [[skills/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|Plateau Component]], attached outside `created_by` entirely; (2) an alternative *dispatch target* behind an already-existing port — e.g. an outbox's drained events going out via a Kafka producer vs a webhook caller — each target is its own small solution implementing the same port, wired at the composition root, and none of them earns a separate plateau. Only an *additive* capability — one that changes what the plateau's own files actually contain, not just which adapter is plugged into an existing port — belongs to a new point in the plateau lattice.
+- Violation: creating `plateau-outbox-kafka` and `plateau-outbox-webhook` as sibling plateaus that are structurally identical except for one adapter file.
+- Risk: N interchangeable dispatch targets multiply into N sibling plateaus that duplicate the same structure and drift independently from each other, when the actual decision is a one-line composition-root wiring choice.
+- Fix: keep the port and its owning plateau singular; add each dispatch target as its own solution implementing that port, selected at composition-root wiring time — never as a plateau fork. See [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]] for where this decision is actually made.
+
 ## FDC resolution
 Preferred: adapt the shared slot to accept a collection (e.g. .NET's `IEnumerable<T>`) so every contributor registers independently and a dispatcher invokes all of them — this collapses the case into `FDN`, and no separate resolver solution is needed at all. Fall back to a Composite-pattern resolver only when the slot genuinely cannot become a collection. Either way, the resolver — if one is built — is never folded into either original solution; both must stay self-sufficient on their own.
 
@@ -156,6 +162,7 @@ Skip writing a Registry entry for an `-N-` group when the catalog's scale makes 
 - [ ] The grouping pass was repeated after adding any resolver, until no new group appeared.
 - [ ] Every Registry entry lives at `{catalog}/registry/{element-name}.md`, never duplicated inside a plateau folder; every plateau that includes the element links to that one file, and a deeper plateau that changes the intersecting set added a `# Growth history` row instead of a new file.
 - [ ] Every `FMC` classification was checked against the [wrap/relocate footnote](#the-wraprelocate-footnote-fmc-vs-fmn) before being recorded as `FMC` rather than `FMN`.
+- [ ] No `FDN`-classified VP (a Plateau Component, or interchangeable adapters behind one existing port) was given its own plateau — see [FDN never forks the plateau tree](#fdn-never-forks-the-plateau-tree).
 - [ ] Any group reaching N≥3 carries the architectural-signal note.
 - [ ] Two-or-more-`.create`-on-one-element cases were fixed by converting one to `.extend`, never by writing a resolver.
 - [ ] The plateau root skill's `registry:` YAML property lists every Registry file created for that plateau.

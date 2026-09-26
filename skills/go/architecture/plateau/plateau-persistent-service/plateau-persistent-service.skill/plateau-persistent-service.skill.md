@@ -4,7 +4,7 @@ description: plateau-cached-service plus a PostgreSQL-backed durable history of 
 whenToUse: when a Go web-service needs to durably record its own outcomes and reload them across a restart, or reviewing whether a solution that computes new domain data also exposes it through every applied inbound adapter
 domain: skill
 type: template
-version: 20260917040000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/plateau-persistent-service

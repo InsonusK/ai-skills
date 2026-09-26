@@ -7,10 +7,10 @@ The anchor document for this catalog's build (per [[skills/common-workflow/bulk-
 ```
 go.mod
 Makefile                          ← solution-go-repository-structure (build/run/lint) +
-                                     solution-go-conformance-testing (unit-test/mutation-test/
+                                     solution-conformance-testing-in-go (unit-test/mutation-test/
                                      test-report/test-and-report)
 .gitignore
-report-template/index.html        ← solution-go-conformance-testing
+report-template/index.html        ← solution-conformance-testing-in-go
 cmd/
   {service}/
     main.go                       ← solution-go-repository-structure (skeleton) → extended by
@@ -31,9 +31,10 @@ internal/
     http/
       server.go                   ← solution-go-http-api
 tools/
-  normalize_unittest/main.go      ← solution-go-conformance-testing
-  normalize_mutation/main.go      ← solution-go-conformance-testing
-  test_report/main.go             ← solution-go-conformance-testing
+  normalize_unittest/main.go      ← solution-conformance-testing-in-go
+  normalize_scenarios/main.go     ← solution-conformance-testing-in-go
+  normalize_mutation/main.go      ← solution-conformance-testing-in-go
+  test_report/main.go             ← solution-conformance-testing-in-go
 ```
 
 - **No `internal/domain/interfaces/`** at baseline — created by `solution-go-domain-ports`, a shared prerequisite the first-applied of `solution-external-integration`/`solution-cached-db`/`solution-persistent-db` depends on (VP2/VP6/VP7).
@@ -49,7 +50,7 @@ tools/
 | DomainLogic | `solution-go-domain-logic` |
 | HttpApi | `solution-go-http-api` |
 | AppLogging | `solution-go-app-logging` |
-| TestConformance (+ Cucumber / Code Coverage / Mutation / Test Reports) | `solution-go-conformance-testing` |
+| TestConformance (+ Cucumber / Code Coverage / Mutation / Test Reports) | `solution-conformance-testing-in-go` |
 
 ## 3. Variation Points → realizing solution(s) (must be 1:1 covered)
 
@@ -61,12 +62,12 @@ tools/
 | VP4 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP3 AND VP7 |
 | VP5 AsyncInboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-consumer` *(skeleton)* | — |
 | VP6 CachedDb | `solution-cached-db` (`depends_on` `solution-go-domain-ports`) | — |
-| VP7 PersistentDb | `solution-persistent-db` (`depends_on` `solution-go-domain-ports`) | — |
+| VP7 PersistentDb | `solution-persistent-db` (`depends_on` `solution-go-domain-ports`), optionally + `solution-go-db-migrations` (`depends_on` `solution-persistent-db`; not composed by any of the 5 plateaus yet) | — |
 
 ## 4. Link & path conventions
 
 - Every internal link points inside `skills/go/architecture/` — this catalog has no version-prefixed staging tree (no pre-existing catalog to parallel-build against; see `agent/DECISIONS.md`).
-- **Carve-out:** `solution-go-conformance-testing` legitimately `depends_on`/references `skills/common-workflow/test/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/go/testing/cucmber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). These are the only allowed external `depends_on`/references in the catalog.
+- **Carve-out:** `solution-conformance-testing-in-go` legitimately `depends_on`/references `skills/common-workflow/test/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/go/test/cucmber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). `solution-go-db-migrations` legitimately references (body prose only, never `depends_on:` — it is not a `solution-*.skill.md`) `skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md`, whose own "migration step" rule owns the deployment topology that gates `cmd/migrate` ahead of the app on each platform. These are the only allowed external `depends_on`/references in the catalog.
 - Wikilink form: `[[skills/go/architecture/solutions/solution-x.skill/solution-x.skill.md|solution-x]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
 - Implementation-file links: `[[.../solution-x.skill/Implementation/{path}/{File}.{kind}.md#SECTION|label]]`.
 - A solution's folder name, its main file name, and its `name:` field are identical: `solution-{name}.skill` / `solution-{name}.skill.md` / `name: solution-{name}`.

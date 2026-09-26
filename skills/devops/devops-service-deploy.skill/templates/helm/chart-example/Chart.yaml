@@ -1,0 +1,6 @@
+apiVersion: v2
+name: {service-name}
+description: Helm chart for {service-name}
+type: application
+version: 0.1.0
+appVersion: "{version}"

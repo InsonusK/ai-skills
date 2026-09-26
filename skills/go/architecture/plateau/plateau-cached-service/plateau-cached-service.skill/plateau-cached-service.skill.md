@@ -4,7 +4,7 @@ description: plateau-integrated-service plus a Redis-backed cache in front of th
 whenToUse: when a Go web-service needs to avoid repeating an expensive lookup or external call, or reviewing whether a cache-store failure incorrectly fails a request instead of degrading gracefully
 domain: skill
 type: template
-version: 20260917030000
+version: 20260924000000
 tags:
   - skill/template/plateau
   - plateau/plateau-cached-service

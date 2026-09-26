@@ -1,0 +1,65 @@
+graph TD
+    subgraph Common["Common features (Mandatory baseline)"]
+        direction TB
+        subgraph CommonRow1[" "]
+            direction LR
+            Svc["{Service}<br/>(root of the family)"]
+            DL["DomainLogic"]
+            LOG["AppLogging"]
+        end
+        subgraph TC["TestConformance"]
+            direction LR
+            CUC["Cucumber Test"]
+            COV["Code Coverage Test"]
+            MUT["Mutation Test"]
+            REP["Test Reports"]
+        end
+    end
+    style CommonRow1 fill:none,stroke:none
+
+    Common -->|Optional| Storage
+    Common -->|Optional| In["Inbound"]
+    Common -->|Optional| Out["Outbound"]
+    Common -->|Optional| Metric
+
+    Storage -->|"At least one (kind)"| Persistent
+    Storage -->|"At least one (kind)"| Cache
+
+    Persistent -->|"Alternative (realization)"| PostgreSQL
+    Persistent -->|"Alternative (realization)"| SQLite
+
+    Cache -->|"Alternative (realization)"| Redis
+    Cache -->|"Alternative (realization)"| InMemory
+
+    In -->|"At least one (kind)"| InboundSync
+    In -->|"At least one (kind)"| InboundAsync
+
+    InboundSync -->|"At least one (protocol)"| HttpApi
+    InboundSync -->|"At least one (protocol)"| GrpcApi
+
+    InboundAsync -->|"At least one (source)"| MessageConsumer
+    InboundAsync -->|"At least one (source)"| TaskBox
+
+    TaskBox -. "Requires" .-> Storage
+
+    MessageConsumer -->|"At least one (protocol)"| KafkaConsumer
+    MessageConsumer -->|"At least one (protocol)"| RabbitMQConsumer
+
+    Out -->|"At least one (kind)"| OutboundSync
+    Out -->|"At least one (kind)"| Outbox
+
+    OutboundSync -->|"At least one (protocol)"| HttpClient
+    OutboundSync -->|"At least one (protocol)"| GrpcClient
+    OutboundSync -->|"At least one (protocol)"| KafkaProducer
+    OutboundSync -->|"At least one (protocol)"| RabbitMQProducer
+
+    Outbox -->|Optional| MessageSendGuarantee
+    Outbox -. "Requires" .-> TaskBox
+    Outbox -. "Requires" .-> OutboundSync
+
+    MessageSendGuarantee -->|"At least one (critical)"| NonCritical
+    MessageSendGuarantee -->|"At least one (critical)"| Critical
+
+    Critical -. "Requires" .-> Persistent
+    NonCritical -. "Requires (any of storage)" .-> Cache
+    NonCritical -. "Requires (any of storage)" .-> Persistent

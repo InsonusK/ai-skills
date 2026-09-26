@@ -93,7 +93,7 @@ architectural fork that needs the owner's sign-off; everything else is execution
     made to this skill (see `[[v31-angular-plateau-build]]` memory, commit `0e2be8cd`).
 - **Planned solutions (12), not yet all authored** — common baseline: `solution-go-repository-structure`,
   `solution-go-domain-logic`, `solution-go-http-api`, `solution-go-app-logging`,
-  `solution-go-conformance-testing` (extends the shared
+  `solution-conformance-testing-in-go` (extends the shared
   `skills/common-workflow/test/solution-conformance-testing.skill`, mirroring the
   `ts`/`python`/`dotnet` per-stack extensions). VP-realizing: `solution-grpc-api` (VP1),
   `solution-external-integration` (VP2), `solution-go-messaging-infrastructure` +
@@ -153,7 +153,7 @@ solution mapping is now final), then Stage 4 (5 plateaus).
   `make mutation-test`/a real network smoke test — none would have surfaced from reading the
   solution skills alone):
   1. `godog.Options` needs an explicit `Format: "pretty"` — fixed in
-     `skills/go/testing/cucmber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
+     `skills/go/test/cucmber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
      in this build), since its own documented example carried the same latent bug.
   2. `solution-go-repository-structure`'s `main.go` was bundled into the repo-tier
      `Repository.create.md` while every solution that extends it expects a file-tier
@@ -204,3 +204,168 @@ solution mapping is now final), then Stage 4 (5 plateaus).
 **Stages 4–5 COMPLETE. Pipeline finished for this build's scope** (base + VP1 + VP2 + VP6 + VP7,
 5 plateaus). Remaining, deliberately out of scope for this batch per the owner's own message:
 VP3/VP4/VP5 (Kafka publish/consume + outbox) stay skeleton solutions with no realizing plateau.
+
+## Follow-up — solution-go-db-migrations (closes solution-persistent-db's own Boundaries gap)
+
+Added after the build above, in a separate worktree (`.ai-worktree/go-db-migration-solution`),
+triggered by the owner asking why `solution-persistent-db`'s adapter uses a bare
+`CREATE TABLE IF NOT EXISTS` instead of a migration library, then asking for a real solution: a
+tool that supports running once at service startup *or* once as a separate deploy-time job, with one
+versioned source of truth for the schema.
+
+**Process correction, recorded because it is worth not repeating:** the first pass modeled this as a
+new "VP8" row and edited `feature-model.md`/`diagrams/feature-diagram.mmd`/`variability-map.md`/
+`plateau/plateau-repository.md` before the owner had confirmed the migration tool — the owner
+stopped this, reverted those edits (`git checkout --`), and corrected two things: (1) the tool choice
+must be agreed first, not decided and then presented; (2) this is **part of VP7**, not a new VP — a
+team never chooses "migrations: yes/no" independently of `PersistentDb` itself. Both are now the
+standing pattern for any future addition to this catalog that extends an existing VP's realization.
+
+**Tool choice, verified rather than assumed:** a first internal pass leaned `golang-migrate`; the
+owner pushed back that it might be unmaintained ("заморожен"). Checked for real via the Go module
+proxy (`@latest`/`@v/list`) and the GitHub API rather than trusting either direction — neither
+project is stalled (`golang-migrate` v4.20.1 released 2026-09-09, `goose` v3.28.0 released
+2026-09-02, both un-archived). Both were also fetched into scratch modules and compiled against this
+solution's actual shape (pgx, `go:embed`, Postgres locking). Real, measured differences favored
+**goose**: lighter `go.sum` footprint (27 vs. 87 lines in a minimal scratch module), and its session
+locker (`goose.WithSessionLocker(lock.NewPostgresSessionLocker())`, opt-in) matches
+`golang-migrate`'s default-on advisory lock once explicitly enabled — recorded with the full
+comparison table in `solution-go-db-migrations.skill/adr/migration-tool-choice.md`. Checked whether
+Google publishes any recommendation between the two (Cloud SQL docs, Go style guide, golang/go
+wiki) — found none; "Database Migration Service" on `cloud.google.com` is an unrelated
+heterogeneous-engine migration product, not a schema-versioning library recommendation.
+
+**Structure:** kept as a second solution skill (`solution-go-db-migrations`, `depends_on`
+`solution-persistent-db`) rather than merged into `solution-persistent-db` directly — owner's
+explicit choice, mirroring VP3's existing two-solutions-one-VP precedent
+(`solution-go-messaging-infrastructure` + `solution-go-kafka-producer`). Unlike VP3's pairing it is
+**not** mandatory whenever VP7 is `Yes`: `plateau-persistent-service` (built before this solution
+existed) composes `solution-persistent-db` alone and stays a legal VP7 realization; see
+`variability-map.md`'s own "`solution-go-db-migrations` is part of VP7, not a new VP" note for why
+mandatory pairing was rejected (it would make the map disagree with that plateau's own already-
+verified `created_by`).
+
+**Ground truth:** `Migrate`'s exact code (goose provider + session locker + `pgx/v5/stdlib` bridge +
+`go:embed`) was compiled and `go vet`-ed against the real `github.com/pressly/goose/v3 v3.28.0`
+release in a throwaway scratch module before being written into the solution's Implementation files
+— not assumed from documentation. No plateau retrofitted to compose it (see `variability-map.md`'s
+own note); that remains future work, same as VP3–VP5.
+
+### Second follow-up — dropped the startup-run call site; migration-job topology moved to devops-service-deploy
+
+The owner pointed out the first version of this solution offered two call sites for `Migrate`
+(`cmd/{service}/main.go`'s own startup path, or a separate `cmd/migrate` job) with no stated
+criteria for choosing between them, then proposed dropping startup-run entirely: migrations always
+run as a separate job, gated so the app container cannot start until the job completes — better
+scaling under load, no concurrent-migration races to reason about, and ~zero ongoing cost once the
+job has completed. Recorded as its own ADR,
+`solution-go-db-migrations.skill/adr/job-only-not-startup-run.md` (searched: job-only vs. the
+original team's-choice design vs. startup-run-only — job-only selected).
+
+**Real per-platform mechanics, verified via web search before committing to the design** (the
+owner's proposal is sound, but "the app waits for the job" does not work identically everywhere):
+Docker Compose supports it natively (`depends_on: condition: service_completed_successfully`,
+Compose v2.20+/Engine 25+). Kubernetes supports it via a `Job` + `kubectl wait
+--for=condition=complete`, or automatically via a Helm `pre-install,pre-upgrade` hook. **Docker
+Stack (Swarm) does not** — `docker stack deploy` silently ignores `depends_on` entirely (confirmed:
+a long-standing, still-open Docker Compose/Moby issue), even though Swarm's own `deploy.mode:
+replicated-job` (added specifically for one-shot tasks like migrations) exists — so on Stack the
+"wait" has to be a scripted two-step deploy (job stack deployed and polled via `docker service ps`
+until `Complete`, then the app stack), not a manifest-only dependency.
+
+**Where this landed:** the actual "gate the app on the job" rule was added to
+`skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md` (a new MUST rule,
+mirrored into its `service-deploy-skill-template.md` skeleton, plus new
+`docker-stack-migrate.example.yml`/`k8s-migrate-job.example.yml` templates and wait-step updates to
+all three deploy guides) — **not** duplicated inside this Go catalog, since it is a cross-stack
+deployment-topology concern every service repository needs, not something specific to Go or to
+`PersistentDb`. `solution-go-db-migrations` now only provides `cmd/migrate` (the binary that
+skill's manifests invoke) and references it in prose; `INVARIANTS.md`'s external-reference carve-out
+list (section 4) was extended to name this one addition explicitly. `cmd/{service}/main.go.extend.md`
+was deleted from this solution's `Implementation/` — the solution no longer touches `main.go` at
+all. goose's session lock is kept, reframed as defense-in-depth against a retried/duplicated job
+run rather than the primary safety mechanism (that is now the deploy pipeline itself, which never
+starts the app while the job is still running).
+
+### Third follow-up — reinstated MigrateOnStart as a second, conditionally-safe mode
+
+The owner's own real deployment topology made job-only stricter than necessary: their Docker Stack
+deployments are always single-replica (the concurrency risk job-only exists to prevent cannot occur
+there), and their Kubernetes deployments always go through a Helm chart (a `pre-install,pre-upgrade`
+hook Job blocks the release natively, so the two-command sequence the plain-manifest path needs is
+never actually paid). The owner also explicitly does not want a two-command deploy anywhere it can
+be avoided.
+
+**Before landing on the final design, the owner asked whether wiring both modes at once (Job *and*
+startup-run, as a "safety net") would create problems.** Answered with five concrete mechanisms, not
+just "it's not best practice": every process restart (crash/OOM/eviction/HPA scale-out), not only
+deploys, would touch the database; it directly undermines autoscaling; it can introduce a new
+pod-readiness stall if an unrelated restart races a still-running Job holding the lock; it silently
+masks a skipped/misconfigured Job step instead of failing loudly; and it re-couples migration
+failure to the app's crash-loop for that path. A lighter alternative (a read-only version-mismatch
+check at startup, fail loudly on mismatch, no mutation) was named as the right tool for "catch a
+skipped Job step" instead of a full migrate-on-start fallback — documented as a future option, not
+built today.
+
+**Then verified two best-practice claims before finalizing** (per this build's own "ground truth,
+not assumed" pattern): the Twelve-Factor App methodology's Admin Processes factor (XI) independently
+corroborates "separate process, same codebase" as the default shape; Kubernetes-specific
+practitioner sources independently name startup-run as the anti-pattern for the owner's own original
+reason (N replicas → N concurrent attempts) and explicitly reject init containers for the identical
+reason (per-pod, same problem moved earlier); Helm's own documentation confirms `pre-install,
+pre-upgrade` hooks genuinely block the release on the hook resource's completion, natively.
+
+**Final design:** `Config.MigrateOnStart` (`MIGRATE_ON_START`, default `false`) is the one switch.
+`cmd/{service}/main.go.extend.md` was rewritten (recreated after being deleted in the prior
+follow-up) to call `Migrate` only inside `if cfg.MigrateOnStart`. The condition for choosing
+MigrateOnStart is stated generically in `devops-service-deploy.skill.md` — safe only when at most
+one instance of the migrating process can ever run concurrently — **not** as an unconditional
+"Docker Stack = MigrateOnStart" mapping, because that skill is shared by every service in this
+repository, not only ones matching this owner's own topology; the shared Stack template's own
+default (`replicas: 2`) is left requiring Job mode unless a specific service's own copy documents
+single-replica and switches it. For this owner's own stated topology the condition resolves to
+exactly what they asked for (Stack → MigrateOnStart, Kubernetes-via-Helm → Job,
+`MIGRATE_ON_START=false` explicit). This distinction (generic conditional rule vs. this owner's own
+resolved instance of it) was raised proactively, per this repository's `AGENTS.md` "Role stance"
+instruction to push back on an incomplete/inconsistent ask rather than defer silently — the owner's
+underlying goal was still fully honored.
+
+Recorded as `solution-go-db-migrations.skill/adr/migration-mode-per-platform.md`, written bilingually
+(English + Russian, mirrored structure) at the owner's explicit request given the topic's
+complexity — it **supersedes** `adr/job-only-not-startup-run.md`, which was kept unedited with a
+superseded-by pointer rather than deleted or rewritten, per `adr-create`'s "record the rejected
+options" principle (its reasoning wasn't wrong, the owner's topology just made a second mode safe in
+addition to it, not a replacement for it). `devops-service-deploy.skill.md`'s "migration step" rule
+and its mirror in `service-deploy-skill-template.md` were rewritten to the same generic,
+condition-based shape.
+
+### Fourth follow-up — gave Helm its own dedicated section instead of a footnote inside plain-k8s
+
+The owner pointed out that Helm — their actual, only Kubernetes deployment path — was buried as a
+`MAY`-level bonus and a commented-out annotation snippet inside the plain-manifest `k8s/` materials,
+not a real, standalone, worked path. Built a full, real chart under
+`templates/helm/chart-example/` (`Chart.yaml`, `values.yaml`, `.helmignore`,
+`templates/_helpers.tpl`/`deployment.yaml`/`service.yaml`/`configmap.yaml`/`secret.yaml`/
+`ingress.yaml`/`migrate-job.yaml`) plus its own `helm-deploy.example.md` deploy guide
+(install/upgrade/rollback/uninstall).
+
+**Verified for real, not just written**: installed `helm` (v3.22.0, via the official
+`get-helm-3` script — not present in this environment before) and ran `helm lint` (clean, one
+informational note only) and `helm template` in both `migrate.mode=job` and `migrate.mode=onStart`
+against the actual in-place chart files, confirming the migrate Job renders only in `job` mode and
+`MIGRATE_ON_START` flips to `"true"` only in `onStart` mode — never both, by construction of the
+template's own `{{- if eq .Values.migrate.mode "job" }}` condition and the Deployment's env var
+being derived from that same values key, not a second independently-settable one. This closes the
+gap the ADR's own Boundary named (`solution-go-db-migrations` "does not verify... relies on the
+deploying team reading and honoring it") for the Helm path specifically: the chart makes "both modes
+at once" structurally impossible to reach via a values override, not merely documented against.
+
+`devops-service-deploy.skill.md` restructured accordingly: "Kubernetes coverage" now explicitly
+names plain-manifests and Helm as two alternative, equally first-class paths (pick one, don't
+maintain both as the steady state); a new "Helm chart coverage" rule states the single-source-of-
+-truth requirement above; `templates/helm/` joins `templates/docker/`/`templates/k8s/` in the
+required grouping layout; Example/Check-list sections and the `service-deploy-skill-template.md`
+mirror all updated to match. `MAY: Provide a Helm chart in addition to plain manifests` was removed
+— that framing was already inconsistent with the pre-existing `Kubernetes coverage` MUST rule, which
+had always accepted "manifests **or** Helm chart" as alternatives satisfying the same requirement,
+not one as an addition on top of the other.

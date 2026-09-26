@@ -20,14 +20,26 @@ kubectl apply -f deploy/k8s/configmap.yml
 kubectl apply -f deploy/k8s/secret.yml
 ```
 
-### 3. Apply workload and network resources
+### 3. Run the migration job and wait for completion (if `deploy/k8s/migrate-job.yml` applies)
+A `Job`'s pod template is immutable, so a job with the same name from a previous deploy must be
+deleted before re-applying it with a new image tag — `kubectl apply` alone fails on that field
+change. Do not proceed to step 4 until `kubectl wait` reports the job complete:
+```bash
+kubectl delete job {service-name}-migrate -n {namespace} --ignore-not-found
+kubectl apply -f deploy/k8s/migrate-job.yml
+kubectl wait --for=condition=complete --timeout=120s job/{service-name}-migrate -n {namespace}
+```
+If the chart is Helm-based, wire the same Job as a `helm.sh/hook: pre-install,pre-upgrade` resource
+instead — `helm upgrade` then blocks on it automatically and this step is unnecessary.
+
+### 4. Apply workload and network resources
 ```bash
 kubectl apply -f deploy/k8s/deployment.yml
 kubectl apply -f deploy/k8s/service.yml
 kubectl apply -f deploy/k8s/ingress.yml
 ```
 
-### 4. Verify the deployment
+### 5. Verify the deployment
 ```bash
 kubectl get pods -n {namespace}
 kubectl logs -n {namespace} -l app={service-name} --tail=50
@@ -36,7 +48,9 @@ curl http://localhost:{host-port}/health-check
 ```
 
 ## Update to a new version
-Set the new image tag in `deploy/k8s/deployment.yml`, then:
+If the new version adds migrations, repeat step 3 with the new image tag first (deleting the old
+job before re-applying, as shown there) and wait for it to complete — before touching the
+Deployment. Then set the new image tag in `deploy/k8s/deployment.yml`, then:
 
 ```bash
 kubectl apply -f deploy/k8s/deployment.yml

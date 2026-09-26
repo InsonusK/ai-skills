@@ -1,0 +1,36 @@
+# This is Job mode: present only when the service has its own schema
+# migration step AND runs more than one replica (docker-stack.example.yml
+# defaults to replicas: 2) — see devops-service-deploy.skill.md's
+# "migration step" MUST rule. If this service is instead explicitly pinned
+# to deploy.replicas: 1, skip this file entirely and use MigrateOnStart
+# mode instead (the app's own MIGRATE_ON_START=true) — simpler, and safe
+# only because there is never more than one instance to race.
+#
+# Deployed under the SAME stack name as docker-stack.example.yml, one step
+# ahead of it — this is one stack, not two (see docker-stack-deploy.example.md's
+# step 3) — never folded into docker-stack.example.yml itself, because
+# docker stack deploy ignores depends_on entirely, so a single manifest
+# cannot express "the app waits for this job"; only deploying in two
+# separate steps can. Safe to leave deployed indefinitely after it
+# completes: docker stack deploy never removes a service that is simply
+# absent from the file passed to a later deploy of the same stack, unless
+# that later deploy is run with --prune (never do that here).
+services:
+  migrate:
+    image: "{registry}/{service-name}:{version}"
+    command: ["/app/migrate"]
+    environment:
+      - CONNECTION_STRING_FILE=/run/secrets/connection_string
+    secrets:
+      - connection_string
+    deploy:
+      mode: replicated-job
+      replicas: 1
+      restart_policy:
+        condition: none
+
+secrets:
+  connection_string:
+    external: true
+    # Same external secret docker-stack.example.yml uses — create it once
+    # per environment (see docker-stack-deploy.example.md step 2).

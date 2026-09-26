@@ -5,13 +5,13 @@ whenToUse: when adding, removing, or relocating a top-level package under this p
 domain: skill
 type: template
 plateau: plateau-http-service
-version: 20260917000000
+version: 20260924000000
 tags:
   - skill/template/repo
   - plateau/plateau-http-service
 created_by:
   - "[[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]]"
-  - "[[skills/go/architecture/solutions/solution-go-conformance-testing.skill/solution-go-conformance-testing.skill.md|solution-go-conformance-testing]]"
+  - "[[skills/go/test/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]]"
 ---
 
 # Structure
@@ -39,13 +39,14 @@ internal/
     http/                         ← package tier, see plateau-http-service--package-api-http.skill.md
 tools/
   normalize_unittest/main.go
+  normalize_scenarios/main.go
   normalize_mutation/main.go
   test_report/main.go
 ```
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/Repository.create.md|Repository]]
-- [[skills/go/architecture/solutions/solution-go-conformance-testing.skill/solution-go-conformance-testing.skill.md|solution-go-conformance-testing]] - [[skills/go/architecture/solutions/solution-go-conformance-testing.skill/Implementation/Repository.extend.md|Repository]]
+- [[skills/go/test/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]] - [[skills/go/test/solution-conformance-testing-in-go.skill/Implementation/Repository.extend.md|Repository]]
 
 ## Directory and package skills
 | Directory \| file | template link | Description |
@@ -58,7 +59,8 @@ __Applied solutions:__
 MUST:
 - `unit-test`/`mutation-test`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
 - `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `public/index.html` — never generated.
+- `make unit-test` writes `tmp/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/Repository.create.md#MUST|Repository]]
-- [[skills/go/architecture/solutions/solution-go-conformance-testing.skill/solution-go-conformance-testing.skill.md|solution-go-conformance-testing]] - [[skills/go/architecture/solutions/solution-go-conformance-testing.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/go/test/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]] - [[skills/go/test/solution-conformance-testing-in-go.skill/Implementation/Repository.extend.md#MUST|Repository]]
