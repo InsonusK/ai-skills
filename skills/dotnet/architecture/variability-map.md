@@ -10,7 +10,14 @@ Built per [[skills/common-workflow/architecture/design/plateau-map/variability-m
 
 **Status of this catalog.** `v3.1/solutions/` now holds the catalog's own solution skills, migrated and adapted from [[skills/dotnet/architecture/v3/README.md|v3]] (see `solutions-plan.md` / `DECISIONS.md`). Every **Realized by** cell links into `v3.1/solutions/`. Rows still marked **aspirational** (VP10–VP14) have skeleton solutions only — their contract is a draft until a real consumer exists. `v3.1/plateau/` holds three plateaus built from this map; the plateau↔VP view lives in [plateau/plateau-repository.md](skills/dotnet/architecture/plateau/plateau-repository.md), maintained per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md|plateau-map-create]].
 
-## Variation Points
+## Common Variation Points
+
+Inherited from the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]], one row per common VP. No common VP is admitted yet; a row of the table below moves here, re-IDed to its `VP-C###` ID, when the common VP covering it is admitted.
+
+| ID | VP | State | Stack delta | Realized by | Migration |
+| --- | --- | --- | --- | --- | --- |
+
+## Stack Variation Points
 
 Each row is one axis on which two modules built on this family could legitimately answer differently. Common baseline features from the Feature Model (`SoftValueObjects`, `ValidationPipeline`, `ExceptionHandlingPipeline`, `CrossModuleValidation`, `MediatorModuleIntegration`, `AppLogging`, `TestConformance` + its four children) are **not** rows here — every path through the family includes them, so per the parent skill's test they are shared core, not variability. See [Grouping features and selectors that are not VPs](#grouping-features-and-selectors-that-are-not-vps).
 

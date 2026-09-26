@@ -1,100 +1,74 @@
 # Web-service common Variability Map — invariants
 
-The anchor document for introducing a **shared, inherited** Variability Map for every backend web-service catalog (per [[skills/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md|bulk-authoring-harness]]). Every artifact this task produces or migrates must satisfy every invariant here. `check.sh` enforces the mechanical ones; the per-wave audit enforces the rest. Open forks are in `DECISIONS.md` (⚠️ entries).
+The anchor document for replacing the copy-what-applies `templates/web-service-variability-map/` with a **shared, inherited** common map that every backend web-service catalog carries, built up **one VP at a time** (per [[skills/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md|bulk-authoring-harness]]). `check.sh` enforces the mechanical invariants; the per-VP audit enforces the rest. Choices are logged in `DECISIONS.md`.
 
-**Problem being fixed.** The existing `templates/web-service-variability-map/` is a *copy-what-applies* menu. Each stack copied, renamed, and re-cut it: Go has 7 VPs, dotnet 14; Go's `ExternalIntegration` is one VP where dotnet splits by transport; `DomainLogic` and `HttpApi` are common baseline in Go and VPs in dotnet. Nothing ties a stack row back to the shared question, so nothing detects drift.
+**Problem being fixed.** The old template was derived mechanically from the common Feature Model and never verified against a real stack. Each stack copied and re-cut it — Go has 7 VPs, dotnet 14; Go's `ExternalIntegration` is one VP where dotnet splits by transport; `DomainLogic`/`HttpApi` are baseline in Go and VPs in dotnet — and nothing ties a stack row back to a shared question, so nothing detects drift.
 
 ## 1. The model: common VPs are inherited, not copied
 
-- **One common map** at `variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md` (renamed from `web-service-variability-map/`, symmetric with `feature-map-create.skill/templates/web-service-common-features/`). It owns, for every common VP: the question, Variants, Constraint, Realization depends on. It never holds `Realized by`.
-- **Every bound stack map carries every common VP** — present, by ID, in its own `## Common Variation Points` table. Absent row = check failure, never "not relevant".
-- **A stack map restates nothing the common map owns.** Its common-VP row holds only: ID, name, State, the stack's delta (if any), `Realized by`, `Migration`. The question/Variants/Constraint are read from the common map through the ID link. (Every fact stated once — this is what stops the drift.)
-- **Stack-local VPs** (variability only this family has) live in a separate `## Stack Variation Points` table with the full column set, exactly as today.
+- **One common map** at `variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md`. It starts **empty** and grows only through §4. The old `web-service-variability-map/` is deleted, not kept beside it — two sources of common VPs is the problem being fixed.
+- **The common map owns the concept.** Per common VP: a table row (question, Variants, Constraint, Realization depends on) and a `### VP-C### {Name}` section with the concept — what the question means, where its boundary with neighbouring VPs lies, why each Constraint holds. It never holds `Realized by`.
+- **Every bound stack map carries every common VP** in its own `## Common Variation Points` table. An absent row is a check failure, never "not relevant".
+- **A stack row restates nothing the common map owns.** It holds only: ID (linking the common section), name, State, the stack's delta, `Realized by`, `Migration`. Every fact stated once — this is what stops the drift.
+- **Stack-local VPs** (variability only that family has) stay in `## Stack Variation Points` with the full column set, as today.
+- **Bound stacks are listed as plain backticked paths** in the common map's `## Bound stack maps` section — never links: the common map lives in a stack-agnostic skill, which must not link stack-specialized files (skill-design). `check.sh` reads that list. Angular catalogs are a different Program Family and are not bound.
 
 ## 2. IDs
 
 | Kind | Format | Example |
 | --- | --- | --- |
-| Common VP | `VP-C` + 3 digits | `VP-C014` |
+| Common VP | `VP-C` + 3 digits, assigned in admission order | `VP-C001` |
 | Stack-local VP | `VP` + number (unchanged) | `VP3` |
 
-- IDs are stable forever: never renumbered, never reused. A retired common VP keeps its row with state `Retired` in the common map; its number is not reassigned.
-- A stack-local VP that becomes common is **re-IDed** to its `VP-C` number in the stack map and every reference in that stack's tree (see §6). Its old local number is left as a gap, never reused.
+- IDs are never renumbered or reused. A retired common VP keeps its common row, marked `Retired` in its VP cell, and is dropped from every stack map.
+- When a stack-local VP is covered by a newly admitted common VP, it is **re-IDed** to the `VP-C` number in its stack map and in every reference in that stack's tree. The old local number becomes a gap. `agent/id-map.tsv` records every re-ID; `check.sh` fails on any leftover old ID.
 
 ## 3. States of a common VP in a stack map
 
 | State | Meaning | Stack delta cell | `Realized by` |
 | --- | --- | --- | --- |
-| **Inherited** | Taken as defined in the common map. | `—` | Solution link(s) per Variant, or `deferred — {reason}` |
-| **Refined** | Taken, plus stack-evidenced narrowing: a Variant unsupported (with reason), an extra Constraint, or a stack-specific realization note. | Required: what is narrowed and why | Solution link(s) per supported Variant |
-| **Fixed: {Variant}** | This family's Feature Model makes the answer non-optional — every member answers `{Variant}`. `Fixed: No` is the old "N/A". | Required: the reason (Feature Model ref) | Baseline solution for `Fixed: Yes`; `—` for `Fixed: No` |
+| **Inherited** | Taken as defined in the common map. | `—` | Solution link per Variant, or `deferred — {reason}` |
+| **Refined** | Taken with stack-evidenced narrowing: a Variant unsupported, an extra Constraint, a stack-specific realization note. | Required: what is narrowed and why | Solution link per supported Variant |
+| **Fixed: {Variant}** | This family's Feature Model makes the answer non-optional — every member answers `{Variant}`. `Fixed: No` = "this family never has it". | Required: reason, with the Feature Model reference | Baseline solution for `Fixed: Yes`; `—` for `Fixed: No` |
 
-- **A stack may narrow, never widen.** It may mark a common Variant unsupported; it may not add a Variant or loosen a Constraint. A new Variant that is not stack-specific is added to the common map first.
-- **`deferred`** means "applicable, no solution yet" — a check *warning*, not a failure. It is different from `Fixed: No` ("this family never answers Yes").
+- **A stack narrows, never widens.** It may mark a Variant unsupported or add a Constraint; it never adds a Variant or loosens a Constraint. A missing Variant that is not stack-specific goes into the common map first.
+- **`deferred`** = applicable, no solution yet → a check *warning*. Distinct from `Fixed: No`.
 
-## 4. Common VP list (v1 — review this)
+## 4. Admitting one common VP (the unit of work)
 
-Derived from `web-service-common-features` + the owner's TaskBox/Outbox decisions (2026-09-26). F-refs are open forks in `DECISIONS.md`.
+One VP — or a tight group that only makes sense together — per cycle, per commit:
+1. **Discuss with the owner:** question, Variants, Constraint, Realization depends on, boundary with neighbouring VPs. Nothing is admitted on the agent's inference alone.
+2. **Common map:** add the table row + `### VP-C###` concept section. It may reference only already-admitted common VPs — this fixes the admission order.
+3. **Every bound stack, while the concept is fresh:** decide the State, the concrete realization (library or own implementation, and why), and what is narrowed. Record it as a `Realized by` link; when the stack has no solution skill for it yet, create a skeleton solution (`> Draft contract` marker, as the Kafka/Outbox skeletons are) carrying that decision.
+4. **Migrate:** a stack-local VP now covered by this common VP is re-IDed (§2) in the same commit.
+5. `check.sh` clean → fresh-eyes audit against this file + the governing skills → commit.
 
-| ID | VP | Variants | Constraint | Realization depends on |
-| --- | --- | --- | --- | --- |
-| VP-C001 | **DomainLogic** — a real domain layer (guarded state transitions), vs. a pass-through service | Yes / No | — | — (F1) |
-| VP-C002 | **PersistentStorage** — durable system-of-record store | Yes / No | — | — |
-| VP-C003 | **PersistentStoreKind** | PostgreSQL / SQLite | Applicable only when C002=Yes | — |
-| VP-C004 | **CacheStorage** — non-durable, cache-capable store | Yes / No | — | — |
-| VP-C005 | **CacheStoreKind** | Redis / InMemory | Applicable only when C004=Yes | — |
-| VP-C006 | **HttpInbound** | Yes / No | — | — |
-| VP-C007 | **GrpcInbound** | Yes / No | — | — |
-| VP-C008 | **KafkaConsumer** | Yes / No | — | Mandatory sub-feature: stack messaging infrastructure (shared with C009, C012, C013) |
-| VP-C009 | **RabbitMqConsumer** | Yes / No | — | same as C008 |
-| VP-C010 | **HttpOutbound** — sync call to another service over HTTP | Yes / No | — | — |
-| VP-C011 | **GrpcOutbound** | Yes / No | — | — |
-| VP-C012 | **KafkaProducer** | Yes / No | — | same as C008 |
-| VP-C013 | **RabbitMqProducer** | Yes / No | — | same as C008 |
-| VP-C014 | **TaskBox** — deferred execution: a task is stored, then executed by a background worker | Yes / No | Yes requires (C002=Yes OR C005=Redis) | **One realization per store that holds data a task is created about**, in *that* store: PostgreSQL → stack library with in-transaction enqueue; Redis → common Redis-Streams contract (enqueue inside the caller's `MULTI`); SQLite → stack decides (may be Refined-unsupported); InMemory → none (tasks would not survive restart). The durability guarantee is a consequence of the store, not a separate choice (F2). |
-| VP-C015 | **Outbox** — outbound calls are not made directly; they are enqueued as TaskBox tasks and dispatched by the task handler | Yes / No | Yes requires C014=Yes AND (C010 OR C011 OR C012 OR C013 = Yes) | The task is enqueued in the **same atomic write, in the same store,** as the business change it reports; the handler calls a C010–C013 adapter (protocol = FDN, never a new VP); delivery is at-least-once, so every message carries an idempotency key. |
-| VP-C016 | **Metric** — stub | Yes / No | — | — |
+## 5. Admission backlog (candidates, not contracts)
 
-**Removed vs. the old template:** `HasCriticalGuaranteeMessages` / `HasNonCriticalGuaranteeMessages` (F2). **Moved in the feature template:** `TaskBox` leaves `InboundAsync` and becomes its own optional feature; `Outbox -. Requires .-> TaskBox` stays.
+Order follows references: a VP comes after every common VP it names.
 
-## 5. Bound stacks and ID mapping
+| # | Candidate | Carries forward from the chat / old template | Open question for its admission |
+| --- | --- | --- | --- |
+| 1 | Storage: persistent + kind, cache + kind | old VP1–VP4; Go VP6/VP7, dotnet VP2 | Yes/No + kind VP, or one categorical VP? SQLite kept? |
+| 2 | TaskBox | deferred execution; realized in the store that holds the task's data (PostgreSQL → library with in-transaction enqueue; Redis → shared Redis-Streams contract, enqueue inside the caller's `MULTI`) | Does the Critical/NonCritical guarantee stay a VP or become a consequence of the store? |
+| 3 | Outbox | outbound calls go through TaskBox; same atomic write, same store as the business change; at-least-once + idempotency key | Go VP4 / dotnet VP14 today require Kafka — generalize to any outbound protocol? |
+| 4 | Inbound protocols | owner: HTTP is mandatory for every backend service → common baseline, not a VP; gRPC optional | dotnet's family is a `Module` — can a module lack HTTP (dotnet VP8)? |
+| 5 | Outbound protocols | old VP10–VP13; dotnet VP10/VP11; Go VP2 `ExternalIntegration` (gRPC-only realization) | Go's transport-agnostic ExternalIntegration → the gRPC VP? |
+| 6 | Messaging (Kafka/RabbitMQ consume/produce) | Go VP3/VP5, dotnet VP12/VP13 | Shared messaging infrastructure as mandatory sub-feature |
+| 7 | DomainLogic | dotnet VP1; Go baseline | Common VP with Go `Fixed: Yes`, or dotnet-local? |
+| 8 | Metric | old VP17 (stub) | Admit now or when a stack needs it? |
+| 9 | Domain-modelling (ValueObjects, SharedRules, concurrency, external identity, audit timestamps) | dotnet VP3–VP7 | Stay dotnet-local until a second stack needs one? |
 
-Bound stacks are listed in the common map's `## Bound stack maps` section; `check.sh` reads that list. Angular catalogs are a different Program Family (frontend) and are **not** bound.
+## 6. Framework wave (before any VP)
 
-| Common | Go (`skills/go/architecture`) | dotnet (`skills/dotnet/architecture`) |
-| --- | --- | --- |
-| C001 DomainLogic | Fixed: Yes (common in Go FM) | ← VP1, Inherited |
-| C002 PersistentStorage | ← VP7, Inherited | ← VP2, Refined (+ requires C001=Yes) |
-| C003 PersistentStoreKind | new, Refined (PostgreSQL only, ADR postgres-via-pgx) | new, Refined (PostgreSQL only) |
-| C004 CacheStorage | ← VP6, Inherited | new, deferred |
-| C005 CacheStoreKind | new, Refined (Redis only) | new, deferred |
-| C006 HttpInbound | Fixed: Yes (common in Go FM) | ← VP8, Inherited |
-| C007 GrpcInbound | ← VP1, Inherited | ← VP9, Inherited |
-| C008 KafkaConsumer | ← VP5, Inherited | ← VP12, Inherited |
-| C009 RabbitMqConsumer | new, deferred | new, deferred |
-| C010 HttpOutbound | new, deferred | ← VP10, Inherited |
-| C011 GrpcOutbound | ← VP2 `ExternalIntegration`, Inherited (F5) | ← VP11, Inherited |
-| C012 KafkaProducer | ← VP3, Inherited | ← VP13, Inherited |
-| C013 RabbitMqProducer | new, deferred | new, deferred |
-| C014 TaskBox | new, deferred | new, deferred |
-| C015 Outbox | ← VP4, Refined (Kafka dispatch, PostgreSQL only; owner rule on when outbox is mandatory) | ← VP14, Refined (Kafka dispatch only) |
-| C016 Metric | new, deferred | new, deferred |
-| *stack-local, kept* | none | VP3 ValueObjects, VP4 SharedRules, VP5 EntityConcurrencyControl, VP6 ExternalIdentity, VP7 AuditTimestamps (F4) |
-
-## 6. What a migrated stack must change
-
-1. `variability-map.md`: split into `## Common Variation Points` (all 16 rows, §3 shape) and `## Stack Variation Points` (local rows, unchanged IDs); notes sections re-keyed to the new IDs.
-2. Every `VPn` reference to a migrated VP anywhere under that stack's catalog → its `VP-C` ID (plateau skills, `plateau/plateau-repository.md`, solutions, `agent/`, registry, `delta-conflict-analysis.md`). Mechanical, by the §5 mapping; `check.sh` fails on any leftover migrated `VPn`.
-3. `feature/feature-model.md` is **not** restructured in this task — only a note that its VPs are now keyed by the common map.
-
-## 7. Skill changes
-
-- `variability-map-create`: the common-map inheritance rules (§1–§3), the explicit exception to "A row only for a real decision" (common rows are always present — a non-decision is `Fixed`), workflow step 2 points at the renamed template; ADR `common-vps-inherited-by-id` recording this vs. copy-menu / per-stack-free alternatives.
+- Common map with an empty `## Common Variation Points` table, the `## Bound stack maps` list (Go, dotnet), and no VP sections.
+- `variability-map-create`: rules for §1–§4 (carry every common VP; restate nothing; narrow never widen; admit through the common map; the states vocabulary), the explicit exception to "A row only for a real decision" (a common row is always present — a non-decision is `Fixed`), workflow step 2 pointing at the new map; ADR `common-vps-inherited-by-id`.
 - `variability-map.template.md`: two-table shape.
-- `feature-map-create`'s `web-service-common-features`: `TaskBox` as its own feature, guarantee nodes removed (per F2), DomainLogic moved per F1; its link to the renamed template.
+- Bound stack maps: add an empty `## Common Variation Points` section; rename their table's section to `## Stack Variation Points`. No row moves yet.
+- Delete the old template; fix its two inbound links.
 
 ## Out of scope
 
-- The TaskBox **contract** itself (port `Enqueue(tx, task)`, retry/DLQ/idempotency semantics, the Redis-Streams key/field model, Cucumber scenarios) and any per-stack TaskBox solution — a follow-up task; here C014 only states what the realization depends on.
-- Restructuring stack Feature Models to inherit common features the same way (the same problem one layer up — follow-up).
+- The TaskBox contract (port `Enqueue(tx, task)`, retry/DLQ/idempotency semantics, the Redis-Streams key/field model, Cucumber scenarios) — authored with or after TaskBox's admission, not in the framework wave.
+- Restructuring stack Feature Models to inherit common features the same way (the same problem one layer up).
 - Angular catalogs.

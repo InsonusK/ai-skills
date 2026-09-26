@@ -10,7 +10,14 @@ Built per [[skills/common-workflow/architecture/design/plateau-map/variability-m
 
 **Status of this catalog.** `solutions/` holds this catalog's own solution skills, authored fresh (no prior catalog to migrate from — see `agent/DECISIONS.md`). Every **Realized by** cell links into `solutions/`. Rows VP3–VP5 (`AsyncOutboundApi`, `OutboxPattern`, `AsyncInboundApi`) are **aspirational**: their solutions are skeletons with a draft-contract marker — no plateau in this catalog's first build realizes them yet. `plateau/` holds the five plateaus built from this map; the plateau↔VP view lives in `plateau/plateau-repository.md`, maintained per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md|plateau-map-create]].
 
-## Variation Points
+## Common Variation Points
+
+Inherited from the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]], one row per common VP. No common VP is admitted yet; a row of the table below moves here, re-IDed to its `VP-C###` ID, when the common VP covering it is admitted.
+
+| ID | VP | State | Stack delta | Realized by | Migration |
+| --- | --- | --- | --- | --- | --- |
+
+## Stack Variation Points
 
 Each row is one axis on which two Go web-services built on this family could legitimately answer differently. Common baseline features from the Feature Model (`DomainLogic`, `HttpApi`, `AppLogging`, `TestConformance` + its four children) are **not** rows here — every path through the family includes them. See [Why AsyncInboundApi/AsyncOutboundApi are single rows](#why-asyncinboundapiasyncoutboundapi-are-single-rows).
 

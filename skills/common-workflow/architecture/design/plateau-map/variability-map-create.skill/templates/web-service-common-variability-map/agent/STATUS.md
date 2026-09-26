@@ -4,11 +4,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 
 | Wave | Content | State |
 | --- | --- | --- |
-| W0 | `INVARIANTS.md`, `DECISIONS.md`, this file | done — **waiting on owner review + ⚠️ F1–F5** |
-| W1 | `check.sh`; common map rewritten + renamed; feature template (TaskBox own feature, F1/F2 outcome); inbound links | pending |
-| W2 | `variability-map-create` rules + ADR `common-vps-inherited-by-id`; `variability-map.template.md` two-table shape | pending |
-| W3 | Go: `variability-map.md` + every migrated `VPn` reference (~14 files) | pending |
-| W4 | dotnet: `variability-map.md` + every migrated `VPn` reference (~130 files) | pending |
-| W5 | Final `check.sh` pass, fresh-eyes audit of the whole diff, PR into `develop` | pending |
+| W0 | First anchor (full 16-VP list) | superseded — owner chose rebuild-from-zero |
+| W1 | Framework: `INVARIANTS.md` rewritten; empty common map; old template deleted; `variability-map-create` rules + ADR `common-vps-inherited-by-id`; two-table `variability-map.template.md`; empty Common section in go/dotnet maps; `check.sh` (mutation-tested) | done |
+| next | Admit backlog item 1 — Storage — per INVARIANTS §4 | waiting on owner discussion |
 
-Each wave: author → `check.sh` clean → fresh-eyes audit → commit.
+Each admission: discuss → common row + concept → every bound stack's row (+ skeleton solution) → re-ID → `check.sh` clean → audit → commit.
