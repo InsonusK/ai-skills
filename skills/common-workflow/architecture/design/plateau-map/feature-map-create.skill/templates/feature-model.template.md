@@ -15,7 +15,7 @@ Name the diagram's root explicitly (the family's product) and state that it is g
 
 ## Feature diagram
 
-@import "./diagrams/feature-diagram.mmd" {as="mermaid"}
+@import "./feature-diagram.template.mmd" {as="mermaid"}
 
 ## Features
 
