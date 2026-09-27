@@ -20,7 +20,7 @@ The v3.1 Feature Model makes `MediatorModuleIntegration` a **common** feature ("
 
 # Selected variant
 
-**Selected variant:** [[#One common solution-mediator-integration, no domain dependency; repository-backed reads stay VP-C001]]
+**Selected variant:** [[#One common solution-mediator-integration, no domain dependency; repository-backed reads stay VP-C001 (selected)]]
 
 # Searched variants
 

@@ -78,7 +78,7 @@ Give every plateau with a non-empty `parent_plateaus` the union of every parent'
 ### Stop and ADR on a composition conflict
 Stop and ask the user, then record a plateau-level ADR, the moment two parents — or a parent and this plateau's own `created_by` solutions — disagree on the same file, rule, or structural element.
 - Risk: silently picking a side hides a real design decision inside an unreviewed diff, and the next person composing the same parents re-introduces the conflict.
-- Fix: follow [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md#Recording plateau-level decisions|plateau-create-by-solutions's conflict-ADR mechanism]], scoped to the composing plateau.
+- Fix: follow [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md#Record every plateau-level decision as an ADR|plateau-create-by-solutions's conflict-ADR mechanism]], scoped to the composing plateau.
 
 ### Declare a whole-plateau dependency via built_on_plateau
 Declare `built_on_plateau` on a solution instead of adding a `depends_on` entry for every individual solution the target plateau happens to contain.

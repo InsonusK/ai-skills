@@ -16,7 +16,7 @@ The v3.1 Variability Map's VP4 (SharedRules) row carries no `Constraint`. But th
 
 # Selected variant
 
-**Selected variant:** [[#Domain.Rules references Interfaces + FluentValidation only; VP4 not gated on VP1]]
+**Selected variant:** [[#Domain.Rules references Interfaces + FluentValidation only; VP4 not gated on VP1 (selected)]]
 
 # Searched variants
 

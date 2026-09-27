@@ -67,7 +67,7 @@ FILES:
 - [[./Implementation/Repository.create.md#MUST|Repository]]
 - [[./Implementation/cmd/{service}/main.go.create.md#MUST|cmd/{service}/main.go]]
 - [[./Implementation/internal/config/config.go.create.md#MUST|internal/config/config.go]]
-- [[./Implementation/internal/version/version.go.create.md#MUST|internal/version/version.go]]
+- [[./Implementation/internal/version/version.go.create.md|internal/version/version.go]]
 
 ## SHOULD
 - [[./Implementation/Repository.create.md#SHOULD|Repository]]

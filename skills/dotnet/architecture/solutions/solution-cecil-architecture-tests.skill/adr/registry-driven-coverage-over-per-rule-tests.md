@@ -16,7 +16,7 @@ A rule spanning more than one Entity property (e.g. `TaskLinkSelfLinkRule` over 
 
 # Selected variant
 
-**Selected variant:** [[#Registry + generic recursive Cecil walk, paired with narrowing setters to private]]
+**Selected variant:** [[#Registry + generic recursive Cecil walk, paired with narrowing setters to private (selected)]]
 
 # Searched variants
 

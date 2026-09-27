@@ -17,7 +17,7 @@ The reverse direction is the problem. `ai-skill-manager` loads a skill for a pro
 
 # Selected variant
 
-**Selected variant:** [[#Agnostic skill names, never links; specialized skill keeps its link up]]
+**Selected variant:** [[#Agnostic skill names, never links; specialized skill keeps its link up (selected)]]
 
 # Searched variants
 
