@@ -18,7 +18,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | J | Messaging ✅ in go (franz-go, amqp091-go) and dotnet (Confluent.Kafka, RabbitMQ.Client), CloudEvents; Go VP3/VP5, dotnet VP12/VP13 re-IDed | done |
 | K | Outbox VP-C010 📐 + ✅ (envelope contract; TaskBox v1 amended: status-code outcomes, `last_status`); Go VP4, dotnet VP14 re-IDed; registry value shift fixed + registry↔matrix cross-check in check.sh | done |
 | L | Inbox VP-C011 📐 + ✅ (only-once mode for broker messages and calls; contract; `status_key` in TaskBox v1) | done |
-| next | Saga (▶); then Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | Saga under discussion |
+| M | Saga dropped (owner): TaskBox/Inbox already are the dispatch mechanism; multi-service sagas go over the brokers | done |
+| next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
 
 ## Follow-ups (outside this PR)
 

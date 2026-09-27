@@ -56,7 +56,7 @@ A non-retryable outcome makes the task `dead` and stops its group until a person
 
 ## 5. Custom handlers
 
-A service may register its own task types next to the generic ones — for a gRPC call, or for any call whose **response** matters. Such a handler makes the call, handles the response, and, when there is a next step, enqueues it through TaskBox in the same transaction as its own data change — one orchestrated step of a saga. It returns an HTTP status code like any TaskBox handler.
+A service may register its own task types next to the generic ones — for a gRPC call, or for any call whose **response** matters. Such a handler makes the call, handles the response, and, when there is follow-up work, enqueues it through TaskBox in the same transaction as its own data change. It returns an HTTP status code like any TaskBox handler. A saga spanning several services is not built from these handlers; it runs over the message brokers.
 
 ## 6. Conformance scenarios
 

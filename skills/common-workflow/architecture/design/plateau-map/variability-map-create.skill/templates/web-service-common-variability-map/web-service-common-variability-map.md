@@ -22,11 +22,10 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 
 ## Candidate Variation Points
 
-Identified, not yet agreed — no ID until the concept is agreed. In discussion order: a candidate is admitted only after every VP in its **Admitted after** column, because its concept will reference them. `▶` marks the one under discussion.
+Identified, not yet agreed — no ID until the concept is agreed. In discussion order: a candidate is admitted only after every VP in its **Admitted after** column, because its concept will reference them. `▶` marks the one under discussion (none right now).
 
 | Status | Candidate | Admitted after | Covers today | Agreed so far / open question |
 | --- | --- | --- | --- | --- |
-| 💡 ▶ | Saga | — | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
 | 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | **Idea to consider:** one `.proto` defines the API and grpc-gateway (`google.api.http` annotations, plus OpenAPI via `protoc-gen-openapiv2`) serves the same API over HTTP/JSON — gRPC as an optional second entry generated from the same definition, not a second server (Go `solution-grpc-api` runs a separate gRPC server today). Open: dotnet's family is a `Module` — can a module lack HTTP? |
 | 💡 | DomainLogic | — | dotnet VP1; baseline in Go | Open: common VP with Go `Fixed: Yes`, or dotnet-only? |
 | 💡 | Metric | — | observability | Open: needed now, or when a stack first needs it? |
@@ -98,7 +97,7 @@ Outbound calls — HTTP requests, broker publications — made by enqueuing a Ta
 - **No storage of its own** — an outbox call is a VP-C003 task: stored, ordered by `queue_group`, retried, and dead-lettered by the TaskBox contract; its criticality follows the store it lives in.
 - **At-least-once, recognisable duplicates** — the task `id` travels as `Idempotency-Key` (HTTP) or as the CloudEvents `id` (brokers), the same on every retry.
 - **Order per receiver and key** — calls with the same target and key are sent in enqueue order; a dead call holds back the later calls with that target and key until a person resolves it.
-- **Generic adapters: HTTP, Kafka, RabbitMQ.** A gRPC call, or any call whose response matters, is a service-specific handler that uses its generated client, handles the response, and may enqueue the next step — one step of an orchestrated saga.
+- **Generic adapters: HTTP, Kafka, RabbitMQ.** A gRPC call, or any call whose response matters, is a service-specific handler that uses its generated client, handles the response, and may enqueue a follow-up task. Multi-service sagas are not modelled here; they run over the message brokers.
 - **Addresses from configuration** — a task names its target, never its address or credentials.
 
 ### VP-C011 Inbox
