@@ -35,6 +35,7 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - Go ExternalIntegration → VP-C005 (its only realization is gRPC); dotnet VP10 → VP-C004, VP11 → VP-C005.
 - **Messaging admitted (2026-09-27), 📐:** four independent VPs — VP-C006 KafkaProducer, VP-C007 KafkaConsumer, VP-C008 RabbitMqProducer, VP-C009 RabbitMqConsumer (like HTTP/gRPC, any in/out combination). CloudEvents 1.0 is the envelope (Kafka binding; RabbitMQ structured JSON). Consumer semantics agreed as a baseline, to be detailed when the solutions are written.
 - **Inbox** — optional, for messages that must be processed only once (consumer → TaskBox task, ack after commit); direct handling stays the default. Raised as its own candidate.
+- **Messaging detailed (2026-09-27):** Go Kafka → `twmb/franz-go` (owner chose it over Sarama after the comparison: better consumer groups and API; cost — an own CloudEvents Kafka binary binding of `ce_*` headers in the messaging infrastructure, and one main maintainer); Go RabbitMQ → `rabbitmq/amqp091-go`; dotnet Kafka → `Confluent.Kafka` + `CloudNative.CloudEvents.Kafka`; dotnet RabbitMQ → `RabbitMQ.Client` v7 + `CloudNative.CloudEvents.SystemTextJson`. MassTransit not used for messaging: its own envelope fights the CloudEvents standard.
 
 ## Agent decisions
 
@@ -66,3 +67,4 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - Outbound protocols were admitted (📐) and detailed (✅) in one change: the registry columns for VP-C004/VP-C005 depend on which plateaus already realize them, which is known only after the stack VPs are mapped.
 - Recoding: GW001.002/GW002.002/GW003.002 → GW005.001/GW006.001/GW007.001; DW004.001/.002 → DW008.003/.004. Registry numbers 002–004 retired (listed under "Retired numbers", enforced by check.sh); stack-VP combination numbers Go 002 and dotnet 001/002 retired in place.
 - Existing solutions lag the new outbound concept (Go external-integration: sentinel errors; dotnet http/grpc clients: dependency-named ports, `Result` statuses) — recorded as "alignment pending" in the stack rows and as a STATUS follow-up, not rewritten in this change.
+- Messaging re-ID: Go VP3→VP-C006, VP5→VP-C007; dotnet VP13→VP-C006, VP12→VP-C007. No plateau realized them, so codes and registry rows are unchanged; the duplicate old columns were dropped from the matrices.

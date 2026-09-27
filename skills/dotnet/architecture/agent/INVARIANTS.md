@@ -52,9 +52,9 @@ The anchor document for the v3.1 solution-catalog build (per [[skills/common-wor
 | VP9 SyncInboundApi-gRPC | `solution-api-project` + `solution-grpc-integration` | — |
 | VP-C004 SyncOutboundApi-HTTP | `solution-http-api-client` *(aspirational — skeleton)* | — |
 | VP-C005 SyncOutboundApi-gRPC | `solution-grpc-client` *(aspirational — skeleton)* | — |
-| VP12 AsyncInboundApi | `solution-messaging-infrastructure` + `solution-kafka-consumer` *(aspirational — skeleton)* | — |
-| VP13 AsyncOutboundApi | `solution-messaging-infrastructure` + `solution-kafka-producer` *(aspirational — skeleton)* | — |
-| VP14 OutboxPattern | `solution-transactional-outbox` *(aspirational — skeleton)* | requires VP13 AND VP-C001 |
+| VP-C007 AsyncInboundApi | `solution-messaging-infrastructure` + `solution-kafka-consumer` *(aspirational — skeleton)* | — |
+| VP-C006 AsyncOutboundApi | `solution-messaging-infrastructure` + `solution-kafka-producer` *(aspirational — skeleton)* | — |
+| VP14 OutboxPattern | `solution-transactional-outbox` *(aspirational — skeleton)* | requires VP-C006 AND VP-C001 |
 
 `solution-entity-classification` (VP5×VP6 combination resolver) — kept, reframed per feature-model.md; not itself a VP.
 

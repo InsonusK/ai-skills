@@ -1,6 +1,6 @@
 ---
 name: solution-kafka-consumer
-description: Skeleton — realizes AsyncInboundApi (VP12). A hosted background consumer per subscribed topic that deserializes each message and dispatches it into MediatR as a Command or Notification, with offset commit only after the handler succeeds.
+description: Skeleton — realizes AsyncInboundApi (VP-C007). A hosted background consumer per subscribed topic that deserializes each message and dispatches it into MediatR as a Command or Notification, with offset commit only after the handler succeeds.
 whenToUse: when a module must react to asynchronous messages from another service — subscribing to a Kafka topic and turning each message into a MediatR dispatch
 domain: skill
 type: architecture
@@ -22,7 +22,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]"
 ---
 
-> **Draft contract — no consumer yet.** VP12 has no v3 prior art. This skeleton fixes the shape (hosted consumer → deserialize → dispatch → commit-after-success). The retry/dead-letter policy, the envelope-to-request mapping convention, and the poison-message handling are finalized with the first real subscription.
+> **Draft contract — no consumer yet.** VP-C007 has no v3 prior art. This skeleton fixes the shape (hosted consumer → deserialize → dispatch → commit-after-success). The retry/dead-letter policy, the envelope-to-request mapping convention, and the poison-message handling are finalized with the first real subscription.
 
 # Goal
 - Turn each message on a subscribed topic into exactly one MediatR dispatch: a Command when the module must act, a Notification when it is a fact to observe.
@@ -38,7 +38,7 @@ depends_on:
 # Boundaries
 - The Kafka client, connection, and serializer are `solution-messaging-infrastructure`.
 - Idempotency of the dispatched handler is the handler's responsibility (at-least-once means a message may be delivered twice) — this solution guarantees delivery, not exactly-once processing.
-- Producing messages is `solution-kafka-producer` (VP13); the reliable-publish outbox is `solution-transactional-outbox` (VP14).
+- Producing messages is `solution-kafka-producer` (VP-C006); the reliable-publish outbox is `solution-transactional-outbox` (VP14).
 
 # Requirements
 SOLUTION:

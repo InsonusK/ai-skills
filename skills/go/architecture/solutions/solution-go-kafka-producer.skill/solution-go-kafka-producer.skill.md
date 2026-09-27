@@ -1,6 +1,6 @@
 ---
 name: solution-go-kafka-producer
-description: Publishes domain events to Kafka directly, through an outbound port — the direct-publish realization of AsyncOutboundApi (VP3), superseded by the outbox pattern for a publication triggered by a persisted-data change once PersistentDb is also present
+description: Publishes domain events to Kafka directly, through an outbound port — the direct-publish realization of AsyncOutboundApi (VP-C006), superseded by the outbox pattern for a publication triggered by a persisted-data change once PersistentDb is also present
 whenToUse: when a Go web-service needs to publish an event for other services to react to, and the publication is not itself triggered by a persisted-data change (otherwise see solution-go-transactional-outbox)
 domain: skill
 type: architecture
@@ -22,7 +22,7 @@ built_on_plateau:
 adr:
 ---
 
-> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP3 (see
+> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP-C006 (see
 > `skills/go/architecture/variability-map.md`). Full authoring — including the AS IS/TO BE
 > extension of `{service}.go` and a real ground-truth example — is deferred until a real plateau
 > composes this solution.

@@ -15,9 +15,12 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | G | TaskBox ✅ in go/dotnet: own realization of the contract per store, clients chosen | done |
 | H | Outbound protocols: VP-C004 HttpOutbound, VP-C005 GrpcOutbound 📐 + ✅ in go/dotnet; Go VP2, dotnet VP10/VP11 re-IDed; plateaus recoded; registry 005–008, 002–004 retired | done |
 | I | Messaging 📐: VP-C006–VP-C009 (Kafka/RabbitMQ producer/consumer), CloudEvents; ⏳ rows in go/dotnet; registry + matrices get 4 columns (all No, no recode); Inbox candidate | done |
-| next | Messaging ✅ per stack (library proposal to the owner), then Outbox → Inbox → Saga | waiting on owner |
+| J | Messaging ✅ in go (franz-go, amqp091-go) and dotnet (Confluent.Kafka, RabbitMQ.Client), CloudEvents; Go VP3/VP5, dotnet VP12/VP13 re-IDed | done |
+| next | Outbox (▶) → Inbox → Saga | Outbox under discussion |
 
 ## Follow-ups (outside this PR)
+
+- **Align messaging skeletons to VP-C006–VP-C009:** Go and dotnet messaging infrastructure → CloudEvents envelope; Go client → franz-go with the own Kafka binary binding.
 
 - **Align outbound solutions to VP-C004/VP-C005:** Go `solution-external-integration` (failures → HTTP status codes); dotnet `solution-http-api-client` / `solution-grpc-client` (domain-named port instead of `I{Dependency}Client`; failures → HTTP status codes).
 
