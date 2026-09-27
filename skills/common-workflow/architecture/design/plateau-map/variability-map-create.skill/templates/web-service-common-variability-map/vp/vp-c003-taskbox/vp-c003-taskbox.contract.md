@@ -1,6 +1,6 @@
 # TaskBox storage contract (VP-C003)
 
-The stack-agnostic contract every stack's TaskBox realization implements, so that the stored tasks look the same whatever language wrote them: a service rewritten in another stack keeps its tables, streams, and pending tasks. It defines the **mechanism only** — how a task is stored, ordered, claimed, retried, dead-lettered, and removed. It knows nothing about what a task does. Concept and store rules: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C003 TaskBox|VP-C003 TaskBox]].
+The stack-agnostic contract every stack's TaskBox realization implements, so that the stored tasks look the same whatever language wrote them: a service rewritten in another stack keeps its tables, streams, and pending tasks. It defines the **mechanism only** — how a task is stored, ordered, claimed, retried, dead-lettered, and removed. It knows nothing about what a task does. Concept and store rules: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c003-taskbox/vp-c003-taskbox|VP-C003 TaskBox]].
 
 A stack's solution decides only the client library and the code that writes, reads, and executes against the structures below.
 
@@ -10,7 +10,7 @@ A stack's solution decides only the client library and the code that writes, rea
 | --- | --- | --- |
 | `seq` | bigint, store-assigned, increasing | Primary key; inserts append to the index; within a group it is also the execution order (§3). |
 | `id` | UUIDv7 | Global identifier, assigned by the enqueuing code: logs, handlers, cross-system references. Time-ordered, so it never scatters an index. |
-| `status_key` | UUIDv4, nullable, unique | Set only for an Inbox task answered with `202`: the unguessable handle a caller uses to read the task's status ([[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c011-inbox|Inbox contract]]). Never derived from `id` — see [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/inbox-status-key-not-task-id|adr/inbox-status-key-not-task-id]]. |
+| `status_key` | UUIDv4, nullable, unique | Set only for an Inbox task answered with `202`: the unguessable handle a caller uses to read the task's status ([[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c011-inbox/vp-c011-inbox.contract|Inbox contract]]). Never derived from `id` — see [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/inbox-status-key-not-task-id|adr/inbox-status-key-not-task-id]]. |
 | `queue` | text, default `default` | Selects a worker pool. |
 | `queue_group` | text, nullable | Ordering key inside a queue (like a Kafka message key). `null` = no ordering with any other task. |
 | `type` | text | Task type name — the **only** key a worker dispatches on. Stable across languages: `send-order-confirmation`, not a class name. |
@@ -32,7 +32,7 @@ Criticality is not stored: it is implied by the store the task lives in (VP-C003
 ## 2. Ports
 
 - **Enqueue** — `enqueue(tx, type, payload, {queue, queue_group, run_at, max_attempts, idempotency_key, retention})`. `tx` is the caller's own unit of work in that store (SQL transaction, Redis `MULTI`/script, nothing for InMemory); enqueue never commits by itself when a `tx` is given.
-- **Handler registry** — the service registers one handler per `type`. A handler receives `(id, payload, attempt)` and returns an **HTTP status code** as its outcome (`2xx` = success), plus an optional `Retry-After`; an exception it raises counts as `500`. TaskBox never inspects `payload`; it classifies the code by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C004 HttpOutbound|VP-C004]]'s retry classification — every handler is idempotent (§4), so `500` is retryable.
+- **Handler registry** — the service registers one handler per `type`. A handler receives `(id, payload, attempt)` and returns an **HTTP status code** as its outcome (`2xx` = success), plus an optional `Retry-After`; an exception it raises counts as `500`. TaskBox never inspects `payload`; it classifies the code by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c004-httpoutbound/vp-c004-httpoutbound|VP-C004]]'s retry classification — every handler is idempotent (§4), so `500` is retryable.
 - **Worker** — claims due tasks (§6), dispatches each by `type`, records the outcome (§4).
 - **Dead-task operations** (for a person or an admin tool) — **requeue** a `dead` task (`pending`, `attempt = 0`, `run_at = now`) or **cancel** it (`cancelled`).
 

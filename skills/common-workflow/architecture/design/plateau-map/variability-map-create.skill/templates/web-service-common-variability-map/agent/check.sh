@@ -9,7 +9,10 @@ import os, re, sys
 
 REPO, HERE = sys.argv[1], sys.argv[2]
 SKILL = os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill")
-COMMON = os.path.join(HERE, "..", "web-service-common-variability-map.md")
+MAPDIR = os.path.normpath(os.path.join(HERE, ".."))
+COMMON = os.path.join(MAPDIR, "web-service-common-variability-map.md")
+CANDIDATES = os.path.join(MAPDIR, "candidates.md")
+VPDIR = os.path.join(MAPDIR, "vp")
 fails, warns = [], []
 def fail(m): fails.append(m)
 def warn(m): warns.append(m)
@@ -50,17 +53,33 @@ else:
     if hdr != ["ID", "Status", "VP", "Variants", "Constraint", "Realization depends on"]:
         fail(f"common map: table header is {hdr}")
     for r in rows:
-        cid = r[0] if r else ""
+        im = re.fullmatch(r"\[(VP-C\d{3})\]\([^)]*\)", r[0]) if r else None
+        cid = im.group(1) if im else (r[0] if r else "")
         if not re.fullmatch(r"VP-C\d{3}", cid): fail(f"common map: bad ID '{cid}'"); continue
         if cid in common: fail(f"common map: duplicate ID {cid}"); continue
         status = r[1] if len(r) > 1 else ""
         if status not in ("📐", "⛔ Retired"): fail(f"common map: {cid} status '{status}' is not 📐 / ⛔ Retired")
         variants = [v.strip() for v in r[3].split("/")] if len(r) > 3 else []
-        common[cid] = {"variants": variants, "retired": status.startswith("⛔")}
-        if not re.search(r"^### " + cid + r" \S", common_text, re.M):
-            fail(f"common map: {cid} has no '### {cid} {{Name}}' concept section")
-cand = section(common_text, "Candidate Variation Points")
-if cand is None: fail("common map: no '## Candidate Variation Points' section")
+        nm = re.match(r"\*\*(\w+)\*\*", r[2] if len(r) > 2 else "")
+        if not nm: fail(f"common map: {cid} VP cell does not start with **Name**"); continue
+        name = nm.group(1)
+        vslug = f"{cid.lower()}-{name.lower()}"
+        concept = os.path.join(VPDIR, vslug, vslug + ".md")
+        common[cid] = {"variants": variants, "retired": status.startswith("⛔"), "concept": rel(concept)}
+        if r[0] != f"[{cid}]({rel(concept)})": fail(f"common map: {cid} ID cell does not link {rel(concept)}")
+        if not os.path.isfile(concept): fail(f"common map: {cid} has no concept file {rel(concept)}"); continue
+        first = open(concept, encoding="utf-8").readline().strip()
+        if first != f"# {cid} {name}": fail(f"{rel(concept)}: first line '{first}' is not '# {cid} {name}'")
+if re.search(r"^### VP-C", common_text, re.M): fail("common map: inline '### VP-C' concept section — it belongs in vp/")
+if os.path.isdir(VPDIR):
+    known = {os.path.basename(os.path.dirname(os.path.join(REPO, c["concept"]))) for c in common.values()}
+    for d in sorted(os.listdir(VPDIR)):
+        if d not in known: fail(f"vp/{d}: no row in the common map"); continue
+        for f in os.listdir(os.path.join(VPDIR, d)):
+            if f not in (d + ".md", d + ".contract.md"): fail(f"vp/{d}/{f}: only {d}.md and {d}.contract.md belong here")
+if not os.path.isfile(CANDIDATES): fail("common map: candidates.md missing")
+cand = section(open(CANDIDATES, encoding="utf-8").read(), "Candidate Variation Points") if os.path.isfile(CANDIDATES) else None
+if cand is None: fail("candidates.md: no '## Candidate Variation Points' section")
 else:
     chdr, crows = table_rows(cand)
     for r in crows:
@@ -94,6 +113,7 @@ for b in bound:
         if cid not in common: fail(f"{b}: {cid} is not in the common map"); continue
         if len(r) != 7: fail(f"{b}: {cid} row has {len(r)} cells, expected 7"); continue
         _, name, status, state, delta, realized, migration = r
+        if r[0] != f"[{cid}]({common[cid]['concept']})": fail(f"{b}: {cid} ID does not link {common[cid]['concept']}")
         if migration not in ("Yes", "No"): fail(f"{b}: {cid} Migration '{migration}'")
         if status == "⏳":
             if any(c not in ("—", "-") for c in (state, delta, realized)):
@@ -210,7 +230,8 @@ print("== 6. Links resolve (touched files) ==")
 files = [(p, None) for p in (COMMON, os.path.join(SKILL, "variability-map-create.skill.md"),
          os.path.join(SKILL, "templates/variability-map.template.md"),
          *[os.path.join(SKILL, "adr", f) for f in sorted(os.listdir(os.path.join(SKILL, "adr")))],
-         *[os.path.join(os.path.dirname(COMMON), "contracts", f) for f in sorted(os.listdir(os.path.join(os.path.dirname(COMMON), "contracts")))],
+         CANDIDATES,
+         *sorted(os.path.join(d, f) for d, _, fs in os.walk(VPDIR) for f in fs if f.endswith(".md")),
          os.path.join(PMC, "plateau-map-create.skill.md"), os.path.join(PMC, "examples/plateau-repository.example.md"),
          os.path.join(PMC, "adr/plateau-code-by-combination.md"), REGF,
          os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md"))]

@@ -1,6 +1,6 @@
 # Outbox envelope contract (VP-C010)
 
-The stack-agnostic contract for outbound calls made through TaskBox, so an outbox task written by one stack is dispatched identically by any other. Outbox owns no storage: an outbound call is a TaskBox task stored, ordered, retried, and dead-lettered exactly as [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c003-taskbox|the TaskBox contract]] defines. This contract adds only the task types, their payload, and how each generic handler dispatches it. Concept: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C010 Outbox|VP-C010 Outbox]].
+The stack-agnostic contract for outbound calls made through TaskBox, so an outbox task written by one stack is dispatched identically by any other. Outbox owns no storage: an outbound call is a TaskBox task stored, ordered, retried, and dead-lettered exactly as [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c003-taskbox/vp-c003-taskbox.contract|the TaskBox contract]] defines. This contract adds only the task types, their payload, and how each generic handler dispatches it. Concept: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c010-outbox/vp-c010-outbox|VP-C010 Outbox]].
 
 ## 1. Envelope
 

@@ -19,6 +19,7 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | K | Outbox VP-C010 📐 + ✅ (envelope contract; TaskBox v1 amended: status-code outcomes, `last_status`); Go VP4, dotnet VP14 re-IDed; registry value shift fixed + registry↔matrix cross-check in check.sh | done |
 | L | Inbox VP-C011 📐 + ✅ (only-once mode for broker messages and calls; contract; `status_key` in TaskBox v1) | done |
 | M | Saga dropped (owner): TaskBox/Inbox already are the dispatch mechanism; multi-service sagas go over the brokers | done |
+| N | Common map split: concepts → `vp/vp-c###-{name}/vp-c###-{name}.md`, contracts beside them as `.contract.md`, candidates → `candidates.md`; ID cells and stack maps link the concept file; ADR `common-vp-concept-per-file`; `check.sh` checks concept files both ways | done |
 | next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
 
 ## Follow-ups (outside this PR)

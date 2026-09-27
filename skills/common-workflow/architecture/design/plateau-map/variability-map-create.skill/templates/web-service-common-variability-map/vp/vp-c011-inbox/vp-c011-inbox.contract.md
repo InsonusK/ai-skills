@@ -1,6 +1,6 @@
 # Inbox contract (VP-C011)
 
-The stack-agnostic contract for **only-once** processing of inbound messages and calls: the input is validated, stored as a TaskBox task, and acknowledged at once; processing runs separately. Like Outbox, Inbox owns no storage — every inbox input is a task stored, ordered, retried, and dead-lettered by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c003-taskbox|the TaskBox contract]]. Concept: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C011 Inbox|VP-C011 Inbox]].
+The stack-agnostic contract for **only-once** processing of inbound messages and calls: the input is validated, stored as a TaskBox task, and acknowledged at once; processing runs separately. Like Outbox, Inbox owns no storage — every inbox input is a task stored, ordered, retried, and dead-lettered by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c003-taskbox/vp-c003-taskbox.contract|the TaskBox contract]]. Concept: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c011-inbox/vp-c011-inbox|VP-C011 Inbox]].
 
 ## 1. Two processing modes
 
