@@ -13,9 +13,21 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | E | TaskBox 📐 (VP-C003) + TransientStore concept sharpened (lifetime); ⏳ rows in go/dotnet; registry + matrices get the VP-C003 column; feature template: TaskBox own feature, criticality on TaskBox | done |
 | F | TaskBox storage contract `contracts/vp-c003-taskbox.md` — two review rounds, accepted | done |
 | G | TaskBox ✅ in go/dotnet: own realization of the contract per store, clients chosen | done |
-| next | Outbox candidate — concept discussion with the owner | waiting on owner |
+| H | Outbound protocols: VP-C004 HttpOutbound, VP-C005 GrpcOutbound 📐 + ✅ in go/dotnet; Go VP2, dotnet VP10/VP11 re-IDed; plateaus recoded; registry 005–008, 002–004 retired | done |
+| I | Messaging 📐: VP-C006–VP-C009 (Kafka/RabbitMQ producer/consumer), CloudEvents; ⏳ rows in go/dotnet; registry + matrices get 4 columns (all No, no recode); Inbox candidate | done |
+| J | Messaging ✅ in go (franz-go, amqp091-go) and dotnet (Confluent.Kafka, RabbitMQ.Client), CloudEvents; Go VP3/VP5, dotnet VP12/VP13 re-IDed | done |
+| K | Outbox VP-C010 📐 + ✅ (envelope contract; TaskBox v1 amended: status-code outcomes, `last_status`); Go VP4, dotnet VP14 re-IDed; registry value shift fixed + registry↔matrix cross-check in check.sh | done |
+| L | Inbox VP-C011 📐 + ✅ (only-once mode for broker messages and calls; contract; `status_key` in TaskBox v1) | done |
+| M | Saga dropped (owner): TaskBox/Inbox already are the dispatch mechanism; multi-service sagas go over the brokers | done |
+| next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
 
 ## Follow-ups (outside this PR)
+
+- **Align outbox skeletons to VP-C010:** Go `solution-go-transactional-outbox`, dotnet `solution-transactional-outbox` — drop their own Kafka-only outbox tables; become the TaskBox-based envelope with generic HTTP/Kafka/RabbitMQ handlers.
+
+- **Align messaging skeletons to VP-C006–VP-C009:** Go and dotnet messaging infrastructure → CloudEvents envelope; Go client → franz-go with the own Kafka binary binding.
+
+- **Align outbound solutions to VP-C004/VP-C005:** Go `solution-external-integration` (failures → HTTP status codes); dotnet `solution-http-api-client` / `solution-grpc-client` (domain-named port instead of `I{Dependency}Client`; failures → HTTP status codes).
 
 - **Rename existing plateau folders/files to their codes** (Go 5, dotnet 3 plateaus; dotnet `structure/` file names embed the plateau name). Wanted as a GitHub issue — `gh` is not authenticated in this environment; issue text handed to the owner. Best done after the candidates covering existing stack VPs are admitted, so codes stop changing.
 - `plateau-map-create`'s "stop if Realized by has gaps" must treat `planned — …` as filled (handled in B).

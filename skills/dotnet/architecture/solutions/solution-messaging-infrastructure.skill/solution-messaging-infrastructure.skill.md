@@ -1,6 +1,6 @@
 ---
 name: solution-messaging-infrastructure
-description: Skeleton — introduces the Kafka connection, serialization, and health-check wiring in App.Infrastructure that solution-kafka-consumer (VP12) and solution-kafka-producer (VP13) both build on. Adds no consumer or producer of its own.
+description: Skeleton — introduces the Kafka connection, serialization, and health-check wiring in App.Infrastructure that solution-kafka-consumer (VP-C007) and solution-kafka-producer (VP-C006) both build on. Adds no consumer or producer of its own.
 whenToUse: when a module first needs asynchronous messaging (inbound or outbound) and the Kafka client + configuration are not wired yet, or when reviewing where broker connection settings and serializer registration live
 domain: skill
 type: architecture
@@ -22,16 +22,16 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-app-logging.skill/solution-app-logging.skill|solution-app-logging]]"
 ---
 
-> **Draft contract — no consumer yet.** VP12/VP13 have no realization in v3 and no service currently needs Kafka. This skeleton fixes the shape (one place for broker config, one serializer policy, one health check); the concrete `KafkaRegistration` body, the serializer choice, and the options schema are finalized when the first real consumer/producer is built.
+> **Draft contract — no consumer yet.** VP-C007/VP-C006 have no realization in v3 and no service currently needs Kafka. This skeleton fixes the shape (one place for broker config, one serializer policy, one health check); the concrete `KafkaRegistration` body, the serializer choice, and the options schema are finalized when the first real consumer/producer is built.
 
 # Goal
 - Give async messaging one home for the Kafka client: connection settings (`KafkaOptions` bound from configuration), a single serializer policy, and a broker health check — all in `App.Infrastructure`.
-- Be the shared prerequisite for `solution-kafka-consumer` (VP12) and `solution-kafka-producer` (VP13); add neither.
+- Be the shared prerequisite for `solution-kafka-consumer` (VP-C007) and `solution-kafka-producer` (VP-C006); add neither.
 
 # Core Principle
 - Broker connection details live in configuration bound to `KafkaOptions` — never hard-coded, never per-module.
 - One serializer policy (JSON with a schema-version header, pending final decision) for every topic; a message envelope carries `type`, `id`, `occurredAt`, `traceId`.
-- `App.Infrastructure` owns the client; a module never references the Kafka client library directly — it sees only the consumer/producer abstractions the VP12/VP13 solutions add.
+- `App.Infrastructure` owns the client; a module never references the Kafka client library directly — it sees only the consumer/producer abstractions the VP-C007/VP-C006 solutions add.
 - Registration is one `AddKafkaMessaging(configuration)` call from `App.Host`.
 
 # Boundaries
@@ -61,7 +61,7 @@ PROJECT:
   - Fix: `services.Configure<KafkaOptions>(configuration.GetSection("Kafka"))`.
 - Keep the Kafka client library referenced only by `App.Infrastructure`.
   - Risk: a module referencing the client directly couples domain/application code to a transport library.
-  - Fix: modules see only the consumer/producer abstractions from the VP12/VP13 solutions.
+  - Fix: modules see only the consumer/producer abstractions from the VP-C007/VP-C006 solutions.
 
 # Check list
 - [ ] `App.Infrastructure/Messaging/KafkaRegistration.cs` + `KafkaOptions.cs` exist.

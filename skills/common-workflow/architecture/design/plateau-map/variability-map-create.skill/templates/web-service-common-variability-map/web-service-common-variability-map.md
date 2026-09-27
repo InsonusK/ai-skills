@@ -11,21 +11,26 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 | VP-C001 | 📐 | **PersistentStore** — where does the service keep data it must never lose? | None / PostgreSQL / SQLite | — | — |
 | VP-C002 | 📐 | **TransientStore** — where does the service keep data that has a lifetime? | None / Redis / InMemory | — | — |
 | VP-C003 | 📐 | **TaskBox** — does the service defer work: store a task now, execute it later in a background worker? | Yes / No | Yes requires (VP-C001 ≠ None OR VP-C002 ≠ None) | Tasks live in the store(s) VP-C001/VP-C002 select — see [VP-C003 TaskBox](#vp-c003-taskbox) |
+| VP-C004 | 📐 | **HttpOutbound** — does the service call other services over HTTP? | Yes / No | — | Call rules shared with VP-C005 — see [VP-C004 HttpOutbound](#vp-c004-httpoutbound) |
+| VP-C005 | 📐 | **GrpcOutbound** — does the service call other services over gRPC? | Yes / No | — | Every rule of VP-C004's concept applies; independent of VP-C004 — see [VP-C005 GrpcOutbound](#vp-c005-grpcoutbound) |
+| VP-C006 | 📐 | **KafkaProducer** — does the service publish events to Kafka? | Yes / No | — | Messaging rules shared with VP-C007–VP-C009 — see [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) |
+| VP-C007 | 📐 | **KafkaConsumer** — does the service consume events from Kafka? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C007 KafkaConsumer](#vp-c007-kafkaconsumer) |
+| VP-C008 | 📐 | **RabbitMqProducer** — does the service publish messages to RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C008 RabbitMqProducer](#vp-c008-rabbitmqproducer) |
+| VP-C009 | 📐 | **RabbitMqConsumer** — does the service consume messages from RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C009 RabbitMqConsumer](#vp-c009-rabbitmqconsumer) |
+| VP-C010 | 📐 | **Outbox** — are outbound calls made through TaskBox instead of directly? | Yes / No | Yes requires VP-C003 = Yes AND (VP-C004 = Yes OR VP-C005 = Yes OR VP-C006 = Yes OR VP-C008 = Yes) | Tasks and handlers of VP-C003; adapters of VP-C004/VP-C006/VP-C008 — see [VP-C010 Outbox](#vp-c010-outbox) |
+| VP-C011 | 📐 | **Inbox** — does the service process some inputs only once: validate, store as a task, answer `202` / acknowledge, process separately? | Yes / No | Yes requires VP-C003 = Yes | Tasks and handlers of VP-C003; broker inputs from VP-C007/VP-C009 — see [VP-C011 Inbox](#vp-c011-inbox) |
 
 ## Candidate Variation Points
 
-Identified, not yet agreed — no ID until the concept is agreed. Listed in the order they can be discussed: a candidate comes after every VP its concept will reference.
+Identified, not yet agreed — no ID until the concept is agreed. In discussion order: a candidate is admitted only after every VP in its **Admitted after** column, because its concept will reference them. `▶` marks the one under discussion (none right now).
 
-| Status | Candidate | Covers today | Open question |
-| --- | --- | --- | --- |
-| 💡 | Outbox | outbound calls go through TaskBox, enqueued in the same atomic write, in the same store, as the business change; at-least-once + idempotency key | Go VP4 / dotnet VP14 require Kafka today — generalize to any outbound protocol? |
-| 💡 | Inbound protocols | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | dotnet's family is a `Module` — can a module lack HTTP? |
-| 💡 | Outbound protocols | Go VP2 `ExternalIntegration` (gRPC-only realization), dotnet VP10/VP11 | Does Go's transport-agnostic ExternalIntegration become the gRPC VP? |
-| 💡 | Messaging | Kafka/RabbitMQ consume/produce; Go VP3/VP5, dotnet VP12/VP13 | Shared messaging infrastructure as a mandatory sub-feature |
-| 💡 | DomainLogic | dotnet VP1; baseline in Go | Common VP with Go `Fixed: Yes`, or dotnet-only? |
-| 💡 | Metric | observability | Needed now, or when a stack first needs it? |
-| 💡 | Domain modelling | ValueObjects, SharedRules, concurrency control, external identity, audit timestamps — dotnet VP3–VP7 | Stay dotnet-only until a second stack needs one? |
-| 💡 | Deployment | SingleInstance / MultiInstance — SQLite (VP-C001) and InMemory (VP-C002) bind a service to one instance | **Discuss with the owner first:** a real VP with a Constraint, or only the consequence already stated in VP-C001/VP-C002? |
+| Status | Candidate | Admitted after | Covers today | Agreed so far / open question |
+| --- | --- | --- | --- | --- |
+| 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | **Idea to consider:** one `.proto` defines the API and grpc-gateway (`google.api.http` annotations, plus OpenAPI via `protoc-gen-openapiv2`) serves the same API over HTTP/JSON — gRPC as an optional second entry generated from the same definition, not a second server (Go `solution-grpc-api` runs a separate gRPC server today). Open: dotnet's family is a `Module` — can a module lack HTTP? |
+| 💡 | DomainLogic | — | dotnet VP1; baseline in Go | Open: common VP with Go `Fixed: Yes`, or dotnet-only? |
+| 💡 | Metric | — | observability | Open: needed now, or when a stack first needs it? |
+| 💡 | Domain modelling | DomainLogic | ValueObjects, SharedRules, concurrency control, external identity, audit timestamps — dotnet VP3–VP7 | Open: stay dotnet-only until a second stack needs one? |
+| 💡 | Deployment | — | SingleInstance / MultiInstance — SQLite (VP-C001) and InMemory (VP-C002) bind a service to one instance | **Discuss with the owner first:** a real VP with a Constraint, or only the consequence already stated in VP-C001/VP-C002? |
 
 ### VP-C001 PersistentStore
 The system of record: **data that survives restarts and redeploys and is never deliberately discarded**. Business changes are written in transactions, which later VPs (TaskBox, Outbox) rely on to stay atomic with the change they report.
@@ -51,6 +56,58 @@ Deferred execution: the service stores a task and a background worker executes i
 - **No ordering across stores.** Tasks in different stores are drained independently; two tasks about the same entity kept in different stores may run in either order. A service that splits task types across stores owns that race.
 - **Data with a lifetime needs no task to expire it** — its store's lifetime (VP-C002) does that.
 - **One storage contract for every stack** — [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c003-taskbox|contracts/vp-c003-taskbox]] fixes the task record, ordering by `queue_group`, lifecycle, retention, and the schema of each store; a stack realizes it with its own client and never with a job-queue library that brings its own schema.
+
+### VP-C004 HttpOutbound
+Synchronous request/response calls from this service to another service over HTTP. The rules below apply to every outbound call, whatever its protocol (VP-C005 inherits them):
+- **Domain-named port** — the port is named for what the domain needs (`ReputationChecker`), never for the dependency or the technology (`IReputationServiceClient`), and has one method per operation the service actually uses. Replacing the provider does not rename the port.
+- **Transport stays in the adapter** — the dependency's contract (OpenAPI, `.proto`) is copied into this service and generated; generated and transport types never leave the adapter.
+- **Outcome is an HTTP status code** — a failed call returns a failure carrying an HTTP status code as its category; the domain branches on the code, never on transport types. A call that got no response: connection failure → `503`, deadline exceeded → `504`.
+- **Retry classification** — retryable: `408`, `429`, `502`, `503`, `504` (honouring `Retry-After` on `429`/`503`); `500` only for an idempotent operation; any other `4xx` never. The same classification drives retries inside a call and, with Outbox, TaskBox's retry-or-dead decision.
+- **Every call has a deadline** — configured per dependency, overridable per call; a call without one can hang on an unresponsive peer forever.
+- **Retries inside a call only for idempotent operations**, with backoff — repeating a non-idempotent `POST` may apply it twice.
+- **Circuit breaker** — recommended; whether and how is the stack's choice.
+- Independent of VP-C005: a service may call one dependency over HTTP and another over gRPC.
+
+### VP-C005 GrpcOutbound
+Synchronous request/response calls from this service to another service over gRPC. Every rule of [VP-C004 HttpOutbound](#vp-c004-httpoutbound) applies, with two gRPC specifics:
+- **Status mapping** — a gRPC status becomes the HTTP status code of the standard gRPC↔HTTP mapping used by grpc-gateway (`NOT_FOUND` → `404`, `INVALID_ARGUMENT` → `400`, `UNAVAILABLE` → `503`, `DEADLINE_EXCEEDED` → `504`, `RESOURCE_EXHAUSTED` → `429`, …).
+- **Separate generated packages** — a dependency's generated contract never shares a package with this service's own exposed gRPC contract.
+- Independent of VP-C004.
+
+### VP-C006 KafkaProducer
+Publishing events to Kafka. The messaging rules below apply to every broker VP (VP-C006–VP-C009); the four are independent, so a service may publish and consume over either broker in any combination.
+- **CloudEvents 1.0 envelope** — every message is a CloudEvent (`id`, `source`, `type`, `time`, `datacontenttype`, `data`; trace context through the distributed-tracing extension). Kafka uses the CloudEvents Kafka protocol binding; RabbitMQ uses structured mode (`application/cloudevents+json`), which works over AMQP 0-9-1 and 1.0 alike.
+- **Order only within a key** — the message key (Kafka partition key, RabbitMQ routing to one queue) is the only ordering unit.
+- **Producer outcome** — by [VP-C004's outcome and retry rules](#vp-c004-httpoutbound): broker unavailable → `503`, message rejected (too large, invalid) → `400`. A retried publish keeps the same CloudEvents `id`, so a duplicate is recognisable.
+- **Consumer semantics (baseline, detailed when the solutions are written)** — at-least-once delivery; handlers are idempotent and deduplicate by CloudEvents `id`; a handler's outcome is an HTTP status code: retryable per VP-C004's classification → redelivered, otherwise → dead-letter topic/queue; the message is acknowledged (offset committed) only after it is handled.
+- **Shared messaging infrastructure** — envelope, serialization, and tracing are one stack-level building block that every broker VP depends on (a mandatory sub-feature), not repeated per VP.
+
+### VP-C007 KafkaConsumer
+Consuming events from Kafka. Every rule of [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) applies; the consumer group is the unit of parallelism, one partition per consumer at a time.
+
+### VP-C008 RabbitMqProducer
+Publishing messages to RabbitMQ. Every rule of [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) applies; publisher confirms are on, so a publish counts as done only when the broker confirmed it.
+
+### VP-C009 RabbitMqConsumer
+Consuming messages from RabbitMQ. Every rule of [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) applies; manual acknowledgement, and a dead-letter exchange receives messages the handler rejects as non-retryable.
+
+### VP-C010 Outbox
+Outbound calls — HTTP requests, broker publications — made by enqueuing a TaskBox task instead of calling directly; a generic handler per adapter then makes the call. Envelope, adapters, and ordering: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c010-outbox|contracts/vp-c010-outbox]].
+- **Required for calls triggered by a data change** — a call or publication caused by a change of persisted data goes through Outbox, enqueued in the same transaction and the same store as that change, so it is sent exactly when the change is committed. A call not tied to a data change may still be made directly.
+- **No storage of its own** — an outbox call is a VP-C003 task: stored, ordered by `queue_group`, retried, and dead-lettered by the TaskBox contract; its criticality follows the store it lives in.
+- **At-least-once, recognisable duplicates** — the task `id` travels as `Idempotency-Key` (HTTP) or as the CloudEvents `id` (brokers), the same on every retry.
+- **Order per receiver and key** — calls with the same target and key are sent in enqueue order; a dead call holds back the later calls with that target and key until a person resolves it.
+- **Generic adapters: HTTP, Kafka, RabbitMQ.** A gRPC call, or any call whose response matters, is a service-specific handler that uses its generated client, handles the response, and may enqueue a follow-up task. Multi-service sagas are not modelled here; they run over the message brokers.
+- **Addresses from configuration** — a task names its target, never its address or credentials.
+
+### VP-C011 Inbox
+Only-once processing of inbound broker messages and calls. Every input is processed in one of two modes, chosen by the service per endpoint and per message type:
+- **At-least-once** (default, no Inbox) — process at once, reply or acknowledge after processing; a lost acknowledgement means a repeat, so the handler is idempotent (the consumer baseline of VP-C006).
+- **Only-once** (this VP) — validate synchronously, store the input as a VP-C003 task, answer `202` / acknowledge, process separately. A repeat carries the same deduplication key and is not stored again, so the input is processed at most once per key within the task's retention.
+- **The sender supplies the key** — CloudEvents `source` + `id`, the HTTP `Idempotency-Key` header, gRPC metadata; scoped to the caller on authenticated endpoints. Same key with a different body → `422`.
+- **Status by capability** — a `202` carries `Location: …/tasks/<status_key>`; `status_key` is a random UUIDv4, never the task id, so one caller cannot reach another caller's task.
+- HTTP inbound is baseline, so Inbox depends on no inbound VP; inbound gRPC is added when it is admitted.
+- Contract: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c011-inbox|contracts/vp-c011-inbox]].
 
 ## Bound stack maps
 

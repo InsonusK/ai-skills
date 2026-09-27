@@ -43,7 +43,7 @@ created_by:
         {Rule}.feature                          — one per rule per classification, scenarios tagged to match the folder
   /App
     /[App.Host](./App.Host/plateau-offline-sync-service--csproj-app-host.skill.md)
-    /[App.Infrastructure](./App.Infrastructure/plateau-offline-sync-service--csproj-app-infrastructure.skill.md)   — VP-C001 / VP5 / VP11
+    /[App.Infrastructure](./App.Infrastructure/plateau-offline-sync-service--csproj-app-infrastructure.skill.md)   — VP-C001 / VP5 / VP-C005
     /[App.Queries](./App.Queries/plateau-offline-sync-service--csproj-app-queries.skill.md)                        — VP-C001 (cross-module reads)
   /[Shared](./Shared/plateau-offline-sync-service--csproj-shared.skill.md)
   /[BuildingBlocks](./BuildingBlocks/plateau-offline-sync-service--csproj-building-blocks.skill.md)

@@ -37,7 +37,7 @@ tools/
   test_report/main.go             ← solution-conformance-testing-in-go
 ```
 
-- **No `internal/domain/interfaces/`** at baseline — created by `solution-go-domain-ports`, a shared prerequisite the first-applied of `solution-external-integration`/`solution-cached-db`/`solution-persistent-db` depends on (VP2/VP-C002/VP-C001).
+- **No `internal/domain/interfaces/`** at baseline — created by `solution-go-domain-ports`, a shared prerequisite the first-applied of `solution-external-integration`/`solution-cached-db`/`solution-persistent-db` depends on (VP-C005/VP-C002/VP-C001).
 - **No `internal/infrastructure/`, `internal/api/grpc/`, `proto/`, `buf/`, `gen/`** at baseline — each created by its own VP-realizing solution.
 - Every Go module dependency is pinned once in `go.mod` — no separate central-package-management solution exists for this stack (unlike the dotnet catalog); see `feature/feature-model.md`'s "Modeling choices" section.
 
@@ -46,7 +46,7 @@ tools/
 | Feature (feature-model.md) | Solution |
 | --- | --- |
 | (baseline repo/composition-root structure) | `solution-go-repository-structure` |
-| (shared outbound-ports package prerequisite) | `solution-go-domain-ports` — not a Feature Model row itself, a shared prerequisite of VP2/VP-C002/VP-C001 |
+| (shared outbound-ports package prerequisite) | `solution-go-domain-ports` — not a Feature Model row itself, a shared prerequisite of VP-C005/VP-C002/VP-C001 |
 | DomainLogic | `solution-go-domain-logic` |
 | HttpApi | `solution-go-http-api` |
 | AppLogging | `solution-go-app-logging` |
@@ -57,10 +57,10 @@ tools/
 | VP | Solution(s) | Constraint (from variability-map.md) |
 | --- | --- | --- |
 | VP1 GrpcApi | `solution-grpc-api` | — |
-| VP2 ExternalIntegration | `solution-external-integration` (`depends_on` `solution-go-domain-ports`) | — |
-| VP3 AsyncOutboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-producer` *(skeleton)* | — |
-| VP4 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP3 AND VP-C001 ≠ None |
-| VP5 AsyncInboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-consumer` *(skeleton)* | — |
+| VP-C005 GrpcOutbound (ExternalIntegration) | `solution-external-integration` (`depends_on` `solution-go-domain-ports`) | — |
+| VP-C006 AsyncOutboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-producer` *(skeleton)* | — |
+| VP-C010 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP-C006 AND VP-C001 ≠ None |
+| VP-C007 AsyncInboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-consumer` *(skeleton)* | — |
 | VP-C002 TransientStore `Redis` | `solution-cached-db` (`depends_on` `solution-go-domain-ports`) | — |
 | VP-C001 PersistentStore `PostgreSQL` | `solution-persistent-db` (`depends_on` `solution-go-domain-ports`), optionally + `solution-go-db-migrations` (`depends_on` `solution-persistent-db`; not composed by any of the 5 plateaus yet) | — |
 
@@ -90,7 +90,7 @@ tools/
 
 **new (every solution in this build so far):** authored via `solution-create`'s `templates/go/`; ADR + glossary as needed; `Implementation/` covers every created/extended file with concrete Go code, never left as prose-only.
 
-**skeleton (aspirational — VP3/VP4/VP5's four solutions):** main skill file complete (Goal, Core Principle, Boundaries where real, Rule, Check list) + a `> Draft contract — no consumer yet` marker + at least one shape-only Implementation file. Full authoring (a grounded Kafka client choice, an AS-IS/TO-BE extension of `{service}.go`, a real ground-truth example) deferred until a sixth plateau consumes them.
+**skeleton (aspirational — VP-C006/VP-C010/VP-C007's four solutions):** main skill file complete (Goal, Core Principle, Boundaries where real, Rule, Check list) + a `> Draft contract — no consumer yet` marker + at least one shape-only Implementation file. Full authoring (a grounded Kafka client choice, an AS-IS/TO-BE extension of `{service}.go`, a real ground-truth example) deferred until a sixth plateau consumes them.
 
 ## 8. Ground truth
 

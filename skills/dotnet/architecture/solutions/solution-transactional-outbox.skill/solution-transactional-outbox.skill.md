@@ -1,6 +1,6 @@
 ---
 name: solution-transactional-outbox
-description: Skeleton — realizes OutboxPattern (VP14). Writes an outgoing message to an outbox table in the same DbContext transaction as the business change, then a relay background service publishes committed rows via IMessagePublisher and marks them sent. Makes outbound publishing consistent with the business write.
+description: Skeleton — realizes OutboxPattern (VP-C010). Writes an outgoing message to an outbox table in the same DbContext transaction as the business change, then a relay background service publishes committed rows via IMessagePublisher and marks them sent. Makes outbound publishing consistent with the business write.
 whenToUse: when a module publishes an asynchronous message that must not be lost or duplicated relative to the business change that caused it — replacing a direct IMessagePublisher.Publish call in a handler with an outbox write
 domain: skill
 type: architecture
@@ -28,7 +28,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-unit-of-work.skill/solution-unit-of-work.skill|solution-unit-of-work]]"
 ---
 
-> **Draft contract — no realization yet.** VP14 has no v3 prior art. This skeleton fixes the shape (outbox row written in the business transaction; a relay publishes and marks sent). The relay's polling/CDC strategy, the ordering guarantee, and the retention/cleanup policy are finalized with the first real use.
+> **Draft contract — no realization yet.** VP-C010 has no v3 prior art. This skeleton fixes the shape (outbox row written in the business transaction; a relay publishes and marks sent). The relay's polling/CDC strategy, the ordering guarantee, and the retention/cleanup policy are finalized with the first real use.
 
 # Goal
 - Make an outbound message and the business change that produced it commit or roll back together: the handler writes an `OutboxMessage` row through `IOutboxWriter`, in the same `DbContext` as the entity change; the unit-of-work commit persists both atomically.
@@ -38,10 +38,10 @@ depends_on:
 - The handler calls `IOutboxWriter.Add(evt, topic)` **instead of** `IMessagePublisher.Publish(...)` — no direct publish from a handler once the outbox is in use.
 - The outbox row is staged in the same `DbContext` change set as the entity mutation; `UnitOfWorkBehavior`'s commit is the single atomic boundary.
 - The relay is the only publisher of outbox rows; it is idempotent on the consumer side (at-least-once) and never blocks a request.
-- `Requires VP13 (AsyncOutboundApi) AND VP-C001 (Persistence)` — per the [Variability Map](skills/dotnet/architecture/variability-map.md), jointly.
+- `Requires VP-C006 (AsyncOutboundApi) AND VP-C001 (Persistence)` — per the [Variability Map](skills/dotnet/architecture/variability-map.md), jointly.
 
 # Boundaries
-- The publish transport is `solution-kafka-producer` (VP13); this solution reuses its `IMessagePublisher`.
+- The publish transport is `solution-kafka-producer` (VP-C006); this solution reuses its `IMessagePublisher`.
 - The transaction/commit boundary is `solution-unit-of-work`; this solution adds a row to its change set, it does not manage transactions itself.
 - Exactly-once end-to-end is not promised — the outbox gives at-least-once with no loss; consumers must be idempotent.
 
@@ -74,4 +74,4 @@ PROJECT:
 - [ ] `OutboxMessage` table configured in `AppDbContext`; row written via `IOutboxWriter` in the handler's `DbContext`.
 - [ ] No direct `IMessagePublisher.Publish` in a handler that uses the outbox.
 - [ ] One `OutboxRelay : BackgroundService`; marks sent only after a successful publish.
-- [ ] Applied only when VP13 and VP-C001 are both present.
+- [ ] Applied only when VP-C006 and VP-C001 are both present.

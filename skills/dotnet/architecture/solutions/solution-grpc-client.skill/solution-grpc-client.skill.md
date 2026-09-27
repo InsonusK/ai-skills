@@ -1,6 +1,6 @@
 ---
 name: solution-grpc-client
-description: Realizes SyncOutboundApi over gRPC (VP11) — a generated client per external dependency from its .proto, wrapped by a narrow I{Dependency}Client contract in Shared that returns Result<T> and maps RpcException/StatusCode, registered with a deadline and a resilience handler. A handler injects I{Dependency}Client, never the generated stub. Independent of solution-http-api-client.
+description: Realizes SyncOutboundApi over gRPC (VP-C005) — a generated client per external dependency from its .proto, wrapped by a narrow I{Dependency}Client contract in Shared that returns Result<T> and maps RpcException/StatusCode, registered with a deadline and a resilience handler. A handler injects I{Dependency}Client, never the generated stub. Independent of solution-http-api-client.
 whenToUse: when a module must make a synchronous request-response call to another internal service over gRPC — adding the dependency's .proto, its generated-client adapter, the RpcException-to-Result mapping, and the Shared contract a handler consumes
 domain: skill
 type: architecture
@@ -47,11 +47,11 @@ adr:
 - **The `.proto` is a copy of the dependency's contract** - it lives in `App.Infrastructure/Protos`, generated to C# by `Grpc.Tools`; the generated stub and message types are never edited.
 - **Every failure is a `Result`, never an exception** - `RpcException`/`StatusCode` is caught in the adapter and mapped via `GrpcStatusExtensions.ToResult(...)`: `NotFound → Result.NotFound()`, `InvalidArgument → Result.Invalid(...)`, `Unavailable`/`DeadlineExceeded` → `Result.Error(...)` (after resilience has already retried), `PermissionDenied`/`Unauthenticated` → `Result.Forbidden()`/`Result.Unauthorized()`.
 - **Every call carries a deadline** - from the dependency's configured default, overridable per call. A deadline-less gRPC call can hang on an unresponsive peer forever.
-- **Independent of `solution-http-api-client`** (VP10) - a module may talk to one dependency over gRPC and another over HTTP; each dependency gets its own `I{Dependency}Client`. Neither solution requires the other.
+- **Independent of `solution-http-api-client`** (VP-C004) - a module may talk to one dependency over gRPC and another over HTTP; each dependency gets its own `I{Dependency}Client`. Neither solution requires the other.
 
 # Boundaries
 - Inbound gRPC (this module's own service) is [[skills/dotnet/architecture/solutions/solution-grpc-integration.skill/solution-grpc-integration.skill|solution-grpc-integration]] (VP9) — unrelated; it never shares a `.proto` or a project folder with this one (inbound `.proto`s live in `{Module}.Api/Protos`, this one's in `App.Infrastructure/Protos`).
-- The `I{Dependency}Client` interface shape is shared with `solution-http-api-client` (VP10): both expose "a per-dependency contract returning `Result<T>`". A module applying **both** does so for **different** dependencies, so it creates different files (`IPricingClient` vs `IInventoryClient`) — never the same file twice. If a future need arises to reach one dependency over both transports, a shared `solution-outbound-client` prerequisite would own the `/Clients` folder; today neither solution needs it.
+- The `I{Dependency}Client` interface shape is shared with `solution-http-api-client` (VP-C004): both expose "a per-dependency contract returning `Result<T>`". A module applying **both** does so for **different** dependencies, so it creates different files (`IPricingClient` vs `IInventoryClient`) — never the same file twice. If a future need arises to reach one dependency over both transports, a shared `solution-outbound-client` prerequisite would own the `/Clients` folder; today neither solution needs it.
 - The dependency's `.proto` contract is owned by that service's team; this solution consumes a vendored copy and does not keep it in sync automatically.
 - Cross-cutting call tracing (an `Activity` per RPC) is a Plateau Component concern, not this solution's.
 

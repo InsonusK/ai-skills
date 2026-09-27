@@ -64,7 +64,7 @@ if cand is None: fail("common map: no '## Candidate Variation Points' section")
 else:
     chdr, crows = table_rows(cand)
     for r in crows:
-        if r and r[0] != "💡": fail(f"common map: candidate '{r[1] if len(r) > 1 else r}' status is not 💡")
+        if r and not r[0].startswith("💡"): fail(f"common map: candidate '{r[1] if len(r) > 1 else r}' status is not 💡")
         if "VP-C" in (r[1] if len(r) > 1 else ""): fail(f"common map: candidate carries an ID: {r[1]}")
     print(f"  {len(crows)} candidate(s)")
 print(f"  {len(common)} common VP(s)")
@@ -164,12 +164,44 @@ else:
     nstack = len(rhdr) - 1 - len(got)
     if nstack != len(bound): fail(f"registry has {nstack} stack column(s), {len(bound)} bound stack(s)")
     nums = [r[0] for r in rrows]
+    rm = re.search(r"^Retired numbers[^:]*:\s*([\d,\s]+)", open(REGF, encoding="utf-8").read(), re.M)
+    retired = set(re.findall(r"\d{3}", rm.group(1))) if rm else set()
+    for n_ in nums:
+        if n_ in retired: fail(f"registry: number {n_} is retired and must not be reused")
     if len(set(nums)) != len(nums): fail("registry: duplicate number")
     for r in rrows:
         if not re.fullmatch(r"\d{3}", r[0]): fail(f"registry: bad number '{r[0]}'")
         for c in r[1 + len(got):]:
             if not (c.startswith("✅") or c == "🔸"): fail(f"registry {r[0]}: stack cell '{c}' is not ✅ {{codes}} / 🔸")
         if not any(c.startswith("✅") for c in r[1 + len(got):]): fail(f"registry {r[0]}: no stack has built it — drop the row")
+    # every code a registry row lists must realize exactly that row's common-VP values in its stack's matrix
+    stack_cols = rhdr[1 + len(got):]
+    for si, b in enumerate(bound):
+        repo_md = os.path.join(REPO, os.path.dirname(b), "plateau/plateau-repository.md")
+        if not os.path.isfile(repo_md): fail(f"{b}: no plateau/plateau-repository.md"); continue
+        mt = open(repo_md, encoding="utf-8").read()
+        mh = next((l for l in mt.splitlines() if l.startswith("| Code |")), None)
+        if not mh: fail(f"{rel(repo_md)}: no Plateau × VP matrix with a Code column"); continue
+        mcols = [c.strip() for c in mh.strip().split("|")[1:-1]]
+        matrix = {}
+        for l in mt.splitlines():
+            if re.match(r"^\| [A-Z]{2}\d{3}\.\d{3} \|", l):
+                c = [x.strip() for x in l.strip().split("|")[1:-1]]
+                matrix[c[0]] = dict(zip(mcols, c))
+        for vp in got:
+            if vp not in mcols: fail(f"{rel(repo_md)}: matrix lacks common column {vp}")
+        listed = set()
+        for r in rrows:
+            cell = r[1 + len(got) + si]
+            for code in re.findall(r"[A-Z]{2}\d{3}\.\d{3}", cell):
+                listed.add(code)
+                if code not in matrix: fail(f"registry {r[0]}: {code} not in {rel(repo_md)}"); continue
+                if code[2:5] != r[0]: fail(f"registry {r[0]}: code {code} carries another common number")
+                for vi, vp in enumerate(got):
+                    if matrix[code].get(vp) != r[1 + vi]:
+                        fail(f"registry {r[0]} {vp}={r[1 + vi]} but {code} has {matrix[code].get(vp)}")
+        for code in matrix:
+            if code not in listed: fail(f"{rel(repo_md)}: {code} is not listed in the registry")
     print(f"  {len(rrows)} registered combination(s)")
 
 print("== 6. Links resolve (touched files) ==")
@@ -178,7 +210,7 @@ print("== 6. Links resolve (touched files) ==")
 files = [(p, None) for p in (COMMON, os.path.join(SKILL, "variability-map-create.skill.md"),
          os.path.join(SKILL, "templates/variability-map.template.md"),
          os.path.join(SKILL, "adr/common-vps-inherited-by-id.md"),
-         os.path.join(os.path.dirname(COMMON), "contracts/vp-c003-taskbox.md"),
+         *[os.path.join(os.path.dirname(COMMON), "contracts", f) for f in sorted(os.listdir(os.path.join(os.path.dirname(COMMON), "contracts")))],
          os.path.join(PMC, "plateau-map-create.skill.md"), os.path.join(PMC, "examples/plateau-repository.example.md"),
          os.path.join(PMC, "adr/plateau-code-by-combination.md"), REGF,
          os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md"))]

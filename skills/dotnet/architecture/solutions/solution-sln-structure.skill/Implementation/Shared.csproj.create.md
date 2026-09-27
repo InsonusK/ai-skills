@@ -15,7 +15,7 @@ tags:
 # Core Principles
 - `Shared` holds interfaces, marker types, and small value primitives — no implementations, no behaviors, no entities.
 - Any project at any layer may reference `Shared`; `Shared` references nothing.
-- Later solutions add their own folders here (`/MediatR` markers from `solution-mediator-integration`, `/Exceptions` from `solution-domain-behaviour`, concurrency/outbox contracts from VP-C001/VP14) — this solution creates the empty project and the `Result` reference only.
+- Later solutions add their own folders here (`/MediatR` markers from `solution-mediator-integration`, `/Exceptions` from `solution-domain-behaviour`, concurrency/outbox contracts from VP-C001/VP-C010) — this solution creates the empty project and the `Result` reference only.
 
 # Structure
 

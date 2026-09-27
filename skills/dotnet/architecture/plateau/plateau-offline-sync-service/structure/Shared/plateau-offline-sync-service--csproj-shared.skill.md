@@ -70,7 +70,7 @@ __Applied solutions:__
   - /Timestamps
     - [ICreationInfoModel / IUpdateInfoModel / ICommandWithTimestamp.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/Shared/classes/plateau-offline-sync-service--class-timestamp-contracts.skill.md) — creation/update timestamp contracts (VP7)
   - /Clients
-    - [I{Dependency}Client.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/Shared/classes/plateau-offline-sync-service--class-i-dependency-client.skill.md) — outbound service contracts returning `Result<T>` (VP11)
+    - [I{Dependency}Client.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/Shared/classes/plateau-offline-sync-service--class-i-dependency-client.skill.md) — outbound service contracts returning `Result<T>` (VP-C005)
   - /Guid
     - [IHasGuid.cs / IGuidResolver.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/Shared/classes/plateau-offline-sync-service--class-guid-contracts.skill.md) — idempotent-create contracts (VP6)
   - /Results

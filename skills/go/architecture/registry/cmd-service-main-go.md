@@ -31,8 +31,8 @@ Five pairings inside this one group, read from the actual `.extend.md` files sid
 - `{repository-structure, app-logging, http-api}`: `source: ordering-only` — `logging.Init` must precede anything that logs; stated in `app-logging`'s own Rule, not backed by a `depends_on` edge.
 - `{http-api, grpc-api}`: `source: constraint` — `solution-grpc-api`'s own `depends_on: solution-go-http-api` frontmatter edge is the ordering's source.
 - `{*, external-integration}`: `source: ordering-only` — `reputationclient.Dial` must run before `services.NewLinkCheckService` is called, a positional requirement stated in `external-integration`'s own Rule.
-- `{*, cached-db}`: `source: ordering-only` — `reputationcache.New` (and `reputationclient.Dial`) must both run before `services.NewLinkCheckService`; no `depends_on` edge exists between `cached-db` and `external-integration` (VP-C002/VP2 are independent).
-- `{*, persistent-db}`: `source: ordering-only` — `linkstore.New` must run before `services.NewLinkCheckService`; no `depends_on` edge exists between `persistent-db` and either `external-integration` or `cached-db` (VP-C001 is independent of VP2 and VP-C002 per the Variability Map).
+- `{*, cached-db}`: `source: ordering-only` — `reputationcache.New` (and `reputationclient.Dial`) must both run before `services.NewLinkCheckService`; no `depends_on` edge exists between `cached-db` and `external-integration` (VP-C002/VP-C005 are independent).
+- `{*, persistent-db}`: `source: ordering-only` — `linkstore.New` must run before `services.NewLinkCheckService`; no `depends_on` edge exists between `persistent-db` and either `external-integration` or `cached-db` (VP-C001 is independent of VP-C005 and VP-C002 per the Variability Map).
 
 # Resolution
 Canonical — no resolver needed, for all five pairings. Verified at every plateau by actually building and running that plateau's own `example/cmd/linkcheck/main.go` (`go build`/`go vet`, real HTTP+gRPC smoke tests) — see Growth history below for what each plateau specifically verified.
