@@ -2,7 +2,7 @@
 
 > **Draft — under owner review.** Not yet referenced by any stack row.
 
-The stack-agnostic contract every stack's TaskBox realization implements, so that the stored tasks look the same whatever language wrote them: a service rewritten in another stack keeps its tables, streams, and pending tasks. It defines the **mechanism only** — how a task is stored, claimed, retried, and dead-lettered. It knows nothing about what a task does. Concept and store rules: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C003 TaskBox|VP-C003 TaskBox]].
+The stack-agnostic contract every stack's TaskBox realization implements, so that the stored tasks look the same whatever language wrote them: a service rewritten in another stack keeps its tables, streams, and pending tasks. It defines the **mechanism only** — how a task is stored, ordered, claimed, retried, dead-lettered, and removed. It knows nothing about what a task does. Concept and store rules: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C003 TaskBox|VP-C003 TaskBox]].
 
 A stack's solution decides only the client library and the code that writes, reads, and executes against the structures below.
 
@@ -10,121 +10,180 @@ A stack's solution decides only the client library and the code that writes, rea
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `id` | UUID (text in SQLite/Redis) | Assigned at enqueue. |
-| `queue` | text, default `default` | Lets a service run separate worker pools; not an ordering unit. |
-| `type` | text | The task type name — the **only** key a worker dispatches on. Stable across languages: `send-order-confirmation`, not a class name. |
-| `payload` | JSON text | Parameters for the handler; its shape is owned by whoever owns the task type. |
-| `idempotency_key` | text, nullable | Optional; an enqueue with a key that already exists in the store is a no-op. |
-| `status` | `pending` / `running` / `done` / `dead` | Lifecycle, §3. |
-| `attempt` | int, starts at 0 | Number of executions started. |
+| `seq` | bigint, store-assigned, increasing | Primary key; inserts append to the index; within a group it is also the execution order (§3). |
+| `id` | UUIDv7 | Global identifier, assigned by the enqueuing code: logs, handlers, cross-system references. Time-ordered, so it never scatters an index. |
+| `queue` | text, default `default` | Selects a worker pool. |
+| `queue_group` | text, nullable | Ordering key inside a queue (like a Kafka message key). `null` = no ordering with any other task. |
+| `type` | text | Task type name — the **only** key a worker dispatches on. Stable across languages: `send-order-confirmation`, not a class name. |
+| `payload` | JSON | Handler parameters; the shape is owned by whoever owns the task type. |
+| `idempotency_key` | text, nullable, unique | An enqueue with a key already present in the store adds nothing. |
+| `status` | `pending` / `running` / `done` / `dead` / `cancelled` | Lifecycle, §4. |
+| `attempt` | int, starts at 0 | Executions started. |
 | `max_attempts` | int, default 10 | After this many failures → `dead`. |
 | `run_at` | timestamp (UTC) | Not claimable before this — delayed tasks and retry backoff. |
-| `locked_until` | timestamp, nullable | Lease end while `running`; a task whose lease expired is claimable again. |
+| `locked_until` | timestamp, nullable | Lease end while `running`; an expired lease makes the task claimable again. |
 | `last_error` | text, nullable | Error of the latest failed attempt. |
+| `retention` | duration, nullable | How long to keep the task after it finishes; effective value = `max(service default, retention)` (§5). |
 | `created_at`, `updated_at` | timestamp (UTC) | Bookkeeping. |
+| `finished_at` | timestamp, nullable | Set when the task becomes `done`, `dead`, or `cancelled`. |
 
 Criticality is not stored: it is implied by the store the task lives in (VP-C003 concept).
 
 ## 2. Ports
 
-- **Enqueue** — `enqueue(tx, type, payload, {queue, run_at, max_attempts, idempotency_key})`. `tx` is the caller's own unit of work in that store (SQL transaction, Redis `MULTI`, nothing for InMemory); enqueue never commits by itself when a `tx` is given.
+- **Enqueue** — `enqueue(tx, type, payload, {queue, queue_group, run_at, max_attempts, idempotency_key, retention})`. `tx` is the caller's own unit of work in that store (SQL transaction, Redis `MULTI`/script, nothing for InMemory); enqueue never commits by itself when a `tx` is given.
 - **Handler registry** — the service registers one handler per `type`. A handler receives `(id, payload, attempt)` and either returns (success) or raises (failure). TaskBox never inspects `payload`.
-- **Worker** — claims due tasks (§4), dispatches each by `type`, and records the outcome (§3).
+- **Worker** — claims due tasks (§6), dispatches each by `type`, records the outcome (§4).
+- **Dead-task operations** (for a person or an admin tool) — **requeue** a `dead` task (`pending`, `attempt = 0`, `run_at = now`) or **cancel** it (`cancelled`).
 
-## 3. Lifecycle
+## 3. Ordering
+
+- **Within `(queue, queue_group)`: strict order.** Tasks of one group run one at a time, lowest `seq` first: a task is claimable only when no task of its group with a lower `seq` is `pending`, `running`, or `dead`.
+- **Enqueue takes the group lock before inserting.** `seq` is assigned at insert, not at commit; without a lock, two concurrent transactions could commit out of `seq` order and a later task would run first. The enqueuing transaction first locks the group's row (§6) and holds it until commit, so a second enqueue into the group waits, inserts after the first commits, and gets a higher `seq`.
+- **Everything else: no order.** Ungrouped tasks and tasks of different groups run in parallel, roughly by `run_at`.
+- **A group stops at its first `dead` task** — nothing says how important the failed task was, and running the later ones may make things worse. The group resumes only after a person requeues or cancels the dead task. While the head task waits for a retry, the group waits too.
+
+## 4. Lifecycle
 
 | From | Event | To |
 | --- | --- | --- |
 | — | enqueue | `pending` |
-| `pending` (due) | claimed | `running`, `attempt + 1`, `locked_until = now + lease` |
-| `running` | handler succeeds | `done` |
+| `pending` (due, head of its group or ungrouped) | claimed | `running`, `attempt + 1`, `locked_until = now + lease` |
+| `running` | handler succeeds | `done`, `finished_at = now` |
 | `running` | handler fails, `attempt < max_attempts` | `pending`, `run_at = now + backoff(attempt)`, `last_error` set |
-| `running` | handler fails, `attempt ≥ max_attempts` | `dead` |
+| `running` | handler fails, `attempt ≥ max_attempts` | `dead`, `finished_at = now` — its group stops |
 | `running` | lease expires (worker died) | claimable again, as if `pending` |
-| `running` | no handler registered for `type` | treated as a failure — so a task reaching an older worker during a rolling deploy is retried, not lost |
+| `running` | no handler registered for `type` | a failure — so a task reaching an older worker during a rolling deploy is retried, not lost |
+| `dead` | requeue | `pending`, `attempt = 0`, `run_at = now`, `finished_at = null` |
+| `dead` | cancel | `cancelled`, `finished_at = now` — its group resumes |
 
-- **At-least-once.** A task may run more than once (a lease expiring mid-run, a crash after the handler succeeded but before `done` was written). Every handler is idempotent.
-- **No ordering guarantee.** Workers take due tasks roughly by `run_at`; nothing orders two tasks relative to each other.
-- **Backoff:** `min(1s × 2^attempt, 1h)`; lease default 5 min. Both configurable per service.
-- **Retention:** `done` tasks are deleted after 7 days (configurable); `dead` tasks stay until handled by a person.
+- **At-least-once.** A task may run more than once (lease expiry mid-run, a crash between handler success and writing `done`). Every handler is idempotent.
+- **Backoff** `min(1s × 2^attempt, 1h)`; **lease** default 5 min — both configurable per service.
 
-## 4. Per-store realization
+## 5. Retention and idempotency window
+
+- A `done` or `cancelled` task is deleted once `now > finished_at + max(service default, retention)`; the service default is 7 days, configurable. A task can extend its own retention, never shorten it below the default.
+- A `dead` task in a VP-C001 store is never deleted automatically — it waits for a person. In a VP-C002 store it keeps a lifetime like every entry there (the store's concept wins).
+- A `taskbox_group` row whose group has no task left is deleted by the same cleanup; the next enqueue into that group recreates it.
+- The effective retention is also the **idempotency window**: an `idempotency_key` is remembered as long as its task row (or Redis marker) exists. A task type that must reject duplicates for longer sets a longer `retention`.
+
+## 6. Per-store realization
 
 ### PostgreSQL (schema v1)
 
 ```sql
 CREATE TABLE taskbox_task (
-  id              uuid PRIMARY KEY,
+  seq             bigint GENERATED ALWAYS AS IDENTITY (CACHE 1) PRIMARY KEY,
+  id              uuid        NOT NULL UNIQUE,
   queue           text        NOT NULL DEFAULT 'default',
+  queue_group     text,
   type            text        NOT NULL,
   payload         jsonb       NOT NULL,
   idempotency_key text        UNIQUE,
-  status          text        NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','running','done','dead')),
+  status          text        NOT NULL DEFAULT 'pending'
+                  CHECK (status IN ('pending','running','done','dead','cancelled')),
   attempt         int         NOT NULL DEFAULT 0,
   max_attempts    int         NOT NULL DEFAULT 10,
   run_at          timestamptz NOT NULL DEFAULT now(),
   locked_until    timestamptz,
   last_error      text,
+  retention       interval,
   created_at      timestamptz NOT NULL DEFAULT now(),
-  updated_at      timestamptz NOT NULL DEFAULT now()
+  updated_at      timestamptz NOT NULL DEFAULT now(),
+  finished_at     timestamptz
 );
-CREATE INDEX taskbox_task_due ON taskbox_task (queue, run_at) WHERE status IN ('pending','running');
+CREATE INDEX taskbox_task_due   ON taskbox_task (queue, run_at)          WHERE status IN ('pending','running');
+CREATE INDEX taskbox_task_group ON taskbox_task (queue, queue_group, seq) WHERE status IN ('pending','running','dead');
+CREATE INDEX taskbox_task_done  ON taskbox_task (finished_at)            WHERE status IN ('done','cancelled');
+
+-- One row per group; exists only to be locked by enqueuing transactions (§3).
+CREATE TABLE taskbox_group (
+  queue       text NOT NULL,
+  queue_group text NOT NULL,
+  PRIMARY KEY (queue, queue_group)
+);
 ```
 
-Claim (many workers, no double claim):
+Enqueue into a group — the lock first, held until the caller commits:
+
+```sql
+INSERT INTO taskbox_group (queue, queue_group) VALUES ($queue, $group)
+ON CONFLICT (queue, queue_group) DO UPDATE SET queue_group = EXCLUDED.queue_group;
+INSERT INTO taskbox_task (...) VALUES (...);
+```
+
+Claim — due tasks that head their group (or are ungrouped), without double claims:
 
 ```sql
 UPDATE taskbox_task SET status = 'running', attempt = attempt + 1,
        locked_until = now() + $lease, updated_at = now()
-WHERE id IN (
-  SELECT id FROM taskbox_task
-  WHERE queue = $queue AND run_at <= now()
-    AND (status = 'pending' OR (status = 'running' AND locked_until < now()))
-  ORDER BY run_at LIMIT $batch
+WHERE seq IN (
+  SELECT t.seq FROM taskbox_task t
+  WHERE t.queue = $queue AND t.run_at <= now()
+    AND (t.status = 'pending' OR (t.status = 'running' AND t.locked_until < now()))
+    AND (t.queue_group IS NULL OR NOT EXISTS (
+      SELECT 1 FROM taskbox_task e
+      WHERE e.queue = t.queue AND e.queue_group = t.queue_group AND e.seq < t.seq
+        AND e.status IN ('pending','running','dead')))
+  ORDER BY t.run_at LIMIT $batch
   FOR UPDATE SKIP LOCKED)
-RETURNING id, type, payload, attempt;
+RETURNING seq, id, type, payload, attempt;
 ```
 
 Enqueue with a key: `INSERT … ON CONFLICT (idempotency_key) DO NOTHING`.
 
 ### SQLite (schema v1)
 
-Same columns: `id`, `payload`, timestamps as `TEXT` (UUID / JSON / ISO-8601 UTC); `CHECK` and the partial index as in PostgreSQL. SQLite has one writer and no `SKIP LOCKED`, so a claim is one `BEGIN IMMEDIATE` transaction running the same `UPDATE … WHERE id IN (SELECT … LIMIT $batch) RETURNING …` (SQLite ≥ 3.35). One service instance by construction (VP-C001).
+Same tables and columns; `seq` is `INTEGER PRIMARY KEY`; UUID, JSON, timestamps as `TEXT` (ISO-8601 UTC); `retention` as integer seconds. SQLite has one writer, so write transactions are already serialized: `seq` order is commit order without `taskbox_group` (the table is still created, so the schema matches PostgreSQL). A claim is one `BEGIN IMMEDIATE` transaction running the same `UPDATE … RETURNING` (SQLite ≥ 3.35) without `SKIP LOCKED`. One service instance by construction (VP-C001).
 
 ### Redis
 
-All keys of a queue share the hash tag `{taskbox:<queue>}` so they sit in one cluster slot. To enqueue atomically with Redis business data, the caller's data keys must be in that slot too — the caller's concern.
+Ordering follows Kafka: a queue has a fixed number of **partitions**; a task's partition is `hash(queue_group) mod partitions` (ungrouped tasks: any partition); each partition is drained by **one worker at a time**, in stream order. A partition holds many groups, so a stopped group is **parked** rather than left blocking its partition. All keys of a queue share the hash tag `{taskbox:<queue>}` so they sit in one cluster slot; to enqueue atomically with Redis business data, the caller's data keys must be in that slot too — the caller's concern.
 
 | Key | Type | Holds |
 | --- | --- | --- |
-| `{taskbox:<queue>}:stream` | Stream | Due tasks; entry fields = the §1 fields |
+| `{taskbox:<queue>}:p:<n>` | Stream | Due tasks of partition `n`; entry fields = the §1 fields |
+| `{taskbox:<queue>}:p:<n>:lease` | String, `SET NX PX <lease>` | Which worker owns partition `n` right now |
 | `{taskbox:<queue>}:delayed` | Sorted set, score = `run_at` (ms) | Tasks not yet due, as the serialized entry |
 | `{taskbox:<queue>}:dead` | Stream | Dead tasks |
-| `{taskbox:<queue>}:key:<idempotency_key>` | String, with TTL = retention | Marks an idempotency key as already enqueued |
+| `{taskbox:<queue>}:stopped` | Set | Groups stopped at a dead task |
+| `{taskbox:<queue>}:parked:<group>` | List | Later tasks of a stopped group, in order |
+| `{taskbox:<queue>}:key:<idempotency_key>` | String, TTL = effective retention | Marks an idempotency key as already enqueued |
 
-- **Enqueue:** inside the caller's `MULTI`: `XADD …:stream` (due now) or `ZADD …:delayed` (future `run_at`). With an idempotency key the check and the add must be one step, so the enqueue is a Lua script: `SET …:key:<k> 1 NX EX <retention>` and add only when it succeeded.
-- **Consumer group:** `taskbox-workers` on `…:stream`. **Claim:** `XREADGROUP`; stale entries (lease = min-idle time) via `XAUTOCLAIM`.
-- **Success:** `XACK` + `XDEL`. **Failure:** `XACK` + `XDEL` + `ZADD …:delayed` with `attempt + 1` and the backoff `run_at`, or `XADD …:dead` past `max_attempts`.
-- **Due mover:** moves members of `…:delayed` with score ≤ now into `…:stream` (a Lua script, run by the worker loop).
-- **Lifetime:** every entry is lost with its store (VP-C002); `…:stream` and `…:dead` are also trimmed by age with `XTRIM MINID` at the retention window.
+- **Enqueue:** inside the caller's `MULTI`: `XADD …:p:<n>` (due now) or `ZADD …:delayed` (future `run_at`). With an idempotency key, the check and the add are one Lua script (`SET …:key:<k> 1 NX EX <retention>`, add only on success). Stream IDs are assigned on execution of `EXEC`, so stream order is commit order.
+- **Claim:** a worker takes a partition lease, reads the partition in order, and keeps renewing the lease; a partition whose lease expired is taken over by another worker, which continues from the first unacknowledged entry.
+- **Retry keeps order:** a failed head task stays at the head and is retried after its backoff — its partition waits, as a group does in SQL.
+- **Dead:** `XADD …:dead`, `SADD …:stopped <group>`, `XDEL`. From then on the worker moves every entry of a stopped group from its partition to `…:parked:<group>` (`RPUSH` + `XDEL`), so other groups in the partition keep flowing.
+- **Requeue / cancel:** one Lua script re-adds the dead task (requeue) or drops it (cancel), moves `…:parked:<group>` back into its partition in order, and removes the group from `…:stopped`.
+- **Due mover:** moves members of `…:delayed` with score ≤ now into their partition (a Lua script run by the worker loop).
+- **Lifetime:** every entry is lost with its store (VP-C002); `…:dead` is trimmed by age with `XTRIM MINID` at the retention window.
 
 ### InMemory
 
-A per-process queue of §1 records (a priority queue by `run_at`) drained by worker threads/goroutines, same lifecycle and handler registry; there is no `tx` — enqueue happens when called. Every task ends with the process (VP-C002's lifetime); NonCritical only.
+Per-process FIFO per `(queue, queue_group)` plus one queue for ungrouped tasks, a priority queue by `run_at` for delayed ones, and worker threads/goroutines that run at most one task per group at a time; a group with a dead head stops until requeue or cancel. Same lifecycle and handler registry; no `tx` — enqueue happens when called. Every task ends with the process (VP-C002 lifetime); NonCritical only.
 
-## 5. Schema versions and migrations
+## 7. Schema versions and migrations
 
 The DDL above is **schema v1** of this contract. Every change adds a numbered version here (v2, …) with its DDL delta. Each stack applies these versions through its **own** migration tool (goose, EF Core migrations, …) as ordinary migrations in the service's history.
 
 Switching a service to another stack is not designed yet — decided when a real switch happens. Known shape of the answer: the new stack's migration history starts from a baseline equal to the contract version the database is already at, instead of re-creating the tables.
 
-## 6. Conformance scenarios
+## 8. Conformance scenarios
 
 Every stack realization passes the same scenarios, one run per store it supports:
 - A task enqueued in a transaction that rolls back never runs; committed, it runs exactly once when the handler succeeds.
-- A failing handler is retried with growing `run_at`; after `max_attempts` failures the task is `dead` with `last_error`.
+- A failing handler is retried with growing `run_at`; after `max_attempts` failures the task is `dead` with `last_error` and `finished_at`.
 - A task claimed by a worker that dies is claimed again after its lease.
 - Two workers never run the same task at the same time.
-- An enqueue repeating an existing `idempotency_key` adds no task.
+- Tasks of one `queue_group` run one at a time in `seq` order, even when enqueued by concurrent transactions; tasks of different groups run in parallel.
+- A retrying head task holds back the rest of its group until it succeeds.
+- A dead task stops its group; other groups — including those in the same Redis partition — keep running; requeue or cancel resumes the group in the original order.
+- An enqueue repeating an existing `idempotency_key` adds no task, for as long as the effective retention keeps the first one.
+- A `done` or `cancelled` task is removed after `max(default, retention)`; a `dead` task in a VP-C001 store is not removed.
 - A task whose `type` has no handler is retried, not dropped.
 - A delayed task does not run before its `run_at`.
+
+## 9. Later (not in v1)
+
+- **Skippable tasks:** a task-level flag (`skip_on_dead`) letting its group continue past it when it dies.
+- **Handler outcome kinds:** once the contract defines how a handler reports its outcome beyond return/raise, a failure may be `fail` (stops the group when dead) or `fail_allow_skip` (the group may continue).
