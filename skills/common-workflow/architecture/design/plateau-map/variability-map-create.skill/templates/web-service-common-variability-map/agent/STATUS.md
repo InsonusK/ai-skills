@@ -10,7 +10,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | B | `plateau-map-create`: plateau codes, letter registry, shared common-plateau registry (empty), plateau statuses, matrix Code/Title columns, ADR `plateau-code-by-combination`; `plateau-create-by-solutions` takes the code as `{plateau-name}` | done |
 | C | Storage ✅ in Go: rows detailed, VP7→VP-C001, VP6→VP-C002 re-ID, plateau-repository recoded (GW001.000 … GW003.002), registry rows 001–003 | done |
 | D | Storage ✅ in dotnet: rows detailed (VP-C001 Refined: requires VP1), VP2→VP-C001 re-ID (46 files), plateau-repository recoded (DW001.000, DW004.001, DW004.002), registry row 004 | done |
-| next | Discuss the next candidate with the owner (TaskBox is first in the list) | waiting on owner |
+| E | TaskBox 📐 (VP-C003) + TransientStore concept sharpened (lifetime); ⏳ rows in go/dotnet; registry + matrices get the VP-C003 column; feature template: TaskBox own feature, criticality on TaskBox | done |
+| next | TaskBox ✅ per stack — realization proposal to the owner | waiting on owner |
 
 ## Follow-ups (outside this PR)
 

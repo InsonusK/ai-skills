@@ -6,9 +6,9 @@ The `{common}` part of every backend web-service plateau code (`{stack}W{common}
 - When a common VP reaches 📐, its column is added and filled for every row with the Variant that row's plateaus realize; a row whose plateaus now disagree splits, and the plateaus that moved get the next free number (recoded in the same change).
 - Stack cell: ✅ `{codes}` — built here with its example; 🔸 — built only in another stack.
 
-| No. | VP-C001 PersistentStore | VP-C002 TransientStore | Go | dotnet |
-| --- | --- | --- | --- | --- |
-| 001 | None | None | ✅ GW001.000, GW001.001, GW001.002 | ✅ DW001.000 |
-| 002 | None | Redis | ✅ GW002.002 | 🔸 |
-| 003 | PostgreSQL | Redis | ✅ GW003.002 | 🔸 |
-| 004 | PostgreSQL | None | 🔸 | ✅ DW004.001, DW004.002 |
+| No. | VP-C001 PersistentStore | VP-C002 TransientStore | VP-C003 TaskBox | Go | dotnet |
+| --- | --- | --- | --- | --- | --- |
+| 001 | None | None | No | ✅ GW001.000, GW001.001, GW001.002 | ✅ DW001.000 |
+| 002 | None | Redis | No | ✅ GW002.002 | 🔸 |
+| 003 | PostgreSQL | Redis | No | ✅ GW003.002 | 🔸 |
+| 004 | PostgreSQL | None | No | 🔸 | ✅ DW004.001, DW004.002 |

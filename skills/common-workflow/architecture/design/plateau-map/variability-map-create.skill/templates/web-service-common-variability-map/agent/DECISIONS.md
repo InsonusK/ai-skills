@@ -21,6 +21,9 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - **Plateau codes** `{stack}{kind}{common}.{specific}`: letters D/G/P/T for stacks, W/C/A for kinds (web-service, CLI, Angular); `{common}` numbers the common-VP combination in a shared registry kept in `plateau-map-create.skill`; `{specific}` numbers the stack-VP combination (same number = same stack-VP set; `000` = none); the old name becomes the matrix's Title column. Plateau statuses: ✅ built with example, 🔸 built only in another stack, no row = never built.
 - **Rename-on-change**: a code changes with its combination (agent's call, delegated by the owner).
 - **Physical rename of existing plateaus → GitHub issue** (owner); `gh` unauthenticated here, so the issue text goes to the owner and the follow-up is tracked in STATUS.
+- **TaskBox concept (2026-09-27), VP-C003 📐:** option C — tasks may live in either store; the service chooses per task type. The concept carries two reminders instead of a restriction: no transactionality between data and task in different stores, and no ordering across stores. Criticality is a per-task-type property, not a VP: Critical → VP-C001 only; NonCritical → either store.
+- **TransientStore redefined:** every entity has a lifetime (TTL); all data with a lifetime lives only in VP-C002; early loss (restart, eviction, failover) = the lifetime expiring early. Hence InMemory is a legitimate TaskBox store for NonCritical tasks.
+- Feature template: `TaskBox` is its own optional feature (not under `InboundAsync`); the criticality pair moved from `Outbox`'s `MessageSendGuarantee` onto `TaskBox`, since it applies to every task, not only outbound messages.
 
 ## Agent decisions
 
@@ -46,3 +49,4 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - dotnet VP-C001 is `Refined`: its stack Constraint (`≠ None` requires stack VP1 DomainLogic) and the repository-backed query handlers stay in the stack delta. dotnet PostgreSQL = the existing EF Core bundle; SQLite = the same bundle with the Sqlite provider (planned).
 - dotnet's `plateau-repository.md` "Reference: v3 plateaus" section cites v3's *own* VP numbering; its "`VP2` = Http" was reworded without an ID so the re-ID could not corrupt it. Every other `VP2` in the dotnet tree referred to v3.1 Persistence (checked).
 - **Finding:** dotnet `agent/check.sh` is stale — it still targets the removed `v3.1/` paths ("no plateau/ folder yet", "not yet: solution-…" for solutions that exist). Pre-existing; not fixed here.
+- VP-C003 admitted with every existing plateau at `No` → registry column added, no row split, no code changed.

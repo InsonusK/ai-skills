@@ -9,7 +9,8 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 | ID | Status | VP | Variants | Constraint | Realization depends on |
 | --- | --- | --- | --- | --- | --- |
 | VP-C001 | 📐 | **PersistentStore** — where does the service keep data it must never lose? | None / PostgreSQL / SQLite | — | — |
-| VP-C002 | 📐 | **TransientStore** — where does the service keep data it can survive losing? | None / Redis / InMemory | — | — |
+| VP-C002 | 📐 | **TransientStore** — where does the service keep data that has a lifetime? | None / Redis / InMemory | — | — |
+| VP-C003 | 📐 | **TaskBox** — does the service defer work: store a task now, execute it later in a background worker? | Yes / No | Yes requires (VP-C001 ≠ None OR VP-C002 ≠ None) | Tasks live in the store(s) VP-C001/VP-C002 select — see [VP-C003 TaskBox](#vp-c003-taskbox) |
 
 ## Candidate Variation Points
 
@@ -17,7 +18,6 @@ Identified, not yet agreed — no ID until the concept is agreed. Listed in the 
 
 | Status | Candidate | Covers today | Open question |
 | --- | --- | --- | --- |
-| 💡 | TaskBox | deferred execution: a task is stored, then run by a background worker, in the store that holds its data (PostgreSQL → library with in-transaction enqueue; Redis → shared Redis-Streams contract, enqueue inside the caller's `MULTI`) | Does a Critical/NonCritical guarantee remain a choice, or is it fully determined by the store? |
 | 💡 | Outbox | outbound calls go through TaskBox, enqueued in the same atomic write, in the same store, as the business change; at-least-once + idempotency key | Go VP4 / dotnet VP14 require Kafka today — generalize to any outbound protocol? |
 | 💡 | Inbound protocols | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | dotnet's family is a `Module` — can a module lack HTTP? |
 | 💡 | Outbound protocols | Go VP2 `ExternalIntegration` (gRPC-only realization), dotnet VP10/VP11 | Does Go's transport-agnostic ExternalIntegration become the gRPC VP? |
@@ -36,12 +36,20 @@ The system of record: data that survives restarts and redeploys and is never del
 - Boundary with VP-C002: the test is whether losing the data is acceptable, not which technology holds it.
 
 ### VP-C002 TransientStore
-Data the service can survive losing — temporary state, short-lived sessions, derived or recomputable values, and caches in front of slower sources. For some data this is the **primary** home, not a copy of VP-C001 data: a cache is one use of this store, not its definition.
-- **None** — no transient state beyond a single request.
-- **Redis** — a separate server; shared across service instances; loses data only on failover or eviction.
-- **InMemory** — inside the service process; per instance, lost on every restart; binds any state that must be shared across requests to a single instance.
+A store in which **every entity has a lifetime** (TTL): temporary state, sessions, derived or recomputable values, caches in front of slower sources. Data that has a lifetime lives only here — never in VP-C001 — and for much of it this is the **primary** home, not a copy of VP-C001 data: a cache is one use of this store, not its definition. Losing an entry early (eviction, failover, restart) is the same event as its lifetime expiring, so the service must already survive it.
+- **None** — no state with a lifetime beyond a single request.
+- **Redis** — a separate server; shared across service instances; loses entries early only on failover or eviction.
+- **InMemory** — inside the service process; per instance; every restart ends every lifetime early; binds any state that must be shared across requests to a single instance.
 - One store kind per service, for the same reason as VP-C001.
 - Independent of VP-C001: a service may have either, both, or neither.
+
+### VP-C003 TaskBox
+Deferred execution: the service stores a task and a background worker executes it later, retrying until it succeeds or is dead-lettered. Delivery is at-least-once, so every task handler is idempotent. Outbox (a candidate) builds on it.
+- **Where a task lives** — in a store the service has: VP-C001 (PostgreSQL / SQLite) or VP-C002 (Redis / InMemory). A service with both may use both; which store a task type uses is the service's own choice.
+- **Criticality is a property of the task type, not a VP.** It sets the least store the task may live in: a **Critical** task lives only in VP-C001; a **NonCritical** task may live in either. A task in VP-C002 has a lifetime like every entry there and may be lost before it runs — acceptable only for NonCritical work.
+- **Atomic with a data change only in the same store.** A task is enqueued atomically with the business change it follows only when the task and that data live in the same store (the same transaction in VP-C001, the same `MULTI` in Redis). Data in one store and its task in the other cannot be made transactional: a crash between the two writes leaves a change without its task, or a task without its change.
+- **No ordering across stores.** Tasks in different stores are drained independently; two tasks about the same entity kept in different stores may run in either order. A service that splits task types across stores owns that race.
+- **Data with a lifetime needs no task to expire it** — its store's lifetime (VP-C002) does that.
 
 ## Bound stack maps
 
