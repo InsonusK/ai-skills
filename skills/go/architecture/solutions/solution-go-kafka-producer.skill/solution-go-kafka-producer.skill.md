@@ -34,7 +34,7 @@ adr:
 - Same port/adapter shape as every other outbound solution in this catalog ([[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]], [[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]]) — the port is named for the event published, never for Kafka itself.
 
 # Boundaries
-- Does not decide *whether* a given publication must instead go through [[skills/go/architecture/solutions/solution-go-transactional-outbox.skill/solution-go-transactional-outbox.skill.md|solution-go-transactional-outbox]] — that determination (VP4's constraint: required once [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] is also present and the publication is triggered by the persisted change) is recorded in `skills/go/architecture/variability-map.md`, not repeated here.
+- Does not decide *whether* a given publication must instead go through [[skills/go/architecture/solutions/solution-go-transactional-outbox.skill/solution-go-transactional-outbox.skill.md|solution-go-transactional-outbox]] — that determination (VP-C010's constraint: required once [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] is also present and the publication is triggered by the persisted change) is recorded in `skills/go/architecture/variability-map.md`, not repeated here.
 
 # Template Skill Mutations
 FILES:

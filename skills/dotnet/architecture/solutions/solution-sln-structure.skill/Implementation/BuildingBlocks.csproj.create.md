@@ -25,7 +25,7 @@ tags:
   /MediatR            — pipeline behavior implementations (added by their solutions)
   BuildingBlocks.csproj
 ```
-Later solutions add: `ValidationBehavior.cs` (solution-validation-behavior), `ExceptionHandlingBehavior.cs` (solution-mediator-exception-handler), `UnitOfWorkBehavior.cs` (VP-C001), `ConcurrencyBehavior.cs` (VP5), `GuidResolvingBehavior.cs` (VP6), `/Outbox` (VP14).
+Later solutions add: `ValidationBehavior.cs` (solution-validation-behavior), `ExceptionHandlingBehavior.cs` (solution-mediator-exception-handler), `UnitOfWorkBehavior.cs` (VP-C001), `ConcurrencyBehavior.cs` (VP5), `GuidResolvingBehavior.cs` (VP6), `/Outbox` (VP-C010).
 
 ## Directory and class skills
 | `Directory\|file` | Description |

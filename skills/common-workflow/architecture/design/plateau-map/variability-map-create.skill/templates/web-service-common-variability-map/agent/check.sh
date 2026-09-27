@@ -174,6 +174,34 @@ else:
         for c in r[1 + len(got):]:
             if not (c.startswith("✅") or c == "🔸"): fail(f"registry {r[0]}: stack cell '{c}' is not ✅ {{codes}} / 🔸")
         if not any(c.startswith("✅") for c in r[1 + len(got):]): fail(f"registry {r[0]}: no stack has built it — drop the row")
+    # every code a registry row lists must realize exactly that row's common-VP values in its stack's matrix
+    stack_cols = rhdr[1 + len(got):]
+    for si, b in enumerate(bound):
+        repo_md = os.path.join(REPO, os.path.dirname(b), "plateau/plateau-repository.md")
+        if not os.path.isfile(repo_md): fail(f"{b}: no plateau/plateau-repository.md"); continue
+        mt = open(repo_md, encoding="utf-8").read()
+        mh = next((l for l in mt.splitlines() if l.startswith("| Code |")), None)
+        if not mh: fail(f"{rel(repo_md)}: no Plateau × VP matrix with a Code column"); continue
+        mcols = [c.strip() for c in mh.strip().split("|")[1:-1]]
+        matrix = {}
+        for l in mt.splitlines():
+            if re.match(r"^\| [A-Z]{2}\d{3}\.\d{3} \|", l):
+                c = [x.strip() for x in l.strip().split("|")[1:-1]]
+                matrix[c[0]] = dict(zip(mcols, c))
+        for vp in got:
+            if vp not in mcols: fail(f"{rel(repo_md)}: matrix lacks common column {vp}")
+        listed = set()
+        for r in rrows:
+            cell = r[1 + len(got) + si]
+            for code in re.findall(r"[A-Z]{2}\d{3}\.\d{3}", cell):
+                listed.add(code)
+                if code not in matrix: fail(f"registry {r[0]}: {code} not in {rel(repo_md)}"); continue
+                if code[2:5] != r[0]: fail(f"registry {r[0]}: code {code} carries another common number")
+                for vi, vp in enumerate(got):
+                    if matrix[code].get(vp) != r[1 + vi]:
+                        fail(f"registry {r[0]} {vp}={r[1 + vi]} but {code} has {matrix[code].get(vp)}")
+        for code in matrix:
+            if code not in listed: fail(f"{rel(repo_md)}: {code} is not listed in the registry")
     print(f"  {len(rrows)} registered combination(s)")
 
 print("== 6. Links resolve (touched files) ==")

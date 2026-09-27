@@ -17,6 +17,7 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 | VP-C007 | 📐 | **KafkaConsumer** — does the service consume events from Kafka? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C007 KafkaConsumer](#vp-c007-kafkaconsumer) |
 | VP-C008 | 📐 | **RabbitMqProducer** — does the service publish messages to RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C008 RabbitMqProducer](#vp-c008-rabbitmqproducer) |
 | VP-C009 | 📐 | **RabbitMqConsumer** — does the service consume messages from RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C009 RabbitMqConsumer](#vp-c009-rabbitmqconsumer) |
+| VP-C010 | 📐 | **Outbox** — are outbound calls made through TaskBox instead of directly? | Yes / No | Yes requires VP-C003 = Yes AND (VP-C004 = Yes OR VP-C005 = Yes OR VP-C006 = Yes OR VP-C008 = Yes) | Tasks and handlers of VP-C003; adapters of VP-C004/VP-C006/VP-C008 — see [VP-C010 Outbox](#vp-c010-outbox) |
 
 ## Candidate Variation Points
 
@@ -24,9 +25,8 @@ Identified, not yet agreed — no ID until the concept is agreed. In discussion 
 
 | Status | Candidate | Admitted after | Covers today | Agreed so far / open question |
 | --- | --- | --- | --- | --- |
-| 💡 ▶ | Outbox | — | outbound calls made through TaskBox (VP-C003) instead of directly; Go VP4, dotnet VP14 (Kafka + PostgreSQL today) | Agreed: no own storage — an outbound call is a TaskBox task; message key = `queue_group`; the task `id` travels as the message id; a **common envelope** — task type `outbox.<adapter>`, payload `{target, key, headers, body}` (for a broker adapter, `body` is the CloudEvent of VP-C006), one generic handler per adapter — fixed in a contract beside TaskBox's; a service may add its own handler that also processes the response (a saga step). Open: the exact envelope. With Outbox, a TaskBox handler returns an HTTP status code (VP-C004's outcome rule) and TaskBox retries or dead-letters by VP-C004's retry classification — a TaskBox contract change made at Outbox's admission |
-| 💡 | Inbox | — | optional consumer-side mirror of Outbox for messages that must be processed **only once**: the consumer enqueues the message as a TaskBox task (`idempotency_key` = CloudEvents `id`, `queue_group` = message key) and acknowledges only after the commit; dedup, retry, per-key order, and stop-at-dead then come from TaskBox. Direct handling stays the default (simpler) | Open: when to require it; relation to the handler status-code outcome |
-| 💡 | Saga | Outbox | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
+| 💡 ▶ | Inbox | — | optional consumer-side mirror of Outbox for messages that must be processed **only once**: the consumer enqueues the message as a TaskBox task (`idempotency_key` = CloudEvents `id`, `queue_group` = message key) and acknowledges only after the commit; dedup, retry, per-key order, and stop-at-dead then come from TaskBox. Direct handling stays the default (simpler) | Open: when to require it; relation to the handler status-code outcome |
+| 💡 | Saga | — | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
 | 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | **Idea to consider:** one `.proto` defines the API and grpc-gateway (`google.api.http` annotations, plus OpenAPI via `protoc-gen-openapiv2`) serves the same API over HTTP/JSON — gRPC as an optional second entry generated from the same definition, not a second server (Go `solution-grpc-api` runs a separate gRPC server today). Open: dotnet's family is a `Module` — can a module lack HTTP? |
 | 💡 | DomainLogic | — | dotnet VP1; baseline in Go | Open: common VP with Go `Fixed: Yes`, or dotnet-only? |
 | 💡 | Metric | — | observability | Open: needed now, or when a stack first needs it? |
@@ -91,6 +91,15 @@ Publishing messages to RabbitMQ. Every rule of [VP-C006 KafkaProducer](#vp-c006-
 
 ### VP-C009 RabbitMqConsumer
 Consuming messages from RabbitMQ. Every rule of [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) applies; manual acknowledgement, and a dead-letter exchange receives messages the handler rejects as non-retryable.
+
+### VP-C010 Outbox
+Outbound calls — HTTP requests, broker publications — made by enqueuing a TaskBox task instead of calling directly; a generic handler per adapter then makes the call. Envelope, adapters, and ordering: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c010-outbox|contracts/vp-c010-outbox]].
+- **Required for calls triggered by a data change** — a call or publication caused by a change of persisted data goes through Outbox, enqueued in the same transaction and the same store as that change, so it is sent exactly when the change is committed. A call not tied to a data change may still be made directly.
+- **No storage of its own** — an outbox call is a VP-C003 task: stored, ordered by `queue_group`, retried, and dead-lettered by the TaskBox contract; its criticality follows the store it lives in.
+- **At-least-once, recognisable duplicates** — the task `id` travels as `Idempotency-Key` (HTTP) or as the CloudEvents `id` (brokers), the same on every retry.
+- **Order per receiver and key** — calls with the same target and key are sent in enqueue order; a dead call holds back the later calls with that target and key until a person resolves it.
+- **Generic adapters: HTTP, Kafka, RabbitMQ.** A gRPC call, or any call whose response matters, is a service-specific handler that uses its generated client, handles the response, and may enqueue the next step — one step of an orchestrated saga.
+- **Addresses from configuration** — a task names its target, never its address or credentials.
 
 ## Bound stack maps
 

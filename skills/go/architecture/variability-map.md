@@ -8,7 +8,7 @@ tags:
 
 Built per [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create]], from the non-common features of [[skills/go/architecture/feature/feature-model|feature/feature-model.md]]. This map is the input to [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md|plateau-create-by-solutions]].
 
-**Status of this catalog.** `solutions/` holds this catalog's own solution skills, authored fresh (no prior catalog to migrate from — see `agent/DECISIONS.md`). Every **Realized by** cell links into `solutions/`. Row VP4 (`OutboxPattern`) and the common Kafka rows VP-C006/VP-C007 (`AsyncOutboundApi`, `AsyncInboundApi`) are **aspirational**: their solutions are skeletons with a draft-contract marker — no plateau in this catalog's first build realizes them yet. `plateau/` holds the five plateaus built from this map; the plateau↔VP view lives in `plateau/plateau-repository.md`, maintained per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md|plateau-map-create]].
+**Status of this catalog.** `solutions/` holds this catalog's own solution skills, authored fresh (no prior catalog to migrate from — see `agent/DECISIONS.md`). Every **Realized by** cell links into `solutions/`. The common rows VP-C006, VP-C007, VP-C010 (Kafka publish, Kafka consume, outbox) are **aspirational**: their solutions are skeletons with a draft-contract marker — no plateau in this catalog's first build realizes them yet. `plateau/` holds the five plateaus built from this map; the plateau↔VP view lives in `plateau/plateau-repository.md`, maintained per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md|plateau-map-create]].
 
 ## Common Variation Points
 
@@ -25,6 +25,7 @@ Inherited from the [[skills/common-workflow/architecture/design/plateau-map/vari
 | [VP-C007](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c007-kafkaconsumer) | KafkaConsumer | ✅ | Inherited | — | Yes → **skeleton** `solution-go-messaging-infrastructure` + [solution-go-kafka-consumer](skills/go/architecture/solutions/solution-go-kafka-consumer.skill/solution-go-kafka-consumer.skill) — `twmb/franz-go` consumer group (cooperative-sticky), offset committed after handling (alignment pending: as VP-C006) | No |
 | [VP-C008](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c008-rabbitmqproducer) | RabbitMqProducer | ✅ | Inherited | — | Yes → planned — `rabbitmq/amqp091-go` with publisher confirms; CloudEvents structured JSON through `cloudevents/sdk-go`; on the shared messaging infrastructure | No |
 | [VP-C009](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c009-rabbitmqconsumer) | RabbitMqConsumer | ✅ | Inherited | — | Yes → planned — `rabbitmq/amqp091-go`, manual ack, dead-letter exchange; CloudEvents structured JSON | No |
+| [VP-C010](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c010-outbox) | Outbox | ✅ | Inherited | — | Yes → **skeleton** [solution-go-transactional-outbox](skills/go/architecture/solutions/solution-go-transactional-outbox.skill/solution-go-transactional-outbox.skill) (alignment pending: it keeps its own Kafka-only outbox table; it becomes the TaskBox-based envelope of the contract) — generic handlers on the VP-C004/VP-C006/VP-C008 clients (`net/http`, `franz-go`, `amqp091-go`) | No |
 
 ## Stack Variation Points
 
@@ -33,15 +34,10 @@ Each row is one axis on which two Go web-services built on this family could leg
 | ID | VP | Variants | Constraint | Realized by | Realization depends on | Migration |
 | --- | --- | --- | --- | --- | --- | --- |
 | VP1 | **GrpcApi** — does the module expose a second inbound entry point over gRPC, alongside the common `HttpApi`? | Yes / No | — | Yes → [solution-grpc-api](skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill) | — | No |
-| VP4 | **OutboxPattern** — write outgoing messages to a transactional outbox in the same transaction as the persisted business change, then relay them, instead of publishing directly? | Yes / No | **Yes requires (VP-C006=Yes AND VP-C001 ≠ None)** — jointly AND — see [note](#vp4s-constraint--the-owners-own-rule) | **skeleton** → [solution-go-transactional-outbox](skills/go/architecture/solutions/solution-go-transactional-outbox.skill/solution-go-transactional-outbox.skill) (draft) | Cross-feature interaction with VP-C006: changes *how* the message is written (staged in the persistent store first, relayed by a background process), not whether VP-C006 is legal | No |
 
-### VP4's constraint — the owner's own rule
+### The owner's outbox rule is now common
 
-The Feature Model draws a single `Requires` edge, `OutboxPattern -> PersistentDb` (now common VP-C001 PersistentStore, any Variant but `None`); combined with `OutboxPattern` being drawn as a child of `AsyncOutboundApi` in the diagram (so it is only selectable once VP-C006=Yes), the table's Constraint states both as a joint AND, matching the dotnet catalog's equivalent VP14 shape.
-
-This catalog's owner stated the rule directly, not as architectural inference: *"если есть БД и публикация связана с изменением данных в БД, то делается через pattern outbox"* — if the module has a persistent DB **and** the publication is tied to a change in that DB's data, it is done via the outbox pattern. Two things follow that the Constraint column's Yes/No shape cannot express on its own:
-- The precondition is **VP-C006=Yes AND VP-C001 ≠ None**, exactly as stated in the table.
-- Once both hold, whether a *specific* publication uses the outbox is not itself a further catalog-level choice — it is **required** for any publication that is triggered by a persisted-data change (direct `solution-go-kafka-producer` publish is still legal for a publication that is not tied to a persisted change, e.g. a pure computed/derived event). `solution-go-transactional-outbox`'s own Boundaries state this precisely; the Variability Map records only the legality gate.
+This catalog's owner rule — *"если есть БД и публикация связана с изменением данных в БД, то делается через pattern outbox"* — is part of common VP-C010's concept for every stack; the Constraint is VP-C010's.
 
 ### solution-go-db-migrations is part of VP-C001 PostgreSQL, not a new VP
 
@@ -75,8 +71,8 @@ The plateau↔VP matrix lives in [plateau/plateau-repository.md](skills/go/archi
 
 ## Out of scope
 
-- **VP4, VP-C006, VP-C007 are skeletons.** Their solution skills exist in `solutions/` with a `> Draft contract` marker and one shape-only Implementation file; full authoring is deferred until a real consumer (a sixth plateau) exists. Their Constraints/notes come from the Feature Model and the owner's stated rule, not from working code.
-- **Constraint evidence.** VP4's `requires VP-C006 AND VP-C001 ≠ None` is drawn from the Feature Model's `Requires` edge plus the owner's own stated business rule (quoted above) — not inferred. No other VP carries a constraint; the absence reflects this catalog having no per-entity axes or DomainLogic-gating the way the dotnet catalog does (`DomainLogic` here is common, not a VP, so nothing gates on it).
+- **VP-C006, VP-C007, VP-C010 are skeletons.** Their solution skills exist in `solutions/` with a `> Draft contract` marker and one shape-only Implementation file; full authoring is deferred until a real consumer (a sixth plateau) exists. Their Constraints/notes come from the Feature Model and the owner's stated rule, not from working code.
+- **Constraint evidence.** No stack VP carries a constraint; the outbox Constraint is common VP-C010's.
 - **Migration is `No` everywhere** — this is a brand-new catalog; no service built on it has yet been observed changing a VP answer after being composed. Per the parent skill, `Migration` is set `Yes` only on a real observed transition, never speculatively.
 - **The plateau↔VP view lives outside this map** — see [plateau/plateau-repository.md](skills/go/architecture/plateau/plateau-repository.md); this file intentionally ends at the VP↔solution binding.
 - **No categorical (multi-variant) stack VP in this catalog** — every stack row is boolean (Yes/No); the categorical storage questions are the common VP-C001/VP-C002. Nothing in the current feature set is a mutually-exclusive-alternatives choice; if a second realization of `GrpcApi`-shaped inbound or `AsyncInboundApi`-shaped consumption is added later, revisit whether it stays a boolean addition to `Realized by` or needs a categorical Variant split.

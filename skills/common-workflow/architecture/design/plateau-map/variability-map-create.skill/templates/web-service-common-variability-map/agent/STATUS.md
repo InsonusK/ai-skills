@@ -16,9 +16,12 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | H | Outbound protocols: VP-C004 HttpOutbound, VP-C005 GrpcOutbound 📐 + ✅ in go/dotnet; Go VP2, dotnet VP10/VP11 re-IDed; plateaus recoded; registry 005–008, 002–004 retired | done |
 | I | Messaging 📐: VP-C006–VP-C009 (Kafka/RabbitMQ producer/consumer), CloudEvents; ⏳ rows in go/dotnet; registry + matrices get 4 columns (all No, no recode); Inbox candidate | done |
 | J | Messaging ✅ in go (franz-go, amqp091-go) and dotnet (Confluent.Kafka, RabbitMQ.Client), CloudEvents; Go VP3/VP5, dotnet VP12/VP13 re-IDed | done |
-| next | Outbox (▶) → Inbox → Saga | Outbox under discussion |
+| K | Outbox VP-C010 📐 + ✅ (envelope contract; TaskBox v1 amended: status-code outcomes, `last_status`); Go VP4, dotnet VP14 re-IDed; registry value shift fixed + registry↔matrix cross-check in check.sh | done |
+| next | Inbox (▶) → Saga; then Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | Inbox under discussion |
 
 ## Follow-ups (outside this PR)
+
+- **Align outbox skeletons to VP-C010:** Go `solution-go-transactional-outbox`, dotnet `solution-transactional-outbox` — drop their own Kafka-only outbox tables; become the TaskBox-based envelope with generic HTTP/Kafka/RabbitMQ handlers.
 
 - **Align messaging skeletons to VP-C006–VP-C009:** Go and dotnet messaging infrastructure → CloudEvents envelope; Go client → franz-go with the own Kafka binary binding.
 

@@ -20,6 +20,7 @@ A stack's solution decides only the client library and the code that writes, rea
 | `max_attempts` | int, default 10 | After this many failures → `dead`. |
 | `run_at` | timestamp (UTC) | Not claimable before this — delayed tasks and retry backoff. |
 | `locked_until` | timestamp, nullable | Lease end while `running`; an expired lease makes the task claimable again. |
+| `last_status` | int, nullable | HTTP status code of the latest attempt's outcome (§4). |
 | `last_error` | text, nullable | Error of the latest failed attempt. |
 | `retention` | duration, nullable | How long to keep the task after it finishes; effective value = `max(service default, retention)` (§5). |
 | `created_at`, `updated_at` | timestamp (UTC) | Bookkeeping. |
@@ -30,7 +31,7 @@ Criticality is not stored: it is implied by the store the task lives in (VP-C003
 ## 2. Ports
 
 - **Enqueue** — `enqueue(tx, type, payload, {queue, queue_group, run_at, max_attempts, idempotency_key, retention})`. `tx` is the caller's own unit of work in that store (SQL transaction, Redis `MULTI`/script, nothing for InMemory); enqueue never commits by itself when a `tx` is given.
-- **Handler registry** — the service registers one handler per `type`. A handler receives `(id, payload, attempt)` and either returns (success) or raises (failure). TaskBox never inspects `payload`.
+- **Handler registry** — the service registers one handler per `type`. A handler receives `(id, payload, attempt)` and returns an **HTTP status code** as its outcome (`2xx` = success), plus an optional `Retry-After`; an exception it raises counts as `500`. TaskBox never inspects `payload`; it classifies the code by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C004 HttpOutbound|VP-C004]]'s retry classification — every handler is idempotent (§4), so `500` is retryable.
 - **Worker** — claims due tasks (§6), dispatches each by `type`, records the outcome (§4).
 - **Dead-task operations** (for a person or an admin tool) — **requeue** a `dead` task (`pending`, `attempt = 0`, `run_at = now`) or **cancel** it (`cancelled`).
 
@@ -47,11 +48,14 @@ Criticality is not stored: it is implied by the store the task lives in (VP-C003
 | --- | --- | --- |
 | — | enqueue | `pending` |
 | `pending` (due, head of its group or ungrouped) | claimed | `running`, `attempt + 1`, `locked_until = now + lease` |
-| `running` | handler succeeds | `done`, `finished_at = now` |
-| `running` | handler fails, `attempt < max_attempts` | `pending`, `run_at = now + backoff(attempt)`, `last_error` set |
-| `running` | handler fails, `attempt ≥ max_attempts` | `dead`, `finished_at = now` — its group stops |
+| `running` | handler returns `2xx` | `done`, `finished_at = now` |
+| `running` | retryable code, `attempt < max_attempts` | `pending`, `run_at = now + max(backoff(attempt), Retry-After)`, `last_error` set |
+| `running` | retryable code, `attempt ≥ max_attempts` | `dead`, `finished_at = now` — its group stops |
+| `running` | non-retryable code (e.g. `400`, `404`, `409`) | `dead` at once, `finished_at = now` — its group stops; retrying cannot change the answer |
 | `running` | lease expires (worker died) | claimable again, as if `pending` |
-| `running` | no handler registered for `type` | a failure — so a task reaching an older worker during a rolling deploy is retried, not lost |
+| `running` | no handler registered for `type` | outcome `503` — retryable, so a task reaching an older worker during a rolling deploy is retried, not lost |
+
+Every attempt records its outcome in `last_status`.
 | `dead` | requeue | `pending`, `attempt = 0`, `run_at = now`, `finished_at = null` |
 | `dead` | cancel | `cancelled`, `finished_at = now` — its group resumes |
 
@@ -84,6 +88,7 @@ CREATE TABLE taskbox_task (
   max_attempts    int         NOT NULL DEFAULT 10,
   run_at          timestamptz NOT NULL DEFAULT now(),
   locked_until    timestamptz,
+  last_status     int,
   last_error      text,
   retention       interval,
   created_at      timestamptz NOT NULL DEFAULT now(),
@@ -170,7 +175,8 @@ Switching a service to another stack is not designed yet — decided when a real
 
 Every stack realization passes the same scenarios, one run per store it supports:
 - A task enqueued in a transaction that rolls back never runs; committed, it runs exactly once when the handler succeeds.
-- A failing handler is retried with growing `run_at`; after `max_attempts` failures the task is `dead` with `last_error` and `finished_at`.
+- A handler returning a retryable code is retried with growing `run_at` (never before a `Retry-After`); after `max_attempts` such outcomes the task is `dead` with `last_status`, `last_error`, and `finished_at`.
+- A handler returning a non-retryable code sends the task to `dead` on the first attempt; an exception counts as `500` and is retried.
 - A task claimed by a worker that dies is claimed again after its lease.
 - Two workers never run the same task at the same time.
 - Tasks of one `queue_group` run one at a time in `seq` order, even when enqueued by concurrent transactions; tasks of different groups run in parallel.
@@ -183,7 +189,6 @@ Every stack realization passes the same scenarios, one run per store it supports
 
 ## 9. Later (not in v1)
 
-- **Handler returns an HTTP status code** (planned with Outbox's admission): TaskBox retries or dead-letters by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C004 HttpOutbound|VP-C004]]'s retry classification instead of treating every failure alike.
 
 - **Skippable tasks:** a task-level flag (`skip_on_dead`) letting its group continue past it when it dies.
-- **Handler outcome kinds:** once the contract defines how a handler reports its outcome beyond return/raise, a failure may be `fail` (stops the group when dead) or `fail_allow_skip` (the group may continue).
+- **Skippable outcomes:** a handler outcome meaning "failed, but the group may continue" (`fail_allow_skip`) next to the default non-retryable failure that stops the group.

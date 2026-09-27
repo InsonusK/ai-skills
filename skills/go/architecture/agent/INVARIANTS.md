@@ -59,7 +59,7 @@ tools/
 | VP1 GrpcApi | `solution-grpc-api` | — |
 | VP-C005 GrpcOutbound (ExternalIntegration) | `solution-external-integration` (`depends_on` `solution-go-domain-ports`) | — |
 | VP-C006 AsyncOutboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-producer` *(skeleton)* | — |
-| VP4 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP-C006 AND VP-C001 ≠ None |
+| VP-C010 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP-C006 AND VP-C001 ≠ None |
 | VP-C007 AsyncInboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-consumer` *(skeleton)* | — |
 | VP-C002 TransientStore `Redis` | `solution-cached-db` (`depends_on` `solution-go-domain-ports`) | — |
 | VP-C001 PersistentStore `PostgreSQL` | `solution-persistent-db` (`depends_on` `solution-go-domain-ports`), optionally + `solution-go-db-migrations` (`depends_on` `solution-persistent-db`; not composed by any of the 5 plateaus yet) | — |
@@ -90,7 +90,7 @@ tools/
 
 **new (every solution in this build so far):** authored via `solution-create`'s `templates/go/`; ADR + glossary as needed; `Implementation/` covers every created/extended file with concrete Go code, never left as prose-only.
 
-**skeleton (aspirational — VP-C006/VP4/VP-C007's four solutions):** main skill file complete (Goal, Core Principle, Boundaries where real, Rule, Check list) + a `> Draft contract — no consumer yet` marker + at least one shape-only Implementation file. Full authoring (a grounded Kafka client choice, an AS-IS/TO-BE extension of `{service}.go`, a real ground-truth example) deferred until a sixth plateau consumes them.
+**skeleton (aspirational — VP-C006/VP-C010/VP-C007's four solutions):** main skill file complete (Goal, Core Principle, Boundaries where real, Rule, Check list) + a `> Draft contract — no consumer yet` marker + at least one shape-only Implementation file. Full authoring (a grounded Kafka client choice, an AS-IS/TO-BE extension of `{service}.go`, a real ground-truth example) deferred until a sixth plateau consumes them.
 
 ## 8. Ground truth
 

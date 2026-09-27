@@ -38,7 +38,7 @@ depends_on:
 # Boundaries
 - The Kafka client, connection, and serializer are `solution-messaging-infrastructure`.
 - Idempotency of the dispatched handler is the handler's responsibility (at-least-once means a message may be delivered twice) — this solution guarantees delivery, not exactly-once processing.
-- Producing messages is `solution-kafka-producer` (VP-C006); the reliable-publish outbox is `solution-transactional-outbox` (VP14).
+- Producing messages is `solution-kafka-producer` (VP-C006); the reliable-publish outbox is `solution-transactional-outbox` (VP-C010).
 
 # Requirements
 SOLUTION:

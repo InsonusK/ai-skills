@@ -31,11 +31,11 @@ depends_on:
 # Core Principle
 - `IMessagePublisher` is a `Shared` contract; `KafkaMessagePublisher` is its only implementation, in `App.Infrastructure`.
 - A handler publishes a `{Module}.Interfaces` event record; the publisher serializes it into the envelope and sends it — the handler never sees Kafka types.
-- **Direct publish is best-effort.** A publish inside a business transaction that must not be lost if the commit rolls back needs `solution-transactional-outbox` (VP14), not this solution alone.
+- **Direct publish is best-effort.** A publish inside a business transaction that must not be lost if the commit rolls back needs `solution-transactional-outbox` (VP-C010), not this solution alone.
 
 # Boundaries
 - The Kafka client, connection, and serializer are `solution-messaging-infrastructure`.
-- Reliable, transaction-consistent publishing (write-then-relay) is `solution-transactional-outbox` (VP14), which `depends_on` this solution and persistence.
+- Reliable, transaction-consistent publishing (write-then-relay) is `solution-transactional-outbox` (VP-C010), which `depends_on` this solution and persistence.
 - Consuming messages is `solution-kafka-consumer` (VP-C007).
 
 # Requirements
