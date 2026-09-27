@@ -5,10 +5,14 @@ The `{common}` part of every backend web-service plateau code (`{stack}W{common}
 - A number is assigned once, to the next combination first built by any stack, and never reused.
 - When a common VP reaches 📐, its column is added and filled for every row with the Variant that row's plateaus realize; a row whose plateaus now disagree splits, and the plateaus that moved get the next free number (recoded in the same change).
 - Stack cell: ✅ `{codes}` — built here with its example; 🔸 — built only in another stack.
+- A row left with no plateau in any stack is removed; its number goes to **Retired numbers**.
 
-| No. | VP-C001 PersistentStore | VP-C002 TransientStore | VP-C003 TaskBox | Go | dotnet |
-| --- | --- | --- | --- | --- | --- |
-| 001 | None | None | No | ✅ GW001.000, GW001.001, GW001.002 | ✅ DW001.000 |
-| 002 | None | Redis | No | ✅ GW002.002 | 🔸 |
-| 003 | PostgreSQL | Redis | No | ✅ GW003.002 | 🔸 |
-| 004 | PostgreSQL | None | No | 🔸 | ✅ DW004.001, DW004.002 |
+| No. | VP-C001 PersistentStore | VP-C002 TransientStore | VP-C003 TaskBox | VP-C004 HttpOutbound | VP-C005 GrpcOutbound | Go | dotnet |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 001 | None | None | No | No | No | ✅ GW001.000, GW001.001 | ✅ DW001.000 |
+| 005 | None | None | No | No | Yes | ✅ GW005.001 | 🔸 |
+| 006 | None | Redis | No | No | Yes | ✅ GW006.001 | 🔸 |
+| 007 | PostgreSQL | Redis | No | No | Yes | ✅ GW007.001 | 🔸 |
+| 008 | PostgreSQL | None | No | No | Yes | 🔸 | ✅ DW008.003, DW008.004 |
+
+Retired numbers (never reused): 002, 003, 004 — their plateaus moved to 005–008 when outbound gRPC became common VP-C005.

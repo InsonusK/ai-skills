@@ -11,6 +11,8 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 | VP-C001 | 📐 | **PersistentStore** — where does the service keep data it must never lose? | None / PostgreSQL / SQLite | — | — |
 | VP-C002 | 📐 | **TransientStore** — where does the service keep data that has a lifetime? | None / Redis / InMemory | — | — |
 | VP-C003 | 📐 | **TaskBox** — does the service defer work: store a task now, execute it later in a background worker? | Yes / No | Yes requires (VP-C001 ≠ None OR VP-C002 ≠ None) | Tasks live in the store(s) VP-C001/VP-C002 select — see [VP-C003 TaskBox](#vp-c003-taskbox) |
+| VP-C004 | 📐 | **HttpOutbound** — does the service call other services over HTTP? | Yes / No | — | Call rules shared with VP-C005 — see [VP-C004 HttpOutbound](#vp-c004-httpoutbound) |
+| VP-C005 | 📐 | **GrpcOutbound** — does the service call other services over gRPC? | Yes / No | — | Every rule of VP-C004's concept applies; independent of VP-C004 — see [VP-C005 GrpcOutbound](#vp-c005-grpcoutbound) |
 
 ## Candidate Variation Points
 
@@ -18,11 +20,10 @@ Identified, not yet agreed — no ID until the concept is agreed. In discussion 
 
 | Status | Candidate | Admitted after | Covers today | Agreed so far / open question |
 | --- | --- | --- | --- | --- |
-| 💡 ▶ | Outbound protocols | — | request/response calls to other services; Go VP2 `ExternalIntegration` (gRPC-only realization), dotnet VP10/VP11 | Open: HTTP and gRPC as separate VPs; does Go's ExternalIntegration become the gRPC one? |
-| 💡 | Messaging | — | Kafka/RabbitMQ publish and consume; Go VP3/VP5, dotnet VP12/VP13 | Open: shared messaging infrastructure as a mandatory sub-feature |
-| 💡 | Outbox | Outbound protocols, Messaging | outbound calls made through TaskBox (VP-C003) instead of directly; Go VP4, dotnet VP14 (Kafka + PostgreSQL today) | Agreed: no own storage — an outbound call is a TaskBox task; message key = `queue_group`; the task `id` travels as the message id; a **common envelope** — task type `outbox.<adapter>`, payload `{target, key, headers, body}`, one generic handler per adapter — fixed in a contract beside TaskBox's; a service may add its own handler that also processes the response (a saga step). Open: the exact envelope |
+| 💡 ▶ | Messaging | — | Kafka/RabbitMQ publish and consume; Go VP3/VP5, dotnet VP12/VP13 | Open: shared messaging infrastructure as a mandatory sub-feature |
+| 💡 | Outbox | Messaging | outbound calls made through TaskBox (VP-C003) instead of directly; Go VP4, dotnet VP14 (Kafka + PostgreSQL today) | Agreed: no own storage — an outbound call is a TaskBox task; message key = `queue_group`; the task `id` travels as the message id; a **common envelope** — task type `outbox.<adapter>`, payload `{target, key, headers, body}`, one generic handler per adapter — fixed in a contract beside TaskBox's; a service may add its own handler that also processes the response (a saga step). Open: the exact envelope. With Outbox, a TaskBox handler returns an HTTP status code (VP-C004's outcome rule) and TaskBox retries or dead-letters by VP-C004's retry classification — a TaskBox contract change made at Outbox's admission |
 | 💡 | Saga | Outbox | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
-| 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | Open: dotnet's family is a `Module` — can a module lack HTTP? |
+| 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | **Idea to consider:** one `.proto` defines the API and grpc-gateway (`google.api.http` annotations, plus OpenAPI via `protoc-gen-openapiv2`) serves the same API over HTTP/JSON — gRPC as an optional second entry generated from the same definition, not a second server (Go `solution-grpc-api` runs a separate gRPC server today). Open: dotnet's family is a `Module` — can a module lack HTTP? |
 | 💡 | DomainLogic | — | dotnet VP1; baseline in Go | Open: common VP with Go `Fixed: Yes`, or dotnet-only? |
 | 💡 | Metric | — | observability | Open: needed now, or when a stack first needs it? |
 | 💡 | Domain modelling | DomainLogic | ValueObjects, SharedRules, concurrency control, external identity, audit timestamps — dotnet VP3–VP7 | Open: stay dotnet-only until a second stack needs one? |
@@ -52,6 +53,23 @@ Deferred execution: the service stores a task and a background worker executes i
 - **No ordering across stores.** Tasks in different stores are drained independently; two tasks about the same entity kept in different stores may run in either order. A service that splits task types across stores owns that race.
 - **Data with a lifetime needs no task to expire it** — its store's lifetime (VP-C002) does that.
 - **One storage contract for every stack** — [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c003-taskbox|contracts/vp-c003-taskbox]] fixes the task record, ordering by `queue_group`, lifecycle, retention, and the schema of each store; a stack realizes it with its own client and never with a job-queue library that brings its own schema.
+
+### VP-C004 HttpOutbound
+Synchronous request/response calls from this service to another service over HTTP. The rules below apply to every outbound call, whatever its protocol (VP-C005 inherits them):
+- **Domain-named port** — the port is named for what the domain needs (`ReputationChecker`), never for the dependency or the technology (`IReputationServiceClient`), and has one method per operation the service actually uses. Replacing the provider does not rename the port.
+- **Transport stays in the adapter** — the dependency's contract (OpenAPI, `.proto`) is copied into this service and generated; generated and transport types never leave the adapter.
+- **Outcome is an HTTP status code** — a failed call returns a failure carrying an HTTP status code as its category; the domain branches on the code, never on transport types. A call that got no response: connection failure → `503`, deadline exceeded → `504`.
+- **Retry classification** — retryable: `408`, `429`, `502`, `503`, `504` (honouring `Retry-After` on `429`/`503`); `500` only for an idempotent operation; any other `4xx` never. The same classification drives retries inside a call and, with Outbox, TaskBox's retry-or-dead decision.
+- **Every call has a deadline** — configured per dependency, overridable per call; a call without one can hang on an unresponsive peer forever.
+- **Retries inside a call only for idempotent operations**, with backoff — repeating a non-idempotent `POST` may apply it twice.
+- **Circuit breaker** — recommended; whether and how is the stack's choice.
+- Independent of VP-C005: a service may call one dependency over HTTP and another over gRPC.
+
+### VP-C005 GrpcOutbound
+Synchronous request/response calls from this service to another service over gRPC. Every rule of [VP-C004 HttpOutbound](#vp-c004-httpoutbound) applies, with two gRPC specifics:
+- **Status mapping** — a gRPC status becomes the HTTP status code of the standard gRPC↔HTTP mapping used by grpc-gateway (`NOT_FOUND` → `404`, `INVALID_ARGUMENT` → `400`, `UNAVAILABLE` → `503`, `DEADLINE_EXCEEDED` → `504`, `RESOURCE_EXHAUSTED` → `429`, …).
+- **Separate generated packages** — a dependency's generated contract never shares a package with this service's own exposed gRPC contract.
+- Independent of VP-C004.
 
 ## Bound stack maps
 

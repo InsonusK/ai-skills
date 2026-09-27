@@ -13,9 +13,12 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | E | TaskBox 📐 (VP-C003) + TransientStore concept sharpened (lifetime); ⏳ rows in go/dotnet; registry + matrices get the VP-C003 column; feature template: TaskBox own feature, criticality on TaskBox | done |
 | F | TaskBox storage contract `contracts/vp-c003-taskbox.md` — two review rounds, accepted | done |
 | G | TaskBox ✅ in go/dotnet: own realization of the contract per store, clients chosen | done |
-| next | Outbound protocols → Messaging → Outbox → Saga (order kept in the common map's `Admitted after` column; `▶` = current) | Outbound protocols under discussion |
+| H | Outbound protocols: VP-C004 HttpOutbound, VP-C005 GrpcOutbound 📐 + ✅ in go/dotnet; Go VP2, dotnet VP10/VP11 re-IDed; plateaus recoded; registry 005–008, 002–004 retired | done |
+| next | Messaging → Outbox → Saga (order in the common map's candidate table; `▶` = current) | Messaging under discussion |
 
 ## Follow-ups (outside this PR)
+
+- **Align outbound solutions to VP-C004/VP-C005:** Go `solution-external-integration` (failures → HTTP status codes); dotnet `solution-http-api-client` / `solution-grpc-client` (domain-named port instead of `I{Dependency}Client`; failures → HTTP status codes).
 
 - **Rename existing plateau folders/files to their codes** (Go 5, dotnet 3 plateaus; dotnet `structure/` file names embed the plateau name). Wanted as a GitHub issue — `gh` is not authenticated in this environment; issue text handed to the owner. Best done after the candidates covering existing stack VPs are admitted, so codes stop changing.
 - `plateau-map-create`'s "stop if Realized by has gaps" must treat `planned — …` as filled (handled in B).

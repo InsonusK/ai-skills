@@ -183,5 +183,7 @@ Every stack realization passes the same scenarios, one run per store it supports
 
 ## 9. Later (not in v1)
 
+- **Handler returns an HTTP status code** (planned with Outbox's admission): TaskBox retries or dead-letters by [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C004 HttpOutbound|VP-C004]]'s retry classification instead of treating every failure alike.
+
 - **Skippable tasks:** a task-level flag (`skip_on_dead`) letting its group continue past it when it dies.
 - **Handler outcome kinds:** once the contract defines how a handler reports its outcome beyond return/raise, a failure may be `fail` (stops the group when dead) or `fail_allow_skip` (the group may continue).

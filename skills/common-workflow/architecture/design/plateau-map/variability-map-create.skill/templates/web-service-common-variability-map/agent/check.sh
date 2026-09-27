@@ -164,6 +164,10 @@ else:
     nstack = len(rhdr) - 1 - len(got)
     if nstack != len(bound): fail(f"registry has {nstack} stack column(s), {len(bound)} bound stack(s)")
     nums = [r[0] for r in rrows]
+    rm = re.search(r"^Retired numbers[^:]*:\s*([\d,\s]+)", open(REGF, encoding="utf-8").read(), re.M)
+    retired = set(re.findall(r"\d{3}", rm.group(1))) if rm else set()
+    for n_ in nums:
+        if n_ in retired: fail(f"registry: number {n_} is retired and must not be reused")
     if len(set(nums)) != len(nums): fail("registry: duplicate number")
     for r in rrows:
         if not re.fullmatch(r"\d{3}", r[0]): fail(f"registry: bad number '{r[0]}'")
