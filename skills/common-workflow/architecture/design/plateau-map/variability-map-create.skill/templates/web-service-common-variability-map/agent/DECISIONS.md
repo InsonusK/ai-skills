@@ -24,6 +24,9 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - **TaskBox concept (2026-09-27), VP-C003 📐:** option C — tasks may live in either store; the service chooses per task type. The concept carries two reminders instead of a restriction: no transactionality between data and task in different stores, and no ordering across stores. Criticality is a per-task-type property, not a VP: Critical → VP-C001 only; NonCritical → either store.
 - **TransientStore redefined:** every entity has a lifetime (TTL); all data with a lifetime lives only in VP-C002; early loss (restart, eviction, failover) = the lifetime expiring early. Hence InMemory is a legitimate TaskBox store for NonCritical tasks.
 - Feature template: `TaskBox` is its own optional feature (not under `InboundAsync`); the criticality pair moved from `Outbox`'s `MessageSendGuarantee` onto `TaskBox`, since it applies to every task, not only outbound messages.
+- **Common storage schema for mechanisms (2026-09-27):** TaskBox (later Outbox) gets a stack-agnostic storage contract — PostgreSQL/SQLite DDL, Redis structures, InMemory model, lifecycle, conformance scenarios; stack solutions own only the client and the read/write/execute code. Business data stays out of any shared schema. A task = `type` name + JSON `payload`; the service registers a handler per `type`, TaskBox never knows what a task does. Consequence: job-queue libraries with their own schemas (River, Hangfire, MassTransit) are not used for TaskBox storage.
+- **Migrations (2026-09-27):** each stack applies the contract's numbered schema versions with its own migration tool. Switching a service between stacks is decided when it really happens; the noted shape of the answer is baselining the new stack's migration history at the contract version the database is at.
+- MediatR and MassTransit v9 commercial licensing is acceptable (free under $1M revenue) — no reason to drop them.
 
 ## Agent decisions
 
@@ -50,3 +53,4 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - dotnet's `plateau-repository.md` "Reference: v3 plateaus" section cites v3's *own* VP numbering; its "`VP2` = Http" was reworded without an ID so the re-ID could not corrupt it. Every other `VP2` in the dotnet tree referred to v3.1 Persistence (checked).
 - **Finding:** dotnet `agent/check.sh` is stale — it still targets the removed `v3.1/` paths ("no plateau/ folder yet", "not yet: solution-…" for solutions that exist). Pre-existing; not fixed here.
 - VP-C003 admitted with every existing plateau at `No` → registry column added, no row split, no code changed.
+- TaskBox contract drafted at `contracts/vp-c003-taskbox.md` (not referenced by stack rows until the owner reviews it). Unknown task `type` = a failure (retried), so a rolling deploy does not lose tasks. Redis idempotency keys are per-key strings with a TTL, not one growing set — every Redis entry keeps a lifetime (VP-C002).

@@ -11,7 +11,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | C | Storage ✅ in Go: rows detailed, VP7→VP-C001, VP6→VP-C002 re-ID, plateau-repository recoded (GW001.000 … GW003.002), registry rows 001–003 | done |
 | D | Storage ✅ in dotnet: rows detailed (VP-C001 Refined: requires VP1), VP2→VP-C001 re-ID (46 files), plateau-repository recoded (DW001.000, DW004.001, DW004.002), registry row 004 | done |
 | E | TaskBox 📐 (VP-C003) + TransientStore concept sharpened (lifetime); ⏳ rows in go/dotnet; registry + matrices get the VP-C003 column; feature template: TaskBox own feature, criticality on TaskBox | done |
-| next | TaskBox ✅ per stack — realization proposal to the owner | waiting on owner |
+| F | TaskBox storage contract draft `contracts/vp-c003-taskbox.md` | done — **owner review** |
+| next | After review: TaskBox ✅ in go/dotnet (contract link + chosen clients) | waiting on owner |
 
 ## Follow-ups (outside this PR)
 
