@@ -10,9 +10,9 @@ Plateaus are coded per [[skills/common-workflow/architecture/design/plateau-map/
 
 | Code | Title | Folder | VP-C001 | VP-C002 | VP-C003 | VP-C004 | VP-C005 | VP-C006 | VP-C007 | VP-C008 | VP-C009 | VP-C010 | VP-C011 | VP1 | VP3 | VP4 | VP5 | VP6 | VP7 | VP8 | VP9 |
 |---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| DW001.000 | core | plateau-core | None | None | No | No | No | No | No | No | No | No | No | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| DW008.003 | domain service | plateau-domain-service | PostgreSQL | None | No | No | Yes | No | No | No | No | No | No | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ |
-| DW008.004 | offline-sync service | plateau-offline-sync-service | PostgreSQL | None | No | No | Yes | No | No | No | No | No | No | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| DW001.000 | core | plateau-core | None | None | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| DW008.003 | domain service | plateau-domain-service | PostgreSQL | None | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ |
+| DW008.004 | offline-sync service | plateau-offline-sync-service | PostgreSQL | None | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 
 Column legend — VP-C001 PersistentStore (common) · VP-C002 TransientStore (common) · VP-C003 TaskBox (common) · VP-C004 HttpOutbound (common) · VP-C005 GrpcOutbound (common) · VP-C006–VP-C009 Kafka/RabbitMQ producer/consumer (common) · VP-C010 Outbox (common) · VP-C011 Inbox (common) · VP1 DomainLogic · VP3 ValueObjects · VP4 SharedRules ·
 VP5 EntityConcurrencyControl · VP6 ExternalIdentity · VP7 AuditTimestamps · VP8 SyncInboundApi–HTTP ·

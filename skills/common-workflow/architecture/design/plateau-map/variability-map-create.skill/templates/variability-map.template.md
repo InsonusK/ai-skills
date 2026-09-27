@@ -15,7 +15,7 @@ The plateau↔VP view (which plateau realizes which VPs) is **not** part of this
 | --- | --- | --- | --- | --- | --- | --- |
 ```hint
 One row per 📐 row of the web-service common map — every one, none skipped.
-- ID: the common `VP-C###` ID, linked to its concept section in the common map.
+- ID: the common `VP-C###` ID, linked to its concept file `vp/vp-c###-{name}/vp-c###-{name}.md` beside the common map.
 - VP: the common VP's name only — never its question, Variants, or Constraint.
 - Status: ⏳ until this stack decides the realization, then ✅ — per variability-map-create's "Track VP status".
 - State, Stack delta, Realized by: per variability-map-create's "Give every common row a State" table; `—` while ⏳.
@@ -23,7 +23,7 @@ One row per 📐 row of the web-service common map — every one, none skipped.
 ```example
 | ID | VP | Status | State | Stack delta | Realized by | Migration |
 | --- | --- | --- | --- | --- | --- | --- |
-| [VP-C003](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map.md#vp-c003-examplevp) | ExampleVP | ✅ | Refined | SQLite unsupported — the family's persistence ADR picks PostgreSQL only | PostgreSQL → `solution-persistent-db` | No |
+| [VP-C003](skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/vp/vp-c003-examplevp/vp-c003-examplevp.md) | ExampleVP | ✅ | Refined | SQLite unsupported — the family's persistence ADR picks PostgreSQL only | PostgreSQL → `solution-persistent-db` | No |
 ```
 
 ## Stack Variation Points

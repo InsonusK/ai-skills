@@ -6,7 +6,7 @@ The anchor document for replacing the copy-what-applies `templates/web-service-v
 
 ## 1. Common map: inherited, not copied
 
-- The common map (`variability-map-create.skill/templates/web-service-common-variability-map/`) owns each common VP: table row (question, Variants, Constraint, Realization depends on) + `### VP-C### {Name}` concept section. Never `Realized by`.
+- The common map (`variability-map-create.skill/templates/web-service-common-variability-map/`) owns each common VP: table row (question, Variants, Constraint, Realization depends on; the ID links the concept) + concept file `vp/vp-c###-{name}/vp-c###-{name}.md` (`{name}` = VP name in lower case, first line `# VP-C### {Name}`) + optional contract `vp-c###-{name}.contract.md` beside it. Nothing else in a `vp/` folder; no inline concept sections. Candidates live in `candidates.md`. Never `Realized by`.
 - Every bound stack map carries every 📐 common VP in `## Common Variation Points`; its row restates nothing the common map owns (ID link, name, Status, State, Stack delta, Realized by, Migration). Stack-local VPs stay in `## Stack Variation Points`.
 - Bound stacks are plain backticked paths in the common map (a stack-agnostic skill never links stack-specialized files). Angular is not bound.
 
@@ -19,7 +19,7 @@ The anchor document for replacing the copy-what-applies `templates/web-service-v
 
 | Where | Status | Meaning |
 | --- | --- | --- |
-| Common map | 💡 | Candidate — identified, nothing agreed, no ID (`## Candidate Variation Points`) |
+| Common map | 💡 | Candidate — identified, nothing agreed, no ID (`candidates.md`) |
 | Common map | 📐 | Concept agreed with the owner |
 | Common map | ⛔ Retired | Row and ID kept |
 | Stack map | ⏳ | Carried, realization not decided — State/delta/Realized by are `—` |
@@ -29,7 +29,7 @@ States of a ✅ row: `Inherited` / `Refined` (narrowing with reason) / `Fixed: {
 
 ## 4. Admission (each stage its own change)
 
-1. 💡 add a candidate row. 2. 📐 owner agrees the concept → ID + concept section + a ⏳ row in every bound stack. 3. ✅ per stack: State, realization per Variant, narrowing, re-ID of the covered stack VP. A `planned` Variant gets its solution when a plateau "existing base plateau + this VP" is built — no throwaway builds.
+1. 💡 add a candidate row. 2. 📐 owner agrees the concept → ID + concept file + a ⏳ row in every bound stack. 3. ✅ per stack: State, realization per Variant, narrowing, re-ID of the covered stack VP. A `planned` Variant gets its solution when a plateau "existing base plateau + this VP" is built — no throwaway builds.
 
 ## 5. Plateau codes (plateau-map-create)
 
