@@ -14,7 +14,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | F | TaskBox storage contract `contracts/vp-c003-taskbox.md` — two review rounds, accepted | done |
 | G | TaskBox ✅ in go/dotnet: own realization of the contract per store, clients chosen | done |
 | H | Outbound protocols: VP-C004 HttpOutbound, VP-C005 GrpcOutbound 📐 + ✅ in go/dotnet; Go VP2, dotnet VP10/VP11 re-IDed; plateaus recoded; registry 005–008, 002–004 retired | done |
-| next | Messaging → Outbox → Saga (order in the common map's candidate table; `▶` = current) | Messaging under discussion |
+| I | Messaging 📐: VP-C006–VP-C009 (Kafka/RabbitMQ producer/consumer), CloudEvents; ⏳ rows in go/dotnet; registry + matrices get 4 columns (all No, no recode); Inbox candidate | done |
+| next | Messaging ✅ per stack (library proposal to the owner), then Outbox → Inbox → Saga | waiting on owner |
 
 ## Follow-ups (outside this PR)
 

@@ -6,15 +6,15 @@ previous plateau. A plateau's capabilities are **cumulative**: everything the pa
 
 ## Plateau × VP matrix
 
-Plateaus are coded per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md#plateau-codes|plateau-map-create's plateau codes]] (`DW` = dotnet web-service; the folders still carry their pre-code names until they are renamed). Rows = plateaus by code, with the Title decoding it and the current folder name. Columns = the 5 common VPs (cell = the Variant the plateau realizes) and the 11 stack VPs (✅ = realized at that plateau, ❌ = not). Answers are **cumulative** down the chain — a plateau has every VP its parent has, plus its own. Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a plateau's complete VP set.
+Plateaus are coded per [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md#plateau-codes|plateau-map-create's plateau codes]] (`DW` = dotnet web-service; the folders still carry their pre-code names until they are renamed). Rows = plateaus by code, with the Title decoding it and the current folder name. Columns = the 9 common VPs (cell = the Variant the plateau realizes) and the 11 stack VPs (✅ = realized at that plateau, ❌ = not). Answers are **cumulative** down the chain — a plateau has every VP its parent has, plus its own. Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a plateau's complete VP set.
 
-| Code | Title | Folder | VP-C001 | VP-C002 | VP-C003 | VP-C004 | VP-C005 | VP1 | VP3 | VP4 | VP5 | VP6 | VP7 | VP8 | VP9 | VP12 | VP13 | VP14 |
-|---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| DW001.000 | core | plateau-core | None | None | No | No | No | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| DW008.003 | domain service | plateau-domain-service | PostgreSQL | None | No | No | Yes | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| DW008.004 | offline-sync service | plateau-offline-sync-service | PostgreSQL | None | No | No | Yes | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Code | Title | Folder | VP-C001 | VP-C002 | VP-C003 | VP-C004 | VP-C005 | VP-C006 | VP-C007 | VP-C008 | VP-C009 | VP1 | VP3 | VP4 | VP5 | VP6 | VP7 | VP8 | VP9 | VP12 | VP13 | VP14 |
+|---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| DW001.000 | core | plateau-core | None | None | No | No | No | No | No | No | No | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| DW008.003 | domain service | plateau-domain-service | PostgreSQL | None | No | No | Yes | No | No | No | No | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| DW008.004 | offline-sync service | plateau-offline-sync-service | PostgreSQL | None | No | No | Yes | No | No | No | No | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 
-Column legend — VP-C001 PersistentStore (common) · VP-C002 TransientStore (common) · VP-C003 TaskBox (common) · VP-C004 HttpOutbound (common) · VP-C005 GrpcOutbound (common) · VP1 DomainLogic · VP3 ValueObjects · VP4 SharedRules ·
+Column legend — VP-C001 PersistentStore (common) · VP-C002 TransientStore (common) · VP-C003 TaskBox (common) · VP-C004 HttpOutbound (common) · VP-C005 GrpcOutbound (common) · VP-C006–VP-C009 Kafka/RabbitMQ producer/consumer (common) · VP1 DomainLogic · VP3 ValueObjects · VP4 SharedRules ·
 VP5 EntityConcurrencyControl · VP6 ExternalIdentity · VP7 AuditTimestamps · VP8 SyncInboundApi–HTTP ·
 VP9 SyncInboundApi–gRPC · VP12 AsyncInboundApi ·
 VP13 AsyncOutboundApi · VP14 OutboxPattern. Full descriptions, the solution that realizes each VP, and

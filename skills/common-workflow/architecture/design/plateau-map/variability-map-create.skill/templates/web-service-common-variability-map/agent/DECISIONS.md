@@ -33,6 +33,8 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - **Outbox form (a):** a common envelope — task type `outbox.<adapter>`, payload `{target, key, headers, body}`, one generic handler per adapter, defined in a contract beside TaskBox's. A service may also write its own handler that processes the response: that is the saga-orchestrator pattern, raised as its own candidate.
 - **Outbound protocols admitted (2026-09-27):** VP-C004 HttpOutbound and VP-C005 GrpcOutbound, independent booleans (the owner's "gRPC requires HTTP" was about grpc-gateway, an *inbound* pattern — noted on the Inbound protocols candidate). Port named for the domain need (Go style), not the dependency. Outcome of a failed call = an HTTP status code (gRPC via the standard gRPC↔HTTP mapping; no response → 503/504), with one retry classification (408/429/502/503/504; 500 only if idempotent) reused later by TaskBox with Outbox. Deadline mandatory, in-call retry only for idempotent operations, circuit breaker recommended (agent's call, delegated).
 - Go ExternalIntegration → VP-C005 (its only realization is gRPC); dotnet VP10 → VP-C004, VP11 → VP-C005.
+- **Messaging admitted (2026-09-27), 📐:** four independent VPs — VP-C006 KafkaProducer, VP-C007 KafkaConsumer, VP-C008 RabbitMqProducer, VP-C009 RabbitMqConsumer (like HTTP/gRPC, any in/out combination). CloudEvents 1.0 is the envelope (Kafka binding; RabbitMQ structured JSON). Consumer semantics agreed as a baseline, to be detailed when the solutions are written.
+- **Inbox** — optional, for messages that must be processed only once (consumer → TaskBox task, ack after commit); direct handling stays the default. Raised as its own candidate.
 
 ## Agent decisions
 

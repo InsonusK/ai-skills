@@ -13,6 +13,10 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 | VP-C003 | 📐 | **TaskBox** — does the service defer work: store a task now, execute it later in a background worker? | Yes / No | Yes requires (VP-C001 ≠ None OR VP-C002 ≠ None) | Tasks live in the store(s) VP-C001/VP-C002 select — see [VP-C003 TaskBox](#vp-c003-taskbox) |
 | VP-C004 | 📐 | **HttpOutbound** — does the service call other services over HTTP? | Yes / No | — | Call rules shared with VP-C005 — see [VP-C004 HttpOutbound](#vp-c004-httpoutbound) |
 | VP-C005 | 📐 | **GrpcOutbound** — does the service call other services over gRPC? | Yes / No | — | Every rule of VP-C004's concept applies; independent of VP-C004 — see [VP-C005 GrpcOutbound](#vp-c005-grpcoutbound) |
+| VP-C006 | 📐 | **KafkaProducer** — does the service publish events to Kafka? | Yes / No | — | Messaging rules shared with VP-C007–VP-C009 — see [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) |
+| VP-C007 | 📐 | **KafkaConsumer** — does the service consume events from Kafka? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C007 KafkaConsumer](#vp-c007-kafkaconsumer) |
+| VP-C008 | 📐 | **RabbitMqProducer** — does the service publish messages to RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C008 RabbitMqProducer](#vp-c008-rabbitmqproducer) |
+| VP-C009 | 📐 | **RabbitMqConsumer** — does the service consume messages from RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C009 RabbitMqConsumer](#vp-c009-rabbitmqconsumer) |
 
 ## Candidate Variation Points
 
@@ -20,8 +24,8 @@ Identified, not yet agreed — no ID until the concept is agreed. In discussion 
 
 | Status | Candidate | Admitted after | Covers today | Agreed so far / open question |
 | --- | --- | --- | --- | --- |
-| 💡 ▶ | Messaging | — | Kafka/RabbitMQ publish and consume; Go VP3/VP5, dotnet VP12/VP13 | Open: shared messaging infrastructure as a mandatory sub-feature |
-| 💡 | Outbox | Messaging | outbound calls made through TaskBox (VP-C003) instead of directly; Go VP4, dotnet VP14 (Kafka + PostgreSQL today) | Agreed: no own storage — an outbound call is a TaskBox task; message key = `queue_group`; the task `id` travels as the message id; a **common envelope** — task type `outbox.<adapter>`, payload `{target, key, headers, body}`, one generic handler per adapter — fixed in a contract beside TaskBox's; a service may add its own handler that also processes the response (a saga step). Open: the exact envelope. With Outbox, a TaskBox handler returns an HTTP status code (VP-C004's outcome rule) and TaskBox retries or dead-letters by VP-C004's retry classification — a TaskBox contract change made at Outbox's admission |
+| 💡 ▶ | Outbox | — | outbound calls made through TaskBox (VP-C003) instead of directly; Go VP4, dotnet VP14 (Kafka + PostgreSQL today) | Agreed: no own storage — an outbound call is a TaskBox task; message key = `queue_group`; the task `id` travels as the message id; a **common envelope** — task type `outbox.<adapter>`, payload `{target, key, headers, body}` (for a broker adapter, `body` is the CloudEvent of VP-C006), one generic handler per adapter — fixed in a contract beside TaskBox's; a service may add its own handler that also processes the response (a saga step). Open: the exact envelope. With Outbox, a TaskBox handler returns an HTTP status code (VP-C004's outcome rule) and TaskBox retries or dead-letters by VP-C004's retry classification — a TaskBox contract change made at Outbox's admission |
+| 💡 | Inbox | — | optional consumer-side mirror of Outbox for messages that must be processed **only once**: the consumer enqueues the message as a TaskBox task (`idempotency_key` = CloudEvents `id`, `queue_group` = message key) and acknowledges only after the commit; dedup, retry, per-key order, and stop-at-dead then come from TaskBox. Direct handling stays the default (simpler) | Open: when to require it; relation to the handler status-code outcome |
 | 💡 | Saga | Outbox | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
 | 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | **Idea to consider:** one `.proto` defines the API and grpc-gateway (`google.api.http` annotations, plus OpenAPI via `protoc-gen-openapiv2`) serves the same API over HTTP/JSON — gRPC as an optional second entry generated from the same definition, not a second server (Go `solution-grpc-api` runs a separate gRPC server today). Open: dotnet's family is a `Module` — can a module lack HTTP? |
 | 💡 | DomainLogic | — | dotnet VP1; baseline in Go | Open: common VP with Go `Fixed: Yes`, or dotnet-only? |
@@ -70,6 +74,23 @@ Synchronous request/response calls from this service to another service over gRP
 - **Status mapping** — a gRPC status becomes the HTTP status code of the standard gRPC↔HTTP mapping used by grpc-gateway (`NOT_FOUND` → `404`, `INVALID_ARGUMENT` → `400`, `UNAVAILABLE` → `503`, `DEADLINE_EXCEEDED` → `504`, `RESOURCE_EXHAUSTED` → `429`, …).
 - **Separate generated packages** — a dependency's generated contract never shares a package with this service's own exposed gRPC contract.
 - Independent of VP-C004.
+
+### VP-C006 KafkaProducer
+Publishing events to Kafka. The messaging rules below apply to every broker VP (VP-C006–VP-C009); the four are independent, so a service may publish and consume over either broker in any combination.
+- **CloudEvents 1.0 envelope** — every message is a CloudEvent (`id`, `source`, `type`, `time`, `datacontenttype`, `data`; trace context through the distributed-tracing extension). Kafka uses the CloudEvents Kafka protocol binding; RabbitMQ uses structured mode (`application/cloudevents+json`), which works over AMQP 0-9-1 and 1.0 alike.
+- **Order only within a key** — the message key (Kafka partition key, RabbitMQ routing to one queue) is the only ordering unit.
+- **Producer outcome** — by [VP-C004's outcome and retry rules](#vp-c004-httpoutbound): broker unavailable → `503`, message rejected (too large, invalid) → `400`. A retried publish keeps the same CloudEvents `id`, so a duplicate is recognisable.
+- **Consumer semantics (baseline, detailed when the solutions are written)** — at-least-once delivery; handlers are idempotent and deduplicate by CloudEvents `id`; a handler's outcome is an HTTP status code: retryable per VP-C004's classification → redelivered, otherwise → dead-letter topic/queue; the message is acknowledged (offset committed) only after it is handled.
+- **Shared messaging infrastructure** — envelope, serialization, and tracing are one stack-level building block that every broker VP depends on (a mandatory sub-feature), not repeated per VP.
+
+### VP-C007 KafkaConsumer
+Consuming events from Kafka. Every rule of [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) applies; the consumer group is the unit of parallelism, one partition per consumer at a time.
+
+### VP-C008 RabbitMqProducer
+Publishing messages to RabbitMQ. Every rule of [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) applies; publisher confirms are on, so a publish counts as done only when the broker confirmed it.
+
+### VP-C009 RabbitMqConsumer
+Consuming messages from RabbitMQ. Every rule of [VP-C006 KafkaProducer](#vp-c006-kafkaproducer) applies; manual acknowledgement, and a dead-letter exchange receives messages the handler rejects as non-retryable.
 
 ## Bound stack maps
 
