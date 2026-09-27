@@ -28,7 +28,7 @@ Identified, not yet agreed — no ID until the concept is agreed. Listed in the 
 | 💡 | Deployment | SingleInstance / MultiInstance — SQLite (VP-C001) and InMemory (VP-C002) bind a service to one instance | **Discuss with the owner first:** a real VP with a Constraint, or only the consequence already stated in VP-C001/VP-C002? |
 
 ### VP-C001 PersistentStore
-The system of record: data that survives restarts and redeploys and is never deliberately discarded. Business changes are written in transactions, which later VPs (TaskBox, Outbox) rely on to stay atomic with the change they report.
+The system of record: **data that survives restarts and redeploys and is never deliberately discarded**. Business changes are written in transactions, which later VPs (TaskBox, Outbox) rely on to stay atomic with the change they report.
 - **None** — the service owns no durable state (stateless, or delegates state to other services).
 - **PostgreSQL** — a separate database server; fits any number of service instances.
 - **SQLite** — an embedded database file; binds the service to a single instance (one writer), for deployments that do not scale out.
