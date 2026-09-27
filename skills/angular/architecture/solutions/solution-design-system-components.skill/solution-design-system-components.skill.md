@@ -117,7 +117,7 @@ sequenceDiagram
 ## Naming an input identically to Material's own (anti-pattern, caught in review)
 
 1. A new component's input is named and typed identically to the Material component it wraps internally (e.g. reusing Material's own `color` enum verbatim).
-2. This is flagged against [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#Anti-patterns]] — mirroring Material's categorization this closely defeats the point of encapsulation, even without directly re-exporting Material's type.
+2. This is flagged against [[skills/angular/architecture/solutions/solution-design-system-components.skill/Implementation/ComponentLayer/{component-name}.component.ts.create.md#MUST]] — mirroring Material's categorization this closely defeats the point of encapsulation, even without directly re-exporting Material's type.
 3. Fix: design the input around this application's own real usage instead.
 
 # Rules

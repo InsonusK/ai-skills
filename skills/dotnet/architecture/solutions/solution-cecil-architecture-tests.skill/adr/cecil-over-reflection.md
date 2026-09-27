@@ -16,7 +16,7 @@ Several structural facts the TaskModule conformance pilot needs to guarantee —
 
 # Selected variant
 
-**Selected variant:** [[#Mono.Cecil, as an xUnit Fact]]
+**Selected variant:** [[#Mono.Cecil, as an xUnit Fact (selected)]]
 
 # Searched variants
 

@@ -45,7 +45,7 @@ Configure every Client's connection to an external API through ENV variables sha
 
 - Violation: a host, port, or TLS literal in code, or a client whose connection variables don't follow this naming (`ORDERS_URL`, `ORDERS_ENDPOINT`).
 - Risk: every client invents its own naming, so nobody can guess or grep for a given integration's settings, and there is no consistent way to override them per environment.
-- Fix: read the host from `{API}_HOST`, each used protocol's port from its own `{API}_{PROTOCOL}_PORT`, and TLS from the shared `{API}_TLS` unless [split per protocol](#split-apitls-per-protocol-only-when-requested) applies.
+- Fix: read the host from `{API}_HOST`, each used protocol's port from its own `{API}_{PROTOCOL}_PORT`, and TLS from the shared `{API}_TLS` unless [split per protocol](#split-api_tls-per-protocol-only-when-requested) applies.
 
 ### Name one PORT variable per protocol actually used
 When a client speaks more than one protocol to the same API (e.g. grpc and http), give each protocol its own `{API}_{PROTOCOL}_PORT` under the same `{API}_HOST`, naming `{PROTOCOL}` explicitly (`GRPC`, `HTTP`) — ports always differ per protocol, so never share one.

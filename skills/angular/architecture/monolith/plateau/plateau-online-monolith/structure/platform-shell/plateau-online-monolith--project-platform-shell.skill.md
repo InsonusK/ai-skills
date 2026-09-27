@@ -68,7 +68,7 @@ __Applied solutions:__
 ## MUST
 - [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill#must|repo-online-monolith]]
 
-- [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill#must never|repo-online-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill#MUST|repo-online-monolith]]
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]] - [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/PlatformHost/platform-shell.project.extend.md|PlatformHost/platform-shell.project.extend]]

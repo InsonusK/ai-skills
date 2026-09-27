@@ -88,9 +88,9 @@ DROP TABLE IF EXISTS {table};
 
 This catalog's own runnable examples concretize this as `linkstore.Migrate` and
 `migrations/00001_create_link_checks.sql` — see `plateau-persistent-service`'s `example/` for how
-[[../store.go.extend.md|store.go]] stops creating the table inline, and how
-[[../../cmd/migrate/main.go.create.md|cmd/migrate/main.go]] and
-[[../../cmd/{service}/main.go.extend.md|cmd/{service}/main.go]]'s guarded call are this
+[[./store.go.extend.md|store.go]] stops creating the table inline, and how
+[[../../../cmd/migrate/main.go.create.md|cmd/migrate/main.go]] and
+[[../../../cmd/{service}/main.go.extend.md|cmd/{service}/main.go]]'s guarded call are this
 function's two (mutually exclusive) callers. Verified directly against the real
 `github.com/pressly/goose/v3 v3.28.0` release (compiled and vetted in a throwaway scratch module
 during this solution's authoring, including the

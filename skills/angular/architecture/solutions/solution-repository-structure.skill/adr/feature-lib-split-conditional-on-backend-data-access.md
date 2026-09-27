@@ -21,7 +21,7 @@ The question: does `solution-repository-structure` still create a `data-access` 
 
 # Selected variant
 
-**Selected variant:** [[#data-access lib is conditional on BackendDataAccess]]
+**Selected variant:** [[#data-access lib is conditional on BackendDataAccess (selected)]]
 
 `solution-repository-structure` creates only the `feature` lib for a feature. `solution-api-http-layer` (the realization of `BackendDataAccess = Yes`) adds the `data-access` lib, its Facade/Client/Mapper shape, and the `feature → data-access` boundary allow-list row. A feature with no server data has just the `feature` lib and never a hollow `data-access` project.
 

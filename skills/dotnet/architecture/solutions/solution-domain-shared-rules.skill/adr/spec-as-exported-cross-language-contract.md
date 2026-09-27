@@ -16,7 +16,7 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#Exported contract, consumer owns its bindings]]
+**Selected variant:** [[#Exported contract, consumer owns its bindings (selected)]]
 
 - The `.feature` files are written to be copied verbatim into another repository. Scenario text is domain language with no .NET/C#/FluentValidation vocabulary and no reference to which adapter proves it; rejection-code strings are part of the contract and appear literally.
 - This solution authors and proves the scenarios from every .NET layer. It does **not** own the step definitions of an external consumer — that consumer writes and maintains its own bindings, in its own language, against the same scenario text.

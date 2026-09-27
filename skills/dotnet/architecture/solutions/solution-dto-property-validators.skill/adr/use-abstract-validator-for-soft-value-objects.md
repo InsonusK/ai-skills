@@ -23,7 +23,7 @@ We needed to decide which API to use for `{ValueObject}PropertyValidator` so tha
 
 # Selected variant
 
-**Selected variant:** [[#Use AbstractValidator<Soft{ValueObject}> for SoftVO validators]]
+**Selected variant:** [[#Use `AbstractValidator<Soft{ValueObject}>` for SoftVO validators]]
 
 Implement `{ValueObject}PropertyValidator` as `AbstractValidator<Soft{ValueObject}>`:
 

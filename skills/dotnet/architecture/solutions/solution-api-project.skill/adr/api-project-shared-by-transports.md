@@ -16,7 +16,7 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#One {Module}.Api project, transports as folders, shared partial ApiRegistration]]
+**Selected variant:** [[#One {Module}.Api project, transports as folders, shared partial ApiRegistration (selected)]]
 
 # Searched variants
 
