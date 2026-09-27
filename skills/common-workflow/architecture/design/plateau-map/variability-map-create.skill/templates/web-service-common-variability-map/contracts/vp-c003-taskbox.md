@@ -10,6 +10,7 @@ A stack's solution decides only the client library and the code that writes, rea
 | --- | --- | --- |
 | `seq` | bigint, store-assigned, increasing | Primary key; inserts append to the index; within a group it is also the execution order (§3). |
 | `id` | UUIDv7 | Global identifier, assigned by the enqueuing code: logs, handlers, cross-system references. Time-ordered, so it never scatters an index. |
+| `status_key` | UUIDv4, nullable, unique | Set only for an Inbox task answered with `202`: the unguessable handle a caller uses to read the task's status ([[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c011-inbox|Inbox contract]]). Never derived from `id`. |
 | `queue` | text, default `default` | Selects a worker pool. |
 | `queue_group` | text, nullable | Ordering key inside a queue (like a Kafka message key). `null` = no ordering with any other task. |
 | `type` | text | Task type name — the **only** key a worker dispatches on. Stable across languages: `send-order-confirmation`, not a class name. |
@@ -77,6 +78,7 @@ Every attempt records its outcome in `last_status`.
 CREATE TABLE taskbox_task (
   seq             bigint GENERATED ALWAYS AS IDENTITY (CACHE 1) PRIMARY KEY,
   id              uuid        NOT NULL UNIQUE,
+  status_key      uuid        UNIQUE,
   queue           text        NOT NULL DEFAULT 'default',
   queue_group     text,
   type            text        NOT NULL,

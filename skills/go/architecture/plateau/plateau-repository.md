@@ -12,17 +12,17 @@ Five plateaus exist on disk today, coded per [[skills/common-workflow/architectu
 
 ## Plateau × VP matrix
 
-Rows = plateaus by code, with the Title decoding it and the current folder name. Columns = the 10 common VPs (cell = the Variant the plateau realizes) and the 1 stack VP from `variability-map.md` (✅ = realized at that plateau, ❌ = not). Answers are **cumulative** down the chain — a plateau has every VP its parent has, plus its own. Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a plateau's complete VP set.
+Rows = plateaus by code, with the Title decoding it and the current folder name. Columns = the 11 common VPs (cell = the Variant the plateau realizes) and the 1 stack VP from `variability-map.md` (✅ = realized at that plateau, ❌ = not). Answers are **cumulative** down the chain — a plateau has every VP its parent has, plus its own. Scan a **column** for the shallowest plateau that includes a VP; read a **row** for a plateau's complete VP set.
 
-| Code | Title | Folder | VP-C001 | VP-C002 | VP-C003 | VP-C004 | VP-C005 | VP-C006 | VP-C007 | VP-C008 | VP-C009 | VP-C010 | VP1 |
-|---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| GW001.000 | http service | plateau-http-service | None | None | No | No | No | No | No | No | No | No | ❌ |
-| GW001.001 | dual-API service | plateau-dual-api-service | None | None | No | No | No | No | No | No | No | No | ✅ |
-| GW005.001 | integrated service | plateau-integrated-service | None | None | No | No | Yes | No | No | No | No | No | ✅ |
-| GW006.001 | cached service | plateau-cached-service | None | Redis | No | No | Yes | No | No | No | No | No | ✅ |
-| GW007.001 | persistent service | plateau-persistent-service | PostgreSQL | Redis | No | No | Yes | No | No | No | No | No | ✅ |
+| Code | Title | Folder | VP-C001 | VP-C002 | VP-C003 | VP-C004 | VP-C005 | VP-C006 | VP-C007 | VP-C008 | VP-C009 | VP-C010 | VP-C011 | VP1 |
+|---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| GW001.000 | http service | plateau-http-service | None | None | No | No | No | No | No | No | No | No | No | ❌ |
+| GW001.001 | dual-API service | plateau-dual-api-service | None | None | No | No | No | No | No | No | No | No | No | ✅ |
+| GW005.001 | integrated service | plateau-integrated-service | None | None | No | No | Yes | No | No | No | No | No | No | ✅ |
+| GW006.001 | cached service | plateau-cached-service | None | Redis | No | No | Yes | No | No | No | No | No | No | ✅ |
+| GW007.001 | persistent service | plateau-persistent-service | PostgreSQL | Redis | No | No | Yes | No | No | No | No | No | No | ✅ |
 
-Column legend — VP-C001 PersistentStore (common) · VP-C002 TransientStore (common) · VP-C003 TaskBox (common) · VP-C004 HttpOutbound (common) · VP-C005 GrpcOutbound (common, the Feature Model's ExternalIntegration) · VP-C006–VP-C009 Kafka/RabbitMQ producer/consumer (common) · VP-C010 Outbox (common) · VP1 GrpcApi. Full descriptions, the solution that realizes each VP, and the constraints between VPs are in [[skills/go/architecture/variability-map.md|../variability-map.md]] and, for common VPs, the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]] — the single source of truth; this table is only the plateau-oriented view of the same answers. The `{common}` numbers come from the [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/registry/web-service-common-plateaus|common-plateau registry]].
+Column legend — VP-C001 PersistentStore (common) · VP-C002 TransientStore (common) · VP-C003 TaskBox (common) · VP-C004 HttpOutbound (common) · VP-C005 GrpcOutbound (common, the Feature Model's ExternalIntegration) · VP-C006–VP-C009 Kafka/RabbitMQ producer/consumer (common) · VP-C010 Outbox (common) · VP-C011 Inbox (common) · VP1 GrpcApi. Full descriptions, the solution that realizes each VP, and the constraints between VPs are in [[skills/go/architecture/variability-map.md|../variability-map.md]] and, for common VPs, the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]] — the single source of truth; this table is only the plateau-oriented view of the same answers. The `{common}` numbers come from the [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/registry/web-service-common-plateaus|common-plateau registry]].
 
 - **VP-C010 is ❌ and VP-C006/VP-C007 are `No` in every plateau, by design, not by omission.** Their solutions (`solution-go-messaging-infrastructure`, `solution-go-kafka-producer`, `solution-go-transactional-outbox`, `solution-go-kafka-consumer`) are skeletons carrying a `> Draft contract` marker — no plateau in this catalog's build composes them yet. See [Combinations the family allows that no plateau covers yet](#combinations-the-family-allows-that-no-plateau-covers-yet).
 - **VP1 is plain boolean, catalog-wide, and the common VPs module-wide** — unlike the worked example's per-entity `Channel` VP, a ✅ or a Variant here means exactly what it says with no further qualification needed.

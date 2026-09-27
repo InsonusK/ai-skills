@@ -18,6 +18,7 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 | VP-C008 | 📐 | **RabbitMqProducer** — does the service publish messages to RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C008 RabbitMqProducer](#vp-c008-rabbitmqproducer) |
 | VP-C009 | 📐 | **RabbitMqConsumer** — does the service consume messages from RabbitMQ? | Yes / No | — | Messaging rules of VP-C006 — see [VP-C009 RabbitMqConsumer](#vp-c009-rabbitmqconsumer) |
 | VP-C010 | 📐 | **Outbox** — are outbound calls made through TaskBox instead of directly? | Yes / No | Yes requires VP-C003 = Yes AND (VP-C004 = Yes OR VP-C005 = Yes OR VP-C006 = Yes OR VP-C008 = Yes) | Tasks and handlers of VP-C003; adapters of VP-C004/VP-C006/VP-C008 — see [VP-C010 Outbox](#vp-c010-outbox) |
+| VP-C011 | 📐 | **Inbox** — does the service process some inputs only once: validate, store as a task, answer `202` / acknowledge, process separately? | Yes / No | Yes requires VP-C003 = Yes | Tasks and handlers of VP-C003; broker inputs from VP-C007/VP-C009 — see [VP-C011 Inbox](#vp-c011-inbox) |
 
 ## Candidate Variation Points
 
@@ -25,8 +26,7 @@ Identified, not yet agreed — no ID until the concept is agreed. In discussion 
 
 | Status | Candidate | Admitted after | Covers today | Agreed so far / open question |
 | --- | --- | --- | --- | --- |
-| 💡 ▶ | Inbox | — | optional consumer-side mirror of Outbox for messages that must be processed **only once**: the consumer enqueues the message as a TaskBox task (`idempotency_key` = CloudEvents `id`, `queue_group` = message key) and acknowledges only after the commit; dedup, retry, per-key order, and stop-at-dead then come from TaskBox. Direct handling stays the default (simpler) | Open: when to require it; relation to the handler status-code outcome |
-| 💡 | Saga | — | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
+| 💡 ▶ | Saga | — | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
 | 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | **Idea to consider:** one `.proto` defines the API and grpc-gateway (`google.api.http` annotations, plus OpenAPI via `protoc-gen-openapiv2`) serves the same API over HTTP/JSON — gRPC as an optional second entry generated from the same definition, not a second server (Go `solution-grpc-api` runs a separate gRPC server today). Open: dotnet's family is a `Module` — can a module lack HTTP? |
 | 💡 | DomainLogic | — | dotnet VP1; baseline in Go | Open: common VP with Go `Fixed: Yes`, or dotnet-only? |
 | 💡 | Metric | — | observability | Open: needed now, or when a stack first needs it? |
@@ -100,6 +100,15 @@ Outbound calls — HTTP requests, broker publications — made by enqueuing a Ta
 - **Order per receiver and key** — calls with the same target and key are sent in enqueue order; a dead call holds back the later calls with that target and key until a person resolves it.
 - **Generic adapters: HTTP, Kafka, RabbitMQ.** A gRPC call, or any call whose response matters, is a service-specific handler that uses its generated client, handles the response, and may enqueue the next step — one step of an orchestrated saga.
 - **Addresses from configuration** — a task names its target, never its address or credentials.
+
+### VP-C011 Inbox
+Only-once processing of inbound broker messages and calls. Every input is processed in one of two modes, chosen by the service per endpoint and per message type:
+- **At-least-once** (default, no Inbox) — process at once, reply or acknowledge after processing; a lost acknowledgement means a repeat, so the handler is idempotent (the consumer baseline of VP-C006).
+- **Only-once** (this VP) — validate synchronously, store the input as a VP-C003 task, answer `202` / acknowledge, process separately. A repeat carries the same deduplication key and is not stored again, so the input is processed at most once per key within the task's retention.
+- **The sender supplies the key** — CloudEvents `source` + `id`, the HTTP `Idempotency-Key` header, gRPC metadata; scoped to the caller on authenticated endpoints. Same key with a different body → `422`.
+- **Status by capability** — a `202` carries `Location: …/tasks/<status_key>`; `status_key` is a random UUIDv4, never the task id, so one caller cannot reach another caller's task.
+- HTTP inbound is baseline, so Inbox depends on no inbound VP; inbound gRPC is added when it is admitted.
+- Contract: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/contracts/vp-c011-inbox|contracts/vp-c011-inbox]].
 
 ## Bound stack maps
 

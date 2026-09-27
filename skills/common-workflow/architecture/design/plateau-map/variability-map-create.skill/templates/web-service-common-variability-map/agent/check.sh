@@ -210,7 +210,7 @@ print("== 6. Links resolve (touched files) ==")
 files = [(p, None) for p in (COMMON, os.path.join(SKILL, "variability-map-create.skill.md"),
          os.path.join(SKILL, "templates/variability-map.template.md"),
          os.path.join(SKILL, "adr/common-vps-inherited-by-id.md"),
-         os.path.join(os.path.dirname(COMMON), "contracts/vp-c003-taskbox.md"),
+         *[os.path.join(os.path.dirname(COMMON), "contracts", f) for f in sorted(os.listdir(os.path.join(os.path.dirname(COMMON), "contracts")))],
          os.path.join(PMC, "plateau-map-create.skill.md"), os.path.join(PMC, "examples/plateau-repository.example.md"),
          os.path.join(PMC, "adr/plateau-code-by-combination.md"), REGF,
          os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md"))]

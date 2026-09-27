@@ -17,7 +17,8 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | I | Messaging 📐: VP-C006–VP-C009 (Kafka/RabbitMQ producer/consumer), CloudEvents; ⏳ rows in go/dotnet; registry + matrices get 4 columns (all No, no recode); Inbox candidate | done |
 | J | Messaging ✅ in go (franz-go, amqp091-go) and dotnet (Confluent.Kafka, RabbitMQ.Client), CloudEvents; Go VP3/VP5, dotnet VP12/VP13 re-IDed | done |
 | K | Outbox VP-C010 📐 + ✅ (envelope contract; TaskBox v1 amended: status-code outcomes, `last_status`); Go VP4, dotnet VP14 re-IDed; registry value shift fixed + registry↔matrix cross-check in check.sh | done |
-| next | Inbox (▶) → Saga; then Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | Inbox under discussion |
+| L | Inbox VP-C011 📐 + ✅ (only-once mode for broker messages and calls; contract; `status_key` in TaskBox v1) | done |
+| next | Saga (▶); then Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | Saga under discussion |
 
 ## Follow-ups (outside this PR)
 
