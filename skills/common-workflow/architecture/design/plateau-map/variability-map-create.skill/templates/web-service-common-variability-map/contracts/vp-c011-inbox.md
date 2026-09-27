@@ -35,7 +35,7 @@ For an authenticated endpoint the key is scoped to the caller: `idempotency_key 
 - **Same key, same body** → no new task; the reply is the same `202` with the same `Location`. A repeated broker message is acknowledged and dropped.
 - **Same key, different body** → `422` (the key is being reused for another request). Bodies are compared as normalized JSON against the stored `payload`.
 - **Status** — `GET <base>/tasks/<status_key>` → `200` with `{status, last_status, created_at, finished_at}`; an unknown or already removed task → `404`.
-- **`status_key` is a capability, not the task id.** It is a random UUIDv4 from a cryptographically secure generator (122 random bits), so knowing one's own key gives no way to reach another caller's task. The task `id` (UUIDv7, partly time-ordered) is never exposed.
+- **`status_key` is a capability, not the task id.** It is a random UUIDv4 from a cryptographically secure generator (122 random bits), so knowing one's own key gives no way to reach another caller's task. The task `id` (UUIDv7, partly time-ordered, and already sent to Outbox receivers) is never exposed. Why a separate key: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/inbox-status-key-not-task-id|adr/inbox-status-key-not-task-id]].
 
 ## 5. Conformance scenarios
 

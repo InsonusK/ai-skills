@@ -12,6 +12,7 @@ adr:
   - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/constraint-vs-ordering-columns|Constraint vs. ordering stays column-level, not a depends_on schema change]]"
   - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/no-plateau-view-in-variability-map|The map binds VPs to solutions; the plateau↔VP view lives in plateau-map-create]]"
   - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/common-vps-inherited-by-id|Common VPs inherited by ID, not copied]]"
+  - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/inbox-status-key-not-task-id|Inbox status by a separate status_key, not by the task id]]"
 ---
 
 # Goal
@@ -36,7 +37,7 @@ One Variability Map per catalog, at `{catalog}/variability-map.md` — a sibling
 A backend web-service catalog's map holds two tables: `## Common Variation Points` (every common VP, inherited — see [Common Variation Points](#common-variation-points)) and `## Stack Variation Points` (this family's own VPs, full column set).
 
 ## Common Variation Points
-The [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]] defines each VP shared by every backend web-service stack — question, Variants, Constraint, Realization depends on, and a concept section — under a `VP-C###` ID, lists candidate VPs not yet agreed, and lists the bound stack maps. A bound stack map carries each agreed common VP as one row: ID (linking the common concept section), VP name, Status, State, Stack delta, Realized by, Migration — governed by [Track VP status](#track-vp-status) through [Common IDs are permanent](#common-ids-are-permanent). Decision recorded in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/common-vps-inherited-by-id|adr/common-vps-inherited-by-id]].
+The [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]] defines each VP shared by every backend web-service stack — question, Variants, Constraint, Realization depends on, and a concept section — under a `VP-C###` ID, lists candidate VPs not yet agreed, and lists the bound stack maps. A bound stack map carries each agreed common VP as one row: ID (linking the common concept section), VP name, Status, State, Stack delta, Realized by, Migration — governed by [Track VP status](#track-vp-status) through [Common IDs are permanent](#common-ids-are-permanent). Decision recorded in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/common-vps-inherited-by-id|adr/common-vps-inherited-by-id]]. Decisions made inside the common map's contracts are recorded here too — e.g. why an Inbox task's status is read by a separate `status_key` rather than its `id`: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/inbox-status-key-not-task-id|adr/inbox-status-key-not-task-id]].
 
 ## How to admit a common Variation Point
 A common VP moves through three stages, each its own change:

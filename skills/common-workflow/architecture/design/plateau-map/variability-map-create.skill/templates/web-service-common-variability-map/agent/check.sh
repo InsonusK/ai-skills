@@ -209,7 +209,7 @@ print("== 6. Links resolve (touched files) ==")
 # (the rest predates the common map and is checked by that catalog's own agent/check.sh).
 files = [(p, None) for p in (COMMON, os.path.join(SKILL, "variability-map-create.skill.md"),
          os.path.join(SKILL, "templates/variability-map.template.md"),
-         os.path.join(SKILL, "adr/common-vps-inherited-by-id.md"),
+         *[os.path.join(SKILL, "adr", f) for f in sorted(os.listdir(os.path.join(SKILL, "adr")))],
          *[os.path.join(os.path.dirname(COMMON), "contracts", f) for f in sorted(os.listdir(os.path.join(os.path.dirname(COMMON), "contracts")))],
          os.path.join(PMC, "plateau-map-create.skill.md"), os.path.join(PMC, "examples/plateau-repository.example.md"),
          os.path.join(PMC, "adr/plateau-code-by-combination.md"), REGF,
