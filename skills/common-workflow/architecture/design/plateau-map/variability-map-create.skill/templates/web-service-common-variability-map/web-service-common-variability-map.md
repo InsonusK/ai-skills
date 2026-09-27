@@ -14,18 +14,19 @@ A VP enters this map only through [[skills/common-workflow/architecture/design/p
 
 ## Candidate Variation Points
 
-Identified, not yet agreed — no ID until the concept is agreed. Listed in the order they can be discussed: a candidate comes after every VP its concept will reference.
+Identified, not yet agreed — no ID until the concept is agreed. In discussion order: a candidate is admitted only after every VP in its **Admitted after** column, because its concept will reference them. `▶` marks the one under discussion.
 
-| Status | Candidate | Covers today | Open question |
-| --- | --- | --- | --- |
-| 💡 | Outbox | outbound calls go through TaskBox, enqueued in the same atomic write, in the same store, as the business change; at-least-once + idempotency key | Go VP4 / dotnet VP14 require Kafka today — generalize to any outbound protocol? |
-| 💡 | Inbound protocols | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | dotnet's family is a `Module` — can a module lack HTTP? |
-| 💡 | Outbound protocols | Go VP2 `ExternalIntegration` (gRPC-only realization), dotnet VP10/VP11 | Does Go's transport-agnostic ExternalIntegration become the gRPC VP? |
-| 💡 | Messaging | Kafka/RabbitMQ consume/produce; Go VP3/VP5, dotnet VP12/VP13 | Shared messaging infrastructure as a mandatory sub-feature |
-| 💡 | DomainLogic | dotnet VP1; baseline in Go | Common VP with Go `Fixed: Yes`, or dotnet-only? |
-| 💡 | Metric | observability | Needed now, or when a stack first needs it? |
-| 💡 | Domain modelling | ValueObjects, SharedRules, concurrency control, external identity, audit timestamps — dotnet VP3–VP7 | Stay dotnet-only until a second stack needs one? |
-| 💡 | Deployment | SingleInstance / MultiInstance — SQLite (VP-C001) and InMemory (VP-C002) bind a service to one instance | **Discuss with the owner first:** a real VP with a Constraint, or only the consequence already stated in VP-C001/VP-C002? |
+| Status | Candidate | Admitted after | Covers today | Agreed so far / open question |
+| --- | --- | --- | --- | --- |
+| 💡 ▶ | Outbound protocols | — | request/response calls to other services; Go VP2 `ExternalIntegration` (gRPC-only realization), dotnet VP10/VP11 | Open: HTTP and gRPC as separate VPs; does Go's ExternalIntegration become the gRPC one? |
+| 💡 | Messaging | — | Kafka/RabbitMQ publish and consume; Go VP3/VP5, dotnet VP12/VP13 | Open: shared messaging infrastructure as a mandatory sub-feature |
+| 💡 | Outbox | Outbound protocols, Messaging | outbound calls made through TaskBox (VP-C003) instead of directly; Go VP4, dotnet VP14 (Kafka + PostgreSQL today) | Agreed: no own storage — an outbound call is a TaskBox task; message key = `queue_group`; the task `id` travels as the message id; a **common envelope** — task type `outbox.<adapter>`, payload `{target, key, headers, body}`, one generic handler per adapter — fixed in a contract beside TaskBox's; a service may add its own handler that also processes the response (a saga step). Open: the exact envelope |
+| 💡 | Saga | Outbox | orchestrated multi-step processes: a handler that processes a response and enqueues the next step | Open: a VP of its own (saga state, compensations, timeouts) or only a documented use of Outbox custom handlers? |
+| 💡 | Inbound protocols | — | HTTP is mandatory for every backend service (owner) → baseline, not a VP; gRPC optional. Go VP1, dotnet VP8/VP9 | Open: dotnet's family is a `Module` — can a module lack HTTP? |
+| 💡 | DomainLogic | — | dotnet VP1; baseline in Go | Open: common VP with Go `Fixed: Yes`, or dotnet-only? |
+| 💡 | Metric | — | observability | Open: needed now, or when a stack first needs it? |
+| 💡 | Domain modelling | DomainLogic | ValueObjects, SharedRules, concurrency control, external identity, audit timestamps — dotnet VP3–VP7 | Open: stay dotnet-only until a second stack needs one? |
+| 💡 | Deployment | — | SingleInstance / MultiInstance — SQLite (VP-C001) and InMemory (VP-C002) bind a service to one instance | **Discuss with the owner first:** a real VP with a Constraint, or only the consequence already stated in VP-C001/VP-C002? |
 
 ### VP-C001 PersistentStore
 The system of record: **data that survives restarts and redeploys and is never deliberately discarded**. Business changes are written in transactions, which later VPs (TaskBox, Outbox) rely on to stay atomic with the change they report.

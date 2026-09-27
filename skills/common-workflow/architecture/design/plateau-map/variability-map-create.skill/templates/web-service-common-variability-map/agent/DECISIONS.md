@@ -29,6 +29,8 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - MediatR and MassTransit v9 commercial licensing is acceptable (free under $1M revenue) — no reason to drop them.
 - **TaskBox contract review 1 (2026-09-27):** `seq bigint` PK + UUIDv7 `id`; `queue_group` gives strict per-group order (Kafka-key-like); per-task `retention` with effective `max(default, retention)`, which is also the idempotency window.
 - **TaskBox contract review 2 (2026-09-27):** no `group_seq` — order within a group is `min(seq)`, made equal to commit order by locking the group row before the insert (owner's simplification; the lock stays). **A group stops at its first dead task** (unknown importance of the failed task); a person resumes it by requeue or cancel (new terminal status `cancelled`). Later, not v1: `skip_on_dead` on a task, and `fail` / `fail_allow_skip` handler outcomes.
+- **Admission order (2026-09-27):** Outbound protocols and Messaging before Outbox (its Constraint references them), then Saga. The chain is kept in the common map's candidate table (`Admitted after`, `▶` for the current one).
+- **Outbox form (a):** a common envelope — task type `outbox.<adapter>`, payload `{target, key, headers, body}`, one generic handler per adapter, defined in a contract beside TaskBox's. A service may also write its own handler that processes the response: that is the saga-orchestrator pattern, raised as its own candidate.
 
 ## Agent decisions
 

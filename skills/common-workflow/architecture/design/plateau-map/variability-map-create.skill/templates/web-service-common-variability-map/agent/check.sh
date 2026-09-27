@@ -64,7 +64,7 @@ if cand is None: fail("common map: no '## Candidate Variation Points' section")
 else:
     chdr, crows = table_rows(cand)
     for r in crows:
-        if r and r[0] != "💡": fail(f"common map: candidate '{r[1] if len(r) > 1 else r}' status is not 💡")
+        if r and not r[0].startswith("💡"): fail(f"common map: candidate '{r[1] if len(r) > 1 else r}' status is not 💡")
         if "VP-C" in (r[1] if len(r) > 1 else ""): fail(f"common map: candidate carries an ID: {r[1]}")
     print(f"  {len(crows)} candidate(s)")
 print(f"  {len(common)} common VP(s)")

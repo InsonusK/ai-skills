@@ -13,7 +13,7 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | E | TaskBox 📐 (VP-C003) + TransientStore concept sharpened (lifetime); ⏳ rows in go/dotnet; registry + matrices get the VP-C003 column; feature template: TaskBox own feature, criticality on TaskBox | done |
 | F | TaskBox storage contract `contracts/vp-c003-taskbox.md` — two review rounds, accepted | done |
 | G | TaskBox ✅ in go/dotnet: own realization of the contract per store, clients chosen | done |
-| next | Outbox candidate — concept discussion with the owner | waiting on owner |
+| next | Outbound protocols → Messaging → Outbox → Saga (order kept in the common map's `Admitted after` column; `▶` = current) | Outbound protocols under discussion |
 
 ## Follow-ups (outside this PR)
 
