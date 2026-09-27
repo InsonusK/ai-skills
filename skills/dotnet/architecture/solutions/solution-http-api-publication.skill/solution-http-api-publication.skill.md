@@ -1,6 +1,6 @@
 ---
 name: solution-http-api-publication
-description: The REST transport for a module's inbound sync API (VP8) — entity-centric Controllers as thin MediatR adapters, Minimal API for system operations, naming/folder conventions, Result-to-HTTP mapping with ProblemDetails, and the AddHttpApi() partial that plugs into solution-api-project's ApiRegistration. Command dispatch is common; GET actions require persistence (VP2).
+description: The REST transport for a module's inbound sync API (VP8) — entity-centric Controllers as thin MediatR adapters, Minimal API for system operations, naming/folder conventions, Result-to-HTTP mapping with ProblemDetails, and the AddHttpApi() partial that plugs into solution-api-project's ApiRegistration. Command dispatch is common; GET actions require persistence (VP-C001).
 whenToUse: when publishing a module's commands/queries over HTTP — adding a controller, defining a route, or mapping a Result to an HTTP response
 domain: skill
 type: architecture
@@ -34,7 +34,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]"
 built_on_plateau:
 adr:
-  - "[[skills/dotnet/architecture/solutions/solution-http-api-publication.skill/adr/reads-require-persistence|GET actions require persistence (VP2); command dispatch is common]]"
+  - "[[skills/dotnet/architecture/solutions/solution-http-api-publication.skill/adr/reads-require-persistence|GET actions require persistence (VP-C001); command dispatch is common]]"
 ---
 
 # Goal
@@ -63,12 +63,12 @@ adr:
 - `ISender` is the only MediatR interface injected into controllers — never `IMediator`
 - Controllers reference only `{Module}.Interfaces` — never Application, Domain, or Infrastructure
 - API layer never references `IRepository<T>`, `IUnitOfWork`, DbContext, or any domain entity type — controllers only ever see `ICommand<T>`/`IQuery<T>` and DTOs from `{Module}.Interfaces`
-- Command dispatch is common (`solution-mediator-integration`), so POST/PUT/PATCH/DELETE actions are always available. `GET` actions are only meaningful once the read side exists — that is `solution-query-integration` (VP2). A module with no persistence gets a **write-only** REST surface; the same solution application, minus GET actions.
+- Command dispatch is common (`solution-mediator-integration`), so POST/PUT/PATCH/DELETE actions are always available. `GET` actions are only meaningful once the read side exists — that is `solution-query-integration` (VP-C001). A module with no persistence gets a **write-only** REST surface; the same solution application, minus GET actions.
 
 # Boundaries
 - Optional, and independent of [[skills/dotnet/architecture/solutions/solution-grpc-integration.skill/solution-grpc-integration.skill|solution-grpc-integration]] (VP9). Apply this alone for HTTP-only, gRPC alone for gRPC-only, or both — both extend the same `partial ApiRegistration` from [[skills/dotnet/architecture/solutions/solution-api-project.skill/solution-api-project.skill|solution-api-project]] and dispatch through the same `ISender`.
 - `solution-repository-integration` is not a dependency — the controller never references `IRepository<T>`, only the handler behind `ISender.Send()` does. Whether persistence exists is invisible from this solution's files, except that GET actions are pointless without a query handler to back them.
-- See the ADR: this is why v3's "requires command or query integration" constraint is inert in v3.1 — command dispatch is common, and the read side is VP2.
+- See the ADR: this is why v3's "requires command or query integration" constraint is inert in v3.1 — command dispatch is common, and the read side is VP-C001.
 
 # Requirements
 SOLUTION:
@@ -79,7 +79,7 @@ SOLUTION:
   - [[skills/dotnet/architecture/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create|ICommand.cs]] - the markers a controller dispatches
 - [[skills/dotnet/architecture/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]
   - [[skills/dotnet/architecture/solutions/solution-validation-behavior.skill/Implementation/BuildingBlocks.csproj.extend/ValidationBehavior.cs.create|ValidationBehavior.cs]] - produces `Result.Invalid` mapped to 400
-- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] (VP2, for GET actions — not required; write-only API without it)
+- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] (VP-C001, for GET actions — not required; write-only API without it)
   - provides the repository-backed query handlers GET actions dispatch to
 
 NUGET:

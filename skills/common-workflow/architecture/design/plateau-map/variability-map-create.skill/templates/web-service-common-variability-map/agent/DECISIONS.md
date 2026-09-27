@@ -12,6 +12,22 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - **States:** Inherited / Refined / `Fixed: {Variant}` (replaces the earlier `N/A`, which could not express "always Yes").
 - **HTTP inbound is mandatory for every backend service** → common baseline, not a VP; gRPC is optional. Applied at backlog item 4 (dotnet's `Module`-level VP8 is the open point there).
 
+- **Storage admitted as two categorical VPs** (2026-09-26): VP-C001 PersistentStore `None / PostgreSQL / SQLite`, VP-C002 TransientStore `None / Redis / InMemory`. "Transient", not "Cache": Redis is the primary home of temporary, non-critical data, not only a cache in front of PostgreSQL. SQLite and InMemory stay — used for single-pod services.
+- **Storage realizations** (agreed): Go SQLite → `modernc.org/sqlite` behind the persistent-db port; Go InMemory → stdlib `map` + `sync.RWMutex` with TTL; dotnet SQLite → EF Core `Microsoft.EntityFrameworkCore.Sqlite` provider swap; dotnet Redis → `StackExchange.Redis` behind a narrow port (not `IDistributedCache`); dotnet InMemory → `IMemoryCache` behind a narrow port.
+- Go's `postgres-via-pgx` ADR rejected SQLite for multi-instance reasons; the owner's single-pod use makes SQLite a legitimate Go variant → Go VP-C001 SQLite is realized/deferred, not Refined-unsupported.
+
+- **No throwaway builds** (2026-09-26): a VP Variant is verified by building a new plateau = an existing base plateau + that VP, not by a temporary build. Detailing a stack records `planned — {chosen realization}`; the solution is written when that plateau is built.
+- **VP statuses**: 💡 candidate / 📐 concept (common map), ⏳ pending / ✅ detailed (per stack map). Detail status is per stack — one stack may be detailed while another is not. Candidates move from the harness backlog into the common map.
+- **Plateau codes** `{stack}{kind}{common}.{specific}`: letters D/G/P/T for stacks, W/C/A for kinds (web-service, CLI, Angular); `{common}` numbers the common-VP combination in a shared registry kept in `plateau-map-create.skill`; `{specific}` numbers the stack-VP combination (same number = same stack-VP set; `000` = none); the old name becomes the matrix's Title column. Plateau statuses: ✅ built with example, 🔸 built only in another stack, no row = never built.
+- **Rename-on-change**: a code changes with its combination (agent's call, delegated by the owner).
+- **Physical rename of existing plateaus → GitHub issue** (owner); `gh` unauthenticated here, so the issue text goes to the owner and the follow-up is tracked in STATUS.
+- **TaskBox concept (2026-09-27), VP-C003 📐:** option C — tasks may live in either store; the service chooses per task type. The concept carries two reminders instead of a restriction: no transactionality between data and task in different stores, and no ordering across stores. Criticality is a per-task-type property, not a VP: Critical → VP-C001 only; NonCritical → either store.
+- **TransientStore redefined:** every entity has a lifetime (TTL); all data with a lifetime lives only in VP-C002; early loss (restart, eviction, failover) = the lifetime expiring early. Hence InMemory is a legitimate TaskBox store for NonCritical tasks.
+- Feature template: `TaskBox` is its own optional feature (not under `InboundAsync`); the criticality pair moved from `Outbox`'s `MessageSendGuarantee` onto `TaskBox`, since it applies to every task, not only outbound messages.
+- **Common storage schema for mechanisms (2026-09-27):** TaskBox (later Outbox) gets a stack-agnostic storage contract — PostgreSQL/SQLite DDL, Redis structures, InMemory model, lifecycle, conformance scenarios; stack solutions own only the client and the read/write/execute code. Business data stays out of any shared schema. A task = `type` name + JSON `payload`; the service registers a handler per `type`, TaskBox never knows what a task does. Consequence: job-queue libraries with their own schemas (River, Hangfire, MassTransit) are not used for TaskBox storage.
+- **Migrations (2026-09-27):** each stack applies the contract's numbered schema versions with its own migration tool. Switching a service between stacks is decided when it really happens; the noted shape of the answer is baselining the new stack's migration history at the contract version the database is at.
+- MediatR and MassTransit v9 commercial licensing is acceptable (free under $1M revenue) — no reason to drop them.
+
 ## Agent decisions
 
 - New folder `web-service-common-variability-map`, symmetric with `feature-map-create`'s `web-service-common-features`.
@@ -25,3 +41,16 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `check.sh` was mutation-tested against a deliberately broken common map + stack maps (duplicate ID, missing concept section, uncarried VP, unknown VP, bad `Fixed` variant, empty delta, dead link, dead anchor, leftover re-IDed ID) — every case caught, files restored.
 - A retired common VP stays in the common map (ID never reused) and is dropped from stack maps.
 - Admission step 3's skeleton solution is authored through `solution-create`, so `variability-map-create` keeps its "never writes solution content" principle.
+- Detailing no longer authors skeleton solutions (superseded by the plateau-based verification decision); `deferred` renamed `planned — {chosen realization}` so the decided realization is recorded in the map.
+- Candidates carry no `VP-C` ID — a candidate that is merged or split would otherwise burn IDs.
+- Kind letter `A` = Angular app with stack `T` (TypeScript), e.g. `TA001.000`.
+- Plateau code file/folder form replaces the dot with a hyphen (`plateau-GW003-000`): how `ai-skill-manager` parses dotted `*.skill` names could not be verified here.
+- Registry numbers assigned in the order the stacks were migrated (Go first): 001 (None, None), 002 (None, Redis), 003 (PostgreSQL, Redis).
+- Catalog `agent/DECISIONS.md` and `agent/logs/` are historical journals: they keep the VP IDs of their time (a note at the top points to `id-map.tsv`) and are excluded from the leftover-ID check. Live contracts (`agent/INVARIANTS.md`) are re-IDed.
+- Go VP4's Constraint became `VP3=Yes AND VP-C001 ≠ None` (semantic, not string replace): Outbox needs a transactional store, and both PostgreSQL and SQLite are.
+- **Finding:** Go `agent/check.sh` §7 warns "not yet: solution-go-conformance-testing" — pre-existing, it looks for the old name of `solution-conformance-testing-in-go`. Unrelated to this task; left as is.
+- dotnet VP-C001 is `Refined`: its stack Constraint (`≠ None` requires stack VP1 DomainLogic) and the repository-backed query handlers stay in the stack delta. dotnet PostgreSQL = the existing EF Core bundle; SQLite = the same bundle with the Sqlite provider (planned).
+- dotnet's `plateau-repository.md` "Reference: v3 plateaus" section cites v3's *own* VP numbering; its "`VP2` = Http" was reworded without an ID so the re-ID could not corrupt it. Every other `VP2` in the dotnet tree referred to v3.1 Persistence (checked).
+- **Finding:** dotnet `agent/check.sh` is stale — it still targets the removed `v3.1/` paths ("no plateau/ folder yet", "not yet: solution-…" for solutions that exist). Pre-existing; not fixed here.
+- VP-C003 admitted with every existing plateau at `No` → registry column added, no row split, no code changed.
+- TaskBox contract drafted at `contracts/vp-c003-taskbox.md` (not referenced by stack rows until the owner reviews it). Unknown task `type` = a failure (retried), so a rolling deploy does not lose tasks. Redis idempotency keys are per-key strings with a TTL, not one growing set — every Redis entry keeps a lifetime (VP-C002).

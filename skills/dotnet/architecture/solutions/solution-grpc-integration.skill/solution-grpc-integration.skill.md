@@ -47,7 +47,7 @@ built_on_plateau:
 - The `.proto` file is the single source of truth for the wire contract; the generated `{Entity}GrpcServiceBase` is never hand-edited — only `{Entity}GrpcService` (the class that inherits it) is hand-written
 - Every RPC method dispatches exactly one `ISender.Send()` — no business logic, no orchestration
 - A failed `Result` becomes a thrown `RpcException` via the shared `ToRpcException()` extension — never a raw exception, never a proto response with an ad hoc error field
-- Write RPCs are always available (command dispatch is common); read RPCs (`Get`/`List`) are only meaningful once `solution-query-integration` (VP2) provides a query handler. A module without persistence gets a write-only gRPC service.
+- Write RPCs are always available (command dispatch is common); read RPCs (`Get`/`List`) are only meaningful once `solution-query-integration` (VP-C001) provides a query handler. A module without persistence gets a write-only gRPC service.
 
 # Boundaries
 - Optional, and independent of [[skills/dotnet/architecture/solutions/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]] (VP8). Both extend the same `partial ApiRegistration` from [[skills/dotnet/architecture/solutions/solution-api-project.skill/solution-api-project.skill|solution-api-project]] (this one adds `AddGrpcApi()`), and both dispatch through the same `ISender` to commands/queries defined once in `{Module}.Interfaces`.
@@ -60,7 +60,7 @@ SOLUTION:
   - [[skills/dotnet/architecture/solutions/solution-api-project.skill/Implementation/App.Host.csproj.extend/ApiRegistration.cs.create|ApiRegistration.cs]] - the `partial` class this solution adds `AddGrpcApi()` to
 - [[skills/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]
   - [[skills/dotnet/architecture/solutions/solution-mediator-integration.skill/Implementation/Shared.csproj.extend/ICommand.cs.create|ICommand.cs]] - the markers an RPC method dispatches
-- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] (VP2, for read RPCs — not required; write-only service without it)
+- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]] (VP-C001, for read RPCs — not required; write-only service without it)
 
 NUGET:
 - `Grpc.AspNetCore` {version} - provides `Grpc.Core.Server`-generated service base classes, `MapGrpcService<T>()`, `AddGrpc()`

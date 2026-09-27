@@ -38,7 +38,7 @@ depends_on:
 - The handler calls `IOutboxWriter.Add(evt, topic)` **instead of** `IMessagePublisher.Publish(...)` — no direct publish from a handler once the outbox is in use.
 - The outbox row is staged in the same `DbContext` change set as the entity mutation; `UnitOfWorkBehavior`'s commit is the single atomic boundary.
 - The relay is the only publisher of outbox rows; it is idempotent on the consumer side (at-least-once) and never blocks a request.
-- `Requires VP13 (AsyncOutboundApi) AND VP2 (Persistence)` — per the [Variability Map](skills/dotnet/architecture/variability-map.md), jointly.
+- `Requires VP13 (AsyncOutboundApi) AND VP-C001 (Persistence)` — per the [Variability Map](skills/dotnet/architecture/variability-map.md), jointly.
 
 # Boundaries
 - The publish transport is `solution-kafka-producer` (VP13); this solution reuses its `IMessagePublisher`.
@@ -74,4 +74,4 @@ PROJECT:
 - [ ] `OutboxMessage` table configured in `AppDbContext`; row written via `IOutboxWriter` in the handler's `DbContext`.
 - [ ] No direct `IMessagePublisher.Publish` in a handler that uses the outbox.
 - [ ] One `OutboxRelay : BackgroundService`; marks sent only after a successful publish.
-- [ ] Applied only when VP13 and VP2 are both present.
+- [ ] Applied only when VP13 and VP-C001 are both present.

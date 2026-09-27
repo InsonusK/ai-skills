@@ -2,7 +2,7 @@
 name: plateau-create-by-solutions
 description: Define how to build plateau skills from a set of solution skills, for any target language/stack
 whenToUse: when you write skills for building a plateau
-updated: 20260909
+updated: 20260926
 tags:
   - skill/architecture/plateau/design
   - stack
@@ -31,7 +31,7 @@ Covers building the plateau skill files (root, repository, project/package, clas
 # Workflow
 
 Inputs:
-- `{plateau-name}` — name of the created plateau.
+- `{plateau-name}` — name of the created plateau; in a catalog whose plateaus are coded, the file form of the plateau's code from [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/plateau-map-create.skill.md#plateau-codes|plateau-map-create]] (e.g. `gw003-000`).
 - `{solutions}` — list of solutions to implement in the plateau.
 - `{parent_plateaus}` — optional list of existing plateaus this plateau composes in addition to `{solutions}`; empty when built from scratch. Merge semantics: [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]].
 - `{standalone}` — whether the plateau is usable/deployable on its own (`true`) or exists only to be composed (`false`). Ask the user if unclear.

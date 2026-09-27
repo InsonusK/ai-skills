@@ -1,6 +1,6 @@
 ---
 name: solution-query-integration
-description: The repository-backed read side of MediatR (part of Persistence, VP2) — single-module query handlers in {Module}.Application using IReadRepository and named specs, cross-module query handlers in App.Queries using DbContext with AsNoTracking, and App.Queries DI. The IQuery<TResponse> marker and dispatch are common (solution-mediator-integration); this solution only adds handlers that read from a store.
+description: The repository-backed read side of MediatR (part of Persistence, VP-C001) — single-module query handlers in {Module}.Application using IReadRepository and named specs, cross-module query handlers in App.Queries using DbContext with AsNoTracking, and App.Queries DI. The IQuery<TResponse> marker and dispatch are common (solution-mediator-integration); this solution only adds handlers that read from a store.
 whenToUse: when implementing a read operation that loads from the database — a single-module query handler over IReadRepository, or a cross-module projection/list query in App.Queries
 domain: skill
 type: architecture
@@ -34,10 +34,10 @@ depends_on:
 built_on_plateau:
 ---
 
-> The `IQuery<TResponse>` marker and dispatch are **common** (`solution-mediator-integration`). This solution is VP2 — it adds the *repository-backed* query handlers, `App.Queries` cross-module read models, and `AppDbContext` reads. A module without persistence still has queries (answered in-memory or by dispatch); it just has no handlers from this solution.
+> The `IQuery<TResponse>` marker and dispatch are **common** (`solution-mediator-integration`). This solution is VP-C001 — it adds the *repository-backed* query handlers, `App.Queries` cross-module read models, and `AppDbContext` reads. A module without persistence still has queries (answered in-memory or by dispatch); it just has no handlers from this solution.
 
 # Goal
-- Add the **repository-backed** read side, once a module has persistence (VP2): single-module query handlers over `IReadRepository<T>` + named specs, and cross-module read models in `App.Queries` over `AppDbContext`.
+- Add the **repository-backed** read side, once a module has persistence (VP-C001): single-module query handlers over `IReadRepository<T>` + named specs, and cross-module read models in `App.Queries` over `AppDbContext`.
 - Create `App.Queries` — the cross-module query project, referenced by `App.Host` and no one else.
 - Define when to use a projection spec vs in-handler mapping — projection spec for flat DTOs, in-handler mapping for computed/conditional DTOs.
 - Register `App.Queries` handlers via assembly scan in `App.Host`.

@@ -20,7 +20,7 @@ The anchor document for the v3.1 solution-catalog build (per [[skills/common-wor
 
 - **No `{Module}.Domain`** at baseline — created by `solution-domain-behaviour` (VP1).
 - **No `{Module}.Api`** at baseline — created by `solution-api-project` (VP8/VP9 prerequisite).
-- **No `App.Infrastructure` / `App.Infrastructure.Migrations` / `App.Queries`** — created by the first persistence solution (VP2).
+- **No `App.Infrastructure` / `App.Infrastructure.Migrations` / `App.Queries`** — created by the first persistence solution (VP-C001).
 - Every `.csproj` uses **versionless `<PackageReference>`**; versions live in `Directory.Packages.props`.
 
 ## 2. Common features → realizing solution (must be 1:1 covered)
@@ -42,19 +42,19 @@ The anchor document for the v3.1 solution-catalog build (per [[skills/common-wor
 | VP | Solution(s) | Constraint (from variability-map.md) |
 | --- | --- | --- |
 | VP1 DomainLogic | `solution-domain-behaviour` (creates `{Module}.Domain`) | — |
-| VP2 Persistence | `solution-infrastructure-project`, `solution-domain-configuration`, `solution-repository-integration`, `solution-unit-of-work`, `solution-query-integration` | requires VP1 |
+| VP-C001 Persistence | `solution-infrastructure-project`, `solution-domain-configuration`, `solution-repository-integration`, `solution-unit-of-work`, `solution-query-integration` | requires VP1 |
 | VP3 ValueObjects | `solution-value-objects` (strict `{VO}`) | requires VP1 |
 | VP4 SharedRules | `solution-domain-shared-rules` + `solution-cecil-architecture-tests` | — (adoption precondition only) |
-| VP5 EntityConcurrencyControl | `solution-entity-concurrency-change` | requires VP2 |
-| VP6 ExternalIdentity | `solution-external-created-entity` | requires VP2 |
-| VP7 AuditTimestamps | `solution-entity-edit-timestamp` | requires VP2 |
+| VP5 EntityConcurrencyControl | `solution-entity-concurrency-change` | requires VP-C001 |
+| VP6 ExternalIdentity | `solution-external-created-entity` | requires VP-C001 |
+| VP7 AuditTimestamps | `solution-entity-edit-timestamp` | requires VP-C001 |
 | VP8 SyncInboundApi-HTTP | `solution-api-project` + `solution-http-api-publication` | — |
 | VP9 SyncInboundApi-gRPC | `solution-api-project` + `solution-grpc-integration` | — |
 | VP10 SyncOutboundApi-HTTP | `solution-http-api-client` *(aspirational — skeleton)* | — |
 | VP11 SyncOutboundApi-gRPC | `solution-grpc-client` *(aspirational — skeleton)* | — |
 | VP12 AsyncInboundApi | `solution-messaging-infrastructure` + `solution-kafka-consumer` *(aspirational — skeleton)* | — |
 | VP13 AsyncOutboundApi | `solution-messaging-infrastructure` + `solution-kafka-producer` *(aspirational — skeleton)* | — |
-| VP14 OutboxPattern | `solution-transactional-outbox` *(aspirational — skeleton)* | requires VP13 AND VP2 |
+| VP14 OutboxPattern | `solution-transactional-outbox` *(aspirational — skeleton)* | requires VP13 AND VP-C001 |
 
 `solution-entity-classification` (VP5×VP6 combination resolver) — kept, reframed per feature-model.md; not itself a VP.
 

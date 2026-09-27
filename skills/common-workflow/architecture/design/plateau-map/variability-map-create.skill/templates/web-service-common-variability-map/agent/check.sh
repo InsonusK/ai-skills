@@ -47,17 +47,26 @@ if body is None:
     fail("common map: no '## Common Variation Points' section")
 else:
     hdr, rows = table_rows(body)
-    if hdr != ["ID", "VP", "Variants", "Constraint", "Realization depends on"]:
+    if hdr != ["ID", "Status", "VP", "Variants", "Constraint", "Realization depends on"]:
         fail(f"common map: table header is {hdr}")
     for r in rows:
         cid = r[0] if r else ""
         if not re.fullmatch(r"VP-C\d{3}", cid): fail(f"common map: bad ID '{cid}'"); continue
-        if cid in common: fail(f"common map: duplicate ID {cid}")
-        variants = [v.strip() for v in r[2].split("/")] if len(r) > 2 else []
-        state_retired = "Retired" in r[1] if len(r) > 1 else False
-        common[cid] = {"name": r[1] if len(r) > 1 else "", "variants": variants, "retired": state_retired}
+        if cid in common: fail(f"common map: duplicate ID {cid}"); continue
+        status = r[1] if len(r) > 1 else ""
+        if status not in ("📐", "⛔ Retired"): fail(f"common map: {cid} status '{status}' is not 📐 / ⛔ Retired")
+        variants = [v.strip() for v in r[3].split("/")] if len(r) > 3 else []
+        common[cid] = {"variants": variants, "retired": status.startswith("⛔")}
         if not re.search(r"^### " + cid + r" \S", common_text, re.M):
             fail(f"common map: {cid} has no '### {cid} {{Name}}' concept section")
+cand = section(common_text, "Candidate Variation Points")
+if cand is None: fail("common map: no '## Candidate Variation Points' section")
+else:
+    chdr, crows = table_rows(cand)
+    for r in crows:
+        if r and r[0] != "💡": fail(f"common map: candidate '{r[1] if len(r) > 1 else r}' status is not 💡")
+        if "VP-C" in (r[1] if len(r) > 1 else ""): fail(f"common map: candidate carries an ID: {r[1]}")
+    print(f"  {len(crows)} candidate(s)")
 print(f"  {len(common)} common VP(s)")
 
 print("== 2. Bound stack maps ==")
@@ -73,7 +82,7 @@ for b in bound:
     if cb is None: fail(f"{b}: no '## Common Variation Points' section"); continue
     if sb is None: fail(f"{b}: no '## Stack Variation Points' section")
     hdr, rows = table_rows(cb)
-    if hdr != ["ID", "VP", "State", "Stack delta", "Realized by", "Migration"]:
+    if hdr != ["ID", "VP", "Status", "State", "Stack delta", "Realized by", "Migration"]:
         fail(f"{b}: common table header is {hdr}")
     seen = {}
     for r in rows:
@@ -83,8 +92,14 @@ for b in bound:
         if cid in seen: fail(f"{b}: {cid} carried twice")
         seen[cid] = r
         if cid not in common: fail(f"{b}: {cid} is not in the common map"); continue
-        if len(r) != 6: fail(f"{b}: {cid} row has {len(r)} cells, expected 6"); continue
-        _, name, state, delta, realized, migration = r
+        if len(r) != 7: fail(f"{b}: {cid} row has {len(r)} cells, expected 7"); continue
+        _, name, status, state, delta, realized, migration = r
+        if migration not in ("Yes", "No"): fail(f"{b}: {cid} Migration '{migration}'")
+        if status == "⏳":
+            if any(c not in ("—", "-") for c in (state, delta, realized)):
+                fail(f"{b}: {cid} is ⏳ but already has State/delta/Realized by — mark it ✅ or clear them")
+            warn(f"{b}: {cid} ⏳ pending stack detail"); continue
+        if status != "✅": fail(f"{b}: {cid} status '{status}' is not ⏳ / ✅"); continue
         sm = STATE.fullmatch(state)
         if not sm: fail(f"{b}: {cid} State '{state}' is not Inherited / Refined / Fixed: {{Variant}}"); continue
         if state == "Inherited" and delta not in ("—", "-"):
@@ -93,9 +108,12 @@ for b in bound:
             fail(f"{b}: {cid} is {state} with no delta (reason required)")
         if sm.group(1) is not None and sm.group(1) not in common[cid]["variants"]:
             fail(f"{b}: {cid} Fixed to '{sm.group(1)}', not one of {common[cid]['variants']}")
-        if not realized: fail(f"{b}: {cid} Realized by is empty")
-        elif realized.startswith("deferred"): warn(f"{b}: {cid} {realized}")
-        if migration not in ("Yes", "No"): fail(f"{b}: {cid} Migration '{migration}'")
+        if not realized or (realized in ("—", "-") and state != "Fixed: No"):
+            fail(f"{b}: {cid} Realized by is empty")
+        for m in re.finditer(r"planned(\s*—\s*)?([^;]*)", realized):
+            if not m.group(1) or len(m.group(2).strip()) < 3:
+                fail(f"{b}: {cid} 'planned' without its chosen realization")
+        if "planned" in realized: warn(f"{b}: {cid} has planned Variant(s) — no solution yet")
     for cid in common:
         if cid in seen and common[cid]["retired"]: fail(f"{b}: {cid} is Retired in the common map — drop its row")
         if cid not in seen and not common[cid]["retired"]: fail(f"{b}: common VP {cid} not carried")
@@ -119,6 +137,8 @@ if os.path.isfile(idmap):
             for f in fs:
                 if not f.endswith(".md"): continue
                 fp = os.path.join(d, f)
+                # agent/DECISIONS.md and agent/logs/ are historical journals — they keep the IDs of their time
+                if rel(fp).endswith("agent/DECISIONS.md") or "/agent/logs/" in fp: continue
                 for i, l in enumerate(open(fp, encoding="utf-8"), 1):
                     if pat.search(l): fail(f"{rel(fp)}:{i}: leftover {old} (now {new})")
 print(f"  {n} re-ID(s) checked")
@@ -132,12 +152,36 @@ for d, _, fs in os.walk(os.path.join(REPO, "skills")):
             if "web-service-variability-map" in open(fp, encoding="utf-8").read():
                 fail(f"{rel(fp)}: still references web-service-variability-map")
 
-print("== 5. Links resolve (touched files) ==")
+print("== 5. Common plateau registry columns follow the common map ==")
+PMC = os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill")
+REGF = os.path.join(PMC, "registry/web-service-common-plateaus.md")
+if not os.path.isfile(REGF): fail("common plateau registry missing")
+else:
+    rhdr, rrows = table_rows(open(REGF, encoding="utf-8").read())
+    want = [c for c in common if not common[c]["retired"]]
+    got = [re.match(r"VP-C\d{3}", h).group(0) for h in rhdr if re.match(r"VP-C\d{3}", h)]
+    if got != want: fail(f"registry VP columns {got} != 📐 common VPs {want}")
+    nstack = len(rhdr) - 1 - len(got)
+    if nstack != len(bound): fail(f"registry has {nstack} stack column(s), {len(bound)} bound stack(s)")
+    nums = [r[0] for r in rrows]
+    if len(set(nums)) != len(nums): fail("registry: duplicate number")
+    for r in rrows:
+        if not re.fullmatch(r"\d{3}", r[0]): fail(f"registry: bad number '{r[0]}'")
+        for c in r[1 + len(got):]:
+            if not (c.startswith("✅") or c == "🔸"): fail(f"registry {r[0]}: stack cell '{c}' is not ✅ {{codes}} / 🔸")
+        if not any(c.startswith("✅") for c in r[1 + len(got):]): fail(f"registry {r[0]}: no stack has built it — drop the row")
+    print(f"  {len(rrows)} registered combination(s)")
+
+print("== 6. Links resolve (touched files) ==")
 # Whole files this task owns; in a bound stack map only its Common Variation Points section
 # (the rest predates the common map and is checked by that catalog's own agent/check.sh).
 files = [(p, None) for p in (COMMON, os.path.join(SKILL, "variability-map-create.skill.md"),
          os.path.join(SKILL, "templates/variability-map.template.md"),
-         os.path.join(SKILL, "adr/common-vps-inherited-by-id.md"))]
+         os.path.join(SKILL, "adr/common-vps-inherited-by-id.md"),
+         os.path.join(os.path.dirname(COMMON), "contracts/vp-c003-taskbox.md"),
+         os.path.join(PMC, "plateau-map-create.skill.md"), os.path.join(PMC, "examples/plateau-repository.example.md"),
+         os.path.join(PMC, "adr/plateau-code-by-combination.md"), REGF,
+         os.path.join(REPO, "skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md"))]
 files += [(os.path.join(REPO, b), "Common Variation Points") for b in bound]
 LINK = re.compile(r"\[\[([^\]|#]+)(#[^\]|]*)?(?:\|[^\]]*)?\]\]|\]\(((?:skills/)[^)#\s]*)(#[^)\s]*)?\)|\]\((#[^)\s]+)\)")
 for fp, only in files:
@@ -145,6 +189,7 @@ for fp, only in files:
     text = open(fp, encoding="utf-8").read()
     if only: text = section(text, only) or ""
     text = re.sub(r"```.*?```", "", text, flags=re.S).replace("\\|", "|")
+    text = re.sub(r"`[^`\n]*`", "", text)  # inline code quotes links, it does not make them
     for m in LINK.finditer(text):
         target, frag = (m.group(1), m.group(2)) if m.group(1) else (m.group(3), m.group(4))
         if m.group(5): target, frag = None, m.group(5)

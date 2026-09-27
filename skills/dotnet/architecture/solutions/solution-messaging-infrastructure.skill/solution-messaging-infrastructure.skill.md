@@ -36,7 +36,7 @@ depends_on:
 
 # Boundaries
 - Consumers (`solution-kafka-consumer`), producers (`solution-kafka-producer`), and the transactional outbox (`solution-transactional-outbox`) are separate solutions that build on this one.
-- Persistence (VP2) is not required by this solution, but the outbox that makes publishing reliable does require it.
+- Persistence (VP-C001) is not required by this solution, but the outbox that makes publishing reliable does require it.
 - The message envelope/serialization contract is shared with any non-.NET service on the same topics — that cross-service contract is out of scope here and belongs with the topic's owning team.
 
 # Requirements

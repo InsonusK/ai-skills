@@ -45,7 +45,7 @@ adr:
 
 # Boundaries
 - The permissive `Soft{ValueObject}` base is `solution-soft-value-objects` (common); this solution only adds the strict subtype.
-- Persistence mapping (`OwnsOne`) of a `{ValueObject}` is `solution-domain-configuration` (VP2).
+- Persistence mapping (`OwnsOne`) of a `{ValueObject}` is `solution-domain-configuration` (VP-C001).
 - Whether the `{ValueObject}`'s condition matches the same concept's boundary validator (`solution-dto-property-validators`) is not enforced here — `solution-domain-shared-rules` (VP4) is the mechanism for one shared declaration.
 
 # Adr

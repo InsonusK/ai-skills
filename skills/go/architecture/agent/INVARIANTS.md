@@ -37,7 +37,7 @@ tools/
   test_report/main.go             ← solution-conformance-testing-in-go
 ```
 
-- **No `internal/domain/interfaces/`** at baseline — created by `solution-go-domain-ports`, a shared prerequisite the first-applied of `solution-external-integration`/`solution-cached-db`/`solution-persistent-db` depends on (VP2/VP6/VP7).
+- **No `internal/domain/interfaces/`** at baseline — created by `solution-go-domain-ports`, a shared prerequisite the first-applied of `solution-external-integration`/`solution-cached-db`/`solution-persistent-db` depends on (VP2/VP-C002/VP-C001).
 - **No `internal/infrastructure/`, `internal/api/grpc/`, `proto/`, `buf/`, `gen/`** at baseline — each created by its own VP-realizing solution.
 - Every Go module dependency is pinned once in `go.mod` — no separate central-package-management solution exists for this stack (unlike the dotnet catalog); see `feature/feature-model.md`'s "Modeling choices" section.
 
@@ -46,7 +46,7 @@ tools/
 | Feature (feature-model.md) | Solution |
 | --- | --- |
 | (baseline repo/composition-root structure) | `solution-go-repository-structure` |
-| (shared outbound-ports package prerequisite) | `solution-go-domain-ports` — not a Feature Model row itself, a shared prerequisite of VP2/VP6/VP7 |
+| (shared outbound-ports package prerequisite) | `solution-go-domain-ports` — not a Feature Model row itself, a shared prerequisite of VP2/VP-C002/VP-C001 |
 | DomainLogic | `solution-go-domain-logic` |
 | HttpApi | `solution-go-http-api` |
 | AppLogging | `solution-go-app-logging` |
@@ -59,10 +59,10 @@ tools/
 | VP1 GrpcApi | `solution-grpc-api` | — |
 | VP2 ExternalIntegration | `solution-external-integration` (`depends_on` `solution-go-domain-ports`) | — |
 | VP3 AsyncOutboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-producer` *(skeleton)* | — |
-| VP4 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP3 AND VP7 |
+| VP4 OutboxPattern | `solution-go-transactional-outbox` *(skeleton)* | requires VP3 AND VP-C001 ≠ None |
 | VP5 AsyncInboundApi | `solution-go-messaging-infrastructure` + `solution-go-kafka-consumer` *(skeleton)* | — |
-| VP6 CachedDb | `solution-cached-db` (`depends_on` `solution-go-domain-ports`) | — |
-| VP7 PersistentDb | `solution-persistent-db` (`depends_on` `solution-go-domain-ports`), optionally + `solution-go-db-migrations` (`depends_on` `solution-persistent-db`; not composed by any of the 5 plateaus yet) | — |
+| VP-C002 TransientStore `Redis` | `solution-cached-db` (`depends_on` `solution-go-domain-ports`) | — |
+| VP-C001 PersistentStore `PostgreSQL` | `solution-persistent-db` (`depends_on` `solution-go-domain-ports`), optionally + `solution-go-db-migrations` (`depends_on` `solution-persistent-db`; not composed by any of the 5 plateaus yet) | — |
 
 ## 4. Link & path conventions
 

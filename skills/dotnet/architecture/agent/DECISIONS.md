@@ -1,5 +1,7 @@
 # v3.1 build decisions log
 
+> **Historical VP IDs.** Entries below keep the VP IDs of their time. `VP2` (Persistence) is now common `VP-C001` PersistentStore — see `skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/agent/id-map.tsv`.
+
 One line per non-mechanical choice made while building the v3.1 catalog. `⚠️` marks a genuine architectural fork that needs the owner's sign-off; everything else is execution against [[skills/dotnet/architecture/agent/INVARIANTS]].
 
 ## Settled before the build (from the design conversation)

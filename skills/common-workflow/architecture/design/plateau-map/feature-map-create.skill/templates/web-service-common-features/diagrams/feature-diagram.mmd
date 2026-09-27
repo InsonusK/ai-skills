@@ -21,6 +21,7 @@ graph TD
     Common -->|Optional| In["Inbound"]
     Common -->|Optional| Out["Outbound"]
     Common -->|Optional| Metric
+    Common -->|Optional| TaskBox
 
     Storage -->|"At least one (kind)"| Persistent
     Storage -->|"At least one (kind)"| Cache
@@ -37,10 +38,11 @@ graph TD
     InboundSync -->|"At least one (protocol)"| HttpApi
     InboundSync -->|"At least one (protocol)"| GrpcApi
 
-    InboundAsync -->|"At least one (source)"| MessageConsumer
-    InboundAsync -->|"At least one (source)"| TaskBox
+    InboundAsync -->|Mandatory| MessageConsumer
 
     TaskBox -. "Requires" .-> Storage
+    TaskBox -->|"At least one (criticality)"| NonCritical
+    TaskBox -->|"At least one (criticality)"| Critical
 
     MessageConsumer -->|"At least one (protocol)"| KafkaConsumer
     MessageConsumer -->|"At least one (protocol)"| RabbitMQConsumer
@@ -53,12 +55,8 @@ graph TD
     OutboundSync -->|"At least one (protocol)"| KafkaProducer
     OutboundSync -->|"At least one (protocol)"| RabbitMQProducer
 
-    Outbox -->|Optional| MessageSendGuarantee
     Outbox -. "Requires" .-> TaskBox
     Outbox -. "Requires" .-> OutboundSync
-
-    MessageSendGuarantee -->|"At least one (critical)"| NonCritical
-    MessageSendGuarantee -->|"At least one (critical)"| Critical
 
     Critical -. "Requires" .-> Persistent
     NonCritical -. "Requires (any of storage)" .-> Cache

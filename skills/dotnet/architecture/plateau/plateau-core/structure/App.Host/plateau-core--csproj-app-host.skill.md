@@ -54,7 +54,7 @@ __Applied solutions:__
   - appsettings.json / appsettings.Development.json — `Logging` section
   - App.Host.csproj
 
-`InfrastructureRegistration.cs` (`AddInfrastructure()`) arrives with VP2.
+`InfrastructureRegistration.cs` (`AddInfrastructure()`) arrives with VP-C001.
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
@@ -99,4 +99,4 @@ __Applied solutions:__
 - [ ] `AddPipeline()` registers `ExceptionHandlingBehavior` then `ValidationBehavior`, both as open generics, in that order.
 - [ ] Every module is registered inside `ModuleRegistration.AddModules`.
 - [ ] `LoggingRegistration` clears providers, binds the `Logging` config section, adds the console provider; no other file names a provider.
-- [ ] No `InfrastructureRegistration.cs` (arrives with VP2).
+- [ ] No `InfrastructureRegistration.cs` (arrives with VP-C001).

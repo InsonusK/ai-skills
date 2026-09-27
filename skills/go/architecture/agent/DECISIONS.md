@@ -1,5 +1,7 @@
 # skills/go/architecture build decisions log
 
+> **Historical VP IDs.** Entries below keep the VP IDs of their time. `VP6` is now common `VP-C002` TransientStore and `VP7` common `VP-C001` PersistentStore — see `skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/agent/id-map.tsv`.
+
 One line per non-mechanical choice made while building this catalog. `⚠️` marks a genuine
 architectural fork that needs the owner's sign-off; everything else is execution against
 [[skills/go/architecture/agent/INVARIANTS]] (once written) or, before that exists, against
