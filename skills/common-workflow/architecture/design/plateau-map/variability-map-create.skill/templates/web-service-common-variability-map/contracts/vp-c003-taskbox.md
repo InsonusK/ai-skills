@@ -1,6 +1,4 @@
-# TaskBox storage contract (VP-C003) — draft
-
-> **Draft — under owner review.** Not yet referenced by any stack row.
+# TaskBox storage contract (VP-C003)
 
 The stack-agnostic contract every stack's TaskBox realization implements, so that the stored tasks look the same whatever language wrote them: a service rewritten in another stack keeps its tables, streams, and pending tasks. It defines the **mechanism only** — how a task is stored, ordered, claimed, retried, dead-lettered, and removed. It knows nothing about what a task does. Concept and store rules: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map#VP-C003 TaskBox|VP-C003 TaskBox]].
 
