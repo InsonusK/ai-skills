@@ -16,11 +16,11 @@ Rows = plateaus by code, with the Title decoding it and the current folder name.
 
 | Code | Title | Folder | VP-C001 | VP-C002 | VP-C003 | VP-C004 | VP-C005 | VP-C006 | VP-C007 | VP-C008 | VP-C009 | VP-C010 | VP-C011 | VP1 |
 |---|---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| GW001.000 | http service | plateau-http-service | None | None | No | No | No | No | No | No | No | No | No | ❌ |
-| GW001.001 | dual-API service | plateau-dual-api-service | None | None | No | No | No | No | No | No | No | No | No | ✅ |
-| GW005.001 | integrated service | plateau-integrated-service | None | None | No | No | Yes | No | No | No | No | No | No | ✅ |
-| GW006.001 | cached service | plateau-cached-service | None | Redis | No | No | Yes | No | No | No | No | No | No | ✅ |
-| GW007.001 | persistent service | plateau-persistent-service | PostgreSQL | Redis | No | No | Yes | No | No | No | No | No | No | ✅ |
+| GW001.000 | http service | plateau-http-service | None | None | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| GW001.001 | dual-API service | plateau-dual-api-service | None | None | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| GW005.001 | integrated service | plateau-integrated-service | None | None | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| GW006.001 | cached service | plateau-cached-service | None | Redis | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| GW007.001 | persistent service | plateau-persistent-service | PostgreSQL | Redis | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 Column legend — VP-C001 PersistentStore (common) · VP-C002 TransientStore (common) · VP-C003 TaskBox (common) · VP-C004 HttpOutbound (common) · VP-C005 GrpcOutbound (common, the Feature Model's ExternalIntegration) · VP-C006–VP-C009 Kafka/RabbitMQ producer/consumer (common) · VP-C010 Outbox (common) · VP-C011 Inbox (common) · VP1 GrpcApi. Full descriptions, the solution that realizes each VP, and the constraints between VPs are in [[skills/go/architecture/variability-map.md|../variability-map.md]] and, for common VPs, the [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/templates/web-service-common-variability-map/web-service-common-variability-map|web-service common map]] — the single source of truth; this table is only the plateau-oriented view of the same answers. The `{common}` numbers come from the [[skills/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/registry/web-service-common-plateaus|common-plateau registry]].
 
