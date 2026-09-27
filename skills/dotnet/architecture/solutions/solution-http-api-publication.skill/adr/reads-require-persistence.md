@@ -21,7 +21,7 @@ So "requires command or query integration" is always trivially true for the comm
 
 # Selected variant
 
-**Selected variant:** [[#depends_on api-project + mediator-integration; GET actions gated on VP2]]
+**Selected variant:** [[#depends_on api-project + mediator-integration; GET actions gated on VP2 (selected)]]
 
 # Searched variants
 

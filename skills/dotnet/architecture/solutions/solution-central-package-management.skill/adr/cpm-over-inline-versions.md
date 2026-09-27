@@ -16,7 +16,7 @@ A service in this family is a multi-project solution (App.Host, Shared, Building
 
 # Selected variant
 
-**Selected variant:** [[#Central Package Management]]
+**Selected variant:** [[#Central Package Management (selected)]]
 
 - `Directory.Packages.props` at the repo root, `ManagePackageVersionsCentrally=true`
 - every `<PackageReference>` is versionless; every version is a `<PackageVersion>` entry in the central file

@@ -23,7 +23,7 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#Validator + Handler + DbContext split with classification-aware interfaces]]
+**Selected variant:** [[#Validator + Handler + DbContext split with classification-aware interfaces (selected)]]
 
 - `ActionTimeStamp` validation is transport correctness, so it belongs in the command validator.
 - User timestamp assignment belongs in the handler because the handler knows which entity is being created or updated.

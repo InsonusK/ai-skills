@@ -16,7 +16,7 @@ We need a structure that:
 
 # Selected variant
 
-**Selected variant:** [[#Two layers — Integration + Client]]
+**Selected variant:** [[#Two layers — Integration + Client (selected)]]
 
 Split the integration surface into two units per external API: an Integration unit that owns the raw call and typed/validated parsing of its response, and a Client unit that composes 1..n Integration calls into the application's own model. The application only ever depends on Client.
 

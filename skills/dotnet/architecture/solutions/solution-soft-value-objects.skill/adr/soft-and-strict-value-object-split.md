@@ -18,7 +18,7 @@ Adapted from the original `soft-value-objects-and-application-validators` ADR; t
 
 # Selected variant
 
-**Selected variant:** [[#Soft{ValueObject} in Interfaces, strict {ValueObject} in Domain, one inherits the other]]
+**Selected variant:** [[#Soft{ValueObject} in Interfaces, strict {ValueObject} in Domain, one inherits the other (selected)]]
 
 - `{Module}.Interfaces` remains declarations-only and exposes the `Soft{ValueObject}` shape — a plain record, no validation
 - `{Module}.Domain.ValueObjects.{ValueObject}` inherits from `Soft{ValueObject}` and enforces invariants by calling `Check()`

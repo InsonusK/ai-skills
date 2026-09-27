@@ -25,7 +25,7 @@ The four checks:
 
 # Selected variant
 
-**Selected variant:** [[#Apply all four; split by host project — the domain-dependent two are absent until VP1]]
+**Selected variant:** [[#Apply all four; split by host project — the domain-dependent two are absent until VP1 (selected)]]
 
 # Searched variants
 

@@ -52,7 +52,7 @@ cmd/migrate/
 - Any domain-service construction, HTTP/gRPC server, or Kafka wiring — this binary's only job is to
   run `{store}.Migrate` and exit with a non-zero status on failure.
 - A second goose call site — this package calls `{store}.Migrate`, never
-  `github.com/pressly/goose/v3` directly (see [[./migrations.go.create.md#MUST|migrations.go's
+  `github.com/pressly/goose/v3` directly (see [[../../internal/infrastructure/{store}/migrations.go.create.md#MUST|migrations.go's
   own Rule]] on this catalog's single call point).
 
 # Allowed Dependencies
