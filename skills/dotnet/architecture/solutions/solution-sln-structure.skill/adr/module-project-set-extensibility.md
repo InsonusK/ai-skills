@@ -21,7 +21,7 @@ An unconditional four-project scaffold forces every module to carry an empty `Do
 
 # Selected variant
 
-**Selected variant:** [[#Base set of two (Interfaces, Application), Domain and Api pattern-added]]
+**Selected variant:** [[#Base set of two (Interfaces, Application), Domain and Api pattern-added (selected)]]
 
 # Searched variants
 

@@ -116,7 +116,7 @@ PROJECT
   - Fix: `Shared` = contracts, `BuildingBlocks` = technical patterns, `App.Host` = composition only.
 
 ## MAY
-- [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create#MAY|App.Host.csproj]]
+- [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/App.Host.csproj.create|App.Host.csproj]]
 - A pattern solution may add a project to a module when it needs project-level isolation the base projects cannot give.
 
 # Check list

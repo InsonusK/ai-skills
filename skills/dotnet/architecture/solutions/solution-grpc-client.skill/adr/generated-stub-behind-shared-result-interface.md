@@ -18,7 +18,7 @@ Internal service-to-service calls in this family go over gRPC (HTTP is reserved 
 
 # Selected variant
 
-**Selected variant:** [[#Generated stub wrapped per-dependency, contract in Shared returning Result<T>]]
+**Selected variant:** [[#Generated stub wrapped per-dependency, contract in Shared returning Result<T> (selected)]]
 
 # Searched variants
 

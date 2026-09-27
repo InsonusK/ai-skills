@@ -87,7 +87,7 @@ __Applied solutions:__
 ## MUST
 - [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/plateau-offline-read-monolith--repo-offline-read-monolith.skill#must|repo-offline-read-monolith]]
 
-- [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/plateau-offline-read-monolith--repo-offline-read-monolith.skill#must never|repo-offline-read-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-offline-read-monolith/structure/plateau-offline-read-monolith--repo-offline-read-monolith.skill#MUST|repo-offline-read-monolith]]
 - `app.config.ts` must register the router with `withPreloading(SelectivePreloadingStrategy)`.
 - `data: { preload: true }` is set only here, on a top-level `loadChildren` entry — never passed down into or set by a feature's own routes.
 - `project.json`'s production build must carry an `initial` and a per-script bundle budget, each with a `maximumError` (not only `maximumWarning`).

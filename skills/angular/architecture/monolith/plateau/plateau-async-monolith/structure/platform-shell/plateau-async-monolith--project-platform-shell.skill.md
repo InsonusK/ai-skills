@@ -76,7 +76,7 @@ __Applied solutions:__
 ## MUST
 - [[skills/angular/architecture/monolith/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill#must|repo-async-monolith]]
 
-- [[skills/angular/architecture/monolith/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill#must never|repo-async-monolith]]
+- [[skills/angular/architecture/monolith/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill#MUST|repo-async-monolith]]
 - `app.config.ts` must register the router with `withPreloading(SelectivePreloadingStrategy)`.
 - `data: { preload: true }` is set only here, on a top-level `loadChildren` entry — never passed down into or set by a feature's own routes.
 - `project.json`'s production build must carry an `initial` and a per-script bundle budget, each with a `maximumError` (not only `maximumWarning`).

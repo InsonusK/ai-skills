@@ -21,7 +21,7 @@ The previous version of `{Feature}Check.cs.create.md` injected `IReadRepository<
 
 # Selected variant
 
-**Selected variant:** [[#Leave Load unimplemented; defer the concrete body to solution-repository-integration]]
+**Selected variant:** Leave Load unimplemented; defer the concrete body to solution-repository-integration
 
 `{Feature}Check.cs.create.md` now shows `Load` throwing `NotSupportedException`, with a comment pointing at whichever solution introduces a data-loading abstraction. `solution-repository-integration` — which already `extends` `{Module}.Application.csproj` for its own specs — adds a `{Feature}Check.cs.extend.md`, in the same `Before`/`After` style `solution-domain-shared-rules` already uses for this same class, replacing the stub `Load` with a concrete `IReadRepository<T>`-based implementation. `CheckAsync` is untouched by that extension.
 

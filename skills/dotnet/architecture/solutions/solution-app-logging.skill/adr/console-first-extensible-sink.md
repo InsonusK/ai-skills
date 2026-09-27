@@ -16,7 +16,7 @@ Every service in the family needs to log. The `AppLogging` feature is deliberate
 
 # Selected variant
 
-**Selected variant:** [[#Microsoft.Extensions.Logging + console provider, sink localised in App.Host]]
+**Selected variant:** [[#Microsoft.Extensions.Logging + console provider, sink localised in App.Host (selected)]]
 
 # Searched variants
 
