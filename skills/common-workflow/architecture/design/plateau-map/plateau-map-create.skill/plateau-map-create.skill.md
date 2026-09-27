@@ -72,7 +72,7 @@ Make each plateau's ✅ set equal its parent's set plus its own `created_by` del
 - Fix: walk `parent_plateaus` transitively before filling a row; flag any plateau whose set is not a superset of its parent's for the owner.
 
 ### Constraint check on every update
-Cross-check every plateau's VP set against every Constraint in the map, and treat a violation as a defect — raised as a plateau-level ADR per [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md#Recording plateau-level decisions|plateau-create-by-solutions]], never a silent exception.
+Cross-check every plateau's VP set against every Constraint in the map, and treat a violation as a defect — raised as a plateau-level ADR per [[skills/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill.md#Record every plateau-level decision as an ADR|plateau-create-by-solutions]], never a silent exception.
 - Risk: an inconsistent plateau ships unnoticed because nothing ever checked it against the table meant to make combinations explicit.
 - Fix: derive every row from the plateau's actual `created_by`/`parent_plateaus` and check it against every Constraint row before saving the file.
 

@@ -84,7 +84,7 @@ PROJECT:
 ## Boundary violation (failure path)
 
 1. A developer adds a route to `apps/platform-shell` that targets a path nested inside a feature (e.g. `feature1/page`) instead of mounting only `feature1`.
-2. This is caught in review against the rule in [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/Repository.extend.md#MUST NOT]] — the shell must not reference a path two or more levels below its own mount point.
+2. This is caught in review against the rule in [[skills/angular/architecture/solutions/solution-app-routing.skill/Implementation/Repository.extend.md#MUST]] — the shell must not reference a path two or more levels below its own mount point.
 3. Fix: the shell mounts only `feature1`; the `page` path is defined inside the feature's own `{feature}.routes.ts`.
 
 # Rules

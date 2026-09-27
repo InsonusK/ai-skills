@@ -21,7 +21,7 @@ Without a permitted place for this content, authors either pushed process descri
 
 # Selected variant
 
-**Selected variant:** [[#Allow optional Scope, Workflow, and Example sections]]
+**Selected variant:** [[#Allow optional Scope, Workflow, and Example sections (selected)]]
 
 Keep the mandatory four sections exactly as before and add at most one `# Scope`, at most one `# Workflow`, and at most one `# Example` top-level section. Each optional section has a strict purpose:
 
