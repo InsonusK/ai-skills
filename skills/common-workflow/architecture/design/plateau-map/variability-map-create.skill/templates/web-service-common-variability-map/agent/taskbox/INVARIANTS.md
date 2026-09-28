@@ -18,7 +18,7 @@ Code: combination PostgreSQL / Redis / TaskBox Yes / GrpcOutbound Yes, everythin
 ## 2. Invariants
 
 1. **The contract is the source of truth.** `vp-c003-taskbox.contract.md` is linked, never restated. A1 adds only what the contract leaves to a solution. A deviation found while coding is a question to the owner (§5), never a silent change.
-2. **A1 is stack-agnostic.** No Go/pgx/goose name in it, no link to A2. Its `Implementation/` holds only stack-independent elements: the **conformance feature file** (contract §8 as Gherkin, one scenario per §8 bullet, run unchanged by every stack) and the schema-v1 SQL as migration content.
+2. **A1 is stack-agnostic.** No Go/pgx/goose name in it, no link to A2. Its `Implementation/` holds only stack-independent elements: the **conformance feature file** (contract §8 as Gherkin, every §8 bullet covered, run unchanged by every stack). The schema DDL stays only in the contract; a stack's migration copies it.
 3. **A2 owns only the client and the code** (contract §intro). PostgreSQL: `pgx/v5`, `enqueue(tx pgx.Tx, …)` never commits, group lock (`INSERT … ON CONFLICT DO UPDATE` on `taskbox_group`) before the task insert, claim = the contract's `UPDATE … WHERE seq IN (SELECT … FOR UPDATE SKIP LOCKED)`, verbatim.
 4. **Schema via the service's own migrations** (contract §7): TaskBox v1 is a goose migration in the service's history (`solution-go-db-migrations`), not `CREATE TABLE IF NOT EXISTS`. A3 therefore also composes `solution-go-db-migrations` — part of VP-C001 PostgreSQL, so the code does not change.
 5. **Handler outcome = HTTP status code**; classification per VP-C004 (408/429/502/503/504 and 500 retryable; any other non-2xx → `dead` at once); `max(backoff, Retry-After)`; no handler → 503.

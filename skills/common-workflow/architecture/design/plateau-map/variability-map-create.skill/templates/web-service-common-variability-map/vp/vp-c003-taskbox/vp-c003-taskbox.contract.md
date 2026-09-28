@@ -150,7 +150,7 @@ Ordering follows Kafka: a queue has a fixed number of **partitions**; each parti
 | --- | --- | --- |
 | `{taskbox:<queue>}:meta` | Hash | `partitions` — set once (`HSETNX`); a process configured with another count refuses to start |
 | `{taskbox:<queue>}:seq` | String, `INCR` | The `seq` counter (§1) |
-| `{taskbox:<queue>}:task:<id>` | Hash | The task's §1 fields; no TTL while `pending`/`running`, TTL = effective retention from `finished_at` on |
+| `{taskbox:<queue>}:task:<id>` | Hash | The task's §1 fields; TTL = effective retention once `done` or `cancelled`, none before (a `dead` task's lifetime is kept by the worker loop, see **Lifetime**) |
 | `{taskbox:<queue>}:status:<status_key>` | String → `id` | Inbox status lookup; same TTL as its task hash |
 | `{taskbox:<queue>}:p:<n>` | Stream, entry `{id, group}` | The order of partition `n` |
 | `{taskbox:<queue>}:p:<n>:lease` | String, `SET NX PX <lease>` | Which worker owns partition `n` right now (a random token) |
