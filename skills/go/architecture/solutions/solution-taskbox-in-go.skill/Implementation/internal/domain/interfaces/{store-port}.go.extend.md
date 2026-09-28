@@ -1,12 +1,12 @@
 ---
 description: A data port whose write can trigger follow-up work takes the tasks next to the data
 project_name: internal/domain/interfaces
-name: "{port}"
+name: "{store-port}"
 element_kind: functions
 change_kind: extend
 tags:
   - solution/taskbox-in-go
-  - element/internal-domain-interfaces-port-go
+  - element/internal-domain-interfaces-store-port-go
 ---
 
 # Goals

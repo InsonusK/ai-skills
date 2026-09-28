@@ -23,7 +23,7 @@ tags:
 ```go
 func (s *{Service}) {Method}(ctx context.Context, input string) (Result, error) {
 	// ... validate, compute ...
-	if err := s.{port}.{Write}(ctx, entry); err != nil {
+	if err := s.{storePort}.{Write}(ctx, entry); err != nil {
 		return Result{}, err
 	}
 	return result, nil
@@ -52,7 +52,7 @@ func (s *{Service}) {Method}(ctx context.Context, input string) (Result, error) 
 			RunAt:   time.Now().Add(s.{delay}),    // zero = as soon as possible
 		})
 	}
-	if err := s.{port}.{Write}(ctx, entry, followUps...); err != nil {
+	if err := s.{storePort}.{Write}(ctx, entry, followUps...); err != nil {
 		return Result{}, err
 	}
 	return result, nil

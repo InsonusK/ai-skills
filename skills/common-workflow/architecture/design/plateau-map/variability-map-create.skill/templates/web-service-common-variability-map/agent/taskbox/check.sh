@@ -20,7 +20,7 @@ FEATURE_MD = f"{A1}/Implementation/features/taskbox-conformance.feature.create.m
 def md_files(root):
     return sorted(p for p in glob.glob(f"{root}/**/*.md", recursive=True) if "/example/" not in p)
 
-owned = [p for r in (A1, A2, A3) for p in md_files(r)] + [CONTRACT]
+owned = [p for r in (A1, A2, A3) for p in md_files(r)] + [CONTRACT] + sorted(glob.glob("skills/go/architecture/registry/*.md"))
 
 # 1. Links resolve
 print("== 1. Links resolve ==")
@@ -146,6 +146,20 @@ ddl = contract.split("### PostgreSQL (schema v1)", 1)[1].split("```sql\n", 1)[1]
 for mig in glob.glob(f"{A3}/**/migrations/*_taskbox_v1.sql", recursive=True):
     up = open(mig).read().split("-- +goose Up\n", 1)[1].split("-- +goose Down", 1)[0]
     if up.strip() != ddl.strip(): fail(f"{mig}: Up section differs from the contract's schema v1 DDL")
+
+# 10. Plateau structure files generated for GW009.001 embed the example's code
+print("== 10. Structure code == example code ==")
+n = 0
+for p in glob.glob(f"{A3}/structure/*.md"):
+    m = re.search(r"^source: (\S+)$", fm(p), re.M)
+    if not m: continue
+    n += 1
+    src = f"{EX}/{m.group(1).replace('{service}', 'linkcheck')}"
+    code = re.search(r"```go\n(.*?)```", open(p).read(), re.S)
+    body = re.sub(r"^// (Skill|Plateau|Version): .*\n", "", code.group(1) if code else "", flags=re.M).lstrip("\n")
+    if not os.path.exists(src) or body.replace("{module-path}", MOD) != open(src).read():
+        fail(f"{p}: code differs from {src}")
+print(f"   {n} structure file(s) checked")
 
 print()
 print(("FAIL — %d failure(s)" % len(fails)) if fails else "PASS — 0 failure(s)")

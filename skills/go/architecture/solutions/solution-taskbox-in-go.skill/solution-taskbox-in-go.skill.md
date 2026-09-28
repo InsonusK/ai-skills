@@ -29,7 +29,7 @@ creates:
   - "internal/api/tasks/handlers.go"
   - "internal/infrastructure/{store}/migrations/{NNNNN}_taskbox_v1.sql"
 extends:
-  - "internal/domain/interfaces/{port}.go"
+  - "internal/domain/interfaces/{store-port}.go"
   - "internal/domain/services/{service}.go"
   - "internal/infrastructure/{store}/"
   - "internal/infrastructure/{store}/store.go"
@@ -109,7 +109,7 @@ PACKAGES AND FILES:
 - [[./Implementation/internal/taskbox/test/Package.create.md|internal/taskbox/test]] - create - the conformance runner
   - [[./Implementation/internal/taskbox/test/runner_test.go.create.md|runner_test.go]], [[./Implementation/internal/taskbox/test/world_test.go.create.md|world_test.go]], [[./Implementation/internal/taskbox/test/steps_test.go.create.md|steps_test.go]], [[./Implementation/internal/taskbox/test/postgres_test.go.create.md|postgres_test.go]] - create
 - [[./Implementation/internal/domain/interfaces/task.go.create.md|internal/domain/interfaces/task.go]] - create - the `Task` domain value
-- [[./Implementation/internal/domain/interfaces/{port}.go.extend.md|internal/domain/interfaces/{port}.go]] - extend - the write takes `tasks ...Task`
+- [[./Implementation/internal/domain/interfaces/{store-port}.go.extend.md|internal/domain/interfaces/{store-port}.go]] - extend - the write takes `tasks ...Task`
 - [[./Implementation/internal/domain/services/{service}.go.extend.md|internal/domain/services/{service}.go]] - extend - decide follow-ups; a method per task type
 - [[./Implementation/internal/infrastructure/{store}/Package.extend.md|internal/infrastructure/{store}]] - extend - `{NNNNN}_taskbox_v1.sql` migration
 - [[./Implementation/internal/infrastructure/{store}/store.go.extend.md|internal/infrastructure/{store}/store.go]] - extend - data and tasks in one `pgx.Tx`
@@ -160,7 +160,7 @@ Apply every MUST of the Implementation files below.
 - [[./Implementation/internal/taskbox/Package.create.md#MUST|internal/taskbox]]
 - [[./Implementation/internal/taskbox/test/runner_test.go.create.md#MUST|runner_test.go]]
 - [[./Implementation/internal/taskbox/test/Package.create.md#MUST|internal/taskbox/test]]
-- [[./Implementation/internal/domain/interfaces/{port}.go.extend.md#MUST|{port}.go]]
+- [[./Implementation/internal/domain/interfaces/{store-port}.go.extend.md#MUST|{store-port}.go]]
 - [[./Implementation/internal/domain/services/{service}.go.extend.md#MUST|{service}.go]]
 - [[./Implementation/internal/infrastructure/{store}/store.go.extend.md#MUST|{store}/store.go]]
 - [[./Implementation/internal/infrastructure/{store}/Package.extend.md#MUST|{store} migrations]]
