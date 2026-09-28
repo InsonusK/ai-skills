@@ -2,7 +2,7 @@
 name: skill-design
 description: How a skill file is organized so an AI agent can find, load, and follow it — Human Flat vs Dir, folder and file naming, the top-level section set, cross-skill links, supporting files, and ADRs; the entry point that also requires skill-content and skill-tags
 whenToUse: when you create a new skill, or change how one is organized — its Human Flat/Dir format, file and folder layout, top-level sections, cross-skill links, or ADRs
-updated: 20260913
+updated: 20260928
 tags:
   - skill/core
   - stack
@@ -11,10 +11,12 @@ adr:
   - adr/cross-skill-links-scope.md
   - adr/allow-extra-top-level-sections.md
   - adr/stack-specific-links-direction.md
+  - adr/stack-agnostic-base-and-extensions.md
 ---
 
 # Goal
 - A skill in the correct format (Human Flat or Human Dir) whose folder and main-file names both match the `name` field.
+- A skill whose implementation differs across stacks split into a stack-agnostic `{skill-name}` base and `{skill-name}-in-{stack}` extensions.
 - Frontmatter carrying a concrete `whenToUse`, `updated: YYYYMMDD`, and — per [[skills/design/skill-tags.skill/skill-tags.skill.md|skill-tags]] — facet tags.
 - Exactly one `# Goal`, `# Core Principle`, `# Rule`, and `# Check list` — plus at most one optional `# Scope`, `# Workflow`, and `# Example`; `# Rule` using only `## MUST`/`## SHOULD`/`## MAY`.
 - Every cross-skill link an input, a required sub-step, an applied standard/template, or an active prohibition — nothing that only runs after this skill's artifact is done.
@@ -146,6 +148,24 @@ Provide a `# Check list` so the agent can verify it followed the skill.
 ### Short skills over monoliths
 Prefer short, focused skills over large monolithic ones — split when two parts have independent triggers and independent reasons to change.
 
+### Split a multi-stack skill into an agnostic base and stack extensions
+When a skill's implementation differs between stacks and it is written — or is committed to be written — for more than one stack, write a stack-agnostic base named `{skill-name}` (bare `stack` tag, under `skills/common-workflow/`) holding what every stack shares, plus one stack-specialized extension per stack named `{skill-name}-in-{stack}` (one `stack/<value>` tag, under `skills/{stack}/`) holding only that stack's implementation. Decision recorded in [[./adr/stack-agnostic-base-and-extensions.md|stack-agnostic-base-and-extensions]].
+- Violation: `solution-app-logging` (dotnet) and `solution-go-app-logging` (go) describe the same capability under unrelated names, each restating the shared rules.
+- Risk: the stack-independent rules are duplicated per stack and drift apart; an agent adding another stack has no base to start from and no shared name tying the variants together.
+- Fix: move the shared goal, rules, and contract into `solution-app-logging`, keep `solution-app-logging-in-dotnet` / `solution-app-logging-in-go` to their stack's implementation, and link base and extensions per [Stack-agnostic skills never link their stack-specialized extensions](#stack-agnostic-skills-never-link-their-stack-specialized-extensions); ask the user when it is unclear whether a second stack is planned.
+
+### Keep single-stack and stack-identical skills whole
+Never split a skill that exists for one stack with no second stack planned, or whose content is the same for every stack — the first keeps its plain `{skill-name}` under `skills/{stack}/`, the second stays one stack-agnostic skill.
+- Violation: `solution-cecil-architecture-tests` renamed to `solution-cecil-architecture-tests-in-dotnet` next to an empty agnostic base, or `work-in-git-tree` copied once per stack.
+- Risk: empty bases and per-stack copies of identical text add files to load and maintain without adding a rule.
+- Fix: split only once a second, differing stack implementation is being written or is planned.
+
+### `-in-{stack}` marks an extension only
+Use the `-in-{stack}` suffix only on a stack-specialized extension of an existing stack-agnostic base, whose name is the part before the suffix.
+- Violation: `devops-github-action-check-version-in-go` with no `devops-github-action-check-version` base.
+- Risk: the suffix promises a shared base the agent then looks for and cannot find.
+- Fix: write the base when [Split a multi-stack skill into an agnostic base and stack extensions](#split-a-multi-stack-skill-into-an-agnostic-base-and-stack-extensions) applies; otherwise drop the suffix.
+
 ### One question per section
 Give each top-level section a single responsibility, and extract a reference vocabulary (a closed list of relation types, a set of layout mechanics) into its own named section when several rules or workflow steps cite it.
 - Risk: a section mixing layout mechanics with a reference vocabulary forces the reader to hold two kinds of knowledge at once, and every citation points into the middle of an unrelated block.
@@ -161,6 +181,9 @@ Never use an absolute file-system path or a URL that depends on the local machin
 ### Supporting files welcome
 Add diagrams, templates, or ADRs inside the skill folder when they make the skill easier to apply.
 
+### Category skills may refine the stack split
+A category-specific skill (e.g. solution-create) may override or detail [Split a multi-stack skill into an agnostic base and stack extensions](#split-a-multi-stack-skill-into-an-agnostic-base-and-stack-extensions) — where its bases live, what a base must hold — and its rule wins for that category.
+
 # Check list
 - [ ] The skill uses the correct format (Human Flat or Human Dir); folder and main-file names both match `name`.
 - [ ] Frontmatter is filled: concrete `whenToUse`, `updated: YYYYMMDD` present and bumped this change.
@@ -171,6 +194,7 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] All supporting files are inside the skill folder (Human Dir); a Human Flat skill has none.
 - [ ] Every cross-skill link is an input, a required sub-step, an applied standard/template, or an active prohibition — an agent could not finish this skill's artifact without it; no link to a later pipeline stage, a consumer, or an out-of-scope topic.
 - [ ] A stack-agnostic skill names its stack-specialized extensions only as plain backticked text, never a link; a stack-specialized skill still links its stack-agnostic base.
+- [ ] A skill whose implementation differs across stacks, written or planned for more than one, is a stack-agnostic base `{skill-name}` plus `{skill-name}-in-{stack}` extensions (unless a category skill overrides it); a single-stack or stack-identical skill is not split, and `-in-{stack}` appears only on an extension of an existing base.
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
 - [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
