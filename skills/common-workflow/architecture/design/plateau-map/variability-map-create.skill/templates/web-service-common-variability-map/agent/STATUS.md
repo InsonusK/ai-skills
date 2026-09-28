@@ -21,7 +21,7 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | M | Saga dropped (owner): TaskBox/Inbox already are the dispatch mechanism; multi-service sagas go over the brokers | done |
 | N | Common map split: concepts → `vp/vp-c###-{name}/vp-c###-{name}.md`, contracts beside them as `.contract.md`, candidates → `candidates.md`; ID cells and stack maps link the concept file; ADR `common-vp-concept-per-file`; `check.sh` checks concept files both ways | done |
 | O | Implementation plan TaskBox → Outbox recorded below | done |
-| P | TaskBox in Go (plan steps 1–3) — worktree `taskbox-go`; anchor `agent/taskbox/INVARIANTS.md`, owner answers applied to the contract | in progress |
+| P | TaskBox in Go (plan steps 1–3) — worktree `taskbox-go`; anchor `agent/taskbox/INVARIANTS.md`, owner answers applied to the contract; W1–W4 done (PostgreSQL), W5 Redis next | in progress |
 | next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
 
 ## Implementation plan — TaskBox → Outbox (agreed 2026-09-28, a separate task)
@@ -30,9 +30,9 @@ The common map is designed; nothing realizes TaskBox or Outbox yet. Order, Go fi
 
 | # | Step | Result |
 | --- | --- | --- |
-| 1 | Common solution `solution-taskbox` — stack-agnostic, realizes VP-C003 by the contract `vp/vp-c003-taskbox/vp-c003-taskbox.contract.md` (location per the `solution-conformance-testing` precedent in `skills/common-workflow/`) | the shared rules + conformance scenarios every stack solution follows |
-| 2 | `solution-taskbox-in-go` — PostgreSQL first (`pgx`), then SQLite / Redis / InMemory | Go realization; VP-C003 `planned` → solution link |
-| 3 | Plateau "existing Go base + TaskBox" (base: `GW007.001`, the only one with PostgreSQL), named by its code | runnable example passing the TaskBox conformance scenarios |
+| 1 | Common solution `solution-taskbox` — stack-agnostic, realizes VP-C003 by the contract `vp/vp-c003-taskbox/vp-c003-taskbox.contract.md` (location per the `solution-conformance-testing` precedent in `skills/common-workflow/`) | the shared rules + conformance scenarios every stack solution follows — **done**: `skills/common-workflow/architecture/solutions/solution-taskbox.skill` |
+| 2 | `solution-taskbox-in-go` — PostgreSQL first (`pgx`), then SQLite / Redis / InMemory | Go realization; VP-C003 `planned` → solution link — **PostgreSQL done** (VP-C003 PostgreSQL linked); Redis next (W5); SQLite / InMemory stay `planned` (owner, Q3) |
+| 3 | Plateau "existing Go base + TaskBox" (base: `GW007.001`, the only one with PostgreSQL), named by its code | runnable example passing the TaskBox conformance scenarios — **done**: `GW009.001` (`skills/go/architecture/plateau/gw009-001`), registry row 009 |
 | 4 | Common solution `solution-transactional-outbox` — realizes VP-C010 by `vp/vp-c010-outbox/vp-c010-outbox.contract.md` | shared rules + scenarios |
 | 5 | `solution-transactional-outbox-in-go` — replaces the Kafka-only skeleton `solution-go-transactional-outbox`; generic `outbox.http` / `outbox.kafka` / `outbox.rabbitmq` handlers | Go realization; VP-C010 → solution link |
 | 6 | Plateau "step 3 + Outbox" | runnable example passing the Outbox scenarios |
