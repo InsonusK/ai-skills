@@ -66,8 +66,10 @@ else note "ok"; fi
 section "6. depends_on targets exist (catalog-solution entries only), skeletons warned not failed"
 : > /tmp/go_deps.txt ; : > /tmp/go_deps_planned.txt
 awk '/^depends_on:/{d=1;next} /^[a-z_]+:/{d=0} d' "$SOL"/*/*.skill.md 2>/dev/null \
-  | grep -oE 'architecture/solutions/solution-[a-z0-9-]+\.skill' | sed 's#.*/##' | sort -u | while read -r sname; do
-  [ -d "$SOL/$sname" ] && continue
+  | grep -oE 'skills/[a-z-]+/architecture/solutions/solution-[a-z0-9-]+\.skill' | sort -u | while read -r spath; do
+  # A stack-agnostic base (skills/common-workflow/architecture/solutions/) is a legal depends_on target.
+  [ -d "$REPO/$spath" ] && continue
+  sname="${spath##*/}"
   if is_planned "${sname%.skill}"; then echo "    planned: $sname" >> /tmp/go_deps_planned.txt
   else echo "    MISSING: $sname" >> /tmp/go_deps.txt; fi
 done

@@ -18,9 +18,13 @@ tags:
 - [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] (`.extend`)
 - [[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]] (`.extend`)
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] (`.extend`)
+- [[skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] (`.extend`)
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] (`.extend`)
 
 # Classification
 `FMN` — **F**: no Constraint blocks any combination of these seven (`grpc-api`'s `depends_on: solution-go-http-api` affects *composition-root wiring*, not this element). **M**: each delta adds a field to `Config` and a line to `Load()`. **N**: independent — each adds a *different, named* field (`LogLevel`, `HTTPListenPort`, `GRPCListenPort`, `ReputationAddr`, `RedisHost`/`RedisPort`/`RedisPassword`/`RedisDB`, `DatabaseDSN`); a Go struct literal with named fields is not order-sensitive.
+
+**GW009.001:** `solution-go-db-migrations` adds `MigrateOnStart`, `solution-taskbox-in-go` adds `TaskWorkers`/`TaskLease`/`TaskPollInterval`/`RecheckAfter` and a `getDuration` loader helper — still `FMN`: new named fields, one new helper nobody else defines.
 
 # Ordering
 `source: ordering-only` — arbitrary; listed in application order purely for readability, not because any delta requires it.
@@ -31,6 +35,8 @@ Canonical — no resolver needed, unchanged in shape since `plateau-http-service
 # Architectural signal
 N=7 at the deepest plateau; every VP-realizing solution this catalog fully authored extends `Config`. This element's accretion has stayed purely additive across all five plateaus — the strongest confirmation in this catalog that an element can grow N≥3 and stay lower-risk than [[./cmd-service-main-go.md|cmd-service-main-go]]'s: named struct fields carry no order dependency at all, unlike the composition root's sequential `run()` body.
 
+At GW009.001 (N=9) still purely additive: `MigrateOnStart`, the `TASKBOX_*` settings, and one new loader helper (`getDuration`).
+
 # Growth history
 | Plateau | N | What changed | Verified |
 | --- | --- | --- | --- |
@@ -39,3 +45,4 @@ N=7 at the deepest plateau; every VP-realizing solution this catalog fully autho
 | `plateau-integrated-service` | 5 | `solution-external-integration` adds `ReputationAddr` | Built again, no conflict |
 | `plateau-cached-service` | 6 | `solution-cached-db` adds `RedisHost`/`RedisPort`/`RedisPassword`/`RedisDB` | Built again, no conflict |
 | `plateau-persistent-service` | 7 | `solution-persistent-db` adds `DatabaseDSN` | Built again, no conflict; `DATABASE_DSN` unset correctly fails `Load` before any adapter is dialed |
+| `gw009-001` (GW009.001) | 9 | `solution-go-db-migrations` (`MIGRATE_ON_START`) and `solution-taskbox-in-go` (`TASKBOX_*`, `RECHECK_AFTER`, `getDuration`) join | Built again, no conflict; defaults exercised by the smoke test |

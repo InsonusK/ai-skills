@@ -14,5 +14,6 @@ The `{common}` part of every backend web-service plateau code (`{stack}W{common}
 | 006 | None | Redis | No | No | Yes | No | No | No | No | No | No | ✅ GW006.001 | 🔸 |
 | 007 | PostgreSQL | Redis | No | No | Yes | No | No | No | No | No | No | ✅ GW007.001 | 🔸 |
 | 008 | PostgreSQL | None | No | No | Yes | No | No | No | No | No | No | 🔸 | ✅ DW008.003, DW008.004 |
+| 009 | PostgreSQL | Redis | Yes | No | Yes | No | No | No | No | No | No | ✅ GW009.001 | 🔸 |
 
 Retired numbers (never reused): 002, 003, 004 — their plateaus moved to 005–008 when outbound gRPC became common VP-C005.
