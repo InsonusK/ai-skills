@@ -124,6 +124,29 @@ print("== 7. Base links no stack extension ==")
 for p in md_files(A1):
     if re.search(r"\[\[skills/(go|dotnet|python|typescript)/", open(p).read()): fail(f"{p}: links a stack-specific skill")
 
+# 8. Go Implementation code is the proven example code
+print("== 8. Implementation code == example code ==")
+EX = f"{A3}/plateau-gw009-001.skill/example"
+MOD = "github.com/example/linkcheck-service"
+n = 0
+for p in glob.glob(f"{A2}/Implementation/**/*.md", recursive=True):
+    m = re.search(r"^verbatim_of: (\S+)$", fm(p), re.M)
+    if not m: continue
+    n += 1
+    code = re.search(r"```go\n(.*?)```", open(p).read(), re.S)
+    src = f"{EX}/{m.group(1)}"
+    if not code or not os.path.exists(src): fail(f"{p}: no go block or missing {src}"); continue
+    if code.group(1).replace("{module-path}", MOD).replace("{store}", "linkstore") != open(src).read():
+        fail(f"{p}: differs from {src}")
+print(f"   {n} verbatim file(s) checked")
+
+# 9. The TaskBox migration is the contract DDL verbatim
+print("== 9. Migration == contract DDL ==")
+ddl = contract.split("### PostgreSQL (schema v1)", 1)[1].split("```sql\n", 1)[1].split("```", 1)[0]
+for mig in glob.glob(f"{A3}/**/migrations/*_taskbox_v1.sql", recursive=True):
+    up = open(mig).read().split("-- +goose Up\n", 1)[1].split("-- +goose Down", 1)[0]
+    if up.strip() != ddl.strip(): fail(f"{mig}: Up section differs from the contract's schema v1 DDL")
+
 print()
 print(("FAIL — %d failure(s)" % len(fails)) if fails else "PASS — 0 failure(s)")
 sys.exit(1 if fails else 0)
