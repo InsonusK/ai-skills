@@ -55,10 +55,11 @@ Criticality is not stored: it is implied by the store the task lives in (VP-C003
 | `running` | non-retryable code (e.g. `400`, `404`, `409`) | `dead` at once, `finished_at = now` — its group stops; retrying cannot change the answer |
 | `running` | lease expires (worker died) | claimable again, as if `pending` |
 | `running` | no handler registered for `type` | outcome `503` — retryable, so a task reaching an older worker during a rolling deploy is retried, not lost |
-
-Every attempt records its outcome in `last_status`.
 | `dead` | requeue | `pending`, `attempt = 0`, `run_at = now`, `finished_at = null` |
 | `dead` | cancel | `cancelled`, `finished_at = now` — its group resumes |
+
+Every attempt records its outcome in `last_status`.
+- **A run never outlives its lease.** The handler is cancelled when the lease ends; an outcome is written only while the task is still `running` under the attempt that was claimed (`attempt` is the fencing token), so the late outcome of a run whose lease expired and whose task was claimed again is discarded. Hence two workers never run one task at the same time. Why: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/taskbox-run-bounded-by-lease|adr/taskbox-run-bounded-by-lease]].
 
 - **At-least-once.** A task may run more than once (lease expiry mid-run, a crash between handler success and writing `done`). Every handler is idempotent.
 - **Backoff** `min(1s × 2^attempt, 1h)`; **lease** default 5 min — both configurable per service.
@@ -143,25 +144,30 @@ Same tables and columns; `seq` is `INTEGER PRIMARY KEY`; UUID, JSON, timestamps 
 
 ### Redis
 
-Ordering follows Kafka: a queue has a fixed number of **partitions**; a task's partition is `hash(queue_group) mod partitions` (ungrouped tasks: any partition); each partition is drained by **one worker at a time**, in stream order. A partition holds many groups, so a stopped group is **parked** rather than left blocking its partition. All keys of a queue share the hash tag `{taskbox:<queue>}` so they sit in one cluster slot; to enqueue atomically with Redis business data, the caller's data keys must be in that slot too — the caller's concern.
+Ordering follows Kafka: a queue has a fixed number of **partitions**; each partition is a stream drained by **one worker at a time**, in stream order. A task's fields live in its own hash; streams and lists carry only task ids, so a task's state can change while its place in the order stays put. A partition holds many groups, so a stopped group is **parked** rather than left blocking its partition. All keys of a queue share the hash tag `{taskbox:<queue>}` so they sit in one cluster slot; to enqueue atomically with Redis business data, the caller's data keys must be in that slot too — the caller's concern. Why this shape: [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/taskbox-redis-task-hash|adr/taskbox-redis-task-hash]].
 
 | Key | Type | Holds |
 | --- | --- | --- |
-| `{taskbox:<queue>}:p:<n>` | Stream | Due tasks of partition `n`; entry fields = the §1 fields |
-| `{taskbox:<queue>}:p:<n>:lease` | String, `SET NX PX <lease>` | Which worker owns partition `n` right now |
-| `{taskbox:<queue>}:delayed` | Sorted set, score = `run_at` (ms) | Tasks not yet due, as the serialized entry |
-| `{taskbox:<queue>}:dead` | Stream | Dead tasks |
+| `{taskbox:<queue>}:meta` | Hash | `partitions` — set once (`HSETNX`); a process configured with another count refuses to start |
+| `{taskbox:<queue>}:seq` | String, `INCR` | The `seq` counter (§1) |
+| `{taskbox:<queue>}:task:<id>` | Hash | The task's §1 fields; no TTL while `pending`/`running`, TTL = effective retention from `finished_at` on |
+| `{taskbox:<queue>}:status:<status_key>` | String → `id` | Inbox status lookup; same TTL as its task hash |
+| `{taskbox:<queue>}:p:<n>` | Stream, entry `{id, group}` | The order of partition `n` |
+| `{taskbox:<queue>}:p:<n>:lease` | String, `SET NX PX <lease>` | Which worker owns partition `n` right now (a random token) |
+| `{taskbox:<queue>}:delayed` | Sorted set, score = `run_at` (ms) | Ids of **ungrouped** tasks not yet due |
+| `{taskbox:<queue>}:dead` | Sorted set, score = `finished_at` (ms) | Ids of dead tasks |
 | `{taskbox:<queue>}:stopped` | Set | Groups stopped at a dead task |
-| `{taskbox:<queue>}:parked:<group>` | List | Later tasks of a stopped group, in order |
+| `{taskbox:<queue>}:parked:<group>` | List | Ids of the later tasks of a stopped group, in order |
 | `{taskbox:<queue>}:key:<idempotency_key>` | String, TTL = effective retention | Marks an idempotency key as already enqueued |
 
-- **Enqueue:** inside the caller's `MULTI`: `XADD …:p:<n>` (due now) or `ZADD …:delayed` (future `run_at`). With an idempotency key, the check and the add are one Lua script (`SET …:key:<k> 1 NX EX <retention>`, add only on success). Stream IDs are assigned on execution of `EXEC`, so stream order is commit order.
-- **Claim:** a worker takes a partition lease, reads the partition in order, and keeps renewing the lease; a partition whose lease expired is taken over by another worker, which continues from the first unacknowledged entry.
-- **Retry keeps order:** a failed head task stays at the head and is retried after its backoff — its partition waits, as a group does in SQL.
-- **Dead:** `XADD …:dead`, `SADD …:stopped <group>`, `XDEL`. From then on the worker moves every entry of a stopped group from its partition to `…:parked:<group>` (`RPUSH` + `XDEL`), so other groups in the partition keep flowing.
-- **Requeue / cancel:** one Lua script re-adds the dead task (requeue) or drops it (cancel), moves `…:parked:<group>` back into its partition in order, and removes the group from `…:stopped`.
-- **Due mover:** moves members of `…:delayed` with score ≤ now into their partition (a Lua script run by the worker loop).
-- **Lifetime:** every entry is lost with its store (VP-C002); `…:dead` is trimmed by age with `XTRIM MINID` at the retention window.
+- **Partition of a task:** grouped — `crc32(queue_group) mod partitions`, CRC-32/IEEE over the UTF-8 bytes of `queue_group`, so every stack routes a group to the same partition; ungrouped — any partition.
+- **Enqueue** is one Lua script, queued inside the caller's `MULTI` when a `tx` is given: with an idempotency key, `SET …:key:<k> 1 NX EX <retention>` first and nothing more if it fails; `INCR …:seq`; `HSET …:task:<id>` (status `pending`); then a grouped task goes to `…:parked:<group>` (`RPUSH`) if its group is in `…:stopped`, otherwise to its partition (`XADD`) **whatever its `run_at`**; an ungrouped task goes to its partition when due, else to `…:delayed`. Stream ids are assigned at `EXEC`, so stream order is commit order.
+- **Claim:** a worker takes a partition lease, keeps renewing it, and reads the partition from its first entry. The head entry is the partition's next task: if its `run_at` is in the future (a delayed grouped task, or a head waiting for a retry), the partition waits for it, as a group does in SQL. A partition whose lease expired is taken over by another worker, which continues from the head.
+- **Outcome** is one Lua script that writes only if the worker still holds the partition lease token and the task's `attempt` is the claimed one (§4). `done` / `cancelled`: `XDEL` the entry, set `finished_at` and the TTLs, refresh the idempotency marker's TTL to the effective retention. Retry: the entry stays at the head, the hash gets `pending`, `run_at`, `last_status`, `last_error`.
+- **Dead:** one Lua script sets the hash to `dead`, `ZADD …:dead`, `XDEL`s the entry and, for a grouped task, `SADD …:stopped <group>` and moves every entry of that group still in the partition to `…:parked:<group>` in stream order. From then on the group's new tasks go straight to `…:parked:<group>` (enqueue above), so nothing of a stopped group stays in its partition and the other groups keep flowing.
+- **Requeue / cancel:** one Lua script resets the dead task (requeue: `pending`, `attempt = 0`; cancel: `cancelled` with its TTLs), `ZREM …:dead`, appends — for requeue — the task and then `…:parked:<group>` in order to the partition (for cancel only the parked ids), deletes the parked list, and removes the group from `…:stopped`.
+- **Due mover:** moves ids from `…:delayed` with score ≤ now into a partition (a Lua script run by the worker loop).
+- **Lifetime:** every task is lost with its store (VP-C002). A dead task keeps a lifetime too: once `finished_at + effective retention` has passed, the worker loop cancels it (the group resumes) and logs it — in this store the lifetime ending is the same event as losing the entry.
 
 ### InMemory
 
@@ -180,6 +186,7 @@ Every stack realization passes the same scenarios, one run per store it supports
 - A handler returning a retryable code is retried with growing `run_at` (never before a `Retry-After`); after `max_attempts` such outcomes the task is `dead` with `last_status`, `last_error`, and `finished_at`.
 - A handler returning a non-retryable code sends the task to `dead` on the first attempt; an exception counts as `500` and is retried.
 - A task claimed by a worker that dies is claimed again after its lease.
+- A handler still running when its lease ends is cancelled, and its late outcome does not change the task.
 - Two workers never run the same task at the same time.
 - Tasks of one `queue_group` run one at a time in `seq` order, even when enqueued by concurrent transactions; tasks of different groups run in parallel.
 - A retrying head task holds back the rest of its group until it succeeds.

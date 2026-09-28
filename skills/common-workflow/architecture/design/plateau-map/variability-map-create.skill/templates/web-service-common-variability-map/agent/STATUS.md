@@ -21,6 +21,7 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | M | Saga dropped (owner): TaskBox/Inbox already are the dispatch mechanism; multi-service sagas go over the brokers | done |
 | N | Common map split: concepts → `vp/vp-c###-{name}/vp-c###-{name}.md`, contracts beside them as `.contract.md`, candidates → `candidates.md`; ID cells and stack maps link the concept file; ADR `common-vp-concept-per-file`; `check.sh` checks concept files both ways | done |
 | O | Implementation plan TaskBox → Outbox recorded below | done |
+| P | TaskBox in Go (plan steps 1–3) — worktree `taskbox-go`; anchor `agent/taskbox/INVARIANTS.md`, owner answers applied to the contract | in progress |
 | next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
 
 ## Implementation plan — TaskBox → Outbox (agreed 2026-09-28, a separate task)

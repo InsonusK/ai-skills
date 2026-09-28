@@ -43,10 +43,12 @@ Code: combination PostgreSQL / Redis / TaskBox Yes / GrpcOutbound Yes, everythin
 | W2 | A1 `solution-taskbox` (+ conformance feature, ADRs) |
 | W3 | A2 PostgreSQL part + A3 plateau built and verified together (code is proven in the example, then written into A2's `Implementation/`) |
 | W4 | A4 map/registry/repository updates, STATUS/DECISIONS |
-| W5 | A2 SQLite / Redis / InMemory — scope per Q2/Q3 |
+| W5 | A2 Redis part, verified by the §8 feature against the plateau's Redis |
 | — | PR into `develop` |
 
-## 5. Questions for the owner (⚠️ forks)
+## 5. Questions for the owner — answered 2026-09-28
+
+All four recommendations accepted (Q2 "for now, to be revisited"). Q1 and Q2 are applied to the contract with ADRs `taskbox-run-bounded-by-lease` and `taskbox-redis-task-hash`; Q2 (c) was refined while writing it — see DECISIONS.md. Q3: A2 covers PostgreSQL and Redis; SQLite/InMemory stay `planned`. The original questions:
 
 **Q1 — contract clarification (PostgreSQL, all stacks).** §8 says "two workers never run the same task at the same time", but a handler that outlives its lease is re-claimed while still running. Proposal: add to §4 "a handler runs at most until its lease ends (cancelled after); an outcome written after the task was re-claimed is discarded (fenced by `attempt`)". Also editorial: the line "Every attempt records its outcome in `last_status`." sits inside the §4 table and cuts off the requeue/cancel rows — move it below the table.
 
