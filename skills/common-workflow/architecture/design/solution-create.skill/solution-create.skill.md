@@ -2,7 +2,9 @@
 name: solution-create
 description: Define how to create new solution skills by patterns
 whenToUse: when you write a solution skill
-updated: 20260909
+updated: 20260928
+adr:
+  - adr/multi-stack-solution-location.md
 tags:
   - skill/architecture/solution/design
   - stack
@@ -12,6 +14,7 @@ tags:
 # Goal
 - A solution skill built from the template folder matching the target stack, filled with real content, with no `hint`, `example`, `code example`, or `# How Apply this template` block left.
 - An `Implementation/` folder with a concrete file per created or extended element.
+- A solution whose implementation differs across stacks built as a `solution-{name}` base in `skills/common-workflow/architecture/solutions/` plus `solution-{name}-in-{stack}` extensions in `skills/{stack}/architecture/solutions/`.
 - One concrete `whenToUse` sentence and no separate `triggers` list.
 - Facet tags filled on the solution file, every `Implementation/` file, and every ADR.
 - Every architecture decision recorded as an ADR registered in `adr:`; every unfamiliar term a page under the solution's own `glossary/`.
@@ -28,6 +31,7 @@ tags:
 
 ## How to build a solution
 1. Detect the target language/stack from the task context, or ask the user if it is unclear.
+   - If the solution's implementation differs across stacks and it is written, or planned, for more than one, apply [Multi-stack solutions: base in common-workflow, extension per stack](#multi-stack-solutions-base-in-common-workflow-extension-per-stack).
 2. Use the template folder that matches the target language:
    - .NET: [templates/dotnet/solution-{Solution}.skill.template](./templates/dotnet/solution-{Solution}.skill.template/)
    - Python: [templates/python/solution-{Solution}.skill.template](./templates/python/solution-{Solution}.skill.template/)
@@ -121,9 +125,18 @@ Never add a separate `triggers` list next to `whenToUse`.
 - Risk: trigger conditions split across two fields drift apart, and the agent does not know which is authoritative.
 - Fix: put every trigger condition into the `whenToUse` sentence itself.
 
+## SHOULD
+
+### Multi-stack solutions: base in common-workflow, extension per stack
+When [skill-design's stack split](skills/design/skill-design.skill/skill-design.skill.md#split-a-multi-stack-skill-into-an-agnostic-base-and-stack-extensions) applies to a solution, put the stack-agnostic base `solution-{name}` in `skills/common-workflow/architecture/solutions/` and each extension `solution-{name}-in-{stack}` in `skills/{stack}/architecture/solutions/`. The base's `Implementation/` holds only stack-independent elements (a contract, a Makefile target set), and every stack-specific element lives in the extension. Decision recorded in [adr/multi-stack-solution-location.md](./adr/multi-stack-solution-location.md).
+- Violation: a new `solution-go-kafka-producer` written next to the existing dotnet `solution-kafka-producer`, each restating the shared delivery rules.
+- Risk: the shared rules drift between stacks, and plateaus in different stacks reference unrelated names for the same capability.
+- Fix: write `solution-kafka-producer` as the base in `skills/common-workflow/architecture/solutions/`, and write `solution-kafka-producer-in-go` / `solution-kafka-producer-in-dotnet` as extensions that link it.
+
 # Check list
 - [ ] The candidate was checked against `plateau-component-create`'s Solution vs Plateau vs Component test before being built as a Solution.
 - [ ] The template folder matches the target stack.
+- [ ] A solution whose implementation differs across stacks and is written or planned for more than one is a `solution-{name}` base in `skills/common-workflow/architecture/solutions/` plus `solution-{name}-in-{stack}` extensions; a single-stack solution keeps its plain name with no suffix.
 - [ ] `whenToUse` is one concrete sentence; there is no separate `triggers` list.
 - [ ] No `hint`, `example`, `code example` blocks and no `# How Apply this template` section remain in the final skill.
 - [ ] `Implementation/` contains concrete files for every created/extended element.
