@@ -1,6 +1,6 @@
 ---
 name: plateau-core--class-feature-check
-description: Class {Feature}Check in the plateau-core plateau — the DI-injected async cross-aggregate check seam; its Load step has no data source until VP2
+description: Class {Feature}Check in the plateau-core plateau — the DI-injected async cross-aggregate check seam; its Load step has no data source until VP-C001
 whenToUse: when creating or editing an async command-level check in {Module}.Application/Validators/Async, or deciding whether a check needs preloaded data
 domain: skill
 type: template
@@ -15,7 +15,7 @@ created_by:
 
 # Goal
 - Let a command validator reject an invalid request before the handler runs, for a condition whose data must be loaded.
-- At plateau-core this class defines the **shape** only — a DI-injected wrapper with a `Load` step and a `CheckAsync` step wired via `CustomAsync`. `Load` has no data source until a persistence solution (VP2) supplies one through its own `.extend.md`.
+- At plateau-core this class defines the **shape** only — a DI-injected wrapper with a `Load` step and a `CheckAsync` step wired via `CustomAsync`. `Load` has no data source until a persistence solution (VP-C001) supplies one through its own `.extend.md`.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]] - [[skills/dotnet/architecture/solutions/solution-dto-property-validators.skill/Implementation/{Module}.Application.csproj.extend/{Feature}Check.cs.create|{Feature}Check.cs]]
@@ -25,7 +25,7 @@ __Applied solutions:__
 - Loading is this class's job — a `{Dto}Validator` / `{ValueObject}PropertyValidator` never performs I/O.
 - The condition is written locally, next to the loading step; the owning entity's own method (VP1) enforces the same invariant independently as the authoritative backstop.
 - Wired into the command validator via `RuleFor(x => x).CustomAsync(check.CheckAsync)`.
-- Does not reference a concrete data-loading abstraction (e.g. `IReadRepository<T>`) in this file — that arrives via `solution-repository-integration`'s `{Feature}Check.cs.extend.md` (VP2). Until then `Load` throws `NotSupportedException`.
+- Does not reference a concrete data-loading abstraction (e.g. `IReadRepository<T>`) in this file — that arrives via `solution-repository-integration`'s `{Feature}Check.cs.extend.md` (VP-C001). Until then `Load` throws `NotSupportedException`.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -45,7 +45,7 @@ public sealed class TransactionWithdrawalCheck
 {
     private Task<(decimal Balance, decimal Amount)?> Load(UpdateTransactionAmountCommand cmd, CancellationToken ct)
         => throw new NotSupportedException(
-            "TransactionWithdrawalCheck has no data-loading abstraction composed yet (arrives with VP2).");
+            "TransactionWithdrawalCheck has no data-loading abstraction composed yet (arrives with VP-C001).");
 
     public async Task CheckAsync(
         UpdateTransactionAmountCommand cmd,
@@ -76,7 +76,7 @@ __Applied solutions:__
 MUST:
 - Load data only inside this class; own the condition locally, next to `Load`.
 - Be wired into its command validator via `RuleFor(x => x).CustomAsync(...)`.
-- Never reference a concrete data-loading abstraction in this file at plateau-core — leave `Load` throwing until VP2's `.extend.md` supplies the body.
+- Never reference a concrete data-loading abstraction in this file at plateau-core — leave `Load` throwing until VP-C001's `.extend.md` supplies the body.
 - Return early (no failure) when the data needed could not be loaded — existence is a separate check.
 - Never apply several plateau templates per class.
 

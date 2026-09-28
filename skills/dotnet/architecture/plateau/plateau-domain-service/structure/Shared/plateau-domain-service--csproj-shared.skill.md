@@ -60,15 +60,15 @@ __Applied solutions:__
   - /Exceptions
     - [DomainException.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-domain-exception.skill.md) — the single invariant-violation exception (VP1)
   - /Repositories
-    - [IReadRepository.cs / IRepository.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-repository-contracts.skill.md) — data-access contracts (VP2)
+    - [IReadRepository.cs / IRepository.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-repository-contracts.skill.md) — data-access contracts (VP-C001)
   - /UnitOfWork
-    - [IUnitOfWork.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-unit-of-work.skill.md) — the commit contract (VP2)
+    - [IUnitOfWork.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-unit-of-work.skill.md) — the commit contract (VP-C001)
   - /Concurrency
     - [IVersioned / IHasVersions / IEntityVersionResolver(Factory).cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-concurrency-contracts.skill.md) — optimistic-concurrency contracts (VP5)
   - /Timestamps
     - [ICreationInfoModel / IUpdateInfoModel / ICommandWithTimestamp.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-timestamp-contracts.skill.md) — creation/update timestamp contracts (VP7)
   - /Clients
-    - [I{Dependency}Client.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-dependency-client.skill.md) — outbound service contracts returning `Result<T>` (VP11)
+    - [I{Dependency}Client.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-dependency-client.skill.md) — outbound service contracts returning `Result<T>` (VP-C005)
   - Shared.csproj
 
 __Applied solutions:__

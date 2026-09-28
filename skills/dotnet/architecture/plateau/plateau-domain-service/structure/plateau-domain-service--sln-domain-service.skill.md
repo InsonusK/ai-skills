@@ -37,8 +37,8 @@ created_by:
     /[{ModuleName}.Api](./{Module}.Api/plateau-domain-service--csproj-module-api.skill.md)                   — VP8/VP9
   /App
     /[App.Host](./App.Host/plateau-domain-service--csproj-app-host.skill.md)
-    /[App.Infrastructure](./App.Infrastructure/plateau-domain-service--csproj-app-infrastructure.skill.md)   — VP2 / VP5 / VP11
-    /[App.Queries](./App.Queries/plateau-domain-service--csproj-app-queries.skill.md)                        — VP2 (cross-module reads)
+    /[App.Infrastructure](./App.Infrastructure/plateau-domain-service--csproj-app-infrastructure.skill.md)   — VP-C001 / VP5 / VP-C005
+    /[App.Queries](./App.Queries/plateau-domain-service--csproj-app-queries.skill.md)                        — VP-C001 (cross-module reads)
   /[Shared](./Shared/plateau-domain-service--csproj-shared.skill.md)
   /[BuildingBlocks](./BuildingBlocks/plateau-domain-service--csproj-building-blocks.skill.md)
 /tests

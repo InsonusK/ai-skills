@@ -42,7 +42,7 @@ adr:
 # Boundaries
 - Whether a module has an API at all is VP8/VP9; this solution is their shared prerequisite, applied once before either.
 - `{Module}.Api` referencing `{Module}.Interfaces` assumes the MediatR markers exist — hence `depends_on solution-mediator-integration`.
-- Outbound API clients (VP10/VP11) are a different concern and do not use this project.
+- Outbound API clients (VP-C004/VP-C005) are a different concern and do not use this project.
 
 # Adr
 - [[skills/dotnet/architecture/solutions/solution-api-project.skill/adr/api-project-shared-by-transports|One {Module}.Api project shared by REST and gRPC transports]]

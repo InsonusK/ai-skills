@@ -1,6 +1,6 @@
 # v3.1 delta-conflict analysis
 
-Produced per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] (**re-run 2026-09-02** after `solution-grpc-client` VP11 was promoted from skeleton to full — 5 new single-solution elements, joins 3 canonical `.csproj` buckets, **no new conflicts, no new design errors, group count unchanged at 23**), run across the **whole catalog** (every solution active = the maximal plateau). Intersections were found by grouping every `Implementation/` file on its `element/{element-name}` tag. `registry/` entries are created during `plateau-create-by-solutions`, one file per element at the catalog's own root `registry/` folder, cumulative across every plateau that touches the element (migrated from the earlier per-plateau placement; see [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/adr/intersection-registry-design.md|the design's own ADR]]).
+Produced per [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]] (**re-run 2026-09-02** after `solution-grpc-client` VP-C005 was promoted from skeleton to full — 5 new single-solution elements, joins 3 canonical `.csproj` buckets, **no new conflicts, no new design errors, group count unchanged at 23**), run across the **whole catalog** (every solution active = the maximal plateau). Intersections were found by grouping every `Implementation/` file on its `element/{element-name}` tag. `registry/` entries are created during `plateau-create-by-solutions`, one file per element at the catalog's own root `registry/` folder, cumulative across every plateau that touches the element (migrated from the earlier per-plateau placement; see [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/adr/intersection-registry-design.md|the design's own ADR]]).
 
 ## Classifier (fixed — from the skill, not re-derived)
 
@@ -31,7 +31,7 @@ The skill's **N≥3 architectural-signal note applies only to `TMC`/`FMC`/`FDC` 
 | `entity-config-cs` | 5 | domain-configuration `.create`; entity-classification, entity-concurrency-change, entity-edit-timestamp, external-created-entity `.extend` | `TMN` | Canonical — each adds a distinct column mapping. N≥3 note. |
 | `module-api-csproj` | 5 | api-project `.create`; entity-concurrency-change, external-created-entity, grpc-integration, http-api-publication `.extend` | `FMN`/`TMN` | Canonical + **conditional-applicability**: VP5/VP6 `.extend` this only when the module also has VP8/VP9. Their skills now say so. |
 | `single-entity-controller-cs` | 2 | http-api-publication `.create`; entity-concurrency-change `.extend` (ETag/If-Match) | `FMN` | Canonical + conditional — already guarded ("only once an HTTP API layer exists"). |
-| `feature-check-cs` | 3 | dto-property-validators `.create` (stub `Load`); domain-shared-rules `.extend` (redirect); repository-integration `.extend` (implement `Load`) | `TMN` | Canonical — the **deferred-stub pattern**: `Load` is intentionally left empty by `dto-property-validators` (its own ADR) and filled by VP2. Different parts of the file. |
+| `feature-check-cs` | 3 | dto-property-validators `.create` (stub `Load`); domain-shared-rules `.extend` (redirect); repository-integration `.extend` (implement `Load`) | `TMN` | Canonical — the **deferred-stub pattern**: `Load` is intentionally left empty by `dto-property-validators` (its own ADR) and filled by VP-C001. Different parts of the file. |
 | `dto-validator-cs` | 2 | dto-property-validators `.create`; domain-shared-rules `.extend` (redirect `Must()` → shared extension) | `FMN` | Canonical — ordered redirect. |
 | `valueobject-cs` | 2 | value-objects `.create`; domain-shared-rules `.extend` (redirect predicate → `Check()`) | `FMN` | Canonical — ordered redirect. |
 | `valueobject-propertyvalidator-cs` | 2 | dto-property-validators `.create`; domain-shared-rules `.extend` | `FMN` | Canonical — ordered redirect. |
@@ -63,7 +63,7 @@ Registry entry (per plateau where VP6 + VP7 co-occur): `Ordering source: orderin
 ## pipelineregistration-cs
 
 Six solutions edit `AddPipeline()`. Each inserts one `AddBehavior<X>()` at a position relative to named anchors:
-`ExceptionHandlingBehavior` (first) → `ValidationBehavior` → `ConcurrencyBehavior` (VP5, if applied) → `GuidResolvingBehavior` (VP6, if applied) → … → `UnitOfWorkBehavior` (VP2, last).
+`ExceptionHandlingBehavior` (first) → `ValidationBehavior` → `ConcurrencyBehavior` (VP5, if applied) → `GuidResolvingBehavior` (VP6, if applied) → … → `UnitOfWorkBehavior` (VP-C001, last).
 
 `solution-external-created-entity` already registers `GuidResolvingBehavior` **conditionally** ("after `ConcurrencyBehavior` if that solution is applied, else after `ValidationBehavior`") — so this is `FMN` with an ordering-only concern, not a hard `FMC`. The plateau's `PipelineRegistration` structure skill records the assembled canonical order for that plateau's actual solution set.
 
@@ -82,7 +82,7 @@ Registry entry: `Ordering source: ordering-only` for the `ConcurrencyBehavior �
 | `solution-external-created-entity` | VP6 | **contract:** `: IHasGuid` + `Guid Guid` + one `Guid` param on the `Create(...)` factory | disjoint property/interface; extends VP1's factory signature (single direction) |
 | `solution-entity-edit-timestamp` | VP7 | **contract:** `: ICreationInfoModel` (+ `: IUpdateInfoModel` if the user edits) + the timestamp properties + a `SetTimestamps(...)` method it owns | disjoint |
 | `solution-entity-classification` | VP5×VP6 | **no code** — narrates which of VP5/VP6 apply per Internal/External × Immutable/Mutable state | — |
-| `solution-domain-configuration` | VP2 | near-nothing — a `private` parameterless ctor for EF, if needed | disjoint |
+| `solution-domain-configuration` | VP-C001 | near-nothing — a `private` parameterless ctor for EF, if needed | disjoint |
 
 Two shapes, both fine per the classifier:
 - **VP1 → VP3 → VP4** form a *coordinated single-direction pipeline* on the same methods (create → re-type the data → redirect the condition). Not uncoordinated concurrent edits — no `FMC`.

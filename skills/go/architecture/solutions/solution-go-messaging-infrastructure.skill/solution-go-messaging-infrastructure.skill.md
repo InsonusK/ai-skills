@@ -22,7 +22,7 @@ adr:
 > Draft contract — no consumer yet. No plateau in this catalog's first build composes
 > [[skills/go/architecture/solutions/solution-go-kafka-producer.skill/solution-go-kafka-producer.skill.md|solution-go-kafka-producer]] or
 > [[skills/go/architecture/solutions/solution-go-kafka-consumer.skill/solution-go-kafka-consumer.skill.md|solution-go-kafka-consumer]]
-> yet (see `skills/go/architecture/variability-map.md` VP3/VP5). This solution's shape is
+> yet (see `skills/go/architecture/variability-map.md` VP-C006/VP-C007). This solution's shape is
 > plausible, not verified against a runnable example — treat it as a starting point, not a
 > finished contract, until a real plateau consumes it.
 

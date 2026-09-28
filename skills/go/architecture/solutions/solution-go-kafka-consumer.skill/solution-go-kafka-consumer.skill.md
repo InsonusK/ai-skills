@@ -1,6 +1,6 @@
 ---
 name: solution-go-kafka-consumer
-description: Reacts to asynchronous Kafka messages from other services — the AsyncInboundApi (VP5) realization, running as a long-running loop alongside any inbound API server
+description: Reacts to asynchronous Kafka messages from other services — the AsyncInboundApi (VP-C007) realization, running as a long-running loop alongside any inbound API server
 whenToUse: when a Go web-service needs to react to messages another service publishes to a Kafka topic
 domain: skill
 type: architecture
@@ -20,7 +20,7 @@ built_on_plateau:
 adr:
 ---
 
-> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP5 (see
+> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP-C007 (see
 > `skills/go/architecture/variability-map.md`). Full authoring is deferred until a real plateau
 > composes this solution.
 
