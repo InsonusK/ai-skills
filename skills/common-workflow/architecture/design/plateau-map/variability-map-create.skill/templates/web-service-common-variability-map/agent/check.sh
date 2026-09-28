@@ -218,7 +218,8 @@ else:
                 if code not in matrix: fail(f"registry {r[0]}: {code} not in {rel(repo_md)}"); continue
                 if code[2:5] != r[0]: fail(f"registry {r[0]}: code {code} carries another common number")
                 for vi, vp in enumerate(got):
-                    if matrix[code].get(vp) != r[1 + vi]:
+                    norm = {"✅": "Yes", "❌": "No"}  # matrices may show a boolean common VP as ✅/❌
+                    if norm.get(matrix[code].get(vp), matrix[code].get(vp)) != norm.get(r[1 + vi], r[1 + vi]):
                         fail(f"registry {r[0]} {vp}={r[1 + vi]} but {code} has {matrix[code].get(vp)}")
         for code in matrix:
             if code not in listed: fail(f"{rel(repo_md)}: {code} is not listed in the registry")

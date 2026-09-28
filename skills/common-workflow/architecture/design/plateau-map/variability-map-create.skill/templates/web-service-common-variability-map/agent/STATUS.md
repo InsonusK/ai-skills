@@ -20,7 +20,24 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | L | Inbox VP-C011 📐 + ✅ (only-once mode for broker messages and calls; contract; `status_key` in TaskBox v1) | done |
 | M | Saga dropped (owner): TaskBox/Inbox already are the dispatch mechanism; multi-service sagas go over the brokers | done |
 | N | Common map split: concepts → `vp/vp-c###-{name}/vp-c###-{name}.md`, contracts beside them as `.contract.md`, candidates → `candidates.md`; ID cells and stack maps link the concept file; ADR `common-vp-concept-per-file`; `check.sh` checks concept files both ways | done |
+| O | Implementation plan TaskBox → Outbox recorded below | done |
 | next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
+
+## Implementation plan — TaskBox → Outbox (agreed 2026-09-28, a separate task)
+
+The common map is designed; nothing realizes TaskBox or Outbox yet. Order, Go first so the contracts are proven by code before dotnet repeats them:
+
+| # | Step | Result |
+| --- | --- | --- |
+| 1 | Common solution `solution-taskbox` — stack-agnostic, realizes VP-C003 by the contract `vp/vp-c003-taskbox/vp-c003-taskbox.contract.md` (location per the `solution-conformance-testing` precedent in `skills/common-workflow/`) | the shared rules + conformance scenarios every stack solution follows |
+| 2 | `solution-taskbox-in-go` — PostgreSQL first (`pgx`), then SQLite / Redis / InMemory | Go realization; VP-C003 `planned` → solution link |
+| 3 | Plateau "existing Go base + TaskBox" (base: `GW007.001`, the only one with PostgreSQL), named by its code | runnable example passing the TaskBox conformance scenarios |
+| 4 | Common solution `solution-transactional-outbox` — realizes VP-C010 by `vp/vp-c010-outbox/vp-c010-outbox.contract.md` | shared rules + scenarios |
+| 5 | `solution-transactional-outbox-in-go` — replaces the Kafka-only skeleton `solution-go-transactional-outbox`; generic `outbox.http` / `outbox.kafka` / `outbox.rabbitmq` handlers | Go realization; VP-C010 → solution link |
+| 6 | Plateau "step 3 + Outbox" | runnable example passing the Outbox scenarios |
+| 7 | Same for dotnet: `solution-taskbox-in-dotnet`, `solution-transactional-outbox-in-dotnet` (the existing `solution-transactional-outbox` in dotnet is renamed — the bare name now belongs to the common solution), plateaus on `DW008.00x` | |
+
+**Naming (owner, 2026-09-28):** a common (stack-agnostic) solution is `solution-{name}`; its stack realization is `solution-{name}-in-{stack}`. Existing stack solutions that break this (`solution-go-*`, dotnet's bare names) are renamed when they are next touched.
 
 ## Follow-ups (outside this PR)
 
