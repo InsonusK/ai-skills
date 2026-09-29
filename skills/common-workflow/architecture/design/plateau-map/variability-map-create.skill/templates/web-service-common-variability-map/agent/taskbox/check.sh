@@ -76,9 +76,14 @@ migration = glob.glob(f"{EX}/**/migrations/*_taskbox_v1.sql", recursive=True)
 if not SPEC or not os.path.isdir(SPEC):
     warn("SPEC_DIR not set — feature copy and migration DDL not compared with taskbox-spec")
 else:
-    if open(feature).read() != open(f"{SPEC}/features/taskbox-conformance.feature").read():
-        fail(f"{feature}: differs from the spec's feature")
-    ddl = open(f"{SPEC}/contract/schema/postgresql/v1.sql").read().split("\n", 1)[1]
+    import subprocess
+    pin = re.search(r"conforms to `master` @ `([0-9a-f]+)`", open(CONTRACT).read())
+    if not pin: fail(f"{CONTRACT}: no pinned spec commit for GW009.001's pre-release copy")
+    def spec(path):
+        return subprocess.run(["git", "-C", SPEC, "show", f"{pin.group(1)}:{path}"], capture_output=True, text=True, check=True).stdout
+    if open(feature).read() != spec("features/taskbox-conformance.feature"):
+        fail(f"{feature}: differs from the spec's feature at the pinned commit")
+    ddl = spec("contract/schema/postgresql/v1.sql").split("\n", 1)[1]
     for mig in migration:
         up = open(mig).read().split("-- +goose Up\n", 1)[1].split("-- +goose Down", 1)[0]
         if up.strip() != ddl.strip(): fail(f"{mig}: Up section differs from the spec's schema v1 DDL")
