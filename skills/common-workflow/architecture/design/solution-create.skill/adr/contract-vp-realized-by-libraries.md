@@ -2,7 +2,7 @@
 name: contract VP realized by libraries
 description: How a Variation Point whose behaviour is fixed by a stack-agnostic contract (storage schema, lifecycle, conformance scenarios) is delivered to each stack
 problem: A contract VP (TaskBox, Outbox, Inbox) needs hundreds of lines of concurrency-sensitive code per stack. Written as code inside a solution's Implementation files, it cannot be reviewed by reading, an agent applying it can silently drop a guarantee, and the rules drown in restated code — where should that code live, and what is left for the solution?
-decision: One stack-agnostic spec repository per contract VP (the contract and its conformance feature) plus one library repository per stack that implements it and runs the pinned feature in its CI; the `-in-{stack}` solution only adds the library dependency and describes the seams between the library and the service.
+decision: One stack-agnostic spec repository per contract VP (the contract and its conformance feature) plus one library repository per stack that implements it and runs the pinned feature in its CI; each repository carries its agent skills in `doc/skills/` (the spec: usage rules and library rules; a library: the seams a service writes), and the solutions in this repository are pointers to them.
 tags:
   - stack
   - concern/architecture
@@ -23,13 +23,14 @@ tags:
 ### Description
 - `{vp-name}-spec` — stack-agnostic: the contract (schema versions, lifecycle, per-store realization) and the conformance feature with its step vocabulary, released by version tags.
 - `{vp-name}-{stack}` (`-go`, `-dotnet`, `-python`, …) — the library: implements the contract, pins a spec version, runs its conformance feature against every store it supports in CI.
-- In this repository: the VP concept (why and when) links the spec repository; the base `solution-{name}` keeps the stack-agnostic usage rules; `solution-{name}-in-{stack}` adds the dependency and describes only the seams (data port, transaction, handler adapter, composition root, migration).
+- Each repository documents itself for agents in `doc/skills/`: the spec repository the usage rules (`{vp-name}-usage`) and the library rules (`{vp-name}-library`); each library its seams with a service (`{vp-name}-{stack}-usage`: data port, transaction, handler adapter, composition root, migration).
+- In this repository: the VP concept (why and when); the contract file becomes a pointer with the pinned spec version; `solution-{name}` and `solution-{name}-in-{stack}` are pointers — `whenToUse` plus links, no rules of their own (owner, 2026-09-29: the description of the solution lives with the code).
 
 ### Benefits
 - Validated by execution, not by reading: a library release is green conformance CI against the pinned spec.
 - An agent never retypes the mechanism, so it cannot drop a guarantee; what it writes — the seams — is small and reviewable.
 - Each stack's library has its own release cadence, CI, and owner (another agent can build one from a task file).
-- Solutions become short and rule-dense again.
+- Rules, code, and seams live in one place per stack and are versioned together; the pointers here cannot drift from them.
 
 ### Costs
 - Four repositories per VP to maintain, each with its own releases.

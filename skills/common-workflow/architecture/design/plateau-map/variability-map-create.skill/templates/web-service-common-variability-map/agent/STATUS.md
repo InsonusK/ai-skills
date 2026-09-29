@@ -21,7 +21,7 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | M | Saga dropped (owner): TaskBox/Inbox already are the dispatch mechanism; multi-service sagas go over the brokers | done |
 | N | Common map split: concepts → `vp/vp-c###-{name}/vp-c###-{name}.md`, contracts beside them as `.contract.md`, candidates → `candidates.md`; ID cells and stack maps link the concept file; ADR `common-vp-concept-per-file`; `check.sh` checks concept files both ways | done |
 | O | Implementation plan TaskBox → Outbox recorded below | done |
-| P | TaskBox in Go (plan steps 1–3) — worktree `taskbox-go`; anchor `agent/taskbox/INVARIANTS.md`, owner answers applied to the contract; W1–W4 done (PostgreSQL), W5 Redis next | in progress |
+| P | TaskBox in Go (plan steps 1–3) — worktree `taskbox-go`: PostgreSQL proven (W1–W4); then contract VPs moved to libraries: `taskbox-spec` (published) + `taskbox-go/-dotnet/-python` (local in `tmp/vp-c003-taskbox/`, TASK.md for other agents); ai-skills skills became pointers; GW009.001 keeps a pre-release copy until `taskbox-go` v0.1.0 | done — PR |
 | Q | Contract VPs as libraries (owner, 2026-09-29): solution-create ADR + rule; TaskBox repositories prepared locally in `tmp/vp-c003-taskbox/` (`taskbox-spec` with the contract and feature; `taskbox-go` / `-dotnet` / `-python` empty with TASK.md). **Pending:** ai-skills side not migrated yet — the contract still lives here too (duplicate of `taskbox-spec`), `solution-taskbox-in-go` still carries the code, GW009.001's example still has `internal/taskbox` | in progress |
 | next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
 
@@ -32,7 +32,7 @@ The common map is designed; nothing realizes TaskBox or Outbox yet. Order, Go fi
 | # | Step | Result |
 | --- | --- | --- |
 | 1 | Common solution `solution-taskbox` — stack-agnostic, realizes VP-C003 by the contract `vp/vp-c003-taskbox/vp-c003-taskbox.contract.md` (location per the `solution-conformance-testing` precedent in `skills/common-workflow/`) | the shared rules + conformance scenarios every stack solution follows — **done**: `skills/common-workflow/architecture/solutions/solution-taskbox.skill` |
-| 2 | `solution-taskbox-in-go` — PostgreSQL first (`pgx`), then SQLite / Redis / InMemory | Go realization; VP-C003 `planned` → solution link — **PostgreSQL done** (VP-C003 PostgreSQL linked); Redis next (W5); SQLite / InMemory stay `planned` (owner, Q3) |
+| 2 | `solution-taskbox-in-go` — PostgreSQL first (`pgx`), then SQLite / Redis / InMemory | Go realization; VP-C003 `planned` → solution link — **PostgreSQL proven**; now delivered by the `taskbox-go` library (TASK.md); Redis blocked on `taskbox-spec/OPEN-QUESTIONS.md`; SQLite / InMemory `planned` |
 | 3 | Plateau "existing Go base + TaskBox" (base: `GW007.001`, the only one with PostgreSQL), named by its code | runnable example passing the TaskBox conformance scenarios — **done**: `GW009.001` (`skills/go/architecture/plateau/gw009-001`), registry row 009 |
 | 4 | Common solution `solution-transactional-outbox` — realizes VP-C010 by `vp/vp-c010-outbox/vp-c010-outbox.contract.md` | shared rules + scenarios |
 | 5 | `solution-transactional-outbox-in-go` — replaces the Kafka-only skeleton `solution-go-transactional-outbox`; generic `outbox.http` / `outbox.kafka` / `outbox.rabbitmq` handlers | Go realization; VP-C010 → solution link |
@@ -42,6 +42,10 @@ The common map is designed; nothing realizes TaskBox or Outbox yet. Order, Go fi
 **Naming (owner, 2026-09-28):** a common (stack-agnostic) solution is `solution-{name}`; its stack realization is `solution-{name}-in-{stack}`. Existing stack solutions that break this (`solution-go-*`, dotnet's bare names) are renamed when they are next touched.
 
 ## Follow-ups (outside this PR)
+
+- **TaskBox libraries:** publish `taskbox-go`, `taskbox-dotnet`, `taskbox-python` (local in `tmp/vp-c003-taskbox/`), replace their mock URLs; answer `taskbox-spec/OPEN-QUESTIONS.md` (3 Redis questions); tag the first spec release and pin it in `vp-c003-taskbox.contract.md`; at `taskbox-go` v0.1.0 switch GW009.001's example to the module and delete its `internal/taskbox`.
+- **Outbox/Inbox contracts** move to their own spec repositories the same way when they are implemented (steps 4–7 of the plan now produce libraries, not solution code).
+- **gremlins vs godog `test/` subpackages** — Go mutation scores are meaningless with this layout (see DECISIONS).
 
 - **Align outbox skeletons to VP-C010:** Go `solution-go-transactional-outbox`, dotnet `solution-transactional-outbox` — drop their own Kafka-only outbox tables; become the TaskBox-based envelope with generic HTTP/Kafka/RabbitMQ handlers.
 

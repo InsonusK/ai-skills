@@ -1,5 +1,7 @@
 # TaskBox in Go — anchor (plan steps 1–3)
 
+> **Superseded in part (2026-09-29).** The owner moved TaskBox into its own repositories (solution-create ADR `contract-vp-realized-by-libraries`): the contract, the conformance feature, and the usage rules live in `taskbox-spec` (`doc/skills/`, `doc/adr/`); code and seams in `taskbox-go` / `-dotnet` / `-python`. Here A1 and A2 are now pointer skills, the contract file is a pointer, and GW009.001 keeps a pre-release copy of the library until `taskbox-go` v0.1.0. `agent/taskbox/check.sh` checks that shape; the invariants below describe the PostgreSQL work as it was built and proven.
+
 Anchor document per `bulk-authoring-harness` for steps 1–3 of STATUS.md's "Implementation plan — TaskBox → Outbox". Every artifact below is checked against it; the owner reviews this file instead of every file.
 
 ## 1. What is created

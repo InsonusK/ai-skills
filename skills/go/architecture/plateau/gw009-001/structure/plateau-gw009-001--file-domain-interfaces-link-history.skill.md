@@ -20,7 +20,7 @@ Declare the durable link-history port; its write takes the follow-up tasks to st
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/domain/interfaces/{store-port}.go.create.md|{store-port}.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/domain/interfaces/{store-port}.go.extend.md|{store-port}.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Core Principles
 - Apply ONE plateau template per file.
@@ -29,7 +29,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/domain/interfaces/{store-port}.go.create.md|{store-port}.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/domain/interfaces/{store-port}.go.extend.md|{store-port}.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Implementation
 ```go
@@ -62,7 +62,7 @@ type LinkHistory interface {
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/domain/interfaces/{store-port}.go.create.md|{store-port}.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/domain/interfaces/{store-port}.go.extend.md|{store-port}.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Rules
 MUST:
@@ -71,11 +71,11 @@ MUST:
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/domain/interfaces/{store-port}.go.create.md|{store-port}.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/domain/interfaces/{store-port}.go.extend.md|{store-port}.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Check list
 - [ ] Every stub of `LinkHistory` records the tasks passed with `Record`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/domain/interfaces/{store-port}.go.create.md|{store-port}.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/domain/interfaces/{store-port}.go.extend.md|{store-port}.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
