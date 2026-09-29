@@ -20,7 +20,7 @@ Apply the service's embedded migrations — `link_checks` and TaskBox schema v1 
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/Implementation/internal/infrastructure/{store}/migrations.go.create.md|migrations.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/infrastructure/{store}/Package.extend.md|00002_taskbox_v1.sql]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Core Principles
 - Apply ONE plateau template per file.
@@ -29,7 +29,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/Implementation/internal/infrastructure/{store}/migrations.go.create.md|migrations.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/infrastructure/{store}/Package.extend.md|00002_taskbox_v1.sql]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Implementation
 ```go
@@ -149,7 +149,7 @@ DROP TABLE IF EXISTS taskbox_task;
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/Implementation/internal/infrastructure/{store}/migrations.go.create.md|migrations.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/infrastructure/{store}/Package.extend.md|00002_taskbox_v1.sql]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Rules
 MUST:
@@ -160,11 +160,11 @@ MUST:
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/Implementation/internal/infrastructure/{store}/migrations.go.create.md|migrations.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/infrastructure/{store}/Package.extend.md|00002_taskbox_v1.sql]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Check list
 - [ ] Running `Migrate` twice is a no-op the second time.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/Implementation/internal/infrastructure/{store}/migrations.go.create.md|migrations.go]]
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/infrastructure/{store}/Package.extend.md|00002_taskbox_v1.sql]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]

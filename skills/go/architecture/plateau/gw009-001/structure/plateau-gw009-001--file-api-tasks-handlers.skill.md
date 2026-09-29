@@ -18,14 +18,14 @@ source: internal/api/tasks/handlers.go
 Translate a `recheck-flagged-link` delivery into `LinkCheckService.Recheck` and its result into a status code.
 
 __Applied solutions:__
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/api/tasks/handlers.go.create.md|handlers.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Core Principles
 - Apply ONE plateau template per file.
 - Malformed payload or `ErrInvalidURL` → `400` (dead at once); `ErrUnavailable` → `503` (retried); other errors → returned, counted as `500`.
 
 __Applied solutions:__
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/api/tasks/handlers.go.create.md|handlers.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Implementation
 ```go
@@ -84,7 +84,7 @@ func (h *Handlers) recheckFlaggedLink(ctx context.Context, d taskbox.Delivery) (
 ```
 
 __Applied solutions:__
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/api/tasks/handlers.go.create.md|handlers.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Rules
 MUST:
@@ -93,10 +93,10 @@ MUST:
 - Never answer `2xx` for a failed call.
 
 __Applied solutions:__
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/api/tasks/handlers.go.create.md|handlers.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Check list
 - [ ] Smoke test: a `503` from the reputation service retries the task; the next attempt records the fresh verdict.
 
 __Applied solutions:__
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/api/tasks/handlers.go.create.md|handlers.go]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]

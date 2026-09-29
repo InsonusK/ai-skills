@@ -57,10 +57,7 @@ internal/
     http/                         ← package tier, see plateau-gw009-001--package-api-http.skill.md
     grpc/                         ← package tier, see plateau-gw009-001--package-api-grpc.skill.md
     tasks/                        ← package tier, see plateau-gw009-001--package-api-tasks.skill.md
-  taskbox/                        ← package tier, see plateau-gw009-001--package-taskbox.skill.md
-    pgstore/                      ← package tier, see plateau-gw009-001--package-taskbox-pgstore.skill.md
-    features/                     ← taskbox-conformance.feature, verbatim from solution-taskbox
-    test/                         ← package tier, see plateau-gw009-001--package-taskbox-test.skill.md
+  taskbox/                        ← pre-release copy of the taskbox-go library (+ pgstore/, features/, test/); no structure skill — replaced by the module dependency at taskbox-go v0.1.0
   infrastructure/
     reputationclient/             ← package tier, see plateau-gw009-001--package-infrastructure-reputationclient.skill.md
     reputationcache/              ← package tier, see plateau-gw009-001--package-infrastructure-reputationcache.skill.md
@@ -80,7 +77,7 @@ __Applied solutions:__
 
 `solution-cached-db` and `solution-persistent-db` add no `Repository` content of their own — `internal/infrastructure/reputationcache` and `internal/infrastructure/linkstore` are ordinary new packages under the already-established `internal/infrastructure/` tree, listed in the table below via their own `Package.create.md` files, not via a `Repository.extend.md`.
 
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/Repository.extend.md|Repository]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 `solution-go-db-migrations` adds `cmd/migrate` and `linkstore/migrations/` inside the established layout, with no `Repository` file of its own.
 
@@ -96,9 +93,6 @@ __Applied solutions:__
 | internal/infrastructure/linkstore | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-infrastructure-linkstore.skill.md]] | Outbound PostgreSQL-backed history adapter |
 | cmd/migrate | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-cmd-migrate.skill.md]] | One-shot migration job (Job mode) |
 | internal/api/tasks | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-api-tasks.skill.md]] | Inbound TaskBox handler adapter |
-| internal/taskbox | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-taskbox.skill.md]] | TaskBox mechanism (VP-C003) |
-| internal/taskbox/pgstore | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-taskbox-pgstore.skill.md]] | PostgreSQL TaskBox store |
-| internal/taskbox/test | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-taskbox-test.skill.md]] | TaskBox conformance runner |
 
 # Rules
 
@@ -116,7 +110,7 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] - [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/Repository.extend.md#MUST|Repository]]
 - [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] - [[skills/go/architecture/solutions/solution-external-integration.skill/Implementation/Repository.extend.md#MUST|Repository]]
 - `make unit-test` needs `TEST_DATABASE_DSN` (a throwaway PostgreSQL): the TaskBox conformance runner fails without it, never skips.
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/Repository.extend.md#MUST|Repository]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Check list
 - [ ] `make proto-gen` regenerates both `gen/api` and `gen/reputation` with no manual edits needed afterward, including the new `RecentChecks` RPC (verified against this plateau's own `example/`).
