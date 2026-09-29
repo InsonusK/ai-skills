@@ -17,7 +17,7 @@ created_by:
 The TaskBox inbound adapter: one handler per task type, as thin as the HTTP and gRPC adapters.
 
 __Applied solutions:__
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/api/tasks/Package.create.md#MUST|internal/api/tasks]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Core Principles
 - Decode payload → call `LinkCheckService` → map its error to a status code; no business logic.
@@ -47,4 +47,4 @@ MUST:
 - Never decide here whether a task is needed.
 
 __Applied solutions:__
-- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/Implementation/internal/api/tasks/Package.create.md#MUST|internal/api/tasks]]
+- [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
