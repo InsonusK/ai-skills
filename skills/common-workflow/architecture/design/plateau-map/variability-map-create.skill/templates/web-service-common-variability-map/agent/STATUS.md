@@ -22,6 +22,7 @@ Worktree `.ai-worktree/common-variability-map`, branch `common-variability-map` 
 | N | Common map split: concepts → `vp/vp-c###-{name}/vp-c###-{name}.md`, contracts beside them as `.contract.md`, candidates → `candidates.md`; ID cells and stack maps link the concept file; ADR `common-vp-concept-per-file`; `check.sh` checks concept files both ways | done |
 | O | Implementation plan TaskBox → Outbox recorded below | done |
 | P | TaskBox in Go (plan steps 1–3) — worktree `taskbox-go`; anchor `agent/taskbox/INVARIANTS.md`, owner answers applied to the contract; W1–W4 done (PostgreSQL), W5 Redis next | in progress |
+| Q | Contract VPs as libraries (owner, 2026-09-29): solution-create ADR + rule; TaskBox repositories prepared locally in `tmp/vp-c003-taskbox/` (`taskbox-spec` with the contract and feature; `taskbox-go` / `-dotnet` / `-python` empty with TASK.md). **Pending:** ai-skills side not migrated yet — the contract still lives here too (duplicate of `taskbox-spec`), `solution-taskbox-in-go` still carries the code, GW009.001's example still has `internal/taskbox` | in progress |
 | next | **Owner validation of the branch.** Remaining candidates afterwards: Inbound protocols, DomainLogic, Metric, Domain modelling, Deployment | waiting on owner |
 
 ## Implementation plan — TaskBox → Outbox (agreed 2026-09-28, a separate task)
