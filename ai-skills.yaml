@@ -9,24 +9,17 @@ sources:
       - skills/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md
       - skills/common-workflow/documentation
       - skills/design
+      
   - path: https://github.com/InsonusK/ai-skill-graph-draw.git
     type: github
     tree: master
     subpath:
       - docs/skills
       
+target:
+  default: {}                          # .agents/skills
+  claude:                              # .claude/skills
+    adapters: [claude-property-adapter]
 settings:
-  target: 
-    for_each:
-      adapters:
-        - link-adapter
-    default:
-      path: .agents/skills
-    claude:
-      path: .claude/skills
-      adapters:
-        - claude-property-adapter
-  remove_orphans: true
-  on_conflict: error
-  dry_run: false
-  add_relations: true
+  remove_orphans: true                 # удалять скилы, которых больше нет в источниках
+  add_relations: true                  # подтягивать скилы, на которые ссылаются выбранные
