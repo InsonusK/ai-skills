@@ -1,7 +1,7 @@
 ---
 name: plateau-gw009-001--file-cmd-service-main
 description: cmd/{service}/main.go of the plateau-gw009-001 (GW009.001) plateau
-whenToUse: when editing the composition root: wiring adapters, the TaskBox worker, the migration call, or the servers
+whenToUse: "when editing the composition root: wiring adapters, the TaskBox worker, the migration call, or the servers"
 domain: skill
 type: template
 plateau: plateau-gw009-001
