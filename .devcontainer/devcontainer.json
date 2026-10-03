@@ -3,15 +3,9 @@
 // plus Docker for the libraries' conformance runs against real PostgreSQL / Redis.
 {
 	"name": "ai-skills",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"image": "mcr.microsoft.com/devcontainers/base:resolute",
 	"features": {
 		"ghcr.io/devcontainers/features/github-cli:1": {},
-		"ghcr.io/devcontainers/features/python:1": { "version": "3.13" },
-		"ghcr.io/devcontainers/features/go:1": { "version": "1.26" },
-		"ghcr.io/devcontainers/features/dotnet:2": { "version": "10.0" },
-		"ghcr.io/devcontainers/features/node:1": { "version": "lts" },
 	},
 
 	// Angular CLI globally; psql / redis-cli to inspect the databases the conformance runs use.
@@ -21,16 +15,4 @@
 	//   docker run -d --name pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:18
 	//   docker run -d --name redis -p 6379:6379 redis:8
 	//"forwardPorts": [5432, 6379],
-
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"golang.go",
-				"ms-dotnettools.csdevkit",
-				"ms-python.python",
-				"angular.ng-template",
-				"CucumberOpen.cucumber-official"
-			]
-		}
-	}
 }
