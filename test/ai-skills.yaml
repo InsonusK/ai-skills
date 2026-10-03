@@ -11,17 +11,15 @@ sources:
       - skills/go
       - skills/design
 
+target:
+  default:
+    path: tmp/.agents/skills
+  claude:
+    path: tmp/.claude/skills
+    adapters: [claude-property-adapter]
+
 settings:
-  target: 
-    for_each:
-      adapters:
-        - link-adapter
-    default:
-      path: tmp/.agents/skills
-    claude:
-      path: tmp/.claude/skills
-      adapters:
-        - claude-property-adapter
   remove_orphans: true
-  on_conflict: error
   dry_run: false
+  validation:
+    exclude_from_checks: [examples, templates]
