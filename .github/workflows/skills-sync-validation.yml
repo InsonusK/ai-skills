@@ -8,7 +8,6 @@ on:
     paths:
       - 'skills/**'
       - 'test/**'
-      - 'requirements.txt'
       - '.github/workflows/skills-sync-validation.yml'
 
 jobs:
@@ -22,10 +21,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Install ai-skill-manager
+        run: curl -fsSL https://raw.githubusercontent.com/InsonusK/go-ai-skill-manage/master/scripts/install.sh | sh
 
       - name: Run sync validation
         run: |
@@ -47,10 +44,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Install ai-skill-manager
+        run: |
+          $env:AISM_INSTALL_DIR = Join-Path $env:RUNNER_TEMP 'aism'
+          irm https://raw.githubusercontent.com/InsonusK/go-ai-skill-manage/master/scripts/install.ps1 | iex
+          $env:AISM_INSTALL_DIR | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Run sync validation
         run: .\test.ps1
