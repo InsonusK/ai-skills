@@ -1,0 +1,47 @@
+sequenceDiagram
+    autonumber
+    actor Client
+    participant svc as LinkCheckService
+    participant rep as reputationclient
+    participant store as linkstore (PostgreSQL)
+    participant worker as taskbox.Worker
+    participant h as api/tasks handler
+
+    Client->>svc: Check("https://bad.example.com/login")
+    activate svc
+    svc->>rep: CheckReputation (cache miss)
+    rep-->>svc: flagged
+    svc->>store: Record(entry, recheck-flagged-link task)
+    activate store
+    Note over store: one pgx.Tx: INSERT link_checks,<br/>lock taskbox_group, INSERT taskbox_task
+    store-->>svc: committed
+    deactivate store
+    svc-->>Client: flagged
+    deactivate svc
+
+    Note over worker: RECHECK_AFTER later
+    worker->>store: claim (SKIP LOCKED, head of group)
+    activate worker
+    worker->>h: delivery {url}
+    activate h
+    h->>svc: Recheck(url)
+    svc->>rep: CheckReputation
+    rep-->>svc: Unavailable
+    svc-->>h: ErrUnavailable
+    h-->>worker: 503
+    deactivate h
+    worker->>store: pending, run_at = now + backoff (fenced by attempt)
+    deactivate worker
+
+    worker->>store: claim again after backoff
+    activate worker
+    worker->>h: delivery {url}
+    activate h
+    h->>svc: Recheck(url)
+    svc->>rep: CheckReputation
+    rep-->>svc: clean
+    svc->>store: Record(fresh entry)
+    h-->>worker: 200
+    deactivate h
+    worker->>store: done
+    deactivate worker

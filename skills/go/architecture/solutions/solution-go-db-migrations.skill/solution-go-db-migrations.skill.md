@@ -4,7 +4,8 @@ description: Versioned, embedded schema migrations for solution-persistent-db's 
 whenToUse: when a module applying solution-persistent-db needs its schema versioned and changeable across releases instead of a single inline CREATE TABLE IF NOT EXISTS
 domain: skill
 type: architecture
-version: 20260920000001
+version: 20260928000000
+updated: 20260928
 tags:
   - skill/architecture/solution
   - solution/go-db-migrations

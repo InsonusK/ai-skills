@@ -2,9 +2,10 @@
 name: solution-create
 description: Define how to create new solution skills by patterns
 whenToUse: when you write a solution skill
-updated: 20260928
+updated: 20260929
 adr:
   - adr/multi-stack-solution-location.md
+  - adr/contract-vp-realized-by-libraries.md
 tags:
   - skill/architecture/solution/design
   - stack
@@ -15,6 +16,7 @@ tags:
 - A solution skill built from the template folder matching the target stack, filled with real content, with no `hint`, `example`, `code example`, or `# How Apply this template` block left.
 - An `Implementation/` folder with a concrete file per created or extended element.
 - A solution whose implementation differs across stacks built as a `solution-{name}` base in `skills/common-workflow/architecture/solutions/` plus `solution-{name}-in-{stack}` extensions in `skills/{stack}/architecture/solutions/`.
+- For a VP fixed by a stack-agnostic contract: a spec repository and one library repository per stack, each carrying its own agent skills in `doc/skills/`, and pointer skills here (`solution-{name}`, `solution-{name}-in-{stack}`) that only link them.
 - One concrete `whenToUse` sentence and no separate `triggers` list.
 - Facet tags filled on the solution file, every `Implementation/` file, and every ADR.
 - Every architecture decision recorded as an ADR registered in `adr:`; every unfamiliar term a page under the solution's own `glossary/`.
@@ -71,7 +73,7 @@ Remove all `hint`, `example`, and `code example` blocks, and the `# How Apply th
 - Fix: delete every such fenced block and the `# How Apply this template` section before committing.
 
 ### Always provide an Implementation folder
-Create an `Implementation/` folder with concrete implementation files for every solution skill — including classification, decision, policy, or taxonomy skills — showing how each selected variant manifests in code, configuration, or project structure.
+Create an `Implementation/` folder with concrete implementation files for every solution skill except a pointer to a contract VP's repositories ([Deliver a contract VP as libraries](#deliver-a-contract-vp-as-libraries)) — including classification, decision, policy, or taxonomy skills — showing how each selected variant manifests in code, configuration, or project structure.
 - Risk: the agent gets rules with no concrete shape and invents its own inconsistent implementation.
 - Fix: add one implementation file per created or extended element under `Implementation/`, following the template's naming rules.
 
@@ -125,6 +127,12 @@ Never add a separate `triggers` list next to `whenToUse`.
 - Risk: trigger conditions split across two fields drift apart, and the agent does not know which is authoritative.
 - Fix: put every trigger condition into the `whenToUse` sentence itself.
 
+### Deliver a contract VP as libraries
+Deliver a VP whose behaviour is fixed by a stack-agnostic contract with conformance scenarios as a `{vp-name}-spec` repository plus one `{vp-name}-{stack}` library repository per stack, each with its own agent skills in `doc/skills/`, and write its solutions here as pointers to those repositories only — decision in [adr/contract-vp-realized-by-libraries.md](./adr/contract-vp-realized-by-libraries.md).
+- Violation: the mechanism's source (claim queries, worker loop, lease handling) copied into `Implementation/` and repeated in every plateau's `structure/`.
+- Risk: the code cannot be validated by reading, an agent copying it can silently drop a guarantee, and the solution's rules drown in restated code.
+- Fix: the spec repository holds the contract, the conformance feature, and the usage rules (`doc/skills/`); each library pins a spec version, runs that feature in CI, and documents its seams with the service in its own `doc/skills/`; `solution-{name}` / `solution-{name}-in-{stack}` here carry `whenToUse` and links only — no `Implementation/`, no rules of their own. A pattern VP that shapes the service's own code (ports, adapters, inbound APIs) stays an ordinary solution.
+
 ## SHOULD
 
 ### Multi-stack solutions: base in common-workflow, extension per stack
@@ -146,4 +154,5 @@ When [skill-design's stack split](skills/design/skill-design.skill/skill-design.
 - [ ] Every assumption a Rule relies on but does not implement or require via `depends_on` is stated in `# Boundaries`.
 - [ ] Architecture decisions are recorded as ADRs and registered in the `adr:` property.
 - [ ] Unfamiliar terms are documented in the solution's own `glossary/` folder.
+- [ ] A VP fixed by a stack-agnostic contract is delivered as a spec repository plus library repositories with their own `doc/skills/`; its solutions here are pointers without `Implementation/`.
 - [ ] Facet tags are filled: `solution/{solution-name}` on the solution file, `solution/{solution-name}` + `element/{element-name}` on Implementation files, `solution/{solution-name}` + `concern/documentation` + `concern/documentation/adr` on ADRs.

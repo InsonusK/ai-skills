@@ -24,6 +24,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"io/fs"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"
@@ -58,7 +59,13 @@ func Migrate(ctx context.Context, dsn string) error {
 		return fmt.Errorf("build session locker: %w", err)
 	}
 
-	provider, err := goose.NewProvider(goose.DialectPostgres, db, migrationsFS,
+	// goose reads migrations from the root of the FS it is given.
+	migrations, err := fs.Sub(migrationsFS, "migrations")
+	if err != nil {
+		return fmt.Errorf("open embedded migrations: %w", err)
+	}
+
+	provider, err := goose.NewProvider(goose.DialectPostgres, db, migrations,
 		goose.WithSessionLocker(locker))
 	if err != nil {
 		return fmt.Errorf("init migrator: %w", err)
@@ -91,10 +98,10 @@ This catalog's own runnable examples concretize this as `linkstore.Migrate` and
 [[./store.go.extend.md|store.go]] stops creating the table inline, and how
 [[../../../cmd/migrate/main.go.create.md|cmd/migrate/main.go]] and
 [[../../../cmd/{service}/main.go.extend.md|cmd/{service}/main.go]]'s guarded call are this
-function's two (mutually exclusive) callers. Verified directly against the real
-`github.com/pressly/goose/v3 v3.28.0` release (compiled and vetted in a throwaway scratch module
-during this solution's authoring, including the
-`lock.NewPostgresSessionLocker`/`WithSessionLocker` wiring) — see
+function's two (mutually exclusive) callers. Verified against the real
+`github.com/pressly/goose/v3 v3.28.0` release — first compiled and vetted in a scratch module, then
+run for real against PostgreSQL 18 in plateau `GW009.001`'s example, which found and fixed the
+`fs.Sub` defect above — see
 [[../../../../adr/migration-tool-choice.md|adr/migration-tool-choice.md]].
 
 # Rule changes
@@ -116,6 +123,12 @@ during this solution's authoring, including the
     non-idempotent statement.
   - Fix: always pass `goose.WithSessionLocker(locker)` when constructing the provider, exactly as
     shown above.
+- `Migrate` must give `goose.NewProvider` the `migrations/` subdirectory (`fs.Sub(migrationsFS,
+  "migrations")`), never the `embed.FS` root.
+  - Violation: passing `migrationsFS` itself while the files are embedded as `migrations/*.sql`.
+  - Risk: goose reads migration files from the root of the FS it is given, finds none, and `Migrate`
+    fails with "no migrations found" on the first real run.
+  - Fix: `fs.Sub` the embedded FS to `migrations`, exactly as shown above.
 - `migrations.go` must be the only file in this package that imports
   `github.com/pressly/goose/v3` (or its subpackages) — `store.go` calls `Migrate`, it never drives
   goose directly.
