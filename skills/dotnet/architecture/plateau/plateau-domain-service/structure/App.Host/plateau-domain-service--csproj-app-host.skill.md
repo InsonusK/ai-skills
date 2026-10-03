@@ -55,7 +55,7 @@ __Applied solutions:__
     - [ModuleRegistration.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/App.Host/classes/plateau-domain-service--class-module-registration.skill.md) — `AddModules()`
     - [PipelineRegistration.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/App.Host/classes/plateau-domain-service--class-pipeline-registration.skill.md) — `AddPipeline()`, behavior order
     - [LoggingRegistration.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/App.Host/classes/plateau-domain-service--class-logging-registration.skill.md) — `AddAppLogging()`
-    - [InfrastructureRegistration.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/App.Host/classes/plateau-domain-service--class-infrastructure-registration.skill.md) — `AddInfrastructure()` — DbContext, repositories, unit of work, version-resolver factory, gRPC clients (VP2/VP5/VP11)
+    - [InfrastructureRegistration.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/App.Host/classes/plateau-domain-service--class-infrastructure-registration.skill.md) — `AddInfrastructure()` — DbContext, repositories, unit of work, version-resolver factory, gRPC clients (VP-C001/VP5/VP-C005)
     - [ApiRegistration.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/App.Host/classes/plateau-domain-service--class-api-registration.skill.md) — `AddModuleApi()` / `UseModuleApi()` with transport hooks (VP8/VP9)
   - Program.cs — `Host.CreateApplicationBuilder`, then `AddAppLogging()`, `AddModules()`, `AddPipeline()`, `AddInfrastructure()`, `AddModuleApi()` / `UseModuleApi()`
   - appsettings.json / appsettings.Development.json — `Logging` section

@@ -36,7 +36,7 @@ built_on_plateau:
 - Keep entity behavior the single source of truth for invariant enforcement, and `DomainException` the single failure model.
 
 # Capabilities
-- A `{Module}.Domain` project referencing only `Shared` and `{Module}.Interfaces` — no repositories, no `DbContext`. (`solution-domain-configuration` (VP2) later adds an `IEntityTypeConfiguration`-only EF Core reference for entity configs; nothing else.)
+- A `{Module}.Domain` project referencing only `Shared` and `{Module}.Interfaces` — no repositories, no `DbContext`. (`solution-domain-configuration` (VP-C001) later adds an `IEntityTypeConfiguration`-only EF Core reference for entity configs; nothing else.)
 - Enforced invariant validation on every entity state change; invalid state unreachable by construction.
 - Safe extraction of complex logic into reusable static domain services.
 - A consistent `Shared.Exceptions.DomainException` error model that `solution-mediator-exception-handler` maps.
@@ -49,7 +49,7 @@ built_on_plateau:
 - Bulky behavior goes to static domain service extension methods in `{Module}.Domain/Services`; a property must not have multiple uncoordinated mutation points.
 
 # Boundaries
-- Persistence configuration and repositories are **not** added here. `solution-domain-configuration` (VP2) adds a reference to EF Core **scoped to `IEntityTypeConfiguration`** for the per-entity configs; `solution-repository-integration` adds `DbContext`/repositories in `App.Infrastructure`. Neither is present from this solution alone.
+- Persistence configuration and repositories are **not** added here. `solution-domain-configuration` (VP-C001) adds a reference to EF Core **scoped to `IEntityTypeConfiguration`** for the per-entity configs; `solution-repository-integration` adds `DbContext`/repositories in `App.Infrastructure`. Neither is present from this solution alone.
 - The strict `{ValueObject}` type (in `{Module}.Domain/ValueObjects`, throwing at construction) is [[skills/dotnet/architecture/solutions/solution-value-objects.skill/solution-value-objects.skill|solution-value-objects]] (VP3), which builds on this solution. Entity properties here use `Soft{ValueObject}` or primitives until VP3 is applied.
 - `DomainException` is thrown, not caught, here — `solution-mediator-exception-handler` catches it when applied; this solution does not require it.
 
@@ -81,8 +81,8 @@ PROJECT:
   - [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create/{Behavior}Service.cs.create#MUST|{Behavior}Service.cs]]
 - [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/Implementation/Shared.csproj.extend/DomainException.cs.create#MUST|DomainException.cs]]
 - Keep `{Module}.Domain` free of `DbContext`, repositories, and any infrastructure reference; this solution adds no NuGet package.
-  - Risk: a `DbContext`/repository reference here makes every domain-bearing module carry persistence, contradicting VP1↔VP2 independence.
-  - Fix: `solution-domain-configuration` (VP2) is the only solution that may add an EF Core reference to `{Module}.Domain`, and only `IEntityTypeConfiguration` — rationale in [[skills/dotnet/architecture/solutions/solution-domain-configuration.skill/adr/entity-configuration-lives-in-domain|entity-configuration-lives-in-domain]].
+  - Risk: a `DbContext`/repository reference here makes every domain-bearing module carry persistence, contradicting VP1↔VP-C001 independence.
+  - Fix: `solution-domain-configuration` (VP-C001) is the only solution that may add an EF Core reference to `{Module}.Domain`, and only `IEntityTypeConfiguration` — rationale in [[skills/dotnet/architecture/solutions/solution-domain-configuration.skill/adr/entity-configuration-lives-in-domain|entity-configuration-lives-in-domain]].
 
 ## SHOULD
 - [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create/{Entity}.cs.create#SHOULD|{Entity}.cs]]

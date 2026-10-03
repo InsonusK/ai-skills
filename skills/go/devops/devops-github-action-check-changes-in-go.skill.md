@@ -44,8 +44,9 @@ runs:
       with:
         filters: |
           code:
-            - '**/*.go'
-            - '!**/*_test.go'
+            # paths-filter@v3 ORs rules, so a standalone negation would match
+            # every non-test file. Keep the exclusion inside one extglob.
+            - '**/!(*_test).go'
             - 'go.mod'
             - 'go.sum'
           test:

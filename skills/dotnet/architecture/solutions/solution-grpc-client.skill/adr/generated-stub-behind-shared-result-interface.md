@@ -1,8 +1,8 @@
 ---
 name: generated-stub-behind-shared-result-interface
 description: How a module calls an external gRPC service — the shape of the client, where it lives, and what a handler sees
-problem: VP11 (SyncOutboundApi over gRPC) has no v3 prior art. A handler needs to call another internal service over gRPC; it must not deal with generated stubs, RpcException, deadlines, or channels, and a failed call must be a Result, not an exception.
-decision: A Grpc.Tools-generated client stub per dependency, wrapped by {Dependency}GrpcClient : I{Dependency}Client in App.Infrastructure; the handler-facing contract is I{Dependency}Client in Shared, returning Result<T>. Status mapping is one shared extension mirroring solution-grpc-integration's table. Independent of solution-http-api-client (VP10).
+problem: VP-C005 (SyncOutboundApi over gRPC) has no v3 prior art. A handler needs to call another internal service over gRPC; it must not deal with generated stubs, RpcException, deadlines, or channels, and a failed call must be a Result, not an exception.
+decision: A Grpc.Tools-generated client stub per dependency, wrapped by {Dependency}GrpcClient : I{Dependency}Client in App.Infrastructure; the handler-facing contract is I{Dependency}Client in Shared, returning Result<T>. Status mapping is one shared extension mirroring solution-grpc-integration's table. Independent of solution-http-api-client (VP-C004).
 tags:
   - solution/grpc-client
   - stack/dotnet
@@ -63,5 +63,5 @@ Per dependency: vendor its `.proto` (`GrpcServices=Client`) into `App.Infrastruc
 
 ### Costs
 - One adapter class + one interface per dependency to write (mechanical).
-- The `I{Dependency}Client` name shape overlaps `solution-http-api-client` (VP10); a module using both does so for different dependencies (different files), so no collision — but if one dependency ever needs both transports, a shared `solution-outbound-client` prerequisite would be needed. Noted in `# Boundaries`; not built today.
+- The `I{Dependency}Client` name shape overlaps `solution-http-api-client` (VP-C004); a module using both does so for different dependencies (different files), so no collision — but if one dependency ever needs both transports, a shared `solution-outbound-client` prerequisite would be needed. Noted in `# Boundaries`; not built today.
 - The vendored `.proto` is a manual copy — it can drift from the dependency's real contract until re-vendored.

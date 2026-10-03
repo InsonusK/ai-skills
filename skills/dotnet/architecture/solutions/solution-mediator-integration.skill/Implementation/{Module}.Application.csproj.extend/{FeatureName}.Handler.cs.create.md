@@ -16,7 +16,7 @@ tags:
 # Core Principles
 - Implements `IRequestHandler<TRequest, Result<T>>`.
 - **Fixed shape:** `guard → (domain call | read) → return Result<T>`.
-- **Persistence steps are conditional.** `load`/`stage` through `IRepository<T>`/`IReadRepository<T>` are added *only* when the request touches stored state — i.e. once `solution-repository-integration` (VP2) is applied. A handler with no persistence and no domain layer skips them entirely and is still a complete, valid handler.
+- **Persistence steps are conditional.** `load`/`stage` through `IRepository<T>`/`IReadRepository<T>` are added *only* when the request touches stored state — i.e. once `solution-repository-integration` (VP-C001) is applied. A handler with no persistence and no domain layer skips them entirely and is still a complete, valid handler.
 - Never `DbContext`, never inline LINQ, never `SaveChangesAsync` (commit is the unit-of-work behavior's job, once persistence exists).
 
 # Naming convention
@@ -63,7 +63,7 @@ public class GetReviewStatusHandler(ISender sender) : IRequestHandler<GetReviewS
 }
 ```
 
-## Command handler — with domain layer (VP1) and persistence (VP2)
+## Command handler — with domain layer (VP1) and persistence (VP-C001)
 
 Once `solution-domain-behaviour` and `solution-repository-integration` are applied, `load` / `stage` steps wrap the domain call:
 
@@ -105,10 +105,10 @@ public class CloseTaskHandler(IRepository<TodoTask> repository) : IRequestHandle
   - Fix: the fixed sequence; the middle step is a domain call for a Command with a domain layer, a repository/dispatch read for a Query.
 - Add `load`/`stage` (via `IRepository<T>`/`IReadRepository<T>`, named specs) **only** when the request touches stored state.
   - Risk: mandating a repository makes the solution unusable for a module with no persistence — the very case v3.1 makes common.
-  - Fix: the baseline handler has no repository; VP2 adds those steps.
+  - Fix: the baseline handler has no repository; VP-C001 adds those steps.
 - Never inject `DbContext`, never write inline LINQ, never call `SaveChangesAsync`.
   - Risk: persistence details and premature commits leak into orchestration and break atomicity.
-  - Fix: `DbContext`/commit are infrastructure concerns; queries go through named specs once VP2 exists.
+  - Fix: `DbContext`/commit are infrastructure concerns; queries go through named specs once VP-C001 exists.
 - Never contain a business rule — delegate to the entity / domain service (when a domain layer exists) or model it as a guard on cross-request facts.
   - Risk: logic in the handler cannot be found by a reader of the entity and is not covered by the domain tests.
   - Fix: `entity.DoThing()`; the entity throws `DomainException` on violation.
@@ -123,6 +123,6 @@ public class CloseTaskHandler(IRepository<TodoTask> repository) : IRequestHandle
 # Check list
 - [ ] `{FeatureName}Handler : IRequestHandler<{Request}, Result<T>>` in `Features/{FeatureName}/`.
 - [ ] Shape is `guard → (domain call | read) → return Result<T>`.
-- [ ] No repository / `IRepository<T>` unless the request touches stored state (VP2).
+- [ ] No repository / `IRepository<T>` unless the request touches stored state (VP-C001).
 - [ ] No `DbContext`, no inline LINQ, no `SaveChangesAsync`.
 - [ ] No business rule in the handler; cross-module via `ISender`/`IPublisher` only.

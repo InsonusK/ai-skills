@@ -28,7 +28,7 @@ __Applied solutions:__
 - Apply ONE plateau template per class.
 - `static class`, one public `AddPipeline(this IServiceCollection) : IServiceCollection` — chainable in `Program.cs`.
 - Each behavior is registered as an open generic: `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(XBehavior<,>))`, in execution order (first registered runs first).
-- Order at plateau-domain-service: `ExceptionHandlingBehavior` (first) → `ValidationBehavior` → `ConcurrencyBehavior` (VP5, guards stale writes before work) → `UnitOfWorkBehavior` (VP2, **last** — commits what a fully-validated, non-stale handler staged).
+- Order at plateau-domain-service: `ExceptionHandlingBehavior` (first) → `ValidationBehavior` → `ConcurrencyBehavior` (VP5, guards stale writes before work) → `UnitOfWorkBehavior` (VP-C001, **last** — commits what a fully-validated, non-stale handler staged).
 - `GuidResolvingBehavior` (VP6) is registered **after** `ConcurrencyBehavior` (when VP5 applies, else after `ValidationBehavior`) and **before** `UnitOfWorkBehavior` — a duplicate-Guid short-circuit must precede any commit. Position is ordering-only, recorded in `registry/pipelineregistration-cs.md`.
 - Behavior order lives **only** here — never in `Program.cs`, never in a module, never split across files.
 
@@ -64,7 +64,7 @@ public static class PipelineRegistration
         // 4. Idempotent create (VP6) — a duplicate Guid short-circuits with ConflictResult before any commit.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(GuidResolvingBehavior<,>));
 
-        // 5. Unit of work (VP2) — LAST, so it commits only a fully-guarded handler's staged changes.
+        // 5. Unit of work (VP-C001) — LAST, so it commits only a fully-guarded handler's staged changes.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         return services;

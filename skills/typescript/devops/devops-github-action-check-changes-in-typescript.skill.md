@@ -2,7 +2,7 @@
 name: devops-github-action-check-changes-in-typescript
 description: TypeScript-specific implementation of the check-changes reusable composite action — dorny/paths-filter patterns for a TypeScript package's src/test/features/Dockerfile/docs layout
 whenToUse: when creating or updating `.github/actions/check-changes/action.yml` in a TypeScript project
-updated: 20260915
+updated: 20260928
 tags:
   - stack/typescript
   - concern/ci
@@ -44,7 +44,10 @@ runs:
       with:
         filters: |
           code:
-            - 'src/**'
+            # Co-located Vitest specs live under src/; paths-filter@v3 ORs rules,
+            # so a standalone negation would match every non-test file. Keep the
+            # exclusion inside one extglob.
+            - 'src/**/!(*.spec.ts|*.test.ts)'
             - 'package.json'
             - 'tsconfig*.json'
           test:
@@ -64,6 +67,12 @@ runs:
 - Risk: a change to a Gherkin scenario or a Vitest spec silently fails to trigger `unit-test`/`mutation-test`, so a broken scenario merges undetected.
 - Fix: match the paths that skill actually creates, not an assumed convention.
 
+### Exclude co-located specs from `code` inside one extglob
+Match `src/` for `code` with `'src/**/!(*.spec.ts|*.test.ts)'`, never with `'src/**'` or a `'!**/*.spec.ts'` rule.
+- Violation: `'src/**'` alone, or `'src/**'` followed by `'!**/*.spec.ts'` / `'!**/*.test.ts'`.
+- Risk: `'src/**'` also matches Vitest specs co-located in `src/`, and paths-filter@v3 ORs rules so a standalone negation matches every non-test file; either way `code` reports `true` on a test-only PR and `version-check` demands a version bump on `master`.
+- Fix: keep the exclusion in the single basename extglob shown above.
+
 ### Composite outputs match the consumer's contract
 Expose exactly `code`, `test`, `workflow`, `docker`, `docs` as this action's outputs.
 - Risk: a renamed or missing output silently breaks every consumer workflow's `if:` conditions (an unset output is falsy, so the job just never runs).
@@ -71,5 +80,5 @@ Expose exactly `code`, `test`, `workflow`, `docker`, `docs` as this action's out
 
 # Check list
 - [ ] `.github/actions/check-changes/action.yml` exists and wraps `dorny/paths-filter@v3`.
-- [ ] `code`/`test`/`workflow`/`docker`/`docs` filters match `src/`+`package.json`+`tsconfig*.json`, `features/**`+`*.spec.ts`+`*.test.ts`, `.github/workflows/`+`.github/actions/`, `Dockerfile`, `docs/`+`*.md` respectively.
+- [ ] `code`/`test`/`workflow`/`docker`/`docs` filters match `src/` minus `*.spec.ts`/`*.test.ts`+`package.json`+`tsconfig*.json`, `features/**`+`*.spec.ts`+`*.test.ts`, `.github/workflows/`+`.github/actions/`, `Dockerfile`, `docs/`+`*.md` respectively.
 - [ ] The action's outputs are named `code`, `test`, `workflow`, `docker`, `docs`.

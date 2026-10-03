@@ -21,7 +21,7 @@ built_on_plateau:
 adr:
 ---
 
-> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP4 (see
+> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP-C010 (see
 > `skills/go/architecture/variability-map.md`). Full authoring is deferred until a real plateau
 > composes this solution.
 
@@ -40,4 +40,4 @@ FILES:
 - [[./Implementation/internal/infrastructure/outbox/Package.create.md|internal/infrastructure/outbox]] - create - outbox table + relay loop, shape only
 
 # Check list
-- [ ] Applied only when both [[skills/go/architecture/solutions/solution-go-kafka-producer.skill/solution-go-kafka-producer.skill.md|solution-go-kafka-producer]] and [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] are present on the same plateau, per the Variability Map's VP4 constraint.
+- [ ] Applied only when both [[skills/go/architecture/solutions/solution-go-kafka-producer.skill/solution-go-kafka-producer.skill.md|solution-go-kafka-producer]] and [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] are present on the same plateau, per the Variability Map's VP-C010 constraint.

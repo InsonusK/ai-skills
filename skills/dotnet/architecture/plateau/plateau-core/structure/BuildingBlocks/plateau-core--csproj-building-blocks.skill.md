@@ -38,7 +38,7 @@ created_by:
     - [ExceptionHandlingBehavior.cs](skills/dotnet/architecture/plateau/plateau-core/structure/BuildingBlocks/classes/plateau-core--class-exception-handling-behavior.skill.md) — catch `Exception`, log `Critical` with `LogEvents.UnhandledException`, return `Result.Error`
   - BuildingBlocks.csproj
 
-Later features add `UnitOfWorkBehavior.cs` + `UnitOfWorkContext.cs` (VP2), `ConcurrencyBehavior.cs` (VP5), `GuidResolvingBehavior.cs` (VP6) — none at plateau-core.
+Later features add `UnitOfWorkBehavior.cs` + `UnitOfWorkContext.cs` (VP-C001), `ConcurrencyBehavior.cs` (VP5), `GuidResolvingBehavior.cs` (VP6) — none at plateau-core.
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |

@@ -47,7 +47,7 @@ created_by:
 `{ModuleName}.Domain` and `{ModuleName}.Api` are **not** in the plateau-core layout — a module is exactly `Interfaces` + `Application` until a feature adds more:
 - `{ModuleName}.Domain` arrives with `solution-domain-behaviour` (VP1).
 - `{ModuleName}.Api` arrives with `solution-api-project` (VP8).
-- `App.Infrastructure`, `App.Infrastructure.Migrations`, `App.Queries` arrive with the first persistence feature (VP2).
+- `App.Infrastructure`, `App.Infrastructure.Migrations`, `App.Queries` arrive with the first persistence feature (VP-C001).
 
 Because there is no `{ModuleName}.Domain`, there is no `{ModuleName}.Domain.Tests` at this plateau either — the conformance solution creates one test project per *existing* production project.
 

@@ -40,8 +40,8 @@ created_by:
     - [ValidationBehavior.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-validation-behavior.skill.md) — collect-all FluentValidation, short-circuit with `Result.Invalid`
     - [ExceptionHandlingBehavior.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-exception-handling-behavior.skill.md) — catch `Exception`, log `Critical` with `LogEvents.UnhandledException`, return `Result.Error`
     - [ConcurrencyBehavior.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-concurrency-behavior.skill.md) — guard `IHasVersions` commands against stale writes (VP5)
-    - [UnitOfWorkContext.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-unit-of-work-context.skill.md) — scoped nesting-depth counter (VP2)
-    - [UnitOfWorkBehavior.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-unit-of-work-behavior.skill.md) — commit once, last, after the outermost command (VP2)
+    - [UnitOfWorkContext.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-unit-of-work-context.skill.md) — scoped nesting-depth counter (VP-C001)
+    - [UnitOfWorkBehavior.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-unit-of-work-behavior.skill.md) — commit once, last, after the outermost command (VP-C001)
   - BuildingBlocks.csproj
 
     - [GuidResolvingBehavior.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/BuildingBlocks/classes/plateau-offline-sync-service--class-guid-resolving-behavior.skill.md) — idempotent create for an `IHasGuid` command (VP6), registered after `ConcurrencyBehavior`

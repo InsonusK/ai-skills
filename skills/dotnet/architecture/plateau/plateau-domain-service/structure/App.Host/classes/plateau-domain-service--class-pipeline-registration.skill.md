@@ -27,7 +27,7 @@ __Applied solutions:__
 - Apply ONE plateau template per class.
 - `static class`, one public `AddPipeline(this IServiceCollection) : IServiceCollection` — chainable in `Program.cs`.
 - Each behavior is registered as an open generic: `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(XBehavior<,>))`, in execution order (first registered runs first).
-- Order at plateau-domain-service: `ExceptionHandlingBehavior` (first) → `ValidationBehavior` → `ConcurrencyBehavior` (VP5, guards stale writes before work) → `UnitOfWorkBehavior` (VP2, **last** — commits what a fully-validated, non-stale handler staged).
+- Order at plateau-domain-service: `ExceptionHandlingBehavior` (first) → `ValidationBehavior` → `ConcurrencyBehavior` (VP5, guards stale writes before work) → `UnitOfWorkBehavior` (VP-C001, **last** — commits what a fully-validated, non-stale handler staged).
 - `GuidResolvingBehavior` (VP6) inserts between validation and concurrency at plateau-offline-sync-service.
 - Behavior order lives **only** here — never in `Program.cs`, never in a module, never split across files.
 
@@ -60,7 +60,7 @@ public static class PipelineRegistration
         // 3. Optimistic-concurrency guard (VP5) — only IHasVersions commands.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
 
-        // 4. Unit of work (VP2) — LAST, so it commits only a fully-guarded handler's staged changes.
+        // 4. Unit of work (VP-C001) — LAST, so it commits only a fully-guarded handler's staged changes.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         return services;

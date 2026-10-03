@@ -23,7 +23,7 @@ __Applied solutions:__
 - Apply ONE plateau template per class.
 - `record`, immutable. `IQuery<Result<{Thing}Dto>>` when it can fail to find its target; `IQuery<IReadOnlyList<{Thing}Dto>>` when it always returns data.
 - Response DTO properties are `Soft{ValueObject}` or primitives — never the domain `{ValueObject}` (that would couple `{Module}.Interfaces` to `{Module}.Domain`).
-- At plateau-core a query handler answers from another module or an in-memory stand-in; repository-backed reads arrive with VP2.
+- At plateau-core a query handler answers from another module or an in-memory stand-in; repository-backed reads arrive with VP-C001.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |

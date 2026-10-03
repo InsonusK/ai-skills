@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package linkcheck;
+
+option go_package = "github.com/example/linkcheck-service/gen/api";
+
+service LinkCheckService {
+  rpc Check(CheckRequest) returns (CheckResponse);
+  rpc RecentChecks(RecentChecksRequest) returns (RecentChecksResponse);
+}
+
+message CheckRequest {
+  string url = 1;
+}
+
+message CheckResponse {
+  string url = 1;
+  string normalized = 2;
+  bool flagged = 3;
+  string reason = 4;
+}
+
+message RecentChecksRequest {
+  int32 limit = 1;
+}
+
+message HistoryEntry {
+  string normalized = 1;
+  bool flagged = 2;
+  string reason = 3;
+  int64 checked_at_unix = 4;
+}
+
+message RecentChecksResponse {
+  repeated HistoryEntry entries = 1;
+}

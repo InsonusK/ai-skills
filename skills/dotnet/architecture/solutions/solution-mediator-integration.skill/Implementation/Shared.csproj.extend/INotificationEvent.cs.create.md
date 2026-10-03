@@ -15,7 +15,7 @@ tags:
 # Core Principles
 - Interface only, extends MediatR's `INotification`; no members.
 - A notification is named in the past tense (`TaskClosed`, `AssigneeChanged`) and carries only the data a subscriber needs — never an entity reference.
-- Publishing is fire-and-observe within the same process and (by default) the same transaction — a handler that must not run in that transaction, or must survive a crash, needs the outbox (VP14), not a plain notification.
+- Publishing is fire-and-observe within the same process and (by default) the same transaction — a handler that must not run in that transaction, or must survive a crash, needs the outbox (VP-C010), not a plain notification.
 - A notification handler may dispatch Commands, but never returns a value and never blocks the publisher on its result.
 
 # Structure

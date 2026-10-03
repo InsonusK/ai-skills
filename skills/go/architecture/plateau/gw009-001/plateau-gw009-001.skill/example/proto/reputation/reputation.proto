@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+// This is the EXTERNAL reputation service's own contract, vendored here
+// only to generate a client from. This module does not implement it.
+package reputation;
+
+option go_package = "github.com/example/linkcheck-service/gen/reputation";
+
+service ReputationService {
+  rpc CheckReputation(CheckReputationRequest) returns (CheckReputationResponse);
+}
+
+message CheckReputationRequest {
+  string url = 1;
+}
+
+message CheckReputationResponse {
+  bool flagged = 1;
+  string reason = 2;
+}

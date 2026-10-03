@@ -5,25 +5,12 @@ $ErrorActionPreference = 'Stop'
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $scriptDir
 
-python -m venv .venv
-
-$venvPython = [System.IO.Path]::Combine($scriptDir, '.venv', 'Scripts', 'python.exe')
-if (-not (Test-Path $venvPython)) {
-    Write-Error "Python executable not found in virtual environment: $venvPython"
+if (-not (Get-Command aism -ErrorAction SilentlyContinue)) {
+    Write-Error "aism executable not found in PATH. Install it: irm https://raw.githubusercontent.com/InsonusK/go-ai-skill-manage/master/scripts/install.ps1 | iex"
 }
 
-$requirementsPath = [System.IO.Path]::Combine($scriptDir, '..', 'requirements.txt')
-& $venvPython -m pip install -r $requirementsPath
-if ($LASTEXITCODE -ne 0) {
-    exit $LASTEXITCODE
-}
-
-$venvAism = [System.IO.Path]::Combine($scriptDir, '.venv', 'Scripts', 'aism.exe')
-if (-not (Test-Path $venvAism)) {
-    Write-Error "aism executable not found in virtual environment: $venvAism"
-}
-
-& $venvAism sync
+& aism --version
+& aism sync
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
