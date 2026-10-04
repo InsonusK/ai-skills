@@ -13,7 +13,7 @@ tags:
 Supporting folders in this repository carry no fixed meaning for code. `templates/` holds both fill-in files and complete scripts wrapped in markdown (`templates/unit-test.sh.md`); `examples/` holds material an agent may or may not be expected to copy; `scripts/` appears once, for a script the agent runs. An agent opening a file cannot tell from its location which action is expected. Which folder means which action?
 
 # Selected variant
-**Selected variant:** [[#One folder per action]]
+**Selected variant:** [[#One folder per action (selected)]]
 - The folder name is the instruction: run, copy, fill, or read.
 - `scripts/` and `templates/` keep the meaning they already have in the repository; only `assets/` is new.
 
