@@ -2,7 +2,7 @@
 name: skill-content
 description: How the prose inside a skill file must read — Goal as a deliverables list, rules as named headings with one imperative sentence and Violation/Risk/Fix, every fact stated once, no authoring narrative, illustrations moved out
 whenToUse: when you write or revise the text of a skill — the Goal and Core Principle bullets, the rule statements and their Violation/Risk/Fix elaboration — or when you tighten an existing skill for concision
-updated: 20260906
+updated: 20261004
 tags:
   - skill/core
   - stack
@@ -74,7 +74,7 @@ Write every rule, workflow step, and checklist item as an instruction to the age
 Move an illustrative code block or table longer than ~15 lines (a full runnable workflow/config file, a multi-step script, a sample end-to-end implementation) into `examples/` or `templates/` inside the skill's own folder, leaving a link with a one-line caption.
 - Violation: a 120-line GitHub Actions YAML pasted under `# Example` instead of `./examples/<name>.example.md`; or the opposite — a `make`-target contract table moved to `examples/contract.md`, leaving `# Rule` saying only "see the example".
 - Risk: an over-long example buries the rules the agent must skim; a moved-out contract forces the agent to open a second file to learn a rule it must follow.
-- Fix: move only content that illustrates a rule; keep a code block, snippet, or table inline when it defines part of the rule/contract itself (a table of required fields, a 3-line config flag).
+- Fix: move only content that illustrates a rule; keep a code block, snippet, or table inline when it defines part of the rule/contract itself (a table of required fields, a 3-line config flag). For a code block, script, or config file, first apply [skill-code-delivery](skills/design/skill-code-delivery.skill/skill-code-delivery.skill.md): code that is the same in every project leaves the skill file as a script, asset, or template whatever its length, and only what remains an instruction falls under this rule.
 
 ## SHOULD
 
@@ -96,5 +96,6 @@ Remove every `hint`, `example`, and `code example` block, and the `# How Apply t
 - [ ] Any `# Goal`/`# Core Principle` bullet over ~20 words starts with `**{Name}** - `; the name is self-explanatory without backstory and not a restatement of the description's opening.
 - [ ] No fact is stated in two places; other mentions are anchor links to the one statement.
 - [ ] No inline code block or table over ~15 lines unless it defines part of the rule/contract; longer illustrations live in `examples/`/`templates/` with a one-line pointer.
+- [ ] Every code block, script, and config file was classified per [skill-code-delivery](skills/design/skill-code-delivery.skill/skill-code-delivery.skill.md) before the previous item was applied to it.
 - [ ] Justifications carry no authoring narrative; at most one precedent per `Risk`, stated as a fact about the artifact.
 - [ ] No `hint`/`example`/`code example` block and no `# How Apply this template` section remain.
