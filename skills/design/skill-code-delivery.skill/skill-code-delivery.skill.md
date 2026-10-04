@@ -87,9 +87,9 @@ Execute each script, build or lint each asset, and fill each template with sampl
 
 ### One reference line, no inline copy
 Replace the moved code in the skill with one line: the form's verb, a link to the file, and — for an asset or template — the target path in the project.
-- Violation: "See [retry.ts](./assets/retry.ts) for an example of the retry helper", or the file's content repeated under the link.
+- Violation: "See `[retry.ts](./assets/retry.ts)` for an example of the retry helper", or the file's content repeated under the link.
 - Risk: "see … for an example" invites adaptation, and an inline copy drifts from the file.
-- Fix: "Copy [retry.ts](./assets/retry.ts) verbatim to `src/shared/retry.ts`; do not modify it." — for a library, the install command with a pinned version.
+- Fix: "Copy `[retry.ts](./assets/retry.ts)` verbatim to `src/shared/retry.ts`; do not modify it." — for a library, the install command with a pinned version.
 
 ### Ask before creating a library
 Ask the user before choosing the Library form, and apply every other form without asking.
