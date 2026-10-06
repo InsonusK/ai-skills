@@ -1,6 +1,6 @@
 # Pull-request workflow example
 
-Project: any stack that has `.github/actions/check-changes` and `.github/actions/check-version` (see the matching `devops-github-action-check-changes-in-{stack}`/`devops-github-action-check-version-in-{stack}` skills).
+Project: any stack that has `.github/actions/check-changes` and `.github/actions/check-version` (see the matching `devops-github-action-check-changes-in-{stack}`/`devops-github-action-check-version-in-{stack}` skills). Only the `Set up {stack}` step below changes between stacks.
 
 ```yaml
 name: Pull request
@@ -37,6 +37,13 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/check-version
         id: version
+      # check-version only reports `bumped` - it never fails on its own, so
+      # without this step the job always passes and the bump is never enforced.
+      - name: Require a version bump
+        if: steps.version.outputs.bumped != 'true'
+        run: |
+          echo "::error::Version ${{ steps.version.outputs.current }} must be strictly greater than master's"
+          exit 1
 
   unit-test:
     name: Unit tests
@@ -45,6 +52,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # The only step that changes between stacks: install the project's
+      # toolchain version (and cache dependencies) instead of relying on
+      # whatever ubuntu-latest preinstalls.
+      # - name: Set up {stack}
+      #   uses: actions/setup-{stack}@v...
+
       - run: make unit-test
 
   report:
