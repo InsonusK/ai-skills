@@ -2,7 +2,7 @@
 name: cucmber-testing-in-go
 description: Go/godog-specific rules for Cucumber testing — the single TestFeatures runner, stdout step logging, step-file layout, and VSCode glue configuration
 whenToUse: when writing or reviewing godog scenarios or step definitions in a Go project
-updated: 20260917
+updated: 20261006
 tags:
   - stack/go
   - concern/testing/bdd
@@ -40,7 +40,7 @@ Keep `"go.testFlags": ["-v"]` in `.vscode/settings.json`, and use `go test ... -
 - Fix: set `go.testFlags: ["-v"]` in the repository's `.vscode/settings.json`, and pass `-v` when running from the terminal (e.g. `go test ./client/eaxmi/test/ -v -run 'TestFeatures/<name>'` to target one scenario).
 
 ### One TestFeatures runner per test package
-Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Format: "pretty", Paths: []string{"../features"}, Tags: "~@todo", Strict: true, TestingT: t}`, and no other `func TestXxx` in that package.
+Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Format: "pretty", Paths: []string{"../features"}, Tags: "~@todo", Strict: true, TestingT: t}`, and no other `func TestXxx` in that package. `Format` starts from `"pretty"` and gains a `cucumber:` output per [Emit classic Cucumber JSON](#emit-classic-cucumber-json).
 - Violation: omitting `Format` from `godog.Options`.
 - Risk: godog has no default formatter — an omitted `Format` fails every run with `unregistered formatter name: ""` before a single step executes, regardless of whether the scenarios themselves are correct (verified against a real `godog v0.16.0` run, not assumed).
 - Fix: always set `Format: "pretty"` explicitly (or another registered formatter — `cucumber`, `events`, `junit`, `progress` — if the suite specifically needs one of those).
@@ -70,6 +70,20 @@ Never rely on an escaped double quote (`\"`) inside a Gherkin step's text or in 
 - Risk: the scenario is unparseable or the assertion never matches because the escape is not processed.
 - Fix: format spy call strings without quotes (`Element(Model/Pkg/Goal1)`).
 
+### Emit classic Cucumber JSON
+godog emits **classic Cucumber JSON**: when the `CUCUMBER_JSON_DIR` environment variable is set, add a `cucumber:` output next to `pretty`, one file per test package (godog runs once per package, so a shared file name would be overwritten):
+```go
+format := "pretty"
+if dir := os.Getenv("CUCUMBER_JSON_DIR"); dir != "" {
+	wd, _ := os.Getwd() // the test package's directory - unique per package
+	format += ",cucumber:" + filepath.Join(dir, strings.NewReplacer("/", "_", "\\", "_", ":", "_").Replace(wd)+".json")
+}
+// godog.Options{Format: format, ...}
+```
+- Violation: `Format: "pretty"` hard-coded with no `cucumber:` output, or one fixed file name shared by every package.
+- Risk: no standard report reaches the living-doc renderer, or packages overwrite each other's report.
+- Fix: build `Format` as above; `make unit-test` sets `CUCUMBER_JSON_DIR`.
+
 ## SHOULD
 
 ### Configure the VSCode Cucumber glue for Go
@@ -87,6 +101,7 @@ For a codec or serializer, write the scenario in-memory, `WriteFile`, reopen, an
 # Check list
 - [ ] Exactly one `TestFeatures` per test package; no other `func TestXxx` alongside it.
 - [ ] `godog.Options` sets `Format: "pretty"` (or another registered formatter), `Tags: "~@todo"`, `Strict: true`, `TestingT: t`.
+- [ ] With `CUCUMBER_JSON_DIR` set, `Format` adds `cucumber:<dir>/<package-unique-name>.json`.
 - [ ] No step returns `godog.ErrSkip` to mean "not implemented yet" — such scenarios are tagged `@todo` instead.
 - [ ] Every step log goes through a `fmt.Printf`-based helper, never `godog.T(ctx).Logf`.
 - [ ] `.vscode/settings.json` sets `"go.testFlags": ["-v"]`.

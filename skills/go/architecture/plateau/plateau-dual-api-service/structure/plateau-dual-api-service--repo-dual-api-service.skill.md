@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level package under this p
 domain: skill
 type: template
 plateau: plateau-dual-api-service
-version: 20260924000000
+version: 20261006000000
 tags:
   - skill/template/repo
   - plateau/plateau-dual-api-service
@@ -71,6 +71,7 @@ MUST:
 - `unit-test`/`mutation-test`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint`/`proto-gen` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
 - `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `public/index.html` — never generated.
 - `make unit-test` writes `tmp/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
+- `make unit-test` writes godog's classic Cucumber JSON to `tmp/report/tests/cucumber/` and renders `tmp/report/tests/livingdoc/` via `tools/livingdoc/` (skipped, never failed, without `npm`).
 - `proto/linkcheck/linkcheck.proto` stays flat (no version subdirectory) — its path must match `go_package`'s flat `gen/api` exactly, or `buf generate` emits code at a different Go import path than every hand-written file expects (verified — this is the actual, observed failure mode, not a hypothetical). `buf/buf.gen.yaml` uses `local:` plugins (`protoc-gen-go`, `protoc-gen-go-grpc`, both `go install`ed), not `buf.build` remote plugins.
 
 __Applied solutions:__
