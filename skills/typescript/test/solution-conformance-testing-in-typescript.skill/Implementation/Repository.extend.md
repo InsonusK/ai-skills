@@ -21,6 +21,11 @@ This `Makefile`/`scripts/` pair assumes a single-package repository, where the r
     {rule}.steps.ts
 /report-template
   index.html
+/tools
+  /livingdoc            (copied verbatim from solution-conformance-testing)
+    package.json
+    package-lock.json
+    render.mjs
 /scripts
   unit-test.sh
   normalize-scenarios.sh
@@ -39,6 +44,7 @@ README.md
 | ----------------- | ----------- |
 | /report-template | index.html | Static landing page `test-report.sh` copies into `public/`; links to `scenarios/`, `tests/`, `coverage/`, `mutation/`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | /scripts | unit-test.sh | Runs `cucumber-js` (wrapped in `c8` when `WITH_CODE_COVERAGE=true`), normalizes results into `tmp/result/unit-test.json` (+ `coverage-test.json`), keeps the native report under `tmp/report/tests` (+ `tmp/report/coverage`) |
+| /tools/livingdoc | package.json, package-lock.json, render.mjs | Copied verbatim from `solution-conformance-testing`; `unit-test.sh` renders `tmp/report/tests/cucumber/messages.ndjson` → `tmp/report/tests/livingdoc/` |
 | /scripts | normalize-scenarios.sh | `.feature` inventory + per-scenario results → `tmp/result/scenarios.json`; identical across the .NET/Python/TypeScript variants |
 | /scripts | messages-results.jq | cucumber-js's Cucumber Messages → `[{uri, line, status}]` for `normalize-scenarios.sh` |
 | /scripts | mutation-test.sh | Runs `stryker run` against a `stryker.conf.json`-derived config (scoped to `DELTA_BASE` when `ONLY_DELTA=true`), normalizes results into `tmp/result/mutation-test.json`, keeps the native report under `tmp/report/mutation` |
@@ -92,6 +98,9 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
 - Never let `report-template/index.html` live under `.github/`.
   - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or publishing configuration it does not — the actual publishing step is a separate, layered CI concern this solution never owns.
   - Fix: keep it at `report-template/index.html`, copied by `test-report.sh` — never generated, never placed under `.github/`.
+- Keep cucumber-js's `message` formatter writing to `tmp/report/tests/cucumber/messages.ndjson` (not a temp file), and render the living doc with the base's `tools/livingdoc/` after the run, as `scripts/unit-test.sh` does — never install the renderer into the project's own `package.json`.
+  - Risk: a temp file leaves nothing for the renderer; a devDependency renderer drifts from every other stack's pinned version.
+  - Fix: follow the template's `CUCUMBER_MESSAGES` path and living-doc block.
 
 # Unittest TestCases
 - [ ] WHEN `make unit-test` runs THEN `tmp/result/unit-test.json` and `tmp/report/tests/` exist.

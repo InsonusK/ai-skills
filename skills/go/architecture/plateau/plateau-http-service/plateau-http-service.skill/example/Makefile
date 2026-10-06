@@ -31,8 +31,9 @@ COVERPKG := $(shell go list ./... | grep -Ev '/(gen|tools)(/|$$)' | tr '\n' ',' 
 # when WITH_CODE_COVERAGE=true.
 unit-test:
 	@mkdir -p tmp/result tmp/report/tests tmp/report/coverage
+	@rm -rf tmp/report/tests/cucumber tmp/report/tests/livingdoc && mkdir -p tmp/report/tests/cucumber
 	@status=0; \
-	set -o pipefail; go test -json -coverpkg=$(COVERPKG) -coverprofile=tmp/report/coverage/coverage.out ./... \
+	set -o pipefail; CUCUMBER_JSON_DIR=$(CURDIR)/tmp/report/tests/cucumber go test -json -coverpkg=$(COVERPKG) -coverprofile=tmp/report/coverage/coverage.out ./... \
 		| tee tmp/report/tests/go-test.json \
 		| go run ./tools/normalize_unittest || status=$$?; \
 	go run ./tools/normalize_scenarios tmp/report/tests/go-test.json || status=$$?; \
@@ -41,6 +42,10 @@ unit-test:
 		pct=$$(go tool cover -func=tmp/report/coverage/coverage.out | tail -1 | awk '{print $$3}' | tr -d '%'); \
 		echo "{\"linePct\": $$pct}" > tmp/result/coverage-test.json; \
 	fi; \
+	if command -v npm >/dev/null 2>&1; then \
+		{ npm ci --prefix tools/livingdoc --silent && node tools/livingdoc/render.mjs tmp/report/tests/cucumber tmp/report/tests/livingdoc; } \
+			|| echo "livingdoc: render failed"; \
+	else echo "livingdoc: npm not found - skipping living-doc report"; fi; \
 	exit $$status
 
 # mutation-test runs gremlins over the whole module (or, with
