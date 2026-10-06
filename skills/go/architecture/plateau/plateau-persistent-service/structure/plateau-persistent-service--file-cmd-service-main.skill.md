@@ -70,6 +70,7 @@ import (
 	"{module-path}/internal/infrastructure/reputationcache"
 	"{module-path}/internal/infrastructure/reputationclient"
 	"{module-path}/internal/logging"
+	"{module-path}/internal/version"
 )
 
 func main() {
@@ -86,6 +87,7 @@ func run() error {
 	}
 
 	logging.Init(cfg.LogLevel)
+	slog.Info("starting", "version", version.Version)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -177,6 +179,7 @@ __Applied solutions:__
 # Check list
 - [ ] `SIGINT`/`SIGTERM` triggers both `grpcServer.GracefulStop()` and `httpServer.Shutdown`, not an abrupt process exit.
 - [ ] `logging.Init` runs before the first adapter constructor.
+- [ ] `run()` logs `starting` with the `version` attribute right after `logging.Init`.
 - [ ] `run()` uses exactly one `errgroup.Group`; no serve loop runs outside it.
 - [ ] `reputationclient.Dial`, `reputationcache.New`, and `linkstore.New` are all called before `services.NewLinkCheckService`, and their results passed directly into that call.
 

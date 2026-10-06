@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/example/linkcheck-service/internal/domain/services"
+	"github.com/example/linkcheck-service/internal/version"
 )
 
 type Server struct {
@@ -26,9 +27,16 @@ func (s *Server) Handler() http.Handler {
 	return mux
 }
 
+type healthResponse struct {
+	Status  string `json:"status"`
+	Version string `json:"version"`
+}
+
+// handleHealth reports liveness and the running binary's version, so a
+// consumer can tell which build it is talking to.
 func handleHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte("ok"))
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(healthResponse{Status: "ok", Version: version.Version})
 }
 
 type checkRequest struct {

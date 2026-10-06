@@ -95,6 +95,12 @@ Compute the shared `YYYYMMDDhhmmss` UTC timestamp inside the `check-version` job
 - Risk: recomputing the timestamp separately can give the Docker image a different tag than the one [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s package uses for the same commit, breaking traceability between the two artifacts of one push.
 - Fix: emit `timestamp` from the shared `check-version` composite action's job and reuse it.
 
+### Pass the version to the image build
+Pass `build-args: VERSION=${{ needs.check-version.outputs.current }}` to `docker/build-push-action`.
+- Violation: the image is built without a `VERSION` build-arg.
+- Risk: the Dockerfile's `ARG VERSION` stays at its default, so the binary inside a release image reports `"dev"` instead of its tag.
+- Fix: add the `build-args` line from the [example](./templates/docker-release-publish.example.md); the project's Dockerfile declares `ARG VERSION` and injects it per its stack.
+
 ### Set up buildx before build-push
 Run `docker/setup-buildx-action` immediately before `docker/build-push-action`.
 - Violation: `docker/build-push-action` called on the runner's default builder.
@@ -121,3 +127,4 @@ See [Docker-release-publish workflow example](./templates/docker-release-publish
 - [ ] The timestamp is computed once in `check-version` and reused, never recomputed in `docker-publish`.
 - [ ] No GitHub Release is created by this workflow — that is [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]]'s job.
 - [ ] `docker/setup-buildx-action` runs before `docker/build-push-action`.
+- [ ] `docker/build-push-action` receives `build-args: VERSION=<check-version current>`.

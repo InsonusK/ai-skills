@@ -13,6 +13,7 @@ import (
 	"github.com/example/linkcheck-service/internal/config"
 	"github.com/example/linkcheck-service/internal/domain/services"
 	"github.com/example/linkcheck-service/internal/logging"
+	"github.com/example/linkcheck-service/internal/version"
 )
 
 func main() {
@@ -29,6 +30,7 @@ func run() error {
 	}
 
 	logging.Init(cfg.LogLevel)
+	slog.Info("starting", "version", version.Version)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()

@@ -61,6 +61,9 @@ Start from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.
         with:
           push: true
           tags: ${{ steps.tags.outputs.value }}
+          # The Dockerfile injects this into the binary (Go: -ldflags, see the
+          # stack's repository-structure solution) and the OCI version label.
+          build-args: VERSION=${{ needs.check-version.outputs.current }}
           # Attestations on the master (release) build only.
           provenance: ${{ github.ref_name == 'master' && 'mode=max' || 'false' }}
           sbom: ${{ github.ref_name == 'master' }}
