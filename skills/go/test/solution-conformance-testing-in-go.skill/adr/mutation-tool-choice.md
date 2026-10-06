@@ -16,11 +16,13 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#gremlins (selected)]]
+**Selected variant:** [[#gremlins]]
 
 # Searched variants
 
-## gremlins (selected)
+## gremlins
+
+**Selected.**
 
 ### Description
 

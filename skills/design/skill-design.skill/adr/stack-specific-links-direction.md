@@ -17,11 +17,13 @@ The reverse direction is the problem. `ai-skill-manager` loads a skill for a pro
 
 # Selected variant
 
-**Selected variant:** [[#Agnostic skill names, never links; specialized skill keeps its link up (selected)]]
+**Selected variant:** [[#Agnostic skill names, never links; specialized skill keeps its link up]]
 
 # Searched variants
 
-## Agnostic skill names, never links; specialized skill keeps its link up (selected)
+## Agnostic skill names, never links; specialized skill keeps its link up
+
+**Selected.**
 
 ### Description
 A stack-agnostic skill mentions its stack-specialized extensions only as plain text — the skill name in backticks (`` `cucmber-testing-in-go` ``), never a wikilink — and recommends asking the user which one to load for the stack at hand. A stack-specialized skill keeps its existing link to the stack-agnostic base it extends (already justified as a required standard under `cross-skill-links-scope.md`).

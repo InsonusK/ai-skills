@@ -14,11 +14,13 @@ tags:
 Once [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill|delta-conflict-detection]]'s classifier assigns a code to a group of solutions sharing an `element/{element-name}` tag, the result (the code, the ordering, the resolution) needs to be recorded somewhere durable — otherwise the same classification work gets silently redone the next time someone touches one of the intersecting solutions. This repository's prior design conversation (recorded before this skill existed) left two open questions: per-element files, or one shared document per plateau/catalog; and where — attached to the catalog root, or to a specific plateau.
 
 # Selected variant
-[[#Per-element files at the catalog root, cumulative across plateaus (selected)]]
+[[#Per-element files at the catalog root, cumulative across plateaus]]
 
 # Searched variants
 
-## Per-element files at the catalog root, cumulative across plateaus (selected)
+## Per-element files at the catalog root, cumulative across plateaus
+
+**Selected.**
 
 ### Description
 One file per conflicting element (`{catalog}/registry/{element-name}.md`), at the catalog root — a sibling of `variability-map.md` and `plateau/`, exactly mirroring how [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/one-map-per-catalog|variability-map.md is one file per catalog, not per plateau]] and how `plateau-repository.md` is likewise one file per catalog. The file holds the *current* (deepest-known) classification and involved-solutions list, plus a compact growth-history table (one row per plateau where the intersecting set changed: plateau name, N, what changed, how it was ground-truth verified in that plateau's own `example/`). Every plateau whose `created_by`/`parent_plateaus` includes the element links to this same file from its own `registry:` YAML property — the file is not owned by any one plateau.

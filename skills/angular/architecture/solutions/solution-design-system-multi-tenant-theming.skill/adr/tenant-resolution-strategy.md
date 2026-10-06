@@ -23,11 +23,13 @@ Tenant *selection* (which tenant a given logged-in user belongs to) is the consu
 
 # Selected variant
 
-**Selected variant:** [[#A [data-tenant] attribute selector, set by the consuming app (selected)]]
+**Selected variant:** [[#A data-tenant attribute selector, set by the consuming app]]
 
 # Searched variants
 
-## A [data-tenant] attribute selector, set by the consuming app (selected)
+## A data-tenant attribute selector, set by the consuming app
+
+**Selected.**
 
 ### Description
 

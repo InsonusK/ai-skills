@@ -16,11 +16,13 @@ Several structural facts the TaskModule conformance pilot needs to guarantee —
 
 # Selected variant
 
-**Selected variant:** [[#Mono.Cecil, as an xUnit Fact (selected)]]
+**Selected variant:** [[#Mono.Cecil, as an xUnit Fact]]
 
 # Searched variants
 
-## Mono.Cecil, as an xUnit Fact (selected)
+## Mono.Cecil, as an xUnit Fact
+
+**Selected.**
 
 ### Description
 

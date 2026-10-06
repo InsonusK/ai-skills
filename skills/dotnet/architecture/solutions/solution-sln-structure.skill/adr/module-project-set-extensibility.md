@@ -21,7 +21,7 @@ An unconditional four-project scaffold forces every module to carry an empty `Do
 
 # Selected variant
 
-**Selected variant:** [[#Base set of two (Interfaces, Application), Domain and Api pattern-added (selected)]]
+**Selected variant:** [[#Base set of two (Interfaces, Application), Domain and Api pattern-added]]
 
 # Searched variants
 
@@ -39,7 +39,9 @@ An unconditional four-project scaffold forces every module to carry an empty `Do
 - An empty `Domain` project is a standing invitation to put a bare entity there without `solution-domain-behaviour`'s guards.
 - "Does this module have a domain layer / an API?" can no longer be answered by looking at its project list.
 
-## Base set of two (Interfaces, Application), Domain and Api pattern-added (selected)
+## Base set of two (Interfaces, Application), Domain and Api pattern-added
+
+**Selected.**
 
 ### Description
 `solution-sln-structure` guarantees `Interfaces` + `Application` per module. `{Module}.Domain` is created by `solution-domain-behaviour` (VP1). `{Module}.Api` is created by a new shared `solution-api-project` (VP8 + VP9 prerequisite). Further projects (`{Module}.Domain.Rules`, persistence layers) are created by their owning pattern solution. `solution-sln-structure` states the base and the general extension permission; the concrete optional-project list is read from the dependency graph.

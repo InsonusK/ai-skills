@@ -16,11 +16,13 @@ The spec promises one Gherkin source re-proven at every layer that redirects to 
 
 # Selected variant
 
-**Selected variant:** [[#Folders per classification, linked by folder (selected)]]
+**Selected variant:** [[#Folders per classification, linked by folder]]
 
 # Searched variants
 
-## Folders per classification, linked by folder (selected)
+## Folders per classification, linked by folder
+
+**Selected.**
 
 ### Description
 

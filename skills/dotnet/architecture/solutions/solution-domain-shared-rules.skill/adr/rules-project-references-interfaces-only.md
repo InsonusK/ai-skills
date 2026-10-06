@@ -16,7 +16,7 @@ The v3.1 Variability Map's VP4 (SharedRules) row carries no `Constraint`. But th
 
 # Selected variant
 
-**Selected variant:** [[#Domain.Rules references Interfaces + FluentValidation only; VP4 not gated on VP1 (selected)]]
+**Selected variant:** [[#Domain.Rules references Interfaces + FluentValidation only; VP4 not gated on VP1]]
 
 # Searched variants
 
@@ -34,7 +34,9 @@ The v3.1 Variability Map's VP4 (SharedRules) row carries no `Constraint`. But th
 - `{Module}.Domain.Rules.csproj` per v3's own checklist references "FluentValidation and `{Module}.Interfaces` … nothing else" — it never referenced `{Module}.Domain`. The "Domain" in the name is about the *concept*, not a project reference.
 - Forcing VP1 makes a rules-only module (a pure validation/policy module) impossible.
 
-## Domain.Rules references Interfaces + FluentValidation only; VP4 not gated on VP1 (selected)
+## Domain.Rules references Interfaces + FluentValidation only; VP4 not gated on VP1
+
+**Selected.**
 
 ### Description
 `{Module}.Domain.Rules.csproj` references `{Module}.Interfaces` (Soft VO types) + FluentValidation, nothing else. `solution-domain-shared-rules` `depends_on` = `solution-sln-structure`, `solution-dto-property-validators`, `solution-dotnet-conformance-testing`. The `extends` entries for `{Module}.Domain.ValueObjects.{ValueObject}.cs` and `{Module}.Domain.Entities.{Entity}.cs` are conditional: they are applied only for a module that also has VP3 / VP1. The Variability Map keeps VP4 with no constraint.

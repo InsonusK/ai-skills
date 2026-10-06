@@ -13,12 +13,14 @@ tags:
 Decide where an agent writes a skill that was formulated together with the user, so that it survives the session, is reviewed and versioned like other project files, and reaches every agent skill folder the project configures.
 
 # Selected variant
-**Selected variant:** [[#./skills as source, synced by aism (selected)]]
+**Selected variant:** [[#./skills as source, synced by aism]]
 - One copy to edit, and every agent folder gets the same content.
 
 # Searched variants
 
-## ./skills as source, synced by aism (selected)
+## ./skills as source, synced by aism
+
+**Selected.**
 
 ### Description
 The skill is written under `./skills/`; `ai-skills.yaml` lists `./skills` as a `local` source; `aism sync` copies it into `.claude/skills`, `.agents/skills`, and any other target, applying adapters such as `claude-property-adapter`.

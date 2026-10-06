@@ -16,11 +16,13 @@ Earlier documentation for this solution treated Format, Semantic, and Domain val
 
 # Selected variant
 
-**Selected variant:** [[#One mechanism, classified by wrapper origin (selected)]]
+**Selected variant:** [[#One mechanism, classified by wrapper origin]]
 
 # Searched variants
 
-## One mechanism, classified by wrapper origin (selected)
+## One mechanism, classified by wrapper origin
+
+**Selected.**
 
 ### Description
 

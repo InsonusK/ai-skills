@@ -22,13 +22,15 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#Configuration classes in {Module}.Domain/Configurations, abstractions-only EF Core reference (selected)]]
+**Selected variant:** [[#Configuration classes in {Module}.Domain/Configurations, abstractions-only EF Core reference]]
 
 `{Module}.Domain` gains a `/Configurations` folder with one `{Entity}Config.cs` per entity and a package reference to `Microsoft.EntityFrameworkCore` — used **only** for `IEntityTypeConfiguration<T>`, `EntityTypeBuilder<T>`, and `ApplyConfigurationsFromAssembly`. No provider package (`.Sqlite`, `.SqlServer`, in-memory), no `DbContext`, no repository lives in `Domain`. `solution-domain-behaviour`'s "no EF Core" rule is narrowed by the Wave-1+2 audit (S6) to "`solution-domain-configuration` may add an `IEntityTypeConfiguration`-only reference." Cross-module foreign-key configuration — which by definition spans two bounded contexts — stays in `App.Infrastructure/Persistence/Configurations`.
 
 # Searched variants
 
-## Configuration classes in {Module}.Domain/Configurations, abstractions-only EF Core reference (selected)
+## Configuration classes in {Module}.Domain/Configurations, abstractions-only EF Core reference
+
+**Selected.**
 
 ### Description
 One `{Entity}Config.cs` per entity under `{Module}.Domain/Configurations`. `{Module}.Domain` references `Microsoft.EntityFrameworkCore` for the configuration abstractions only. The `DbContext` (in `App.Infrastructure`) calls `ApplyConfigurationsFromAssembly` over each module's `Domain` assembly to discover them.

@@ -11,7 +11,7 @@ The three-tier config pattern (see [[three-tier-variable-precedence.md|Three-tie
 
 # Selected variant
 
-**Selected variant:** [[#Separate _secret_config, sourced from SOPS-encrypted files (selected)]]
+**Selected variant:** [[#Separate _secret_config, sourced from SOPS-encrypted files]]
 - Keeps every accidental `debug: var=_{{ role_name }}_config` or verbose task-argument dump free of secret material by construction.
 - Reuses the same `community.sops.sops` vars plugin mechanism the project already needs for any SOPS-based secret, rather than inventing a bespoke encryption scheme per role.
 
@@ -42,7 +42,9 @@ Keep one `group_vars/{{ group }}.yml` file per group/host; encrypt individual se
 - Encrypting scalars inline with `ansible-vault encrypt_string` is materially more manual/error-prone to author and rotate than running `sops -e` over a whole file; every secret value needs its own individual vault-encrypt invocation.
 - The user's stated storage requirement for this solution is SOPS specifically, not Ansible Vault; SOPS does not have an established "inline encrypted scalar mixed into a plaintext file" convention the way Ansible Vault's `!vault` tag does — SOPS instead operates at file granularity, encrypting every leaf value in whichever file it is pointed at.
 
-## Separate `_secret_config`, sourced from SOPS-encrypted files (selected)
+## Separate _secret_config, sourced from SOPS-encrypted files
+
+**Selected.**
 
 ### Description
 `{{ role_name }}_group_secret` lives in `group_vars/{{ group }}/secrets.sops.yaml`; `{{ role_name }}_secret` lives in `host_vars/{{ host }}/secrets.sops.yaml` — both encrypted with `sops` and auto-decrypted at inventory-load time by the `community.sops.sops` vars plugin (see [[../glossary/sops-secrets.md|SOPS-encrypted inventory secrets]]). The role's `vars/main.yml` combines these two inputs into `_{{ role_name }}_secret_config`, a variable structurally separate from `_{{ role_name }}_config`. This requires switching `group_vars`/`host_vars` from single files to per-group/per-host directories, so the encrypted secrets file can sit alongside the plaintext vars file.

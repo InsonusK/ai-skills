@@ -2,7 +2,9 @@
 name: adr-create
 description: Define how to record an architecture decision as an ADR (architecture decision record) inside the skill that owns the decision
 whenToUse: when an architecture decision is made while building or editing a skill and the selected variant together with the considered alternatives must be recorded
-updated: 20260909
+updated: 20261006
+adr:
+  - adr/selected-marker-inside-section.md
 tags:
   - skill/architecture/design
   - stack
@@ -12,7 +14,7 @@ tags:
 
 # Goal
 - One ADR file per decision, created from [adr.template.md](./templates/adr.template.md) under the owning skill's `adr/` folder, recording the problem, the selected variant, and every considered alternative with its `Description`/`Benefits`/`Costs`.
-- The selected variant listed in `# Searched variants` alongside the rejected ones and marked as selected, and named and linked from `# Selected variant`.
+- The selected variant listed in `# Searched variants` alongside the rejected ones, marked by a `**Selected.**` line inside its section (never in its heading), and linked from `# Selected variant` by a link whose text equals that heading verbatim.
 - The ADR's YAML `tags` list carrying `concern/documentation/adr`.
 - No `hint`/`example`/`code example` block left in the final ADR file.
 - Every ADR registered in the owning skill's `adr:` YAML property and linked from its body.
@@ -41,15 +43,16 @@ Store each ADR file in an `adr/` folder inside the skill folder that owns the de
 - Fix: create an ADR file from [adr.template.md](./templates/adr.template.md) and link it from the skill body.
 
 ### List the selected variant among the rejected ones
-List the selected variant in `# Searched variants` together with the rejected variants and mark it as selected (for example "(selected)" in its heading).
-- Violation: `# Selected variant` names "Handle conflicts in HTTP middleware", but `# Searched variants` lists only the rejected options.
-- Risk: the reader cannot compare the chosen variant against the alternatives on equal terms.
-- Fix: list the selected variant with the same `Description`/`Benefits`/`Costs` structure and mark it selected.
+List the selected variant in `# Searched variants` together with the rejected variants, and mark it with a `**Selected.**` line directly under its heading — never inside the heading itself. Decision recorded in [selected-marker-inside-section](./adr/selected-marker-inside-section.md).
+- Violation: `# Selected variant` names "Handle conflicts in HTTP middleware", but `# Searched variants` lists only the rejected options; or the entry is headed `## Handle conflicts in HTTP middleware (selected)`.
+- Risk: the reader cannot compare the chosen variant against the alternatives on equal terms; a marker in the heading changes its anchor, so the link from `# Selected variant` breaks.
+- Fix: list the selected variant with the same `Description`/`Benefits`/`Costs` structure, keep its heading plain, and put `**Selected.**` as the first line of its section.
 
 ### Link the selection to its entry
-Name and link the selected variant from `# Selected variant` to its entry in `# Searched variants`.
-- Risk: the reader cannot tell which searched variant was chosen.
-- Fix: add the explicit name and link in `# Selected variant`.
+Name and link the selected variant from `# Selected variant` to its entry in `# Searched variants`, with link text equal to that entry's heading character for character.
+- Violation: `[[#Full version in the file]]` pointing at `## Full major.minor.patch in the file`.
+- Risk: the reader cannot tell which searched variant was chosen, and a link whose text differs from the heading resolves to nothing.
+- Fix: copy the heading text verbatim into the link.
 
 ### Describe every variant the same way
 Describe every variant with `Description`, `Benefits`, and `Costs` subsections.
@@ -84,6 +87,7 @@ Write one ADR per decision instead of mixing several decisions into one file.
 # Check list
 - [ ] ADR file is created from [adr.template.md](./templates/adr.template.md) inside the owning skill's `adr/` folder.
 - [ ] YAML header is filled: `name`, `description`, `problem`, `decision`, `tags`.
+- [ ] The selected variant's heading carries no marker, its section starts with `**Selected.**`, and the `# Selected variant` link text equals that heading verbatim.
 - [ ] The `tags` list contains the mandatory tag `concern/documentation/adr`.
 - [ ] `# Problem` states the problem or question the decision solves.
 - [ ] `# Selected variant` explicitly names and links to a variant listed in `# Searched variants`.

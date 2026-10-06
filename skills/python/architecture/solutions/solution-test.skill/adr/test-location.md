@@ -9,13 +9,15 @@ decision: Use a top-level test directory mirroring src by default; allow co-loca
 Decide where and how to place test files in Python projects so that they are easy to find and maintain, while ensuring they are not included in installed packages.
 
 # Selected variant
-**Selected variant:** [[#Top-level test directory mirroring src structure (selected)]]
+**Selected variant:** [[#Top-level test directory mirroring src structure]]
 - Default approach for all Python projects.
 - Co-located tests are allowed only when explicitly needed and properly excluded from packaging.
 
 # Searched variants
 
-## Top-level test directory mirroring src structure (selected)
+## Top-level test directory mirroring src structure
+
+**Selected.**
 
 ### Description
 Keep a top-level `test/` directory whose internal structure mirrors the `src/` directory. Test modules are named `{module}_test.py`.

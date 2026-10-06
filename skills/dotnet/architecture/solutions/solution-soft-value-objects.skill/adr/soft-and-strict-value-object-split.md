@@ -18,7 +18,7 @@ Adapted from the original `soft-value-objects-and-application-validators` ADR; t
 
 # Selected variant
 
-**Selected variant:** [[#Soft{ValueObject} in Interfaces, strict {ValueObject} in Domain, one inherits the other (selected)]]
+**Selected variant:** [[#Soft{ValueObject} in Interfaces, strict {ValueObject} in Domain, one inherits the other]]
 
 - `{Module}.Interfaces` remains declarations-only and exposes the `Soft{ValueObject}` shape — a plain record, no validation
 - `{Module}.Domain.ValueObjects.{ValueObject}` inherits from `Soft{ValueObject}` and enforces invariants by calling `Check()`
@@ -50,7 +50,9 @@ Keep one `{ValueObject}` type, always strict, and require every consumer (includ
 - A DTO carrying invalid client data cannot be constructed at all, defeating collect-all validation at the transport boundary
 - `{Module}.Interfaces` would need to reference `{Module}.Domain` (or the type would need to move there), breaking the module's declarations-only contract
 
-## Soft{ValueObject} in Interfaces, strict {ValueObject} in Domain, one inherits the other (selected)
+## Soft{ValueObject} in Interfaces, strict {ValueObject} in Domain, one inherits the other
+
+**Selected.**
 
 ### Description
 `Soft{ValueObject}` is a plain, permissive record in `{Module}.Interfaces`. `{ValueObject}` in `{Module}.Domain` inherits from it and adds invariant enforcement via `Check()`. A `Soft{ValueObject}` does not require a matching `{ValueObject}` — some values only ever need the permissive strength.

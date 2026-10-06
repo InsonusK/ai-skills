@@ -16,7 +16,7 @@ A service in this family is a multi-project solution (App.Host, Shared, Building
 
 # Selected variant
 
-**Selected variant:** [[#Central Package Management (selected)]]
+**Selected variant:** [[#Central Package Management]]
 
 - `Directory.Packages.props` at the repo root, `ManagePackageVersionsCentrally=true`
 - every `<PackageReference>` is versionless; every version is a `<PackageVersion>` entry in the central file
@@ -52,7 +52,9 @@ Define `<MediatRVersion>` etc. as MSBuild properties in `Directory.Build.props`,
 - Nothing stops a project from writing a literal version instead of the property
 - Not the idiomatic .NET mechanism for this; tooling (Dependabot, `dotnet list package`, NuGet audit) understands `Directory.Packages.props`, not ad-hoc properties
 
-## Central Package Management (selected)
+## Central Package Management
+
+**Selected.**
 
 ### Description
 `Directory.Packages.props` at the repo root with `<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>` and one `<PackageVersion Include="X" Version="N" />` per package. Every `<PackageReference>` in every project is versionless. Optionally `CentralPackageTransitivePinningEnabled` pins transitive dependencies to the same list.
