@@ -19,7 +19,9 @@ Every contract carries its major version in the package/URL (`orders.v1`, `/v1/`
 
 # Searched variants
 
-## Full major.minor.patch in the file (selected)
+## Full major.minor.patch in the file
+
+**Selected.**
 
 ### Description
 `info.version` / the `.proto` version comment holds `1.4.2`; its major must equal the `v1` in the package/URL.

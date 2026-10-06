@@ -18,7 +18,9 @@ tags:
 
 # Searched variants
 
-## First-line version comment (selected)
+## First-line version comment
+
+**Selected.**
 
 ### Description
 The first line of every `.proto` file is `// version: 1.4.2`.
