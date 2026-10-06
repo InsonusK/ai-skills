@@ -52,7 +52,7 @@ Never store the version in a file; treat the most recent `vX.Y.Z` git tag as the
 ## version.go constant
 
 ### Description
-Store the version as a Go constant (e.g. `const Version = "1.4.0"` in a `version.go` file), parsed with a small regex or `go/ast` in `check-version`.
+Store the release number itself as a Go constant (e.g. `const Version = "1.4.0"` in a `version.go` file), parsed with a small regex or `go/ast` in `check-version`.
 
 ### Benefits
 - The version is available to the compiled binary at runtime (e.g. for a `--version` flag) without extra embedding steps.
@@ -60,3 +60,5 @@ Store the version as a Go constant (e.g. `const Version = "1.4.0"` in a `version
 ### Costs
 - Parsing a Go source file for a string constant is more fragile and more code than reading a one-line text file, for a value `check-version` only ever treats as opaque text.
 - Ties `check-version`'s implementation to Go source syntax instead of the same trivial file-read every other stack's action already uses.
+
+This rejected variant is not the `-ldflags` receiver in [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]: that file holds `"dev"`, never a number, and is filled from `VERSION` at build time.

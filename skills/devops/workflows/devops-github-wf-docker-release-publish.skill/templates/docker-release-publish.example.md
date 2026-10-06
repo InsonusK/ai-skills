@@ -53,10 +53,20 @@ Start from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.
             echo "$tags"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
+      # The runner's default "docker" buildx driver cannot produce
+      # provenance/SBOM attestations ("Attestation is not supported for the
+      # docker driver") - switch to a docker-container builder first.
+      - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
           push: true
           tags: ${{ steps.tags.outputs.value }}
+          # The Dockerfile injects this into the binary (Go: -ldflags, see the
+          # stack's repository-structure solution) and the OCI version label.
+          build-args: VERSION=${{ needs.check-version.outputs.current }}
+          # Attestations on the master (release) build only.
+          provenance: ${{ github.ref_name == 'master' && 'mode=max' || 'false' }}
+          sbom: ${{ github.ref_name == 'master' }}
 ```
 
 Add `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` at the workflow level (see [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md#should|SHOULD]]).

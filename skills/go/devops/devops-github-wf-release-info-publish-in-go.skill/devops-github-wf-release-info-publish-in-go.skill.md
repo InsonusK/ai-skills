@@ -2,7 +2,7 @@
 name: devops-github-wf-release-info-publish-in-go
 description: Go implementation of release-info-publish's "Release binaries" extension point — cross-compiles the application to linux/windows/darwin inside the same github-release job, before its softprops/action-gh-release@v2 step, and lists them in that one call's files — only for a Go project whose deliverable is a standalone executable, never a network service
 whenToUse: when creating or updating `.github/workflows/release-info-publish.yml` in a Go project whose deliverable is a CLI or desktop application (not a web/API service)
-updated: 20260917
+updated: 20261006
 tags:
   - stack/go
   - concern/ci
@@ -67,7 +67,7 @@ Add `files: dist/*` and `fail_on_unmatched_files: true` to [[skills/devops/workf
 ## SHOULD
 - Generate a `sha256sum` checksums file alongside the binaries and include it in `files:` too.
 - Add `linux/arm64` and `darwin/arm64` once the project has users on those architectures.
-- Embed the version into the binary via `-ldflags "-X main.version={version}"` so `{app-name} --version` reports the exact release version.
+- Embed the version into the binary via `-ldflags "-X {module-path}/internal/version.Version={version}"` — the same variable every other build path sets (see [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]) — so `{app-name} --version` reports the exact release version.
 - Strip debug symbols (`-ldflags "-s -w"`) to shrink the published binaries.
 
 ## MAY
