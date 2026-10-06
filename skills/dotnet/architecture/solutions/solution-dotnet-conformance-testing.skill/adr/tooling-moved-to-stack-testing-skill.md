@@ -16,11 +16,13 @@ The Makefile, the `unit-test.sh`/`mutation-test.sh`/`test-report.sh` scripts, `r
 
 # Selected variant
 
-**Selected variant:** [[#Split tooling into the stack testing skill, keep layout here (selected)]]
+**Selected variant:** [[#Split tooling into the stack testing skill, keep layout here]]
 
 # Searched variants
 
-## Split tooling into the stack testing skill, keep layout here (selected)
+## Split tooling into the stack testing skill, keep layout here
+
+**Selected.**
 
 ### Description
 

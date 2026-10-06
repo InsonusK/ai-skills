@@ -14,11 +14,13 @@ tags:
 `solution-taskbox-in-go` was built the usual way: every file of the mechanism was copied into `Implementation/`, into the plateau's `structure/`, and into the plateau example. Reviewing it, the owner found that (1) it could not be validated by reading, (2) nothing stops an agent from breaking a guarantee while copying 1,000 lines of concurrency code — the group lock and the outcome fence were exactly such lines — and (3) the solution's rules were lost among restated code. The mechanism already had library shape: it imported nothing of the service.
 
 # Selected variant
-[[#Spec repository plus one library repository per stack (selected)]]
+[[#Spec repository plus one library repository per stack]]
 
 # Searched variants
 
-## Spec repository plus one library repository per stack (selected)
+## Spec repository plus one library repository per stack
+
+**Selected.**
 
 ### Description
 - `{vp-name}-spec` — stack-agnostic: the contract (schema versions, lifecycle, per-store realization) and the conformance feature with its step vocabulary, released by version tags.

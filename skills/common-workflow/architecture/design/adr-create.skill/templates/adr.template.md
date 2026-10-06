@@ -32,10 +32,17 @@ The selected variant MUST also appear as one of the searched variants below.
 # Searched variants
 ```hint
 List every considered variant, including the selected one.
-Clearly mark the selected variant (for example by adding "(selected)" to its heading or by repeating the selection link).
+Mark the selected variant with a `**Selected.**` line directly under its heading.
+Never put the marker into the heading: it changes the anchor and breaks the link from Selected variant.
 ```
 
 ## {Variant name}
+```hint
+For the selected variant only, the first line of the section:
+```
+```example
+**Selected.**
+```
 
 ### Description
 ```hint

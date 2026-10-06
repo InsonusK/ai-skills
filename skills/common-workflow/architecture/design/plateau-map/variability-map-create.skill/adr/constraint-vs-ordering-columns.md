@@ -18,11 +18,13 @@ tags:
 Nothing in the existing schema tells a reader which of the two a given `depends_on` entry means, and this repository's prior design conversation (recorded before this skill existed) considered annotating each entry with a `reason: constraint | ordering-only` field.
 
 # Selected variant
-[[#Column-level distinction, depends_on unchanged (selected)]]
+[[#Column-level distinction, depends_on unchanged]]
 
 # Searched variants
 
-## Column-level distinction, depends_on unchanged (selected)
+## Column-level distinction, depends_on unchanged
+
+**Selected.**
 
 ### Description
 `depends_on` keeps its existing plain-list shape everywhere, with no schema change. The Variability Map's `Constraint` column carries every genuine Feature-Model requirement; its `Realization depends on` column carries same-VP relationships that change code shape without gating legality. For delta ordering that exists purely for a conflict resolver (no Feature-Model constraint behind it at all), [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill|delta-conflict-detection]]'s Registry entries carry an explicit `Ordering` field stating `source: constraint` or `source: ordering-only`.

@@ -18,11 +18,13 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#`common-workflow/architecture/solutions/`, stack-independent Implementation only (selected)]]
+**Selected variant:** [[#`common-workflow/architecture/solutions/`, stack-independent Implementation only]]
 
 # Searched variants
 
-## `common-workflow/architecture/solutions/`, stack-independent Implementation only (selected)
+## `common-workflow/architecture/solutions/`, stack-independent Implementation only
+
+**Selected.**
 
 ### Description
 Bases go in `skills/common-workflow/architecture/solutions/`, which mirrors `skills/{stack}/architecture/solutions/`. Extensions stay in the stack's own `architecture/solutions/`. The base's `Implementation/` holds only elements every stack shares, such as a contract or a Makefile target set. Stack-specific elements live in the extension.

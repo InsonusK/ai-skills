@@ -15,12 +15,14 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#Root VERSION file (selected)]]
+**Selected variant:** [[#Root VERSION file]]
 - Matches the other three stacks' pattern (one file, one field, diffable across commits) closely enough that `devops-github-action-check-version-in-go` can reuse the same read/compare logic, and keeps `devops-github-wf-pull-request`'s PR-time version-bump gate meaningful for Go projects too.
 
 # Searched variants
 
-## Root VERSION file (selected)
+## Root VERSION file
+
+**Selected.**
 
 ### Description
 A plain-text file, `VERSION`, at the repository root, holding exactly the semantic version (e.g. `1.4.0`).

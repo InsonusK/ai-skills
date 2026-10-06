@@ -28,6 +28,8 @@ Store architecture decision records directly inside the solution skill's `adr/` 
 
 ## Keep ADRs inside the solution skill folder
 
+**Selected.**
+
 ### Description
 
 Create an `adr/` subfolder inside `solution-{SolutionName}.skill/` and add one markdown file per decision. Link the file from the `adr:` header property and briefly mention the selected variant in the skill body.

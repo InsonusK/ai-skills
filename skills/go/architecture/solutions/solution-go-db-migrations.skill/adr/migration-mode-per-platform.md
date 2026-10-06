@@ -97,11 +97,13 @@ right mode.
 
 ## Selected variant
 
-**Selected variant:** [[#Two modes, switched by one config flag, chosen per platform's own topology (selected)]]
+**Selected variant:** [[#Two modes, switched by one config flag, chosen per platform's own topology]]
 
 ## Searched variants
 
-### Two modes, switched by one config flag, chosen per platform's own topology (selected)
+### Two modes, switched by one config flag, chosen per platform's own topology
+
+**Selected.**
 
 #### Description
 

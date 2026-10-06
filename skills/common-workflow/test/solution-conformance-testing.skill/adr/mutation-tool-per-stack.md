@@ -16,11 +16,13 @@ Mutation testing (see the parent solution's Core Principles) needs a concrete to
 
 # Selected variant
 
-**Selected variant:** [[#Stryker for .NET and Angular/TypeScript, Mutmut for Python, Gremlins for Go (selected)]]
+**Selected variant:** [[#Stryker for .NET and Angular/TypeScript, Mutmut for Python, Gremlins for Go]]
 
 # Searched variants
 
-## Stryker for .NET and Angular/TypeScript, Mutmut for Python, Gremlins for Go (selected)
+## Stryker for .NET and Angular/TypeScript, Mutmut for Python, Gremlins for Go
+
+**Selected.**
 
 ### Description
 

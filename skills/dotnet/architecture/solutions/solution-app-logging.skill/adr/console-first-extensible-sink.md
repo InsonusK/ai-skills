@@ -16,7 +16,7 @@ Every service in the family needs to log. The `AppLogging` feature is deliberate
 
 # Selected variant
 
-**Selected variant:** [[#Microsoft.Extensions.Logging + console provider, sink localised in App.Host (selected)]]
+**Selected variant:** [[#Microsoft.Extensions.Logging + console provider, sink localised in App.Host]]
 
 # Searched variants
 
@@ -34,7 +34,9 @@ Adopt Serilog (or NLog) as the logging framework, with sinks configured from `ap
 - Call sites either use `ILogger<T>` (then Serilog is just a provider — no reason to pick it early) or `Serilog.ILogger` (a lock-in the feature explicitly wants to avoid)
 - More than "basic" — the feature asks for the minimum, extensible later
 
-## Microsoft.Extensions.Logging + console provider, sink localised in App.Host (selected)
+## Microsoft.Extensions.Logging + console provider, sink localised in App.Host
+
+**Selected.**
 
 ### Description
 Call sites use `ILogger<T>` from `Microsoft.Extensions.Logging`. `App.Host/DependencyInjection/LoggingRegistration.cs` clears providers, binds levels from configuration, and adds the console provider. A `LogEvents` catalogue of `EventId`s lives in `Shared`. Adding a file or OTLP sink later is a single line inside `LoggingRegistration` plus a package entry — no call site changes, because call sites never named a provider.

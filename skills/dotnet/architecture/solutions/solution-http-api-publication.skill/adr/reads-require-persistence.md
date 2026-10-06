@@ -21,7 +21,7 @@ So "requires command or query integration" is always trivially true for the comm
 
 # Selected variant
 
-**Selected variant:** [[#depends_on api-project + mediator-integration; GET actions gated on VP-C001 (selected)]]
+**Selected variant:** [[#depends_on api-project + mediator-integration; GET actions gated on VP-C001]]
 
 # Searched variants
 
@@ -38,7 +38,9 @@ Port the v3 ADR and `depends_on` unchanged.
 - The query half points at a solution that is now inside persistence — the dependency is really on VP-C001, mislabelled.
 - A reader checking the constraint learns nothing.
 
-## depends_on api-project + mediator-integration; GET actions gated on VP-C001 (selected)
+## depends_on api-project + mediator-integration; GET actions gated on VP-C001
+
+**Selected.**
 
 ### Description
 `depends_on solution-api-project` (the `{Module}.Api` project + `ApiRegistration`) and `solution-mediator-integration` (the markers). Controllers' write actions (POST/PUT/PATCH/DELETE) are always emitted. GET actions across the five controller types are emitted only when `solution-query-integration` (VP-C001) is also applied — otherwise the module has a **write-only** REST API, which is a complete, valid application of this solution.

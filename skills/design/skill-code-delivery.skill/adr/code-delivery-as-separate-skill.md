@@ -13,13 +13,15 @@ tags:
 `skill-content` moves a code block out of the skill file by length (~15 lines) and by whether it illustrates a rule or defines a contract. Neither axis asks whether the code is the same in every project — the property that decides if an agent should retype it or copy it. Where do the rules for that decision live, and to which skills do they apply?
 
 # Selected variant
-**Selected variant:** [[#Separate skill, applied to new and revised skills (selected)]]
+**Selected variant:** [[#Separate skill, applied to new and revised skills]]
 - The decision has its own trigger (the skill contains code) and its own procedure (variance test, form table), neither of which is about prose.
 - Existing skills are not swept; each is classified the next time it is revised.
 
 # Searched variants
 
-## Separate skill, applied to new and revised skills (selected)
+## Separate skill, applied to new and revised skills
+
+**Selected.**
 
 ### Description
 `skill-code-delivery` owns the variance test, the delivery-form table, and the rules for templates, verification, and reference lines. `skill-content`'s "Illustrations move out, contracts stay inline" rule applies it first to every code unit. A skill nobody is editing keeps its code until it is next revised; then every code unit in it is classified.

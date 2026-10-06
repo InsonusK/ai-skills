@@ -16,7 +16,7 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#Exported contract, consumer owns its bindings (selected)]]
+**Selected variant:** [[#Exported contract, consumer owns its bindings]]
 
 - The `.feature` files are written to be copied verbatim into another repository. Scenario text is domain language with no .NET/C#/FluentValidation vocabulary and no reference to which adapter proves it; rejection-code strings are part of the contract and appear literally.
 - This solution authors and proves the scenarios from every .NET layer. It does **not** own the step definitions of an external consumer — that consumer writes and maintains its own bindings, in its own language, against the same scenario text.
@@ -24,7 +24,9 @@ tags:
 
 # Searched variants
 
-## Exported contract, consumer owns its bindings (selected)
+## Exported contract, consumer owns its bindings
+
+**Selected.**
 
 ### Description
 `{Module}.Domain.Rules.Spec` is a first-class deliverable of this solution, not just a test-sharing device. Its `.feature` files are constrained so that they carry no information specific to this service's implementation: only the rule's condition, its inputs in domain terms, its pass/fail outcome, and the exact rejection code. A frontend or another-language service copies the directory in and writes step definitions binding the identical Gherkin to its own validation code. When a backend rule changes, the scenario changes, the consumer re-syncs the file, and its own bound test fails until its implementation matches.

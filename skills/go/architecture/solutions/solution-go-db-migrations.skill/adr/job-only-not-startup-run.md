@@ -35,11 +35,13 @@ resource).
 
 # Selected variant
 
-**Selected variant:** [[#Deploy-time job only, gated ahead of the app (selected)]]
+**Selected variant:** [[#Deploy-time job only, gated ahead of the app]]
 
 # Searched variants
 
-## Deploy-time job only, gated ahead of the app (selected)
+## Deploy-time job only, gated ahead of the app
+
+**Selected.**
 
 ### Description
 

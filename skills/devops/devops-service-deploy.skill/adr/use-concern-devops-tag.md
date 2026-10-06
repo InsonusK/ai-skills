@@ -19,7 +19,9 @@ The devops-service-deploy skill needs a `concern/*` tag from the controlled face
 
 # Searched variants
 
-## concern/ci (selected)
+## concern/ci
+
+**Selected.**
 
 ### Description
 Register `concern/ci` as the controlled facet value for skills that address the DevOps process, including deployment, infrastructure, and CI/CD.
