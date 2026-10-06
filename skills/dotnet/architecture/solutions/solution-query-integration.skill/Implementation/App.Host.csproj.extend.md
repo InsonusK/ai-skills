@@ -43,8 +43,16 @@ public static IServiceCollection AddModules(this IServiceCollection services, IC
 }
 ```
 
+**TO BE** in `PipelineRegistration` (from `solution-pipeline-registration`) — the paging validator registered right after `ValidationBehavior`, which resolves it together with each query's own validators:
+```csharp
+// App.Host/DependencyInjection/PipelineRegistration.cs
+services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+services.AddTransient(typeof(IValidator<>), typeof(FetchQueryValidator<>));  // every IFetchQuery
+```
+
 # Allowed Dependencies
 - App.Queries — for `RegisterAppQueries()` extension
+- BuildingBlocks — for `FetchQueryValidator<>`
 - All module Application projects — for `Register{ModuleName}Module()` extensions
 
 # Rules
@@ -53,6 +61,7 @@ public static IServiceCollection AddModules(this IServiceCollection services, IC
 - Called after all module registrations — App.Queries depends on module entity types
 - App.Queries handlers registered via `RegisterAppQueries()` assembly scan in App.Host
 - Never call `RegisterAppQueries()` from inside any module registration method
+- Register `FetchQueryValidator<>` once, as the open generic `IValidator<>`, in `PipelineRegistration` right after `ValidationBehavior`
 ## SHOULD
 - Avoid calling `RegisterAppQueries()` before module registrations — module handlers and entity types may not be available
 - Avoid scattering App.Queries registration across multiple extension methods
@@ -61,3 +70,4 @@ public static IServiceCollection AddModules(this IServiceCollection services, IC
 - [ ] `RegisterAppQueries()` called from App.Host
 - [ ] Called after all module registrations
 - [ ] Not called from within any module registration method
+- [ ] `FetchQueryValidator<>` registered once as open-generic `IValidator<>`

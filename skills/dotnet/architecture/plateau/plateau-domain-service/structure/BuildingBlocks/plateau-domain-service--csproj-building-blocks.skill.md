@@ -37,6 +37,7 @@ created_by:
 - /BuildingBlocks
   - /MediatR
     - [ValidationBehavior.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-validation-behavior.skill.md) — collect-all FluentValidation, short-circuit with `Result.Invalid`
+    - [FetchQueryValidator.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-fetch-query-validator.skill.md) — Page/PageSize validator for every `IFetchQuery`
     - [ExceptionHandlingBehavior.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-exception-handling-behavior.skill.md) — catch `Exception`, log `Critical` with `LogEvents.UnhandledException`, return `Result.Error`
     - [ConcurrencyBehavior.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-concurrency-behavior.skill.md) — guard `IHasVersions` commands against stale writes (VP5)
     - [UnitOfWorkContext.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-unit-of-work-context.skill.md) — scoped nesting-depth counter (VP-C001)
@@ -49,6 +50,7 @@ created_by:
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
 | /MediatR/ValidationBehavior.cs | Runs every `IValidator<TRequest>` before the handler; short-circuits invalid requests | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-validation-behavior.skill\|class-validation-behavior]] |
+| /MediatR/FetchQueryValidator.cs | Validates `Page`/`PageSize` of every `IFetchQuery` | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-fetch-query-validator.skill\|class-fetch-query-validator]] |
 | /MediatR/ExceptionHandlingBehavior.cs | Catch-all that turns an unhandled exception into a generic `Result.Error` | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-exception-handling-behavior.skill\|class-exception-handling-behavior]] |
 | /MediatR/ConcurrencyBehavior.cs | Version guard for `IHasVersions` commands | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-concurrency-behavior.skill\|class-concurrency-behavior]] |
 | /MediatR/UnitOfWorkContext.cs | Scoped nesting-depth counter | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/classes/plateau-domain-service--class-unit-of-work-context.skill\|class-unit-of-work-context]] |
