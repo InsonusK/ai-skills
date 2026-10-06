@@ -25,11 +25,13 @@ The wider the tenant's surface, the more CSS ships per tenant and the more a ten
 
 # Selected variant
 
-**Selected variant:** [[#Colour-only, via a shared ds-tenant-theme mixin (selected)]]
+**Selected variant:** [[#Colour-only, via a shared ds-tenant-theme mixin]]
 
 # Searched variants
 
-## Colour-only, via a shared ds-tenant-theme mixin (selected)
+## Colour-only, via a shared ds-tenant-theme mixin
+
+**Selected.**
 
 ### Description
 

@@ -14,11 +14,13 @@ tags:
 The common map carried a `### VP-C### {Name}` concept section per VP below its table. At 11 VPs the concepts were most of the file, and every admitted VP adds one. Its readers work one VP at a time — detailing a VP on a stack, realizing it in a solution, classifying deltas — or need only the table (plateau matrices, Constraint checks), yet each loaded every concept. Stack maps linked each concept by an anchor into that one file. How should the concepts be stored?
 
 # Selected variant
-[[#Concept file per VP (selected)]]
+[[#Concept file per VP]]
 
 # Searched variants
 
-## Concept file per VP (selected)
+## Concept file per VP
+
+**Selected.**
 
 ### Description
 The common map is an index: the `## Common Variation Points` table and the bound stack maps. Each VP has a folder `vp/vp-c###-{name}/` (`{name}` = VP name in lower case) holding its concept `vp-c###-{name}.md` and, when it has one, its contract `vp-c###-{name}.contract.md`. The table's ID cell links the concept file, and stack maps link the same file. The row's question is the VP's short description; no separate description column. Candidates, which only the admission discussion reads, live in `candidates.md`.

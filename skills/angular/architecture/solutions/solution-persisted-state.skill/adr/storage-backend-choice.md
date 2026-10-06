@@ -23,11 +23,13 @@ A single default has to be picked, with an explicit rule for the exceptions, or 
 
 # Selected variant
 
-**Selected variant:** [[#localStorage default, sessionStorage for per-tab, IndexedDB only for large or structured drafts (selected)]]
+**Selected variant:** [[#localStorage default, sessionStorage for per-tab, IndexedDB only for large or structured drafts]]
 
 # Searched variants
 
-## localStorage default, sessionStorage for per-tab, IndexedDB only for large or structured drafts (selected)
+## localStorage default, sessionStorage for per-tab, IndexedDB only for large or structured drafts
+
+**Selected.**
 
 ### Description
 

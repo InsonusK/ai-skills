@@ -14,11 +14,13 @@ tags:
 The Inbox contract (VP-C011) answers an only-once input with `202 Accepted` and offers `GET …/tasks/<handle>` to read the task's status. The owner's requirement: a caller that knows its own handle must not be able to reach a neighbour's task. The task already has an `id` (UUIDv7) — the question is whether that `id` can be the handle, or whether the handle must be a separate field.
 
 # Selected variant
-[[#Separate random status_key (selected)]]
+[[#Separate random status_key]]
 
 # Searched variants
 
-## Separate random status_key (selected)
+## Separate random status_key
+
+**Selected.**
 
 ### Description
 A `status_key` column (UUIDv4, nullable, unique) in the TaskBox task, generated from a cryptographically secure random source, set only for Inbox tasks answered with `202`. The `202` carries `Location: …/tasks/<status_key>`; the status endpoint looks tasks up by it and nothing else. The task `id` is never exposed as a way to read status.

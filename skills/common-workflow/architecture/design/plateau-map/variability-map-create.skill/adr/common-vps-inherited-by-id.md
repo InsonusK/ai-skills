@@ -14,11 +14,13 @@ tags:
 Backend web-service catalogs on different stacks (Go, dotnet, ...) answer largely the same variability questions — which storage, which inbound and outbound protocols, deferred tasks, outbox. A stack-agnostic starting list existed as a template each catalog copied and adapted. The copies drifted: one stack kept 7 VPs, another 14; the same outbound-call question was one VP in one stack and split by transport in the other; `DomainLogic` and `HttpApi` were baseline in one family and VPs in the other. Nothing tied a stack row back to the shared question, so nothing could detect the drift. How should a shared VP be defined once and stay consistent across stacks?
 
 # Selected variant
-[[#Inherited common map (selected)]]
+[[#Inherited common map]]
 
 # Searched variants
 
-## Inherited common map (selected)
+## Inherited common map
+
+**Selected.**
 
 ### Description
 One common map (`templates/web-service-common-variability-map/`) owns each shared VP: question, Variants, Constraint, Realization depends on, and a concept section, under a permanent `VP-C###` ID. Every bound stack map carries every common VP in a `## Common Variation Points` table holding only ID, name, State (`Inherited` / `Refined` / `Fixed: {Variant}`), the stack's narrowing, `Realized by`, and `Migration`. A stack narrows, never widens. A VP moves 💡 candidate → 📐 concept (owner-agreed; every bound stack gets a ⏳ row) → ✅ detailed per stack (State, chosen realization per Variant, narrowing); a stack-local VP it covers is re-IDed to the common ID when that stack details it.

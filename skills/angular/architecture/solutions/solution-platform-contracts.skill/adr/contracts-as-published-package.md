@@ -17,11 +17,13 @@ A federation host and every independently deployed remote need exactly one build
 
 # Selected variant
 
-**Selected variant:** [[#Own repository, published to npm, strictVersion sharing (selected)]]
+**Selected variant:** [[#Own repository, published to npm, strictVersion sharing]]
 
 # Searched variants
 
-## Own repository, published to npm, strictVersion sharing (selected)
+## Own repository, published to npm, strictVersion sharing
+
+**Selected.**
 
 ### Description
 `@platform/contracts` lives in its own repository, versioned by Changesets, published to npm. Host and every remote declare it `singleton: true`, `strictVersion: true`.

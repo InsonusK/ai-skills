@@ -22,11 +22,13 @@ If persisted state is merged back *after* the first render, the user sees a visi
 
 # Selected variant
 
-**Selected variant:** [[#Synchronous metaReducer for slices, onInit hook for feature stores (selected)]]
+**Selected variant:** [[#Synchronous metaReducer for slices, onInit hook for feature stores]]
 
 # Searched variants
 
-## Synchronous metaReducer for slices, onInit hook for feature stores (selected)
+## Synchronous metaReducer for slices, onInit hook for feature stores
+
+**Selected.**
 
 ### Description
 

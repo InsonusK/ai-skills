@@ -16,11 +16,13 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#One narrow, business-named port per cached concept (selected)]]
+**Selected variant:** [[#One narrow, business-named port per cached concept]]
 
 # Searched variants
 
-## One narrow, business-named port per cached concept (selected)
+## One narrow, business-named port per cached concept
+
+**Selected.**
 
 ### Description
 

@@ -14,11 +14,13 @@ tags:
 Plateaus were named by what they are about (`plateau-persistent-service`, `plateau-domain-service`). The names say nothing about which VP combination a plateau realizes, the same combination gets unrelated names in different stacks, and a new name is invented for every new combination. With common Variation Points now shared across stacks, a plateau's identity should state its combination and match across stacks.
 
 # Selected variant
-[[#Two-part code by combination (selected)]]
+[[#Two-part code by combination]]
 
 # Searched variants
 
-## Two-part code by combination (selected)
+## Two-part code by combination
+
+**Selected.**
 
 ### Description
 Code `{stack}{kind}{common}.{specific}` — one registered letter per stack and per kind; `{common}` from the shared common-plateau registry (one number per combination of common-VP Variants); `{specific}` from the catalog's own table of stack-VP combinations, `000` meaning none. The old name stays as the matrix's Title. When a combination changes (a VP becomes common, a solution is added), the code changes in the same change.
