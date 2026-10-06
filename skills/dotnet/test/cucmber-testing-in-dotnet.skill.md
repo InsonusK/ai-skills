@@ -2,7 +2,7 @@
 name: cucmber-testing-in-dotnet
 description: .NET/Reqnroll-specific rules for Cucumber testing — hook-based logging via ITestOutputHelper/ScenarioContext, binding-class layout, and VSCode glue configuration
 whenToUse: when writing or reviewing Reqnroll (or SpecFlow) scenarios or step bindings in a .NET project
-updated: 20260913
+updated: 20261006
 tags:
   - stack/dotnet
   - concern/testing/bdd
@@ -50,6 +50,12 @@ Tag a not-yet-runnable scenario `@todo` and exclude it via the test runner's cat
 - Risk: an unfiltered `@todo` scenario either fails the build (if its step is undefined) or, worse, passes on an incomplete implementation, contradicting [Tag unrunnable scenarios @todo and verify exclusion](../../common-workflow/test/cucmber-testing.skill/cucmber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion).
 - Fix: map the `@todo` Gherkin tag to a runner category/trait and filter it out of the default run.
 
+### Emit Cucumber Messages
+Reqnroll emits **Cucumber Messages**: configure the `message` formatter in each test project's `reqnroll.json` (`"formatters": { "message": { "outputFilePath": "<path>.ndjson" } }`), one `.ndjson` file per test project.
+- Violation: a project relying only on Reqnroll's `html` formatter or on TRX for scenario results.
+- Risk: no standard report reaches the living-doc renderer, and the scenario report has no per-scenario status source.
+- Fix: keep the `message` formatter configured in every test project.
+
 ## SHOULD
 
 ### Configure the VSCode Cucumber glue for .NET
@@ -67,3 +73,4 @@ When applying [Configure the Cucumber editor extension](../../common-workflow/te
 - [ ] Cross-step state travels through `ScenarioContext` or context injection, never a static field.
 - [ ] `@todo`-tagged scenarios are mapped to a runner category/trait and excluded from the default run, confirmed as skipped rather than passing.
 - [ ] `cucumber.glue` in `.vscode/settings.json` matches this skill's .NET glob when proposed to the user.
+- [ ] The runner writes Cucumber Messages per [Emit Cucumber Messages](#emit-cucumber-messages).

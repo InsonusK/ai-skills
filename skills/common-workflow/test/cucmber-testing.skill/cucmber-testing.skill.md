@@ -2,7 +2,7 @@
 name: cucmber-testing
 description: Language-independent rules for writing and organizing Cucumber/Gherkin scenarios and their step definitions — generic comparators, expected-data placement, ordering, logging, and BDD editor setup
 whenToUse: when writing or reviewing a `.feature` file or its step definitions, when deciding whether an assertion step is reusable across scenarios, or when configuring an editor/devcontainer for Cucumber
-updated: 20260924
+updated: 20261006
 tags:
   - stack
   - concern/testing/bdd
@@ -142,6 +142,16 @@ When working in VSCode, recommend to the user: installing the `CucumberOpen.cucu
 - Risk: without the extension and `cucumber.glue` configured, step definitions in the IDE show as unresolved ("undefined step") even when a matching step exists, making the feature file harder to navigate and author.
 - Fix: propose the extension/devcontainer/settings change to the user; get the `cucumber.glue` glob for the project's stack from the matching stack-specific skill listed in [# Scope](#scope).
 
+### Name the runner's report protocol
+Every `cucmber-testing-in-{stack}` skill names which of the two standard Cucumber report protocols its runner emits, and the exact formatter setting that writes it to a given path:
+- **classic Cucumber JSON** — `features[].elements[].steps[]`; emitted by godog, Cucumber-JVM, cucumber-ruby, pytest-bdd, behave (via a plugin);
+- **Cucumber Messages** — an NDJSON envelope stream; emitted by cucumber-js and Reqnroll.
+
+A stack whose runner can emit both names one, preferring Messages.
+- Violation: a stack skill that leaves the report format to the project, or builds its own HTML from a tool-specific format.
+- Risk: every project in that stack picks differently, and nothing downstream can render a living-doc view the same way across stacks.
+- Fix: add a rule to the stack skill naming the protocol and the formatter setting.
+
 ## SHOULD
 
 ### Prefer a generated step index over a manual one
@@ -165,3 +175,4 @@ Use the runner's own step-listing/generation facility, when it has one, instead 
 - [ ] Persisted output is asserted via reload, not only via the in-memory object.
 - [ ] Adapter/tool-layer scenarios stub the service interface instead of exercising its real implementation.
 - [ ] The Cucumber VSCode extension, devcontainer entry, and `cucumber.glue`/`cucumber.features` settings have been proposed to the user when working in VSCode.
+- [ ] The stack's `cucmber-testing-in-{stack}` skill names its runner's report protocol and formatter setting.

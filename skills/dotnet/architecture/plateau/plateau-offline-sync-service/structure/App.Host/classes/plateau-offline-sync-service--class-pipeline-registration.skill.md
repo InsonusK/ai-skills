@@ -10,6 +10,7 @@ tags:
   - skill/template/class
   - plateau/offline-sync-service
 created_by:
+  - "[[skills/dotnet/architecture/solutions/solution-query-integration.skill/solution-query-integration.skill|solution-query-integration]]"
   - "[[skills/dotnet/architecture/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]"
   - "[[skills/dotnet/architecture/solutions/solution-mediator-exception-handler.skill/solution-mediator-exception-handler.skill|solution-mediator-exception-handler]]"
   - "[[skills/dotnet/architecture/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
@@ -43,6 +44,7 @@ __Applied solutions:__
 // Plateau: core
 // Version: 20260902000000
 using BuildingBlocks.MediatR;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -57,6 +59,7 @@ public static class PipelineRegistration
 
         // 2. Transport validation.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IValidator<>), typeof(FetchQueryValidator<>));  // every IFetchQuery
 
         // 3. Optimistic-concurrency guard (VP5) — only IHasVersions commands.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ConcurrencyBehavior<,>));
@@ -87,6 +90,7 @@ MUST:
 # Check list
 - [ ] `AddPipeline()` in `App.Host/DependencyInjection/PipelineRegistration.cs`, returns `IServiceCollection`.
 - [ ] `ExceptionHandlingBehavior` then `ValidationBehavior`, both open generics, in that order.
+- [ ] `FetchQueryValidator<>` registered as open-generic `IValidator<>` right after `ValidationBehavior`.
 - [ ] No behavior registered anywhere else.
 
 # Unittest TestCases

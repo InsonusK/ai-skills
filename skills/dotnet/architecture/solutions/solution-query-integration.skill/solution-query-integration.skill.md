@@ -4,7 +4,7 @@ description: The repository-backed read side of MediatR (part of Persistence, VP
 whenToUse: when implementing a read operation that loads from the database — a single-module query handler over IReadRepository, or a cross-module projection/list query in App.Queries
 domain: skill
 type: architecture
-version: 20260901000000
+version: 20261006000000
 tags:
   - skill/architecture/solution
   - stack/dotnet
@@ -24,14 +24,22 @@ creates:
   - App.Queries.csproj
   - App.Queries.AppQueriesRegistration.cs
   - App.Queries.Queries.{ModuleName}.{CrossModuleQueryHandler}.cs
+  - Shared.MediatR.IFetchQuery.cs
+  - BuildingBlocks.MediatR.FetchQueryValidator.cs
 extends:
   - "{Module}.Application.csproj"
+  - Shared.csproj
+  - BuildingBlocks.csproj
   - App.Queries.csproj
   - App.Host.csproj
 depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]"
   - "[[skills/dotnet/architecture/solutions/solution-repository-integration.skill/solution-repository-integration.skill|solution-repository-integration]]"
+  - "[[skills/dotnet/architecture/solutions/solution-validation-behavior.skill/solution-validation-behavior.skill|solution-validation-behavior]]"
 built_on_plateau:
+adr:
+  - adr/fetch-query-paging-shape.md
+  - adr/fetch-query-validator-location.md
 ---
 
 > The `IQuery<TResponse>` marker and dispatch are **common** (`solution-mediator-integration`). This solution is VP-C001 — it adds the *repository-backed* query handlers, `App.Queries` cross-module read models, and `AppDbContext` reads. A module without persistence still has queries (answered in-memory or by dispatch); it just has no handlers from this solution.
@@ -41,6 +49,7 @@ built_on_plateau:
 - Create `App.Queries` — the cross-module query project, referenced by `App.Host` and no one else.
 - Define when to use a projection spec vs in-handler mapping — projection spec for flat DTOs, in-handler mapping for computed/conditional DTOs.
 - Register `App.Queries` handlers via assembly scan in `App.Host`.
+- Page every fetch query (a query returning a collection) the same way: `IFetchQuery` with `Page` (1-based, default 1) and `PageSize` (default 100, max 1000), validated once by `FetchQueryValidator<TQuery>` — see [fetch-query-paging-shape](./adr/fetch-query-paging-shape.md) and [fetch-query-validator-location](./adr/fetch-query-validator-location.md).
 
 The `IQuery<TResponse>` marker, the query/DTO record conventions in `{Module}.Interfaces`, and MediatR dispatch are **not** defined here — they are common, from [[skills/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]. This solution only adds the handlers that read from a store.
 
@@ -58,6 +67,7 @@ The `IQuery<TResponse>` marker, the query/DTO record conventions in `{Module}.In
 - Cross-module handlers use DbContext directly with `AsNoTracking()` — no repository abstraction needed here
 - All single-module entity loading goes through named specs — no inline LINQ in handlers
 - DTOs are the only data shape that crosses module boundaries for read operations — never domain entities
+- A fetch query is callable with no paging parameters — it returns the first 100 items
 - Query handlers may have transport validators — `ValidationBehavior` validates structural correctness before the handler runs
 - DTO validators are owned by `solution-dto-property-validators.skill` and live in `{Module}.Application/Validators`
 - Query validators reuse `IValidator<Soft{ValueObject}>` and `IValidator<{Dto}>` from `solution-dto-property-validators.skill` instead of duplicating cross-module validation rules
@@ -77,6 +87,10 @@ NUGET:
 # Template Skill Mutations
 
 PROJECT:
+- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend|Shared.csproj]] - extend - Add the `IFetchQuery` paging contract
+  - [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend/IFetchQuery.cs.create|IFetchQuery.cs]] - create - `Page`/`PageSize` with defaults and cap
+- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/BuildingBlocks.csproj.extend|BuildingBlocks.csproj]] - extend - Add the shared paging validator
+  - [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/BuildingBlocks.csproj.extend/FetchQueryValidator.cs.create|FetchQueryValidator.cs]] - create - Generic validator for every `IFetchQuery`
 - [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend|{Module}.Application.csproj]] - extend - Add single-module query handler and optional transport validator in feature folder
   - [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Handler.cs.create|{FeatureName}.Handler.cs]] - create - Single-module query handler implementation
   - [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/{Module}.Application.csproj.extend/{FeatureName}.Validator.cs.create|{FeatureName}.Validator.cs]] - create - Optional transport validator for query input
@@ -88,6 +102,8 @@ PROJECT:
 # Rules
 
 ## MUST
+- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/Shared.csproj.extend/IFetchQuery.cs.create#MUST|IFetchQuery.cs]]
+- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/BuildingBlocks.csproj.extend/FetchQueryValidator.cs.create#MUST|FetchQueryValidator.cs]]
 - [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/App.Host.csproj.extend#MUST|App.Host.csproj]]
 - [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend#MUST|App.Queries.csproj]]
 	- [[skills/dotnet/architecture/solutions/solution-query-integration.skill/Implementation/App.Queries.csproj.extend/AppQueriesRegistration.cs.create#MUST|AppQueriesRegistration.cs]]
@@ -125,3 +141,6 @@ PROJECT:
 - [ ] Query validator does not duplicate rules already defined in `{ValueObject}PropertyValidator` or `{Dto}Validator`
 - [ ] Query handlers return `Result.NotFound()` when entity is missing
 - [ ] No `SaveChangesAsync` call in any query handler
+- [ ] Every collection-returning query implements `IFetchQuery` with `Page = 1`/`PageSize = 100` defaults
+- [ ] `FetchQueryValidator<>` is registered once as open-generic `IValidator<>` and enforces `Page >= 1`, `1 <= PageSize <= 1000`
+- [ ] Fetch specs order deterministically before `Skip`/`Take`

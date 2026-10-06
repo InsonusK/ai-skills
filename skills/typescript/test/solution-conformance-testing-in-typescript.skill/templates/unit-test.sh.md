@@ -18,12 +18,14 @@ RESULT_DIR="tmp/result"
 REPORT_DIR="tmp/report"
 
 rm -rf "$REPORT_DIR/tests" "$REPORT_DIR/coverage"
-mkdir -p "$RESULT_DIR" "$REPORT_DIR/tests"
+mkdir -p "$RESULT_DIR" "$REPORT_DIR/tests/cucumber"
 
 CUCUMBER_JSON="$(mktemp)"
-CUCUMBER_MESSAGES="$(mktemp)"
+# The standard report (Cucumber Messages, per cucmber-testing-in-typescript) is kept:
+# tools/livingdoc renders it into tmp/report/tests/livingdoc/.
+CUCUMBER_MESSAGES="$REPORT_DIR/tests/cucumber/messages.ndjson"
 SCENARIO_RESULTS="$(mktemp)"
-trap 'rm -f "$CUCUMBER_JSON" "$CUCUMBER_MESSAGES" "$SCENARIO_RESULTS"' EXIT
+trap 'rm -f "$CUCUMBER_JSON" "$SCENARIO_RESULTS"' EXIT
 
 CUCUMBER_ARGS=(
   'features/**/*.feature'
@@ -63,6 +65,17 @@ if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   LINE_PCT=$(jq '.total.lines.pct' "$REPORT_DIR/coverage/coverage-summary.json")
   rm "$REPORT_DIR/coverage/coverage-summary.json"
   printf '{"linePct":%s}' "$LINE_PCT" > "$RESULT_DIR/coverage-test.json"
+fi
+
+# Living-doc report from the standard Cucumber report - shared, pinned renderer in
+# tools/livingdoc (solution-conformance-testing). Skipped without npm; never changes
+# the exit code.
+if command -v npm >/dev/null 2>&1; then
+  { npm ci --prefix tools/livingdoc --silent \
+      && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc"; } \
+    || echo "livingdoc: render failed"
+else
+  echo "livingdoc: npm not found - skipping living-doc report"
 fi
 
 exit "$CUCUMBER_EXIT"

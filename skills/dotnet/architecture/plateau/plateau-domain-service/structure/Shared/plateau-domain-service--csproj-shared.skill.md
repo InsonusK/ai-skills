@@ -54,6 +54,7 @@ __Applied solutions:__
   - /MediatR
     - [ICommand.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-command.skill.md) — `ICommand : IRequest<Result>`, `ICommand<TResponse> : IRequest<TResponse>`
     - [IQuery.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-query.skill.md) — `IQuery<TResponse> : IRequest<TResponse>`
+    - [IFetchQuery.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-fetch-query.skill.md) — paging contract for collection-returning queries
     - [INotificationEvent.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-notification-event.skill.md) — `INotificationEvent : INotification`
   - /Logging
     - [LogEvents.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-log-events.skill.md) — stable `EventId` constants
@@ -80,6 +81,7 @@ __Applied solutions:__
 | --- | --- | --- |
 | /MediatR/ICommand.cs | `ICommand` + `ICommand<TResponse>` request markers | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-command.skill\|class-i-command]] |
 | /MediatR/IQuery.cs | `IQuery<TResponse>` request marker | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-query.skill\|class-i-query]] |
+| /MediatR/IFetchQuery.cs | `IFetchQuery` paging contract | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-fetch-query.skill\|class-i-fetch-query]] |
 | /MediatR/INotificationEvent.cs | `INotificationEvent` notification marker | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-i-notification-event.skill\|class-i-notification-event]] |
 | /Logging/LogEvents.cs | `EventId` catalogue for searched-for log lines | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-log-events.skill\|class-log-events]] |
 | /Exceptions/DomainException.cs | Single invariant-violation exception | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/classes/plateau-domain-service--class-domain-exception.skill\|class-domain-exception]] |
