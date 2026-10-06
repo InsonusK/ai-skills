@@ -2,7 +2,7 @@
 name: cucmber-testing-in-typescript
 description: TypeScript/@cucumber/cucumber-specific rules for Cucumber testing — World-based state sharing, step-file layout, custom parameter types, and VSCode glue configuration
 whenToUse: when writing or reviewing cucumber-js scenarios or step definitions in a TypeScript/JavaScript project
-updated: 20260913
+updated: 20261006
 tags:
   - stack/typescript
   - concern/testing/bdd
@@ -54,6 +54,12 @@ When a step's placeholder needs a shape beyond cucumber-js's built-ins (`{string
 - Risk: parsing a structured value by hand inside every step that needs it duplicates the parsing logic and produces a domain-specific step instead of a generic comparator, contradicting [Generic comparator steps](../../common-workflow/test/cucmber-testing.skill/cucmber-testing.skill.md#generic-comparator-steps).
 - Fix: `defineParameterType({ name: 'isoDate', regexp: /\d{4}-\d{2}-\d{2}/, transformer: (s) => new Date(s) })`, then use `{isoDate}` in the step's Cucumber Expression.
 
+### Emit Cucumber Messages
+cucumber-js emits both protocols; use **Cucumber Messages**: `--format message:<path>.ndjson`.
+- Violation: relying on `--format json:` as the standard report.
+- Risk: two TypeScript projects pick different protocols and render differently.
+- Fix: always pass the `message` formatter; `json` may still be used internally for counting.
+
 ## SHOULD
 
 ### Configure the VSCode Cucumber glue for TypeScript
@@ -73,3 +79,4 @@ List any `defineParameterType` custom type under `cucumber.parameterTypes` too, 
 - [ ] `@todo`-tagged scenarios are excluded via the runner's tag filter, confirmed as skipped rather than passing.
 - [ ] A structured placeholder is a registered `defineParameterType`, not parsed by hand inside the step.
 - [ ] `cucumber.glue`/`cucumber.parameterTypes` in `.vscode/settings.json` matches this skill's TypeScript configuration when proposed to the user.
+- [ ] The runner writes Cucumber Messages per [Emit Cucumber Messages](#emit-cucumber-messages).

@@ -1,0 +1,11 @@
+{
+  "name": "livingdoc",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "@cucumber/html-formatter": "24.2.0",
+    "@cucumber/messages": "34.2.1",
+    "multiple-cucumber-html-reporter": "4.4.2"
+  }
+}

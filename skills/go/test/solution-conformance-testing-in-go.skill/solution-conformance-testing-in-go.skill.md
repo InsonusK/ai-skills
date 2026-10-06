@@ -4,7 +4,7 @@ description: Sets up the Go side of the Cucumber/coverage/mutation quality gate 
 whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario report into a Go project's Makefile/CI pipeline
 domain: skill
 type: architecture
-version: 20260924000000
+version: 20261006000000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-go
@@ -95,3 +95,4 @@ FILES:
 - [ ] `COVERPKG` excludes `gen/` and `tools/`.
 - [ ] `tmp/result/scenarios.json` is written on every `make unit-test` run and `public/scenarios/index.html` is rendered from it.
 - [ ] Every `.feature` file's scenarios follow [[skills/go/test/cucmber-testing-in-go.skill.md|cucmber-testing-in-go]]'s check list.
+- [ ] `make unit-test` writes godog's classic Cucumber JSON to `tmp/report/tests/cucumber/` and renders `tmp/report/tests/livingdoc/` per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#living-doc-report|the parent solution's living-doc report]].

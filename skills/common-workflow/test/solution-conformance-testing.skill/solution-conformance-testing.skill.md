@@ -5,7 +5,7 @@ whenToUse: when setting up or reviewing a project's testing strategy, when decid
 domain: skill
 type: architecture
 version: 2
-updated: 20260924
+updated: 20261006
 tags:
   - skill/architecture/solution
   - solution/conformance-testing
@@ -18,12 +18,15 @@ tags:
 creates:
   - Makefile
   - report-template/index.html
+  - tools/livingdoc/package.json
+  - tools/livingdoc/render.mjs
 extends:
 depends_on:
 built_on_plateau:
 adr:
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/adr/mutation-tool-per-stack.md|Mutation-testing tool per stack]]"
   - "[[skills/common-workflow/test/solution-conformance-testing.skill/adr/scenario-report.md|Scenario report from tagged .feature files]]"
+  - "[[skills/common-workflow/test/solution-conformance-testing.skill/adr/livingdoc-renderer-per-protocol.md|Living-doc renderer per Cucumber report protocol]]"
 ---
 
 # Goal
@@ -34,6 +37,7 @@ adr:
 - Mutation testing on top of coverage, so a weak assertion shows up as a surviving mutant instead of a passing coverage number.
 - Four uniform `make` targets any CI can call without knowing the project's stack.
 - A stack-independent, normalized `tmp/result/*.json` result per test kind, so CI/badge generation never has to parse a tool's native report format — see [# Report contract](#report-contract).
+- A living-doc HTML view of every executed scenario — filterable by tag and status, identical in every stack — rendered from the runner's standard Cucumber report, see [## Living-doc report](#living-doc-report).
 
 # Core Principles
 - Every test run produces a report describing covered test cases in a readable form.
@@ -48,6 +52,8 @@ adr:
   - Selected variant: Stryker for C#/.NET and Angular/TypeScript, Mutmut for Python
 - [[./adr/scenario-report.md|Scenario report from tagged .feature files]]
   - Selected variant: `unit-test` writes a normalized `tmp/result/scenarios.json` built from the `.feature` files plus the runner's result; `test-report` renders it — no hand-maintained test inventory file
+- [[./adr/livingdoc-renderer-per-protocol.md|Living-doc renderer per Cucumber report protocol]]
+  - Selected variant: one pinned renderer per protocol in a shared `tools/livingdoc/` — `multiple-cucumber-html-reporter` for classic JSON, `@cucumber/html-formatter` for Messages
 
 # Report contract
 `unit-test` and `mutation-test` each write two kinds of output, so `test-report` — and anything downstream of it, such as CI badge generation — has a stack-independent source to read instead of parsing each tool's native format:
@@ -89,6 +95,13 @@ The report answers, without a separate hand-maintained test inventory file:
 | Which scenarios pass but assert too little? | `public/mutation/` — surviving mutants in the code those scenarios exercise |
 | Which changed method or branch no scenario reaches? | `public/coverage/` and `public/mutation/` (no-coverage mutants) for the changed files |
 
+## Living-doc report
+`unit-test` makes the Cucumber runner write its standard report into `tmp/report/tests/cucumber/`, in the one protocol its `cucmber-testing-in-{stack}` skill names:
+- **classic Cucumber JSON** (`*.json`, `features[].elements[].steps[]`) — rendered by `multiple-cucumber-html-reporter`;
+- **Cucumber Messages** (`*.ndjson` envelope stream) — rendered by `@cucumber/html-formatter`.
+
+Then it renders `tmp/report/tests/livingdoc/` with the stack-independent [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]], from the isolated, pinned install in [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] — never from the project's own dependency manifest. `test-report` publishes it unchanged as `public/tests/livingdoc/`, next to the `public/scenarios/` inventory, which it does not replace. The step needs Node 22+ and is skipped, never failed, where `npm` is missing.
+
 ## Public site output
 `test-report` assembles a stack-independent `public/` directory, the one artifact every CI publishing step (e.g. to GitHub Pages) uploads as-is, without knowing anything about the stack:
 
@@ -105,6 +118,8 @@ None at this level — stack-specific packages (the Cucumber runner, the coverag
 # Template Skill Mutations
 REPOSITORY:
 - [[./Implementation/Repository.create.md|Repository]] - create - `Makefile` exposing the four unified testing targets, plus `report-template/index.html`
+- [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] - create - pinned living-doc renderers, isolated npm install
+- [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]] - create - renders `tmp/report/tests/cucumber/` by protocol
 
 # Rule
 
@@ -142,6 +157,12 @@ Propagate the underlying mutation tool's own exit code after writing `tmp/result
 - Risk: a real mutation-testing failure gets hidden, and CI reports success on a run that actually found unkilled mutants.
 - Fix: exit with the underlying tool's code after the normalized result is written.
 
+### Render the living doc from the standard Cucumber report
+Apply the living-doc MUSTs in [[./Implementation/Repository.create.md#MUST|Repository]], [[./Implementation/tools/livingdoc/package.json.create.md#MUST|tools/livingdoc/package.json]], and [[./Implementation/tools/livingdoc/render.mjs.create.md#MUST|tools/livingdoc/render.mjs]] per [## Living-doc report](#living-doc-report).
+- Violation: a stack renders its own HTML from a tool-specific format, or installs the renderer into the project's `package.json`.
+- Risk: the living-doc view differs per stack and its renderer versions drift.
+- Fix: write the standard protocol to `tmp/report/tests/cucumber/` and call the shared renderer.
+
 ### Keep report-template/index.html in place
 Keep `report-template/index.html` at that path, copied verbatim by `test-report` — never generated, never placed under `.github/`.
 - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern.
@@ -155,3 +176,4 @@ Keep `report-template/index.html` at that path, copied verbatim by `test-report`
 - [ ] `tmp/result/scenarios.json` is written on every `unit-test` run, lists `@todo` entries, and follows [## Scenario report](#scenario-report); `public/scenarios/index.html` is rendered from it.
 - [ ] `mutation-test` exits with the underlying tool's own exit code after writing its normalized result.
 - [ ] `public/` follows [## Public site output](#public-site-output): per-kind report copies, `*-badge.json` files, and `index.html` copied from `report-template/index.html`.
+- [ ] `unit-test` writes the runner's standard Cucumber report to `tmp/report/tests/cucumber/` and renders `tmp/report/tests/livingdoc/` via `tools/livingdoc/`, skipping without failure when `npm` is missing.
