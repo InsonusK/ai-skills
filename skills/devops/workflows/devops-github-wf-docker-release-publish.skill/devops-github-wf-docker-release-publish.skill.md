@@ -2,7 +2,7 @@
 name: devops-github-wf-docker-release-publish
 description: Stack-agnostic GitHub Actions workflow that builds and pushes the project's Docker image to GHCR on every relevant push to master (tagged version and latest) or develop (tagged version-timestamp only) — the only one of the three release-publish workflows that never needs a stack-specific companion, since Docker build/push is already generic
 whenToUse: when you need to create or update `.github/workflows/docker-release-publish.yml` for a project that has a Dockerfile
-updated: 20260915
+updated: 20261006
 tags:
   - concern/ci
   - github-actions
@@ -95,9 +95,15 @@ Compute the shared `YYYYMMDDhhmmss` UTC timestamp inside the `check-version` job
 - Risk: recomputing the timestamp separately can give the Docker image a different tag than the one [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s package uses for the same commit, breaking traceability between the two artifacts of one push.
 - Fix: emit `timestamp` from the shared `check-version` composite action's job and reuse it.
 
+### Set up buildx before build-push
+Run `docker/setup-buildx-action` immediately before `docker/build-push-action`.
+- Violation: `docker/build-push-action` called on the runner's default builder.
+- Risk: the default `docker` buildx driver cannot produce attestations — with `provenance`/`sbom` set, the build fails with "Attestation is not supported for the docker driver".
+- Fix: add `uses: docker/setup-buildx-action@v3` before the build step, as in the [example](./templates/docker-release-publish.example.md).
+
 ## SHOULD
 - Set `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` so a newer push on the same branch cancels an outdated, still-publishing run.
-- Attach build provenance/SBOM (`docker/build-push-action`'s `provenance`/`sbom` inputs) on the `master` build.
+- Attach build provenance/SBOM (`docker/build-push-action`'s `provenance`/`sbom` inputs) on the `master` build, as shown in the [example](./templates/docker-release-publish.example.md); this requires [a docker-container builder](#set-up-buildx-before-build-push).
 
 # Example
 See [Docker-release-publish workflow example](./templates/docker-release-publish.example.md) for the `docker-publish` job. Its `changes`/`check-version`/`unit-test` jobs are [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]], copied unmodified.
@@ -114,3 +120,4 @@ See [Docker-release-publish workflow example](./templates/docker-release-publish
 - [ ] `master` images are tagged both `{version}` and `latest`; `develop` images are tagged only `{version}-{timestamp}`.
 - [ ] The timestamp is computed once in `check-version` and reused, never recomputed in `docker-publish`.
 - [ ] No GitHub Release is created by this workflow — that is [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]]'s job.
+- [ ] `docker/setup-buildx-action` runs before `docker/build-push-action`.
