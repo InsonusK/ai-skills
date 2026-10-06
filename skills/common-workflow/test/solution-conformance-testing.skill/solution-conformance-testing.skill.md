@@ -5,7 +5,7 @@ whenToUse: when setting up or reviewing a project's testing strategy, when decid
 domain: skill
 type: architecture
 version: 2
-updated: 20260924
+updated: 20261006
 tags:
   - skill/architecture/solution
   - solution/conformance-testing
@@ -94,7 +94,7 @@ The report answers, without a separate hand-maintained test inventory file:
 
 - `public/<kind>/` — a copy of `tmp/report/<kind>/` for each kind present (`tests`, `coverage`, `mutation`).
 - `public/scenarios/index.html` — rendered from `tmp/result/scenarios.json`, per [## Scenario report](#scenario-report).
-- `public/<label>-badge.json` — one per metric, shields.io's [endpoint badge](https://shields.io/badges/endpoint-badge) schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}`. `label` is `tests`, `coverage`, or `mutation score`; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
+- `public/tests-badge.json`, `public/coverage-badge.json`, `public/mutation-badge.json` — one per metric, file names fixed regardless of the label, in shields.io's [endpoint badge](https://shields.io/badges/endpoint-badge) schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}`. `label` is `tests`, `coverage`, or `mutation score` respectively; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
 - `public/index.html` — copied verbatim from `report-template/index.html`, a small static landing page the project owns (linking to `scenarios/`, `tests/`, `coverage/`, `mutation/`) — `test-report` never generates its content, only copies it.
 
 `report-template/index.html` lives outside `.github/` — this solution owns no `.github/workflows/*` file; publishing `public/` (e.g. to GitHub Pages) is a CI concern layered on top, not part of this contract.

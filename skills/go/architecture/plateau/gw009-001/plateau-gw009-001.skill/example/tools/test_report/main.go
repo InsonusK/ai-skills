@@ -89,7 +89,7 @@ func writeUnitBadge() error {
 	if r.Failed > 0 {
 		color = "red"
 	}
-	return writeBadge("tests", fmt.Sprintf("%d/%d", r.Passed, r.Total), color)
+	return writeBadge("tests", "tests", fmt.Sprintf("%d/%d", r.Passed, r.Total), color)
 }
 
 func writeCoverageBadge() error {
@@ -101,7 +101,7 @@ func writeCoverageBadge() error {
 	if err := json.Unmarshal(data, &r); err != nil {
 		return err
 	}
-	return writeBadge("coverage", fmt.Sprintf("%.1f%%", r.LinePct), pctColor(r.LinePct))
+	return writeBadge("coverage", "coverage", fmt.Sprintf("%.1f%%", r.LinePct), pctColor(r.LinePct))
 }
 
 func writeMutationBadge() error {
@@ -113,7 +113,7 @@ func writeMutationBadge() error {
 	if err := json.Unmarshal(data, &r); err != nil {
 		return err
 	}
-	return writeBadge("mutation score", fmt.Sprintf("%.1f%%", r.Score), pctColor(r.Score))
+	return writeBadge("mutation", "mutation score", fmt.Sprintf("%.1f%%", r.Score), pctColor(r.Score))
 }
 
 // pctColor follows the parent contract: >=80 brightgreen / >=60 yellowgreen / else red.
@@ -128,25 +128,15 @@ func pctColor(pct float64) string {
 	}
 }
 
-func writeBadge(label, message, color string) error {
+// writeBadge writes public/{file}-badge.json; the file name is fixed by the parent
+// contract and independent of the human-readable label.
+func writeBadge(file, label, message, color string) error {
 	data, err := json.Marshal(badge{SchemaVersion: 1, Label: label, Message: message, Color: color})
 	if err != nil {
 		return err
 	}
-	name := fmt.Sprintf("%s-badge.json", slug(label))
+	name := file + "-badge.json"
 	return os.WriteFile(filepath.Join("public", name), data, 0o644)
-}
-
-func slug(label string) string {
-	out := make([]byte, 0, len(label))
-	for _, r := range label {
-		if r == ' ' {
-			out = append(out, '-')
-			continue
-		}
-		out = append(out, byte(r))
-	}
-	return string(out)
 }
 
 func copyDir(src, dst string) error {
