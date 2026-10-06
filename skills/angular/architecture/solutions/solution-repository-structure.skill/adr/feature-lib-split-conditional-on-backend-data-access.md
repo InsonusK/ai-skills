@@ -21,7 +21,7 @@ The question: does `solution-repository-structure` still create a `data-access` 
 
 # Selected variant
 
-**Selected variant:** [[#data-access lib is conditional on BackendDataAccess (selected)]]
+**Selected variant:** [[#data-access lib is conditional on BackendDataAccess]]
 
 `solution-repository-structure` creates only the `feature` lib for a feature. `solution-api-http-layer` (the realization of `BackendDataAccess = Yes`) adds the `data-access` lib, its Facade/Client/Mapper shape, and the `feature → data-access` boundary allow-list row. A feature with no server data has just the `feature` lib and never a hollow `data-access` project.
 
@@ -45,7 +45,9 @@ Keep the V1 rule unchanged — `solution-repository-structure` scaffolds `libs/{
 - Contradicts the VP: `BackendDataAccess` is supposed to be the thing that *introduces* the data layer. If the lib exists unconditionally, the VP only toggles whether it has content — a weaker, fuzzier boundary.
 - `solution-repository-structure` would have to know about `data-access`'s internal shape (Facade/Client/Mapper) to scaffold it meaningfully, coupling the base structure to the HTTP-layer solution.
 
-## data-access lib is conditional on BackendDataAccess (selected)
+## data-access lib is conditional on BackendDataAccess
+
+**Selected.**
 
 ### Description
 

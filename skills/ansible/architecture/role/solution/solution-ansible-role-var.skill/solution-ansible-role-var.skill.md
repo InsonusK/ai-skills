@@ -54,9 +54,9 @@ adr:
 
 # Adr
 - [[adr/three-tier-variable-precedence.md|Three-tier variable precedence]]
-  - Selected variant: [[adr/three-tier-variable-precedence.md#Three-tier prefixed combine (selected)|Three-tier prefixed combine]]
+  - Selected variant: [[adr/three-tier-variable-precedence.md#Three-tier prefixed combine|Three-tier prefixed combine]]
 - [[adr/secret-tier-isolation.md|Secret tier isolation]]
-  - Selected variant: [[adr/secret-tier-isolation.md#Separate _secret_config, sourced from SOPS-encrypted files (selected)|Separate `_secret_config`, sourced from SOPS-encrypted files]]
+  - Selected variant: [[adr/secret-tier-isolation.md#Separate _secret_config, sourced from SOPS-encrypted files|Separate `_secret_config`, sourced from SOPS-encrypted files]]
 
 # Requirements
 SOLUTION:

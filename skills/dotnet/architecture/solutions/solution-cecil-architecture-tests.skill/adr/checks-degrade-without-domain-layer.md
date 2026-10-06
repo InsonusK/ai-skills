@@ -25,7 +25,7 @@ The four checks:
 
 # Selected variant
 
-**Selected variant:** [[#Apply all four; split by host project — the domain-dependent two are absent until VP1 (selected)]]
+**Selected variant:** [[#Apply all four; split by host project — the domain-dependent two are absent until VP1]]
 
 # Searched variants
 
@@ -52,7 +52,9 @@ Two solutions: one with the two rules checks (companion of VP4), one with the tw
 - Four checks, built on one Cecil harness, sharing helpers and a registry — splitting duplicates the harness.
 - `guarded-property-coverage` needs the rule registry that the rules side owns — the split cuts across a real dependency.
 
-## Apply all four; split by host project — the domain-dependent two are absent until VP1 (selected)
+## Apply all four; split by host project — the domain-dependent two are absent until VP1
+
+**Selected.**
 
 ### Description
 `solution-cecil-architecture-tests` stays one solution, mandatory with VP4, but its `extends` targets two test projects. `{Module}RuleArchitectureTests` (dead-rule, code-uniqueness) goes in `{Module}.Domain.Rules.Tests`, which always exists with VP4. `{Module}ArchitectureTests` (exception-scoping) and `GuardedPropertyRuleCoverageTests` go in `{Module}.Domain.Tests`, which — like `{Module}.Domain` itself — only exists with VP1; for a rules-only module those two `.cs` files are simply not created. When VP1 is later added, `{Module}.Domain.Tests` appears and this solution's `{Module}.Domain.Tests.csproj.extend` files apply then.

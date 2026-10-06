@@ -24,13 +24,15 @@ V1's `solution-state-management` always created the store from the first plateau
 
 # Selected variant
 
-**Selected variant:** [[#Each VP requires GlobalStore and registers a slice (selected)]]
+**Selected variant:** [[#Each VP requires GlobalStore and registers a slice]]
 
 Every one of the four solutions declares `depends_on solution-global-store` and adds its slice via the `store.config.ts` registration seam. The monolith Variability Map records this as the "requires VP2" Constraint on VP4/VP5/VP7/VP8. A plateau that answers `GlobalStore = No` cannot compose any of the four.
 
 # Searched variants
 
-## Each VP requires GlobalStore and registers a slice (selected)
+## Each VP requires GlobalStore and registers a slice
+
+**Selected.**
 
 ### Description
 

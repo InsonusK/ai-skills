@@ -16,7 +16,7 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#One {Module}.Api project, transports as folders, shared partial ApiRegistration (selected)]]
+**Selected variant:** [[#One {Module}.Api project, transports as folders, shared partial ApiRegistration]]
 
 # Searched variants
 
@@ -34,7 +34,9 @@ tags:
 - No shared prerequisite solution; the "create the project" step is duplicated in each transport solution, and a module with both transports has two near-identical projects.
 - The v3 catalog and its structure skills assume one `{Module}.Api` — a split ripples into every plateau.
 
-## One {Module}.Api project, transports as folders, shared partial ApiRegistration (selected)
+## One {Module}.Api project, transports as folders, shared partial ApiRegistration
+
+**Selected.**
 
 ### Description
 `solution-api-project` creates `{Module}.Api` and a `partial ApiRegistration` with `AddModuleApi()`/`UseModuleApi()`. `solution-http-api-publication` adds `/Controllers` + a partial with `AddHttpApi()`; `solution-grpc-integration` adds `/Grpc` + `/Protos` + a partial with `AddGrpcApi()`. `Program.cs` calls only the top-level pair.

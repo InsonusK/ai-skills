@@ -24,13 +24,15 @@ The question: which unit owns `SessionContract` publication, and how is it wired
 
 # Selected variant
 
-**Selected variant:** [[#A separate platform-host solution that depends on monolith auth (selected)]]
+**Selected variant:** [[#A separate platform-host solution that depends on monolith auth]]
 
 `solution-session-sharing` lives in `platform-host/`, realizes `platform-host` VP2, and `depends_on` the monolith `solution-authentication` (the `auth` slice it exposes a read-only view of), `solution-platform-contracts` (the package the contract type ships in), and `solution-federation-host` (the host that mounts the remotes). Monolith `solution-authentication` was rewritten with no federation dependency — it produces the `auth` slice and stops there.
 
 # Searched variants
 
-## A separate platform-host solution that depends on monolith auth (selected)
+## A separate platform-host solution that depends on monolith auth
+
+**Selected.**
 
 ### Description
 

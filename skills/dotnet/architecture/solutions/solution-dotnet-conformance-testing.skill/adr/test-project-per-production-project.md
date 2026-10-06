@@ -16,11 +16,13 @@ An earlier draft of this solution created a single `{Module}.Tests` project per 
 
 # Selected variant
 
-**Selected variant:** [[#One test project per production project (selected)]]
+**Selected variant:** [[#One test project per production project]]
 
 # Searched variants
 
-## One test project per production project (selected)
+## One test project per production project
+
+**Selected.**
 
 ### Description
 

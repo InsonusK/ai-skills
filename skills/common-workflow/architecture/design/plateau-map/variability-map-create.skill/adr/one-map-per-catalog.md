@@ -14,11 +14,13 @@ tags:
 A plateau/solution catalog (e.g. `skills/dotnet/architecture/v3`) can have several plateaus at different composition depths (`plateau-stateless-non-interactive-service`, `plateau-statefull-service`, `plateau-v1`, ...). Where should the Variability Map — the table of Variation Points, Variants, Constraints, and Realized-by links — be stored: once for the whole catalog, or once per plateau?
 
 # Selected variant
-[[#One map per catalog (selected)]]
+[[#One map per catalog]]
 
 # Searched variants
 
-## One map per catalog (selected)
+## One map per catalog
+
+**Selected.**
 
 ### Description
 A single `variability-map.md` at the catalog root, sibling to `plateau/` and `solutions/`. It binds every Variation Point to its realizing solutions once for the whole catalog. The plateau↔VP view over it is a separate artifact (`plateau/plateau-repository.md`, built by `plateau-map-create`) — see [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/no-plateau-view-in-variability-map|adr/no-plateau-view-in-variability-map]].

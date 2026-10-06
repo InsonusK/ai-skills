@@ -17,11 +17,13 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#Classical NgRx (@ngrx/store + @ngrx/effects) for the global tier (selected)]]
+**Selected variant:** [[#Classical NgRx (@ngrx/store + @ngrx/effects) for the global tier]]
 
 # Searched variants
 
-## Classical NgRx (@ngrx/store + @ngrx/effects) for the global tier (selected)
+## Classical NgRx (@ngrx/store + @ngrx/effects) for the global tier
+
+**Selected.**
 
 ### Description
 `libs/shared/state` holds one slice per cross-cutting concern, each with actions / reducer / effects / selectors. Reducers and effects are registered once in `apps/platform-shell` via `store.config.ts`. Components and feature Signal Stores dispatch plain actions and read selectors.

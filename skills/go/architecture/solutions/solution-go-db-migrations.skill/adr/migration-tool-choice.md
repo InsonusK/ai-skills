@@ -35,7 +35,7 @@ applied to `goose`, which changed the outcome below.
 
 # Selected variant
 
-**Selected variant:** [[#goose, via a plain *sql.DB + go:embed + session-level advisory lock (selected)]]
+**Selected variant:** [[#goose, via a plain *sql.DB + go:embed + session-level advisory lock]]
 
 # Verification performed
 
@@ -62,7 +62,9 @@ reputation.
 
 # Searched variants
 
-## goose, via a plain *sql.DB + go:embed + session-level advisory lock (selected)
+## goose, via a plain *sql.DB + go:embed + session-level advisory lock
+
+**Selected.**
 
 ### Description
 

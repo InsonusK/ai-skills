@@ -18,7 +18,7 @@ Internal service-to-service calls in this family go over gRPC (HTTP is reserved 
 
 # Selected variant
 
-**Selected variant:** [[#Generated stub wrapped per-dependency, contract in Shared returning Result<T> (selected)]]
+**Selected variant:** [[#Generated stub wrapped per-dependency, contract in Shared returning Result<T>]]
 
 # Searched variants
 
@@ -49,7 +49,9 @@ A single `IGrpcCaller.Call<TReq, TReply>(...)` service that any handler uses for
 - No place for per-dependency concerns (deadline, retry policy, DTO mapping).
 - Loses the "one narrow contract per dependency, only the operations we call" property.
 
-## Generated stub wrapped per-dependency, contract in Shared returning Result<T> (selected)
+## Generated stub wrapped per-dependency, contract in Shared returning Result<T>
+
+**Selected.**
 
 ### Description
 Per dependency: vendor its `.proto` (`GrpcServices=Client`) into `App.Infrastructure/Protos`; declare `I{Dependency}Client` in `Shared/Clients` with one method per called operation, each returning `Result<T>` over module DTOs; implement `{Dependency}GrpcClient : I{Dependency}Client` in `App.Infrastructure/Clients` wrapping the generated stub, applying the configured deadline, and catching `RpcException` → `Result` via a shared `GrpcStatusExtensions.ToResult` (the mirror of `solution-grpc-integration`'s `ToRpcException`). Register with `AddGrpcClient<T>()` + `.AddStandardResilienceHandler()` in `App.Host`.

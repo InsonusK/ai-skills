@@ -16,11 +16,13 @@ tags:
 
 # Selected variant
 
-**Selected variant:** [[#Shared prerequisite solution, depended on by every port-needing solution (selected)]]
+**Selected variant:** [[#Shared prerequisite solution, depended on by every port-needing solution]]
 
 # Searched variants
 
-## Shared prerequisite solution, depended on by every port-needing solution (selected)
+## Shared prerequisite solution, depended on by every port-needing solution
+
+**Selected.**
 
 ### Description
 

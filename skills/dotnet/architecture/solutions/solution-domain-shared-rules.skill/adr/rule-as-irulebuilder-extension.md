@@ -23,11 +23,13 @@ An earlier iteration introduced a custom `RuleResult` type to carry `ErrorCode`/
 
 # Selected variant
 
-**Selected variant:** [[#Rule as bool primitive + IRuleBuilder extension (selected)]]
+**Selected variant:** [[#Rule as bool primitive + IRuleBuilder extension]]
 
 # Searched variants
 
-## Rule as bool primitive + IRuleBuilder extension (selected)
+## Rule as bool primitive + IRuleBuilder extension
+
+**Selected.**
 
 ### Description
 

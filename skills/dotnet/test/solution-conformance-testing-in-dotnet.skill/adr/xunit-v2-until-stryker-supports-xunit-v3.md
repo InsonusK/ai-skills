@@ -29,11 +29,13 @@ On MTP, `WITH_CODE_COVERAGE=true` also needs `Microsoft.Testing.Extensions.CodeC
 
 # Selected variant
 
-**Selected variant:** [[#xUnit v2 on VSTest until Stryker.NET supports xunit.v3 (selected)]]
+**Selected variant:** [[#xUnit v2 on VSTest until Stryker.NET supports xunit.v3]]
 
 # Searched variants
 
-## xUnit v2 on VSTest until Stryker.NET supports xunit.v3 (selected)
+## xUnit v2 on VSTest until Stryker.NET supports xunit.v3
+
+**Selected.**
 
 ### Description
 

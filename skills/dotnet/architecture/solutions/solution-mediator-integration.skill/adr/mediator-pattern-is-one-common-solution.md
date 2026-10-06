@@ -20,7 +20,7 @@ The v3.1 Feature Model makes `MediatorModuleIntegration` a **common** feature ("
 
 # Selected variant
 
-**Selected variant:** [[#One common solution-mediator-integration, no domain dependency; repository-backed reads stay VP-C001 (selected)]]
+**Selected variant:** [[#One common solution-mediator-integration, no domain dependency; repository-backed reads stay VP-C001]]
 
 # Searched variants
 
@@ -38,7 +38,9 @@ Two solutions: `solution-command-integration` (common) and `solution-query-integ
 - Three solutions for one pattern; an agent applying "MediatR" has to find and reconcile all three.
 - `command-integration`'s `depends_on solution-domain-behaviour` has to be dropped anyway, so the "command" solution is no longer really about writes-with-a-domain.
 
-## One common solution-mediator-integration, no domain dependency; repository-backed reads stay VP-C001 (selected)
+## One common solution-mediator-integration, no domain dependency; repository-backed reads stay VP-C001
+
+**Selected.**
 
 ### Description
 `solution-mediator-integration` (common, rename of `solution-command-integration`) owns the entire pattern: `ICommand`/`ICommand<T>`, `IQuery<T>`, `INotificationEvent` in `Shared`; records in `{Module}.Interfaces/{Commands,Queries,Events}`; one handler/validator convention; module DI self-registration; App.Host wiring. It has **no** `depends_on` on `solution-domain-behaviour` — a handler delegates to the domain layer *when one exists*, stated in `# Boundaries`. The repository-backed query handler, `App.Queries` cross-module read models, and `DbContext` reads remain in `solution-query-integration` (VP-C001), which builds on this one.

@@ -16,11 +16,13 @@ The trace matrix answered questions the report could not: which scenarios exist 
 
 # Selected variant
 
-**Selected variant:** [[#Normalized scenarios.json from tagged .feature files (selected)]]
+**Selected variant:** [[#Normalized scenarios.json from tagged .feature files]]
 
 # Searched variants
 
-## Normalized scenarios.json from tagged .feature files (selected)
+## Normalized scenarios.json from tagged .feature files
+
+**Selected.**
 
 ### Description
 

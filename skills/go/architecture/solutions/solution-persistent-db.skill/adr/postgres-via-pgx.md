@@ -16,11 +16,13 @@ This catalog needs one concrete, demonstrated realization of "durable system-of-
 
 # Selected variant
 
-**Selected variant:** [[#PostgreSQL via pgxpool (selected)]]
+**Selected variant:** [[#PostgreSQL via pgxpool]]
 
 # Searched variants
 
-## PostgreSQL via pgxpool (selected)
+## PostgreSQL via pgxpool
+
+**Selected.**
 
 ### Description
 

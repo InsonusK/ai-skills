@@ -15,7 +15,7 @@ Roles that read variables directly by short, generic names (`port`, `enabled`, `
 
 # Selected variant
 
-**Selected variant:** [[#Three-tier prefixed combine (selected)]]
+**Selected variant:** [[#Three-tier prefixed combine]]
 - Every tier shares the exact same `{{ role_name }}` prefix, so the anti-collision guarantee holds even as roles multiply.
 - The merge is computed once, in `vars/main.yml`, instead of being repeated ad-hoc across tasks.
 
@@ -59,7 +59,9 @@ Instead of a templated variable in `vars/main.yml`, a task at the top of `tasks/
 - The merged value does not exist until that task has run, so it cannot be used in `when:` conditions or `vars:` on earlier tasks, in `meta: end_play`/`import_role` boundaries evaluated before task execution, or by other roles that reference this role's variables before it runs.
 - Duplicates a computation that `vars/main.yml` already performs automatically and lazily for every task in the role.
 
-## Three-tier prefixed combine (selected)
+## Three-tier prefixed combine
+
+**Selected.**
 
 ### Description
 Every tier — role defaults, group override, host override — shares one `{{ role_name }}` prefix:

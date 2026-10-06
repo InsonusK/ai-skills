@@ -16,13 +16,15 @@ We need a structure that:
 
 # Selected variant
 
-**Selected variant:** [[#Two layers — Integration + Client (selected)]]
+**Selected variant:** [[#Two layers — Integration + Client]]
 
 Split the integration surface into two units per external API: an Integration unit that owns the raw call and typed/validated parsing of its response, and a Client unit that composes 1..n Integration calls into the application's own model. The application only ever depends on Client.
 
 # Searched variants
 
-## Two layers — Integration + Client (selected)
+## Two layers — Integration + Client
+
+**Selected.**
 
 ### Description
 Integration calls the API and maps the raw response (string/JSON) into a typed object that mirrors the API's contract, raising a typed error when the response doesn't match the expected shape. Client calls one or more Integration methods and maps their typed output into the application's own model, hiding the API's shape from the rest of the application.
