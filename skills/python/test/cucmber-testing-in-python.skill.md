@@ -2,7 +2,7 @@
 name: cucmber-testing-in-python
 description: Python/behave-or-pytest-bdd-specific rules for Cucumber testing — step logging via caplog/capsys, step-module layout, and VSCode glue/parameterTypes configuration
 whenToUse: when writing or reviewing behave or pytest-bdd scenarios or step definitions in a Python project
-updated: 20260913
+updated: 20261006
 tags:
   - stack/python
   - concern/testing/bdd
@@ -65,6 +65,12 @@ Have every step with a body print its action/observation (behave: plain `print()
 - Risk: a step that only asserts leaves no trace of what it checked when a later step in the same scenario fails.
 - Fix: log `action → observed result`; run `pytest -v` (or rely on `pytest`'s default capture-on-failure) so the log surfaces on a failing scenario.
 
+### Emit classic Cucumber JSON
+Python runners emit **classic Cucumber JSON**: `pytest-bdd` via `--cucumberjson=<path>.json`. behave's built-in `json` formatter is not classic Cucumber JSON (its tags are plain strings, not `{name, line}` objects), so a behave suite needs a formatter plugin or a conversion step that produces the classic schema.
+- Violation: feeding behave's `json`/`json.pretty` output to a classic-JSON consumer as-is.
+- Risk: tag filters and tag columns in the rendered report come out empty or broken.
+- Fix: use `--cucumberjson` with pytest-bdd; with behave, convert to the classic schema first.
+
 ## SHOULD
 
 ### Configure the VSCode Cucumber glue for Python
@@ -84,3 +90,4 @@ and add [Register every pytest-bdd parse() placeholder as a parameterType](#regi
 - [ ] `@todo`-tagged scenarios are excluded from the default run via tag/marker filtering, confirmed as skipped rather than passing.
 - [ ] Every step with a body prints or logs its action/observation, visible when the scenario fails.
 - [ ] `cucumber.glue` (and `cucumber.parameterTypes` for pytest-bdd) in `.vscode/settings.json` matches this skill's Python configuration when proposed to the user.
+- [ ] The runner writes classic Cucumber JSON per [Emit classic Cucumber JSON](#emit-classic-cucumber-json).

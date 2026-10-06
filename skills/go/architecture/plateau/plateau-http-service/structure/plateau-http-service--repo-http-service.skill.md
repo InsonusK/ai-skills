@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level package under this p
 domain: skill
 type: template
 plateau: plateau-http-service
-version: 20260924000000
+version: 20261006000000
 tags:
   - skill/template/repo
   - plateau/plateau-http-service
@@ -60,6 +60,7 @@ MUST:
 - `unit-test`/`mutation-test`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
 - `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `public/index.html` — never generated.
 - `make unit-test` writes `tmp/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
+- `make unit-test` writes godog's classic Cucumber JSON to `tmp/report/tests/cucumber/` and renders `tmp/report/tests/livingdoc/` via `tools/livingdoc/` (skipped, never failed, without `npm`).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/Repository.create.md#MUST|Repository]]

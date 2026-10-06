@@ -20,6 +20,7 @@ tools/
   normalize_scenarios/
   normalize_mutation/
   test_report/
+  livingdoc/          (copied verbatim from solution-conformance-testing: package.json, package-lock.json, render.mjs)
 ```
 
 ## Directory and class skills
@@ -30,6 +31,7 @@ tools/
 | tools/normalize_mutation | main.go | `gremlins` report → `tmp/result/mutation-test.json` |
 | tools/test_report | main.go | `tmp/result/*.json` → `public/` (badges, report copies, `scenarios/`) |
 | report-template | index.html | Static landing page, copied verbatim into `public/` |
+| tools/livingdoc | package.json, package-lock.json, render.mjs | Copied verbatim from `solution-conformance-testing`; renders `tmp/report/tests/cucumber/` → `tmp/report/tests/livingdoc/` |
 
 # Implementation changes
 
@@ -55,8 +57,9 @@ COVERPKG := $(shell go list ./... | grep -Ev '/(gen|tools)(/|$$)' | tr '\n' ',' 
 # when WITH_CODE_COVERAGE=true.
 unit-test:
 	@mkdir -p tmp/result tmp/report/tests tmp/report/coverage
+	@rm -rf tmp/report/tests/cucumber tmp/report/tests/livingdoc && mkdir -p tmp/report/tests/cucumber
 	@status=0; \
-	set -o pipefail; go test -json -coverpkg=$(COVERPKG) -coverprofile=tmp/report/coverage/coverage.out ./... \
+	set -o pipefail; CUCUMBER_JSON_DIR=$(CURDIR)/tmp/report/tests/cucumber go test -json -coverpkg=$(COVERPKG) -coverprofile=tmp/report/coverage/coverage.out ./... \
 		| tee tmp/report/tests/go-test.json \
 		| go run ./tools/normalize_unittest || status=$$?; \
 	go run ./tools/normalize_scenarios tmp/report/tests/go-test.json || status=$$?; \
@@ -65,6 +68,10 @@ unit-test:
 		pct=$$(go tool cover -func=tmp/report/coverage/coverage.out | tail -1 | awk '{print $$3}' | tr -d '%'); \
 		echo "{\"linePct\": $$pct}" > tmp/result/coverage-test.json; \
 	fi; \
+	if command -v npm >/dev/null 2>&1; then \
+		{ npm ci --prefix tools/livingdoc --silent && node tools/livingdoc/render.mjs tmp/report/tests/cucumber tmp/report/tests/livingdoc; } \
+			|| echo "livingdoc: render failed"; \
+	else echo "livingdoc: npm not found - skipping living-doc report"; fi; \
 	exit $$status
 
 # mutation-test runs gremlins over the whole module (or, with
@@ -115,6 +122,7 @@ require (
   <ul>
     <li><a href="scenarios/">Scenarios</a></li>
     <li><a href="tests/">Tests</a></li>
+    <li><a href="tests/livingdoc/">Living documentation</a></li>
     <li><a href="coverage/">Coverage</a></li>
     <li><a href="mutation/">Mutation</a></li>
   </ul>
@@ -137,8 +145,12 @@ require (
 - `COVERPKG` must exclude `gen/` and `tools/` from both `unit-test` and `mutation-test`.
   - Risk: mutating generated protobuf/gRPC code or this solution's own reporting tools produces meaningless surviving-mutant noise with no product logic behind it.
   - Fix: keep the `grep -Ev '/(gen|tools)(/|$$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`.
+- `unit-test` must run `go test` with `CUCUMBER_JSON_DIR=$(CURDIR)/tmp/report/tests/cucumber` (the runner adds its `cucumber:` output per `cucmber-testing-in-go`), then render `tmp/report/tests/livingdoc/` with the base's `tools/livingdoc/`, exactly as the recipe above does.
+  - Risk: without it the Go project has no living-doc view, or renders one with a Go-specific tool.
+  - Fix: copy the recipe lines and `tools/livingdoc/` unchanged.
 
 # Check list
+- [ ] `tmp/report/tests/cucumber/*.json` exists after `make unit-test`; `tmp/report/tests/livingdoc/index.html` exists when `npm` is available, and `unit-test`'s exit code is unaffected by that step.
 - [ ] `make unit-test` produces `tmp/result/unit-test.json` and `tmp/result/scenarios.json` on every run, green or red, and exits non-zero when a test failed.
 - [ ] `make unit-test WITH_CODE_COVERAGE=true` additionally produces `tmp/result/coverage-test.json` and `tmp/report/coverage/index.html`.
 - [ ] `make mutation-test` installs `gremlins` on first use and exits non-zero when a mutant survives.
