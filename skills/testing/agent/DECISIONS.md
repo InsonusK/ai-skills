@@ -24,7 +24,7 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The README check compares against declared badges, not generated ones — a `pr-check` run skips kinds, so generated badges would report false gaps; `test-report` cross-checks declared against produced in a `report` run so the declaration cannot drift.
 - A self-skipping kind leaves a marker with the reason: absence alone cannot be told apart from a kind that wrongly decided not to run.
 - A report may exist without a badge (today's scenario report has none); a badge always has a report.
-- Isolation is read as "no link to a plateau, catalog solution, Variability Map, or Feature Model"; design-method skills stay linkable.
+- ~~Isolation is read as "no link into an architecture catalog"; design-method skills stay linkable.~~ Superseded by the owner: links only inside `skills/testing/`.
 - Decisions are recorded here, not as ADRs yet: an ADR belongs to a skill whose body follows it, and the skills still state the current contract. Each ADR is written in the wave that changes its skill.
 
 ## Owner-decided (2026-10-07, after reviewing INVARIANTS)
