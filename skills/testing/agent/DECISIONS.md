@@ -117,3 +117,19 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The Go mutation kind decides to skip before it touches the toolchain, so a `check` run costs nothing.
 - Kinds run in alphabetical order under `make test-and-report` — they are independent, so the order carries no meaning.
 - Per-file description documents (`templates/*.md`, the `testing.mk` / `testing.sh` / `test_report` Implementation files) were deleted: with real files, `Repository.create` / `Repository.extend` reference them in one line each.
+
+## Agent decisions — W5 (running the examples)
+
+- `testing.sh` writes each kind's exit code to `{kind}/exit-code`; `run.json` gained the state `failed`, and `test-report` exits `0` when a kind failed. Without it the owner's rule "a failed kind turns its job red and the report is still published" never held for a red test: both mutation tools need green tests, so the mutation kind stopped without a result, `test-report` exited `1` over its missing badge, and the workflow skipped the publish step. No target or variable was added; the workflows are unchanged.
+- `test-report.sh` writes `reports/{name}/index.html` when the tool wrote none: the landing page and every README badge link `reports/{name}/`, which is a 404 on a static host for Go and .NET `reports/tests/`.
+- `normalize-scenarios.sh` ignores everything below `TEST_WORK_DIR`: a mutation tool's sandbox there holds copies of the `.feature` files.
+- Go: `--threshold-efficacy 0 --threshold-mcover 0` in a `report` run. `gremlins` exits `0` on survivors by default (TASK item 3), but `10` once `.gremlins.yaml` sets a threshold.
+- Go: `normalize_unittest` names the failed tests on stderr — the run's only other output is the JSON stream.
+- .NET: delta scoping through `--mutate` patterns built from `git diff`, not `--since`. Measured: with Reqnroll-generated tests Stryker.NET 4.16.0 logs a changed production file as "Changed test file" and ignores its mutants. This also makes the three non-Go stacks scope a delta run the same way.
+- Every non-Go mutation kind resolves `DELTA_BASE` with `git rev-parse` and compares against the working tree, so `HEAD~1`, a branch or a tag all work, and the kind skips itself ("no … file changed") instead of running over nothing.
+- Python: `pytest-bdd` implemented (TASK item 9). The scenario results come from a small `pytest` plugin, `tools/testing/kinds/unit_scenarios.py`, not from `--cucumberjson`: measured, `pytest-bdd` 9.0 reports the outline's line for every `Examples:` row and drops the `Examples:` tags, so its JSON cannot tell two blocks apart. The plugin uses the documented `pytest_bdd_before_scenario` hook and reads the row lines from the feature file; checked on `pytest-bdd` 8.1 and 9.0.
+- Python: `mutmut` 3.8 — counts from `mutmut export-cicd-stats`, delta scoping through mutant-name patterns (it has no path option), `./mutants` deleted afterwards (it accepts no other directory). Both former `VERIFY` placeholders are gone, so `mutation.sh` became an asset with no placeholder.
+- Python and TypeScript got an `example/` inside their `solution-conformance-testing-in-{stack}` skill — the minimal package each was proved on — and `check.sh` §10 covers them. Before, neither stack had anything runnable.
+- TypeScript: only what the run broke was fixed in the kind scripts (git pathspec, Stryker sandbox and `c8` temp directory below the kind directory). The Vitest half of that skill was not touched — ⚠️ in `STATUS.md`.
+- `run-example.sh` and `report-links.py` in this folder repeat W5 for one example; they need the toolchains, so `check.sh` does not call them.
+- `no-test-theater-in-angular` was not re-stamped in `.validation`: `validation_queue.py` registered the moved skills as never validated, and a stamp means a validation that did not happen here.
