@@ -24,7 +24,7 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      relevant: ${{ steps.filter.outputs.code == 'true' || steps.filter.outputs.test == 'true' || steps.filter.outputs.workflow == 'true' }}
+      relevant: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.code == 'true' || steps.filter.outputs.test == 'true' || steps.filter.outputs.workflow == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/check-changes
@@ -68,7 +68,7 @@ jobs:
 
       # Full run (no ONLY_DELTA): this workflow only runs on master, where there's no PR
       # base branch to diff against, so the whole project is mutated. It never gates -
-      # devops-github-wf-pull-request's mutation-test job already enforced the threshold.
+      # mutation testing runs only in this workflow, and only as a report.
       # continue-on-error is what actually makes that true: make mutation-test exits
       # with the underlying tool's own exit code (non-zero on a surviving mutant, per
       # solution-conformance-testing's contract) - without this, that failure would
@@ -124,7 +124,7 @@ jobs:
 [![Pull request](https://github.com/{org}/{repo}/actions/workflows/pull-request.yml/badge.svg)](https://github.com/{org}/{repo}/actions/workflows/pull-request.yml)
 [![Tests](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/tests-badge.json)](https://{org}.github.io/{repo}/tests/)
 [![Coverage](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/coverage-badge.json)](https://{org}.github.io/{repo}/coverage/)
-[![Mutation score](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/mutation-badge.json)](https://{org}.github.io/{repo}/mutation/reports/mutation-report.html)
+[![Mutation score](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/mutation-badge.json)](https://{org}.github.io/{repo}/)
 ```
 
-The four badges are independent: the first is GitHub's native workflow-status badge for the pull-request workflow; the other three are shields.io [endpoint badges](https://shields.io/badges/endpoint-badge) reading `<label>-badge.json` files that `make test-report` writes into `public/` on every run of this workflow — never hand-edited.
+The four badges are independent: the first is GitHub's native workflow-status badge for the pull-request workflow; the other three are shields.io [endpoint badges](https://shields.io/badges/endpoint-badge) reading the `tests-badge.json`, `coverage-badge.json`, and `mutation-badge.json` files that `make test-report` writes into `public/` on every run of this workflow — never hand-edited. The mutation badge links to the landing page, not into `mutation/`: the native mutation report's entry file differs per stack (Stryker's `reports/mutation-report.html`, Go's `index.html`).
