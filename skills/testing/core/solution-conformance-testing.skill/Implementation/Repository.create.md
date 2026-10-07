@@ -81,6 +81,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | --- | --- | --- |
 | `mode` | one line: what the kind did because of the run's purpose | every kind that ran — `kind_mode "…"` |
 | `skipped` | one line: why the kind does not apply to this run | a kind that skipped itself — `kind_skip "…"` |
+| `exit-code` | the kind script's exit code | `testing.sh`, after the script ends |
 | `result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit` |
 | `result/coverage-test.json` | `{ "linePct": <number> }` | `unit` (`report` only) |
 | `result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
@@ -94,14 +95,15 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 `score` in `mutation-test.json` is `killed / (killed+survived+timedout+noCoverage) * 100`, rounded to 1 decimal, `"0.0"` when nothing was mutated.
 
 ## Report output
-`test-report` empties `$TEST_REPORT_DIR`, runs `tools/testing/test-report.sh` — the same script in every stack — then records and checks the result:
+`test-report` empties `$TEST_REPORT_DIR`, runs `tools/testing/test-report.sh` — the same script in every stack — then records and checks the result. It exits `0` when a kind failed: that kind's own exit code is the signal, and the report of a red run must still be built and published. It exits non-zero only for a broken report — no `index.html`, a badge without a report or without a declaring kind, or in a `report` run a kind that exited `0` without a badge it declares.
 
 | File | Content | Source |
 | --- | --- | --- |
 | `index.html` | entry point; copied verbatim, never generated | `report-template/index.html` |
 | `reports/{name}/` | one folder per report: a copy of every `kinds/*/report/{name}/`, plus `reports/scenarios/index.html` | the kinds' `report/` folders; `result/scenarios.json` |
+| `reports/{name}/index.html` | when the tool wrote none: a list of what the folder holds, so `reports/{name}/` — the target of the landing page and of a README badge — opens on a static host | `test-report.sh` |
 | `badges/{name}.json` | shields.io endpoint-badge schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` — `tests`, `coverage`, `mutation` | computed from the kinds' `result/*.json` |
-| `run.json` | `{ "purpose", "kinds": [ { "kind", "state": "ran"\|"skipped"\|"missing", "note" } ] }` | `testing.sh`, from each kind's `mode` / `skipped` |
+| `run.json` | `{ "purpose", "kinds": [ { "kind", "state": "ran"\|"failed"\|"skipped"\|"missing", "note" } ] }` — `failed`: the kind exited non-zero or never finished | `testing.sh`, from each kind's `mode` / `skipped` / `exit-code` |
 
 A badge and its report share a name; a kind may produce several; a report may have no badge (`scenarios`). Names are unique across kinds. `label` is `tests`, `coverage`, or `mutation score`; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
 

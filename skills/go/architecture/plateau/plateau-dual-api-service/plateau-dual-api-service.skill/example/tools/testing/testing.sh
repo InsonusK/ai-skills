@@ -29,11 +29,19 @@ all_badges()    { local k; for k in $(kinds); do badges "$k" | tr ' ' '\n'; done
 kind_of_badge() { local k; for k in $(kinds); do case " $(badges "$k") " in *" $1 "*) echo "$k"; return;; esac; done; }
 
 run_kind() {
-  local kind="$1" script="$KINDS_SRC/$1.sh"
+  local kind="$1" script="$KINDS_SRC/$1.sh" status=0
   [ -f "$script" ] || { echo "test-kind-$kind: no such kind - $script is missing (kinds: $(kinds | tr '\n' ' '))" >&2; exit 2; }
   export TEST_KIND="$kind" TEST_KIND_DIR="$TEST_WORK_DIR/kinds/$kind"
   rm -rf "$TEST_KIND_DIR" && mkdir -p "$TEST_KIND_DIR/result" "$TEST_KIND_DIR/report"
-  bash "$script"
+  bash "$script" || status=$?
+  # Kept beside the kind's results: the report tells a failed kind from one that ran.
+  echo "$status" > "$TEST_KIND_DIR/exit-code"
+  return "$status"
+}
+
+# ran: the kind's script exited 0. failed: it exited non-zero, or never finished.
+kind_state() {
+  [ "$(cat "$TEST_WORK_DIR/kinds/$1/exit-code" 2>/dev/null)" = 0 ] && echo ran || echo failed
 }
 
 # README must show exactly the declared badges. A badge is recognised by "badges/<name>.json" in its URL.
@@ -63,7 +71,7 @@ report() {
   { printf '{ "purpose": "%s", "kinds": [' "$TEST_RUN_PURPOSE"
     for kind in $(kinds); do
       if   [ -f "$kinds_dir/$kind/skipped" ]; then state=skipped; text=$(head -1 "$kinds_dir/$kind/skipped")
-      elif [ -d "$kinds_dir/$kind" ];         then state=ran;     text=$(head -1 "$kinds_dir/$kind/mode" 2>/dev/null || true)
+      elif [ -d "$kinds_dir/$kind" ];         then state=$(kind_state "$kind"); text=$(head -1 "$kinds_dir/$kind/mode" 2>/dev/null || true)
       else                                         state=missing; text="the kind left no result"
       fi
       [ $first -eq 1 ] || printf ','; first=0
@@ -78,10 +86,11 @@ report() {
     [ -d "$TEST_REPORT_DIR/reports/$name" ] || { echo "test-report: badge '$name' has no report reports/$name/"; fail=1; }
     all_badges | grep -qx "$name" || { echo "test-report: badge '$name' is produced but no kind declares it in its '# badges:' line"; fail=1; }
   done
-  # A full run must produce every badge of every kind that ran.
+  # A full run must produce every badge of every kind that ran. A failed kind may have
+  # stopped before its result - its own exit code already reported that.
   if [ "$TEST_RUN_PURPOSE" = report ]; then
     for kind in $(kinds); do
-      [ -d "$kinds_dir/$kind" ] && [ ! -f "$kinds_dir/$kind/skipped" ] || continue
+      [ -d "$kinds_dir/$kind" ] && [ ! -f "$kinds_dir/$kind/skipped" ] && [ "$(kind_state "$kind")" = ran ] || continue
       for expected in $(badges "$kind"); do
         [ -f "$TEST_REPORT_DIR/badges/$expected.json" ] || { echo "test-report: test kind '$kind' declares badge '$expected' but the run produced none"; fail=1; }
       done

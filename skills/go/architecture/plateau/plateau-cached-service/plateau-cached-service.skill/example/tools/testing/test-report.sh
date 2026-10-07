@@ -86,3 +86,22 @@ if [ -n "$SCENARIOS" ]; then
     "</body></html>"
   ' "$SCENARIOS" > "$REPORT_DIR/reports/scenarios/index.html"
 fi
+
+# A report whose tool wrote no entry page gets one listing what it holds, so reports/<name>/
+# - where the landing page and a README badge point - opens on a static host too.
+for dir in "$REPORT_DIR"/reports/*/; do
+  [ -d "$dir" ] && [ ! -f "${dir}index.html" ] || continue
+  entries=("$dir"*)   # listed before the page itself exists
+  { printf '<!doctype html><html><head><meta charset="utf-8"><title>%s</title></head><body><h1>%s</h1><ul>\n' "$(basename "$dir")" "$(basename "$dir")"
+    for entry in "${entries[@]}"; do
+      name=$(basename "$entry")
+      if   [ -f "$entry" ];            then printf '<li><a href="%s">%s</a></li>\n' "$name" "$name"
+      elif [ -f "$entry/index.html" ]; then printf '<li><a href="%s/">%s/</a></li>\n' "$name" "$name"
+      else
+        for file in "$entry"/*; do
+          [ -f "$file" ] && printf '<li><a href="%s">%s</a></li>\n' "$name/$(basename "$file")" "$name/$(basename "$file")"
+        done
+      fi
+    done
+    printf '</ul></body></html>\n'; } > "${dir}index.html"
+done
