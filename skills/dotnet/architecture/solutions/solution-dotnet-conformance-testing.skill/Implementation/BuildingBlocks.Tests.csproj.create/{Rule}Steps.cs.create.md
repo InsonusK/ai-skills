@@ -11,7 +11,7 @@ tags:
 ---
 
 # Goals
-- Prove a `BuildingBlocks` pipeline behavior's technical contract — e.g. that `ExceptionHandlingBehavior` catches an unhandled exception and returns a generic error without leaking details — as a scenario, per [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]'s "technical and architectural functions are described through Cucumber/Gherkin scenarios too" principle.
+- Prove a `BuildingBlocks` pipeline behavior's technical contract — e.g. that `ExceptionHandlingBehavior` catches an unhandled exception and returns a generic error without leaking details — as a scenario, per [[skills/testing/solution-conformance-testing/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]'s "technical and architectural functions are described through Cucumber/Gherkin scenarios too" principle.
 
 # Core Principles
 - `BuildingBlocks` scenarios are technical-contract-shaped, not validation-shaped: given a pipeline condition (e.g. "the inner handler throws"), prove the behavior's observable contract (e.g. "a generic error is returned, nothing leaks") — never a business rule, since `BuildingBlocks` has none.

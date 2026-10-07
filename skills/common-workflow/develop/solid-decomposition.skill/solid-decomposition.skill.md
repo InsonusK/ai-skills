@@ -23,10 +23,10 @@ tags:
 # Scope
 This skill governs the process of decomposing and confirming design, independent of language or stack. It does not replace stack-specific conventions:
 - If the target stack has a plateau skill (for example `[plateau-plateau-python-cli](skills/python/architecture/plateau/plateau-python-cli/plateau-plateau-python-cli.skill.md)`, which defines `module-service-service` and `module-functions-function` templates), use its module templates to shape the file/class for each confirmed unit.
-- Use [workflow-unittest-testplan](skills/common-workflow/test/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill.md) and its [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md) template to write the test case list for each unit — do not invent a new test case format.
-- Use [code-coverage](skills/common-workflow/test/code-coverage.skill.md) to decide what must be covered.
-- Use [test-driven-development](skills/common-workflow/test/test-driven-development.skill/test-driven-development.skill.md) to decide the order of writing tests vs. implementation for each unit (step 4-5 below): new units get full red-green-refactor, refactors of existing units need a green baseline first, and local/mechanical fixes inside an already-decomposed unit don't need test-first ceremony.
-- Use [architect-validator](skills/common-workflow/test/architect-validator.skill.md) as the final gate after code is generated.
+- Use [workflow-unittest-testplan](skills/testing/workflow-unittest-testplan/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill.md) and its [usecases_list.md](skills/testing/workflow-unittest-testplan/workflow-unittest-testplan.skill/templates/usecases_list.md) template to write the test case list for each unit — do not invent a new test case format.
+- Use [code-coverage](skills/testing/code-coverage/code-coverage.skill.md) to decide what must be covered.
+- Use [test-driven-development](skills/testing/test-driven-development/test-driven-development.skill/test-driven-development.skill.md) to decide the order of writing tests vs. implementation for each unit (step 4-5 below): new units get full red-green-refactor, refactors of existing units need a green baseline first, and local/mechanical fixes inside an already-decomposed unit don't need test-first ceremony.
+- Use [architect-validator](skills/testing/architect-validator/architect-validator.skill.md) as the final gate after code is generated.
 
 # Core Principle
 - Decompose before you code. Never generate the implementation of new business logic in the same step as deciding its shape.
@@ -46,9 +46,9 @@ This skill governs the process of decomposing and confirming design, independent
    - `depends_on` — the roles/abstractions it needs (not concrete classes)
    - `usage_scenario` — 1-3 sentences: who calls it, when, with what result
 3. **Confirm with the user.** Present the draft decomposition (see [decomposition list format](#decomposition-list-format)) before writing any code. Do not proceed until the user confirms or edits it.
-4. **Attach test cases.** For each confirmed unit, write its test case list using the [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md) format, following [code-coverage](skills/common-workflow/test/code-coverage.skill.md) rules for what to cover.
-5. **Generate code.** Implement exactly the confirmed units, one responsibility per unit, following [test-driven-development](skills/common-workflow/test/test-driven-development.skill/test-driven-development.skill.md) for the test/implementation order: a brand-new unit gets full red-green-refactor per test case; a unit created by refactoring existing code needs a green baseline before restructuring. Apply the stack's plateau/module skill if one exists for the unit's kind.
-6. **Validate.** Run [architect-validator](skills/common-workflow/test/architect-validator.skill.md) against the generated files.
+4. **Attach test cases.** For each confirmed unit, write its test case list using the [usecases_list.md](skills/testing/workflow-unittest-testplan/workflow-unittest-testplan.skill/templates/usecases_list.md) format, following [code-coverage](skills/testing/code-coverage/code-coverage.skill.md) rules for what to cover.
+5. **Generate code.** Implement exactly the confirmed units, one responsibility per unit, following [test-driven-development](skills/testing/test-driven-development/test-driven-development.skill/test-driven-development.skill.md) for the test/implementation order: a brand-new unit gets full red-green-refactor per test case; a unit created by refactoring existing code needs a green baseline before restructuring. Apply the stack's plateau/module skill if one exists for the unit's kind.
+6. **Validate.** Run [architect-validator](skills/testing/architect-validator/architect-validator.skill.md) against the generated files.
 7. **Update the feature index.** Create or update `docs/features/{feature}.md` from [feature-index.template.md](skills/common-workflow/develop/solid-decomposition.skill/templates/feature-index.template.md): capabilities, units, links to their test case lists, and frontmatter `depends_on` links to every unit touched.
 8. **Render the diagram.** Run the `diagram-renderer` CLI against `docs/features/{feature}.md` (or the `docs/features/diagrams.yaml` config if one exists) to produce the `.canvas` diagram. Do not draw the diagram by hand.
 
@@ -72,7 +72,7 @@ This skill governs the process of decomposing and confirming design, independent
   - Risk: nobody can tell what the service does or which cases it must handle; changes to email logic risk breaking data fetching.
   - Fix: split into `ReportDataFetcher`, `ReportFormatter`, `ReportMailer` (Functions or Services depending on state), orchestrated by a `Command`.
 - Express `depends_on` as roles/abstractions the unit needs, not concrete classes it constructs itself.
-- Attach a test case list (via [usecases_list.md](skills/common-workflow/test/workflow-unittest-testplan.skill/templates/usecases_list.md)) to every confirmed unit before or immediately after generating its code.
+- Attach a test case list (via [usecases_list.md](skills/testing/workflow-unittest-testplan/workflow-unittest-testplan.skill/templates/usecases_list.md)) to every confirmed unit before or immediately after generating its code.
   - Risk: without test cases attached at design time, nobody knows whether current behavior is correct or which cases are missing, and regressions go unnoticed.
   - Fix: attach a usecases_list.md-formatted list to every unit at design time.
 - Keep the orchestrator/entry point free of business logic; it only calls units in sequence and never branches on business rules that belong to a unit.
@@ -82,7 +82,7 @@ This skill governs the process of decomposing and confirming design, independent
 - Render feature diagrams with `diagram-renderer`; never hand-draw them as mermaid/ASCII in the index document.
   - Risk: a hand-drawn diagram silently drifts from the real code and nobody notices.
   - Fix: derive the diagram from `depends_on` frontmatter links via `diagram-renderer`.
-- Run [architect-validator](skills/common-workflow/test/architect-validator.skill.md) after generating or changing units belonging to a plateau.
+- Run [architect-validator](skills/testing/architect-validator/architect-validator.skill.md) after generating or changing units belonging to a plateau.
 
 ## SHOULD
 - Reuse an existing unit instead of creating a near-duplicate when one already covers the responsibility.

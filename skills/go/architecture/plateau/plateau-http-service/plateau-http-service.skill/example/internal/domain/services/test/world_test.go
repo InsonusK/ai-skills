@@ -11,7 +11,7 @@ import (
 
 // logf logs a step's action/observation via stdout, matching godog's pretty
 // output so the line stays attached to the step that produced it (see
-// cucmber-testing-in-go's "Log through stdout, not testing.T" rule).
+// cucumber-testing-in-go's "Log through stdout, not testing.T" rule).
 func logf(format string, args ...any) {
 	fmt.Printf(format+"\n", args...)
 }

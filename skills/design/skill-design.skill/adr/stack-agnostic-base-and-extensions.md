@@ -1,7 +1,7 @@
 ---
 name: stack-agnostic-base-and-extensions
 description: How a skill whose implementation differs across stacks is split and named — a stack-agnostic `{skill-name}` base plus `{skill-name}-in-{stack}` extensions — and when the split does not apply
-problem: The same skill is written for several stacks with different implementations, but nothing says whether it is one skill, independent per-stack skills, or a base plus extensions, nor how those are named. The repository already holds all three shapes (cucmber-testing + -in-{stack}; solution-app-logging vs solution-go-app-logging; devops-*-in-{stack} with no base).
+problem: The same skill is written for several stacks with different implementations, but nothing says whether it is one skill, independent per-stack skills, or a base plus extensions, nor how those are named. The repository already holds all three shapes (cucumber-testing + -in-{stack}; solution-app-logging vs solution-go-app-logging; devops-*-in-{stack} with no base).
 decision: When a skill's implementation differs between stacks and it is written — or is committed to be written — for more than one stack, it SHOULD be a stack-agnostic base `{skill-name}` under skills/common-workflow/ plus one `{skill-name}-in-{stack}` extension per stack under skills/{stack}/. A single-stack skill with no second stack planned, and a skill identical for every stack, are not split. The `-in-{stack}` suffix appears only on an extension of an existing base. A category-specific skill may override or detail the split. Existing skills are brought in line when they are next edited, not in a bulk migration.
 tags:
   - stack
@@ -13,7 +13,7 @@ tags:
 
 Some skills describe a capability whose goal and rules are the same in every stack while the implementation differs — conformance testing, Cucumber testing, application logging, Kafka producers. The repository has no rule for these, and three shapes coexist:
 
-- a stack-agnostic base plus `-in-{stack}` extensions (`cucmber-testing`, `solution-conformance-testing`);
+- a stack-agnostic base plus `-in-{stack}` extensions (`cucumber-testing`, `solution-conformance-testing`);
 - independent per-stack skills with unrelated names and no base (`solution-app-logging` in dotnet, `solution-go-app-logging` in go);
 - `-in-{stack}` suffixes with no base to extend (`devops-github-action-check-version-in-{stack}`).
 
@@ -35,7 +35,7 @@ A SHOULD rule in skill-design. The split applies when (1) the implementation dif
 ### Benefits
 - Shared rules live once, so stacks cannot drift apart on the contract.
 - Base and extensions share a name prefix, so an agent finds every stack variant by name and a new stack starts from the base.
-- Consistent with the existing `cucmber-testing` / `solution-conformance-testing` precedent and with the link direction in `stack-specific-links-direction`.
+- Consistent with the existing `cucumber-testing` / `solution-conformance-testing` precedent and with the link direction in `stack-specific-links-direction`.
 - The conditions keep out empty bases and pointless per-stack copies.
 - A SHOULD with a category override leaves room for areas that need a different split, without the generic rule blocking them.
 
@@ -80,7 +80,7 @@ Mark the stack at the front of the name, as the go catalog's `solution-go-app-lo
 
 ### Costs
 - The base name is no longer a prefix of its extensions, so a name search for the base does not find them.
-- Conflicts with the existing `-in-{stack}` precedent used by `cucmber-testing` and `solution-conformance-testing`.
+- Conflicts with the existing `-in-{stack}` precedent used by `cucumber-testing` and `solution-conformance-testing`.
 - Rejected: stack grouping already comes from the `skills/{stack}/` folder and the `stack/<value>` tag.
 
 ## One skill with a section per stack
