@@ -1,7 +1,7 @@
 ---
 name: multi-stack-solution-location
 description: Where the stack-agnostic base of a multi-stack solution and its `-in-{stack}` extensions live, and what the base's Implementation/ holds
-problem: skill-design requires a skill whose implementation differs across stacks to be split into a stack-agnostic base plus `-in-{stack}` extensions under skills/common-workflow/, but no folder exists for stack-agnostic architecture solutions, and a solution skill must always ship an Implementation/ folder even though most of its implementation is stack-specific.
+problem: skill-stack-split requires a skill whose implementation differs across stacks to be split into a stack-agnostic base plus `-in-{stack}` extensions under skills/common-workflow/, but no folder exists for stack-agnostic architecture solutions, and a solution skill must always ship an Implementation/ folder even though most of its implementation is stack-specific.
 decision: A multi-stack solution's base `solution-{name}` lives in skills/common-workflow/architecture/solutions/ and each extension `solution-{name}-in-{stack}` lives in skills/{stack}/architecture/solutions/. The base's Implementation/ holds only stack-independent elements, such as a contract or a Makefile target set, and every stack-specific element lives in the extension.
 tags:
   - stack
@@ -11,7 +11,7 @@ tags:
 
 # Problem
 
-[[skills/design/skill-design.skill/adr/stack-agnostic-base-and-extensions.md|stack-agnostic-base-and-extensions]] places a stack-agnostic base under `skills/common-workflow/` and its extensions under `skills/{stack}/`. For solution skills this leaves two open questions:
+[[skills/design/skill-stack-split.skill/adr/stack-agnostic-base-and-extensions.md|stack-agnostic-base-and-extensions]] places a stack-agnostic base under `skills/common-workflow/` and its extensions under `skills/{stack}/`. For solution skills this leaves two open questions:
 
 - which folder under `skills/common-workflow/` holds architecture solution bases, given that only `common-workflow/test/` holds a base today (`solution-conformance-testing`);
 - what the base's mandatory `Implementation/` holds when most of the implementation is stack-specific.

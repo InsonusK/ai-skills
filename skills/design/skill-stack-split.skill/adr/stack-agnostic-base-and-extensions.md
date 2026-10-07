@@ -30,7 +30,7 @@ An agent writing a new multi-stack skill, or adding a stack to an existing one, 
 **Selected.**
 
 ### Description
-A SHOULD rule in skill-design. The split applies when (1) the implementation differs between stacks and (2) the skill is written, or is committed to be written, for more than one stack. The base `{skill-name}` (bare `stack` tag, under `skills/common-workflow/`) holds the shared goal, rules, and contract. Each extension `{skill-name}-in-{stack}` (one `stack/<value>` tag, under `skills/{stack}/`) holds only that stack's implementation. A single-stack skill keeps its plain name, and a stack-identical skill stays one agnostic skill. The `-in-{stack}` suffix marks an extension only. A category-specific skill (e.g. solution-create) may override or detail the split. Existing skills are migrated when next edited.
+A SHOULD rule, written in skill-design and since moved to skill-stack-split, with the when-to-split condition kept in skill-design. The split applies when (1) the implementation differs between stacks and (2) the skill is written, or is committed to be written, for more than one stack. The base `{skill-name}` (bare `stack` tag, under `skills/common-workflow/`) holds the shared goal, rules, and contract. Each extension `{skill-name}-in-{stack}` (one `stack/<value>` tag, under `skills/{stack}/`) holds only that stack's implementation. A single-stack skill keeps its plain name, and a stack-identical skill stays one agnostic skill. The `-in-{stack}` suffix marks an extension only. A category-specific skill (e.g. solution-create) may override or detail the split. Existing skills are migrated when next edited.
 
 ### Benefits
 - Shared rules live once, so stacks cannot drift apart on the contract.
