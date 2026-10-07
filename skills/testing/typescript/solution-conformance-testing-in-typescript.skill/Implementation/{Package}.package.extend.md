@@ -46,6 +46,7 @@ tags:
 | vitest | ^2 | Unit tests and coverage (`--coverage`, v8 provider) |
 | @stryker-mutator/core | ^8 | Mutation testing |
 | tsx | latest stable | Load TypeScript step definitions in `@cucumber/cucumber` (`--require-module tsx/cjs`) |
+| c8 | ^10 | Coverage of the `cucumber-js` run in `tools/testing/kinds/unit.sh` (`npx c8`) |
 
 # What Does NOT Belong Here
 - Gherkin `.feature` files shared with a non-TypeScript implementation of the same rule — those belong to the shared conformance-spec source, not to a copy inside this package.

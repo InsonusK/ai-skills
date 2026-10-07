@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>linkcheck — test report</title>
+</head>
+<body>
+  <h1>linkcheck — test report</h1>
+  <ul>
+    <li><a href="reports/scenarios/">Scenarios</a></li>
+    <li><a href="reports/tests/">Tests</a></li>
+    <li><a href="reports/tests/livingdoc/">Living documentation</a></li>
+    <li><a href="reports/coverage/">Coverage</a></li>
+    <li><a href="reports/mutation/">Mutation</a></li>
+  </ul>
+  <h2>This run</h2>
+  <pre id="run"></pre>
+  <script>
+    fetch('run.json').then(r => r.json()).then(run => {
+      document.getElementById('run').textContent = 'purpose: ' + run.purpose + '\n' +
+        run.kinds.map(k => k.kind + ': ' + k.state + (k.note ? ' — ' + k.note : '')).join('\n');
+    }).catch(() => {});
+  </script>
+</body>
+</html>
