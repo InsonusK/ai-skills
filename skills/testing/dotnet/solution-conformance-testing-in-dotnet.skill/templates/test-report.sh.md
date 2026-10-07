@@ -30,7 +30,7 @@ for src in "$WORK_DIR"/kinds/*/report/*/; do
 done
 
 # Path of the normalized result file of that name, from whichever kind wrote it; empty
-# when no kind did (a pr-check run reports no coverage, a skipped kind leaves no result).
+# when no kind did (a check run reports no coverage, a skipped kind leaves no result).
 result() {
   local f
   for f in "$WORK_DIR"/kinds/*/result/"$1"; do

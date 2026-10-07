@@ -9,7 +9,7 @@ Runs `behave` (`@todo` scenarios excluded) and the plain `test/` suite under `co
 # $TEST_KIND_DIR/result/*.json, keeping the native report under $TEST_KIND_DIR/report/.
 # Called by `make test-kind-unit`, which exports:
 #   TEST_KIND_DIR      the only directory this kind writes to
-#   TEST_RUN_PURPOSE   report: also report line coverage; pr-check: tests only
+#   TEST_RUN_PURPOSE   report: also report line coverage; check: tests only
 set -euo pipefail
 
 KIND_DIR="${TEST_KIND_DIR:?run this through make test-kind-unit}"

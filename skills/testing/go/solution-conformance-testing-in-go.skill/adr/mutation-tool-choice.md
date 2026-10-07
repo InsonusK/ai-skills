@@ -31,7 +31,7 @@ tags:
 ### Benefits
 
 - Go-native — no JVM/Node/Python runtime to install alongside the Go toolchain, matching the minimal-dependency spirit of this catalog's baseline.
-- Ships a `--diff` flag that maps directly onto the parent contract's `DELTA_BASE` in a `pr-check` run, with no extra scripting needed to compute the changed-file set.
+- Ships a `--diff` flag that maps directly onto the parent contract's `DELTA_BASE` in a `check` run, with no extra scripting needed to compute the changed-file set.
 - Already the tool a real Go service on this family (`tmp/tg-bot-service`) uses in production, with a working `Makefile` integration to ground this solution's `Repository.extend.md` against.
 
 ### Costs
@@ -51,7 +51,7 @@ An older, community Go mutation-testing tool (`github.com/zimmski/go-mutesting`)
 ### Costs
 
 - Effectively unmaintained (no active release activity), with known incompatibilities against modern Go module layouts.
-- No delta/diff-scoped run mode, so every `pr-check` run with a `DELTA_BASE` would need bespoke scripting this catalog would then own and maintain.
+- No delta/diff-scoped run mode, so every `check` run with a `DELTA_BASE` would need bespoke scripting this catalog would then own and maintain.
 
 ## No mutation testing for Go yet — leave the ADR's Go row unfilled
 

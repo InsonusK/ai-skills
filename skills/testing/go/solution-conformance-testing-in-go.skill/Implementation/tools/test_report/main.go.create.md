@@ -15,7 +15,7 @@ tags:
 # Core Principles
 - Reads `$TEST_KIND_DIR/result/*.json` only — never re-parses `go test`'s or `gremlins`' native output.
 - `$TEST_REPORT_DIR/reports/scenarios/index.html` is rendered from `$TEST_KIND_DIR/result/scenarios.json` alone, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]].
-- `coverage-test.json`, `mutation-test.json`, and `scenarios.json` are optional inputs (a `pr-check` run reports no coverage, and a kind that skipped itself leaves no result) — their badges are simply omitted, never a fatal error.
+- `coverage-test.json`, `mutation-test.json`, and `scenarios.json` are optional inputs (a `check` run reports no coverage, and a kind that skipped itself leaves no result) — their badges are simply omitted, never a fatal error.
 
 # Implementation changes
 ```go
@@ -335,7 +335,7 @@ func needsAttention(s scenarioEntry) bool {
   - Risk: parsing a tool's native report format here duplicates the normalizers' own parsing and breaks the moment the underlying tool's report shape changes.
   - Fix: every badge's value comes from the already-normalized JSON; `$TEST_KIND_DIR/report/<kind>/` is copied byte-for-byte, never read for data.
 - Treat a missing `$TEST_KIND_DIR/result/{coverage-test,mutation-test}.json` as "skip this badge," never as a fatal error.
-  - Risk: `test-report` is also called by `test-and-report` right after `test-kind-mutation`, but a standalone `make test-report` (or a `pr-check` run) legitimately has no mutation or coverage result.
+  - Risk: `test-report` is also called by `test-and-report` right after `test-kind-mutation`, but a standalone `make test-report` (or a `check` run) legitimately has no mutation or coverage result.
   - Fix: `os.ReadFile`'s error on either optional file returns `nil` from that badge function, producing no badge for that metric rather than exiting.
 - Mark a scenario row as needing attention exactly when the parent contract says so: `untyped`, `missing`, `failed`, or a `todo` entry of type `happy`/`negative`/`error` without a note.
   - Risk: a looser rule lets a planned-but-unexplained negative case blend in with the finished rows; a stricter one trains readers to ignore the highlight.

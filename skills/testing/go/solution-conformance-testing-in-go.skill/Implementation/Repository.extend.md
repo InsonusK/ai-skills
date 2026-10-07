@@ -82,15 +82,15 @@ test-kind-unit:
 	else echo "livingdoc: npm not found - skipping living-doc report"; fi; \
 	exit $$status
 
-# mutation: gremlins over the whole module in a `report` run; in a `pr-check`
+# mutation: gremlins over the whole module in a `report` run; in a `check`
 # run only over files changed since DELTA_BASE, and skipped without one. Exits
 # with gremlins' own exit code after writing the normalized result.
 test-kind-mutation:
 	@$(test-kind-begin)
-	@if [ "$(TEST_RUN_PURPOSE)" = pr-check ] && [ -z "$(DELTA_BASE)" ]; then \
-		$(call test-kind-skip,a pr-check run mutates only changed files and no DELTA_BASE was given); fi; \
+	@if [ "$(TEST_RUN_PURPOSE)" = check ] && [ -z "$(DELTA_BASE)" ]; then \
+		$(call test-kind-skip,a check run mutates only changed files and no DELTA_BASE was given); fi; \
 	K="$(abspath $(TEST_KIND_DIR))"; diff_flag=""; \
-	if [ "$(TEST_RUN_PURPOSE)" = pr-check ]; then diff_flag="--diff $(DELTA_BASE)"; \
+	if [ "$(TEST_RUN_PURPOSE)" = check ]; then diff_flag="--diff $(DELTA_BASE)"; \
 		$(call test-kind-mode,mutating only files changed since $(DELTA_BASE)); \
 	else $(call test-kind-mode,mutating the whole module); fi; \
 	test -x "$(GREMLINS)" || go install github.com/go-gremlins/gremlins/cmd/gremlins@$(GREMLINS_VERSION); \
@@ -149,8 +149,8 @@ require (
 
 ## MUST
 - `test-kind-unit` must gather coverage on every run, and normalize/report it only in a `report` run — never make gathering itself conditional.
-  - Risk: making coverage collection itself conditional (rather than just its reporting) means a delta-scoped mutation run has no coverage data to scope against in a `pr-check` run.
-  - Fix: always pass `-coverpkg`/`-coverprofile` to `go test`; gate only the `go tool cover`/`$TEST_KIND_DIR/result/coverage-test.json` steps on `TEST_RUN_PURPOSE`, and remove `report/coverage/` in a `pr-check` run so no coverage report is published without its badge.
+  - Risk: making coverage collection itself conditional (rather than just its reporting) means a delta-scoped mutation run has no coverage data to scope against in a `check` run.
+  - Fix: always pass `-coverpkg`/`-coverprofile` to `go test`; gate only the `go tool cover`/`$TEST_KIND_DIR/result/coverage-test.json` steps on `TEST_RUN_PURPOSE`, and remove `report/coverage/` in a `check` run so no coverage report is published without its badge.
 - `test-kind-unit` must run `tools/normalize_scenarios` after `go test` whether or not a test failed, and exit with the test run's own status afterwards.
   - Risk: with `set -o pipefail` a failing `go test` ends the recipe line, so `$TEST_KIND_DIR/result/scenarios.json` would be missing or stale exactly on the red run it should describe.
   - Fix: capture the pipeline's status with `|| status=$$?`, run the scenario normalizer and the coverage step in the same shell, then `exit $$status`.
@@ -169,5 +169,5 @@ require (
 - [ ] `make test-kind-unit` produces `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` on every run, green or red, and exits non-zero when a test failed.
 - [ ] `make test-kind-unit` (a `report` run) additionally produces `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/index.html`.
 - [ ] `make test-kind-mutation` installs `gremlins` on first use and exits non-zero when a mutant survives.
-- [ ] `make test-kind-mutation TEST_RUN_PURPOSE=pr-check` skips itself without `DELTA_BASE` and passes `--diff` with one; `make test-kinds` prints `unit tests coverage` and `mutation mutation`.
+- [ ] `make test-kind-mutation TEST_RUN_PURPOSE=check` skips itself without `DELTA_BASE` and passes `--diff` with one; `make test-kinds` prints `unit tests coverage` and `mutation mutation`.
 - [ ] `make test-report` fills `$TEST_REPORT_DIR` with `index.html`, `reports/{tests,coverage,mutation,scenarios}/`, `badges/{tests,coverage,mutation}.json`, and `run.json`; `make test-readme-check` passes.

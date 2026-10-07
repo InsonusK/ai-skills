@@ -43,7 +43,7 @@ Which test projects exist, and what each one references, is decided by the archi
 | /scripts | normalize-scenarios.sh | `.feature` inventory + per-scenario results → `$TEST_KIND_DIR/result/scenarios.json`; identical across the .NET/Python/TypeScript variants |
 | /scripts | messages-results.jq | Reqnroll's Cucumber Messages → `[{uri, line, status}]` for `normalize-scenarios.sh` |
 | / | stryker-config.json | `solution` + `test-case-filter: Category!=todo`, so Stryker.NET's own test runs skip `@todo` scenarios |
-| /scripts | mutation-test.sh | Runs `dotnet-stryker` against the whole solution (in a `pr-check` run scoped to code changed since `DELTA_BASE`), normalizes results into `$TEST_KIND_DIR/result/mutation-test.json`, keeps the native report under `$TEST_KIND_DIR/report/mutation` |
+| /scripts | mutation-test.sh | Runs `dotnet-stryker` against the whole solution (in a `check` run scoped to code changed since `DELTA_BASE`), normalizes results into `$TEST_KIND_DIR/result/mutation-test.json`, keeps the native report under `$TEST_KIND_DIR/report/mutation` |
 | /scripts | test-report.sh | Builds `$TEST_REPORT_DIR/` — `index.html`, `reports/`, `badges/` — from every kind's `result/*.json` + `report/*/`; no test/build tooling involved; byte-identical across the .NET/Python/TypeScript variants |
 | / | Makefile | Declares the `unit` and `mutation` kinds, includes `tools/testing/testing.mk`, and defines `test-kind-unit`/`test-kind-mutation`/`test-report-build` as required by [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] |
 
@@ -57,7 +57,7 @@ Runs `dotnet test` against the whole solution — which picks up every test proj
 Build `$TEST_KIND_DIR/result/scenarios.json` per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]. See [templates/normalize-scenarios.sh.md](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/templates/normalize-scenarios.sh.md) and [templates/messages-results.jq.md](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/templates/messages-results.jq.md).
 
 ## scripts/mutation-test.sh
-Runs Stryker.NET against the whole solution — its native `--since` mode covers a `pr-check` run's `DELTA_BASE` directly, so this script does not need to compute the diff itself, and Stryker's own solution-wide run already covers every test project together. See [templates/mutation-test.sh.md](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/templates/mutation-test.sh.md) for the full script.
+Runs Stryker.NET against the whole solution — its native `--since` mode covers a `check` run's `DELTA_BASE` directly, so this script does not need to compute the diff itself, and Stryker's own solution-wide run already covers every test project together. See [templates/mutation-test.sh.md](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/templates/mutation-test.sh.md) for the full script.
 
 ## stryker-config.json
 ```json
@@ -115,9 +115,9 @@ Pure assembly — no `dotnet`/test tooling involved, so this same script (unmodi
 - [ ] WHEN `make test-kind-unit` runs in a `report` run THEN `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/` reflect coverage across every test project.
 - [ ] WHEN `make test-kind-unit` runs and a scenario fails THEN `$TEST_KIND_DIR/result/scenarios.json` still lists every `.feature` entry, `@todo` ones with status `todo`, and the target exits non-zero.
 - [ ] WHEN `make test-report` runs THEN `$TEST_REPORT_DIR/reports/scenarios/index.html` shows the type × status table and every entry.
-- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=pr-check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated, across every test project.
+- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated, across every test project.
 - [ ] WHEN `make test-report` runs after both kinds THEN `$TEST_REPORT_DIR/` contains `index.html`, `badges/{tests,coverage,mutation}.json`, `reports/{tests,coverage,mutation,scenarios}/`, and `run.json`.
 - [ ] WHEN `make test-kind-unit` runs with `npm` available THEN `report/tests/cucumber/*.ndjson` and `report/tests/livingdoc/index.html` exist; without `npm` the kind's exit code is unchanged.
-- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=pr-check` runs without `DELTA_BASE` THEN the kind skips itself, leaving `skipped` and no badge.
+- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check` runs without `DELTA_BASE` THEN the kind skips itself, leaving `skipped` and no badge.
 - [ ] WHEN `make test-readme-check` runs THEN it passes with one README badge per declared badge.
 - [ ] WHEN `make test-and-report` runs THEN it produces the same end state as running every `test-kind-{kind}` and then `test-report` by hand.

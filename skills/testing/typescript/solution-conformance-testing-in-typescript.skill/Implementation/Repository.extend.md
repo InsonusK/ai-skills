@@ -42,11 +42,11 @@ README.md
 | Directory | file | Description |
 | ----------------- | ----------- |
 | /report-template | index.html | Static landing page `test-report.sh` copies into `$TEST_REPORT_DIR/`; links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
-| /scripts | unit-test.sh | Runs `cucumber-js` (wrapped in `c8` when `WITH_CODE_COVERAGE=true`), normalizes results into `$TEST_KIND_DIR/result/unit-test.json` (+ `coverage-test.json`), keeps the native report under `$TEST_KIND_DIR/report/tests` (+ `$TEST_KIND_DIR/report/coverage`) |
+| /scripts | unit-test.sh | Runs `cucumber-js` (wrapped in `c8` in a `report` run), normalizes results into `$TEST_KIND_DIR/result/unit-test.json` (+ `coverage-test.json`), keeps the native report under `$TEST_KIND_DIR/report/tests` (+ `$TEST_KIND_DIR/report/coverage`) |
 | /tools/livingdoc | package.json, package-lock.json, render.mjs | Copied verbatim from `solution-conformance-testing`; `unit-test.sh` renders `$TEST_KIND_DIR/report/tests/cucumber/messages.ndjson` → `$TEST_KIND_DIR/report/tests/livingdoc/` |
 | /scripts | normalize-scenarios.sh | `.feature` inventory + per-scenario results → `$TEST_KIND_DIR/result/scenarios.json`; identical across the .NET/Python/TypeScript variants |
 | /scripts | messages-results.jq | cucumber-js's Cucumber Messages → `[{uri, line, status}]` for `normalize-scenarios.sh` |
-| /scripts | mutation-test.sh | Runs `stryker run` against a `stryker.conf.json`-derived config (in a `pr-check` run scoped to files changed since `DELTA_BASE`), normalizes results into `$TEST_KIND_DIR/result/mutation-test.json`, keeps the native report under `$TEST_KIND_DIR/report/mutation` |
+| /scripts | mutation-test.sh | Runs `stryker run` against a `stryker.conf.json`-derived config (in a `check` run scoped to files changed since `DELTA_BASE`), normalizes results into `$TEST_KIND_DIR/result/mutation-test.json`, keeps the native report under `$TEST_KIND_DIR/report/mutation` |
 | /scripts | test-report.sh | Assembles `$TEST_REPORT_DIR/` — `scenarios/` included — from `$TEST_KIND_DIR/result/*.json` + `$TEST_KIND_DIR/report/*`; no test/build tooling involved |
 | / | stryker.conf.json | Base Stryker config; `mutation-test.sh` patches its `reporters`/`thresholds`/reporter file paths per run, never edits it in place |
 | / | Makefile | Declares the `unit` and `mutation` kinds, includes `tools/testing/testing.mk`, and defines `test-kind-unit`/`test-kind-mutation`/`test-report-build` as required by [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] |
@@ -55,13 +55,13 @@ README.md
 See [templates/Makefile.md](../templates/Makefile.md) for the full content.
 
 ## scripts/unit-test.sh
-Runs `cucumber-js` (and, when `WITH_CODE_COVERAGE=true`, wraps it with `c8` for coverage), then normalizes the result. See [templates/unit-test.sh.md](../templates/unit-test.sh.md) for the full script.
+Runs `cucumber-js` (and, in a `report` run, wraps it with `c8` for coverage), then normalizes the result. See [templates/unit-test.sh.md](../templates/unit-test.sh.md) for the full script.
 
 ## scripts/normalize-scenarios.sh
 Builds `$TEST_KIND_DIR/result/scenarios.json` per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]; `scripts/messages-results.jq` reduces cucumber-js's Cucumber Messages to `[{uri, line, status}]`. See [templates/normalize-scenarios.sh.md](../templates/normalize-scenarios.sh.md) and [templates/messages-results.jq.md](../templates/messages-results.jq.md).
 
 ## scripts/mutation-test.sh
-StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates a `pr-check` run's `DELTA_BASE` itself by limiting `--mutate` to the files `git diff` reports as changed. See [templates/mutation-test.sh.md](../templates/mutation-test.sh.md) for the full script.
+StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates a `check` run's `DELTA_BASE` itself by limiting `--mutate` to the files `git diff` reports as changed. See [templates/mutation-test.sh.md](../templates/mutation-test.sh.md) for the full script.
 
 ## scripts/test-report.sh
 Pure assembly — no `npm`/test tooling involved, so this same script (unmodified) also works for the .NET and Python variants of this solution. See [templates/test-report.sh.md](../templates/test-report.sh.md) for the full script.
@@ -106,6 +106,6 @@ Pure assembly — no `npm`/test tooling involved, so this same script (unmodifie
 - [ ] WHEN `make test-kind-unit TEST_RUN_PURPOSE=report` runs THEN `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/` also exist.
 - [ ] WHEN `make test-kind-unit` runs and a scenario fails THEN `$TEST_KIND_DIR/result/scenarios.json` still lists every `.feature` entry, `@todo` ones with status `todo`, and the target exits non-zero.
 - [ ] WHEN `make test-report` runs THEN `$TEST_REPORT_DIR/reports/scenarios/index.html` shows the type × status table and every entry.
-- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=pr-check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated.
+- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated.
 - [ ] WHEN `make test-report` runs after both `*-test` targets THEN `$TEST_REPORT_DIR/` contains the badge JSON files and copies of the native reports.
 - [ ] WHEN `make test-and-report` runs THEN it produces the same end state as running `test-kind-unit`, `test-kind-mutation`, and `test-report` in sequence by hand.

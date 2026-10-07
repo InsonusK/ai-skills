@@ -1,6 +1,6 @@
 # scripts/mutation-test.sh
 
-StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates a `pr-check` run's `DELTA_BASE` itself by limiting `--mutate` to the files `git diff` reports as changed. See [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) for the target contract.
+StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates a `check` run's `DELTA_BASE` itself by limiting `--mutate` to the files `git diff` reports as changed. See [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) for the target contract.
 
 ```bash
 #!/usr/bin/env bash
@@ -9,10 +9,10 @@ StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this s
 # $TEST_KIND_DIR/result/mutation-test.json, keeping the native browsable report under
 # $TEST_KIND_DIR/report/mutation. Called by `make test-kind-mutation`, which exports:
 #   TEST_KIND_DIR      the only directory this kind writes to
-#   TEST_RUN_PURPOSE   pr-check: only mutate source files changed since DELTA_BASE, the
+#   TEST_RUN_PURPOSE   check: only mutate source files changed since DELTA_BASE, the
 #                      real threshold applies; report: the whole package, which never
 #                      fails on the score
-#   DELTA_BASE         git ref to diff against in a pr-check run (make skips the kind
+#   DELTA_BASE         git ref to diff against in a check run (make skips the kind
 #                      without it)
 set -euo pipefail
 
@@ -27,9 +27,9 @@ mkdir -p "$RESULT_DIR"
 rm -rf "$REPORT_DIR"
 
 MUTATE_ARGS=()
-if [ "$PURPOSE" = "pr-check" ]; then
+if [ "$PURPOSE" = "check" ]; then
   if [ -z "$DELTA_BASE" ]; then
-    echo "DELTA_BASE is required in a pr-check run" >&2
+    echo "DELTA_BASE is required in a check run" >&2
     exit 1
   fi
 
@@ -45,7 +45,7 @@ fi
 CONFIG_FILE="$(mktemp --suffix=.json)"
 trap 'rm -f "$CONFIG_FILE"' EXIT
 
-if [ "$PURPOSE" = "pr-check" ]; then
+if [ "$PURPOSE" = "check" ]; then
   # Real threshold from stryker.conf.json applies here - the score has to be good
   # enough to pass the PR gate.
   jq --arg html "$REPORT_DIR/reports/mutation-report.html" \
@@ -57,7 +57,7 @@ if [ "$PURPOSE" = "pr-check" ]; then
 else
   # Full run has no PR base to diff against, so the whole package is mutated; the break
   # threshold is overridden to 0 so a low score never fails this run - it only reports
-  # the score, it doesn't gate anything. A pr-check run enforces the real
+  # the score, it doesn't gate anything. A check run enforces the real
   # threshold from stryker.conf.json before code reaches master.
   jq --arg html "$REPORT_DIR/reports/mutation-report.html" \
      --arg json "$REPORT_DIR/reports/mutation-report.json" \

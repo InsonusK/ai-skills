@@ -38,9 +38,9 @@ README.md
 | ----------------- | ----------- |
 | /features | {rule}.feature, steps/{rule}_steps.py | Gherkin scenarios and their bindings |
 | /report-template | index.html | Static landing page `test-report.sh` copies into `$TEST_REPORT_DIR/`; links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
-| /scripts | unit-test.sh | Runs `behave`/`pytest` under `coverage`, normalizes results into `$TEST_KIND_DIR/result/unit-test.json` (+ `coverage-test.json` when `WITH_CODE_COVERAGE=true`), keeps the native report under `$TEST_KIND_DIR/report/tests` (+ `$TEST_KIND_DIR/report/coverage`) |
+| /scripts | unit-test.sh | Runs `behave`/`pytest` under `coverage`, normalizes results into `$TEST_KIND_DIR/result/unit-test.json` (+ `coverage-test.json` in a `report` run), keeps the native report under `$TEST_KIND_DIR/report/tests` (+ `$TEST_KIND_DIR/report/coverage`) |
 | /scripts | normalize-scenarios.sh | `.feature` inventory + per-scenario results → `$TEST_KIND_DIR/result/scenarios.json`; identical across the .NET/Python/TypeScript variants |
-| /scripts | mutation-test.sh | Runs `mutmut run` (in a `pr-check` run scoped to files changed since `DELTA_BASE`), normalizes results into `$TEST_KIND_DIR/result/mutation-test.json`, keeps the native report under `$TEST_KIND_DIR/report/mutation` |
+| /scripts | mutation-test.sh | Runs `mutmut run` (in a `check` run scoped to files changed since `DELTA_BASE`), normalizes results into `$TEST_KIND_DIR/result/mutation-test.json`, keeps the native report under `$TEST_KIND_DIR/report/mutation` |
 | /scripts | test-report.sh | Assembles `$TEST_REPORT_DIR/` — `scenarios/` included — from `$TEST_KIND_DIR/result/*.json` + `$TEST_KIND_DIR/report/*`; no test/build tooling involved |
 | / | Makefile | Declares the `unit` and `mutation` kinds, includes `tools/testing/testing.mk`, and defines `test-kind-unit`/`test-kind-mutation`/`test-report-build` as required by [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] |
 
@@ -71,7 +71,7 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
   - Fix: write both outputs exactly as [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] specifies.
 - Before relying on `scripts/mutation-test.sh`, replace its placeholder `KILLED`/`SURVIVED`/`TIMEDOUT`/`NO_COVERAGE` parsing with a real export from the `mutmut` version the project pins, and verify the delta-scoping flag/config key used in `ONLY_DELTA=true` mode — see the `VERIFY` comments inline.
   - Risk: `mutmut`'s CLI has moved between major versions, so unverified placeholder parsing can silently report wrong `KILLED`/`SURVIVED` counts, or crash, once a real run happens.
-  - Fix: replace the placeholder parsing with a real export from the pinned `mutmut` version, and confirm the delta-scoping flag/config key before relying on a `pr-check` run with `DELTA_BASE`.
+  - Fix: replace the placeholder parsing with a real export from the pinned `mutmut` version, and confirm the delta-scoping flag/config key before relying on a `check` run with `DELTA_BASE`.
 - `scripts/mutation-test.sh` must still exit with `mutmut`'s own exit code after writing `$TEST_KIND_DIR/result/mutation-test.json` — normalizing the result must never swallow a real mutation-testing failure.
   - Risk: a real mutation-testing failure gets swallowed by the normalization step, and CI reports success on a run that actually found unkilled mutants.
   - Fix: propagate `mutmut`'s exit code from the script after it finishes writing the normalized result.
@@ -99,6 +99,6 @@ Pure assembly — no `python`/test tooling involved, so this same script (unmodi
 - [ ] WHEN `make test-kind-unit TEST_RUN_PURPOSE=report` runs THEN `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/` also exist.
 - [ ] WHEN `make test-kind-unit` runs and a scenario fails THEN `$TEST_KIND_DIR/result/scenarios.json` still lists every `.feature` entry, `@todo` ones with status `todo`, and the target exits non-zero.
 - [ ] WHEN `make test-report` runs THEN `$TEST_REPORT_DIR/reports/scenarios/index.html` shows the type × status table and every entry.
-- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=pr-check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated.
+- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated.
 - [ ] WHEN `make test-report` runs after both `*-test` targets THEN `$TEST_REPORT_DIR/` contains the badge JSON files and copies of the native reports.
 - [ ] WHEN `make test-and-report` runs THEN it produces the same end state as running `test-kind-unit`, `test-kind-mutation`, and `test-report` in sequence by hand.

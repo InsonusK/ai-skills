@@ -30,9 +30,9 @@ tags:
 #
 # Callers (a developer, CI) use only:
 #   make test-kinds | test-kind-<kind> | test-report | test-readme-check | test-and-report
-#   TEST_RUN_PURPOSE=pr-check|report   DELTA_BASE=<ref>   TEST_WORK_DIR=<dir>   TEST_REPORT_DIR=<dir>
+#   TEST_RUN_PURPOSE=check|report   DELTA_BASE=<ref>   TEST_WORK_DIR=<dir>   TEST_REPORT_DIR=<dir>
 
-# What the run is for. pr-check: decides whether a pull request may merge - must be fast.
+# What the run is for. check: decides whether a change may proceed (merge, publish) - must be fast.
 # report: builds the full reports and badges for publishing.
 TEST_RUN_PURPOSE ?= report
 # The ref to compare against when a kind can limit itself to changed code. Empty: none.
@@ -44,8 +44,8 @@ TEST_REPORT_DIR ?= $(TEST_WORK_DIR)/report
 # The file test-readme-check reads.
 TEST_README ?= README.md
 
-ifeq ($(filter $(TEST_RUN_PURPOSE),pr-check report),)
-$(error TEST_RUN_PURPOSE must be pr-check or report, got '$(TEST_RUN_PURPOSE)')
+ifeq ($(filter $(TEST_RUN_PURPOSE),check report),)
+$(error TEST_RUN_PURPOSE must be check or report, got '$(TEST_RUN_PURPOSE)')
 endif
 
 # "<kind>:<badge>,<badge> ..." - the declaration tools/testing/testing.sh checks against.

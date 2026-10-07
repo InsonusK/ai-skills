@@ -158,7 +158,7 @@ Propagate the underlying mutation tool's own exit code after writing `result/mut
 
 ### State what the run's purpose changes
 Have every kind say what it does because of `TEST_RUN_PURPOSE` / `DELTA_BASE` through `test-kind-mode`, or skip itself through `test-kind-skip` with the reason — in the log and in `run.json`.
-- Violation: a kind that silently narrows or drops its work in a `pr-check` run.
+- Violation: a kind that silently narrows or drops its work in a `check` run.
 - Risk: a check that wrongly decided not to run cannot be told apart from one that does not apply.
 - Fix: one `mode` line per run, or a `skipped` line; never a silent branch.
 

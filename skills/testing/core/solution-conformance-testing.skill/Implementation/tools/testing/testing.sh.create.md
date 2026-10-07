@@ -12,7 +12,7 @@ tags:
 - Record in the report how each kind ran, and fail when the report and the declaration disagree.
 
 # Core Principles
-- `readme-check` compares the README with the *declared* badges and runs no tests: a `pr-check` run skips kinds, so the badges a run produced cannot be the reference.
+- `readme-check` compares the README with the *declared* badges and runs no tests: a `check` run skips kinds, so the badges a run produced cannot be the reference.
 - A badge is recognised in the README by `badges/{name}.json` in its URL — the host and the path before it are the publisher's business.
 - `report-finish` writes `run.json` (purpose, and per kind `ran` / `skipped` / `missing` with its note), requires a same-named report for every badge, and in a `report` run requires every declared badge of every kind that ran.
 

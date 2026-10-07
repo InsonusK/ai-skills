@@ -26,7 +26,7 @@ tags:
 }
 ```
 
-Run `npm install --prefix tools/livingdoc` once and commit the generated `tools/livingdoc/package-lock.json`; `unit-test` installs with `npm ci`. Add `tools/livingdoc/node_modules/` to `.gitignore`.
+Run `npm install --prefix tools/livingdoc` once and commit the generated `tools/livingdoc/package-lock.json`; `test-kind-unit` installs with `npm ci`. Add `tools/livingdoc/node_modules/` to `.gitignore`.
 
 # Rule changes
 

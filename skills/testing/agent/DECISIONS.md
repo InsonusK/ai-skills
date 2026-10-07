@@ -19,9 +19,9 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 
 ## Agent decisions
 
-- Names `test-kinds`, `test-readme-check`, `TEST_RUN_PURPOSE` (`pr-check` / `report`), `TEST_WORK_DIR`, `TEST_REPORT_DIR` — proposed, not confirmed.
+- Names `test-kinds`, `test-readme-check`, `TEST_RUN_PURPOSE` (`check` / `report`), `TEST_WORK_DIR`, `TEST_REPORT_DIR` — proposed, not confirmed.
 - Purpose values name the purpose, not the trigger: a manual run is neither a PR nor a release.
-- The README check compares against declared badges, not generated ones — a `pr-check` run skips kinds, so generated badges would report false gaps; `test-report` cross-checks declared against produced in a `report` run so the declaration cannot drift.
+- The README check compares against declared badges, not generated ones — a `check` run skips kinds, so generated badges would report false gaps; `test-report` cross-checks declared against produced in a `report` run so the declaration cannot drift.
 - A self-skipping kind leaves a marker with the reason: absence alone cannot be told apart from a kind that wrongly decided not to run.
 - A report may exist without a badge (today's scenario report has none); a badge always has a report.
 - ~~Isolation is read as "no link into an architecture catalog"; design-method skills stay linkable.~~ Superseded by the owner: links only inside `skills/testing/`.
@@ -34,7 +34,7 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 
 ## Agent decisions — W1
 
-- `test-setup-check` renamed `test-readme-check`, `gate` renamed `pr-check`: the owner found both names unclear. Still proposals.
+- `test-setup-check` renamed `test-readme-check`, `gate` renamed `check`: the owner found both names unclear. Still proposals.
 - The topic folder is named exactly after the skill, so the layout is checkable: `{skill-name}` or `{skill-name}-in-{stack}`, nothing else.
 - Renamed to fit that rule: `no-test-theater-{angular,dotnet,python}` → `no-test-theater-in-…`; `dotnet-unittest` → `unittest-in-dotnet`; `testing-strategy` → `testing-strategy-in-dotnet`. The last two have no base — accepted by the owner for one-stack topics; `skill-design` now states it.
 - `-in-angular` is kept although Angular is a framework on `stack/typescript`; `check.sh` requires `framework/angular` for it.

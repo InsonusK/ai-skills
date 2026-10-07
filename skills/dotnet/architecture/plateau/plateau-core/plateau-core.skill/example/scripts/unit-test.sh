@@ -3,7 +3,7 @@
 # results into $TEST_KIND_DIR/result/*.json, keeping a merged, browsable native report
 # under $TEST_KIND_DIR/report/. Called by `make test-kind-unit`, which exports:
 #   TEST_KIND_DIR      the only directory this kind writes to
-#   TEST_RUN_PURPOSE   report: also collect and report line coverage; pr-check: tests only
+#   TEST_RUN_PURPOSE   report: also collect and report line coverage; check: tests only
 set -euo pipefail
 
 SOLUTION="Sample.slnx"

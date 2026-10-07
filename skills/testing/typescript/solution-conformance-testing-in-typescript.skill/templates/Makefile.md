@@ -31,9 +31,9 @@ test-kind-unit: install
 
 test-kind-mutation: install
 	@$(test-kind-begin)
-	@if [ "$(TEST_RUN_PURPOSE)" = pr-check ] && [ -z "$(DELTA_BASE)" ]; then \
-		$(call test-kind-skip,a pr-check run mutates only changed files and no DELTA_BASE was given); fi; \
-	if [ "$(TEST_RUN_PURPOSE)" = pr-check ]; then $(call test-kind-mode,mutating only files changed since $(DELTA_BASE)); \
+	@if [ "$(TEST_RUN_PURPOSE)" = check ] && [ -z "$(DELTA_BASE)" ]; then \
+		$(call test-kind-skip,a check run mutates only changed files and no DELTA_BASE was given); fi; \
+	if [ "$(TEST_RUN_PURPOSE)" = check ]; then $(call test-kind-mode,mutating only files changed since $(DELTA_BASE)); \
 	else $(call test-kind-mode,mutating the whole package - the score never fails the run); fi; \
 	scripts/mutation-test.sh
 

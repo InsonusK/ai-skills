@@ -45,11 +45,34 @@ jobs:
           echo "::error::Version ${{ steps.version.outputs.current }} must be strictly greater than master's"
           exit 1
 
-  unit-test:
-    name: Unit tests
+  # The project's Makefile says which test kinds exist; this workflow never names one.
+  test-kinds:
+    name: List test kinds
     needs: changes
     if: needs.changes.outputs.code == 'true' || needs.changes.outputs.test == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      kinds: ${{ steps.kinds.outputs.kinds }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: kinds
+        run: echo "kinds=$(make -s test-kinds | cut -d' ' -f1 | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
+      # Fails with "you forgot to add a badge" when the README and the declared badges disagree.
+      - run: make test-readme-check
+
+  test-kind:
+    name: Test (${{ matrix.kind }})
+    needs: test-kinds
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: ${{ fromJSON(needs.test-kinds.outputs.kinds) }}
+    runs-on: ubuntu-latest
+    env:
+      # The one fact this workflow states about the run; each kind decides what it means
+      # for it and logs that. DELTA_BASE is deliberately not passed - see the skill's
+      # "Never gate a PR on mutation testing".
+      TEST_RUN_PURPOSE: check
     steps:
       - uses: actions/checkout@v4
 
@@ -59,11 +82,11 @@ jobs:
       # - name: Set up {stack}
       #   uses: actions/setup-{stack}@v...
 
-      - run: make unit-test
+      - run: make test-kind-${{ matrix.kind }}
 
   report:
     name: Pull request report
-    needs: [changes, version-check, unit-test]
+    needs: [changes, version-check, test-kinds, test-kind]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -79,7 +102,8 @@ jobs:
           echo "- docs    : ${{ needs.changes.outputs.docs }}"
 
           for j in "version-check ${{ needs.version-check.result }}" \
-                   "unit-test ${{ needs.unit-test.result }}"; do
+                   "test-kinds ${{ needs.test-kinds.result }}" \
+                   "test-kind ${{ needs.test-kind.result }}"; do
             set -- $j
             echo "$1: $2"
             [ "$2" = "failure" ] && fail=1

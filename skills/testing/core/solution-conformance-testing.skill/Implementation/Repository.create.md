@@ -56,14 +56,14 @@ test-report-build:
 ## Variables a caller sets
 | Variable | Values | Default |
 | --- | --- | --- |
-| `TEST_RUN_PURPOSE` | `pr-check` — the run decides whether a pull request may merge, so it must be fast; `report` — the run builds the full reports and badges for publishing | `report` |
+| `TEST_RUN_PURPOSE` | `check` — the run decides whether a change may proceed (a pull request merged, a release published), so it must be fast; `report` — the run builds the full reports and badges for publishing | `report` |
 | `DELTA_BASE` | the ref to compare against, when a kind can limit itself to changed code | empty |
 | `TEST_WORK_DIR` | where kinds write their results | `tmp/testing` |
 | `TEST_REPORT_DIR` | where `test-report` writes the publishable report | `$(TEST_WORK_DIR)/report` |
 
 The variables state facts about the run, never how to test. Each kind decides what they mean for it:
 
-| Kind | `report` | `pr-check` |
+| Kind | `report` | `check` |
 | --- | --- | --- |
 | `unit` | every test, coverage collected and reported | every test, coverage not reported |
 | `mutation` | the whole project | only code changed since `DELTA_BASE`; skipped when `DELTA_BASE` is empty |
@@ -131,7 +131,7 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
   - Risk: a kind reading or overwriting another kind's files cannot run in parallel with it, and a CI job cannot hand its result over as one directory.
   - Fix: take every output path from `$TEST_KIND_DIR`.
 - Have every kind state what it does because of `TEST_RUN_PURPOSE` / `DELTA_BASE` through `$(call test-kind-mode,…)`, or skip itself through `$(call test-kind-skip,…)` — never branch silently.
-  - Violation: a `mutation` recipe that quietly does nothing in a `pr-check` run.
+  - Violation: a `mutation` recipe that quietly does nothing in a `check` run.
   - Risk: a kind that wrongly decided not to run looks the same as one that does not apply, and a check disappears unnoticed.
   - Fix: one `mode` line per run, or a `skipped` line with the reason; both reach the log and `run.json`.
 - Keep `test-kind-unit` running both Cucumber scenarios and plain technical tests in a single invocation — never split them into two kinds.
@@ -169,5 +169,5 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - [ ] `report/tests/cucumber/` holds the runner's standard report; `report/tests/livingdoc/index.html` exists when `npm` is available, and its absence never fails the kind.
 - [ ] Each kind exits with its tool's own exit code after writing its results.
 - [ ] `make test-report` writes `index.html`, `reports/`, `badges/`, `run.json` into `$TEST_REPORT_DIR`; a different `TEST_WORK_DIR` / `TEST_REPORT_DIR` moves everything, and nothing is written to `public/`.
-- [ ] `make test-and-report TEST_RUN_PURPOSE=pr-check` skips or narrows kinds as the table says and still builds a report.
+- [ ] `make test-and-report TEST_RUN_PURPOSE=check` skips or narrows kinds as the table says and still builds a report.
 - [ ] `make test-readme-check` passes; `report-template/index.html` exists at the repository root (not under `.github/`).

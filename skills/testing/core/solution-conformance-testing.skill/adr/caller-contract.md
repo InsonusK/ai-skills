@@ -24,7 +24,7 @@ The contract was four fixed targets — `unit-test`, `mutation-test`, `test-repo
 
 ### Description
 - **Targets.** `make test-kinds` lists the kinds and the badges each declares; `make test-kind-{kind}` runs one, independently of the others; `make test-report` builds the report; `make test-readme-check` checks the README badges; `make test-and-report` is the local all-in-one.
-- **Input.** `TEST_RUN_PURPOSE` = `pr-check` (decides whether a pull request may merge; must be fast) or `report` (builds the full reports and badges), and `DELTA_BASE`. They are facts; each kind decides what they mean for it, logs that decision, and records it in the report — or skips itself with a reason.
+- **Input.** `TEST_RUN_PURPOSE` = `check` (decides whether a change may proceed — a pull request merged, a release published; must be fast) or `report` (builds the full reports and badges), and `DELTA_BASE`. They are facts; each kind decides what they mean for it, logs that decision, and records it in the report — or skips itself with a reason.
 - **Directories.** The caller sets `TEST_WORK_DIR` and `TEST_REPORT_DIR`; a kind writes only to `{work}/kinds/{kind}/`.
 - **Output.** `index.html`, `reports/{name}/`, `badges/{name}.json` (a badge and its report share a name), `run.json`.
 - **README.** Whoever adds a kind adds its badge; `test-readme-check` fails naming a missing or stale badge, comparing against the declared badges.

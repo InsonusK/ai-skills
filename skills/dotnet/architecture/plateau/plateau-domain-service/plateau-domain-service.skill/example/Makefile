@@ -36,13 +36,13 @@ test-kind-unit: build
 	@scripts/unit-test.sh
 
 # mutation: Stryker.NET over the whole solution in a `report` run (the score never fails
-# the run); in a `pr-check` run only over code changed since DELTA_BASE, and skipped
+# the run); in a `check` run only over code changed since DELTA_BASE, and skipped
 # without one.
 test-kind-mutation: restore
 	@$(test-kind-begin)
-	@if [ "$(TEST_RUN_PURPOSE)" = pr-check ] && [ -z "$(DELTA_BASE)" ]; then \
-		$(call test-kind-skip,a pr-check run mutates only changed code and no DELTA_BASE was given); fi; \
-	if [ "$(TEST_RUN_PURPOSE)" = pr-check ]; then $(call test-kind-mode,mutating only code changed since $(DELTA_BASE)); \
+	@if [ "$(TEST_RUN_PURPOSE)" = check ] && [ -z "$(DELTA_BASE)" ]; then \
+		$(call test-kind-skip,a check run mutates only changed code and no DELTA_BASE was given); fi; \
+	if [ "$(TEST_RUN_PURPOSE)" = check ]; then $(call test-kind-mode,mutating only code changed since $(DELTA_BASE)); \
 	else $(call test-kind-mode,mutating the whole solution - the score never fails the run); fi; \
 	scripts/mutation-test.sh
 

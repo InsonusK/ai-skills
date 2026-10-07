@@ -36,7 +36,7 @@ adr:
 
 # Capabilities
 - Gherkin `.feature` files execute against the package's real public functions/classes via `behave` step definitions.
-- `make test-kind-mutation TEST_RUN_PURPOSE=pr-check DELTA_BASE=<ref>` fails fast on a changed line's surviving mutant, without paying for a full-package mutation run on every call.
+- `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` fails fast on a changed line's surviving mutant, without paying for a full-package mutation run on every call.
 - `make test-kind-unit TEST_RUN_PURPOSE=report` and `make test-report` give `master` an up-to-date coverage/mutation-score report and the data the README badges are generated from.
 - `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type tag, status, and `@todo` reason — and `make test-report` renders it as `$TEST_REPORT_DIR/reports/scenarios/`, per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report).
 
@@ -79,8 +79,8 @@ REPOSITORY:
 ## Add conformance coverage for a new validation rule (happy path)
 1. A `.feature` file describing the rule (e.g. `features/{rule}.feature`) is added or extended with `Given/When/Then` scenarios.
 2. `features/steps/{rule}_steps.py` is created with `@given`/`@when`/`@then` bindings that call the package's real function/class.
-3. `make test-kind-unit` runs `coverage run -m behave` and `coverage run -a -m pytest` (or `unittest`) into the same `.coverage` data file, and normalizes the result into `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` (plus `$TEST_KIND_DIR/result/coverage-test.json` when `WITH_CODE_COVERAGE=true`).
-4. `make test-kind-mutation` runs `mutmut run` — across the whole package in a `report` run; in a `pr-check` run scoped to files changed since `DELTA_BASE`, and skipped without one — and normalizes the result into `$TEST_KIND_DIR/result/mutation-test.json`.
+3. `make test-kind-unit` runs `coverage run -m behave` and `coverage run -a -m pytest` (or `unittest`) into the same `.coverage` data file, and normalizes the result into `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` (plus `$TEST_KIND_DIR/result/coverage-test.json` in a `report` run).
+4. `make test-kind-mutation` runs `mutmut run` — across the whole package in a `report` run; in a `check` run scoped to files changed since `DELTA_BASE`, and skipped without one — and normalizes the result into `$TEST_KIND_DIR/result/mutation-test.json`.
 5. `make test-report` assembles `$TEST_REPORT_DIR/` — `scenarios/` included — from `$TEST_KIND_DIR/result/*.json` and `$TEST_KIND_DIR/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
 6. Which of these `make` targets run on which trigger, and how `$TEST_REPORT_DIR/` gets published, is decided by the project's own CI configuration — not by this solution.
 

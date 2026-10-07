@@ -64,7 +64,7 @@ runs:
             - '*.md'
 ```
 - Violation: filtering only `src/**` for `test`, missing `features/**` (Cucumber) or `*.spec.ts`/`*.test.ts` (Vitest) — the two suites [solution-conformance-testing-in-typescript](skills/testing/typescript/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md) actually runs.
-- Risk: a change to a Gherkin scenario or a Vitest spec silently fails to trigger `unit-test`/`mutation-test`, so a broken scenario merges undetected.
+- Risk: a change to a Gherkin scenario or a Vitest spec silently fails to trigger the test jobs, so a broken scenario merges undetected.
 - Fix: match the paths that skill actually creates, not an assumed convention.
 
 ### Exclude co-located specs from `code` inside one extglob

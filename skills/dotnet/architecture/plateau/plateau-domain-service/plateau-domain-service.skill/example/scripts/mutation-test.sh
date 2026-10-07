@@ -3,9 +3,9 @@
 # $TEST_KIND_DIR/result/*.json, keeping the native browsable report under
 # $TEST_KIND_DIR/report/mutation/. Called by `make test-kind-mutation`, which exports:
 #   TEST_KIND_DIR      the only directory this kind writes to
-#   TEST_RUN_PURPOSE   pr-check: only mutate code changed since DELTA_BASE, thresholds apply;
+#   TEST_RUN_PURPOSE   check: only mutate code changed since DELTA_BASE, thresholds apply;
 #                      report: the whole solution, which never fails on the score (--break-at 0)
-#   DELTA_BASE         git ref to diff against in a pr-check run (make skips the kind without it)
+#   DELTA_BASE         git ref to diff against in a check run (make skips the kind without it)
 set -euo pipefail
 
 PURPOSE="${TEST_RUN_PURPOSE:-report}"
@@ -19,9 +19,9 @@ mkdir -p "$RESULT_DIR"
 rm -rf "$REPORT_DIR"
 
 STRYKER_ARGS=(-r html -r json -r cleartext -O "$REPORT_DIR" --break-on-initial-test-failure)
-if [ "$PURPOSE" = "pr-check" ]; then
+if [ "$PURPOSE" = "check" ]; then
   if [ -z "$DELTA_BASE" ]; then
-    echo "DELTA_BASE is required in a pr-check run" >&2
+    echo "DELTA_BASE is required in a check run" >&2
     exit 1
   fi
   STRYKER_ARGS+=(--since:"$DELTA_BASE")

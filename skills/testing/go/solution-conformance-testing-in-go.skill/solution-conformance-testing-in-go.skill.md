@@ -37,7 +37,7 @@ adr:
 # Capabilities
 - `go test -json ./...` runs godog scenarios and plain Go tests in one invocation; a normalizer collapses godog's parent/subtest duplication so a scenario is counted once.
 - `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type tag, status, and `@todo` reason — and `make test-report` renders it as `$TEST_REPORT_DIR/reports/scenarios/`.
-- `make test-kind-mutation TEST_RUN_PURPOSE=pr-check DELTA_BASE=<ref>` scopes a mutation run to files changed since `<ref>`, so a pull request's gate does not pay for a full-module run.
+- `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` scopes a mutation run to files changed since `<ref>`, so a pull request's gate does not pay for a full-module run.
 - `make test-report` assembles a stack-independent `$TEST_REPORT_DIR/` site from the normalized results, matching the parent solution's report contract exactly — nothing downstream needs to know this is a Go module.
 
 # Core Principles
@@ -73,7 +73,7 @@ FILES:
 1. A `.feature` file is added next to the package it exercises (e.g. `internal/domain/services/features/{rule}.feature`), per [[skills/testing/go/cucumber-testing-in-go.skill.md|cucumber-testing-in-go]].
 2. Step definitions in that package's `test/` folder bind the scenario to the package's real exported API.
 3. `make test-kind-unit` runs `go test -json -coverpkg=$(COVERPKG) -coverprofile=... ./...`, piping JSON events through `tools/normalize_unittest` into `$TEST_KIND_DIR/result/unit-test.json`, then runs `tools/normalize_scenarios` to write `$TEST_KIND_DIR/result/scenarios.json` — also when a test failed (plus `$TEST_KIND_DIR/result/coverage-test.json` in a `report` run).
-4. `make test-kind-mutation` runs `gremlins unleash` (across the whole module in a `report` run; in a `pr-check` run scoped to files changed since `DELTA_BASE`, and skipped without one), normalizing its report into `$TEST_KIND_DIR/result/mutation-test.json` via `tools/normalize_mutation`.
+4. `make test-kind-mutation` runs `gremlins unleash` (across the whole module in a `report` run; in a `check` run scoped to files changed since `DELTA_BASE`, and skipped without one), normalizing its report into `$TEST_KIND_DIR/result/mutation-test.json` via `tools/normalize_mutation`.
 5. `make test-report` runs `tools/test_report`, building `$TEST_REPORT_DIR/` from every kind's `result/*.json`. `make test-and-report` runs every kind, then the report.
 
 ## Surviving mutant found (report path)

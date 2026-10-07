@@ -60,15 +60,15 @@ test-kind-unit:
 	else echo "livingdoc: npm not found - skipping living-doc report"; fi; \
 	exit $$status
 
-# mutation: gremlins over the whole module in a `report` run; in a `pr-check`
+# mutation: gremlins over the whole module in a `report` run; in a `check`
 # run only over files changed since DELTA_BASE, and skipped without one. Exits
 # with gremlins' own exit code after writing the normalized result.
 test-kind-mutation:
 	@$(test-kind-begin)
-	@if [ "$(TEST_RUN_PURPOSE)" = pr-check ] && [ -z "$(DELTA_BASE)" ]; then \
-		$(call test-kind-skip,a pr-check run mutates only changed files and no DELTA_BASE was given); fi; \
+	@if [ "$(TEST_RUN_PURPOSE)" = check ] && [ -z "$(DELTA_BASE)" ]; then \
+		$(call test-kind-skip,a check run mutates only changed files and no DELTA_BASE was given); fi; \
 	K="$(abspath $(TEST_KIND_DIR))"; diff_flag=""; \
-	if [ "$(TEST_RUN_PURPOSE)" = pr-check ]; then diff_flag="--diff $(DELTA_BASE)"; \
+	if [ "$(TEST_RUN_PURPOSE)" = check ]; then diff_flag="--diff $(DELTA_BASE)"; \
 		$(call test-kind-mode,mutating only files changed since $(DELTA_BASE)); \
 	else $(call test-kind-mode,mutating the whole module); fi; \
 	test -x "$(GREMLINS)" || go install github.com/go-gremlins/gremlins/cmd/gremlins@$(GREMLINS_VERSION); \

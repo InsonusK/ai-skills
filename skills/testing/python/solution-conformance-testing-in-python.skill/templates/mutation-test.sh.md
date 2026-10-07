@@ -9,10 +9,10 @@
 # $TEST_KIND_DIR/result/mutation-test.json, keeping the native browsable report under
 # $TEST_KIND_DIR/report/mutation. Called by `make test-kind-mutation`, which exports:
 #   TEST_KIND_DIR      the only directory this kind writes to
-#   TEST_RUN_PURPOSE   pr-check: only mutate source files changed since DELTA_BASE, the
+#   TEST_RUN_PURPOSE   check: only mutate source files changed since DELTA_BASE, the
 #                      real threshold applies; report: the whole package, which never
 #                      fails on the score
-#   DELTA_BASE         git ref to diff against in a pr-check run (make skips the kind
+#   DELTA_BASE         git ref to diff against in a check run (make skips the kind
 #                      without it)
 set -euo pipefail
 
@@ -27,9 +27,9 @@ mkdir -p "$RESULT_DIR"
 rm -rf "$REPORT_DIR" .mutmut-cache
 
 MUTMUT_PATHS=()
-if [ "$PURPOSE" = "pr-check" ]; then
+if [ "$PURPOSE" = "check" ]; then
   if [ -z "$DELTA_BASE" ]; then
-    echo "DELTA_BASE is required in a pr-check run" >&2
+    echo "DELTA_BASE is required in a check run" >&2
     exit 1
   fi
 

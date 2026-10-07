@@ -59,7 +59,7 @@ runs:
             - '*.md'
 ```
 - Violation: filtering on `tests/**` (plural) or omitting `features/**`, which drifts from `test/`/`features/` — the paths [solution-test-layout-in-python](skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md) and [solution-conformance-testing-in-python](skills/testing/python/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md) actually create.
-- Risk: a change to a Gherkin scenario in `features/` silently fails to trigger `unit-test`/`mutation-test`, so a broken scenario merges undetected.
+- Risk: a change to a Gherkin scenario in `features/` silently fails to trigger the test jobs, so a broken scenario merges undetected.
 - Fix: match the paths those two skills actually produce, not an assumed convention.
 
 ### Composite outputs match the consumer's contract
