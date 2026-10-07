@@ -145,7 +145,7 @@ Prefer short, focused skills over large monolithic ones — split when two parts
 Apply [[skills/design/skill-stack-split.skill/skill-stack-split.skill.md|skill-stack-split]] when a skill's implementation differs between stacks and it is written — or is committed to be written — for more than one stack; otherwise keep it one skill with no `-in-{stack}` suffix. Decision recorded in [adr/stack-rules-in-own-skill.md](./adr/stack-rules-in-own-skill.md).
 - Violation: `solution-cecil-architecture-tests` renamed to `solution-cecil-architecture-tests-in-dotnet` next to an empty agnostic base; `work-in-git-tree` copied once per stack; `devops-github-action-check-version-in-go` with no `devops-github-action-check-version` base.
 - Risk: empty bases and per-stack copies of identical text add files to load and maintain without adding a rule, and a `-in-{stack}` suffix promises a shared base the agent then looks for and cannot find.
-- Fix: a single-stack skill keeps its plain `{skill-name}` under `skills/{stack}/`, and a skill whose content is the same for every stack stays one stack-agnostic skill; ask the user when it is unclear whether a second stack is planned.
+- Fix: a single-stack skill keeps its plain `{skill-name}`, and a skill whose content is the same for every stack stays one stack-agnostic skill; ask the user when it is unclear whether a second stack is planned.
 
 ### One question per section
 Give each top-level section a single responsibility, and extract a reference vocabulary (a closed list of relation types, a set of layout mechanics) into its own named section when several rules or workflow steps cite it.
