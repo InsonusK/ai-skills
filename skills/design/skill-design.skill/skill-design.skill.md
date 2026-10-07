@@ -12,7 +12,7 @@ adr:
   - adr/allow-extra-top-level-sections.md
   - adr/stack-specific-links-direction.md
   - adr/stack-agnostic-base-and-extensions.md
-  - adr/testing-skills-grouped-by-topic.md
+  - adr/testing-skills-in-one-directory.md
 ---
 
 # Goal
@@ -131,7 +131,7 @@ Link a skill this one needs to finish its own artifact — an input it reads, a 
 
 ### Stack-agnostic skills never link their stack-specialized extensions
 A stack-agnostic skill (bare `stack` tag) never wikilinks/markdown-links a stack-specialized skill that extends it (one `stack/<value>` tag) — name it only as plain backticked text, and recommend asking the user which one to load for the stack in use. A stack-specialized skill still links back to the stack-agnostic base it extends, per [Link what the artifact needs, not what comes after it](#link-what-the-artifact-needs-not-what-comes-after-it). Decision recorded in [[./adr/stack-specific-links-direction.md|stack-specific-links-direction]].
-- Violation: `cucumber-testing`'s `# Scope` linking `[[skills/testing/cucumber-testing/cucumber-testing-in-go.skill.md|cucumber-testing-in-go]]`, `-in-dotnet`, `-in-python`, and `-in-typescript`.
+- Violation: `cucumber-testing`'s `# Scope` linking `[[skills/testing/go/cucumber-testing-in-go.skill.md|cucumber-testing-in-go]]`, `-in-dotnet`, `-in-python`, and `-in-typescript`.
 - Risk: `ai-skill-manager` resolves every link a loaded skill carries, so linking all stack-specialized extensions from the agnostic skill pulls every other stack's skill into a project that only uses one of them.
 - Fix: write `` `cucumber-testing-in-go`, `cucumber-testing-in-dotnet`, `cucumber-testing-in-python`, `cucumber-testing-in-typescript` `` as plain text, and add a rule/note telling the agent to ask the user which one to load for the project's stack.
 
@@ -142,10 +142,10 @@ When a choice between considered variants — each with real benefits and costs 
 - Fix: create the ADR immediately, register it in the skill's `adr:` YAML property, and link it from the skill body.
 
 ### Keep testing skills together
-Place every testing skill in `skills/testing/{skill-name}/` — the stack-agnostic `{skill-name}` beside each `{skill-name}-in-{stack}` — name a testing skill written for one stack `{skill-name}-in-{stack}` too, and link from a skill there only to files under `skills/testing/`. Decision recorded in [[./adr/testing-skills-grouped-by-topic.md|testing-skills-grouped-by-topic]].
+Place every testing skill under `skills/testing/` — a stack-agnostic `{skill-name}` in `core/`, a stack-specific `{skill-name}-in-{stack}` in `{stack}/`, with the `-in-{stack}` suffix even when no base exists — and link from a skill there only to files under `skills/testing/`. Decision recorded in [[./adr/testing-skills-in-one-directory.md|testing-skills-in-one-directory]].
 - Violation: `cucumber-testing-in-go` under `skills/go/test/`, or a testing skill linking a plateau or a catalog solution.
 - Risk: testing rules scatter across stack and catalog directories again, and a link out of the directory makes `ai-skill-manager` load an architecture catalog with every testing skill.
-- Fix: move the skill into its topic folder under `skills/testing/`; name an outside skill as plain backticked text, or move what the testing skill needs into `skills/testing/`.
+- Fix: move the skill into `skills/testing/core/` or `skills/testing/{stack}/`; name an outside skill as plain backticked text, or move what the testing skill needs into `skills/testing/`.
 
 ### `-in-{stack}` marks an extension only
 Use the `-in-{stack}` suffix only on a stack-specialized extension of an existing stack-agnostic base, whose name is the part before the suffix.
@@ -202,7 +202,7 @@ A category-specific skill (e.g. solution-create) may override or detail [Split a
 - [ ] Every cross-skill link is an input, a required sub-step, an applied standard/template, or an active prohibition — an agent could not finish this skill's artifact without it; no link to a later pipeline stage, a consumer, or an out-of-scope topic.
 - [ ] A stack-agnostic skill names its stack-specialized extensions only as plain backticked text, never a link; a stack-specialized skill still links its stack-agnostic base.
 - [ ] A skill whose implementation differs across stacks, written or planned for more than one, is a stack-agnostic base `{skill-name}` plus `{skill-name}-in-{stack}` extensions (unless a category skill overrides it); a single-stack or stack-identical skill is not split, and `-in-{stack}` appears only on an extension of an existing base.
-- [ ] A testing skill lives in `skills/testing/{skill-name}/`, carries `-in-{stack}` when stack-specific, and links only inside `skills/testing/`.
+- [ ] A testing skill lives in `skills/testing/core/` (stack-agnostic) or `skills/testing/{stack}/` (named `{skill-name}-in-{stack}`), and links only inside `skills/testing/`.
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
 - [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.

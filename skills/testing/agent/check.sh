@@ -25,26 +25,30 @@ out=$(awk -F'\t' 'NR==FNR { seen[$1 "\t" $4]=1; next } !(($1 "\t" $2) in seen) {
 [ -n "$out" ] && { err "stale entries in isolation-exceptions.tsv:"; echo "$out"; }
 
 # 3. A stack-agnostic skill never links a stack-specialized one.
-out=$(awk -F'\t' '$1 ~ /^skills\/testing\// && $1 !~ /-in-[a-z]+\.skill/ && $4 ~ /-in-[a-z]+\.skill/ { print $1 "\t" $4 }' "$links" | sort -u)
+out=$(awk -F'\t' '$1 ~ /^skills\/testing\// && $1 ~ /^skills\/testing\/core\// && $4 !~ /^skills\/testing\/core\// { print $1 "\t" $4 }' "$links" | sort -u)
 [ -n "$out" ] && { err "stack-agnostic skill links a stack-specialized skill:"; echo "$out"; }
+out=$(awk -F'\t' '$1 ~ /^skills\/testing\/(angular|dotnet|go|python|typescript)\// && $4 ~ /^skills\/testing\// { split($1,s,"/"); split($4,t,"/"); if (t[3]!="core" && t[3]!=s[3] && !(s[3]=="angular" && t[3]=="typescript")) print $1 "\t" $4 }' "$links" | sort -u)
+[ -n "$out" ] && { err "stack skill links another stack's skill:"; echo "$out"; }
 
-# 4. Layout: skills/testing/{topic}/ holds only {topic}.skill[.md] and {topic}-in-{stack}.skill[.md];
-#    the skill file's name: matches; a stack skill carries its stack/{stack} tag, an agnostic one the bare stack tag.
+# 4. Layout: skills/testing/core/ holds stack-agnostic skills, skills/testing/{stack}/ holds {name}-in-{stack} skills;
+#    the skill file's name: matches; a stack skill carries its stack tag, an agnostic one the bare stack tag.
 stacks='angular|dotnet|go|python|typescript'
 for d in skills/testing/*/; do
-  topic=$(basename "$d"); [ "$topic" = agent ] && continue
+  dir=$(basename "$d"); [ "$dir" = agent ] && continue
+  [[ "$dir" == core || "$dir" =~ ^($stacks)$ ]] || { err "$d: not core/ or a stack folder"; continue; }
   for e in "$d"*; do
     b=$(basename "$e"); n=${b%.md}; n=${n%.skill}
     [[ "$b" == *.skill || "$b" == *.skill.md ]] || { err "$e: not a skill"; continue; }
-    [[ "$n" == "$topic" || "$n" =~ ^$topic-in-($stacks)$ ]] || { err "$e: name is neither $topic nor $topic-in-{stack}"; continue; }
     f=$e; [ -d "$e" ] && f="$e/$n.skill.md"
     [ -f "$f" ] || { err "$f: missing skill file"; continue; }
     grep -qx "name: $n" "$f" || err "$f: frontmatter name is not $n"
-    if [[ "$n" =~ -in-($stacks)$ ]]; then
-      want="stack/${BASH_REMATCH[1]}"; [ "${BASH_REMATCH[1]}" = angular ] && want="framework/angular"   # angular is a framework on stack/typescript
-      grep -qE "^\s*- $want$" "$f" || err "$f: missing tag $want"
-    else
+    if [ "$dir" = core ]; then
+      [[ "$n" =~ -in-($stacks)$ ]] && err "$e: a stack-specific skill in core/"
       grep -qE "^\s*- stack$" "$f" || err "$f: missing bare stack tag"
+    else
+      [[ "$n" == *-in-$dir ]] || err "$e: name does not end with -in-$dir"
+      want="stack/$dir"; [ "$dir" = angular ] && want="framework/angular"   # angular is a framework on stack/typescript
+      grep -qE "^\s*- $want$" "$f" || err "$f: missing tag $want"
     fi
   done
 done

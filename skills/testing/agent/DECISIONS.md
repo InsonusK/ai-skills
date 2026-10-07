@@ -43,3 +43,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The location rule went into `skill-design` as a MUST with its own ADR: the old rule placed a base under `skills/common-workflow/` and a one-stack skill under a plain name, both of which this move contradicts.
 - `.validation` logs were not edited by hand (their header forbids it).
 - ⚠️ Go `Makefile` dependency and Python `solution-test` dependency — see `STATUS.md`.
+
+## Owner-decided (2026-10-07, layout)
+
+- `skills/testing/core/` + `skills/testing/{stack}/`, not folders by topic: `ai-skill-manager` selects by path, and a topic folder mixes every stack.
+
+## Agent decisions — regrouping
+
+- A skill sits directly in `core/` or `{stack}/` with no per-topic wrapper folder — the wrapper would hold exactly one skill.
+- `-in-{stack}` stays on every stack skill, including the two with no base: the generated copies (`.claude/skills/`, `.agents/skills/`) are flat, so the name is what states the stack there.
+- `angular/` is its own folder although its stack tag is `stack/typescript`: an Angular project lists `core`, `typescript`, `angular`.
+- `check.sh` also forbids a stack skill linking another stack's skill (Angular → TypeScript allowed) — the same loading argument as base → extension.
+- The by-topic ADR written in W1 was replaced, not kept as history: it was never merged.

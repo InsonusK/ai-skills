@@ -1,7 +1,7 @@
 ---
 name: devops-github-wf-release-test-report
 description: Stack-agnostic master-push GitHub Actions workflow that runs the full (unscoped) unit-test-with-coverage and mutation-test suite for a project following solution-conformance-testing, assembles the report, and publishes coverage/mutation reports and README badges to GitHub Pages
-whenToUse: when a project that follows [[skills/testing/solution-conformance-testing/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] needs its `make unit-test`/`make mutation-test`/`make test-report` targets published as a full report on every relevant push to master
+whenToUse: when a project that follows [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] needs its `make unit-test`/`make mutation-test`/`make test-report` targets published as a full report on every relevant push to master
 updated: 20261006
 tags:
   - concern/ci
@@ -17,7 +17,7 @@ tags:
 ---
 
 # Goal
-- Give every project following [[skills/testing/solution-conformance-testing/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] the same CI wiring for its `make` contract on `master`: full coverage-instrumented unit tests, full (unscoped) mutation testing, and a published report + README badges on GitHub Pages.
+- Give every project following [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] the same CI wiring for its `make` contract on `master`: full coverage-instrumented unit tests, full (unscoped) mutation testing, and a published report + README badges on GitHub Pages.
 - Keep that wiring identical across stacks — this workflow only ever calls `make` targets, never a stack's native test/coverage/mutation CLI directly.
 - Never publish a report for a commit that `master` has already moved past.
 
@@ -55,7 +55,7 @@ Gate this workflow's jobs on `./.github/actions/check-changes`'s output — the 
 ### Call only the project's make targets
 Run `make unit-test WITH_CODE_COVERAGE=true`, `make mutation-test`, and `make test-report` — never a stack's native test/coverage/mutation CLI directly.
 - Risk: the workflow now needs stack-specific knowledge, and switching or reconfiguring the underlying tool later becomes a breaking change for every workflow file that calls it directly.
-- Fix: route every CI invocation through the `make` targets defined by [[skills/testing/solution-conformance-testing/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]].
+- Fix: route every CI invocation through the `make` targets defined by [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]].
 
 ### Always collect coverage here, never on the PR gate
 Run `unit-test` with `WITH_CODE_COVERAGE=true` unconditionally in this workflow.
@@ -65,7 +65,7 @@ Run `unit-test` with `WITH_CODE_COVERAGE=true` unconditionally in this workflow.
 ### Keep the mutation-test job report-only
 Set `continue-on-error: true` on the `Run mutation tests` step (`make mutation-test`) — never let its exit code fail the job or block this workflow.
 - Violation: running `make mutation-test` with no `continue-on-error`, relying on the surrounding prose/intent alone to keep it "report-only."
-- Risk: `make mutation-test` exits with the underlying mutation tool's own exit code — non-zero the moment one mutant survives, per [[skills/testing/solution-conformance-testing/solution-conformance-testing.skill/solution-conformance-testing.skill.md#propagate-the-mutation-tools-exit-code|solution-conformance-testing's contract]]. Without `continue-on-error`, that failure fails the `mutation-test` job itself — and since `test-report`'s `needs` has no `if: always()`, GitHub cascade-skips `test-report`/`deploy` entirely instead of merely reporting a low score, so one surviving mutant silently stops the whole report/Pages pipeline from publishing anything, coverage included.
+- Risk: `make mutation-test` exits with the underlying mutation tool's own exit code — non-zero the moment one mutant survives, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#propagate-the-mutation-tools-exit-code|solution-conformance-testing's contract]]. Without `continue-on-error`, that failure fails the `mutation-test` job itself — and since `test-report`'s `needs` has no `if: always()`, GitHub cascade-skips `test-report`/`deploy` entirely instead of merely reporting a low score, so one surviving mutant silently stops the whole report/Pages pipeline from publishing anything, coverage included.
 - Fix: add `continue-on-error: true` to the mutation-test step itself, as shown in [example](./templates/release-test-report.example.md); the job still uploads its report and normalized score artifact regardless of the tool's exit code.
 
 ### Cancel a superseded run

@@ -96,7 +96,7 @@ architectural fork that needs the owner's sign-off; everything else is execution
 - **Planned solutions (12), not yet all authored** — common baseline: `solution-go-repository-structure`,
   `solution-go-domain-logic`, `solution-go-http-api`, `solution-go-app-logging`,
   `solution-conformance-testing-in-go` (extends the shared
-  `skills/testing/solution-conformance-testing/solution-conformance-testing.skill`, mirroring the
+  `skills/testing/core/solution-conformance-testing.skill`, mirroring the
   `ts`/`python`/`dotnet` per-stack extensions). VP-realizing: `solution-grpc-api` (VP1),
   `solution-external-integration` (VP2), `solution-go-messaging-infrastructure` +
   `solution-go-kafka-producer` (VP3, skeleton), `solution-go-transactional-outbox` (VP4, skeleton),
@@ -155,7 +155,7 @@ solution mapping is now final), then Stage 4 (5 plateaus).
   `make mutation-test`/a real network smoke test — none would have surfaced from reading the
   solution skills alone):
   1. `godog.Options` needs an explicit `Format: "pretty"` — fixed in
-     `skills/testing/cucumber-testing/cucumber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
+     `skills/testing/go/cucumber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
      in this build), since its own documented example carried the same latent bug.
   2. `solution-go-repository-structure`'s `main.go` was bundled into the repo-tier
      `Repository.create.md` while every solution that extends it expects a file-tier

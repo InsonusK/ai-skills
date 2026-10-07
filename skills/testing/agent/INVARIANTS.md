@@ -23,17 +23,16 @@ A base plateau names the testing skills it uses; no plateau restates them. Plate
 
 ```
 skills/testing/
-  {skill-name}/
-    {skill-name}.skill[.md]              stack-agnostic
-    {skill-name}-in-{stack}.skill[.md]   one per stack that has it
+  core/        {skill-name}.skill[.md]              every stack-agnostic skill
+  {stack}/     {skill-name}-in-{stack}.skill[.md]   every skill of that stack
 ```
 
-The topic folder is named after the skill. A skill written for one stack only is still `{skill-name}-in-{stack}` — the folder no longer states its stack; a topic with no stack variants holds only the agnostic skill. `-in-angular` marks the Angular framework on `stack/typescript`. Tags are unchanged — skillsets still resolve by `stack/{x} & concern/testing`. Rule and ADR: `skill-design` — "Keep testing skills together".
+`ai-skill-manager` selects skills by path, so a project lists `skills/testing/core` and `skills/testing/{stack}`. A stack-specific skill always carries `-in-{stack}`, base or not; a base and its extensions are matched by name. `angular/` holds the Angular-framework skills on `stack/typescript`. Rule and ADR: `skill-design` — "Keep testing skills together".
 
 ## 3. Isolation
 
 - A file under `skills/testing/` links only to files under `skills/testing/`. A skill outside is named as plain backticked text.
-- A stack-specialized skill may link its stack-agnostic base. A stack-agnostic skill never links a stack-specialized one — it says a stack skill must be found for the detail — because `ai-skill-manager` loads every skill a loaded skill links.
+- A stack-specialized skill may link its stack-agnostic base, and nothing in another stack's folder. A stack-agnostic skill never links a stack-specialized one — it says a stack skill must be found for the detail — because `ai-skill-manager` loads every skill a loaded skill links.
 - Links into `skills/testing/` from outside are allowed.
 - `check.sh` enforces all three. A conflict is not worked around: it is listed in `isolation-exceptions.tsv` and decided with the owner.
 
