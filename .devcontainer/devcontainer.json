@@ -6,6 +6,12 @@
 	"image": "mcr.microsoft.com/devcontainers/base:resolute",
 	"features": {
 		"ghcr.io/devcontainers/features/github-cli:1": {},
+		// Stacks the skills' runnable examples are verified with (make test-and-report in each example).
+		"ghcr.io/devcontainers/features/python:1": { "version": "3.13" },
+		"ghcr.io/devcontainers/features/go:1": { "version": "1.26" },
+		"ghcr.io/devcontainers/features/dotnet:2": { "version": "10.0" },
+		"ghcr.io/devcontainers/features/node:1": { "version": "lts" },
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
 
 	// Angular CLI globally; psql / redis-cli to inspect the databases the conformance runs use.
