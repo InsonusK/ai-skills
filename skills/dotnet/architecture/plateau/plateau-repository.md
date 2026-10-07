@@ -54,13 +54,13 @@ The build scaffolding (anchor contract, mechanical check, decisions log) lives i
 plateau-{name}/
   plateau-{name}.skill/
     plateau-{name}.skill.md      the plateau summary an agent reads before writing code
-    example/                     a runnable Sample service — `dotnet build` + `make unit-test` green
+    example/                     a runnable Sample service — `dotnet build` + `make test-kind-unit` green
   structure/                     one skill per project + per class (prefix `plateau-{name}--`)
   registry/                      delta-conflict-detection ordering records (offline-sync-service only)
   adr/                           plateau-level decisions, if any
 ```
 
-| Plateau | structure skills | example: `make unit-test` |
+| Plateau | structure skills | example: `make test-kind-unit` |
 |---|---|---|
 | plateau-core | 34 | 7 scenarios, 4 test projects |
 | plateau-domain-service | 65 | 10 scenarios, 5 test projects |

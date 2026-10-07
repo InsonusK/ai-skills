@@ -73,7 +73,7 @@ adr:
 
 SOLUTION:
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]
-  - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create|{Module}.Domain.Tests.csproj]] — hosts the `Architecture/` folder these tests live in, already wired into the module's `dotnet test`/`make unit-test` run
+  - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create|{Module}.Domain.Tests.csproj]] — hosts the `Architecture/` folder these tests live in, already wired into the module's `dotnet test`/`make test-kind-unit` run
 - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill|solution-domain-shared-rules]]
   - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create|{Module}.Domain.Rules.csproj]] — the assembly the dead-rule/code-uniqueness checks load; without a real `Domain.Rules` project there is nothing for these two checks to scan
 
@@ -115,7 +115,7 @@ PROJECT:
 
 1. Confirm [[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/examples/guarded-property-coverage|the existing generic test]] already covers the target Entity's namespace (it does, if the Entity lives under the module's `Domain/Entities` namespace).
 2. Add one `(nameof(Entity), nameof(Entity.Property))` → `["RuleClass.Check"]` line to the registry, one line per guarded property.
-3. Where the write pattern allows it, narrow the guarded property's own setter from `internal`/`public` to `private` — this closes external bypasses at compile time, on top of what the test catches. See [[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/examples/guarded-property-coverage|guarded-property-coverage.md]] for why this is necessary, not optional, for a setter the test would otherwise flag on its own.
+3. Where the write pattern allows it, narrow the guarded property's own setter from `internal`/`$TEST_REPORT_DIR` to `private` — this closes external bypasses at compile time, on top of what the test catches. See [[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/examples/guarded-property-coverage|guarded-property-coverage.md]] for why this is necessary, not optional, for a setter the test would otherwise flag on its own.
 
 # Rules
 
@@ -145,7 +145,7 @@ PROJECT:
 
 ## SHOULD
 - Prefer narrowing a guarded property to `private` over trying to catch external bypasses by loading and scanning every assembly with `InternalsVisibleTo` access to it.
-  - Risk: `internal` visibility gives a bounded but ever-growing list of assemblies to keep loading and scanning as the solution grows, and `public` visibility gives no bounded list at all — no Cecil-based scan can ever be complete for a `public` member. See [[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/registry-driven-coverage-over-per-rule-tests]].
+  - Risk: `internal` visibility gives a bounded but ever-growing list of assemblies to keep loading and scanning as the solution grows, and `$TEST_REPORT_DIR` visibility gives no bounded list at all — no Cecil-based scan can ever be complete for a `$TEST_REPORT_DIR` member. See [[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/registry-driven-coverage-over-per-rule-tests]].
   - Fix: `private set` makes the compiler reject the bypass at every caller's compile time, permanently, at zero ongoing maintenance cost — strictly stronger than any scan, for the callers a scan could even reach.
 - Keep a call-graph/registry-driven check in its own test class, separate from single-pass checks in the same module.
   - Risk: mixing a complex recursive check with three simple single-pass ones in one file makes the file's own complexity budget harder to reason about, and a failure in the complex check's output is easy to skim past among simpler ones.
@@ -164,6 +164,6 @@ PROJECT:
 - [ ] A new multi-field rule adds a registry entry, not a new bespoke test class.
 - [ ] No rule-check logic lives inside an individual property setter for a rule spanning more than one property.
 - [ ] Call-graph/registry-driven checks live in their own test class, separate from single-pass checks.
-- [ ] A guarded property's setter is narrowed to `private` wherever the write pattern allows it, not left `internal`/`public` "because the test will catch misuse anyway."
+- [ ] A guarded property's setter is narrowed to `private` wherever the write pattern allows it, not left `internal`/`$TEST_REPORT_DIR` "because the test will catch misuse anyway."
 - [ ] Each of the four checks has a companion documentary `.feature` file (in the same `Architecture/` folder as its `[Fact]`), scenario titles matching `[Fact]` method names, with no fabricated step-definition binding.
 - [ ] `GuardedPropertyRuleCoverageTests` scans `{Module}.Domain` only — no other module's assembly.

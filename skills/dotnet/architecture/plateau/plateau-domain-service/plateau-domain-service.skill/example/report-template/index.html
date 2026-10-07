@@ -7,10 +7,19 @@
 <body>
   <h1>StatelessService Test Reports</h1>
   <ul>
-    <li><a href="scenarios/">Scenarios</a></li>
-    <li><a href="tests/">Unit / Reqnroll scenario reports</a></li>
-    <li><a href="coverage/">Coverage report</a></li>
-    <li><a href="mutation/">Mutation testing report</a></li>
+    <li><a href="reports/scenarios/">Scenarios</a></li>
+    <li><a href="reports/tests/">Unit / Reqnroll scenario reports</a></li>
+    <li><a href="reports/tests/livingdoc/">Living documentation</a></li>
+    <li><a href="reports/coverage/">Coverage report</a></li>
+    <li><a href="reports/mutation/reports/mutation-report.html">Mutation report</a></li>
   </ul>
+  <h2>This run</h2>
+  <pre id="run"></pre>
+  <script>
+    fetch('run.json').then(r => r.json()).then(run => {
+      document.getElementById('run').textContent = 'purpose: ' + run.purpose + '\n' +
+        run.kinds.map(k => k.kind + ': ' + k.state + (k.note ? ' — ' + k.note : '')).join('\n');
+    }).catch(() => {});
+  </script>
 </body>
 </html>

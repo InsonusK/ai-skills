@@ -1,13 +1,9 @@
-# Conformance-testing contract — solution-dotnet-conformance-testing.
-# `make unit-test` is the ground-truth gate for this plateau example.
+# Conformance-testing contract — solution-conformance-testing-in-dotnet.
+# `make test-kind-unit` is the ground-truth gate for this plateau example.
 SOLUTION := Sample.slnx
 CONFIGURATION := Release
 
-.PHONY: restore build run test unit-test mutation-test test-report test-and-report clean
-
-WITH_CODE_COVERAGE ?= false
-ONLY_DELTA ?= false
-DELTA_BASE ?=
+.PHONY: restore build run test clean
 
 restore:
 	dotnet restore $(SOLUTION)
@@ -19,21 +15,43 @@ build: restore
 run: build
 	dotnet run --project src/App/App.Host/App.Host.csproj --configuration $(CONFIGURATION) --no-build
 
-test: unit-test
+# --- solution-conformance-testing-in-dotnet: the test kinds behind the shared contract ---
+# Caller-facing targets and variables (test-kinds, test-kind-<kind>, test-report,
+# test-readme-check, test-and-report; TEST_RUN_PURPOSE, DELTA_BASE, TEST_WORK_DIR,
+# TEST_REPORT_DIR) come from tools/testing/testing.mk - see solution-conformance-testing.
 
-unit-test: build
-	WITH_CODE_COVERAGE=$(WITH_CODE_COVERAGE) scripts/unit-test.sh
+TEST_KINDS           := unit mutation
+TEST_BADGES_unit     := tests coverage
+TEST_BADGES_mutation := mutation
+include tools/testing/testing.mk
 
-mutation-test: restore
-	ONLY_DELTA=$(ONLY_DELTA) DELTA_BASE=$(DELTA_BASE) scripts/mutation-test.sh
+test: test-kind-unit
 
-test-report:
-	scripts/test-report.sh
+# unit: every test project in one `dotnet test`. Coverage is collected and reported
+# only in a `report` run.
+test-kind-unit: build
+	@$(test-kind-begin)
+	@if [ "$(TEST_RUN_PURPOSE)" = report ]; then $(call test-kind-mode,every test with coverage collected and reported); \
+	else $(call test-kind-mode,every test - coverage not collected); fi
+	@scripts/unit-test.sh
 
-test-and-report: WITH_CODE_COVERAGE := true
-test-and-report: unit-test mutation-test test-report
+# mutation: Stryker.NET over the whole solution in a `report` run (the score never fails
+# the run); in a `pr-check` run only over code changed since DELTA_BASE, and skipped
+# without one.
+test-kind-mutation: restore
+	@$(test-kind-begin)
+	@if [ "$(TEST_RUN_PURPOSE)" = pr-check ] && [ -z "$(DELTA_BASE)" ]; then \
+		$(call test-kind-skip,a pr-check run mutates only changed code and no DELTA_BASE was given); fi; \
+	if [ "$(TEST_RUN_PURPOSE)" = pr-check ]; then $(call test-kind-mode,mutating only code changed since $(DELTA_BASE)); \
+	else $(call test-kind-mode,mutating the whole solution - the score never fails the run); fi; \
+	scripts/mutation-test.sh
+
+# test-report-build reads only the kinds' result/*.json (never a tool's native report
+# format) and fills $(TEST_REPORT_DIR); `make test-report` calls it.
+test-report-build:
+	@scripts/test-report.sh
 
 clean:
 	dotnet clean $(SOLUTION)
 	find . -type d \( -name bin -o -name obj \) -exec rm -rf {} +
-	rm -rf tmp public
+	rm -rf tmp

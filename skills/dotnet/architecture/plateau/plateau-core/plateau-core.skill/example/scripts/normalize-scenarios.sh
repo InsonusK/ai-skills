@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Writes tmp/result/scenarios.json (solution-conformance-testing's Scenario report).
+# Writes $TEST_KIND_DIR/result/scenarios.json (solution-conformance-testing's Scenario report).
 #
 # The inventory comes from every .feature file in the repository, so @todo entries the
 # runner never executes are listed too. The status comes from $1: a JSON array of
@@ -11,7 +11,7 @@
 set -euo pipefail
 
 RESULTS="${1:?usage: normalize-scenarios.sh <results.json>}"
-RESULT_DIR="tmp/result"
+RESULT_DIR="${TEST_KIND_DIR:?run this through make test-kind-unit}/result"
 mkdir -p "$RESULT_DIR"
 
 INVENTORY="$(mktemp)"

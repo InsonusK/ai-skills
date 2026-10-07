@@ -124,4 +124,4 @@ __Applied solutions:__
 - [ ] `{Module}.Domain` present for a domain-bearing module; `App.Infrastructure` + `App.Queries` present; exactly one `DbContext`.
 - [ ] `App.Infrastructure` referenced only by `App.Host`; `Shared` has zero project references.
 - [ ] One test project per production project except `{Module}.Api`; `{Module}.Domain.Tests` present with `{Module}.Domain`.
-- [ ] `make unit-test` is green.
+- [ ] `make test-kind-unit` is green.

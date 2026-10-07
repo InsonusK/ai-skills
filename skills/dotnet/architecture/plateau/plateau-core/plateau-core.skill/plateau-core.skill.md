@@ -34,7 +34,7 @@ Establish the common baseline every v3.1 service shares before any variability i
 - **Pipeline, ordered in one place** — `ExceptionHandlingBehavior` first (wraps everything, logs `Critical`, returns a generic `Result.Error`), then `ValidationBehavior` (collect-all, short-circuits with `Result.Invalid` before the handler). Order lives only in `PipelineRegistration.AddPipeline()`.
 - **Soft Value Objects at the boundary** — a value carrying business meaning on a DTO/command/query is a `Soft{ValueObject}` record in `{Module}.Interfaces` (permissive, no validation); a `{ValueObject}PropertyValidator : AbstractValidator<Soft{ValueObject}>` owns its condition and is resolvable cross-module via `IValidator<T>`.
 - **Structured logging** — every class logs through `ILogger<T>`; the provider and levels are configured once in `App.Host`; searched-for lines carry an `EventId` from `Shared.Logging.LogEvents`.
-- **One test project per production project** — `Shared.Tests`, `BuildingBlocks.Tests`, `{Module}.Interfaces.Tests`, `{Module}.Application.Tests`, each mirroring its counterpart's allowed dependencies. `{Module}.Domain.Tests` appears only with a domain layer. The `make unit-test` target is the gate.
+- **One test project per production project** — `Shared.Tests`, `BuildingBlocks.Tests`, `{Module}.Interfaces.Tests`, `{Module}.Application.Tests`, each mirroring its counterpart's allowed dependencies. `{Module}.Domain.Tests` appears only with a domain layer. The `make test-kind-unit` target is the gate.
 
 # Capabilities
 - request dispatch
@@ -44,7 +44,7 @@ Establish the common baseline every v3.1 service shares before any variability i
 - composition
   - `Program.cs` calls only `AddAppLogging()`, `AddModules()`, `AddPipeline()`. Each module self-registers via `Add{Module}Module()` (MediatR + validator assembly scan).
 - conformance
-  - `make unit-test` runs every test project; `make test-report` adds coverage; `make mutation-test` runs Stryker (heavy, off the fast gate).
+  - `make test-kind-unit` runs every test project; `make test-report` adds coverage; `make test-kind-mutation` runs Stryker (heavy, off the fast gate).
 
 # Usecases
 
@@ -84,4 +84,4 @@ sequenceDiagram
 See [[skills/dotnet/architecture/plateau/plateau-core/structure/plateau-core--sln-core.skill|plateau-core--sln-core]] for the repository layout and the per-project / per-class skills.
 
 # Example
-A complete, runnable minimal service is in [`example/`](./example/) — a `Sample` module with one command, one query, one notification, and one Soft Value Object, wired through the full pipeline. `dotnet build Sample.slnx` and `make unit-test` are green (the plateau's ground-truth check).
+A complete, runnable minimal service is in [`example/`](./example/) — a `Sample` module with one command, one query, one notification, and one Soft Value Object, wired through the full pipeline. `dotnet build Sample.slnx` and `make test-kind-unit` are green (the plateau's ground-truth check).

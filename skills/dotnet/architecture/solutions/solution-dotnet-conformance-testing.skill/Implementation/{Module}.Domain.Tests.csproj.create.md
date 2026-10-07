@@ -60,7 +60,7 @@ tags:
   - Risk: a step definition with its own copy of the rule's logic can pass even after the real implementation breaks.
   - Fix: call `{Module}.Domain`'s public API directly from step definitions.
 - Configure `dotnet test` to run both `[Fact]`/`[Theory]` unit tests and Reqnroll-generated scenario tests in the same run.
-  - Risk: if only one kind of test runs per invocation, `make unit-test` reports an incomplete result and CI/local runs can diverge on what "green" means.
+  - Risk: if only one kind of test runs per invocation, `make test-kind-unit` reports an incomplete result and CI/local runs can diverge on what "green" means.
   - Fix: configure the test project so a single `dotnet test` invocation executes both.
 - Never add a second, separate test project just for `{Module}.Domain`'s Gherkin scenarios — unit tests and scenarios stay in this one project.
   - Risk: coverage and mutation-testing reports get computed against only part of `{Module}.Domain`'s test suite, understating both.

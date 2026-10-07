@@ -1,41 +1,36 @@
 # scripts/mutation-test.sh
 
-Runs Stryker.NET — its native `--since` mode covers `ONLY_DELTA`/`DELTA_BASE` directly, so this script does not need to compute the diff itself. See [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] for the target contract.
+Runs Stryker.NET — its native `--since` mode covers a `pr-check` run's `DELTA_BASE` directly, so this script does not need to compute the diff itself. See [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] for the target contract.
 
 ```bash
 #!/usr/bin/env bash
-# Runs Stryker.NET mutation testing and normalizes the results into tmp/result/*.json,
-# keeping the native browsable report under tmp/report/.
-#
-# Params (env vars):
-#   ONLY_DELTA=true   only mutate code changed since DELTA_BASE (for PRs); default is a
-#                     full run, which never gates (--break-at 0) since it's report-only -
-#                     the PR job is what enforces the threshold, via ONLY_DELTA.
-#   DELTA_BASE=<ref>  git ref to diff against; required when ONLY_DELTA=true.
+# The mutation test kind: runs Stryker.NET and normalizes the results into
+# $TEST_KIND_DIR/result/*.json, keeping the native browsable report under
+# $TEST_KIND_DIR/report/mutation/. Called by `make test-kind-mutation`, which exports:
+#   TEST_KIND_DIR      the only directory this kind writes to
+#   TEST_RUN_PURPOSE   pr-check: only mutate code changed since DELTA_BASE, thresholds apply;
+#                      report: the whole solution, which never fails on the score (--break-at 0)
+#   DELTA_BASE         git ref to diff against in a pr-check run (make skips the kind without it)
 set -euo pipefail
 
-ONLY_DELTA="${ONLY_DELTA:-false}"
+PURPOSE="${TEST_RUN_PURPOSE:-report}"
 DELTA_BASE="${DELTA_BASE:-}"
+KIND_DIR="${TEST_KIND_DIR:?run this through make test-kind-mutation}"
 
-RESULT_DIR="tmp/result"
-REPORT_DIR="tmp/report/mutation"
+RESULT_DIR="$KIND_DIR/result"
+REPORT_DIR="$KIND_DIR/report/mutation"
 
 mkdir -p "$RESULT_DIR"
 rm -rf "$REPORT_DIR"
 
 STRYKER_ARGS=(-r html -r json -r cleartext -O "$REPORT_DIR" --break-on-initial-test-failure)
-if [ "$ONLY_DELTA" = "true" ]; then
+if [ "$PURPOSE" = "pr-check" ]; then
   if [ -z "$DELTA_BASE" ]; then
-    echo "DELTA_BASE is required when ONLY_DELTA=true" >&2
+    echo "DELTA_BASE is required in a pr-check run" >&2
     exit 1
   fi
-  # consult Stryker.NET's current docs for the exact "since" flag/config key
   STRYKER_ARGS+=(--since:"$DELTA_BASE")
 else
-  # Full run has no PR base to diff against, so the whole module is mutated; the break
-  # threshold is overridden to 0 so a low score never fails this run - it only reports
-  # the score, it doesn't gate anything. The PR job (ONLY_DELTA=true) enforces the real
-  # threshold from stryker-config.json before code reaches master.
   STRYKER_ARGS+=(--break-at 0)
 fi
 
@@ -60,7 +55,5 @@ if [ -f "$MUTATION_JSON" ]; then
     "$KILLED" "$SURVIVED" "$TIMEDOUT" "$NO_COVERAGE" "$SCORE" > "$RESULT_DIR/mutation-test.json"
 fi
 
-# The normalized result is a side effect - the script's own exit code must still be
-# Stryker's, so a real failure (or a broken threshold) fails the calling make target.
 exit $STRYKER_EXIT_CODE
 ```

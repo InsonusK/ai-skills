@@ -1,22 +1,24 @@
 # scripts/unit-test.sh
 
-Runs every test project of the solution together — `@todo` scenarios excluded — and merges their Reqnroll scenarios, TRX counters, scenario results, and coverage (when `WITH_CODE_COVERAGE=true`) into one normalized result, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Writes `tmp/result/unit-test.json` and `tmp/result/scenarios.json` on a red run too, then exits with `dotnet test`'s own code. Verified with Reqnroll 3.3.4 + xUnit 2.9 on the VSTest runner, .NET 10 SDK.
+Runs every test project of the solution together — `@todo` scenarios excluded — and merges their Reqnroll scenarios, TRX counters, scenario results, and coverage (in a `report` run) into one normalized result, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Writes `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` on a red run too, then exits with `dotnet test`'s own code. Verified with Reqnroll 3.3.4 + xUnit 2.9 on the VSTest runner, .NET 10 SDK.
 
 ```bash
 #!/usr/bin/env bash
-# Runs every test project in the solution and normalizes the combined results into
-# tmp/result/*.json, keeping a merged, browsable native report under tmp/report/.
-#
-# Params (env vars, optional):
-#   WITH_CODE_COVERAGE=true   also collect and report line coverage
+# The unit test kind: runs every test project in the solution and normalizes the combined
+# results into $TEST_KIND_DIR/result/*.json, keeping a merged, browsable native report
+# under $TEST_KIND_DIR/report/. Called by `make test-kind-unit`, which exports:
+#   TEST_KIND_DIR      the only directory this kind writes to
+#   TEST_RUN_PURPOSE   report: also collect and report line coverage; pr-check: tests only
 set -euo pipefail
 
 SOLUTION="{Solution}.slnx"
-WITH_CODE_COVERAGE="${WITH_CODE_COVERAGE:-false}"
+KIND_DIR="${TEST_KIND_DIR:?run this through make test-kind-unit}"
+WITH_CODE_COVERAGE=false
+if [ "${TEST_RUN_PURPOSE:-report}" = report ]; then WITH_CODE_COVERAGE=true; fi
 
-RESULT_DIR="tmp/result"
-REPORT_DIR="tmp/report"
-TEST_RESULTS_DIR="tmp/TestResults"
+RESULT_DIR="$KIND_DIR/result"
+REPORT_DIR="$KIND_DIR/report"
+TEST_RESULTS_DIR="$KIND_DIR/TestResults"
 
 rm -rf "$TEST_RESULTS_DIR"
 find . -name reqnroll_messages.ndjson -path "*/bin/*" -delete
@@ -78,6 +80,22 @@ while IFS= read -r -d '' messages; do
 done < <(find . -path "*/bin/Release/*/reqnroll_messages.ndjson" -print0) \
   | jq -s 'add // []' > "$SCENARIO_RESULTS"
 scripts/normalize-scenarios.sh "$SCENARIO_RESULTS"
+
+# Living doc: every project's Cucumber Messages file becomes the runner's standard report
+# under report/tests/cucumber/, rendered by the shared tools/livingdoc. Never changes the
+# exit code; skipped where npm is missing.
+mkdir -p "$REPORT_DIR/tests/cucumber"
+while IFS= read -r -d '' messages; do
+  PROJECT_NAME=$(basename "$(dirname "$(dirname "$(dirname "$(dirname "$messages")")")")")
+  cp "$messages" "$REPORT_DIR/tests/cucumber/$PROJECT_NAME.ndjson"
+done < <(find . -path "*/bin/Release/*/reqnroll_messages.ndjson" -print0)
+if command -v npm >/dev/null 2>&1; then
+  { npm ci --prefix tools/livingdoc --silent \
+      && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc"; } \
+    || echo "livingdoc: render failed"
+else
+  echo "livingdoc: npm not found - skipping living-doc report"
+fi
 
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   # The glob already matches every test project's own coverage.cobertura.xml, so

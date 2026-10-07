@@ -35,7 +35,7 @@ adr:
 # Capabilities
 - Every production project's Allowed Dependencies rule (from `solution-sln-structure`) has a matching test project with the same, mirrored dependency: `{Module}.Domain.Tests` references only `{Module}.Domain`, `{Module}.Interfaces.Tests` references only `{Module}.Interfaces`, and so on.
 - Gherkin `.feature` files execute against real production code via Reqnroll step definitions, in whichever test project owns the code being proven.
-- Every test project is picked up by the `make unit-test`/`mutation-test`/`test-report` contract of [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]] without any per-project wiring.
+- Every test project is picked up by the `make test-kind-unit`/`test-kind-mutation`/`test-report` contract of [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]] without any per-project wiring.
 
 # Core Principles
 - One test project per production project **that exists**, never one combined project per module. At the v3.1 baseline that is `{Module}.Application.Tests`, `{Module}.Interfaces.Tests`, `Shared.Tests`, `BuildingBlocks.Tests`. `{Module}.Domain.Tests` appears only when the module has a domain layer (`solution-domain-behaviour`, VP1); `{Module}.Domain.Rules.Tests` only with VP4. `{Module}.Api` has no dedicated test project — it is a thin MediatR adapter with no business logic of its own to prove (see [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|ADR]]).
@@ -53,7 +53,7 @@ adr:
 # Requirements
 SOLUTION:
 - [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]
-  - Provides the Reqnroll/coverlet/Stryker.NET tooling and the `make unit-test`/`mutation-test`/`test-report`/`test-and-report` contract that runs every test project created here.
+  - Provides the Reqnroll/coverlet/Stryker.NET tooling and the `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` contract that runs every test project created here.
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
   - Defines the production projects (`{Module}.Domain`, `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`) and their Allowed Dependencies, which each test project here mirrors.
 
@@ -103,4 +103,4 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] Each test project's references match its production counterpart's Allowed Dependencies exactly — no wider, no narrower.
 - [ ] `{Module}.Api` has no dedicated test project.
 - [ ] Every `.feature` scenario has a matching step definition, in the same test project as the code it proves, that calls production code.
-- [ ] [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]] is applied, so `make unit-test` picks up every test project.
+- [ ] [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]] is applied, so `make test-kind-unit` picks up every test project.

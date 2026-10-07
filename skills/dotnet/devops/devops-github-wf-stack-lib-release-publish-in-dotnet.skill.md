@@ -24,7 +24,7 @@ This skill adds .NET-specific mechanics on top of [[skills/devops/workflows/devo
 ## MUST
 
 ### Start from the shared base, then add this publish job
-Open [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version`/`unit-test` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
+Open [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version`/`test-kind-unit` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
 ```yaml
   publish:
     needs: [changes, check-version, unit-test]
@@ -79,7 +79,7 @@ Pass `-p:Version=${{ steps.publish-version.outputs.value }}` to `dotnet pack` �
 
 # Check list
 - [ ] `.github/workflows/stack-lib-release-publish.yml` exists, following [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s shared trigger/gating rules.
-- [ ] `changes`/`check-version`/`unit-test` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
+- [ ] `changes`/`check-version`/`test-kind-unit` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
 - [ ] `publish` also `needs: unit-test` and uses the `always()`-based condition (`unit-test.result != 'failure'`), never a plain `if:`.
 - [ ] `master` pushes to `nuget.org` under the plain `{version}`; `develop` pushes to `nuget.pkg.github.com` under `{version}-{timestamp}`.
 - [ ] Only `<IsPackable>true</IsPackable>` projects are packed — `*.Tests` projects are never pushed.

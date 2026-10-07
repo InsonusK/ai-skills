@@ -1,67 +1,78 @@
 # scripts/test-report.sh
 
-Pure assembly — `public/scenarios/index.html` included, rendered from `tmp/result/scenarios.json` alone — no `dotnet`/test tooling involved, so this same script (unmodified) also works for the Python and TypeScript variants of this solution; see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. It is duplicated verbatim in each stack solution rather than shared, so each solution stays self-contained and portable on its own.
+Pure assembly — `$TEST_REPORT_DIR/reports/scenarios/index.html` included, rendered from `$TEST_KIND_DIR/result/scenarios.json` alone — no `dotnet`/test tooling involved, so this same script (unmodified) also works for the Python and TypeScript variants of this solution; see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. It is duplicated verbatim in each stack solution rather than shared, so each solution stays self-contained and portable on its own.
 
 ```bash
 #!/usr/bin/env bash
-# Assembles public/ (the GitHub Pages site) purely from tmp/result/*.json summaries and
-# tmp/report/* native reports - no test/build tooling involved, so this can run as its
-# own CI job (or locally) once unit-test/mutation-test have populated tmp/.
+# Builds the report directory from what the test kinds left in the work directory:
+# native reports copied as they are, badges and the scenario page computed from the
+# normalized result/*.json files. Called by `make test-report`, which exports:
+#   TEST_WORK_DIR     kinds/<kind>/{result,report}/ live below it
+#   TEST_REPORT_DIR   emptied by make before this runs; filled here
 set -euo pipefail
 
-RESULT_DIR="tmp/result"
-REPORT_DIR="tmp/report"
-PUBLIC_DIR="public"
+WORK_DIR="${TEST_WORK_DIR:-tmp/testing}"
+REPORT_DIR="${TEST_REPORT_DIR:-$WORK_DIR/report}"
 
-# unit-test.json/tests and mutation-test.json/mutation are always expected - fail
-# loudly instead of silently publishing an incomplete site if the upload/download
-# artifact wiring ever drops them again.
-for required in "$RESULT_DIR/unit-test.json" "$RESULT_DIR/mutation-test.json" "$REPORT_DIR/tests" "$REPORT_DIR/mutation"; do
-  if [ ! -e "$required" ]; then
-    echo "test-report: expected $required to exist - did unit-test/mutation-test run (and their artifacts get downloaded) first?" >&2
+mkdir -p "$REPORT_DIR/reports" "$REPORT_DIR/badges"
+cp report-template/index.html "$REPORT_DIR/index.html"
+
+# Every kinds/<kind>/report/<name>/ becomes reports/<name>/, so a new kind's report is
+# published without changing this script.
+for src in "$WORK_DIR"/kinds/*/report/*/; do
+  [ -d "$src" ] || continue
+  name=$(basename "$src")
+  if [ -e "$REPORT_DIR/reports/$name" ]; then
+    echo "test-report: two test kinds wrote a report named '$name'" >&2
     exit 1
   fi
+  cp -r "$src" "$REPORT_DIR/reports/$name"
 done
 
-mkdir -p "$PUBLIC_DIR"
-cp report-template/index.html "$PUBLIC_DIR/index.html"
+# Path of the normalized result file of that name, from whichever kind wrote it; empty
+# when no kind did (a pr-check run reports no coverage, a skipped kind leaves no result).
+result() {
+  local f
+  for f in "$WORK_DIR"/kinds/*/result/"$1"; do
+    if [ -f "$f" ]; then echo "$f"; return 0; fi
+  done
+  return 0
+}
 
-for name in tests coverage mutation; do
-  if [ -d "$REPORT_DIR/$name" ]; then
-    rm -rf "${PUBLIC_DIR:?}/$name"
-    cp -r "$REPORT_DIR/$name" "$PUBLIC_DIR/$name"
-  fi
-done
-
-# score_color PCT -> shields.io badge color, thresholds: >=80 green, >=60 yellowgreen, else red.
 score_color() {
   awk -v s="$1" 'BEGIN { if (s >= 80) print "brightgreen"; else if (s >= 60) print "yellowgreen"; else print "red" }'
 }
 
-TOTAL=$(jq '.total' "$RESULT_DIR/unit-test.json")
-PASSED=$(jq '.passed' "$RESULT_DIR/unit-test.json")
-COLOR="red"
-[ "$PASSED" = "$TOTAL" ] && COLOR="brightgreen"
-printf '{"schemaVersion":1,"label":"tests","message":"%s/%s passed","color":"%s"}' \
-  "$PASSED" "$TOTAL" "$COLOR" > "$PUBLIC_DIR/tests-badge.json"
-
-# coverage-test.json is the only genuinely optional one (only produced when
-# unit-test ran with WITH_CODE_COVERAGE=true).
-if [ -f "$RESULT_DIR/coverage-test.json" ]; then
-  PCT=$(jq '.linePct' "$RESULT_DIR/coverage-test.json")
-  printf '{"schemaVersion":1,"label":"coverage","message":"%s%%","color":"%s"}' \
-    "$PCT" "$(score_color "$PCT")" > "$PUBLIC_DIR/coverage-badge.json"
+UNIT=$(result unit-test.json)
+if [ -n "$UNIT" ]; then
+  TOTAL=$(jq '.total' "$UNIT")
+  PASSED=$(jq '.passed' "$UNIT")
+  COLOR="red"
+  [ "$PASSED" = "$TOTAL" ] && COLOR="brightgreen"
+  printf '{"schemaVersion":1,"label":"tests","message":"%s/%s passed","color":"%s"}' \
+    "$PASSED" "$TOTAL" "$COLOR" > "$REPORT_DIR/badges/tests.json"
 fi
 
-SCORE=$(jq '.score' "$RESULT_DIR/mutation-test.json")
-printf '{"schemaVersion":1,"label":"mutation score","message":"%s%%","color":"%s"}' \
-  "$SCORE" "$(score_color "$SCORE")" > "$PUBLIC_DIR/mutation-badge.json"
+COVERAGE=$(result coverage-test.json)
+if [ -n "$COVERAGE" ]; then
+  PCT=$(jq '.linePct' "$COVERAGE")
+  printf '{"schemaVersion":1,"label":"coverage","message":"%s%%","color":"%s"}' \
+    "$PCT" "$(score_color "$PCT")" > "$REPORT_DIR/badges/coverage.json"
+fi
 
-# scenarios.json -> public/scenarios/index.html: type x status table, then every entry
+MUTATION=$(result mutation-test.json)
+if [ -n "$MUTATION" ]; then
+  SCORE=$(jq '.score' "$MUTATION")
+  printf '{"schemaVersion":1,"label":"mutation score","message":"%s%%","color":"%s"}' \
+    "$SCORE" "$(score_color "$SCORE")" > "$REPORT_DIR/badges/mutation.json"
+fi
+
+# scenarios.json -> reports/scenarios/index.html: type x status table, then every entry
 # grouped by feature. "attention" marks untyped, missing, failed, and todo
 # happy/negative/error entries without a note.
-if [ -f "$RESULT_DIR/scenarios.json" ]; then
-  mkdir -p "$PUBLIC_DIR/scenarios"
+SCENARIOS=$(result scenarios.json)
+if [ -n "$SCENARIOS" ]; then
+  mkdir -p "$REPORT_DIR/reports/scenarios"
   jq -r '
     ["happy","boundary","negative","error","concurrency","security","regression","untyped"] as $types
     | ["passed","failed","todo","missing"] as $statuses
@@ -78,7 +89,7 @@ if [ -f "$RESULT_DIR/scenarios.json" ]; then
       (.[] | "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.type)</td><td>\(.status)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
       "</table>"),
     "</body></html>"
-  ' "$RESULT_DIR/scenarios.json" > "$PUBLIC_DIR/scenarios/index.html"
+  ' "$SCENARIOS" > "$REPORT_DIR/reports/scenarios/index.html"
 fi
 ```
 
