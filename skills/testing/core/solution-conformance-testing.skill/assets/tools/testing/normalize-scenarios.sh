@@ -17,9 +17,13 @@ mkdir -p "$RESULT_DIR"
 INVENTORY="$(mktemp)"
 trap 'rm -f "$INVENTORY"' EXIT
 
+# Nothing below the work directory is a project file: a mutation tool's sandbox there holds
+# copies of the .feature files.
+WORK_REL="$(realpath -m --relative-to=. "${TEST_WORK_DIR:-tmp/testing}")/"
+
 # One TSV line per entry: feature, scenario, examples, uri, line, tags, todo, note, lines.
 find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tmp -o -name public -o -name .venv \) -prune \
-  -o -name '*.feature' -print | sed 's#^\./##' | sort | while IFS= read -r uri; do
+  -o -name '*.feature' -print | sed 's#^\./##' | awk -v work="$WORK_REL" 'index($0, work) != 1' | sort | while IFS= read -r uri; do
   awk -v uri="$uri" '
     function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t\r]+$/, "", s); return s }
     function after_colon(s) { sub(/^[^:]*:[ \t]*/, "", s); return s }
