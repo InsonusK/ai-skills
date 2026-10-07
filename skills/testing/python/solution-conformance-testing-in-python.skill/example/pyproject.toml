@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linkcheck"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-bdd>=8.1,<10",
+    "coverage>=7",
+    "mutmut>=3.8,<4",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["test*"]
+
+[tool.pytest.ini_options]
+testpaths = ["test", "features"]
+python_files = ["*_test.py", "*_steps.py"]
+markers = [
+    "todo: scenario planned but not runnable yet - excluded from the run",
+    "happy", "boundary", "negative", "error", "concurrency", "security", "regression",
+]
+
+[tool.coverage.run]
+source = ["linkcheck"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 80
+
+[tool.mutmut]
+source_paths = ["src"]
+also_copy = ["features"]
+pytest_add_cli_args = ["-m", "not todo"]

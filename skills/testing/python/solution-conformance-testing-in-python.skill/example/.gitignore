@@ -1,0 +1,6 @@
+tmp/
+mutants/
+.coverage
+__pycache__/
+*.egg-info/
+tools/livingdoc/node_modules/

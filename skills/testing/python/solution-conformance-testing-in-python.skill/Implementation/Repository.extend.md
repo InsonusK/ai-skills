@@ -1,5 +1,5 @@
 ---
-description: Add the test kinds (unit, mutation), the report builder and their normalization scripts to the Makefile behind the shared testing contract
+description: Add the Python test kinds (unit, mutation) as kind scripts behind the shared testing contract, the pytest plugin the unit kind loads, report-template/index.html and the README badges
 element_kind: repository
 change_kind: extend
 tags:
@@ -11,7 +11,7 @@ tags:
 
 ## Project Structure
 ```
-/{package}
+/src/{package}                 — or /{package} without a src/ layout
 /test
 /features
   {rule}.feature
@@ -21,64 +21,73 @@ tags:
   index.html
 Makefile                       — one line added: include tools/testing/testing.mk
 README.md                      — one badge per declared badge
+.gitignore                     — tmp/, mutants/, .coverage, *.egg-info/, tools/livingdoc/node_modules/
 /tools
   /testing                     — copied verbatim from solution-conformance-testing
     /kinds
       unit.sh                  — this stack's unit kind
+      unit_scenarios.py        — pytest plugin unit.sh loads: each scenario's own line and status
       mutation.sh              — this stack's mutation kind
   /livingdoc                   — package.json, package-lock.json, render.mjs, copied verbatim
 pyproject.toml
-README.md
 ```
 
 ## Directory and class skills
 | Directory | file | Description |
-| ----------------- | ----------- |
+| --------- | ---- | ----------- |
 | /features | {rule}.feature, steps/{rule}_steps.py | Gherkin scenarios and their bindings |
 | /report-template | index.html | Static landing page `tools/testing/test-report.sh` copies into `$TEST_REPORT_DIR/`; links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
+| /tools/testing/kinds | unit.sh, unit_scenarios.py, mutation.sh | This stack's two test kinds — run `pytest` / `mutmut`, write the normalized results |
 
 ## Kind scripts
-The only stack-specific code: each runs this stack's tool and writes the normalized `result/*.json` and native `report/{name}/` — the Makefile, the runner and the report builder are the base's `tools/testing/`.
-- Copy verbatim to `tools/testing/kinds/unit.sh`: [`assets/tools/testing/kinds/unit.sh`](../assets/tools/testing/kinds/unit.sh)
-- Fill and copy to `tools/testing/kinds/mutation.sh` — `{package}` = the package's source directory: [`templates/tools/testing/kinds/mutation.sh`](../templates/tools/testing/kinds/mutation.sh)
+The only stack-specific code — the Makefile, the runner and the report builder are the base's `tools/testing/`. Copy verbatim, as a folder, to `tools/testing/kinds/`: [`assets/tools/testing/kinds/`](../assets/tools/testing/kinds/) — `unit.sh`, `unit_scenarios.py`, `mutation.sh`.
+
+`report-template/index.html` — fill and copy the base's template, `{project-name}` = the package name: [`templates/report-template/index.html`](skills/testing/core/solution-conformance-testing.skill/templates/report-template/index.html)
+
+## What the kinds write
+| Kind | Below `$TEST_KIND_DIR` |
+| --- | --- |
+| `unit` | `result/unit-test.json` (counts from `report/tests/junit.xml`), `result/scenarios.json`, `report/tests/cucumber/pytest-bdd.json` (classic Cucumber JSON), `report/tests/livingdoc/`; in a `report` run also `result/coverage-test.json` and `report/coverage/` |
+| `mutation` | `result/mutation-test.json` (from `mutmut export-cicd-stats`), `report/mutation/results.txt` (every mutant and its status), `report/mutation/mutmut.log` |
 
 # Rules
 
 ## MUST
-- `test-kind-unit`, `test-kind-mutation`, `test-report`, and `test-and-report` targets must exist and behave exactly as documented in [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] — this `Makefile` is the Python implementation of that contract, not a variation of it.
-  - Violation: a CI workflow or a developer runs `mutmut`/`behave` directly instead of through `make test-kind-mutation`/`make test-kind-unit`.
-  - Risk: the workflow now needs Python-specific knowledge, and switching or reconfiguring `mutmut` later becomes a breaking change for every CI file that calls it directly.
-  - Fix: every caller (CI or a developer) goes through the `Makefile`; the project's own CI workflows call these targets stack-agnostically instead of the underlying tools directly.
-- `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write their normalized JSON into `$TEST_KIND_DIR/result/` and keep the native HTML report under `$TEST_KIND_DIR/report/<kind>/`, per the same contract.
-  - Risk: without the normalized JSON, `make test-report` and badge generation have nothing stack-independent to read.
-  - Fix: write both outputs exactly as [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] specifies.
-- Before relying on `tools/testing/kinds/mutation.sh`, replace its placeholder `KILLED`/`SURVIVED`/`TIMEDOUT`/`NO_COVERAGE` parsing with a real export from the `mutmut` version the project pins, and verify the delta-scoping flag/config key used in a `check` run with `DELTA_BASE` — see the `VERIFY` comments inline.
-  - Risk: `mutmut`'s CLI has moved between major versions, so unverified placeholder parsing can silently report wrong `KILLED`/`SURVIVED` counts, or crash, once a real run happens.
-  - Fix: replace the placeholder parsing with a real export from the pinned `mutmut` version, and confirm the delta-scoping flag/config key before relying on a `check` run with `DELTA_BASE`.
-- `tools/testing/kinds/mutation.sh` must still exit with `mutmut`'s own exit code after writing `$TEST_KIND_DIR/result/mutation-test.json` — normalizing the result must never swallow a real mutation-testing failure.
-  - Risk: a real mutation-testing failure gets swallowed by the normalization step, and CI reports success on a run that actually found unkilled mutants.
-  - Fix: propagate `mutmut`'s exit code from the script after it finishes writing the normalized result.
-- Pin `behave-cucumber-formatter` and keep `tools/testing/kinds/unit.sh` writing classic Cucumber JSON through `behave_cucumber_formatter:PrettyCucumberJSONFormatter` into `report/tests/cucumber/`, rendered by `tools/livingdoc/`.
-  - Risk: behave's own `json` formatter is not classic Cucumber JSON (tags are plain strings), so the living-doc renderer shows empty or broken tag columns, or there is no readable test report at all.
-  - Fix: add the package to the `dev` extra in `pyproject.toml` and keep both `--format` lines of the script — `json.pretty` for the counts, the Cucumber formatter for the living doc.
-- `tools/testing/kinds/unit.sh` must exclude `@todo` scenarios from the run, write `$TEST_KIND_DIR/result/scenarios.json` through `tools/testing/normalize-scenarios.sh` on every run — including a red one — and only then exit with the runner's own code.
-  - Risk: under `set -e` a failing runner ends the script before the scenario report is written, so the report is missing or stale exactly on the red run it should describe.
-  - Fix: wrap the runner in `set +e`/`set -e`, keep its exit code, normalize, then `exit` with it.
+- Run every test — `pytest-bdd` scenarios and the plain `test/` suite — in the one `coverage run -m pytest` of `tools/testing/kinds/unit.sh`, and exit with its exit code after the results are written.
+  - Violation: a second runner invocation for the scenarios, or `mutmut`/`pytest` called by a CI workflow directly.
+  - Risk: two runs give two exit codes and two coverage data files to reconcile; a caller that names a tool needs Python knowledge the contract exists to hide.
+  - Fix: keep the single run of the script; every caller goes through `make test-kind-unit`.
+- Load the `unit_scenarios` plugin in that run (`-p unit_scenarios`, `PYTHONPATH=tools/testing/kinds`) and feed its output to `tools/testing/normalize-scenarios.sh`.
+  - Violation: building the scenario results from `--cucumberjson`.
+  - Risk: `pytest-bdd`'s Cucumber JSON gives every row of a `Scenario Outline` the outline's line, so the scenario report cannot tell one `Examples:` block from another and marks them all `missing`.
+  - Fix: keep the plugin — it reports the row's own line; `--cucumberjson` stays as the standard report for the living doc only.
+- Pass `--fail-under=0` to the `coverage html` / `coverage json` calls of a `report` run.
+  - Risk: with `fail_under` in `pyproject.toml` these commands exit `2` below the threshold, and a `report` run goes red over a score.
+  - Fix: keep the flag in `unit.sh`; the project enforces its threshold with its own `coverage report` where it gates.
+- Keep `COVERAGE_FILE`, `--junitxml`, `--cucumberjson` and `-p no:cacheprovider` as `unit.sh` sets them, and let `mutation.sh` remove `./mutants` when it is done.
+  - Risk: `.coverage`, `.pytest_cache` or `mutants/` left in the repository root is output outside `$TEST_KIND_DIR` — two kinds running in parallel overwrite each other, and a CI job cannot hand the result over as one directory.
+  - Fix: copy both scripts unchanged; `mutmut` accepts no other working directory than `./mutants`, so the script deletes it after reading the result.
+- Scope a `check` run of `mutation.sh` by mutant-name patterns built from the source files changed since `DELTA_BASE` (`{module path}.x*`), and skip the kind when no source file changed.
+  - Risk: `mutmut` 3 has no path option on its command line; an unknown flag or a config rewrite silently mutates the whole package or nothing.
+  - Fix: keep the loop in `mutation.sh`; it resolves `DELTA_BASE` with `git rev-parse`, leaves test code out, and treats "nothing matches" — changed files without mutable code — as a run with no mutants.
+- Exit from `mutation.sh` with `mutmut`'s own exit code after `result/mutation-test.json` is written.
+  - Risk: `mutmut` has no score threshold — it exits `0` however many mutants survive and non-zero only when it could not run (a red test fails its clean run); swallowing that code hides a broken run.
+  - Fix: keep `exit "$code"` as the script's last line.
 - Add only `include tools/testing/testing.mk` to the `Makefile`, after its first target; never a testing recipe.
   - Risk: a recipe in the project's `Makefile` duplicates a kind script and drifts from it; an include placed first makes `test-kinds` the default goal.
-  - Fix: append the include line; everything a kind does lives in `tools/testing/kinds/{kind}.sh`.
-- Never add a caller-facing variable beyond `TEST_RUN_PURPOSE`/`DELTA_BASE`/`TEST_WORK_DIR`/`TEST_REPORT_DIR` — a caller must not need to know this is a Python project.
-  - Risk: every caller (CI workflow, developer, script) now needs Python-specific knowledge to invoke the targets correctly, defeating the point of the uniform contract this `Makefile` implements.
-  - Fix: keep the `make` interface limited to the toggles [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] defines; anything Python-specific stays inside the `Makefile`/scripts.
+  - Fix: append the include line; everything a kind does lives in `tools/testing/kinds/`.
+- Never add a caller-facing variable beyond `TEST_RUN_PURPOSE`/`DELTA_BASE`/`TEST_WORK_DIR`/`TEST_REPORT_DIR`, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
+  - Risk: a caller needs Python knowledge to invoke the targets, defeating the uniform contract.
+  - Fix: anything Python-specific stays inside the kind scripts and `pyproject.toml`.
 - Never let `report-template/index.html` live under `.github/`.
-  - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or publishing configuration it does not — the actual publishing step is a separate, layered CI concern this solution never owns.
-  - Fix: keep it at `report-template/index.html`, copied by `tools/testing/test-report.sh` — never generated, never placed under `.github/`.
+  - Risk: a project-owned static asset inside `.github/` implies this solution owns a workflow it does not.
+  - Fix: keep it at `report-template/index.html`, copied by `tools/testing/test-report.sh`.
 
 # Unittest TestCases
-- [ ] WHEN `make test-kind-unit` runs THEN `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/report/tests/` exist.
-- [ ] WHEN `make test-kind-unit TEST_RUN_PURPOSE=report` runs THEN `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/` also exist.
-- [ ] WHEN `make test-kind-unit` runs and a scenario fails THEN `$TEST_KIND_DIR/result/scenarios.json` still lists every `.feature` entry, `@todo` ones with status `todo`, and the target exits non-zero.
-- [ ] WHEN `make test-report` runs THEN `$TEST_REPORT_DIR/reports/scenarios/index.html` shows the type × status table and every entry.
-- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated.
-- [ ] WHEN `make test-report` runs after both `*-test` targets THEN `$TEST_REPORT_DIR/` contains the badge JSON files and copies of the native reports.
-- [ ] WHEN `make test-and-report` runs THEN it produces the same end state as running `test-kind-unit`, `test-kind-mutation`, and `test-report` in sequence by hand.
+- [ ] WHEN `make test-kind-unit` runs THEN `$TEST_KIND_DIR/result/unit-test.json` counts scenarios and plain tests together, and `report/tests/junit.xml`, `report/tests/cucumber/pytest-bdd.json`, `report/tests/livingdoc/index.html` exist.
+- [ ] WHEN `make test-kind-unit` runs as a `report` run with coverage below `fail_under` THEN it exits `0` and writes `result/coverage-test.json` and `report/coverage/`.
+- [ ] WHEN a scenario fails THEN `make test-kind-unit` exits non-zero, and `result/scenarios.json` still lists every `.feature` entry — the failed `Examples:` block as `failed`, its sibling blocks as `passed`, `@todo` entries as `todo`.
+- [ ] WHEN `make test-kind-unit` or `make test-kind-mutation` ends THEN the repository root holds no `.coverage`, `.pytest_cache` or `mutants/`.
+- [ ] WHEN `make test-kind-mutation` runs as a `report` run and mutants survive THEN it exits `0`; WHEN a test is red THEN it exits non-zero and writes no result.
+- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants of the source files changed since `<ref>` are evaluated; without `DELTA_BASE`, or with no source file changed, the kind skips itself.
+- [ ] WHEN `make test-and-report` runs THEN `$TEST_REPORT_DIR` holds `index.html`, `run.json`, `badges/{tests,coverage,mutation}.json` and `reports/{tests,coverage,mutation,scenarios}/`.
