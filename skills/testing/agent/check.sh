@@ -58,5 +58,53 @@ out=$(git grep -nIE 'skills/(common-workflow|angular|dotnet|go|python|typescript
       -- . ':!.validation' ":!$A" ':!*/agent/DECISIONS.md' ':!*/adr/*' | cut -c1-200)
 [ -n "$out" ] && { err "references to the old test locations/names:"; echo "$out"; }
 
+# 6. Shared contract files are verbatim copies of the core skill's Implementation blocks, in every example.
+block() { perl -0ne 'print $1 if /^`{3,}\w*\n(.*?)^`{3,}$/ms' "$1"; }
+core=skills/testing/core/solution-conformance-testing.skill/Implementation/tools
+for f in testing/testing.mk testing/testing.sh livingdoc/render.mjs; do
+  ref=$(block "$core/$f.create.md" | md5sum)
+  while IFS= read -r copy; do
+    [ "$(md5sum < "$copy")" = "$ref" ] || err "$copy differs from $core/$f.create.md"
+  done < <(git ls-files -co --exclude-standard "skills/*/example/tools/$f" "skills/**/example/tools/$f")
+done
+
+# 7. Every example on the contract: its Makefile parses, lists kinds, and its README shows every declared badge.
+while IFS= read -r mk; do
+  dir=$(dirname "$mk")
+  kinds=$(make -s -C "$dir" test-kinds 2>/dev/null) || { err "$dir: make test-kinds fails"; continue; }
+  [ -n "$kinds" ] || err "$dir: make test-kinds prints nothing"
+  make -s -C "$dir" test-readme-check >/dev/null 2>&1 || err "$dir: make test-readme-check fails"
+  for k in $(echo "$kinds" | cut -d' ' -f1); do
+    make -n -C "$dir" "test-kind-$k" >/dev/null 2>&1 || err "$dir: no target test-kind-$k"
+  done
+done < <(git grep -l 'include tools/testing/testing.mk' -- 'skills/**/example/Makefile')
+
+# 8. Stack variants share their report scripts byte for byte.
+for f in normalize-scenarios.sh test-report.sh; do
+  n=$( { for s in dotnet python typescript; do block "skills/testing/$s/solution-conformance-testing-in-$s.skill/templates/$f.md" | md5sum; done; } | sort -u | wc -l)
+  [ "$n" = 1 ] || err "templates/$f.md differs between the dotnet, python and typescript variants"
+done
+
+# 9. No caller-facing remnant of the previous contract.
+out=$(git grep -nE 'make unit-test|make mutation-test|ONLY_DELTA|WITH_CODE_COVERAGE \?=|-badge\.json|tmp/result/|public/(tests|coverage|mutation|scenarios)' \
+      -- skills ':!*/adr/*' ':!*/agent/*' ':!*/recheck/*' | cut -c1-200)
+[ -n "$out" ] && { err "references to the previous testing contract:"; echo "$out"; }
+
+# 10. Example tooling equals the stack skill's Implementation: Go tools, dotnet scripts ({Solution} = Sample).
+go=skills/testing/go/solution-conformance-testing-in-go.skill/Implementation/tools
+for t in normalize_unittest normalize_scenarios normalize_mutation test_report; do
+  ref=$(block "$go/$t/main.go.create.md" | md5sum)
+  while IFS= read -r copy; do
+    [ "$(md5sum < "$copy")" = "$ref" ] || err "$copy differs from $go/$t/main.go.create.md"
+  done < <(git ls-files -co --exclude-standard "skills/go/**/example/tools/$t/main.go")
+done
+dn=skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/templates
+for s in unit-test.sh mutation-test.sh normalize-scenarios.sh test-report.sh; do
+  ref=$(block "$dn/$s.md" | sed 's/{Solution}\.slnx/Sample.slnx/' | md5sum)
+  while IFS= read -r copy; do
+    [ "$(md5sum < "$copy")" = "$ref" ] || err "$copy differs from $dn/$s.md"
+  done < <(git ls-files -co --exclude-standard "skills/dotnet/**/example/scripts/$s")
+done
+
 [ $fail -eq 0 ] && echo "skills/testing: all checks passed"
 exit $fail

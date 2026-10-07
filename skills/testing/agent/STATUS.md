@@ -7,10 +7,11 @@ Worktree `.ai-worktree/skills-testing`, branch `skills-testing` (base `develop`)
 | W0 | Anchor document, decisions log | done `a4e5d442` |
 | W1 | Move: 21 skills from `skills/common-workflow/test/` and `skills/{stack}/test/` into `skills/testing/core/` and `skills/testing/{stack}/` (`moves.tsv`; first grouped by topic, regrouped on the owner's decision); renames `cucmber`→`cucumber`, `no-test-theater-{stack}`→`-in-{stack}`, `dotnet-unittest`→`unittest-in-dotnet`, `testing-strategy`→`testing-strategy-in-dotnet`; every reference in the repository rewritten; 4 links out of `skills/testing/` turned into plain names; `skill-design` rule "Keep testing skills together" + ADR; `validation-config.yaml` exclude pattern; `check.sh` | done |
 | W1a | Isolation conflicts closed (owner): `solution-conformance-testing-in-go` no longer depends on the Go catalog's repository-structure solution — it adds its targets to the `Makefile` and creates it when missing; the Python catalog's `solution-test` moved in as `python/solution-test-layout-in-python`. `isolation-exceptions.tsv` is empty | done |
-| W1b | Living-doc report (base ADR `livingdoc-renderer-per-protocol`, 2026-10-06) in the dotnet and python stack skills — see below | open |
-| W2 | DevOps contract (INVARIANTS §5) in `solution-conformance-testing` and its four stack skills, with its ADR | blocked — see below |
-| W3 | DevOps workflow skills use only the contract | after W2 |
-| W4 | Layout by convention and tests of pluggable modules as testing skills; plateau `*.Tests` structure skills removed; base plateaus name the testing skills | after the forks below |
+| W1b | Living-doc report in every stack: dotnet (`unit-test.sh` copies each project's Cucumber Messages file and renders it; `tools/livingdoc/` added to the three examples) and python (behave stays, classic Cucumber JSON through `behave-cucumber-formatter`) | written, not run |
+| W2 | Caller contract (INVARIANTS §5) in `solution-conformance-testing` — `tools/testing/testing.mk` + `testing.sh`, ADR `caller-contract` — and in the go, dotnet, python, typescript stack skills; six Go and three dotnet plateau examples migrated | written; shared half tested here, toolchain-dependent half not run |
+| W3 | DevOps: `pull-request` and `release-test-report` discover kinds through `make test-kinds` and name none; publish workflows gate on `make test-and-report TEST_RUN_PURPOSE=check` | written, not run |
+| W5 | Run every example and the workflows — `TASK.md` | **next, needs the rebuilt container** |
+| W4 | Layout by convention and tests of pluggable modules as testing skills; plateau `*.Tests` structure skills removed; base plateaus name the testing skills | not started — needs the owner, see below |
 
 ## Living-doc report: not in every stack
 
@@ -23,9 +24,16 @@ The base requires every stack's `unit-test` to write the runner's standard Cucum
 | dotnet | Cucumber Messages | **no** | 3 dotnet plateau examples lack it |
 | Python | classic Cucumber JSON | **no** — and the skill runs `behave`, whose JSON `cucumber-testing-in-python` says is not classic; an HTML formatter is still an open `TODO` there | none exist |
 
-## Blocked: no runtime in this environment
+## Not run
 
-W2 changes `make` targets, scripts and report layout that about 240 files carry, including the runnable plateau examples (Go, dotnet, Angular). Neither Go, .NET, Node, Python nor Docker is installed here, so the changed targets cannot be run. W2 needs an environment where the examples build.
+The container had no Go, .NET, Node, Python or Docker. `.devcontainer/devcontainer.json` on this branch adds them; after a rebuild `TASK.md` lists exactly what to run and where the risk is.
+
+## Waiting on the owner
+
+- ⚠️ **Mutation testing in a pull request.** The mutation kind runs in a `check` run only when `DELTA_BASE` is given, over the changed code. The pull-request workflow passes none, so it skips itself there — today's policy ("never gate a PR on mutation testing") is unchanged. Adding `DELTA_BASE: origin/${{ github.base_ref }}` to that workflow turns delta mutation into part of the merge gate.
+- ⚠️ **Report workflow no longer goes red on a failed unit test.** Every kind step has `continue-on-error`, because the workflow cannot tell kinds apart and the mutation kind may exit non-zero on a surviving mutant. The failure shows in the published report and the `tests` badge. The alternative — kinds never fail on score in a `report` run, and the step loses `continue-on-error` — needs item 3 of `TASK.md` first.
+- **Consumers' `ai-skills.yaml`** that list `skills/common-workflow/test` or `skills/{stack}/test` must switch to `skills/testing/core` and `skills/testing/{stack}`.
+- **W4** needs decisions before it can start: what happens to the dotnet catalog's `solution-dotnet-conformance-testing` (test-project layout) and the plateau `*.Tests` structure skills once the layout rule moves into `skills/testing/dotnet/`; and how a VP attaches its own test detail (deferred by the owner).
 
 ## Not changed
 

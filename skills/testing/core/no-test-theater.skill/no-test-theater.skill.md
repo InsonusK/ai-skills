@@ -31,8 +31,8 @@ This skill does not define test naming/folder structure for a specific stack or 
 1. **Before writing any step definition or test code**, enumerate scenarios for the touched functionality — happy, boundary, negative, error, concurrency, security — and write each into its `.feature` file with its type tag; a scenario not implemented yet is tagged `@todo` with a `# todo:` reason, per [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md).
 2. Write the step definitions and production code; remove `@todo` from each scenario as it becomes runnable.
 3. **After writing tests**, in a separate pass — not the same pass that wrote the tests — run `make test-and-report` and read the report of [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report):
-   - `public/scenarios/` — no `untyped` or `missing` entry for the changed features, and every `todo` entry of type `happy`/`negative`/`error` has a reason.
-   - `public/coverage/` and `public/mutation/` — every changed public method and branch is reached by a scenario, and no surviving mutant in changed code is left without an explanation.
+   - `reports/scenarios/` in the report (`tmp/testing/report/` by default) — no `untyped` or `missing` entry for the changed features, and every `todo` entry of type `happy`/`negative`/`error` has a reason.
+   - `reports/coverage/` and `reports/mutation/` — every changed public method and branch is reached by a scenario, and no surviving mutant in changed code is left without an explanation.
 4. If any existing test was weakened while making tests pass (removed assert, raised timeout, added `Skip`/`xfail`/`.only`/`@todo`), call it out as an explicit, justified point in the PR description.
 
 # Rule

@@ -1,6 +1,6 @@
 # skills/testing — invariants
 
-The anchor document for gathering every testing skill into `skills/testing/` and making testing a self-contained concern (per [[skills/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md|bulk-authoring-harness]]). Reviewed by the owner 2026-10-07; progress is in `STATUS.md`. Choices are logged in `DECISIONS.md`; names marked *(proposed)* are the agent's and open to change.
+The anchor document for gathering every testing skill into `skills/testing/` and making testing a self-contained concern (per [[skills/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md|bulk-authoring-harness]]). Reviewed by the owner 2026-10-07; progress is in `STATUS.md`. Choices are logged in `DECISIONS.md`; target and variable names are the agent's proposals, implemented as written here.
 
 **Problem being fixed.** How a service is tested is stated in three places — `skills/common-workflow/test/`, `skills/{stack}/test/`, and inside architecture catalogs (test solutions, plateau `*.Tests` structure skills) — so no one place answers it, and a failing test is traced across all three. DevOps workflows know the test kinds, the `tmp/` layout, and the badge file names.
 
@@ -48,18 +48,17 @@ DevOps skills use only this contract and never know which test kinds exist or ho
 
 | Part | Contract |
 | --- | --- |
-| Targets | `make test-kind-{kind}` — one test kind, independent of every other kind, runnable from a clean checkout. `make test-report` — assembles the report from the kinds' results. `make test-kinds` *(proposed)* — prints every kind and the badges it declares, without running anything. `make test-readme-check` *(proposed)* — fails when the README lacks a badge a kind declares, or shows one no kind declares; runs no tests. `make test-and-report` — local convenience: every kind, then the report. |
-| Input (ENV) | `TEST_RUN_PURPOSE` *(proposed)* = `check` (the run decides whether a change may proceed (a pull request merged, a release published) — it must be fast) or `report` (the run builds the full reports and badges for publishing; the default). `DELTA_BASE` — the ref to compare against, when there is one. They state facts about the run; each kind decides what they mean for it, and writes that decision to its log and into the report (e.g. "purpose check: mutating changed files only"). |
-| Directories (ENV) | `TEST_WORK_DIR` *(proposed)*, default `tmp/testing` — a kind writes only to `{work}/{kind}/`. `TEST_REPORT_DIR` *(proposed)*, default inside the work dir — where `test-report` writes. The caller chooses both; nothing writes to `public/`. |
-| Output | `{report}/index.html` — entry point. `{report}/reports/{name}/` and `{report}/badges/{name}.json` — a kind may produce several; a badge always has a same-named report, a report may have no badge. Names are unique across kinds; `test-report` fails on a duplicate. |
-| Skip | A kind that does not apply to the run exits `0` and leaves `{work}/{kind}/skipped` with the reason; `test-report` lists it. No badge, no report. |
+| Targets | `make test-kinds` — one line per kind with the badges it declares; runs nothing. `make test-kind-{kind}` — one test kind, independent of every other, runnable from a clean checkout. `make test-report` — builds the report from the kinds' results. `make test-readme-check` — fails when the README lacks a declared badge or shows an undeclared one; runs no tests. `make test-and-report` — local convenience: every kind, then the report. |
+| Input (ENV) | `TEST_RUN_PURPOSE` = `check` (the run decides whether a change may proceed — a pull request merged, a release published — so it must be fast) or `report` (the run builds the full reports and badges for publishing; the default). `DELTA_BASE` — the ref to compare against, when there is one. They state facts about the run; each kind decides what they mean for it, and writes that decision to its log and into the report (`mode`, shown in `run.json`). |
+| Directories (ENV) | `TEST_WORK_DIR`, default `tmp/testing` — a kind writes only to `{work}/kinds/{kind}/`. `TEST_REPORT_DIR`, default `{work}/report` — where `test-report` writes. The caller chooses both; nothing writes to `public/`. |
+| Output | `{report}/index.html` — entry point; `{report}/run.json` — the purpose and how each kind ran. `{report}/reports/{name}/` and `{report}/badges/{name}.json` — a kind may produce several; a badge always has a same-named report, a report may have no badge. Names are unique across kinds; `test-report` fails on a duplicate. |
+| Skip | A kind that does not apply to the run exits `0` and leaves `{work}/kinds/{kind}/skipped` with the reason; `test-report` lists it. No badge, no report. |
 | Exit code | Non-zero = this kind's checks failed. Results are written before exiting, so the report exists for a failed run. Whether a failure blocks is DevOps's call. |
 | README badges | Added by whoever adds a kind. `test-readme-check` compares the README with the badges `test-kinds` declares and fails naming each missing or stale badge ("badge `{name}` is not in README"). The check is static — a `check` run skips some kinds, so generated badges cannot be the reference. In a `report` run, `test-report` fails when produced badges differ from declared ones. |
 
-CI runs `test-readme-check` and every `test-kind-*` (from `test-kinds`) in parallel, then `test-report`; a new kind is picked up with no workflow change.
+CI runs `test-readme-check` and every `test-kind-*` (from `test-kinds`) in parallel, then `test-report`; a new kind is picked up with no workflow change. The caller-facing half is `tools/testing/testing.mk` + `testing.sh`, identical in every project; `check.sh` §6–§10 keep the copies and the examples consistent.
 
 ## 6. Open
 
 - How a VP attaches its own test detail to the general approach (owner: revisit when we get there).
-- What each existing kind does under `check` (today: PR runs unit tests without coverage; mutation runs only for the report).
 - Scope and order of the DevOps skill changes; whether plateau codes keep module VPs ([[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/prefer-module-realization|prefer-module-realization]], branch `prefer-module-vp`).

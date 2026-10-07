@@ -67,3 +67,24 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The Go skill's `Repository.extend` file keeps its name; only its text now says the `Makefile` is created when missing. Renaming it to `.create` would make two `.create` files on one element in the Go catalog.
 - `validation-config.yaml` excludes `testing/*/solution-*.skill/**`, not only the conformance solutions, so the moved layout solution keeps being treated as a solution skill.
 - dotnet, python and typescript testing skills already add their own `Makefile` without assuming a catalog's — no change needed there.
+
+## Owner-decided (2026-10-07, before W2)
+
+- Add the stacks to the dev container; write everything that can be written without running it; leave a task for the next agent to run the examples after the container is rebuilt.
+
+## Agent decisions — W1b, W2, W3
+
+- The caller-facing half of the contract is two files copied verbatim into every project (`tools/testing/testing.mk`, `testing.sh`), like `tools/livingdoc/`: it could be tested here, and a stack only supplies recipes.
+- Kinds live in `{work}/kinds/{kind}/`, not `{work}/{kind}/`, so the report directory can default to `{work}/report` without a kind ever colliding with it.
+- Each kind's `result/` and `report/` keep the file names of the old `tmp/result` and `tmp/report`, to keep the change in the tools to their output root.
+- `test-report` copies every `kinds/*/report/{name}/` and looks results up by file name across kinds, so a new kind's report is published without changing the report builder.
+- `run.json` (purpose; per kind `ran` / `skipped` / `missing` and its note) is how the report shows the mode; the landing page displays it.
+- `pr-check` renamed `check`: the publish workflows gate on the same fast run, and they are not pull requests.
+- Under `check`: unit reports no coverage (dotnet/typescript do not collect it either — as before); mutation runs over code changed since `DELTA_BASE` and skips itself without one. The delta mode is what the scripts already supported for a manual run.
+- The pull-request workflow passes no `DELTA_BASE`: the DevOps rule "never gate a PR on mutation testing" is deliberate and stays true. ⚠️ in `STATUS.md`.
+- The report workflow puts `continue-on-error` on every kind step — it cannot name the mutation kind. ⚠️ in `STATUS.md`.
+- Python keeps `behave`; `behave-cucumber-formatter` supplies classic Cucumber JSON. The existing tool-choice ADR already selected behave, so this closes its open `TODO` rather than reopening the choice.
+- `scripts/test-report.sh` and `normalize-scenarios.sh` are one file for dotnet, python, typescript (the skills already required byte-identity).
+- Example `README.md` files with badges were added: `test-readme-check` needs them; the URLs are placeholders under `example.github.io`.
+- ADRs written before today keep the old target names — they record decisions made under the old contract.
+- Angular catalogs do not use this `make` contract and were not touched.
