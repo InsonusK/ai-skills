@@ -66,11 +66,10 @@ jobs:
       # - name: Set up {stack}
       #   uses: actions/setup-{stack}@v...
 
-      # Report-only: a kind exits non-zero when its own checks failed (a red test, a
-      # surviving mutant), and this workflow never blocks on that - the failure shows in
-      # the published report and its badges. The kind wrote its results before exiting.
+      # A kind exits non-zero when its checks failed (a red test, a broken tool) - never
+      # because of a score in a report run. The job then shows red, and the report is
+      # still built and published: the kind wrote its results before exiting.
       - run: make test-kind-${{ matrix.kind }}
-        continue-on-error: true
 
       # The kind's one directory - handed to the report job as it is.
       - uses: actions/upload-artifact@v4

@@ -22,7 +22,7 @@ tags:
 - Never publish a report for a commit that `master` has already moved past.
 
 # Core Principle
-- This is a report-only workflow: it never blocks anything. The merge gate — a `check` run of the same kinds — lives in [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]; a kind that skips itself in a `check` run (mutation testing) runs only here, after a PR already merged, and only ever as a report.
+- This is a report workflow: it blocks no merge, and a red kind shows as a red job beside a published report. The merge gate — a `check` run of the same kinds — lives in [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]; a kind that skips itself in a `check` run (mutation testing) runs only here, after a PR already merged, and only ever as a report.
 - What a `report` run adds to a `check` run — coverage reporting, whole-project mutation testing — is decided by each kind, not here: this workflow states `TEST_RUN_PURPOSE=report` and chooses the two directories, nothing else.
 - Change detection reuses the same `./.github/actions/check-changes` composite action as `devops-github-wf-pull-request` — never a second, divergent path-filter implementation.
 - A push that lands while a previous run of this workflow is still going means that run's eventual report would describe code no longer on `master` — cancel it, don't let it finish and publish stale numbers.
@@ -32,7 +32,7 @@ tags:
 1. Set the repository's Settings → Pages → Source to "GitHub Actions".
 2. `changes` job calls `./.github/actions/check-changes`; every job below is gated on `code`, `test`, or `workflow` having changed, or on the run being a manual `workflow_dispatch`.
 3. `test-kinds` job reads the kinds from `make test-kinds`.
-4. `test-kind` job runs one matrix leg per kind: `make test-kind-{kind}` with `continue-on-error`, then uploads the kind's one directory, `$TEST_WORK_DIR/kinds/{kind}`, as the artifact `test-kind-{kind}`. A failing kind never blocks — its failure shows in the published report.
+4. `test-kind` job runs one matrix leg per kind: `make test-kind-{kind}`, then — also after a failure — uploads the kind's one directory, `$TEST_WORK_DIR/kinds/{kind}`, as the artifact `test-kind-{kind}`. A kind that exits non-zero turns its leg red; the report is still built and published.
 5. `test-report` job downloads every `test-kind-*` artifact back under `$TEST_WORK_DIR/kinds/`, runs `make test-report` to build `$TEST_REPORT_DIR` (`site/testing`), and uploads `site` as the Pages artifact. It cascade-skips when the kinds were skipped.
 6. `deploy` job deploys the site to GitHub Pages; it cascade-skips the same way.
 7. Add the workflow badge, the report link, and one badge per declared test badge from the [example](./templates/release-test-report.example.md) to the project's README.
@@ -62,11 +62,11 @@ Set `TEST_RUN_PURPOSE: report`, `TEST_WORK_DIR`, and `TEST_REPORT_DIR` once at w
 - Risk: a switch set here duplicates a decision the test kinds own, and drifts from it when a kind changes.
 - Fix: keep the three `env` lines of the [example](./templates/release-test-report.example.md); what a `report` run includes is the kinds' business.
 
-### Keep every kind report-only
-Set `continue-on-error: true` on the `make test-kind-{kind}` step and let `test-report`/`deploy` run with `!cancelled()` — never let a kind's exit code block this workflow.
-- Violation: running the kind step with no `continue-on-error`, relying on the surrounding prose/intent alone to keep it "report-only."
-- Risk: a kind exits with its tool's own exit code — non-zero on a red test or the moment one mutant survives, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#propagate-the-mutation-tools-exit-code|solution-conformance-testing's contract]]. Without `continue-on-error`, that failure fails the `test-kind-mutation` job itself — and since `test-report`'s `needs` has no `if: always()`, GitHub cascade-skips `test-report`/`deploy` entirely instead of merely reporting a low score, so one surviving mutant silently stops the whole report/Pages pipeline from publishing anything, coverage included.
-- Fix: add `continue-on-error: true` to the kind step itself, as shown in [example](./templates/release-test-report.example.md); the job still uploads the kind's directory regardless of the tool's exit code.
+### Publish the report after a failed kind
+Upload the kind's directory with `if: !cancelled()` and run `test-report`/`deploy` with `!cancelled()` conditions, so a kind's non-zero exit code turns its job red without stopping the report — never hide that exit code with `continue-on-error`.
+- Violation: `continue-on-error: true` on the kind step, or `test-report` with a plain `needs:` and no `if:`.
+- Risk: with `continue-on-error` a red test on `master` leaves the workflow green; with a plain `needs:` a failed kind cascade-skips `test-report`/`deploy`, and the report that would show the failure is never published. A kind does not exit non-zero over a score in a `report` run, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#propagate-the-mutation-tools-exit-code|solution-conformance-testing's contract]].
+- Fix: copy the `if:` conditions of the [example](./templates/release-test-report.example.md).
 
 ### Cancel a superseded run
 Set `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` at the workflow level.
@@ -108,7 +108,7 @@ See [Release-test-report workflow example](./templates/release-test-report.examp
 - [ ] `changes` calls `./.github/actions/check-changes` — the same composite action the PR workflow uses.
 - [ ] Every CI job calls the project's `make test-kinds`/`make test-kind-{kind}`/`make test-report` — never a stack's native CLI, never a kind by name.
 - [ ] The workflow sets only `TEST_RUN_PURPOSE: report`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`.
-- [ ] The kind step has `continue-on-error: true`; each kind's directory is uploaded as `test-kind-{kind}` and restored under `$TEST_WORK_DIR/kinds/` before `make test-report`.
+- [ ] The kind step has no `continue-on-error`; `test-report`/`deploy` run after a failed kind; each kind's directory is uploaded as `test-kind-{kind}` and restored under `$TEST_WORK_DIR/kinds/` before `make test-report`.
 - [ ] `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` is set.
 - [ ] `test-kinds` is gated on the path filter or a manual `workflow_dispatch`; the jobs after it cascade-skip.
 - [ ] GitHub Pages source is set to "GitHub Actions".

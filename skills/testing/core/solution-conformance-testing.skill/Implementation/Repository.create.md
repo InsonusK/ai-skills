@@ -140,6 +140,10 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - Write a kind's normalized `result/*.json` and its native `report/{name}/` per [## Kind output](#kind-output), before exiting with the tool's own exit code — also when a test failed.
   - Risk: a failed run leaves no report to read, or a real failure is swallowed while normalizing.
   - Fix: write the results, then `exit` with the code the runner or the mutation tool returned.
+- Exit non-zero from a kind only for a failed check — a red test, a tool that could not run, or in a `check` run a threshold the kind enforces — never for a score in a `report` run.
+  - Violation: a mutation kind that fails a `report` run because a mutant survived.
+  - Risk: a caller reads the exit code as "the tests failed"; a run that is red over a score every time hides the run that is red over a broken test.
+  - Fix: in a `report` run give the tool its never-break setting (`--break-at 0`, `thresholds.break = 0`) and return its exit code; a red test always returns non-zero.
 - Write `result/scenarios.json` on every `test-kind-unit` run, listing every `.feature` entry, `@todo` ones included.
   - Risk: a report built only from executed scenarios hides planned-but-missing cases.
   - Fix: build the inventory from the `.feature` files and join the runner's result onto it.
@@ -167,7 +171,7 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - [ ] Every kind leaves `mode` or `skipped`; `run.json` shows it.
 - [ ] `result/unit-test.json`, `result/coverage-test.json` (`report`), `result/mutation-test.json` follow [## Kind output](#kind-output); `result/scenarios.json` exists after every unit run, green or red, with `@todo` entries.
 - [ ] `report/tests/cucumber/` holds the runner's standard report; `report/tests/livingdoc/index.html` exists when `npm` is available, and its absence never fails the kind.
-- [ ] Each kind exits with its tool's own exit code after writing its results.
+- [ ] Each kind exits with its tool's own exit code after writing its results. `make test-kind-unit` exits non-zero when a test failed; no kind exits non-zero over a score in a `report` run.
 - [ ] `make test-report` writes `index.html`, `reports/`, `badges/`, `run.json` into `$TEST_REPORT_DIR`; a different `TEST_WORK_DIR` / `TEST_REPORT_DIR` moves everything, and nothing is written to `public/`.
 - [ ] `make test-and-report TEST_RUN_PURPOSE=check` skips or narrows kinds as the table says and still builds a report.
 - [ ] `make test-readme-check` passes; `report-template/index.html` exists at the repository root (not under `.github/`).
