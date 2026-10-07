@@ -1,12 +1,12 @@
 # scripts/normalize-scenarios.sh
 
-Writes `tmp/result/scenarios.json` per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]. Stack-independent — the same script (unmodified) is used by the .NET and the Python variants of this solution; it is duplicated verbatim in each rather than shared, so each solution stays self-contained. `scripts/unit-test.sh` calls it with the runner's per-scenario results already reduced to `[{"uri", "line", "status"}]`.
+Writes `$TEST_KIND_DIR/result/scenarios.json` per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|solution-conformance-testing's Scenario report]]. Stack-independent — the same script (unmodified) is used by the .NET and the Python variants of this solution; it is duplicated verbatim in each rather than shared, so each solution stays self-contained. `scripts/unit-test.sh` calls it with the runner's per-scenario results already reduced to `[{"uri", "line", "status"}]`.
 
 The inventory comes from scanning every `.feature` file (English Gherkin keywords), so `@todo` entries the runner never executes are listed too; a result is joined onto an entry by `uri` plus the `Scenario` line, or the `Examples:` row line for a `Scenario Outline` row.
 
 ````bash
 #!/usr/bin/env bash
-# Writes tmp/result/scenarios.json (solution-conformance-testing's Scenario report).
+# Writes $TEST_KIND_DIR/result/scenarios.json (solution-conformance-testing's Scenario report).
 #
 # The inventory comes from every .feature file in the repository, so @todo entries the
 # runner never executes are listed too. The status comes from $1: a JSON array of
@@ -18,7 +18,7 @@ The inventory comes from scanning every `.feature` file (English Gherkin keyword
 set -euo pipefail
 
 RESULTS="${1:?usage: normalize-scenarios.sh <results.json>}"
-RESULT_DIR="tmp/result"
+RESULT_DIR="${TEST_KIND_DIR:?run this through make test-kind-unit}/result"
 mkdir -p "$RESULT_DIR"
 
 INVENTORY="$(mktemp)"

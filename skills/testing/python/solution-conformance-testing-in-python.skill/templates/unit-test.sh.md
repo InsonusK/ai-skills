@@ -1,32 +1,33 @@
 # scripts/unit-test.sh
 
-Runs `behave` (`@todo` scenarios excluded) and the plain `test/` suite under `coverage`, then normalizes the result into `tmp/result/*.json` — `scenarios.json` included, on a red run too — and exits with the first failing runner's own code, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment. Verified with behave 1.3.3, coverage.py, pytest.
+Runs `behave` (`@todo` scenarios excluded) and the plain `test/` suite under `coverage`, then normalizes the result into `$TEST_KIND_DIR/result/*.json` — `scenarios.json` included, on a red run too — and exits with the first failing runner's own code, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. The JSON parsing below (behave's own `json.pretty` formatter, modeled after Cucumber's JSON schema) and the `coverage`/`jq` calls are solid; the HTML-formatter line is a choice you still have to pin — see the comment. Verified with behave 1.3.3, coverage.py, pytest.
 
 ```bash
 #!/usr/bin/env bash
-# Runs the Cucumber/Gherkin conformance suite via behave (plus the plain test/ suite),
-# both under coverage.py, and normalizes the results into tmp/result/*.json, keeping
-# the native browsable report under tmp/report/.
-#
-# Params (env vars, optional):
-#   WITH_CODE_COVERAGE=true   also collect and report line coverage
+# The unit test kind: runs the Cucumber/Gherkin conformance suite via behave (plus the
+# plain test/ suite), both under coverage.py, and normalizes the results into
+# $TEST_KIND_DIR/result/*.json, keeping the native report under $TEST_KIND_DIR/report/.
+# Called by `make test-kind-unit`, which exports:
+#   TEST_KIND_DIR      the only directory this kind writes to
+#   TEST_RUN_PURPOSE   report: also report line coverage; pr-check: tests only
 set -euo pipefail
 
-WITH_CODE_COVERAGE="${WITH_CODE_COVERAGE:-false}"
+KIND_DIR="${TEST_KIND_DIR:?run this through make test-kind-unit}"
+WITH_CODE_COVERAGE=false
+if [ "${TEST_RUN_PURPOSE:-report}" = report ]; then WITH_CODE_COVERAGE=true; fi
 
-RESULT_DIR="tmp/result"
-REPORT_DIR="tmp/report"
+RESULT_DIR="$KIND_DIR/result"
+REPORT_DIR="$KIND_DIR/report"
 
 rm -rf "$REPORT_DIR/tests" "$REPORT_DIR/coverage" .coverage
-mkdir -p "$RESULT_DIR" "$REPORT_DIR/tests"
+mkdir -p "$RESULT_DIR" "$REPORT_DIR/tests/cucumber"
 
 BEHAVE_JSON="$(mktemp)"
 trap 'rm -f "$BEHAVE_JSON"' EXIT
 
-# behave has no built-in HTML formatter - pick one third-party plugin (e.g.
-# behave-html-formatter, allure-behave) and pin it in pyproject.toml; verify its exact
-# `--format`/`--outfile` invocation against the version you pin, this line is a sketch.
-# The json.pretty line below is behave's own built-in formatter and is not a guess.
+# Two formatters: behave's own json.pretty feeds the counts and the scenario report
+# below; behave-cucumber-formatter writes classic Cucumber JSON - the standard report
+# tools/livingdoc renders (behave's own JSON is not that schema).
 # behave pairs each --outfile with the --format before it, so json.pretty comes first.
 # @todo scenarios are excluded (behave reports them as "skipped"). Exit codes are kept,
 # not acted on yet, so the normalized results below are written on a red run too.
@@ -34,10 +35,9 @@ set +e
 coverage run -m behave \
   --tags=-todo \
   --format json.pretty --outfile "$BEHAVE_JSON" \
+  --format behave_cucumber_formatter:PrettyCucumberJSONFormatter --outfile "$REPORT_DIR/tests/cucumber/behave.json" \
   --format progress
 BEHAVE_EXIT=$?
-# TODO: also run behave with the chosen HTML formatter (or convert $BEHAVE_JSON with
-# a template) so tmp/report/tests/index.html exists before test-report.sh runs.
 
 coverage run -a -m pytest test/
 PYTEST_EXIT=$?
@@ -66,6 +66,17 @@ if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   LINE_PCT=$(jq '.totals.percent_covered' "$REPORT_DIR/coverage/coverage.json")
   rm "$REPORT_DIR/coverage/coverage.json"
   printf '{"linePct":%s}' "$LINE_PCT" > "$RESULT_DIR/coverage-test.json"
+fi
+
+# Living-doc report from the standard Cucumber report - shared, pinned renderer in
+# tools/livingdoc (solution-conformance-testing). Skipped without npm; never changes
+# the exit code.
+if command -v npm >/dev/null 2>&1; then
+  { npm ci --prefix tools/livingdoc --silent \
+      && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc"; } \
+    || echo "livingdoc: render failed"
+else
+  echo "livingdoc: npm not found - skipping living-doc report"
 fi
 
 if [ "$BEHAVE_EXIT" -ne 0 ]; then exit "$BEHAVE_EXIT"; fi

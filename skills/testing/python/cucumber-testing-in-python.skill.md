@@ -66,10 +66,10 @@ Have every step with a body print its action/observation (behave: plain `print()
 - Fix: log `action → observed result`; run `pytest -v` (or rely on `pytest`'s default capture-on-failure) so the log surfaces on a failing scenario.
 
 ### Emit classic Cucumber JSON
-Python runners emit **classic Cucumber JSON**: `pytest-bdd` via `--cucumberjson=<path>.json`. behave's built-in `json` formatter is not classic Cucumber JSON (its tags are plain strings, not `{name, line}` objects), so a behave suite needs a formatter plugin or a conversion step that produces the classic schema.
+Python runners emit **classic Cucumber JSON**: `pytest-bdd` via `--cucumberjson=<path>.json`. behave's built-in `json` formatter is not classic Cucumber JSON (its tags are plain strings, not `{name, line}` objects), so a behave suite writes it through the `behave-cucumber-formatter` plugin: `--format behave_cucumber_formatter:PrettyCucumberJSONFormatter --outfile <path>.json`.
 - Violation: feeding behave's `json`/`json.pretty` output to a classic-JSON consumer as-is.
 - Risk: tag filters and tag columns in the rendered report come out empty or broken.
-- Fix: use `--cucumberjson` with pytest-bdd; with behave, convert to the classic schema first.
+- Fix: use `--cucumberjson` with pytest-bdd; with behave, add the `behave-cucumber-formatter` formatter beside any other.
 
 ## SHOULD
 

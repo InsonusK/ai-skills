@@ -1,39 +1,41 @@
 # scripts/mutation-test.sh
 
-StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates `ONLY_DELTA` itself by limiting `--mutate` to the files `git diff` reports as changed. See [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) for the target contract.
+StrykerJS has no native `--since`/delta flag the way Stryker.NET does, so this script emulates a `pr-check` run's `DELTA_BASE` itself by limiting `--mutate` to the files `git diff` reports as changed. See [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract) for the target contract.
 
 ```bash
 #!/usr/bin/env bash
+# The mutation test kind.
 # Runs StrykerJS mutation testing and normalizes the results into
-# tmp/result/mutation-test.json, keeping the native browsable report under
-# tmp/report/mutation.
-#
-# Params (env vars):
-#   ONLY_DELTA=true   only mutate source files changed since DELTA_BASE (for PRs);
-#                     default is a full run, which never gates (break threshold
-#                     overridden to 0) since it's report-only - the PR job is what
-#                     enforces the threshold, via ONLY_DELTA.
-#   DELTA_BASE=<ref>  git ref to diff against; required when ONLY_DELTA=true.
+# $TEST_KIND_DIR/result/mutation-test.json, keeping the native browsable report under
+# $TEST_KIND_DIR/report/mutation. Called by `make test-kind-mutation`, which exports:
+#   TEST_KIND_DIR      the only directory this kind writes to
+#   TEST_RUN_PURPOSE   pr-check: only mutate source files changed since DELTA_BASE, the
+#                      real threshold applies; report: the whole package, which never
+#                      fails on the score
+#   DELTA_BASE         git ref to diff against in a pr-check run (make skips the kind
+#                      without it)
 set -euo pipefail
 
-ONLY_DELTA="${ONLY_DELTA:-false}"
+PURPOSE="${TEST_RUN_PURPOSE:-report}"
 DELTA_BASE="${DELTA_BASE:-}"
+KIND_DIR="${TEST_KIND_DIR:?run this through make test-kind-mutation}"
 
-RESULT_DIR="tmp/result"
-REPORT_DIR="tmp/report/mutation"
+RESULT_DIR="$KIND_DIR/result"
+REPORT_DIR="$KIND_DIR/report/mutation"
 
 mkdir -p "$RESULT_DIR"
 rm -rf "$REPORT_DIR"
 
 MUTATE_ARGS=()
-if [ "$ONLY_DELTA" = "true" ]; then
+if [ "$PURPOSE" = "pr-check" ]; then
   if [ -z "$DELTA_BASE" ]; then
-    echo "DELTA_BASE is required when ONLY_DELTA=true" >&2
+    echo "DELTA_BASE is required in a pr-check run" >&2
     exit 1
   fi
 
   FILES=$(git diff --name-only --diff-filter=ACMR "$DELTA_BASE" HEAD -- 'src/**/*.ts' | paste -sd, -)
   if [ -z "$FILES" ]; then
+    echo "no changes in src/**/*.ts since $DELTA_BASE" > "$KIND_DIR/skipped"
     echo "No changes in src/**/*.ts since $DELTA_BASE — skipping mutation testing."
     exit 0
   fi
@@ -43,7 +45,7 @@ fi
 CONFIG_FILE="$(mktemp --suffix=.json)"
 trap 'rm -f "$CONFIG_FILE"' EXIT
 
-if [ "$ONLY_DELTA" = "true" ]; then
+if [ "$PURPOSE" = "pr-check" ]; then
   # Real threshold from stryker.conf.json applies here - the score has to be good
   # enough to pass the PR gate.
   jq --arg html "$REPORT_DIR/reports/mutation-report.html" \
@@ -55,7 +57,7 @@ if [ "$ONLY_DELTA" = "true" ]; then
 else
   # Full run has no PR base to diff against, so the whole package is mutated; the break
   # threshold is overridden to 0 so a low score never fails this run - it only reports
-  # the score, it doesn't gate anything. The PR job (ONLY_DELTA=true) enforces the real
+  # the score, it doesn't gate anything. A pr-check run enforces the real
   # threshold from stryker.conf.json before code reaches master.
   jq --arg html "$REPORT_DIR/reports/mutation-report.html" \
      --arg json "$REPORT_DIR/reports/mutation-report.json" \

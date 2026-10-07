@@ -1,38 +1,41 @@
 # scripts/mutation-test.sh
 
-`mutmut`'s CLI for CI-friendly result export and for scoping a run to specific changed files has moved between major versions more than Stryker.NET/StrykerJS have — treat every `mutmut` line below as a sketch to verify against the version this project pins, not a copy-paste command. The surrounding contract (env vars, `tmp/result/mutation-test.json` schema, exit-code propagation) is what must hold regardless of which `mutmut` version/flags end up filling it in — see [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
+`mutmut`'s CLI for CI-friendly result export and for scoping a run to specific changed files has moved between major versions more than Stryker.NET/StrykerJS have — treat every `mutmut` line below as a sketch to verify against the version this project pins, not a copy-paste command. The surrounding contract (env vars, `$TEST_KIND_DIR/result/mutation-test.json` schema, exit-code propagation) is what must hold regardless of which `mutmut` version/flags end up filling it in — see [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
 
 ```bash
 #!/usr/bin/env bash
+# The mutation test kind.
 # Runs mutmut mutation testing and normalizes the results into
-# tmp/result/mutation-test.json, keeping the native browsable report under
-# tmp/report/mutation.
-#
-# Params (env vars):
-#   ONLY_DELTA=true   only mutate source files changed since DELTA_BASE (for PRs);
-#                     default is a full run, which never gates since it's report-only -
-#                     the PR job is what enforces the threshold, via ONLY_DELTA.
-#   DELTA_BASE=<ref>  git ref to diff against; required when ONLY_DELTA=true.
+# $TEST_KIND_DIR/result/mutation-test.json, keeping the native browsable report under
+# $TEST_KIND_DIR/report/mutation. Called by `make test-kind-mutation`, which exports:
+#   TEST_KIND_DIR      the only directory this kind writes to
+#   TEST_RUN_PURPOSE   pr-check: only mutate source files changed since DELTA_BASE, the
+#                      real threshold applies; report: the whole package, which never
+#                      fails on the score
+#   DELTA_BASE         git ref to diff against in a pr-check run (make skips the kind
+#                      without it)
 set -euo pipefail
 
-ONLY_DELTA="${ONLY_DELTA:-false}"
+PURPOSE="${TEST_RUN_PURPOSE:-report}"
 DELTA_BASE="${DELTA_BASE:-}"
+KIND_DIR="${TEST_KIND_DIR:?run this through make test-kind-mutation}"
 
-RESULT_DIR="tmp/result"
-REPORT_DIR="tmp/report/mutation"
+RESULT_DIR="$KIND_DIR/result"
+REPORT_DIR="$KIND_DIR/report/mutation"
 
 mkdir -p "$RESULT_DIR"
 rm -rf "$REPORT_DIR" .mutmut-cache
 
 MUTMUT_PATHS=()
-if [ "$ONLY_DELTA" = "true" ]; then
+if [ "$PURPOSE" = "pr-check" ]; then
   if [ -z "$DELTA_BASE" ]; then
-    echo "DELTA_BASE is required when ONLY_DELTA=true" >&2
+    echo "DELTA_BASE is required in a pr-check run" >&2
     exit 1
   fi
 
   FILES=$(git diff --name-only --diff-filter=ACMR "$DELTA_BASE" HEAD -- '{package}/**/*.py')
   if [ -z "$FILES" ]; then
+    echo "no changes in {package}/**/*.py since $DELTA_BASE" > "$KIND_DIR/skipped"
     echo "No changes in {package}/**/*.py since $DELTA_BASE — skipping mutation testing."
     exit 0
   fi

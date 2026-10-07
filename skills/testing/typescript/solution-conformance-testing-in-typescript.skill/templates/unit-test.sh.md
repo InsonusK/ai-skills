@@ -1,28 +1,30 @@
 # scripts/unit-test.sh
 
-Runs `cucumber-js` (`@todo` scenarios excluded; wrapped with `c8` for coverage when `WITH_CODE_COVERAGE=true`), then normalizes the result into `tmp/result/*.json` — `scenarios.json` included, on a red run too — and exits with `cucumber-js`'s own code, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Verified with `@cucumber/cucumber` 13, `tsx` 4, TypeScript 7. `tsx` transpiles through esbuild, so it does not depend on the TypeScript compiler's version — unlike `ts-node`, which fails to load under TypeScript 6+.
+Runs `cucumber-js` (`@todo` scenarios excluded; wrapped with `c8` for coverage when `WITH_CODE_COVERAGE=true`), then normalizes the result into `$TEST_KIND_DIR/result/*.json` — `scenarios.json` included, on a red run too — and exits with `cucumber-js`'s own code, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]]. Verified with `@cucumber/cucumber` 13, `tsx` 4, TypeScript 7. `tsx` transpiles through esbuild, so it does not depend on the TypeScript compiler's version — unlike `ts-node`, which fails to load under TypeScript 6+.
 
 ```bash
 #!/usr/bin/env bash
-# Runs the Cucumber/Gherkin conformance suite via cucumber-js and normalizes the
-# results into tmp/result/unit-test.json (+ coverage-test.json when
-# WITH_CODE_COVERAGE=true), keeping the native HTML report(s) under tmp/report/.
-#
-# Params (env vars, optional):
-#   WITH_CODE_COVERAGE=true   also collect and report line coverage
+# The unit test kind: runs the Cucumber/Gherkin conformance suite via cucumber-js and
+# normalizes the results into $TEST_KIND_DIR/result/unit-test.json (+ coverage-test.json
+# in a report run), keeping the native HTML report(s) under $TEST_KIND_DIR/report/.
+# Called by `make test-kind-unit`, which exports:
+#   TEST_KIND_DIR      the only directory this kind writes to
+#   TEST_RUN_PURPOSE   report: also collect and report line coverage; pr-check: tests only
 set -euo pipefail
 
-WITH_CODE_COVERAGE="${WITH_CODE_COVERAGE:-false}"
+KIND_DIR="${TEST_KIND_DIR:?run this through make test-kind-unit}"
+WITH_CODE_COVERAGE=false
+if [ "${TEST_RUN_PURPOSE:-report}" = report ]; then WITH_CODE_COVERAGE=true; fi
 
-RESULT_DIR="tmp/result"
-REPORT_DIR="tmp/report"
+RESULT_DIR="$KIND_DIR/result"
+REPORT_DIR="$KIND_DIR/report"
 
 rm -rf "$REPORT_DIR/tests" "$REPORT_DIR/coverage"
 mkdir -p "$RESULT_DIR" "$REPORT_DIR/tests/cucumber"
 
 CUCUMBER_JSON="$(mktemp)"
 # The standard report (Cucumber Messages, per cucumber-testing-in-typescript) is kept:
-# tools/livingdoc renders it into tmp/report/tests/livingdoc/.
+# tools/livingdoc renders it into report/tests/livingdoc/.
 CUCUMBER_MESSAGES="$REPORT_DIR/tests/cucumber/messages.ndjson"
 SCENARIO_RESULTS="$(mktemp)"
 trap 'rm -f "$CUCUMBER_JSON" "$SCENARIO_RESULTS"' EXIT
