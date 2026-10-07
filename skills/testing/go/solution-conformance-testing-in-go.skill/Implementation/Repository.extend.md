@@ -69,6 +69,10 @@ require (
 - `test-kind-mutation` must `exit $$code` with `gremlins`' own exit status after `tools/normalize_mutation` has written its normalized result — never swallow it.
   - Risk: swallowing the exit code turns a real mutation-testing failure into a silently green CI step.
   - Fix: capture `gremlins`' exit code before running the normalizer, and `exit` with it at the end of the target.
+- `test-kind-mutation` must pass `--threshold-efficacy 0 --threshold-mcover 0` to `gremlins` in a `report` run, and leave the project's own thresholds in force in a `check` run.
+  - Violation: a `.gremlins.yaml` with `unleash.threshold.efficacy: 80` and a `report` run that passes no threshold flag — `gremlins` exits `10` ("below efficacy-threshold").
+  - Risk: the report workflow goes red over a score, which the parent contract forbids in a `report` run.
+  - Fix: keep the two flags in `tools/testing/kinds/mutation.sh`; `0` switches a threshold off and overrides the configuration file. Without any threshold `gremlins` exits `0` however many mutants survive.
 - `COVERPKG` must exclude `gen/` and `tools/` from both `test-kind-unit` and `test-kind-mutation`.
   - Risk: mutating generated protobuf/gRPC code or this solution's own reporting tools produces meaningless surviving-mutant noise with no product logic behind it.
   - Fix: keep the `grep -Ev '/(gen|tools)(/|$$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`.
@@ -80,6 +84,6 @@ require (
 - [ ] `$TEST_KIND_DIR/report/tests/cucumber/*.json` exists after `make test-kind-unit`; `$TEST_KIND_DIR/report/tests/livingdoc/index.html` exists when `npm` is available, and `test-kind-unit`'s exit code is unaffected by that step.
 - [ ] `make test-kind-unit` produces `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` on every run, green or red, and exits non-zero when a test failed.
 - [ ] `make test-kind-unit` (a `report` run) additionally produces `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/index.html`.
-- [ ] `make test-kind-mutation` installs `gremlins` on first use and exits non-zero when a mutant survives.
-- [ ] `make test-kind-mutation TEST_RUN_PURPOSE=check` skips itself without `DELTA_BASE` and passes `--diff` with one; `make test-kinds` prints `unit tests coverage` and `mutation mutation`.
+- [ ] `make test-kind-mutation` installs `gremlins` on first use; in a `report` run it exits `0` when mutants survive — also with a threshold in `.gremlins.yaml` — and non-zero only when `gremlins` could not run (a red test fails its coverage step).
+- [ ] `make test-kind-mutation TEST_RUN_PURPOSE=check` skips itself without `DELTA_BASE` and passes `--diff` with one (`gremlins` matches the diff only when `go.mod` is in the repository root — in a module below it every mutant is `SKIPPED`); `make test-kinds` prints `unit tests coverage` and `mutation mutation`.
 - [ ] `make test-report` fills `$TEST_REPORT_DIR` with `index.html`, `reports/{tests,coverage,mutation,scenarios}/`, `badges/{tests,coverage,mutation}.json`, and `run.json`; `make test-readme-check` passes.

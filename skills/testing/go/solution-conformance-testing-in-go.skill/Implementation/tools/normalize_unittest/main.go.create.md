@@ -29,7 +29,12 @@ Copy verbatim to `tools/normalize_unittest/main.go`: [`assets/tools/normalize_un
   - Risk: this tool exiting non-zero on a failed test would compete with the pipeline's own exit-code propagation and risk masking which command actually failed.
   - Fix: only `os.Exit(1)` on a real tool error (a malformed stdin read, a write failure) — never because the normalized counts show a failure.
 
+- Print `FAIL {package}/{test}` to stderr for every failed leaf test, then one line with the count and the path of `report/tests/go-test.json`.
+  - Risk: `go test -json` is piped into this tool, so a red `make test-kind-unit` otherwise ends with `Error 1` and no word about which test failed.
+  - Fix: keep the two `fmt.Fprint…(os.Stderr, …)` calls; stdout stays empty.
+
 # Check list
+- [ ] A red run prints one `FAIL …` line per failed leaf test and the path of `go-test.json`; a green run prints nothing.
 - [ ] `$TEST_KIND_DIR/result/unit-test.json` matches `{"total": <int>, "passed": <int>, "failed": <int>}` exactly.
 - [ ] A `TestFeatures` run with 3 passing godog scenarios and no other test produces `{"total": 3, "passed": 3, "failed": 0}`, not `{"total": 4, ...}`.
 

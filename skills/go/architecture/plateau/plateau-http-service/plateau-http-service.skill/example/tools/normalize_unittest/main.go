@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -48,14 +49,21 @@ func run() error {
 	}
 
 	total, passed, failed := 0, 0, 0
-	for _, name := range leafNames(results) {
+	leaves := leafNames(results)
+	sort.Strings(leaves)
+	for _, name := range leaves {
 		total++
 		switch results[name] {
 		case "pass":
 			passed++
 		case "fail":
 			failed++
+			// The event stream is the only output of the run, so a red run names what failed.
+			fmt.Fprintln(os.Stderr, "FAIL", name)
 		}
+	}
+	if failed > 0 {
+		fmt.Fprintf(os.Stderr, "%d of %d tests failed - output of each: %s/report/tests/go-test.json\n", failed, total, kindDir())
 	}
 
 	if err := os.MkdirAll(kindDir()+"/result", 0o755); err != nil {
