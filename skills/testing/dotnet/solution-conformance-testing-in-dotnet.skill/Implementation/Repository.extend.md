@@ -85,6 +85,10 @@ The only stack-specific code: each runs this stack's tool and writes the normali
 - Add only `include tools/testing/testing.mk` to the `Makefile`, after its first target; never a testing recipe.
   - Risk: a recipe in the project's `Makefile` duplicates a kind script and drifts from it; an include placed first makes `test-kinds` the default goal.
   - Fix: append the include line; everything a kind does lives in `tools/testing/kinds/{kind}.sh`.
+- `tools/testing/kinds/mutation.sh` must scope a `check` run with one `--mutate` pattern per changed production file (`git diff --relative --name-only {commit} -- '*.cs'`, each path made relative to its project, files of `*Tests.csproj` projects left out) — never with Stryker's `--since`.
+  - Violation: `dotnet-stryker --since:HEAD~1`.
+  - Risk: `--since` accepts a branch, a tag or a full commit id only, and with Reqnroll-generated tests Stryker.NET 4.16.0 logs every changed file as "Changed test file" and ignores its mutants ("Removed by since filter") — the run is green and tests nothing.
+  - Fix: keep the loop in `assets/tools/testing/kinds/mutation.sh`; it resolves `DELTA_BASE` with `git rev-parse` and skips the kind when no production file changed.
 - Never add a caller-facing variable beyond `TEST_RUN_PURPOSE`/`DELTA_BASE`/`TEST_WORK_DIR`/`TEST_REPORT_DIR` — a caller must not need to know this is a .NET project.
   - Risk: every caller (CI workflow, developer, script) now needs .NET-specific knowledge to invoke the targets correctly, defeating the point of the uniform contract this `Makefile` implements.
   - Fix: keep the `make` interface limited to the variables [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] defines; anything .NET-specific stays inside the `Makefile`/scripts.
@@ -94,7 +98,7 @@ The only stack-specific code: each runs this stack's tool and writes the normali
 - [ ] WHEN `make test-kind-unit` runs in a `report` run THEN `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/` reflect coverage across every test project.
 - [ ] WHEN `make test-kind-unit` runs and a scenario fails THEN `$TEST_KIND_DIR/result/scenarios.json` still lists every `.feature` entry, `@todo` ones with status `todo`, and the target exits non-zero.
 - [ ] WHEN `make test-report` runs THEN `$TEST_REPORT_DIR/reports/scenarios/index.html` shows the type × status table and every entry.
-- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in code changed since `<ref>` are evaluated, across every test project.
+- [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in production `.cs` files changed since `<ref>` (any commit expression — `HEAD~1`, `origin/main`) are evaluated, and the kind skips itself when none changed.
 - [ ] WHEN `make test-report` runs after both kinds THEN `$TEST_REPORT_DIR/` contains `index.html`, `badges/{tests,coverage,mutation}.json`, `reports/{tests,coverage,mutation,scenarios}/`, and `run.json`.
 - [ ] WHEN `make test-kind-unit` runs with `npm` available THEN `report/tests/cucumber/*.ndjson` and `report/tests/livingdoc/index.html` exist; without `npm` the kind's exit code is unchanged.
 - [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check` runs without `DELTA_BASE` THEN the kind skips itself, leaving `skipped` and no badge.

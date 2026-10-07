@@ -8,7 +8,8 @@ set -euo pipefail
 source tools/testing/kind.sh
 
 # The one solution file in the repository root.
-SOLUTION=$(ls *.slnx *.sln 2>/dev/null | head -1)
+# (find, not a glob: under pipefail `ls *.slnx *.sln` fails when only one of the two exists.)
+SOLUTION=$(find . -maxdepth 1 \( -name '*.slnx' -o -name '*.sln' \) -printf '%f\n' | sort | head -1)
 [ -n "$SOLUTION" ] || { echo "no .slnx/.sln in $(pwd)" >&2; exit 2; }
 
 WITH_CODE_COVERAGE=false
