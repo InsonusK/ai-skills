@@ -28,10 +28,10 @@ The contract was four fixed targets — `unit-test`, `mutation-test`, `test-repo
 - **Directories.** The caller sets `TEST_WORK_DIR` and `TEST_REPORT_DIR`; a kind writes only to `{work}/kinds/{kind}/`.
 - **Output.** `index.html`, `reports/{name}/`, `badges/{name}.json` (a badge and its report share a name), `run.json`.
 - **README.** Whoever adds a kind adds its badge; `test-readme-check` fails naming a missing or stale badge, comparing against the declared badges.
-- The caller-facing half is one file, `tools/testing/testing.mk`, identical in every stack.
+- Everything but the kind scripts is one folder, `tools/testing/`, identical in every stack: the Makefile side, the runner, the report builder. A stack contributes `tools/testing/kinds/{kind}.sh` only — run the tool, write normalized JSON.
 
 ### Benefits
-- A new kind is a declaration and a recipe in the project; no caller changes, and CI still gets one job and one status per kind, in parallel.
+- A new kind is one script in the project; no caller changes, and CI still gets one job and one status per kind, in parallel.
 - What a pull request skips is decided next to the tool that knows the cost, and is visible in the log and the report.
 - The report can be written into a subfolder of a site the project already publishes.
 

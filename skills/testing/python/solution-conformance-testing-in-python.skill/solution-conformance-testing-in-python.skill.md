@@ -17,8 +17,8 @@ tags:
 creates:
   - features/{rule}.feature
   - features/steps/{rule}_steps.py
-  - Makefile
-  - scripts/normalize-scenarios.sh
+
+  - tools/testing/normalize-scenarios.sh
 extends:
   - pyproject.toml
   - README.md

@@ -23,7 +23,7 @@ created_by:
   Directory.Packages.props        — every NuGet version, pinned once (ManagePackageVersionsCentrally)
   Directory.Build.props           — net10.0, ImplicitUsings, Nullable, TreatWarningsAsErrors
   {Solution}.slnx                 — .NET 10 XML solution format
-  Makefile                        — test-kind-unit / test-kind-mutation / test-report-build + tools/testing/testing.mk
+  Makefile                        — include tools/testing/testing.mk (the test kinds are tools/testing/kinds/*.sh)
 /src
   /Modules
     /{ModuleName}

@@ -10,24 +10,23 @@ Read first: `INVARIANTS.md` §5 (the contract), then `skills/testing/core/soluti
 
 ## What was verified without a toolchain
 
-- `tools/testing/testing.mk` + `testing.sh`: exercised end to end against a fake project — `report` and `check` runs, a skipped kind, a custom work/report directory, a missing and a stale README badge, a bad `TEST_RUN_PURPOSE`.
-- `scripts/test-report.sh` (dotnet/python/typescript): run against fake kind results — badges, report copies, scenario page.
-- Every example `Makefile` parses; `make test-kinds` and `make test-readme-check` pass in all nine examples.
+- `tools/testing/` (`testing.mk`, `testing.sh`, `kind.sh`, `test-report.sh`): exercised end to end with fake kind scripts — `report` and `check` runs, a skipped kind, a failing kind, custom work/report directories, a missing and a stale README badge, an unknown kind, a bad `TEST_RUN_PURPOSE`.
+- In the real examples: `make test-kinds`, `make test-readme-check`, and `make test-kind-mutation TEST_RUN_PURPOSE=check` (the skip path) run and pass.
 - `bash -n` on every script.
 
 ## What was not run — check each
 
 | # | Where | Risk |
 | --- | --- | --- |
-| 1 | Go: `tools/{normalize_unittest,normalize_scenarios,normalize_mutation,test_report}/main.go` | Edited without a compiler: `kindDir()`, `workDir()`, `reportDir()`, `readResult()`, the report-copy loop in `test_report`. Must build and vet. |
-| 2 | Go `Makefile`: `test-kind-unit` | `CUCUMBER_JSON_DIR` and `-coverprofile` now point below `$(abspath $(TEST_KIND_DIR))`; in a `check` run `report/coverage/` is removed after the run. |
-| 3 | Go `Makefile`: `test-kind-mutation` | The contract now says no kind exits non-zero over a score in a `report` run, and the report workflow no longer has `continue-on-error`. Find out what `gremlins` returns when mutants survive and make the Go kind conform (dotnet: `--break-at 0`; typescript: `thresholds.break = 0`). Same question for `mutmut`. |
-| 4 | dotnet `scripts/unit-test.sh` | `TestResults` moved below the kind directory; new living-doc block copies every `reqnroll_messages.ndjson` to `report/tests/cucumber/{Project}.ndjson` and calls `tools/livingdoc/render.mjs` (Cucumber Messages path — never run for dotnet before). |
-| 5 | dotnet `scripts/mutation-test.sh` | Stryker's `-O` output now below the kind directory; `report-template/index.html` links `reports/mutation/reports/mutation-report.html`. |
+| 1 | Go: `tools/{normalize_unittest,normalize_scenarios,normalize_mutation}/main.go` | Edited without a compiler: each got `kindDir()` and writes below `TEST_KIND_DIR`. Must build and vet. The Go report builder was removed — Go now uses the shared `tools/testing/test-report.sh` (needs `jq`), never run on Go results. |
+| 2 | Go `tools/testing/kinds/unit.sh` | The former Makefile recipe as a script: `CUCUMBER_JSON_DIR` and `-coverprofile` point below `$REPORT_DIR` (absolute); in a `check` run `report/coverage/` is removed after the run. |
+| 3 | Go `tools/testing/kinds/mutation.sh` | The contract now says no kind exits non-zero over a score in a `report` run, and the report workflow no longer has `continue-on-error`. Find out what `gremlins` returns when mutants survive and make the Go kind conform (dotnet: `--break-at 0`; typescript: `thresholds.break = 0`). Same question for `mutmut`. |
+| 4 | dotnet `tools/testing/kinds/unit.sh` | Now restores and builds itself and finds the solution file (`*.slnx` / `*.sln`) instead of a hard-coded name; `TestResults` below the kind directory; copies every `reqnroll_messages.ndjson` to `report/tests/cucumber/{Project}.ndjson` and calls `kind_livingdoc` (Cucumber Messages path — never run for dotnet before). |
+| 5 | dotnet `tools/testing/kinds/mutation.sh` | Stryker's `-O` output now below the kind directory; `report-template/index.html` links `reports/mutation/reports/mutation-report.html`. |
 | 6 | Python and TypeScript templates | No runnable example exists. Python: `--format behave_cucumber_formatter:PrettyCucumberJSONFormatter` (from the package's PyPI page) and the pre-existing `VERIFY` placeholders for `mutmut`. Build a minimal project from each skill if you can; otherwise say they stay unverified. |
 | 7 | `skills/devops/workflows/*/templates/*.example.md` | The YAML was never executed: dynamic matrix from `make -s test-kinds`, `include-hidden-files`, restoring `test-kind-*` artifacts under `$TEST_WORK_DIR/kinds/`. Review by reading; run in a scratch repository if one is available. |
 | 8 | `skills/go/architecture/plateau/gw009-001` example | Carries the pre-release TaskBox copy; its plateau skill says mutation results are not evidence there. Its unit kind may need PostgreSQL — read the plateau skill before running. |
-| 9 | Python: switch `behave` → `pytest-bdd` | Owner's decision (2026-10-07), not implemented: `behave` + `behave-cucumber-formatter` is in the skill as an interim. `pytest-bdd` writes classic Cucumber JSON itself (`--cucumberjson`), runs inside the `pytest` run the script already makes for `test/`, and gives one exit code and one coverage run. Rewrite `assets/scripts/unit-test.sh` (one `coverage run -m pytest … -m "not todo" --cucumberjson=… --junitxml=…`; counts from the JUnit XML so plain tests are counted too; scenario results from the Cucumber JSON — check what `line` it reports for a Scenario Outline row), the step-definition Implementation file, `pyproject.toml.extend`, the requirements, and the tool-choice ADR. Build a minimal package to prove it. |
+| 9 | Python: switch `behave` → `pytest-bdd` | Owner's decision (2026-10-07), not implemented: `behave` + `behave-cucumber-formatter` is in the skill as an interim. `pytest-bdd` writes classic Cucumber JSON itself (`--cucumberjson`), runs inside the `pytest` run the script already makes for `test/`, and gives one exit code and one coverage run. Rewrite `assets/tools/testing/kinds/unit.sh` (one `coverage run -m pytest … -m "not todo" --cucumberjson=… --junitxml=…`; counts from the JUnit XML so plain tests are counted too; scenario results from the Cucumber JSON — check what `line` it reports for a Scenario Outline row), the step-definition Implementation file, `pyproject.toml.extend`, the requirements, and the tool-choice ADR. Build a minimal package to prove it. |
 
 ## Steps
 
@@ -43,6 +42,7 @@ Read first: `INVARIANTS.md` §5 (the contract), then `skills/testing/core/soluti
 ## Rules while fixing
 
 - Code has one source: a real file under the skill's `assets/` (copied verbatim) or `templates/` (placeholders filled). Change it there **and** in every example copy in the same commit — `check.sh` §6 and §10 fail otherwise.
-- Shared by every stack, in `skills/testing/core/solution-conformance-testing.skill/assets/`: `tools/testing/`, `tools/livingdoc/`, `scripts/normalize-scenarios.sh`, `scripts/test-report.sh`, `scripts/messages-results.jq`.
+- Shared by every stack, in `skills/testing/core/solution-conformance-testing.skill/assets/`: `tools/testing/` (the Makefile side, the runner, the report builder, `kind.sh`) and `tools/livingdoc/`. Stack-specific: only `tools/testing/kinds/{kind}.sh` in the stack skill's `assets/` — and for Go the three normalizers those scripts call.
+- A project's `Makefile` carries `include tools/testing/testing.mk` and no testing recipe (`check.sh` §11).
 - Do not add a caller-facing variable or target; if the contract itself is wrong, record it in `DECISIONS.md` with ⚠️ and stop for the owner.
 - One commit per stack; update `STATUS.md` with what ran and its result. Report failures with their output — do not mark an example verified that was not run.

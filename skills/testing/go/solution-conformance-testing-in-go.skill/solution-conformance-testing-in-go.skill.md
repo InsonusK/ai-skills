@@ -18,7 +18,8 @@ creates:
   - "tools/normalize_unittest/main.go"
   - "tools/normalize_scenarios/main.go"
   - "tools/normalize_mutation/main.go"
-  - "tools/test_report/main.go"
+  - "tools/testing/kinds/unit.sh"
+  - "tools/testing/kinds/mutation.sh"
   - "README.md"
 extends:
   - "Makefile"
@@ -65,7 +66,6 @@ FILES:
 - [[./Implementation/tools/normalize_unittest/main.go.create.md|tools/normalize_unittest/main.go]] - create - collapses `go test -json` output to leaf-level results, writes `$TEST_KIND_DIR/result/unit-test.json`
 - [[./Implementation/tools/normalize_scenarios/main.go.create.md|tools/normalize_scenarios/main.go]] - create - parses every `.feature` file, joins `go test -json` results, writes `$TEST_KIND_DIR/result/scenarios.json`
 - [[./Implementation/tools/normalize_mutation/main.go.create.md|tools/normalize_mutation/main.go]] - create - normalizes `gremlins`' report, writes `$TEST_KIND_DIR/result/mutation-test.json`
-- [[./Implementation/tools/test_report/main.go.create.md|tools/test_report/main.go]] - create - assembles `$TEST_REPORT_DIR/` (badges, report copies, `scenarios/`) from `$TEST_KIND_DIR/result/*.json`
 
 # Workflow
 
@@ -74,7 +74,7 @@ FILES:
 2. Step definitions in that package's `test/` folder bind the scenario to the package's real exported API.
 3. `make test-kind-unit` runs `go test -json -coverpkg=$(COVERPKG) -coverprofile=... ./...`, piping JSON events through `tools/normalize_unittest` into `$TEST_KIND_DIR/result/unit-test.json`, then runs `tools/normalize_scenarios` to write `$TEST_KIND_DIR/result/scenarios.json` — also when a test failed (plus `$TEST_KIND_DIR/result/coverage-test.json` in a `report` run).
 4. `make test-kind-mutation` runs `gremlins unleash` (across the whole module in a `report` run; in a `check` run scoped to files changed since `DELTA_BASE`, and skipped without one), normalizing its report into `$TEST_KIND_DIR/result/mutation-test.json` via `tools/normalize_mutation`.
-5. `make test-report` runs `tools/test_report`, building `$TEST_REPORT_DIR/` from every kind's `result/*.json`. `make test-and-report` runs every kind, then the report.
+5. `make test-report` runs the shared `tools/testing/test-report.sh`, building `$TEST_REPORT_DIR/` from every kind's `result/*.json`. `make test-and-report` runs every kind, then the report.
 
 ## Surviving mutant found (report path)
 1. `make test-kind-mutation` reports a mutant `gremlins` could not kill, as part of a report-only CI run.
@@ -87,7 +87,6 @@ FILES:
 - [[./Implementation/tools/normalize_unittest/main.go.create.md#MUST|tools/normalize_unittest/main.go]]
 - [[./Implementation/tools/normalize_scenarios/main.go.create.md#MUST|tools/normalize_scenarios/main.go]]
 - [[./Implementation/tools/normalize_mutation/main.go.create.md#MUST|tools/normalize_mutation/main.go]]
-- [[./Implementation/tools/test_report/main.go.create.md#MUST|tools/test_report/main.go]]
 
 # Check list
 - [ ] `make test-kinds` lists `unit` and `mutation`; `make test-kind-unit`, `make test-kind-mutation`, `make test-report`, `make test-readme-check`, and `make test-and-report` all exist and match [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|the parent solution's report contract]].

@@ -14,12 +14,12 @@ tags:
   - cucumber
   - concern/testing/mutation
 creates:
-  - Makefile
-  - scripts/unit-test.sh
-  - scripts/normalize-scenarios.sh
-  - scripts/messages-results.jq
-  - scripts/mutation-test.sh
-  - scripts/test-report.sh
+
+  - tools/testing/kinds/unit.sh
+  - tools/testing/normalize-scenarios.sh
+  - tools/testing/messages-results.jq
+  - tools/testing/kinds/mutation.sh
+  - tools/testing/test-report.sh
   - "{TestProject}/reqnroll.json"
   - stryker-config.json
   - report-template/index.html

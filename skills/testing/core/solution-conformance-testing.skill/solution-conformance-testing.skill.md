@@ -22,6 +22,10 @@ creates:
   - tools/livingdoc/render.mjs
   - tools/testing/testing.mk
   - tools/testing/testing.sh
+  - tools/testing/kind.sh
+  - tools/testing/test-report.sh
+  - tools/testing/normalize-scenarios.sh
+  - tools/testing/messages-results.jq
 extends:
 depends_on:
 built_on_plateau:
@@ -49,6 +53,7 @@ adr:
 - Code coverage is always collected; it is reported in a `report` run.
 - The mutation-testing tool is chosen per stack, not per project: Stryker for C#/.NET and for Angular/TypeScript, Mutmut for Python — see [[./adr/mutation-tool-per-stack.md|ADR]].
 - Tests run as independent kinds (`make test-kind-{kind}`) and `make test-report` builds one report; a caller states what the run is for, never how to test.
+- One `Makefile`, one report builder, and one script per test kind: only `tools/testing/kinds/{kind}.sh` differs between stacks — it runs the stack's tool and writes normalized JSON; everything before and after it is shared.
 
 # Adr
 - [[./adr/mutation-tool-per-stack.md|Mutation-testing tool per stack]]
@@ -61,7 +66,7 @@ adr:
   - Selected variant: `test-kind-{kind}` targets discovered through `test-kinds`, `TEST_RUN_PURPOSE` / `DELTA_BASE` as facts about the run, caller-chosen work and report directories, badges checked against the README
 
 # Caller contract
-Whoever runs the tests — a developer, an agent, a CI workflow — uses only the targets and variables in [[./Implementation/Repository.create.md#targets-a-caller-uses|Repository]], shipped identically to every stack by [[./Implementation/tools/testing/testing.mk.create.md|tools/testing/testing.mk]]: `make test-kinds` to learn the kinds, `make test-kind-{kind}` to run one, `make test-report` to build the report, `make test-readme-check` for the README badges, and `TEST_RUN_PURPOSE`, `DELTA_BASE`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`. A caller never names a test tool, a coverage switch, or a report file other than `index.html`, `reports/{name}/`, and `badges/{name}.json`. Decision in [[./adr/caller-contract.md|adr/caller-contract]].
+Whoever runs the tests — a developer, an agent, a CI workflow — uses only the targets and variables in [[./Implementation/Repository.create.md#targets-a-caller-uses|Repository]], shipped identically to every stack as `tools/testing/`: `make test-kinds` to learn the kinds, `make test-kind-{kind}` to run one, `make test-report` to build the report, `make test-readme-check` for the README badges, and `TEST_RUN_PURPOSE`, `DELTA_BASE`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`. A caller never names a test tool, a coverage switch, or a report file other than `index.html`, `reports/{name}/`, and `badges/{name}.json`. Decision in [[./adr/caller-contract.md|adr/caller-contract]].
 
 # Report contract
 Every kind writes two kinds of output below its own `$TEST_KIND_DIR`, per [[./Implementation/Repository.create.md#kind-output|Kind output]], so the report builder has a stack-independent source instead of each tool's native format:
@@ -114,9 +119,7 @@ None at this level — stack-specific packages (the Cucumber runner, the coverag
 
 # Template Skill Mutations
 REPOSITORY:
-- [[./Implementation/Repository.create.md|Repository]] - create - `Makefile` declaring the test kinds, `README.md` badges, `report-template/index.html`
-- [[./Implementation/tools/testing/testing.mk.create.md|tools/testing/testing.mk]] - create - caller-facing targets and variables, identical in every stack
-- [[./Implementation/tools/testing/testing.sh.create.md|tools/testing/testing.sh]] - create - README and report checks
+- [[./Implementation/Repository.create.md|Repository]] - create - the `Makefile` include line, `tools/testing/` (the Makefile side, the runner, the report builder, the kind-script library), `README.md` badges, `report-template/index.html`
 - [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] - create - pinned living-doc renderers, isolated npm install
 - [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]] - create - renders `report/tests/cucumber/` by protocol
 
@@ -141,7 +144,7 @@ Collect coverage as part of every `test-kind-unit` run; report it in a `report` 
 - Fix: wire coverage collection into `test-kind-unit` unconditionally; only writing `result/coverage-test.json` and `report/coverage/` depends on the purpose.
 
 ### Read only the normalized result files
-Have `test-report-build` read only the kinds' normalized `result/*.json` files defined in [# Report contract](#report-contract) — never parse a tool's native report format directly.
+Have `tools/testing/test-report.sh` read only the kinds' normalized `result/*.json` files defined in [# Report contract](#report-contract) — never parse a tool's native report format directly.
 - Risk: switching the underlying tool later breaks every consumer that learned to parse its specific native format.
 - Fix: read `result/*.json` only; treat `report/{name}/` as opaque, human-facing output.
 
@@ -163,7 +166,7 @@ Have every kind say what it does because of `TEST_RUN_PURPOSE` / `DELTA_BASE` th
 - Fix: one `mode` line per run, or a `skipped` line; never a silent branch.
 
 ### Keep a caller ignorant of the kinds
-Never require a caller to name a kind, a tool, or a file beyond [# Caller contract](#caller-contract); a new kind is added by declaring it in `TEST_KINDS` / `TEST_BADGES_{kind}` and adding its README badge.
+Never require a caller to name a kind, a tool, or a file beyond [# Caller contract](#caller-contract); a new kind is added by writing `tools/testing/kinds/{kind}.sh` with its `# badges:` line and adding its README badge.
 - Violation: a workflow that runs `make test-kind-mutation` by name, or reads `result/mutation-test.json`.
 - Risk: every added kind needs a change in every caller.
 - Fix: callers iterate `make test-kinds` and publish `$TEST_REPORT_DIR` as-is.
@@ -175,9 +178,9 @@ Apply the living-doc MUSTs in [[./Implementation/Repository.create.md#MUST|Repos
 - Fix: write the standard protocol to `report/tests/cucumber/` and call the shared renderer.
 
 ### Keep report-template/index.html in place
-Keep `report-template/index.html` at that path, copied verbatim by `test-report-build` — never generated, never placed under `.github/`.
+Keep `report-template/index.html` at that path, copied verbatim by `tools/testing/test-report.sh` — never generated, never placed under `.github/`.
 - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern.
-- Fix: keep the file at `report-template/index.html` and have `test-report-build` copy it as-is.
+- Fix: keep the file at `report-template/index.html` and have `tools/testing/test-report.sh` copy it as-is.
 
 # Check list
 - [ ] Every scenario follows [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]]'s check list.

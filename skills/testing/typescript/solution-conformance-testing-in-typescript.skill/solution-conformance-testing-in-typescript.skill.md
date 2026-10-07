@@ -18,9 +18,9 @@ tags:
 creates:
   - "{Package}/features/{rule}.feature"
   - "{Package}/features/step-definitions/{rule}.steps.ts"
-  - Makefile
-  - scripts/normalize-scenarios.sh
-  - scripts/messages-results.jq
+
+  - tools/testing/normalize-scenarios.sh
+  - tools/testing/messages-results.jq
 extends:
   - "{Package}/package.json"
   - README.md

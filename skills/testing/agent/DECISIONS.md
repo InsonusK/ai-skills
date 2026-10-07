@@ -103,3 +103,17 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The descriptions of the stack scripts stay as `templates/*.md` beside the real files — moving them would rewrite links for no gain in delivery.
 - Go's `Makefile` block is an asset appended to the project's `Makefile` (`assets/Makefile.testing`), although `skill-code-delivery` would call a merged fragment an instruction: it is identical in every project, and the examples are checked to contain it verbatim.
 - dotnet placeholder `{Solution}` became `{solution}` (kebab-case, as the standard requires).
+
+## Owner-decided (2026-10-07, structure of the contract)
+
+- One Makefile, one report script for every stack, and per stack only the scripts that run the tests and produce JSON. Go must not differ from the other stacks.
+
+## Agent decisions — W7
+
+- A kind is a file, not a declaration: `tools/testing/kinds/{kind}.sh`. `make test-kinds` lists the folder; the badges come from the script's `# badges:` line. This removed `TEST_KINDS` / `TEST_BADGES_{kind}` and every recipe from project Makefiles.
+- Build and install steps moved into the kind scripts (dotnet restore/build, `pip install`, `npm install`): a kind must run from a clean checkout without a Makefile prerequisite.
+- The dotnet unit kind finds the solution file itself, so the script is an asset with no placeholder.
+- Go keeps its three normalizers in Go (`go test -json` leaf counting, the gherkin inventory, the gremlins report) — they are how that stack "produces JSON"; its Go report builder is gone in favour of the shared `test-report.sh`, which makes `jq` a requirement for Go projects too.
+- The Go mutation kind decides to skip before it touches the toolchain, so a `check` run costs nothing.
+- Kinds run in alphabetical order under `make test-and-report` — they are independent, so the order carries no meaning.
+- Per-file description documents (`templates/*.md`, the `testing.mk` / `testing.sh` / `test_report` Implementation files) were deleted: with real files, `Repository.create` / `Repository.extend` reference them in one line each.

@@ -1,5 +1,5 @@
 ---
-description: Makefile wiring of the testing contract — test kinds, the report builder, and the shared tools/testing files
+description: The testing contract in a repository — one include line in the Makefile, the shared tools/testing files, one script per test kind
 element_kind: repository
 change_kind: create
 tags:
@@ -11,38 +11,44 @@ tags:
 
 ## Project Structure
 ```
-Makefile                ← declares the kinds, includes tools/testing/testing.mk; created when missing, otherwise extended
+Makefile                ← one line: include tools/testing/testing.mk (created when missing)
 README.md               ← one badge per declared badge
 report-template/
   index.html
 tools/
   testing/
-    testing.mk          ← see tools/testing/testing.mk.create.md
-    testing.sh          ← see tools/testing/testing.sh.create.md
+    testing.mk          ← the Makefile side: caller targets and variables
+    testing.sh          ← runs a kind, builds and checks the report, checks the README
+    kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_livingdoc
+    test-report.sh      ← result/*.json + report/* of every kind → the report directory
+    normalize-scenarios.sh, messages-results.jq   ← helpers a kind script may call
+    kinds/
+      unit.sh           ← one script per test kind — the only stack-specific part
+      mutation.sh
   livingdoc/
-    package.json        ← pinned renderers, see tools/livingdoc/package.json.create.md
-    package-lock.json
-    render.mjs          ← see tools/livingdoc/render.mjs.create.md
+    package.json, package-lock.json, render.mjs
 ```
 
-## Makefile
-```makefile
-TEST_KINDS           := unit mutation
-TEST_BADGES_unit     := tests coverage
-TEST_BADGES_mutation := mutation
-include tools/testing/testing.mk
+## Files
+- Copy verbatim, as a folder, to `tools/testing/`: [`assets/tools/testing/`](../assets/tools/testing/) — `testing.mk`, `testing.sh`, `kind.sh`, `test-report.sh`, `normalize-scenarios.sh`, `messages-results.jq`. Identical in every stack.
+- Copy verbatim, as a folder, to `tools/livingdoc/`: [`assets/tools/livingdoc/`](../assets/tools/livingdoc/).
+- Add to the `Makefile`: `include tools/testing/testing.mk`.
+- `tools/testing/kinds/{kind}.sh` comes from the stack's `solution-conformance-testing-in-{stack}` skill.
 
-test-kind-unit:
-	@$(test-kind-begin)
-	…the stack's recipe, writing only below $$TEST_KIND_DIR
+## A kind script
+```bash
+#!/usr/bin/env bash
+# badges: tests coverage            ← the badges this kind produces in a report run
+set -euo pipefail
+source tools/testing/kind.sh        # RESULT_DIR, REPORT_DIR, kind_mode, kind_skip, kind_livingdoc
 
-test-kind-mutation:
-	@$(test-kind-begin)
-	…
+if [ "$TEST_RUN_PURPOSE" = report ]; then kind_mode "every test with coverage reported"
+else kind_mode "every test - coverage not reported"; fi
 
-test-report-build:
-	…the stack's report builder
+…run the stack's tool; write $RESULT_DIR/*.json and $REPORT_DIR/{name}/…
+exit "$status"                      # the tool's own exit code
 ```
+A kind exists because its script exists: `make test-kinds` lists `tools/testing/kinds/*.sh`, and `make test-kind-{kind}` runs one of them in an emptied `$TEST_KIND_DIR`.
 
 ## Targets a caller uses
 | Target | Purpose |
@@ -73,8 +79,8 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 
 | File | Content | Written by |
 | --- | --- | --- |
-| `mode` | one line: what the kind did because of the run's purpose | every kind that ran — `$(call test-kind-mode,…)` |
-| `skipped` | one line: why the kind does not apply to this run | a kind that skipped itself — `$(call test-kind-skip,…)` |
+| `mode` | one line: what the kind did because of the run's purpose | every kind that ran — `kind_mode "…"` |
+| `skipped` | one line: why the kind does not apply to this run | a kind that skipped itself — `kind_skip "…"` |
 | `result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit` |
 | `result/coverage-test.json` | `{ "linePct": <number> }` | `unit` (`report` only) |
 | `result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
@@ -88,14 +94,14 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 `score` in `mutation-test.json` is `killed / (killed+survived+timedout+noCoverage) * 100`, rounded to 1 decimal, `"0.0"` when nothing was mutated.
 
 ## Report output
-`test-report` empties `$TEST_REPORT_DIR`, runs the stack's `test-report-build`, then `tools/testing/testing.sh report-finish`:
+`test-report` empties `$TEST_REPORT_DIR`, runs `tools/testing/test-report.sh` — the same script in every stack — then records and checks the result:
 
 | File | Content | Source |
 | --- | --- | --- |
 | `index.html` | entry point; copied verbatim, never generated | `report-template/index.html` |
 | `reports/{name}/` | one folder per report: a copy of every `kinds/*/report/{name}/`, plus `reports/scenarios/index.html` | the kinds' `report/` folders; `result/scenarios.json` |
 | `badges/{name}.json` | shields.io endpoint-badge schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` — `tests`, `coverage`, `mutation` | computed from the kinds' `result/*.json` |
-| `run.json` | `{ "purpose", "kinds": [ { "kind", "state": "ran"\|"skipped"\|"missing", "note" } ] }` | `report-finish`, from each kind's `mode` / `skipped` |
+| `run.json` | `{ "purpose", "kinds": [ { "kind", "state": "ran"\|"skipped"\|"missing", "note" } ] }` | `testing.sh`, from each kind's `mode` / `skipped` |
 
 A badge and its report share a name; a kind may produce several; a report may have no badge (`scenarios`). Names are unique across kinds. `label` is `tests`, `coverage`, or `mutation score`; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
 
@@ -111,17 +117,20 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 # Rule
 
 ## MUST
-- Declare every kind in `TEST_KINDS` and its badges in `TEST_BADGES_{kind}`, include `tools/testing/testing.mk`, and define `test-kind-{kind}` and `test-report-build` — nothing else of the contract in the project's `Makefile`.
-  - Risk: a caller-facing target or variable defined per project differs between projects, and every caller needs stack knowledge again.
-  - Fix: keep the caller-facing half in the shared file; the project's `Makefile` holds only the declaration and the stack's recipes.
-- Add the contract to an existing `Makefile`, leaving its other targets as they are; create the `Makefile` when the repository has none.
-  - Risk: replacing a `Makefile` another skill or the project wrote removes its targets.
-  - Fix: append the declaration, the `include`, and the recipes.
-- Start every `test-kind-{kind}` recipe with `$(test-kind-begin)` and write nothing outside `$TEST_KIND_DIR`.
+- Put nothing of the contract into the project's `Makefile` but `include tools/testing/testing.mk`; a test kind is one script `tools/testing/kinds/{kind}.sh` with a `# badges:` line.
+  - Risk: a target or recipe written per project differs between projects, and the report builder or a caller needs stack knowledge again.
+  - Fix: keep `tools/testing/` verbatim; write only the kind scripts, and only what a stack's tool needs.
+- Produce the report with the shared `tools/testing/test-report.sh` in every stack — never a stack's own report builder.
+  - Risk: two builders drift, and the same results give different reports per stack.
+  - Fix: a kind writes the normalized `result/*.json`; everything after that is shared.
+- Add the include line to an existing `Makefile` after its first target, leaving everything else as it is; create the `Makefile` when the repository has none.
+  - Risk: replacing a `Makefile` removes the project's targets; an include placed first makes `test-kinds` the default goal.
+  - Fix: append the line at the end.
+- Source `tools/testing/kind.sh` first in every kind script and write nothing outside `$TEST_KIND_DIR`.
   - Risk: a kind reading or overwriting another kind's files cannot run in parallel with it, and a CI job cannot hand its result over as one directory.
   - Fix: take every output path from `$TEST_KIND_DIR`.
-- Have every kind state what it does because of `TEST_RUN_PURPOSE` / `DELTA_BASE` through `$(call test-kind-mode,…)`, or skip itself through `$(call test-kind-skip,…)` — never branch silently.
-  - Violation: a `mutation` recipe that quietly does nothing in a `check` run.
+- Have every kind state what it does because of `TEST_RUN_PURPOSE` / `DELTA_BASE` through `kind_mode`, or skip itself through `kind_skip` — never branch silently.
+  - Violation: a `mutation` script that quietly does nothing in a `check` run.
   - Risk: a kind that wrongly decided not to run looks the same as one that does not apply, and a check disappears unnoticed.
   - Fix: one `mode` line per run, or a `skipped` line with the reason; both reach the log and `run.json`.
 - Keep `test-kind-unit` running both Cucumber scenarios and plain technical tests in a single invocation — never split them into two kinds.
@@ -137,15 +146,9 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - Write `result/scenarios.json` on every `test-kind-unit` run, listing every `.feature` entry, `@todo` ones included.
   - Risk: a report built only from executed scenarios hides planned-but-missing cases.
   - Fix: build the inventory from the `.feature` files and join the runner's result onto it.
-- Have `test-report-build` read only the kinds' `result/*.json` and copy their `report/{name}/` folders — never parse a tool's native report — and write `$TEST_REPORT_DIR` per [## Report output](#report-output).
-  - Risk: switching a tool breaks the report builder; a non-uniform report forces the publisher to know the stack.
-  - Fix: glob `$TEST_WORK_DIR/kinds/*/result/` and `…/report/*/`; compute badges from the normalized results.
-- Have `test-kind-unit` make the Cucumber runner write its standard report — the protocol its `cucumber-testing-in-{stack}` skill names — into `$TEST_KIND_DIR/report/tests/cucumber/`, then render it with `npm ci --prefix tools/livingdoc && node tools/livingdoc/render.mjs $TEST_KIND_DIR/report/tests/cucumber $TEST_KIND_DIR/report/tests/livingdoc`.
+- Have `test-kind-unit` make the Cucumber runner write its standard report — the protocol its `cucumber-testing-in-{stack}` skill names — into `$TEST_KIND_DIR/report/tests/cucumber/`, then call `kind_livingdoc`.
   - Risk: without a standard report there is no stack-independent input for the living-doc view, and each stack builds its own HTML.
-  - Fix: configure the runner's classic-JSON or Messages formatter to write there, and call the shared renderer.
-- Skip the living-doc step with a message when `npm` is unavailable, and never let it change the kind's exit code.
-  - Risk: a machine without Node fails the test target, or a rendering error masks a red test run.
-  - Fix: guard with `command -v npm`, and append `|| echo "livingdoc: render failed"` instead of propagating.
+  - Fix: configure the runner's classic-JSON or Messages formatter to write there; `kind_livingdoc` renders it, is skipped without `npm`, and never changes the exit code.
 - Add one README badge per declared badge, per [## README badges](#readme-badges), in the same change that declares it.
   - Risk: `make test-readme-check` fails the pull request with "you forgot to add a badge".
   - Fix: add the badge line; remove it when the kind is removed.
@@ -155,7 +158,7 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 
 # Check list
 - [ ] `make test-kinds` lists every kind with its badges; `make test-kind-{kind}` exists for each.
-- [ ] `tools/testing/testing.mk` and `tools/testing/testing.sh` are verbatim copies.
+- [ ] `tools/testing/` (except `kinds/`) and `tools/livingdoc/` are byte-for-byte copies of the assets; the `Makefile` has the include line and no testing recipe.
 - [ ] An existing `Makefile` kept its other targets.
 - [ ] `make test-kind-unit` runs Cucumber scenarios and plain tests together and writes only below `$TEST_KIND_DIR`.
 - [ ] Every kind leaves `mode` or `skipped`; `run.json` shows it.

@@ -58,7 +58,7 @@ tags:
   - Fix: define `test`, `coverage`, and `mutation` scripts in `package.json` that wrap Vitest and `cucumber-js`/Stryker respectively.
 - Configure `cucumber-js` to load `.ts` step definitions through `tsx` (`--require-module tsx/cjs`) — never `ts-node`.
   - Risk: without a TypeScript loader configured, `cucumber-js` cannot import `.steps.ts` files and every scenario fails to run.
-  - Fix: pass `--require-module tsx/cjs` (in `scripts/unit-test.sh` or `cucumber.mjs`); `ts-node` does not load under TypeScript 6+ and is no longer maintained.
+  - Fix: pass `--require-module tsx/cjs` (in `tools/testing/kinds/unit.sh` or `cucumber.mjs`); `ts-node` does not load under TypeScript 6+ and is no longer maintained.
 - Never import a validator inside a step definition from anywhere other than `src/index.ts`.
   - Violation: importing `src/{rule}-validator.ts` directly from a step definition instead of `src/index.ts`.
   - Risk: the step definition depends on internal file layout that is free to change, defeating the purpose of a stable public API.

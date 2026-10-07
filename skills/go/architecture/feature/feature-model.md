@@ -33,9 +33,8 @@ tools/
   normalize_unittest/               — normalizes `go test -json` output into the unit kind's result/unit-test.json
   normalize_scenarios/              — .feature files + go test -json into the unit kind's result/scenarios.json
   normalize_mutation/               — normalizes the mutation tool's report into the mutation kind's result/mutation-test.json
-  test_report/                     — builds the report directory from the kinds' result/*.json files
 report-template/
-  index.html                       — static landing page, copied verbatim by test_report
+  index.html                       — static landing page, copied verbatim by tools/testing/test-report.sh
 ```
 No `internal/domain/interfaces/` exists at this baseline — the domain layer has no outbound port to declare until a feature that needs one (`ExternalIntegration`, `CachedDb`, `PersistentDb`) is selected; whichever is selected first creates the folder, and any of the other two extends it. No `internal/infrastructure/`, `internal/api/grpc/`, `proto/`, `buf/`, or `gen/` exists at baseline either, for the same reason.
 
