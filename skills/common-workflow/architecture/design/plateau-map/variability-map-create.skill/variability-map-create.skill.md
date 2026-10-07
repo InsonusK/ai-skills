@@ -2,7 +2,7 @@
 name: variability-map-create
 description: Define how to build and maintain a Variability Map — one table binding every Variation Point of a plateau/solution catalog to the solutions that realize it (Variants, Constraint, Realized by, Realization depends on, Migration)
 whenToUse: when a plateau/solution catalog needs its variability made explicit as a table instead of tribal knowledge — when grouping a Feature Model's non-common features into Variation Points, or when a new optional/alternative solution is added to the catalog, or when a Variation Point shared by every backend web-service stack is admitted into the common map
-updated: 20260929
+updated: 20261007
 tags:
   - skill/architecture/variability/design
   - stack
@@ -13,6 +13,7 @@ adr:
   - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/no-plateau-view-in-variability-map|The map binds VPs to solutions; the plateau↔VP view lives in plateau-map-create]]"
   - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/common-vps-inherited-by-id|Common VPs inherited by ID, not copied]]"
   - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/inbox-status-key-not-task-id|Inbox status by a separate status_key, not by the task id]]"
+  - "[[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/prefer-module-realization|Prefer a module realization for a Variation Point]]"
 ---
 
 # Goal
@@ -27,6 +28,7 @@ adr:
 - **Shared concept, stack realization** - A VP every web-service stack shares is defined once, in the common map; each stack map inherits it by ID and contributes only its State, its narrowing, and its `Realized by` — a stack never re-cuts a shared question.
 - **The table is the artifact** - A plateau never re-describes its own variability separately from the map. [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/glossary/realized-by|Realized by]] always points at solutions that exist — this skill never re-authors solution content.
 - **Runs after the Feature Model** - This skill starts from a catalog Feature Model built by [[skills/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]], whose non-common features feed this skill its candidate pool (see [Precondition: a finished Feature Model](#precondition-a-finished-feature-model)).
+- **A VP is a module where it can be** - A Variant that attaches behind a port at the composition root adds no plateau and leaves the baseline's files alone; a VP is cut for that shape first (see [Prefer a module realization](#prefer-a-module-realization)).
 - **Realized by is a sub-step, not a later stage** - Filling `Realized by` — authoring each VP's realizing solution(s) and classifying where two of them touch the same code element — is done by [[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]], run to complete this map. Assembling plateaus from the finished map is a separate stage this skill does not describe.
 
 # Workflow
@@ -171,6 +173,12 @@ Group solutions into one VP with several Variants when they are mutually-exclusi
 ### Reuse a near-duplicate VP first
 Prefer reusing an existing VP's Variant set — a common VP before a stack VP — over introducing a near-duplicate VP when a new solution answers almost the same question an existing VP already covers.
 
+### Prefer a module realization
+Cut a VP so each Variant attaches as a module — its own project/package behind a port the baseline declares, wired at the composition root — and accept a realization that changes files the baseline or another VP's solution owns only when no port can carry the VP, naming that reason in **Realization depends on**.
+- Violation: an integration VP (a store, a broker, an outbound call) whose solution adds its client code inside the service's application project instead of its own infrastructure project/package.
+- Risk: every structural VP forks the plateau tree and drags shared concerns (how the service is tested) into each plateau, where they are restated and drift.
+- Fix: put each external integration in its own infrastructure project/package behind a port, so adding the Variant is a composition-root registration ([[skills/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md#fdn-never-forks-the-plateau-tree|FDN never forks the plateau tree]]) and a stack-wide rule per kind of module covers the rest. Decision in [[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/prefer-module-realization|adr/prefer-module-realization]].
+
 ## MAY
 
 ### Migration defaults to No
@@ -179,6 +187,7 @@ Leave **Migration** at `No` for a VP that has never yet needed to change after a
 # Check list
 - [ ] `{catalog}/feature/feature-model.md` exists and is built via `feature-map-create` before this skill runs — or its absence was confirmed with the catalog's owner as deliberate.
 - [ ] Every stack VP row passed the "would two teams legitimately answer differently" test before being added.
+- [ ] Every VP is cut for a module realization, or its **Realization depends on** names why no port can carry it.
 - [ ] The candidate pool included the Feature Model's non-common features.
 - [ ] A backend web-service catalog is listed in the common map's `## Bound stack maps` and carries every 📐 common VP, by `VP-C###` ID, in `## Common Variation Points`.
 - [ ] Every common VP has a status (💡 / 📐 / ⛔) and every carried row a detail status (⏳ / ✅); only 📐 and ⛔ VPs have an ID.
