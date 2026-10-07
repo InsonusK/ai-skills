@@ -43,7 +43,7 @@ jobs:
             ext=""
             [ "$goos" = "windows" ] && ext=".exe"
             out="dist/${APP_NAME}_${VERSION}_${goos}_${goarch}${ext}"
-            GOOS="$goos" GOARCH="$goarch" go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" -o "$out" .
+            GOOS="$goos" GOARCH="$goarch" go build -trimpath -ldflags "-s -w -X {module-path}/internal/version.Version=${VERSION}" -o "$out" .
           done
           ( cd dist && sha256sum * > "${APP_NAME}_${VERSION}_checksums.txt" )
 

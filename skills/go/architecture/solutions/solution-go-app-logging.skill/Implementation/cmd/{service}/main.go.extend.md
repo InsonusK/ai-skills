@@ -13,7 +13,10 @@ tags:
 ```go
 import (
 	// ...
+	"log/slog"
+
 	"{module-path}/internal/logging"
+	"{module-path}/internal/version"
 )
 
 func run() error {
@@ -23,6 +26,7 @@ func run() error {
 	}
 
 	logging.Init(cfg.LogLevel)
+	slog.Info("starting", "version", version.Version)
 
 	// ... every later constructor call follows, and may now log.
 }
@@ -34,6 +38,10 @@ func run() error {
 - `logging.Init(cfg.LogLevel)` must be the first call in `run()` after `config.Load()` returns successfully — before any adapter or client is constructed.
   - Risk: a constructor that runs before `Init` logs through `slog`'s zero-value default handler (unstructured, no level filtering), so its earliest — often most diagnostically important — logs look different from every later one.
   - Fix: call `logging.Init` immediately after the config-load error check, before any other line in `run()`.
+- Log the running version once, right after `logging.Init`: `slog.Info("starting", "version", version.Version)`.
+  - Risk: without it, logs from a deployment cannot be matched to the build that produced them.
+  - Fix: add the line directly after `logging.Init`.
 
 # Check list
 - [ ] `logging.Init` runs before the first adapter constructor in `run()`.
+- [ ] `run()` logs `starting` with the `version` attribute right after `logging.Init`.

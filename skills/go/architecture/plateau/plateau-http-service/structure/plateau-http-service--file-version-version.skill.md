@@ -22,6 +22,7 @@ __Applied solutions:__
 # Core Principles
 - Apply ONE plateau template per file.
 - The version is a build-time constant, never computed at runtime.
+- The value comes only from the root `VERSION` file via `-ldflags -X`; never write a version number in Go source.
 
 # Implementation
 ```go
@@ -40,6 +41,7 @@ __Applied solutions:__
 
 # Check list
 - [ ] `go build -ldflags "-X {module-path}/internal/version.Version=1.2.3" ...` overrides `Version`.
+- [ ] `Version` is `"dev"` in source; no Go file holds a version number.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]

@@ -14,6 +14,11 @@ tags:
 Makefile
 report-template/
   index.html
+tools/
+  livingdoc/
+    package.json        ← pinned renderers, see tools/livingdoc/package.json.create.md
+    package-lock.json
+    render.mjs          ← see tools/livingdoc/render.mjs.create.md
 ```
 
 ## Makefile targets
@@ -34,6 +39,8 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 | `tmp/result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "status", "note" } ] }` — see [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit-test` (every run, also when a test failed) |
 | `tmp/result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation-test` |
 | `tmp/report/tests/` | tool's native test report | `unit-test` |
+| `tmp/report/tests/cucumber/` | the runner's standard Cucumber report — `*.json` (classic Cucumber JSON) or `*.ndjson` (Cucumber Messages), one protocol per stack | `unit-test` |
+| `tmp/report/tests/livingdoc/` | living-doc HTML rendered from `tmp/report/tests/cucumber/` by `tools/livingdoc/render.mjs`; published as `public/tests/livingdoc/` | `unit-test` (skipped when `npm` is unavailable) |
 | `tmp/report/coverage/` | tool's native coverage report | `unit-test` (only with `WITH_CODE_COVERAGE=true`) |
 | `tmp/report/mutation/` | tool's native mutation report | `mutation-test` |
 
@@ -75,6 +82,12 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 - Have `test-report` assemble `public/` per [## Public site output](#public-site-output): per-kind report copies, `*-badge.json` files, and `index.html` copied verbatim from `report-template/index.html`.
   - Risk: without a uniform `public/` shape, every CI publishing step needs stack-specific knowledge of where reports and badges live.
   - Fix: build `public/` exactly as documented, so a publishing step only ever needs to upload `public/` as-is.
+- Have `unit-test` make the Cucumber runner write its standard report — the protocol its `cucmber-testing-in-{stack}` skill names — into `tmp/report/tests/cucumber/`, then render it with `npm ci --prefix tools/livingdoc && node tools/livingdoc/render.mjs tmp/report/tests/cucumber tmp/report/tests/livingdoc`.
+  - Risk: without a standard report there is no stack-independent input for the living-doc view, and each stack builds its own HTML.
+  - Fix: configure the runner's classic-JSON or Messages formatter to write there, and call the shared renderer.
+- Skip the living-doc step with a message when `npm` is unavailable, and never let it change `unit-test`'s exit code — a render failure is reported, the runner's own code is returned.
+  - Risk: a machine without Node fails the test target, or a rendering error masks a red test run.
+  - Fix: guard with `command -v npm`, and append `|| echo "livingdoc: render failed"` instead of propagating.
 - Keep the caller-facing interface to `WITH_CODE_COVERAGE`/`ONLY_DELTA`/`DELTA_BASE` only — never add another caller-facing flag.
   - Risk: every caller now needs stack-specific knowledge to invoke the targets correctly, defeating the point of a uniform contract.
   - Fix: keep anything stack-specific inside the `Makefile` itself, never in the caller-facing interface.
@@ -88,5 +101,6 @@ Each `*-test` target writes a normalized JSON result under `tmp/result/`, plus t
 - [ ] `tmp/report/tests/`, `tmp/report/coverage/`, and `tmp/report/mutation/` hold each tool's native report.
 - [ ] `tmp/result/scenarios.json` exists after every `unit-test` run (green or red) and includes `@todo` entries.
 - [ ] `public/scenarios/index.html` is rendered from `tmp/result/scenarios.json`, and `report-template/index.html` links `scenarios/`.
+- [ ] `tmp/report/tests/cucumber/` holds the runner's standard report after `unit-test`; `tmp/report/tests/livingdoc/index.html` exists when `npm` is available, and its absence never fails `unit-test`.
 - [ ] `mutation-test` exits with the underlying tool's own exit code.
 - [ ] `test-report` assembles `public/` per [## Public site output](#public-site-output), and `report-template/index.html` exists at the repository root (not under `.github/`).

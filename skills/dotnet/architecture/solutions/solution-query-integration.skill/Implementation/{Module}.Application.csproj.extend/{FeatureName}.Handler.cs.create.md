@@ -60,7 +60,7 @@ public class GetTasksHandler
     {
         // projection spec — DTO built inside the spec, AsNoTracking applied by repository
         var results = await _repository.ListAsync(
-            new TaskSummarySpec(query.AssigneeId), ct);
+            new TaskSummarySpec(query.AssigneeId, query.Page, query.PageSize), ct);
 
         return Result.Success<IReadOnlyList<TaskSummaryDto>>(results);
     }
@@ -126,6 +126,9 @@ public class GetTaskHandler
 - Never call `SaveChangesAsync` or inject `IUnitOfWork`
 - Never dispatch commands
 - Never use inline LINQ — all filtering goes through named specs
+- For a fetch query (`IFetchQuery`), pass `Page`/`PageSize` to the spec; the spec orders deterministically, then applies `Skip((Page - 1) * PageSize).Take(PageSize)`
+  - Risk: paging without a stable order returns duplicated or skipped rows across pages; paging in memory after `ListAsync` loads the whole table.
+  - Fix: `Query.OrderBy(...).Skip(...).Take(...)` inside the named spec.
 
 # Unittest TestCases
 - [ ] WHEN applied THEN Fetch and project data for a single module's read operation
@@ -138,6 +141,7 @@ public class GetTaskHandler
 - [ ] WHEN applied THEN All entity loading uses named specs — no inline LINQ
 - [ ] WHEN applied THEN Returns Result.NotFound() when entity is missing — never returns null or empty DTO
 - [ ] WHEN naming 'Query handler' THEN pattern matches convention
+- [ ] WHEN a fetch query asks for page 2 of size 10 THEN the handler returns items 11–20 in a stable order
 ## SHOULD
 - Avoid `IRepository<T>` injected into query handler — use `IReadRepository<T>`
 - Avoid inline LINQ in handler: `_repository.FirstOrDefaultAsync(x => x.Id == id)` — define `TaskByIdSpec` instead
