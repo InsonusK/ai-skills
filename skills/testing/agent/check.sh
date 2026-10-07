@@ -58,14 +58,13 @@ out=$(git grep -nIE 'skills/(common-workflow|angular|dotnet|go|python|typescript
       -- . ':!.validation' ":!$A" ':!*/agent/DECISIONS.md' ':!*/adr/*' | cut -c1-200)
 [ -n "$out" ] && { err "references to the old test locations/names:"; echo "$out"; }
 
-# 6. Shared contract files are verbatim copies of the core skill's Implementation blocks, in every example.
-block() { perl -0ne 'print $1 if /^`{3,}\w*\n(.*?)^`{3,}$/ms' "$1"; }
-core=skills/testing/core/solution-conformance-testing.skill/Implementation/tools
-for f in testing/testing.mk testing/testing.sh livingdoc/render.mjs; do
-  ref=$(block "$core/$f.create.md" | md5sum)
+# 6. Shared files in every example are verbatim copies of the core skill's assets.
+core=skills/testing/core/solution-conformance-testing.skill/assets
+for f in tools/testing/testing.mk tools/testing/testing.sh tools/livingdoc/render.mjs tools/livingdoc/package.json tools/livingdoc/package-lock.json \
+         scripts/normalize-scenarios.sh scripts/test-report.sh scripts/messages-results.jq; do
   while IFS= read -r copy; do
-    [ "$(md5sum < "$copy")" = "$ref" ] || err "$copy differs from $core/$f.create.md"
-  done < <(git ls-files -co --exclude-standard "skills/*/example/tools/$f" "skills/**/example/tools/$f")
+    cmp -s "$core/$f" "$copy" || err "$copy differs from $core/$f"
+  done < <(git ls-files -co --exclude-standard "skills/**/example/$f")
 done
 
 # 7. Every example on the contract: its Makefile parses, lists kinds, and its README shows every declared badge.
@@ -79,32 +78,28 @@ while IFS= read -r mk; do
   done
 done < <(git grep -l 'include tools/testing/testing.mk' -- 'skills/**/example/Makefile')
 
-# 8. Stack variants share their report scripts byte for byte.
-for f in normalize-scenarios.sh test-report.sh; do
-  n=$( { for s in dotnet python typescript; do block "skills/testing/$s/solution-conformance-testing-in-$s.skill/templates/$f.md" | md5sum; done; } | sort -u | wc -l)
-  [ "$n" = 1 ] || err "templates/$f.md differs between the dotnet, python and typescript variants"
-done
+# 8. No fenced script left in a templates/ description: code is a real file under assets/ or templates/.
+out=$(grep -lE '^```(bash|makefile|go|js|jq|json|html)$' skills/testing/*/*.skill/templates/*.md skills/testing/*/*.skill/Implementation/tools/*/*.md skills/testing/*/*.skill/Implementation/tools/*/*/*.md 2>/dev/null)
+[ -n "$out" ] && { err "code still inline instead of a real file:"; echo "$out"; }
 
 # 9. No caller-facing remnant of the previous contract.
 out=$(git grep -nE 'make unit-test|make mutation-test|ONLY_DELTA|WITH_CODE_COVERAGE \?=|-badge\.json|tmp/result/|public/(tests|coverage|mutation|scenarios)' \
       -- skills ':!*/adr/*' ':!*/agent/*' ':!*/recheck/*' | cut -c1-200)
 [ -n "$out" ] && { err "references to the previous testing contract:"; echo "$out"; }
 
-# 10. Example tooling equals the stack skill's Implementation: Go tools, dotnet scripts ({Solution} = Sample).
-go=skills/testing/go/solution-conformance-testing-in-go.skill/Implementation/tools
-for t in normalize_unittest normalize_scenarios normalize_mutation test_report; do
-  ref=$(block "$go/$t/main.go.create.md" | md5sum)
-  while IFS= read -r copy; do
-    [ "$(md5sum < "$copy")" = "$ref" ] || err "$copy differs from $go/$t/main.go.create.md"
-  done < <(git ls-files -co --exclude-standard "skills/go/**/example/tools/$t/main.go")
-done
-dn=skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/templates
-for s in unit-test.sh mutation-test.sh normalize-scenarios.sh test-report.sh; do
-  ref=$(block "$dn/$s.md" | sed 's/{Solution}\.slnx/Sample.slnx/' | md5sum)
-  while IFS= read -r copy; do
-    [ "$(md5sum < "$copy")" = "$ref" ] || err "$copy differs from $dn/$s.md"
-  done < <(git ls-files -co --exclude-standard "skills/dotnet/**/example/scripts/$s")
-done
+# 10. Example tooling equals the stack skill's assets and templates: Go tools, dotnet scripts ({solution} = Sample).
+go=skills/testing/go/solution-conformance-testing-in-go.skill/assets
+while IFS= read -r copy; do
+  cmp -s "$go/tools/$(basename "$(dirname "$copy")")/main.go" "$copy" || err "$copy differs from $go"
+done < <(git ls-files -co --exclude-standard 'skills/go/**/example/tools/normalize_*/main.go' 'skills/go/**/example/tools/test_report/main.go')
+while IFS= read -r mk; do
+  perl -0e 'open A,"<",$ARGV[0]; open B,"<",$ARGV[1]; local $/; exit(index(<B>, <A>) >= 0 ? 0 : 1)' "$go/Makefile.testing" "$mk" || err "$mk does not contain $go/Makefile.testing verbatim"
+done < <(git ls-files -co --exclude-standard 'skills/go/**/example/Makefile')
+dn=skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill
+while IFS= read -r ex; do
+  cmp -s "$dn/assets/scripts/mutation-test.sh" "$ex/scripts/mutation-test.sh" || err "$ex/scripts/mutation-test.sh differs from $dn"
+  sed 's/{solution}/Sample/' "$dn/templates/scripts/unit-test.sh" | cmp -s - "$ex/scripts/unit-test.sh" || err "$ex/scripts/unit-test.sh differs from $dn"
+done < <(git ls-files -co --exclude-standard 'skills/dotnet/**/example/Makefile' | xargs -n1 dirname)
 
 [ $fail -eq 0 ] && echo "skills/testing: all checks passed"
 exit $fail

@@ -88,3 +88,18 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - Example `README.md` files with badges were added: `test-readme-check` needs them; the URLs are placeholders under `example.github.io`.
 - ADRs written before today keep the old target names — they record decisions made under the old contract.
 - Angular catalogs do not use this `make` contract and were not touched.
+
+## Owner-decided (2026-10-07, after W3)
+
+- `make test-kind-unit` exits non-zero when a test failed, and CI must see it: the report workflow has no `continue-on-error`. A failed kind turns its job red and the report is still published.
+- Python: `pytest-bdd` instead of `behave` + plugin — `behave` has no advantage here that pays for the extra formatter.
+- Testing skills deliver code as real files (`skill-code-delivery`), not as markdown examples.
+
+## Agent decisions — W6 and the exit-code rule
+
+- New contract rule: a kind exits non-zero only for a failed check; never for a score in a `report` run. It is what lets the report workflow drop `continue-on-error` without going red over a surviving mutant.
+- The `pytest-bdd` switch is recorded as `TASK.md` item 9, not written here: Python has no runnable example and no interpreter in this container, and the details that matter (what the Cucumber JSON reports for outline rows, marker mapping for `@todo`) can only be settled by running it.
+- Files identical for dotnet, python and typescript (`normalize-scenarios.sh`, `test-report.sh`, `messages-results.jq`) live once, in the core skill's `assets/`; stack skills reference them.
+- The descriptions of the stack scripts stay as `templates/*.md` beside the real files — moving them would rewrite links for no gain in delivery.
+- Go's `Makefile` block is an asset appended to the project's `Makefile` (`assets/Makefile.testing`), although `skill-code-delivery` would call a merged fragment an instruction: it is identical in every project, and the examples are checked to contain it verbatim.
+- dotnet placeholder `{Solution}` became `{solution}` (kebab-case, as the standard requires).

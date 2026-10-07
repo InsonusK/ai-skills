@@ -12,19 +12,7 @@ tags:
 
 # Implementation changes
 `tools/livingdoc/package.json`:
-```json
-{
-  "name": "livingdoc",
-  "private": true,
-  "type": "module",
-  "engines": { "node": ">=22" },
-  "dependencies": {
-    "@cucumber/html-formatter": "24.2.0",
-    "@cucumber/messages": "34.2.1",
-    "multiple-cucumber-html-reporter": "4.4.2"
-  }
-}
-```
+Copy verbatim to `tools/livingdoc/package.json`, together with the `package-lock.json` beside it: [`assets/tools/livingdoc/package.json`](../../../assets/tools/livingdoc/package.json)
 
 Run `npm install --prefix tools/livingdoc` once and commit the generated `tools/livingdoc/package-lock.json`; `test-kind-unit` installs with `npm ci`. Add `tools/livingdoc/node_modules/` to `.gitignore`.
 

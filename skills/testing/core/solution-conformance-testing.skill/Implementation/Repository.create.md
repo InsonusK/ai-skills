@@ -99,17 +99,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 
 A badge and its report share a name; a kind may produce several; a report may have no badge (`scenarios`). Names are unique across kinds. `label` is `tests`, `coverage`, or `mutation score`; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
 
-`report-template/index.html` is a small static landing page the project owns — links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and a block that shows `run.json`:
-```html
-<h2>This run</h2>
-<pre id="run"></pre>
-<script>
-  fetch('run.json').then(r => r.json()).then(run => {
-    document.getElementById('run').textContent = 'purpose: ' + run.purpose + '\n' +
-      run.kinds.map(k => k.kind + ': ' + k.state + (k.note ? ' — ' + k.note : '')).join('\n');
-  }).catch(() => {});
-</script>
-```
+`report-template/index.html` is a small static landing page the project owns — links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and a block that shows `run.json`. Fill and copy [`templates/report-template/index.html`](../templates/report-template/index.html) — `{project-name}` = the project's name; adjust the links when a stack's native report has another entry file.
 It lives at the repository root, never under `.github/`, since this solution owns no `.github/workflows/*` file.
 
 ## README badges
