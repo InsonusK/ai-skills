@@ -12,7 +12,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
+  - "[[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]"
 ---
 
 # Goal
@@ -20,7 +20,7 @@ created_by:
 - Keep the test module aligned with the source module location.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
 
 # Core Principles
 - Apply ONE plateau template per class/module.
@@ -29,7 +29,7 @@ __Applied solutions:__
 - Tests use the standard `unittest` module unless the project has chosen `pytest`.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
 
 # Naming convention
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 ```
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
 
 # Rules
 
@@ -80,7 +80,7 @@ __Applied solutions:__
 - Import from the test module in production code.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
 
 # Anti-patterns
 
@@ -92,7 +92,7 @@ __Applied solutions:__
   - Instead: create one `{Module}_test.py` per source module.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
 
 # Check list
 
@@ -101,7 +101,7 @@ __Applied solutions:__
 - [ ] Test methods cover the public functions of the source module.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
 
 # Unittest TestCases
 
@@ -109,4 +109,4 @@ __Applied solutions:__
 - [ ] WHEN the tested function receives invalid input THEN it raises the expected exception or returns the expected error value.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]

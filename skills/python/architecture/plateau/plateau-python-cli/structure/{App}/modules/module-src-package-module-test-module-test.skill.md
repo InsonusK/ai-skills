@@ -12,7 +12,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
+  - "[[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]"
 ---
 
 # Goal
@@ -20,7 +20,7 @@ created_by:
 - Ensure co-located tests are still excluded from the installed package.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
 
 # Core Principles
 - Apply ONE plateau template per class/module.
@@ -28,7 +28,7 @@ __Applied solutions:__
 - The same one-test-module-per-source-module rule applies.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
 
 # Naming convention
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 ```
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
 
 # Rules
 
@@ -80,7 +80,7 @@ __Applied solutions:__
 - Adopt co-located tests without excluding them from the installed package.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
 
 # Anti-patterns
 
@@ -92,7 +92,7 @@ __Applied solutions:__
   - Instead: add `exclude = ["*test*"]` to `[tool.setuptools.packages.find]` in `pyproject.toml`.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
 
 # Check list
 
@@ -101,7 +101,7 @@ __Applied solutions:__
 - [ ] `pyproject.toml` excludes `*test*` from package discovery.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
 
 # Unittest TestCases
 
@@ -109,4 +109,4 @@ __Applied solutions:__
 - [ ] WHEN the tested function receives invalid input THEN it raises the expected exception or returns the expected error value.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/src.{Package}.{Module}.test.{Module}_test.py.create.md|src.{Package}.{Module}.test.{Module}_test.py.create]]

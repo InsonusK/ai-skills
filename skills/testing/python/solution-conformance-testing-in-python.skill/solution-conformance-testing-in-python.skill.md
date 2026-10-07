@@ -24,14 +24,14 @@ extends:
   - README.md
 depends_on:
   - "[[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
-  - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
+  - "[[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]"
 adr:
   - "[[skills/testing/python/solution-conformance-testing-in-python.skill/adr/testing-tool-choice|Testing tool choice]]"
 ---
 
 # Goal
 - Give a Python package the concrete tooling to run the three-layer gate defined by [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md): Gherkin scenarios, code coverage, mutation testing.
-- Add this on top of the plain unit-test structure defined by [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md), without changing that structure.
+- Add this on top of the plain unit-test structure defined by [solution-test-layout-in-python](skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md), without changing that structure.
 - Expose that tooling behind the `make unit-test`/`make mutation-test`/`make test-report`/`make test-and-report` contract so any CI workflow can wire it in without knowing anything Python-specific.
 
 # Capabilities
@@ -41,7 +41,7 @@ adr:
 - `make unit-test` also writes `tmp/result/scenarios.json` — every `.feature` entry with its type tag, status, and `@todo` reason — and `make test-report` renders it as `public/scenarios/`, per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report).
 
 # Core Principles
-- `behave`'s own convention (`features/` at the repository root, with `features/steps/` for step definitions) is used as-is; it is a separate root from `test/`, not folded into the mirrored structure [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) defines for plain unit tests.
+- `behave`'s own convention (`features/` at the repository root, with `features/steps/` for step definitions) is used as-is; it is a separate root from `test/`, not folded into the mirrored structure [solution-test-layout-in-python](skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md) defines for plain unit tests.
 - Step definitions import and call the package's real public functions/classes; they never re-implement the rule under test.
 - Coverage and mutation testing both run against the combined suite (`unittest`/`pytest` tests plus `behave` scenarios), not against either alone.
 
@@ -53,7 +53,7 @@ adr:
 SOLUTION:
 - [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
   - Defines the `make` command contract and normalized report format this solution implements concretely for Python.
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
   - Defines the `test/` structure for this package's plain unit tests; this solution adds `features/` alongside it, unchanged.
 
 PYPI:

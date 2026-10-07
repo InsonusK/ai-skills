@@ -52,8 +52,6 @@ adr:
 SOLUTION:
 - [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]
   - Defines the `make` command contract and normalized report format this solution implements concretely for Go.
-- [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]]
-  - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/Repository.create.md|Repository]] - the `Makefile` this solution extends with the testing targets
 GO MODULES / STANDARD LIBRARY:
 - `github.com/cucumber/godog` — runs `.feature` files against step definitions; see [[skills/testing/go/cucumber-testing-in-go.skill.md|cucumber-testing-in-go]] for authoring rules.
 - `github.com/cucumber/gherkin/go/v42` + `github.com/cucumber/messages/go/v34` — the `.feature` parser godog itself uses; `tools/normalize_scenarios` imports it to build the scenario inventory.

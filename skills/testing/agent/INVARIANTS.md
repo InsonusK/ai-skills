@@ -17,6 +17,8 @@ The anchor document for gathering every testing skill into `skills/testing/` and
 | Architecture tests that check one catalog's rules; what counts as a unit for a project role | the architecture catalog |
 | Test detail specific to one VP (e.g. dotnet domain logic) | with that VP — mechanism not decided, see §6 |
 
+A testing skill never assumes a file a catalog skill creates: where both write the same file (a `Makefile`), the testing skill adds its part to an existing file and creates the file when there is none, and the two contents must not conflict. Catalog solutions and plateaus build on `skills/testing/`, never the reverse.
+
 A base plateau names the testing skills it uses; no plateau restates them. Plateau `*.Tests` structure skills are removed once the layout rule covers them.
 
 ## 2. Directory layout
@@ -61,4 +63,3 @@ CI runs `test-readme-check` and every `test-kind-*` (from `test-kinds`) in paral
 - How a VP attaches its own test detail to the general approach (owner: revisit when we get there).
 - What each existing kind does under `pr-check` (today: PR runs unit tests without coverage; mutation runs only for the report).
 - Scope and order of the DevOps skill changes; whether plateau codes keep module VPs ([[skills/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/prefer-module-realization|prefer-module-realization]], branch `prefer-module-vp`).
-- The isolation conflicts in `isolation-exceptions.tsv` — see `STATUS.md`.

@@ -13,7 +13,7 @@ A Python CLI application needs one authoritative place to declare its name, vers
 
 **Selected variant:** [[#PEP 621 pyproject.toml with setuptools.build_meta]]
 
-Use one `pyproject.toml` at the repository root: a `[build-system]` table naming `setuptools.build_meta` as the backend, and a standard `[project]` table (PEP 621) for name, version, dependencies, and `[project.scripts]`. This requires no extra tool beyond `pip`/`setuptools`/`wheel`, keeps the layered CLI structure from [[../../solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] framework-agnostic, and matches the exclusion rules solution-test already contributes to `pyproject.toml`.
+Use one `pyproject.toml` at the repository root: a `[build-system]` table naming `setuptools.build_meta` as the backend, and a standard `[project]` table (PEP 621) for name, version, dependencies, and `[project.scripts]`. This requires no extra tool beyond `pip`/`setuptools`/`wheel`, keeps the layered CLI structure from [[../../solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] framework-agnostic, and matches the exclusion rules solution-test-layout-in-python already contributes to `pyproject.toml`.
 
 # Searched variants
 

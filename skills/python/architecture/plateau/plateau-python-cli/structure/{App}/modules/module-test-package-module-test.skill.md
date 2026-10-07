@@ -12,7 +12,7 @@ tags:
   - concern/architecture
 
 created_by:
-  - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
+  - "[[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]"
 ---
 
 # Goal
@@ -20,7 +20,7 @@ created_by:
 - Preserve the package hierarchy in the test directory.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
 
 # Core Principles
 - Apply ONE plateau template per class/module.
@@ -28,7 +28,7 @@ __Applied solutions:__
 - One test module per source module.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
 
 # Naming convention
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 ```
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
 
 # Rules
 
@@ -79,7 +79,7 @@ __Applied solutions:__
 - Flatten package structure inside `test/`.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
 
 # Anti-patterns
 
@@ -91,7 +91,7 @@ __Applied solutions:__
   - Instead: recreate the full `src/` hierarchy under `test/`.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
 
 # Check list
 
@@ -100,7 +100,7 @@ __Applied solutions:__
 - [ ] The test path mirrors the source path `src/{Package}/{Module}.py`.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
 
 # Unittest TestCases
 
@@ -108,4 +108,4 @@ __Applied solutions:__
 - [ ] WHEN the tested function receives invalid input THEN it raises the expected exception or returns the expected error value.
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]

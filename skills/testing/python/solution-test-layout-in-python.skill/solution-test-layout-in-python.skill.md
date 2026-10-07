@@ -1,5 +1,5 @@
 ---
-name: solution-test
+name: solution-test-layout-in-python
 description: Define how to organize and write tests in Python projects so that test structure mirrors source structure
 domain: python
 type: architecture

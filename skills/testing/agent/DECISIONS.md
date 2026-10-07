@@ -55,3 +55,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `angular/` is its own folder although its stack tag is `stack/typescript`: an Angular project lists `core`, `typescript`, `angular`.
 - `check.sh` also forbids a stack skill linking another stack's skill (Angular → TypeScript allowed) — the same loading argument as base → extension.
 - The by-topic ADR written in W1 was replaced, not kept as history: it was never merged.
+
+## Owner-decided (2026-10-07, isolation conflicts)
+
+- Two skills may both say "create the `Makefile`"; what matters is that their content does not conflict, and one file results. Solutions and plateaus accept that they build on `skills/testing/` and shape their own logic around it.
+- How Python tests are laid out (`test/` mirrors the sources, `{Module}_test.py`, excluded from the package) is a general Python testing requirement and belongs in `skills/testing/python/`.
+
+## Agent decisions — W1a
+
+- `solution-test` → `solution-test-layout-in-python`: the `solution-` prefix stays because it keeps its `Implementation/` files and plateau `created_by` links; `test-layout` says what it decides.
+- The Go skill's `Repository.extend` file keeps its name; only its text now says the `Makefile` is created when missing. Renaming it to `.create` would make two `.create` files on one element in the Go catalog.
+- `validation-config.yaml` excludes `testing/*/solution-*.skill/**`, not only the conformance solutions, so the moved layout solution keeps being treated as a solution skill.
+- dotnet, python and typescript testing skills already add their own `Makefile` without assuming a catalog's — no change needed there.

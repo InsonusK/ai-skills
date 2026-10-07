@@ -12,7 +12,7 @@ tags:
 
 created_by:
   - "[[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]"
-  - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
+  - "[[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]"
   - "[[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]"
 ---
 
@@ -28,7 +28,7 @@ created_by:
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]
 
 # Capabilities
@@ -52,7 +52,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]
 
 # Usecases

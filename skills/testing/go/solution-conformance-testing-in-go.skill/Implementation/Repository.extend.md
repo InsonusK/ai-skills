@@ -11,7 +11,7 @@ tags:
 
 ## Repository Structure
 ```
-Makefile            (extended)
+Makefile            (extended; created when missing)
 go.mod              (extended)
 report-template/
   index.html
@@ -35,7 +35,7 @@ tools/
 
 # Implementation changes
 
-`Makefile` (added to the `build`/`run`/`lint` targets [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/Repository.create.md|solution-go-repository-structure]] already created):
+`Makefile` — added to the repository's `Makefile`, leaving its other targets as they are; created with this content when the repository has none:
 ```makefile
 .PHONY: unit-test mutation-test test-report test-and-report
 

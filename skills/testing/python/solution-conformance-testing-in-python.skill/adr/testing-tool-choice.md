@@ -25,7 +25,7 @@ Use `behave` for Gherkin scenarios (the most widely used Python Cucumber impleme
 
 ### Benefits
 - `behave` has the largest community and plugin ecosystem among Python Gherkin runners.
-- `coverage.py` is already the de-facto standard and works with either `unittest` or `pytest`, matching [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md)'s runner-agnostic stance.
+- `coverage.py` is already the de-facto standard and works with either `unittest` or `pytest`, matching [solution-test-layout-in-python](skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md)'s runner-agnostic stance.
 - `mutmut` supports running an arbitrary test command, so it can exercise the combined `test/` + `features/` suite without a second, parallel toolchain.
 
 ### Costs
@@ -42,7 +42,7 @@ Use `pytest-bdd`, which expresses Gherkin scenarios as `pytest` test functions i
 - Reuses `pytest` fixtures directly.
 
 ### Costs
-- Ties the Gherkin layer to `pytest` specifically, while [solution-test](skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md) deliberately keeps the plain unit-test runner optional (`unittest` or `pytest`).
+- Ties the Gherkin layer to `pytest` specifically, while [solution-test-layout-in-python](skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md) deliberately keeps the plain unit-test runner optional (`unittest` or `pytest`).
 
 ## cosmic-ray instead of mutmut
 

@@ -19,3 +19,4 @@ skills/common-workflow/test/architect-validator.skill.md	skills/testing/core/arc
 skills/common-workflow/test/code-coverage.skill.md	skills/testing/core/code-coverage.skill.md
 skills/dotnet/test/dotnet-unittest.skill	skills/testing/dotnet/unittest-in-dotnet.skill
 skills/dotnet/test/testing-strategy.skill.md	skills/testing/dotnet/testing-strategy-in-dotnet.skill.md
+skills/python/architecture/solutions/solution-test.skill	skills/testing/python/solution-test-layout-in-python.skill

@@ -13,7 +13,7 @@ tags:
 
 created_by:
   - "[[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]"
-  - "[[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]"
+  - "[[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]"
   - "[[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]"
 ---
 
@@ -26,7 +26,7 @@ created_by:
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 # Core Principles
@@ -40,7 +40,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 # Structure
@@ -79,8 +79,8 @@ pyproject.toml
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Package}.{Module}_test.py.create.md|test.{Package}.{Module}_test.py.create]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 ## Package Metadata (pyproject.toml)
@@ -110,7 +110,7 @@ exclude = ["test", "test.*", "*test*"]
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
 
 ## Directory and module skills
 
@@ -125,7 +125,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
 
 ## Python Dependencies
 
@@ -135,7 +135,7 @@ __Applied solutions:__
 | wheel | - | Build-time dependency required by `[build-system].requires` to produce an installable wheel |
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 ## What Does NOT Belong Here
@@ -144,7 +144,7 @@ __Applied solutions:__
 - A second CLI entry point that bypasses `{App}.cli:main` (e.g. a duplicate script outside `[project.scripts]`).
 
 __Applied solutions:__
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 ## Allowed Dependencies
@@ -156,7 +156,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 # Rules
@@ -184,8 +184,8 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 # Anti-patterns
@@ -208,9 +208,9 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/test.{Module}_test.py.create.md|test.{Module}_test.py.create]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
 
 # Check list
@@ -226,6 +226,6 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] - [[skills/python/architecture/solutions/solution-default-cli.skill/Implementation/{App}.create.md|{App}.create]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]] - [[skills/python/architecture/solutions/solution-test.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
-- [[skills/python/architecture/solutions/solution-test.skill/solution-test.skill.md|solution-test]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] - [[skills/testing/python/solution-test-layout-in-python.skill/Implementation/pyproject.toml.extend.md|pyproject.toml.extend]]
+- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]] - [[skills/python/architecture/solutions/solution-cli-packaging.skill/Implementation/pyproject.toml.create.md|pyproject.toml.create]]
