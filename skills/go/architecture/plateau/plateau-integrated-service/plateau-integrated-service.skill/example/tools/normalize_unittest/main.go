@@ -1,5 +1,5 @@
 // Command normalize_unittest reads `go test -json` events from stdin and
-// writes the normalized tmp/result/unit-test.json the solution-conformance-testing
+// writes the normalized result/unit-test.json of the unit test kind the solution-conformance-testing
 // report contract defines. It counts each leaf test exactly once: a godog
 // scenario run as a Go subtest of TestFeatures reports its own pass/fail
 // alongside TestFeatures' own - only the deepest name per branch is counted.
@@ -58,7 +58,7 @@ func run() error {
 		}
 	}
 
-	if err := os.MkdirAll("tmp/result", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/result", 0o755); err != nil {
 		return err
 	}
 	data, err := json.Marshal(struct {
@@ -69,7 +69,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile("tmp/result/unit-test.json", data, 0o644)
+	return os.WriteFile(kindDir()+"/result/unit-test.json", data, 0o644)
 }
 
 // leafNames returns every key with no other key nested under it (no other
@@ -94,4 +94,13 @@ func leafNames(results map[string]string) []string {
 		}
 	}
 	return leaves
+}
+
+// kindDir is the only directory this test kind may write to - tools/testing/testing.mk
+// exports it as TEST_KIND_DIR for every test-kind-<kind> target.
+func kindDir() string {
+	if d := os.Getenv("TEST_KIND_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing/kinds/unit"
 }

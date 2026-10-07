@@ -1,5 +1,5 @@
 ---
-description: Builds tmp/result/scenarios.json from every .feature file plus the go test -json event stream
+description: Builds $TEST_KIND_DIR/result/scenarios.json from every .feature file plus the go test -json event stream
 project_name: tools/normalize_scenarios
 name: normalize_scenarios
 element_kind: functions
@@ -10,16 +10,16 @@ tags:
 ---
 
 # Goals
-- Write the normalized `tmp/result/scenarios.json` [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]] defines: one entry per `Scenario`, or per `Examples:` block of a `Scenario Outline`, with its type tag, status, location, and `# todo:` reason.
+- Write the normalized `$TEST_KIND_DIR/result/scenarios.json` [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]] defines: one entry per `Scenario`, or per `Examples:` block of a `Scenario Outline`, with its type tag, status, location, and `# todo:` reason.
 
 # Core Principles
 - The inventory comes from parsing every `.feature` file with `github.com/cucumber/gherkin/go/v42` — the parser godog itself uses — so `@todo` entries godog never runs are listed too.
-- The status comes from the `go test -json` stream `unit-test` already tees to `tmp/report/tests/go-test.json`: godog runs every pickle as the subtest `TestFeatures/{pickle name}`, and `go test` rewrites spaces to `_` and suffixes repeated names with `#NN`. The tool compiles the same pickles (`gherkin.Pickles`) and looks each one up by that rewritten name.
+- The status comes from the `go test -json` stream `test-kind-unit` already tees to `$TEST_KIND_DIR/report/tests/go-test.json`: godog runs every pickle as the subtest `TestFeatures/{pickle name}`, and `go test` rewrites spaces to `_` and suffixes repeated names with `#NN`. The tool compiles the same pickles (`gherkin.Pickles`) and looks each one up by that rewritten name.
 - A scenario name is looked up across all packages; two scenarios with the same name in different packages share their status — keep scenario names unique within the module, and give a `Scenario Outline` a name with `<placeholders>` when its rows must be told apart.
 
 # Implementation changes
 ```go
-// Command normalize_scenarios writes the normalized tmp/result/scenarios.json
+// Command normalize_scenarios writes the normalized result/scenarios.json
 // the parent solution-conformance-testing Scenario report defines. The
 // inventory comes from every .feature file under the repository (so @todo
 // entries godog never runs are listed too); the status of each entry comes
@@ -118,7 +118,7 @@ func run(eventsPath string) error {
 	if entries == nil {
 		entries = []*entry{}
 	}
-	if err := os.MkdirAll("tmp/result", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/result", 0o755); err != nil {
 		return err
 	}
 	data, err := json.MarshalIndent(struct {
@@ -127,7 +127,7 @@ func run(eventsPath string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile("tmp/result/scenarios.json", data, 0o644)
+	return os.WriteFile(kindDir()+"/result/scenarios.json", data, 0o644)
 }
 
 // readResults maps a subtest name below TestFeatures (e.g. "Check_a_URL#01")
@@ -330,6 +330,15 @@ func newEntry(feature, scenario, examples, uri string, line int64, chain []scope
 	}
 	return e
 }
+
+// kindDir is the only directory this test kind may write to - tools/testing/testing.mk
+// exports it as TEST_KIND_DIR for every test-kind-<kind> target.
+func kindDir() string {
+	if d := os.Getenv("TEST_KIND_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing/kinds/unit"
+}
 ```
 
 # Rule changes
@@ -342,11 +351,11 @@ func newEntry(feature, scenario, examples, uri string, line int64, chain []scope
   - Risk: a `.feature` file outside every runner's `Paths`, or a skipped scenario, would read as verified in the report.
   - Fix: `statusOf` sets `missing` unless at least one `pass` exists and no `fail` does.
 - Never exit non-zero because a scenario failed — only on a tool error (unreadable event stream, unparsable `.feature`).
-  - Risk: competing with `go test`'s own exit code, which `make unit-test` already propagates.
-  - Fix: write the file and return; `unit-test` exits with the test run's status.
+  - Risk: competing with `go test`'s own exit code, which `make test-kind-unit` already propagates.
+  - Fix: write the file and return; `test-kind-unit` exits with the test run's status.
 
 # Check list
-- [ ] `tmp/result/scenarios.json` lists every `.feature` entry, `@todo` ones included, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]].
+- [ ] `$TEST_KIND_DIR/result/scenarios.json` lists every `.feature` entry, `@todo` ones included, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]].
 - [ ] An `Examples:` block tagged `@negative` under a `Scenario Outline` is its own entry with `"type": "negative"`.
 - [ ] A `.feature` file no runner picks up produces `"status": "missing"` entries.
 

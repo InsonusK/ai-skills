@@ -1,4 +1,4 @@
-// Command normalize_scenarios writes the normalized tmp/result/scenarios.json
+// Command normalize_scenarios writes the normalized result/scenarios.json
 // the parent solution-conformance-testing Scenario report defines. The
 // inventory comes from every .feature file under the repository (so @todo
 // entries godog never runs are listed too); the status of each entry comes
@@ -97,7 +97,7 @@ func run(eventsPath string) error {
 	if entries == nil {
 		entries = []*entry{}
 	}
-	if err := os.MkdirAll("tmp/result", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/result", 0o755); err != nil {
 		return err
 	}
 	data, err := json.MarshalIndent(struct {
@@ -106,7 +106,7 @@ func run(eventsPath string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile("tmp/result/scenarios.json", data, 0o644)
+	return os.WriteFile(kindDir()+"/result/scenarios.json", data, 0o644)
 }
 
 // readResults maps a subtest name below TestFeatures (e.g. "Check_a_URL#01")
@@ -308,4 +308,13 @@ func newEntry(feature, scenario, examples, uri string, line int64, chain []scope
 		}
 	}
 	return e
+}
+
+// kindDir is the only directory this test kind may write to - tools/testing/testing.mk
+// exports it as TEST_KIND_DIR for every test-kind-<kind> target.
+func kindDir() string {
+	if d := os.Getenv("TEST_KIND_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing/kinds/unit"
 }

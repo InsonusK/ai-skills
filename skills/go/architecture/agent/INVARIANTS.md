@@ -7,8 +7,8 @@ The anchor document for this catalog's build (per [[skills/common-workflow/bulk-
 ```
 go.mod
 Makefile                          ← solution-go-repository-structure (build/run/lint) +
-                                     solution-conformance-testing-in-go (unit-test/mutation-test/
-                                     test-report/test-and-report)
+                                     solution-conformance-testing-in-go (test-kind-unit/
+                                     test-kind-mutation/test-report-build)
 .gitignore
 report-template/index.html        ← solution-conformance-testing-in-go
 cmd/
@@ -94,4 +94,4 @@ tools/
 
 ## 8. Ground truth
 
-Each of the five plateaus' own `example/` must `go build ./...`, `go vet ./...`, and `make unit-test` (godog scenarios green) — `plateau-persistent-service`'s example additionally needs a reachable PostgreSQL and Redis to run its full scenario set; document the exact `docker run`/connection-string setup in that plateau's own root skill. Until a plateau's example passes, that plateau is "plausible", not "verified".
+Each of the five plateaus' own `example/` must `go build ./...`, `go vet ./...`, and `make test-kind-unit` (godog scenarios green) — `plateau-persistent-service`'s example additionally needs a reachable PostgreSQL and Redis to run its full scenario set; document the exact `docker run`/connection-string setup in that plateau's own root skill. Until a plateau's example passes, that plateau is "plausible", not "verified".

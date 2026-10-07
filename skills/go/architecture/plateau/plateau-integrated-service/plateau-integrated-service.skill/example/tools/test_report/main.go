@@ -1,6 +1,8 @@
-// Command test_report assembles public/ from the normalized tmp/result/*.json
-// files, per the solution-conformance-testing report contract. It never
-// parses a tool's native report format.
+// Command test_report builds the report directory from what the test kinds
+// left in the work directory, per the solution-conformance-testing report
+// contract: badges and the scenario page from the normalized result/*.json
+// files, native reports copied as they are. It never parses a tool's native
+// report format.
 package main
 
 import (
@@ -42,16 +44,29 @@ func main() {
 }
 
 func run() error {
-	if err := os.MkdirAll("public", 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(reportDir(), "reports"), 0o755); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Join(reportDir(), "badges"), 0o755); err != nil {
 		return err
 	}
 
-	for _, kind := range []string{"tests", "coverage", "mutation"} {
-		src := filepath.Join("tmp", "report", kind)
-		if _, err := os.Stat(src); err != nil {
-			continue // this kind was never run in this invocation
+	// Every kinds/<kind>/report/<name>/ becomes reports/<name>/, so a new
+	// kind's report is published without changing this tool.
+	sources, err := filepath.Glob(filepath.Join(workDir(), "kinds", "*", "report", "*"))
+	if err != nil {
+		return err
+	}
+	for _, src := range sources {
+		info, statErr := os.Stat(src)
+		if statErr != nil || !info.IsDir() {
+			continue
 		}
-		if err := copyDir(src, filepath.Join("public", kind)); err != nil {
+		dst := filepath.Join(reportDir(), "reports", filepath.Base(src))
+		if _, statErr := os.Stat(dst); statErr == nil {
+			return fmt.Errorf("two test kinds wrote a report named %q", filepath.Base(src))
+		}
+		if err := copyDir(src, dst); err != nil {
 			return err
 		}
 	}
@@ -73,13 +88,42 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join("public", "index.html"), page, 0o644)
+	return os.WriteFile(filepath.Join(reportDir(), "index.html"), page, 0o644)
+}
+
+// workDir and reportDir are chosen by the caller of `make test-report`;
+// tools/testing/testing.mk exports them.
+func workDir() string {
+	if d := os.Getenv("TEST_WORK_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing"
+}
+
+func reportDir() string {
+	if d := os.Getenv("TEST_REPORT_DIR"); d != "" {
+		return d
+	}
+	return filepath.Join(workDir(), "report")
+}
+
+// readResult returns the normalized result file of that name from whichever
+// test kind wrote it - result names are unique across kinds.
+func readResult(name string) ([]byte, error) {
+	matches, err := filepath.Glob(filepath.Join(workDir(), "kinds", "*", "result", name))
+	if err != nil {
+		return nil, err
+	}
+	if len(matches) == 0 {
+		return nil, os.ErrNotExist
+	}
+	return os.ReadFile(matches[0])
 }
 
 func writeUnitBadge() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "unit-test.json"))
+	data, err := readResult("unit-test.json")
 	if err != nil {
-		return nil // no unit-test run yet in this invocation
+		return nil // the unit kind left no result
 	}
 	var r unitResult
 	if err := json.Unmarshal(data, &r); err != nil {
@@ -93,9 +137,9 @@ func writeUnitBadge() error {
 }
 
 func writeCoverageBadge() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "coverage-test.json"))
+	data, err := readResult("coverage-test.json")
 	if err != nil {
-		return nil // WITH_CODE_COVERAGE was not set
+		return nil // coverage is reported only in a report run
 	}
 	var r coverageResult
 	if err := json.Unmarshal(data, &r); err != nil {
@@ -105,9 +149,9 @@ func writeCoverageBadge() error {
 }
 
 func writeMutationBadge() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "mutation-test.json"))
+	data, err := readResult("mutation-test.json")
 	if err != nil {
-		return nil // mutation-test has not run yet
+		return nil // the mutation kind did not run or skipped itself
 	}
 	var r mutationResult
 	if err := json.Unmarshal(data, &r); err != nil {
@@ -128,15 +172,14 @@ func pctColor(pct float64) string {
 	}
 }
 
-// writeBadge writes public/{file}-badge.json; the file name is fixed by the parent
-// contract and independent of the human-readable label.
+// writeBadge writes badges/{file}.json - the name its report has under
+// reports/, independent of the human-readable label.
 func writeBadge(file, label, message, color string) error {
 	data, err := json.Marshal(badge{SchemaVersion: 1, Label: label, Message: message, Color: color})
 	if err != nil {
 		return err
 	}
-	name := file + "-badge.json"
-	return os.WriteFile(filepath.Join("public", name), data, 0o644)
+	return os.WriteFile(filepath.Join(reportDir(), "badges", file+".json"), data, 0o644)
 }
 
 func copyDir(src, dst string) error {
@@ -183,13 +226,13 @@ var (
 	scenarioStatuses = []string{"passed", "failed", "todo", "missing"}
 )
 
-// writeScenariosPage renders public/scenarios/index.html from
-// tmp/result/scenarios.json: a type x status table, then every entry grouped
+// writeScenariosPage renders reports/scenarios/index.html from
+// result/scenarios.json: a type x status table, then every entry grouped
 // by feature. Rows needing attention are marked "attention".
 func writeScenariosPage() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "scenarios.json"))
+	data, err := readResult("scenarios.json")
 	if err != nil {
-		return nil // unit-test has not run yet
+		return nil // the unit kind left no result
 	}
 	var r struct {
 		Scenarios []scenarioEntry `json:"scenarios"`
@@ -245,10 +288,10 @@ func writeScenariosPage() error {
 	}
 	b.WriteString("</body></html>")
 
-	if err := os.MkdirAll(filepath.Join("public", "scenarios"), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(reportDir(), "reports", "scenarios"), 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join("public", "scenarios", "index.html"), []byte(b.String()), 0o644)
+	return os.WriteFile(filepath.Join(reportDir(), "reports", "scenarios", "index.html"), []byte(b.String()), 0o644)
 }
 
 // needsAttention follows the parent contract: untyped, missing, failed, and

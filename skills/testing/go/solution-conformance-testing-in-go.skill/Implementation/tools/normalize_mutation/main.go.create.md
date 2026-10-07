@@ -1,5 +1,5 @@
 ---
-description: Normalizes gremlins' mutation-testing report into tmp/result/mutation-test.json
+description: Normalizes gremlins' mutation-testing report into $TEST_KIND_DIR/result/mutation-test.json
 project_name: tools/normalize_mutation
 name: normalize_mutation
 element_kind: functions
@@ -19,15 +19,14 @@ tags:
 # Implementation changes
 ```go
 // Command normalize_mutation reads gremlins' own JSON mutation report (its
-// path is argv[1]) and writes the normalized tmp/result/mutation-test.json
-// the parent solution-conformance-testing report contract defines, plus a
-// small human-readable tmp/report/mutation/index.html table.
+// path is argv[1]) and writes the normalized result/mutation-test.json of the mutation test kind
+// the solution-conformance-testing report contract defines, plus a small
+// human-readable report/mutation/index.html table.
 //
 // gremlins v0.6.0's report nests per-mutation status under files[].mutations
 // (not a flat top-level list), and its status strings are "KILLED",
 // "LIVED", "NOT COVERED", and "TIMED OUT" — verified against a real
-// `gremlins unleash --output <path>` run (see this solution's own ADR),
-// not assumed. Re-check this shape if the pinned gremlins version changes.
+// `gremlins unleash --output` run, not assumed.
 package main
 
 import (
@@ -95,21 +94,21 @@ func run(reportPath string) error {
 		n.Score = round1(float64(n.Killed) / float64(total) * 100)
 	}
 
-	if err := os.MkdirAll("tmp/result", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/result", 0o755); err != nil {
 		return err
 	}
 	out, err := json.Marshal(n)
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile("tmp/result/mutation-test.json", out, 0o644); err != nil {
+	if err := os.WriteFile(kindDir()+"/result/mutation-test.json", out, 0o644); err != nil {
 		return err
 	}
 
-	if err := os.MkdirAll("tmp/report/mutation", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/report/mutation", 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile("tmp/report/mutation/index.html", []byte(renderHTML(n)), 0o644)
+	return os.WriteFile(kindDir()+"/report/mutation/index.html", []byte(renderHTML(n)), 0o644)
 }
 
 func round1(v float64) float64 {
@@ -123,6 +122,15 @@ func renderHTML(n normalized) string {
 <tr><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%.1f%%</td></tr>
 </table></body></html>`, n.Killed, n.Survived, n.TimedOut, n.NoCoverage, n.Score)
 }
+
+// kindDir is the only directory this test kind may write to - tools/testing/testing.mk
+// exports it as TEST_KIND_DIR for every test-kind-<kind> target.
+func kindDir() string {
+	if d := os.Getenv("TEST_KIND_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing/kinds/mutation"
+}
 ```
 
 # Rule changes
@@ -130,13 +138,13 @@ func renderHTML(n normalized) string {
 ## MUST
 - Never shell out to `gremlins` from this program — it only reads the report path given as its argument.
   - Risk: this tool re-running the mutation tool duplicates the `Makefile` target's own invocation and doubles the run time.
-  - Fix: `mutation-test` runs `gremlins` itself and passes the resulting report's path as this program's sole argument.
+  - Fix: `test-kind-mutation` runs `gremlins` itself and passes the resulting report's path as this program's sole argument.
 - `score` must use the exact formula from [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|the parent contract]] — `killed / (killed+survived+timedout+noCoverage) * 100`, rounded to 1 decimal, `0.0` when the denominator is `0`.
   - Risk: a different rounding or a different denominator (e.g. including `NOT_VIABLE`/compile-error mutants) produces a badge value that does not match what a human reading the native `gremlins` report would compute.
   - Fix: sum exactly the four bucketed counts as the denominator; guard the zero-denominator case explicitly.
 
 # Check list
-- [ ] `tmp/result/mutation-test.json` matches `{"killed","survived","timedout","noCoverage","score"}` with `score` a 1-decimal number.
+- [ ] `$TEST_KIND_DIR/result/mutation-test.json` matches `{"killed","survived","timedout","noCoverage","score"}` with `score` a 1-decimal number.
 - [ ] A report with zero mutants produces `"score": 0.0`, not `NaN` or a division-by-zero panic.
 
 # Unittest TestCases

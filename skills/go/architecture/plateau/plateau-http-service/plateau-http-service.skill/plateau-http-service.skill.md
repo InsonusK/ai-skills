@@ -37,7 +37,7 @@ The foundation every other plateau in this catalog composes from: a Go web-servi
 - domain
   - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged; rejects everything else via `ErrInvalidURL`.
 - testing
-  - `make unit-test`/`mutation-test`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `public/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -83,9 +83,9 @@ Three intersections found at this plateau (all canonical `FMN`, no resolver) —
 # Ground truth
 `example/` is a real, runnable Go module (`github.com/example/linkcheck-service`), verified:
 - `go build ./...` and `go vet ./...` — clean.
-- `make unit-test` — 5/5 godog scenarios green (`internal/domain/services/test`), `TestFeatures` the only test function.
-- `make mutation-test` — `gremlins` runs clean (3 killed / 4 survived / 0 timed out / 20 not covered against this plateau's small surface — the HTTP-adapter path has no scenario coverage yet, expected at this plateau).
-- `make test-report` — `public/` assembled with `index.html` + three badge files.
+- `make test-kind-unit` — 5/5 godog scenarios green (`internal/domain/services/test`), `TestFeatures` the only test function.
+- `make test-kind-mutation` — `gremlins` runs clean (3 killed / 4 survived / 0 timed out / 20 not covered against this plateau's small surface — the HTTP-adapter path has no scenario coverage yet, expected at this plateau).
+- `make test-report` — `$TEST_REPORT_DIR/` assembled with `index.html` + three badge files.
 - Runtime smoke test: built binary started, `GET /health` → `200`; `POST /v1/links/check` with a valid/invalid URL → `200`/`400` as designed.
 
-To run it yourself: `cd example && go mod tidy && make build && make unit-test && make run`.
+To run it yourself: `cd example && go mod tidy && make build && make test-kind-unit && make run`.

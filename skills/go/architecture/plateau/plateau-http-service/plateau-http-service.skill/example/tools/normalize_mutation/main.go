@@ -1,7 +1,7 @@
 // Command normalize_mutation reads gremlins' own JSON mutation report (its
-// path is argv[1]) and writes the normalized tmp/result/mutation-test.json
+// path is argv[1]) and writes the normalized result/mutation-test.json of the mutation test kind
 // the solution-conformance-testing report contract defines, plus a small
-// human-readable tmp/report/mutation/index.html table.
+// human-readable report/mutation/index.html table.
 //
 // gremlins v0.6.0's report nests per-mutation status under files[].mutations
 // (not a flat top-level list), and its status strings are "KILLED",
@@ -74,21 +74,21 @@ func run(reportPath string) error {
 		n.Score = round1(float64(n.Killed) / float64(total) * 100)
 	}
 
-	if err := os.MkdirAll("tmp/result", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/result", 0o755); err != nil {
 		return err
 	}
 	out, err := json.Marshal(n)
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile("tmp/result/mutation-test.json", out, 0o644); err != nil {
+	if err := os.WriteFile(kindDir()+"/result/mutation-test.json", out, 0o644); err != nil {
 		return err
 	}
 
-	if err := os.MkdirAll("tmp/report/mutation", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/report/mutation", 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile("tmp/report/mutation/index.html", []byte(renderHTML(n)), 0o644)
+	return os.WriteFile(kindDir()+"/report/mutation/index.html", []byte(renderHTML(n)), 0o644)
 }
 
 func round1(v float64) float64 {
@@ -101,4 +101,13 @@ func renderHTML(n normalized) string {
 <tr><th>Killed</th><th>Survived</th><th>Timed out</th><th>No coverage</th><th>Score</th></tr>
 <tr><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%.1f%%</td></tr>
 </table></body></html>`, n.Killed, n.Survived, n.TimedOut, n.NoCoverage, n.Score)
+}
+
+// kindDir is the only directory this test kind may write to - tools/testing/testing.mk
+// exports it as TEST_KIND_DIR for every test-kind-<kind> target.
+func kindDir() string {
+	if d := os.Getenv("TEST_KIND_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing/kinds/mutation"
 }

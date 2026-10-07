@@ -1,5 +1,5 @@
 ---
-description: Normalizes go test -json output into tmp/result/unit-test.json, counting each leaf test once
+description: Normalizes go test -json output into $TEST_KIND_DIR/result/unit-test.json, counting each leaf test once
 project_name: tools/normalize_unittest
 name: normalize_unittest
 element_kind: functions
@@ -18,11 +18,10 @@ tags:
 # Implementation changes
 ```go
 // Command normalize_unittest reads `go test -json` events from stdin and
-// writes the normalized tmp/result/unit-test.json the parent
-// solution-conformance-testing report contract defines. It counts each leaf
-// test exactly once: a godog scenario run as a Go subtest of TestFeatures
-// reports its own pass/fail alongside TestFeatures' own — only the deepest
-// name per branch is counted.
+// writes the normalized result/unit-test.json of the unit test kind the solution-conformance-testing
+// report contract defines. It counts each leaf test exactly once: a godog
+// scenario run as a Go subtest of TestFeatures reports its own pass/fail
+// alongside TestFeatures' own - only the deepest name per branch is counted.
 package main
 
 import (
@@ -78,7 +77,7 @@ func run() error {
 		}
 	}
 
-	if err := os.MkdirAll("tmp/result", 0o755); err != nil {
+	if err := os.MkdirAll(kindDir()+"/result", 0o755); err != nil {
 		return err
 	}
 	data, err := json.Marshal(struct {
@@ -89,7 +88,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile("tmp/result/unit-test.json", data, 0o644)
+	return os.WriteFile(kindDir()+"/result/unit-test.json", data, 0o644)
 }
 
 // leafNames returns every key with no other key nested under it (no other
@@ -115,6 +114,15 @@ func leafNames(results map[string]string) []string {
 	}
 	return leaves
 }
+
+// kindDir is the only directory this test kind may write to - tools/testing/testing.mk
+// exports it as TEST_KIND_DIR for every test-kind-<kind> target.
+func kindDir() string {
+	if d := os.Getenv("TEST_KIND_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing/kinds/unit"
+}
 ```
 
 # Rule changes
@@ -124,12 +132,12 @@ func leafNames(results map[string]string) []string {
   - Violation: summing every `action == "pass"` event's count directly from the stream.
   - Risk: `TestFeatures` and each of its `N` godog subtests all report their own pass/fail, so a naive count reports `N+1` tests for what is really `N` scenarios, corrupting the badge and the report's total.
   - Fix: buffer every test's last-seen action, then count only names with no other name nested under them (`leafNames`).
-- Never `exit` non-zero because a test failed — this tool always writes its normalized result and returns `0`; the failure is visible in `"failed"` and via `go test`'s own exit code, which `make unit-test`'s `set -o pipefail` already propagates.
+- Never `exit` non-zero because a test failed — this tool always writes its normalized result and returns `0`; the failure is visible in `"failed"` and via `go test`'s own exit code, which `make test-kind-unit`'s `set -o pipefail` already propagates.
   - Risk: this tool exiting non-zero on a failed test would compete with the pipeline's own exit-code propagation and risk masking which command actually failed.
   - Fix: only `os.Exit(1)` on a real tool error (a malformed stdin read, a write failure) — never because the normalized counts show a failure.
 
 # Check list
-- [ ] `tmp/result/unit-test.json` matches `{"total": <int>, "passed": <int>, "failed": <int>}` exactly.
+- [ ] `$TEST_KIND_DIR/result/unit-test.json` matches `{"total": <int>, "passed": <int>, "failed": <int>}` exactly.
 - [ ] A `TestFeatures` run with 3 passing godog scenarios and no other test produces `{"total": 3, "passed": 3, "failed": 0}`, not `{"total": 4, ...}`.
 
 # Unittest TestCases

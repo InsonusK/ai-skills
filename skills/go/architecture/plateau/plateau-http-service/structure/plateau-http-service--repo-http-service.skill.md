@@ -57,10 +57,11 @@ __Applied solutions:__
 # Rules
 
 MUST:
-- `unit-test`/`mutation-test`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
-- `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `public/index.html` — never generated.
-- `make unit-test` writes `tmp/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
-- `make unit-test` writes godog's classic Cucumber JSON to `tmp/report/tests/cucumber/` and renders `tmp/report/tests/livingdoc/` via `tools/livingdoc/` (skipped, never failed, without `npm`).
+- `test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
+- `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `$TEST_REPORT_DIR/index.html` — never generated.
+- `make test-kind-unit` writes `$TEST_KIND_DIR/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
+- `make test-kind-unit` writes godog's classic Cucumber JSON to `$TEST_KIND_DIR/report/tests/cucumber/` and renders `$TEST_KIND_DIR/report/tests/livingdoc/` via `tools/livingdoc/` (skipped, never failed, without `npm`).
+- `tools/testing/` (copied verbatim from `solution-conformance-testing`) defines the caller-facing targets — `make test-kinds`, `test-kind-{kind}`, `test-report`, `test-readme-check`, `test-and-report`; `README.md` carries one badge per declared badge.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/Repository.create.md#MUST|Repository]]

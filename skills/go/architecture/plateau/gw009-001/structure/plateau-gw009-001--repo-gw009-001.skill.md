@@ -97,10 +97,11 @@ __Applied solutions:__
 # Rules
 
 MUST:
-- `unit-test`/`mutation-test`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint`/`proto-gen` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
-- `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `public/index.html` — never generated.
-- `make unit-test` writes `tmp/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
-- `make unit-test` writes godog's classic Cucumber JSON to `tmp/report/tests/cucumber/` and renders `tmp/report/tests/livingdoc/` via `tools/livingdoc/` (skipped, never failed, without `npm`).
+- `test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` are the only testing-related `Makefile` targets; `build`/`run`/`lint`/`proto-gen` are the only lifecycle targets. No solution redefines an existing target — each adds its own.
+- `report-template/index.html` is a static asset, copied verbatim by `tools/test_report` into `$TEST_REPORT_DIR/index.html` — never generated.
+- `make test-kind-unit` writes `$TEST_KIND_DIR/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
+- `make test-kind-unit` writes godog's classic Cucumber JSON to `$TEST_KIND_DIR/report/tests/cucumber/` and renders `$TEST_KIND_DIR/report/tests/livingdoc/` via `tools/livingdoc/` (skipped, never failed, without `npm`).
+- `tools/testing/` (copied verbatim from `solution-conformance-testing`) defines the caller-facing targets — `make test-kinds`, `test-kind-{kind}`, `test-report`, `test-readme-check`, `test-and-report`; `README.md` carries one badge per declared badge.
 - `proto/linkcheck/linkcheck.proto` stays flat (no version subdirectory) — its path must match `go_package`'s flat `gen/api` exactly, or `buf generate` emits code at a different Go import path than every hand-written file expects (verified — this is the actual, observed failure mode, not a hypothetical). `buf/buf.gen.yaml` uses `local:` plugins (`protoc-gen-go`, `protoc-gen-go-grpc`, both `go install`ed), not `buf.build` remote plugins.
 - `proto/reputation/reputation.proto` (the external service's own contract) is generated into its own `gen/reputation` via its own `buf/reputation.gen.yaml` — never merged with `gen/api`. Its `buf generate` call was added as a second line inside the existing `proto-gen` target, not a second target declaration.
 - A new `internal/infrastructure/*` adapter package (like `linkstore`) never requires a `Repository.extend.md` of its own — it is ordinary content inside the `internal/infrastructure/` tree `solution-go-repository-structure` already established.
@@ -110,9 +111,9 @@ __Applied solutions:__
 - [[skills/testing/go/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]] - [[skills/testing/go/solution-conformance-testing-in-go.skill/Implementation/Repository.extend.md#MUST|Repository]]
 - [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] - [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/Repository.extend.md#MUST|Repository]]
 - [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] - [[skills/go/architecture/solutions/solution-external-integration.skill/Implementation/Repository.extend.md#MUST|Repository]]
-- `make unit-test` needs `TEST_DATABASE_DSN` (a throwaway PostgreSQL): the TaskBox conformance runner fails without it, never skips.
+- `make test-kind-unit` needs `TEST_DATABASE_DSN` (a throwaway PostgreSQL): the TaskBox conformance runner fails without it, never skips.
 - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Check list
 - [ ] `make proto-gen` regenerates both `gen/api` and `gen/reputation` with no manual edits needed afterward, including the new `RecentChecks` RPC (verified against this plateau's own `example/`).
-- [ ] `TEST_DATABASE_DSN=postgres://postgres:postgres@localhost:5432/taskbox_test make unit-test` passes (48 tests; 30 TaskBox scenarios on PostgreSQL).
+- [ ] `TEST_DATABASE_DSN=postgres://postgres:postgres@localhost:5432/taskbox_test make test-kind-unit` passes (48 tests; 30 TaskBox scenarios on PostgreSQL).

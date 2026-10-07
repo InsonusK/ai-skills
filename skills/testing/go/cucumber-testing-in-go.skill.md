@@ -82,7 +82,7 @@ if dir := os.Getenv("CUCUMBER_JSON_DIR"); dir != "" {
 ```
 - Violation: `Format: "pretty"` hard-coded with no `cucumber:` output, or one fixed file name shared by every package.
 - Risk: no standard report reaches the living-doc renderer, or packages overwrite each other's report.
-- Fix: build `Format` as above; `make unit-test` sets `CUCUMBER_JSON_DIR`.
+- Fix: build `Format` as above; `make test-kind-unit` sets `CUCUMBER_JSON_DIR`.
 
 ## SHOULD
 

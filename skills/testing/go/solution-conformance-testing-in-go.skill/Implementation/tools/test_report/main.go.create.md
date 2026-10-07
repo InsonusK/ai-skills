@@ -1,5 +1,5 @@
 ---
-description: Assembles the stack-independent public/ site — badges, report copies, scenario page — from tmp/result/*.json
+description: Builds the stack-independent report directory — badges, report copies, scenario page — from every test kind's result/*.json and report/ folders
 project_name: tools/test_report
 name: test_report
 element_kind: functions
@@ -10,18 +10,20 @@ tags:
 ---
 
 # Goals
-- Assemble `public/` — badges, per-kind report copies, the scenario page, and the landing page — reading only the normalized `tmp/result/*.json` files, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#public-site-output|the parent solution's Public site output contract]].
+- Assemble `$TEST_REPORT_DIR/` — badges, per-kind report copies, the scenario page, and the landing page — reading only the normalized `$TEST_KIND_DIR/result/*.json` files, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-output|the parent solution's Public site output contract]].
 
 # Core Principles
-- Reads `tmp/result/*.json` only — never re-parses `go test`'s or `gremlins`' native output.
-- `public/scenarios/index.html` is rendered from `tmp/result/scenarios.json` alone, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]].
-- `coverage-test.json`, `mutation-test.json`, and `scenarios.json` are optional inputs (a run without `WITH_CODE_COVERAGE=true`, or before `mutation-test` has ever run, has neither) — their badges are simply omitted, never a fatal error.
+- Reads `$TEST_KIND_DIR/result/*.json` only — never re-parses `go test`'s or `gremlins`' native output.
+- `$TEST_REPORT_DIR/reports/scenarios/index.html` is rendered from `$TEST_KIND_DIR/result/scenarios.json` alone, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]].
+- `coverage-test.json`, `mutation-test.json`, and `scenarios.json` are optional inputs (a `pr-check` run reports no coverage, and a kind that skipped itself leaves no result) — their badges are simply omitted, never a fatal error.
 
 # Implementation changes
 ```go
-// Command test_report assembles public/ from the normalized tmp/result/*.json
-// files, per the solution-conformance-testing report contract. It never
-// parses a tool's native report format.
+// Command test_report builds the report directory from what the test kinds
+// left in the work directory, per the solution-conformance-testing report
+// contract: badges and the scenario page from the normalized result/*.json
+// files, native reports copied as they are. It never parses a tool's native
+// report format.
 package main
 
 import (
@@ -63,16 +65,29 @@ func main() {
 }
 
 func run() error {
-	if err := os.MkdirAll("public", 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(reportDir(), "reports"), 0o755); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Join(reportDir(), "badges"), 0o755); err != nil {
 		return err
 	}
 
-	for _, kind := range []string{"tests", "coverage", "mutation"} {
-		src := filepath.Join("tmp", "report", kind)
-		if _, err := os.Stat(src); err != nil {
-			continue // this kind was never run in this invocation
+	// Every kinds/<kind>/report/<name>/ becomes reports/<name>/, so a new
+	// kind's report is published without changing this tool.
+	sources, err := filepath.Glob(filepath.Join(workDir(), "kinds", "*", "report", "*"))
+	if err != nil {
+		return err
+	}
+	for _, src := range sources {
+		info, statErr := os.Stat(src)
+		if statErr != nil || !info.IsDir() {
+			continue
 		}
-		if err := copyDir(src, filepath.Join("public", kind)); err != nil {
+		dst := filepath.Join(reportDir(), "reports", filepath.Base(src))
+		if _, statErr := os.Stat(dst); statErr == nil {
+			return fmt.Errorf("two test kinds wrote a report named %q", filepath.Base(src))
+		}
+		if err := copyDir(src, dst); err != nil {
 			return err
 		}
 	}
@@ -94,13 +109,42 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join("public", "index.html"), page, 0o644)
+	return os.WriteFile(filepath.Join(reportDir(), "index.html"), page, 0o644)
+}
+
+// workDir and reportDir are chosen by the caller of `make test-report`;
+// tools/testing/testing.mk exports them.
+func workDir() string {
+	if d := os.Getenv("TEST_WORK_DIR"); d != "" {
+		return d
+	}
+	return "tmp/testing"
+}
+
+func reportDir() string {
+	if d := os.Getenv("TEST_REPORT_DIR"); d != "" {
+		return d
+	}
+	return filepath.Join(workDir(), "report")
+}
+
+// readResult returns the normalized result file of that name from whichever
+// test kind wrote it - result names are unique across kinds.
+func readResult(name string) ([]byte, error) {
+	matches, err := filepath.Glob(filepath.Join(workDir(), "kinds", "*", "result", name))
+	if err != nil {
+		return nil, err
+	}
+	if len(matches) == 0 {
+		return nil, os.ErrNotExist
+	}
+	return os.ReadFile(matches[0])
 }
 
 func writeUnitBadge() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "unit-test.json"))
+	data, err := readResult("unit-test.json")
 	if err != nil {
-		return nil // no unit-test run yet in this invocation
+		return nil // the unit kind left no result
 	}
 	var r unitResult
 	if err := json.Unmarshal(data, &r); err != nil {
@@ -114,9 +158,9 @@ func writeUnitBadge() error {
 }
 
 func writeCoverageBadge() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "coverage-test.json"))
+	data, err := readResult("coverage-test.json")
 	if err != nil {
-		return nil // WITH_CODE_COVERAGE was not set
+		return nil // coverage is reported only in a report run
 	}
 	var r coverageResult
 	if err := json.Unmarshal(data, &r); err != nil {
@@ -126,9 +170,9 @@ func writeCoverageBadge() error {
 }
 
 func writeMutationBadge() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "mutation-test.json"))
+	data, err := readResult("mutation-test.json")
 	if err != nil {
-		return nil // mutation-test has not run yet
+		return nil // the mutation kind did not run or skipped itself
 	}
 	var r mutationResult
 	if err := json.Unmarshal(data, &r); err != nil {
@@ -149,15 +193,14 @@ func pctColor(pct float64) string {
 	}
 }
 
-// writeBadge writes public/{file}-badge.json; the file name is fixed by the parent
-// contract and independent of the human-readable label.
+// writeBadge writes badges/{file}.json - the name its report has under
+// reports/, independent of the human-readable label.
 func writeBadge(file, label, message, color string) error {
 	data, err := json.Marshal(badge{SchemaVersion: 1, Label: label, Message: message, Color: color})
 	if err != nil {
 		return err
 	}
-	name := file + "-badge.json"
-	return os.WriteFile(filepath.Join("public", name), data, 0o644)
+	return os.WriteFile(filepath.Join(reportDir(), "badges", file+".json"), data, 0o644)
 }
 
 func copyDir(src, dst string) error {
@@ -204,13 +247,13 @@ var (
 	scenarioStatuses = []string{"passed", "failed", "todo", "missing"}
 )
 
-// writeScenariosPage renders public/scenarios/index.html from
-// tmp/result/scenarios.json: a type x status table, then every entry grouped
+// writeScenariosPage renders reports/scenarios/index.html from
+// result/scenarios.json: a type x status table, then every entry grouped
 // by feature. Rows needing attention are marked "attention".
 func writeScenariosPage() error {
-	data, err := os.ReadFile(filepath.Join("tmp", "result", "scenarios.json"))
+	data, err := readResult("scenarios.json")
 	if err != nil {
-		return nil // unit-test has not run yet
+		return nil // the unit kind left no result
 	}
 	var r struct {
 		Scenarios []scenarioEntry `json:"scenarios"`
@@ -266,10 +309,10 @@ func writeScenariosPage() error {
 	}
 	b.WriteString("</body></html>")
 
-	if err := os.MkdirAll(filepath.Join("public", "scenarios"), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(reportDir(), "reports", "scenarios"), 0o755); err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join("public", "scenarios", "index.html"), []byte(b.String()), 0o644)
+	return os.WriteFile(filepath.Join(reportDir(), "reports", "scenarios", "index.html"), []byte(b.String()), 0o644)
 }
 
 // needsAttention follows the parent contract: untyped, missing, failed, and
@@ -288,28 +331,28 @@ func needsAttention(s scenarioEntry) bool {
 # Rule changes
 
 ## MUST
-- Read only `tmp/result/*.json` to decide badge content — never `tmp/report/<kind>/`'s native files.
+- Read only `$TEST_KIND_DIR/result/*.json` to decide badge content — never `$TEST_KIND_DIR/report/<kind>/`'s native files.
   - Risk: parsing a tool's native report format here duplicates the normalizers' own parsing and breaks the moment the underlying tool's report shape changes.
-  - Fix: every badge's value comes from the already-normalized JSON; `tmp/report/<kind>/` is copied byte-for-byte, never read for data.
-- Treat a missing `tmp/result/{coverage-test,mutation-test}.json` as "skip this badge," never as a fatal error.
-  - Risk: `test-report` is also called by `test-and-report` right after `mutation-test`, but a standalone `make test-report` (or a first `unit-test` run without `WITH_CODE_COVERAGE=true`) legitimately has no mutation or coverage result yet.
+  - Fix: every badge's value comes from the already-normalized JSON; `$TEST_KIND_DIR/report/<kind>/` is copied byte-for-byte, never read for data.
+- Treat a missing `$TEST_KIND_DIR/result/{coverage-test,mutation-test}.json` as "skip this badge," never as a fatal error.
+  - Risk: `test-report` is also called by `test-and-report` right after `test-kind-mutation`, but a standalone `make test-report` (or a `pr-check` run) legitimately has no mutation or coverage result.
   - Fix: `os.ReadFile`'s error on either optional file returns `nil` from that badge function, producing no badge for that metric rather than exiting.
 - Mark a scenario row as needing attention exactly when the parent contract says so: `untyped`, `missing`, `failed`, or a `todo` entry of type `happy`/`negative`/`error` without a note.
   - Risk: a looser rule lets a planned-but-unexplained negative case blend in with the finished rows; a stricter one trains readers to ignore the highlight.
   - Fix: keep `needsAttention` aligned with the parent contract's list.
-- Copy `report-template/index.html` byte-for-byte into `public/index.html` — never generate its content.
+- Copy `report-template/index.html` byte-for-byte into `$TEST_REPORT_DIR/index.html` — never generate its content.
   - Risk: generating the landing page here duplicates ownership of a file the parent contract states this project owns, not this tool.
   - Fix: read-then-write the file unchanged.
 
 # Check list
-- [ ] `public/index.html` is byte-identical to `report-template/index.html`.
-- [ ] `public/tests-badge.json` always exists after any `unit-test` run; `public/coverage-badge.json` and `public/mutation-badge.json` exist only when their `tmp/result/*.json` input is present.
+- [ ] `$TEST_REPORT_DIR/index.html` is byte-identical to `report-template/index.html`.
+- [ ] `$TEST_REPORT_DIR/badges/tests.json` always exists after any `test-kind-unit` run; `$TEST_REPORT_DIR/badges/coverage.json` and `$TEST_REPORT_DIR/badges/mutation.json` exist only when their `$TEST_KIND_DIR/result/*.json` input is present.
 - [ ] Badge colors follow the parent contract's thresholds exactly.
-- [ ] `public/scenarios/index.html` exists whenever `tmp/result/scenarios.json` does, with the type × status table first.
+- [ ] `$TEST_REPORT_DIR/reports/scenarios/index.html` exists whenever `$TEST_KIND_DIR/result/scenarios.json` does, with the type × status table first.
 
 # Unittest TestCases
-- [ ] WHEN `tmp/result/coverage-test.json` is absent THEN `test_report` completes successfully with no `coverage-badge.json`
+- [ ] WHEN `$TEST_KIND_DIR/result/coverage-test.json` is absent THEN `test_report` completes successfully with no `badges/coverage.json`
 - [ ] WHEN `unit-test.json` reports `failed > 0` THEN the tests badge color is `red`
 - [ ] WHEN `coverage-test.json` reports `linePct: 82.3` THEN the coverage badge color is `brightgreen`
 - [ ] WHEN `scenarios.json` has one `todo` `negative` entry with an empty note THEN its row carries `class="attention"`
-- [ ] WHEN `scenarios.json` is absent THEN `test_report` completes successfully with no `public/scenarios/`
+- [ ] WHEN `scenarios.json` is absent THEN `test_report` completes successfully with no `$TEST_REPORT_DIR/reports/scenarios/`
