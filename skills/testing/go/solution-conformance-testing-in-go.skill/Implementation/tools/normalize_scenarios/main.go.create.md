@@ -36,6 +36,7 @@ Copy verbatim to `tools/normalize_scenarios/main.go`: [`assets/tools/normalize_s
 # Check list
 - [ ] `$TEST_KIND_DIR/result/scenarios.json` lists every `.feature` entry, `@todo` ones included, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]].
 - [ ] An `Examples:` block tagged `@negative` under a `Scenario Outline` is its own entry with `"type": "negative"`.
+- [ ] Every entry lists its own and inherited tags in `"tags"`, with `@`, sorted — a feature tagged `@validation` gives every entry of it that tag.
 - [ ] A `.feature` file no runner picks up produces `"status": "missing"` entries.
 
 # Unittest TestCases

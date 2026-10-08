@@ -97,9 +97,9 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `report/scenarios/` | the scenario page rendered from `result/scenarios.json` | `unit` — `kind_scenarios_report` |
 | `result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit` |
 | `result/coverage-test.json` | `{ "linePct": <number> }` | `unit` (`report` only) |
-| `result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
+| `result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "tags", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
 | `result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation` |
-| `report/tests/` | the tool's native test report | `unit` |
+| `report/tests/` | the tool's native test report; its entry page forwards to `livingdoc/` when the tool wrote none | `unit` — `kind_livingdoc` |
 | `report/tests/cucumber/` | the runner's standard Cucumber report — `*.json` (classic Cucumber JSON) or `*.ndjson` (Cucumber Messages), one protocol per stack | `unit` |
 | `report/tests/livingdoc/` | living-doc HTML rendered from `report/tests/cucumber/` by `tools/livingdoc/render.mjs` | `unit` (skipped when `npm` is unavailable) |
 | `report/coverage/` | the tool's native coverage report | `unit` (`report` only) |
@@ -122,7 +122,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 
 A badge and its report share a name; a kind may produce several; a report may have no badge (`scenarios`). Names are unique across kinds. The labels in use are `tests`, `coverage` and `mutation score`.
 
-`report-template/index.html` is a small landing page the project owns: the `<!-- test-reports -->` line `test-report.sh` fills, a link to the living doc, and a block that shows `run.json`. The list holds only what the run produced, so a `check` run links no coverage and no mutation report, and a new kind's report appears with no change to the page. Fill and copy [`templates/report-template/index.html`](../templates/report-template/index.html) — `{project-name}` = the project's name. A page without the marker line is published as it is.
+`report-template/index.html` is a small landing page the project owns: the `<!-- test-reports -->` line `test-report.sh` fills, and a block that shows `run.json`. The `tests` item opens the living doc. The list holds only what the run produced, so a `check` run links no coverage and no mutation report, and a new kind's report appears with no change to the page. Fill and copy [`templates/report-template/index.html`](../templates/report-template/index.html) — `{project-name}` = the project's name. A page without the marker line is published as it is.
 It lives at the repository root, never under `.github/`, since this solution owns no `.github/workflows/*` file.
 
 ## README badges

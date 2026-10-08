@@ -16,6 +16,7 @@ Worktree `.ai-worktree/skills-testing`, branch `skills-testing` (base `develop`)
 | W9 | Python: features and tests beside the code (owner, 2026-10-08) — `solution-test-layout-in-python` removed, the layout is a rule of `cucumber-testing-in-python` with its ADR; example, `plateau-python-cli`, `solution-cli-packaging` and the Python check-changes action updated | done; the check-changes YAML not run on GitHub |
 | W10 | Kinds own their output (owner, 2026-10-08): each kind script writes `badges/{name}.json` (through `kind.sh`) and its reports, the scenario page included; `test-report.sh` only gathers | done, all eleven examples re-run |
 | W11 | Python living doc shows the type tag of every `Examples:` row (owner). A runnable example inside `solution-conformance-testing-in-go` (owner) — which showed the Go mutation kind measuring nothing; fixed with `gremlins --integration`, an uncached first run and a longer timeout | done, the seven Go examples and the Python example re-run |
+| W12 | Report page and examples (owner, 2026-10-08): `tests` opens the living doc and its separate line is gone; the scenarios page is one table with a tags column (`scenarios.json` gained `tags`); the Go, Python and TypeScript examples carry three features each | done, all twelve examples re-run |
 | W5 | Run every example, fix what breaks; Python on `pytest-bdd`; runnable Python and TypeScript examples | done — see below |
 | W4 | Layout by convention and tests of pluggable modules as testing skills; plateau `*.Tests` structure skills removed; base plateaus name the testing skills | not started — needs the owner, see below |
 
@@ -25,7 +26,7 @@ Container: Go 1.26.8, .NET SDK 10.0.401, Node 24.21, Python 3.13.16; no Docker. 
 
 | Example | `make test-and-report` | tests | coverage | mutation score |
 | --- | --- | --- | --- | --- |
-| go `solution-conformance-testing-in-go` (new, W11) | exit 0 | 4/4 | 90.0% | 100% |
+| go `solution-conformance-testing-in-go` (new, W11; three features since W12) | exit 0 | 10/10 | 96.3% | 100% |
 | go `plateau-http-service` | exit 0 | 5/5 | 10.4% | 25.9% |
 | go `plateau-cached-service` | exit 0 | 11/11 | 12.0% | 24.4% |
 | go `plateau-dual-api-service` | exit 0 | 5/5 | 8.5% | 23.3% |
@@ -35,8 +36,8 @@ Container: Go 1.26.8, .NET SDK 10.0.401, Node 24.21, Python 3.13.16; no Docker. 
 | dotnet `plateau-core` | exit 0 | 7/7 | 72.4% | 55.0% |
 | dotnet `plateau-domain-service` | exit 0 | 10/10 | 41.7% | 31.1% |
 | dotnet `plateau-offline-sync-service` | exit 0 | 14/14 | 40.1% | 29.3% |
-| python `solution-conformance-testing-in-python` (new) | exit 0 | 5/5 | 100% | 93.5% |
-| typescript `solution-conformance-testing-in-typescript` (new) | exit 0 | 4/4 | 100% | 86.1% |
+| python `solution-conformance-testing-in-python` (new; three features since W12) | exit 0 | 11/11 | 100% | 91.4% |
+| typescript `solution-conformance-testing-in-typescript` (new; three features since W12) | exit 0 | 10/10 | 100% | 89.4% |
 
 In every one: the report holds `index.html`, `run.json`, three badges, `reports/{tests,coverage,mutation,scenarios}/` and the living doc, and every link of the landing page resolves; the `check` run writes nothing to `tmp/` or `public/`, skips mutation, and produces the `tests` badge only. The Go mutation scores are those of W11 (2026-10-08), after the mutation kind got `gremlins --integration`: no example has a surviving mutant; what keeps the plateau examples low is `noCoverage` — `main`, config and server code no scenario reaches. Before W11 the scores were 2–11% and meant nothing: gremlins ran only the mutated package's own tests.
 
@@ -67,6 +68,7 @@ What was broken and is fixed — the commit messages carry the detail:
 
 - ⚠️ **Mutation testing in a pull request.** The mutation kind runs in a `check` run only when `DELTA_BASE` is given, over the changed code. The pull-request workflow passes none, so it skips itself there — today's policy ("never gate a PR on mutation testing") is unchanged. Adding `DELTA_BASE: origin/${{ github.base_ref }}` to that workflow turns delta mutation into part of the merge gate.
 - **Consumers' `ai-skills.yaml`** that list `skills/common-workflow/test` or `skills/{stack}/test` must switch to `skills/testing/core` and `skills/testing/{stack}`.
+- **TypeScript keeps features in a root `features/` tree** with `features/step-definitions/`, while Go and Python keep them beside the code. `solution-conformance-testing-in-typescript` and `cucumber-testing-in-typescript` were not moved to the co-located layout; nobody asked yet.
 - **Go scenario report is per outline, not per `Examples:` block.** `normalize_scenarios` matches results by test name, and godog names every row of an outline alike — one failed row marks every block of that outline `failed`. The other three stacks match by row line. godog's Cucumber JSON carries each row's own line (checked), so the fix is to join on it and keep the name match for a runner that writes no Cucumber JSON. Shown to the owner; not started.
 - **Angular on the `make` contract** (owner, 2026-10-08): component tests and pixel tests as test kinds of their own beside the scenario-based `unit` kind — a `solution-conformance-testing-in-angular` with one kind script and one badge name per kind. Not started; the Angular catalogs do not use the contract yet. Since W10 a new kind needs no change to the shared report builder.
 - **`gw009-001`'s TaskBox runner** (the pre-release library copy) writes no Cucumber JSON, so its 30 scenarios are in the scenario report but not in the living doc.

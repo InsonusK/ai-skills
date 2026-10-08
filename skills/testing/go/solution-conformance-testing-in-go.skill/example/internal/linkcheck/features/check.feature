@@ -1,3 +1,4 @@
+@validation
 Feature: Check a URL
   A caller validates and normalizes a URL before using it.
 

@@ -1,14 +1,8 @@
-import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
 from linkcheck.checker import check
 
 scenarios("../features/check.feature")
-
-
-@pytest.fixture
-def world():
-    return {}
 
 
 @given(parsers.parse('the URL "{url}"'))

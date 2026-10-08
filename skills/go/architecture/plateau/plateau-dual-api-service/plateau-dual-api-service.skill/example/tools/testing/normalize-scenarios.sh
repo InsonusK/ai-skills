@@ -112,6 +112,7 @@ jq -R -s --slurpfile results "$RESULTS" '
           feature: $feature, scenario: $scenario, examples: $examples,
           uri: $uri, line: ($line | tonumber),
           type: (if ($typeTags | length) == 1 then $typeTags[0] else "untyped" end),
+          tags: ($tagList | unique | map("@" + .)),
           status: (
             if $todo == "1" then "todo"
             elif any($perRow[]; index("failed")) then "failed"

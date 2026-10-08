@@ -17,6 +17,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"unicode"
 
@@ -35,14 +36,15 @@ var todoComment = regexp.MustCompile(`^\s*#\s*todo:\s*(.*?)\s*$`)
 var skipDirs = map[string]bool{".git": true, "node_modules": true, "vendor": true, "tmp": true, "public": true}
 
 type entry struct {
-	Feature  string `json:"feature"`
-	Scenario string `json:"scenario"`
-	Examples string `json:"examples"`
-	URI      string `json:"uri"`
-	Line     int64  `json:"line"`
-	Type     string `json:"type"`
-	Status   string `json:"status"`
-	Note     string `json:"note"`
+	Feature  string   `json:"feature"`
+	Scenario string   `json:"scenario"`
+	Examples string   `json:"examples"`
+	URI      string   `json:"uri"`
+	Line     int64    `json:"line"`
+	Type     string   `json:"type"`
+	Tags     []string `json:"tags"`
+	Status   string   `json:"status"`
+	Note     string   `json:"note"`
 
 	pickleNames []string
 }
@@ -285,11 +287,16 @@ type scope struct {
 // newEntry derives type, @todo status, and note from the entry's tag scopes,
 // outermost (feature) first.
 func newEntry(feature, scenario, examples, uri string, line int64, chain []scope) *entry {
-	e := &entry{Feature: feature, Scenario: scenario, Examples: examples, URI: uri, Line: line}
+	e := &entry{Feature: feature, Scenario: scenario, Examples: examples, URI: uri, Line: line, Tags: []string{}}
 	types := map[string]bool{}
+	seen := map[string]bool{}
 	for _, sc := range chain {
 		for _, t := range sc.tags {
 			name := strings.TrimPrefix(t.Name, "@")
+			if !seen[name] {
+				seen[name] = true
+				e.Tags = append(e.Tags, "@"+name)
+			}
 			if typeTags[name] {
 				types[name] = true
 			}
@@ -301,6 +308,7 @@ func newEntry(feature, scenario, examples, uri string, line int64, chain []scope
 			}
 		}
 	}
+	sort.Strings(e.Tags)
 	e.Type = "untyped"
 	if len(types) == 1 {
 		for t := range types {

@@ -4,7 +4,7 @@ description: Sets up the Go side of the Cucumber/coverage/mutation quality gate 
 whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario report into a Go project's Makefile/CI pipeline
 domain: skill
 type: architecture
-version: 20261008200000
+version: 20261008220000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-go
@@ -81,10 +81,10 @@ FILES:
 2. Whoever notices it (via the published report or a coverage/mutation badge) strengthens the corresponding scenario's assertion in a follow-up change, or explicitly accepts it per the parent solution's own rule.
 
 # Ground truth
-[`example/`](./example/) is a minimal module (`internal/linkcheck/` with its `features/` — a `Scenario Outline` of two `Examples:` blocks and a `@todo` scenario — and its `test/` runner) carrying this solution as it is delivered. Verified on 2026-10-08 with Go 1.26, `godog` 0.16, `gremlins` 0.6.0:
-- `make init`, then `make test-and-report` — exit `0`; 4/4 scenarios, coverage 90.0%, mutation score 100% (7 killed); the scenario report lists both `Examples:` blocks and the `@todo` entry with its reason, and the living doc shows each row with its type tag.
+[`example/`](./example/) is a small module carrying this solution as it is delivered: `internal/linkcheck/` with two features in its `features/` and their steps in its `test/`, and the sub-package `internal/linkcheck/batch/` with its own `features/` and `test/` runner. The three features hold plain scenarios, a `Scenario Outline` with two `Examples:` blocks, data tables, two `@todo` scenarios, and a tag on each feature. Verified on 2026-10-08 with Go 1.26, `godog` 0.16, `gremlins` 0.6.0:
+- `make init`, then `make test-and-report` — exit `0`; 10/10 scenarios, coverage 96.3%, mutation score 100%; the scenario report lists both `Examples:` blocks and the `@todo` entry with its reason, and the living doc shows each row with its type tag.
 - `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped, no coverage report, only the `tests` badge.
-- `make test-kind-mutation` without `--integration` — 4 of the 7 mutants live and the score is 42.9%: the measurement behind the `--integration` rule.
+- `make test-kind-mutation` without `--integration`, measured when the example had one feature — 4 of its 7 mutants lived and the score was 42.9%: the measurement behind the `--integration` rule.
 
 # Rules
 

@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 3
+version: 4
 updated: 20261007
 tags:
   - skill/architecture/solution
@@ -83,16 +83,17 @@ Every kind writes its whole output below its own `$TEST_KIND_DIR`, per [[./Imple
 { "scenarios": [
   { "feature": "Check a URL", "scenario": "Check a URL", "examples": "malformed",
     "uri": "internal/domain/services/features/check.feature", "line": 18,
-    "type": "negative", "status": "passed", "note": "" }
+    "type": "negative", "tags": ["@negative", "@validation"], "status": "passed", "note": "" }
 ] }
 ```
 - **Entry** — one `Scenario`/`Example`, or one `Examples:` block of a `Scenario Outline`. `examples` is that block's name (`""` for a plain scenario); `line` is the `Scenario` line, or the `Examples:` line for a block; `uri` is the `.feature` path relative to the repository root.
 - **Inventory source** — the `.feature` files themselves, so `@todo` entries the runner never executes are listed too. Only the status comes from the runner's own result.
 - **`type`** — the one type tag among the entry's own and inherited (`Feature`, `Rule`, `Scenario`, `Examples`) tags, without `@`, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-type-tag-per-scenario|One type tag per scenario]]; `untyped` when there is none or more than one.
+- **`tags`** — every tag the entry carries or inherits, with `@`, sorted: the type tag, `@todo`, and whatever tags the project puts on its features and scenarios.
 - **`status`** — `passed`; `failed` (for an `Examples:` block: any of its rows failed); `todo` (tagged `@todo`, excluded from the run); `missing` (not `@todo`, but the runner reported no result for it — a wiring defect, never a pass).
 - **`note`** — the `# todo:` reason of a `@todo` entry, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion|Tag unrunnable scenarios @todo]]; `""` otherwise.
 
-`test-report` renders `reports/scenarios/index.html` from `scenarios.json` alone: a type × status count table, then every entry grouped by feature (scenario / examples, type, status, `uri:line`, note). It highlights `untyped` and `missing` entries, and `todo` entries of type `happy`, `negative`, or `error` that have no note.
+The unit kind renders `report/scenarios/index.html` from `scenarios.json` alone (`kind_scenarios_report`): a type × status count table, then one table of every entry — feature, scenario, examples, type, tags, status, `uri:line`, note. It highlights `untyped` and `missing` entries, and `todo` entries of type `happy`, `negative`, or `error` that have no note.
 
 The report answers, without a separate hand-maintained test inventory file:
 
@@ -110,7 +111,7 @@ The report answers, without a separate hand-maintained test inventory file:
 - **classic Cucumber JSON** (`*.json`, `features[].elements[].steps[]`) — rendered by `multiple-cucumber-html-reporter`;
 - **Cucumber Messages** (`*.ndjson` envelope stream) — rendered by `@cucumber/html-formatter`.
 
-Then it renders `report/tests/livingdoc/` with the stack-independent [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]], from the isolated, pinned install in [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] — never from the project's own dependency manifest. `test-report` publishes it unchanged as `reports/tests/livingdoc/`, next to the `reports/scenarios/` inventory, which it does not replace. The step needs Node 22+ and is skipped, never failed, where `npm` is missing.
+Then it renders `report/tests/livingdoc/` with the stack-independent [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]], from the isolated, pinned install in [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] — never from the project's own dependency manifest. It is what `reports/tests/` opens: where the runner's own report has no entry page, `kind_livingdoc` writes one that forwards to `livingdoc/`. `test-report` publishes it unchanged, next to the `reports/scenarios/` inventory, which it does not replace. The step needs Node 22+ and is skipped, never failed, where `npm` is missing.
 
 ## Report output
 `test-report` builds `$TEST_REPORT_DIR` — `index.html`, `reports/{name}/`, `badges/{name}.json`, `run.json` — per [[./Implementation/Repository.create.md#report-output|Report output]]: the one stack-independent artifact a publishing step uploads as-is. Where it is published, and under which path, is the publisher's choice; this solution owns no `.github/workflows/*` file and writes nothing outside the two directories the caller names.

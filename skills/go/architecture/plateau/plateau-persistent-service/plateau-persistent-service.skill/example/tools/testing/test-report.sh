@@ -68,7 +68,7 @@ for with_badge in 1 0; do
       jq -r --arg name "$name" '"    <li><span class=\"badge\"><span class=\"badge-label\">\(.label | @html)</span><span class=\"badge-message badge-\(.color)\">\(.message | @html)</span></span> - <a href=\"reports/\($name)/\">\($name)</a></li>"' "$badge"
     elif [ ! -f "$badge" ] && [ "$with_badge" = 0 ]; then
       hint=""
-      [ "$name" = scenarios ] && hint=" - every entry of the .feature files: its type, its status, the reason of a @todo"
+      [ "$name" = scenarios ] && hint=" - every entry of the .feature files: its type, its tags, its status, the reason of a @todo"
       printf '    <li><a href="reports/%s/">%s</a>%s</li>\n' "$name" "$name" "$hint"
     fi
   done

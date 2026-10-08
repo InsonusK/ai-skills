@@ -218,3 +218,16 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The Go example is the Python example's twin: `internal/linkcheck/` with the same feature file, its `test/` runner, and a `Makefile` with `init` (module download, `gremlins`) and the include line. `check.sh` §10 covers it.
 - ⚠️ The example showed that the Go mutation kind measured almost nothing: `gremlins` runs the tests of the mutated package only, and under the layout rule that package has none — the scenarios run from `{package}/test/`. The limit was known (the common map's `agent/DECISIONS.md`; `gw009-001` said its mutation run "is not evidence"). `gremlins unleash --integration` runs the whole module's tests per mutant: the example went from 42.9% to 100%, and no example has a surviving mutant left. It is in `mutation.sh` now, with two settings it needs: `GOFLAGS=-count=1` (a cached first run gives every mutant a timeout of nearly zero — `gw009-001`: 81 timed out) and `--timeout-coefficient 10` (the default times out killable mutants of a suite that runs in under a second). The price is the whole suite per mutant.
 - The Go mutation scores in `STATUS.md` changed with it; the remaining gap to 100% in the plateau examples is `noCoverage` — `main`, config and HTTP server code no scenario reaches.
+
+## Owner-decided (2026-10-08, the report page and the examples)
+
+- The separate "living documentation" line on the landing page is redundant: the `tests` item leads straight to the living doc.
+- The examples get more features.
+- A table "feature | scenario | scenario tags | …" should be available.
+
+## Agent decisions — the report page and the examples
+
+- `tests` → living doc: `kind_livingdoc` writes `report/tests/index.html` forwarding to `livingdoc/` when the runner's own report has no entry page (Go, .NET, Python). The landing page and a README badge link `reports/tests/` as before, so nothing in the builder knows about the living doc. TypeScript keeps cucumber-js's own HTML report as that page — the same renderer.
+- The table is the scenarios page: `scenarios.json` gained `tags` (own and inherited, with `@`), and the page is one table — feature, scenario, examples, type, tags, status, location, note — under the type × status summary, instead of one table per feature.
+- The three skill examples carry the same three features: a second feature in the same package, and a sub-package with its own `features/` and `test/` — data tables, an outline with two `Examples:` blocks, two `@todo` scenarios. Python also shows steps' shared fixture in `test/conftest.py`.
+- Each feature carries one tag of the project's own (`@validation`, `@extraction`, `@batch`) to show what a feature-level tag looks like in the living doc and in the scenarios table. The skills prescribe only the type tags and `@todo`; a project's own tags are free, and in Python each must be a registered marker.

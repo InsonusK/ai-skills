@@ -20,6 +20,9 @@ func logf(format string, args ...any) {
 type World struct {
 	input  string
 	result linkcheck.Result
+
+	text  string
+	links []string
 }
 
 func newWorld() *World {
