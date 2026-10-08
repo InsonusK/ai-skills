@@ -4,7 +4,7 @@ description: Sets up the Python side of the Cucumber/coverage/mutation quality g
 whenToUse: Set up or review the test suite of a Python package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing Python project, or wire coverage and mutation testing into a Python project's `make`/CI pipeline.
 domain: python
 type: architecture
-version: 20261007180000
+version: 20261008100000
 tags:
   - solution/conformance-testing-in-python
   - skill/architecture/solution
@@ -91,7 +91,7 @@ REPOSITORY:
 
 # Ground truth
 [`example/`](./example/) is a minimal package (`src/` layout, one feature with a `Scenario Outline` of two `Examples:` blocks and a `@todo` scenario, one plain test) carrying this solution as it is delivered. Verified on 2026-10-07 with Python 3.13, `pytest` 9.1, `pytest-bdd` 9.0 (and 8.1), `coverage` 7.16, `mutmut` 3.8:
-- `make test-and-report` — exit `0`; 5/5 tests, coverage 100%, mutation score 93.5% (29 killed, 2 survived); the scenario report lists both `Examples:` blocks and the `@todo` entry with its reason.
+- `make init`, then `make test-and-report`, with no Python package installed outside `.venv/` — exit `0`; 5/5 tests, coverage 100%, mutation score 93.5% (29 killed, 2 survived); the scenario report lists both `Examples:` blocks and the `@todo` entry with its reason.
 - `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped, no coverage report, only the `tests` badge.
 - A broken `Examples:` row — `make test-kind-unit` exits non-zero, that block is `failed` and its sibling `passed`.
 - `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=HEAD~1` in a copy with its own git history — only the changed module's mutants run.
