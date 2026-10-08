@@ -1,0 +1,7 @@
+{
+  "testRunner": "command",
+  "commandRunner": { "command": "npx cucumber-js --format progress" },
+  "mutate": ["src/**/*.ts"],
+  "coverageAnalysis": "off",
+  "thresholds": { "high": 80, "low": 60, "break": 50 }
+}

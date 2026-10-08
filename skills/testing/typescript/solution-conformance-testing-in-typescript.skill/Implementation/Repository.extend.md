@@ -51,7 +51,7 @@ The only stack-specific code: each runs this stack's tool and writes the normali
 
 ## MUST
 - `test-kind-unit`, `test-kind-mutation`, `test-report`, and `test-and-report` targets must exist and behave exactly as documented in [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] — this `Makefile` is the TypeScript implementation of that contract, not a variation of it.
-  - Violation: a CI workflow or a developer runs `stryker run`/`vitest`/`cucumber-js` directly instead of through `make test-kind-mutation`/`make test-kind-unit`.
+  - Violation: a CI workflow or a developer runs `stryker run`/`cucumber-js` directly instead of through `make test-kind-mutation`/`make test-kind-unit`.
   - Risk: the workflow now needs TypeScript-specific knowledge, and switching or reconfiguring Stryker later becomes a breaking change for every CI file that calls it directly.
   - Fix: every caller (CI or a developer) goes through the `Makefile`; the project's own CI workflows call these targets stack-agnostically instead of the underlying tools directly.
 - `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write their normalized JSON into `$TEST_KIND_DIR/result/` and keep the native HTML report under `$TEST_KIND_DIR/report/<kind>/`, per the same contract.

@@ -2,7 +2,7 @@
 name: testing tool choice
 description: Which Gherkin runner, coverage tool, and mutation-testing tool the TypeScript conformance-testing solution uses
 problem: Pick one Gherkin/BDD runner, one coverage tool, and one mutation-testing tool for framework-agnostic TypeScript packages that must satisfy the solution-conformance-testing gate
-decision: "@cucumber/cucumber + Vitest coverage + Stryker (@stryker-mutator/core)"
+decision: "@cucumber/cucumber + c8 + Stryker (@stryker-mutator/core)"
 tags:
   - solution/conformance-testing-in-typescript
   - concern/documentation
@@ -13,24 +13,41 @@ tags:
 # Problem
 [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md) requires a Gherkin runner, a coverage tool, and a mutation-testing tool, but leaves the concrete choice to each stack. Framework-agnostic TypeScript packages need one specific, documented choice so every package applying this solution uses the same tools, independent of whatever UI framework eventually consumes the package.
 
+The first choice named Vitest for coverage and for unit tests beside the scenarios. It was replaced on 2026-10-08: the unit kind never ran Vitest, and the owner's rule for front-end code is that tests of services and classes are Cucumber scenarios, while component and pixel tests are test kinds of the UI framework's own testing solution.
+
 # Selected variant
-**Selected variant:** [[#cucumber-js Vitest coverage Stryker]]
+**Selected variant:** [[#cucumber-js c8 Stryker]]
 
 # Searched variants
+
+## cucumber-js c8 Stryker
+
+**Selected.**
+
+### Description
+Use `@cucumber/cucumber` (the official JS/TS Cucumber implementation) for every test of the package, `c8` for the coverage of that run, and Stryker (`@stryker-mutator/core`) with its `command` test runner calling `cucumber-js` for mutation testing.
+
+### Benefits
+- One runner: the unit kind, the coverage number and mutation testing all see the same tests.
+- `@cucumber/cucumber` is the reference implementation of Cucumber for JavaScript/TypeScript; it writes Cucumber Messages, the standard report the living doc is rendered from.
+- `c8` wraps any Node process, so coverage needs no second runner and no instrumentation step.
+- Stryker Mutator is the same tool family as Stryker.NET in `solution-conformance-testing-in-dotnet`, keeping the mutation report's shape consistent across stacks.
+
+### Costs
+- Stryker's `command` runner starts `cucumber-js` once per mutant and cannot tell which test covers which mutant: slow on a large package, and no mutant is ever reported as `NoCoverage`.
+- A test that is awkward as a scenario has no other home in this package.
 
 ## cucumber-js Vitest coverage Stryker
 
 ### Description
-Use `@cucumber/cucumber` (the official JS/TS Cucumber implementation) for Gherkin scenarios, Vitest's built-in coverage (`--coverage`, v8 provider) for coverage, and Stryker (`@stryker-mutator/core`) for mutation testing.
+Use Vitest for unit tests and its built-in coverage, with `@cucumber/cucumber` beside it for the scenarios.
 
 ### Benefits
-- `@cucumber/cucumber` is the reference implementation of Cucumber for JavaScript/TypeScript, with the widest ecosystem support.
-- Vitest coverage requires no extra tooling beyond the test runner most modern TS packages already use.
-- Stryker Mutator is the same vendor/tool family already selected for .NET in the dotnet variant `solution-conformance-testing-in-dotnet` (as Stryker.NET), keeping the mutation-report shape and mental model consistent across stacks.
+- Vitest is the runner most TypeScript packages already use; its coverage needs no extra tool.
 
 ### Costs
-- `@cucumber/cucumber` runs as a separate process from Vitest, so combining their coverage output requires configuring both to write to the same coverage provider/output directory.
-- Stryker's mutation runs are slow on large packages; `make mutation-test` still supports `ONLY_DELTA`/`DELTA_BASE` for a fast local/manual run, even though no CI workflow currently calls it that way — the full, unscoped command is expected to run only on a post-merge report, never on a PR-gate.
+- Two runners in one test kind: two exit codes and two coverage outputs to merge, and mutation testing must run both.
+- It duplicates what the scenarios already prove for a package of rules and validators.
 
 ## jest-cucumber instead of @cucumber/cucumber
 
@@ -41,7 +58,7 @@ Express Gherkin scenarios as Jest test functions via `jest-cucumber` instead of 
 - Scenarios run inside the existing test runner process, one less CLI invocation in CI.
 
 ### Costs
-- Requires Jest specifically; this solution's package already standardizes on Vitest for unit tests and coverage, and mixing two test runners in one package adds configuration surface for no functional gain.
+- Requires Jest specifically, and gives up `@cucumber/cucumber`'s Cucumber Messages report the living doc is rendered from.
 
 ## Playwright's own BDD-style fixtures instead of Cucumber
 

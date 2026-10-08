@@ -1,5 +1,5 @@
 ---
-description: Add Cucumber, Vitest coverage, and Stryker scripts/config to the package
+description: Add the Cucumber, c8 and Stryker dependencies and their two config files to the package
 name: "{Package}"
 element_kind: package
 change_kind: extend
@@ -9,7 +9,7 @@ tags:
 ---
 
 # Goals
-- Give `{Package}` a `test`/`coverage`/`mutation` script triplet that runs Vitest unit tests together with the package's Cucumber scenarios.
+- Give `{Package}` the dependencies and the two config files `tools/testing/kinds/unit.sh` and `mutation.sh` run on.
 
 # Core Principles
 - `.feature` files live under `features/`, one file per business rule; step definitions live under `features/step-definitions/`, one file per feature file.
@@ -29,9 +29,12 @@ tags:
       {rule}.steps.ts
   package.json
   cucumber.mjs
-  vitest.config.ts
-  stryker.config.mjs
+  stryker.conf.json
 ```
+
+## Files
+- Copy verbatim to `cucumber.mjs`: [`assets/cucumber.mjs`](../assets/cucumber.mjs) — the default profile: feature paths, the `tsx/cjs` loader, the step definitions, `not @todo`.
+- Copy verbatim to `stryker.conf.json`: [`assets/stryker.conf.json`](../assets/stryker.conf.json) — the `command` test runner calling `cucumber-js`, `src/**/*.ts` mutated; the package then owns its `thresholds`.
 
 ## Directory and class skills
 | Directory | file   | Description           |
@@ -43,7 +46,6 @@ tags:
 | Package   | Version constraint | Purpose                |
 | --------- | ------------------ | ---------------------- |
 | @cucumber/cucumber | ^10 | Run Gherkin scenarios against step definitions |
-| vitest | ^2 | Unit tests and coverage (`--coverage`, v8 provider) |
 | @stryker-mutator/core | ^8 | Mutation testing |
 | tsx | latest stable | Load TypeScript step definitions in `@cucumber/cucumber` (`--require-module tsx/cjs`) |
 | c8 | ^10 | Coverage of the `cucumber-js` run in `tools/testing/kinds/unit.sh` (`npx c8`) |
@@ -54,9 +56,13 @@ tags:
 # Rules
 
 ## MUST
-- Add `test`, `coverage`, and `mutation` scripts to `package.json` that run Vitest and `cucumber-js`/Stryker respectively.
-  - Risk: without these scripts, `make test-kind-unit`/`make test-kind-mutation` (implemented by `Repository.extend`'s scripts) have no consistent npm entry point to invoke.
-  - Fix: define `test`, `coverage`, and `mutation` scripts in `package.json` that wrap Vitest and `cucumber-js`/Stryker respectively.
+- Keep `cucumber.mjs` as the one place that says which features and step definitions run, and `stryker.conf.json`'s `commandRunner` calling `npx cucumber-js` with no path of its own.
+  - Violation: a `stryker.conf.json` whose command lists feature paths, or a second test runner beside `cucumber-js`.
+  - Risk: mutation testing runs a different set of tests than `make test-kind-unit`, so a mutant "survives" against tests the unit kind never ran — or is killed by one it does not count.
+  - Fix: `commandRunner.command` = `npx cucumber-js --format progress`; everything else comes from the default profile.
+- List `c8` as a dev dependency.
+  - Risk: `unit.sh` calls `npx c8`; without the dependency `npx` downloads whatever version is current on every run.
+  - Fix: `"c8": "^10"` in `devDependencies`.
 - Configure `cucumber-js` to load `.ts` step definitions through `tsx` (`--require-module tsx/cjs`) — never `ts-node`.
   - Risk: without a TypeScript loader configured, `cucumber-js` cannot import `.steps.ts` files and every scenario fails to run.
   - Fix: pass `--require-module tsx/cjs` (in `tools/testing/kinds/unit.sh` or `cucumber.mjs`); `ts-node` does not load under TypeScript 6+ and is no longer maintained.
@@ -66,5 +72,5 @@ tags:
   - Fix: import only the symbols `index.ts` re-exports.
 
 # Check list
-- [ ] `package.json` declares `test`, `coverage`, `mutation` scripts.
-- [ ] `cucumber.mjs` can load `.ts` step definitions.
+- [ ] `package.json` lists `@cucumber/cucumber`, `tsx`, `c8`, `@stryker-mutator/core` under `devDependencies`.
+- [ ] `npx cucumber-js` with no argument runs every scenario but the `@todo` ones; `stryker.conf.json` names no feature path.
