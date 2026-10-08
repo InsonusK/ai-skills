@@ -16,7 +16,7 @@ The test module configures dependencies; the component fixture exposes the insta
 
 ## Example
 
-The counter specs click the fixture’s real button and check the resulting count.
+The form specs submit through the real template and assert the normalized URL.
 
 ## Sources
 

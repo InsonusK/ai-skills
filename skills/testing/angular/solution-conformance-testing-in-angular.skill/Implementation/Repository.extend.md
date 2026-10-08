@@ -29,6 +29,8 @@ For a multi-project workspace, append the intended application name to the `ng t
 
 Extend README Shields endpoint links with `badges/components.json` and `badges/ui.json` beside the inherited badges. Their destination links open `reports/components/` and `reports/ui/` under the published report root.
 
+The [complete example Makefile](../example/Makefile) exposes the inherited public contract. Its `init` target prepares dependencies; testing targets come exclusively from the shared include. [Example README](../example/README.md) documents the caller commands and report destination.
+
 # Rules
 ## MUST
 ### Preserve discovery and caller paths

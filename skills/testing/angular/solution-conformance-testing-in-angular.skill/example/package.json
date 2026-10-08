@@ -1,0 +1,47 @@
+{
+  "name": "linkcheck",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "cucumber-js",
+    "mutation": "stryker run",
+    "build": "ng build",
+    "start": "ng serve"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10",
+    "@stryker-mutator/core": "^8",
+    "c8": "^10",
+    "tsx": "^4",
+    "typescript": "6.0.2",
+    "@angular/build": "^22.2.2",
+    "@angular/cli": "^22.2.2",
+    "@angular/compiler-cli": "^22.2.0",
+    "@playwright/test": "^1.64.0",
+    "@vitest/coverage-v8": "^5.0.3",
+    "jsdom": "^30.0.0",
+    "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "engines": {
+    "node": ">=24.15 <25"
+  },
+  "c8": {
+    "include": [
+      "src/linkcheck/**/*.ts"
+    ],
+    "exclude": [
+      "src/**/test/**"
+    ]
+  }
+}

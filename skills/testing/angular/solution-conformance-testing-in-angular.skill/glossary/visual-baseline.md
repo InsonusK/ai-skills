@@ -16,7 +16,7 @@ The expected image is source-controlled; actual images and diffs are transient r
 
 ## Example
 
-The counter appearance spec compares its app-root region with a separately reviewed counter.png.
+The form appearance spec compares its main region with the reviewed linkcheck-form.png.
 
 ## Sources
 

@@ -16,7 +16,7 @@ The configuration owns the server and browser settings; spec files declare flows
 
 ## Example
 
-The counter browser test clicks Increment in the served Angular application and checks the visible count.
+The browser tests submit a URL in the served Angular form and check the visible normalized URL or error.
 
 ## Sources
 

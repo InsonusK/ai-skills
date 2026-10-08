@@ -4,7 +4,7 @@ description: Extends TypeScript conformance testing with Angular TestBed compone
 whenToUse: Add component behavior and browser UI coverage to an Angular application that already uses the TypeScript Cucumber, coverage and mutation solution.
 domain: skill
 type: architecture
-version: 20261008210000
+version: 20261008220000
 updated: 20261008
 tags:
   - skill/architecture/solution
@@ -32,6 +32,7 @@ depends_on:
   - "[solution-conformance-testing-in-typescript](skills/testing/typescript/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md)"
 adr:
   - "[Angular test kinds](adr/angular-test-kinds.md)"
+  - "[Complete Makefile example](adr/complete-makefile-example.md)"
 ---
 
 # Goal
@@ -58,6 +59,8 @@ adr:
 
 # Adr
 - [Angular test kinds](adr/angular-test-kinds.md): native Angular builder for compilation/TestBed and Playwright for browser evidence, two discovered kinds.
+
+- [Complete Makefile example](adr/complete-makefile-example.md): one runnable Angular app executes all four kinds and generates its report through Make.
 
 # Requirements
 SOLUTION:
@@ -95,7 +98,7 @@ PACKAGE:
 3. Follow the baseline review procedure in [UI tests](Implementation/{Flow}.ui.spec.ts.create.md#MUST); the normal kind never updates committed expectations.
 
 # Ground truth
-[Verification](verification.md) records the real Angular and Chromium runs, positive/negative outcomes and supported version boundary; [counter sources](examples/README.md) show both kinds against the same component.
+[The complete Angular example](example/README.md) builds and serves a real Link checker form over the inherited domain package. Its Makefile runs all four kinds and assembles the common report; [verification](verification.md) records actual executions and failure paths.
 
 # Rules
 ## MUST

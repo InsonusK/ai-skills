@@ -16,7 +16,7 @@ A simulated document contains elements and DOM events; it does not reproduce Chr
 
 ## Example
 
-The TestBed counter test checks output text here; a screenshot comparison belongs to the browser kind.
+The form component tests check output text here; a screenshot comparison belongs to the browser kind.
 
 ## Sources
 
