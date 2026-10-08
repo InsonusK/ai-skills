@@ -17,11 +17,11 @@ graph TD
     end
     style CommonRow1 fill:none,stroke:none
 
-    Common -->|Optional| Storage
     Common -->|Optional| In["Inbound"]
-    Common -->|Optional| Out["Outbound"]
     Common -->|Optional| Metric
     Common -->|Optional| TaskBox
+    Common -->|Optional| Storage
+    Common -->|Optional| Out["Outbound"]
 
     Storage -->|"At least one (kind)"| Persistent
     Storage -->|"At least one (kind)"| Cache
@@ -46,6 +46,9 @@ graph TD
 
     MessageConsumer -->|"At least one (protocol)"| KafkaConsumer
     MessageConsumer -->|"At least one (protocol)"| RabbitMQConsumer
+    MessageConsumer -->|"Optional"| Inbox
+
+    Inbox -. "Requires" .-> TaskBox
 
     Out -->|"At least one (kind)"| OutboundSync
     Out -->|"At least one (kind)"| Outbox
