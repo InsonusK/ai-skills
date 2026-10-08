@@ -12,6 +12,8 @@ tags:
 
 # Problem
 
+This records the earlier choice. Its page/renderer output is superseded by [[./one-livingdoc-view.md|One living-doc view]]: the inventory now drives the tag check and completes one shared living doc, which is the only scenario view.
+
 The trace matrix answered questions the report could not: which scenarios exist per feature, which type each one is (happy / boundary / negative / error / concurrency / security / regression), which are planned but not implemented and why, and — through a per-type summary — whether a whole kind of behavior is missing. Keeping that answer in a hand-written file next to the `.feature` files means every scenario is described twice, and the copy that is not executed goes stale first.
 
 # Selected variant

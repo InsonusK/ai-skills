@@ -61,7 +61,6 @@ kind_badge_count tests tests "$PASSED" "$TOTAL"
 # are already relative to the repository root.
 jq -s --arg prefix "" -f tools/testing/messages-results.jq "$CUCUMBER_MESSAGES" > "$SCENARIO_RESULTS"
 bash tools/testing/normalize-scenarios.sh "$SCENARIO_RESULTS"
-kind_scenarios_report
 kind_scenarios_check || CUCUMBER_EXIT=1   # an untagged scenario or feature is a failed check
 
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then

@@ -19,7 +19,7 @@ tools/
   testing/
     testing.mk          ← the Makefile side: caller targets and variables
     testing.sh          ← runs a kind, builds and checks the report, checks the README
-    kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_badge*, kind_scenarios_report, kind_scenarios_check, kind_livingdoc
+    kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_badge*, kind_scenarios_check, kind_livingdoc
     test-report.sh      ← gathers report/ and badges/ of every kind into the report directory
     normalize-scenarios.sh, messages-results.jq   ← helpers a kind script may call
     kinds/
@@ -94,10 +94,9 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `skipped` | one line: why the kind does not apply to this run | a kind that skipped itself — `kind_skip "…"` |
 | `exit-code` | the kind script's exit code | `testing.sh`, after the script ends |
 | `badges/{name}.json` | the badge of the report of the same name — shields.io endpoint schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` | the kind, through `kind_badge*`; `unit`: `tests`, and `coverage` in a `report` run; `mutation`: `mutation` |
-| `report/scenarios/` | the scenario page rendered from `result/scenarios.json` | `unit` — `kind_scenarios_report` |
 | `result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit` |
 | `result/coverage-test.json` | `{ "linePct": <number> }` | `unit` (`report` only) |
-| `result/scenarios.json` | `{ "scenarios": [ { "feature", "type", "scenario", "examples", "category", "status", "validated", "tags", "uri", "line", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
+| `result/scenarios.json` | `{ "scenarios": [ { "feature", "type", "scenario", "examples", "category", "status", "validated", "tags", "uri", "line", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-inventory|Scenario inventory]] | `unit` (every run, also when a test failed) |
 | `result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation` |
 | `report/tests/` | the tool's native test report; its entry page forwards to `livingdoc/` when the tool wrote none | `unit` — `kind_livingdoc` |
 | `report/tests/cucumber/` | the runner's standard Cucumber report — `*.json` (classic Cucumber JSON) or `*.ndjson` (Cucumber Messages), one protocol per stack | `unit` |
@@ -161,9 +160,9 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
   - Risk: a caller reads the exit code as "the tests failed"; a run that is red over a score every time hides the run that is red over a broken test.
   - Fix: in a `report` run give the tool its never-break setting (`--break-at 0`, `thresholds.break = 0`) and return its exit code; a red test always returns non-zero.
 - Call `kind_scenarios_check` in `test-kind-unit` after the results are written, and exit non-zero when it fails.
-  - Violation: a unit kind that renders the scenarios page and exits `0` while it lists a feature without a type or a scenario without a category.
+  - Violation: a unit kind that exits `0` while its inventory lists a feature without a type or a scenario without a category.
   - Risk: a missing tag is visible only to someone who opens the report; an agent that runs the tests and sees them green never learns that it left a scenario or a feature unclassified.
-  - Fix: `kind_scenarios_check || status=1` after `kind_scenarios_report` — it prints each feature without exactly one `@type/…` tag and each scenario without exactly one `@category/…` tag to stderr.
+  - Fix: `kind_scenarios_check || status=1` after writing the inventory — it prints each feature without exactly one `@type/…` tag and each scenario without exactly one `@category/…` tag to stderr.
 - Write `result/scenarios.json` on every `test-kind-unit` run, listing every `.feature` entry, `@status/todo` and `@status/broken` ones included.
   - Risk: a report built only from executed scenarios hides planned-but-missing cases.
   - Fix: build the inventory from the `.feature` files and join the runner's result onto it.

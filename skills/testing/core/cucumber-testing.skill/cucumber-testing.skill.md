@@ -1,8 +1,9 @@
 ---
+version: 20261008170000
 name: cucumber-testing
 description: Language-independent rules for writing and organizing Cucumber/Gherkin scenarios and their step definitions — generic comparators, expected-data placement, ordering, logging, and BDD editor setup
 whenToUse: when writing or reviewing a `.feature` file or its step definitions, when deciding whether an assertion step is reusable across scenarios, or when configuring an editor/devcontainer for Cucumber
-updated: 20261009
+updated: 20261008
 tags:
   - stack
   - concern/testing/bdd
@@ -36,7 +37,7 @@ This skill covers language-independent Cucumber/Gherkin authoring: scenario stru
 ### One scenario, one runner
 Write every test case as a Cucumber scenario — a technical case as much as a business one. Two exceptions: the one runner entry point wired to the stack's native test tool, and a case whose scenario would be unjustifiably complex to implement, written as a plain test with the reason in a comment above it.
 - Violation: a plain unit-test-framework test for behavior a `.feature` scenario could express; a plain test with no stated reason.
-- Risk: a person reads the Cucumber text, not test code — a case kept in a plain test is a case nobody but a developer reviews, and it is missing from the scenario report.
+- Risk: a person reads the Cucumber text, not test code — a case kept in a plain test is a case nobody but a developer reviews, and it is missing from the living doc.
 - Fix: express the case as a scenario; keep a plain test only where the steps would cost more than the case is worth, and say why above it.
 
 ### Delete unreachable code instead of testing around it

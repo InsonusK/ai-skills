@@ -40,7 +40,7 @@ kind_livingdoc() {
         && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc" \
              "$TEST_KIND_DIR/status-legend.json" "$RESULT_DIR/scenarios.json"; } \
       || { echo "livingdoc: render failed"; return 0; }
-    [ -f "$REPORT_DIR/tests/index.html" ] || cat > "$REPORT_DIR/tests/index.html" <<'HTML'
+    cat > "$REPORT_DIR/tests/index.html" <<'HTML'
 <!doctype html><html><head><meta charset="utf-8"><title>tests</title>
 <meta http-equiv="refresh" content="0; url=livingdoc/"></head>
 <body><a href="livingdoc/">living documentation</a></body></html>
@@ -75,7 +75,7 @@ kind_badge_percent() {
 }
 
 # kind_status_legend_json - the meaning of the status tags and of the statuses a run reports:
-# the one text behind the legend of the scenarios page and of the living doc.
+# the one text behind the living-doc status legend.
 kind_status_legend_json() {
   cat <<'JSON'
 { "tags": [
@@ -88,50 +88,6 @@ kind_status_legend_json() {
     { "name": "not-run", "meaning": "in a .feature file and not excluded, yet no runner executed it - a wiring defect, never a pass" } ],
   "note": "Every feature carries one @type/... tag - the part of the program it specifies; every scenario one @category/... tag - the kind of test it is. \"none\" in those columns fails the unit test kind." }
 JSON
-}
-
-# kind_status_legend - that legend as an HTML fragment.
-kind_status_legend() {
-  kind_status_legend_json | jq -r '
-    def rows: map("<tr><td>\(.name | @html)</td><td>\(.meaning | @html)</td></tr>") | join("");
-    "<h2>Statuses</h2>",
-    "<table><tr><th>tag on a feature or a scenario</th><th>meaning</th></tr>\(.tags | rows)</table>",
-    "<table><tr><th>status of a run</th><th>meaning</th></tr>\(.run | rows)</table>",
-    "<p>\(.note | @html)</p>"'
-}
-
-# kind_scenarios_report - result/scenarios.json -> report/scenarios/index.html: the status
-# legend, a category x status and a type x status table, then one table of every entry.
-# "attention" marks an entry without a type or a category, a failed or not-run one, and a
-# todo or broken one without a reason.
-kind_scenarios_report() {
-  [ -f "$RESULT_DIR/scenarios.json" ] || return 0
-  mkdir -p "$REPORT_DIR/scenarios"
-  {
-    echo '<!doctype html><html><head><meta charset="utf-8"><title>Scenarios</title>'
-    echo '<style>td,th{border:1px solid #999;padding:2px 6px;text-align:left}table{border-collapse:collapse;margin-bottom:1em}.attention{background:#fdd}</style></head><body>'
-    echo '<h1>Scenarios</h1>'
-    jq -r '
-      ["happy","boundary","negative","error","concurrency","security","regression","none"] as $categories
-      | ["domain","service","api","infrastructure","mapping","contract","tech-check","none"] as $types
-      | ["passed","failed","todo","broken","not-run"] as $statuses
-      | .scenarios as $all
-      | def attention: .type == "none" or .category == "none" or .status == "failed" or .status == "not-run"
-          or ((.status == "todo" or .status == "broken") and .note == "");
-        def summary($title; $key; $values):
-          "<h2>\($title)</h2><table><tr><th>\($key)</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
-          ($values[] as $v | "<tr><td>\($v)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(.[$key] == $v and .status == $s)] | length)</td>") | join("")) + "</tr>"),
-          "</table>";
-      summary("By category - the kind of test"; "category"; $categories),
-      summary("By type - the part of the program"; "type"; $types),
-      "<h2>Every scenario</h2><table><tr><th>feature</th><th>type</th><th>scenario</th><th>examples</th><th>category</th><th>status</th><th>validated</th><th>tags</th><th>location</th><th>note</th></tr>",
-      ($all | sort_by(.feature, .uri, .line)[] |
-        "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.feature | @html)</td><td>\(.type)</td><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.category)</td><td>\(.status)</td><td>\(if .validated then "yes" else "" end)</td><td>\(.tags | join(" ") | @html)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
-      "</table>"
-    ' "$RESULT_DIR/scenarios.json"
-    kind_status_legend
-    echo '</body></html>'
-  } > "$REPORT_DIR/scenarios/index.html"
 }
 
 # kind_scenarios_check - fails when result/scenarios.json holds a feature without exactly one

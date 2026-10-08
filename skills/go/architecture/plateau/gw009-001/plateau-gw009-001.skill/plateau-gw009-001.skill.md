@@ -4,8 +4,8 @@ description: GW009.001 — persistent service with TaskBox; plateau-persistent-s
 whenToUse: when a Go web-service with PostgreSQL must run follow-up work after a data change — retried, ordered per key, and atomic with the change — or when reviewing a Go service's TaskBox wiring against the VP-C003 contract
 domain: skill
 type: template
-version: 20261008200000
-updated: 20260929
+version: 20261008170000
+updated: 20261008
 tags:
   - skill/template/plateau
   - plateau/plateau-gw009-001

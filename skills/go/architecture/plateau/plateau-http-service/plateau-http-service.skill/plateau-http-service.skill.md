@@ -4,7 +4,7 @@ description: The base Go web-service plateau — no DB, domain-logic separation,
 whenToUse: when starting a new Go web-service from scratch with no database and no alternative API yet, or reviewing whether a change follows this family's ports-and-adapters/config/logging/testing conventions
 domain: skill
 type: template
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/plateau
   - plateau/plateau-http-service

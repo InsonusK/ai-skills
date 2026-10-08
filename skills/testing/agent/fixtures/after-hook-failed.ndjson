@@ -1,0 +1,6 @@
+{"gherkinDocument": {"uri": "hook.feature", "feature": {"id": "f", "name": "Hook failure", "keyword": "Feature", "description": "", "location": {"line": 1}, "tags": [{"name": "@type/domain", "location": {"line": 1}}], "children": [{"scenario": {"id": "s", "keyword": "Scenario", "name": "After hook fails", "description": "", "location": {"line": 3}, "steps": [{"id": "st", "keyword": "Then ", "text": "it passes", "location": {"line": 4}}]}}]}}}
+{"pickle": {"id": "p", "uri": "hook.feature", "name": "After hook fails", "astNodeIds": ["s"], "tags": [{"name": "@type/domain"}, {"name": "@category/happy"}], "steps": [{"id": "ps", "text": "it passes", "astNodeIds": ["st"]}]}}
+{"testCase": {"id": "tc", "pickleId": "p", "testSteps": [{"id": "tst", "pickleStepId": "ps"}, {"id": "after", "hookId": "hook"}]}}
+{"testCaseStarted": {"id": "ts", "testCaseId": "tc"}}
+{"testStepFinished": {"testCaseStartedId": "ts", "testStepId": "tst", "testStepResult": {"status": "PASSED"}}}
+{"testStepFinished": {"testCaseStartedId": "ts", "testStepId": "after", "testStepResult": {"status": "FAILED", "message": "after hook crashed"}}}

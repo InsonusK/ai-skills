@@ -99,7 +99,7 @@ for s in go dotnet; do
     cmp -s "$src/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/tools/testing/kinds/"
   done < <(git ls-files -co --exclude-standard "skills/$s/**/example/tools/testing/kinds/*.sh")
 done
-for s in go python typescript; do   # the runnable example inside the testing skill itself
+for s in go python typescript dotnet; do   # the runnable example inside the testing skill itself
   src=skills/testing/$s/solution-conformance-testing-in-$s.skill
   while IFS= read -r copy; do
     cmp -s "$src/assets/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/assets/tools/testing/kinds/"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Writes $TEST_KIND_DIR/result/scenarios.json (solution-conformance-testing's Scenario report).
+# Writes $TEST_KIND_DIR/result/scenarios.json (solution-conformance-testing's scenario inventory).
 #
 # The inventory comes from every .feature file in the repository, so @status/todo and
 # @status/broken entries the runner never executes are listed too. Per entry it reads:
