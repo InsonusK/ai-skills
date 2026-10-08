@@ -63,7 +63,7 @@ init:
 ## What the kinds write
 | Kind | Below `$TEST_KIND_DIR` |
 | --- | --- |
-| `unit` | `badges/tests.json` and `result/unit-test.json` (counts from `report/tests/junit.xml`), `result/scenarios.json` and `report/scenarios/`, `report/tests/cucumber/pytest-bdd.json` (classic Cucumber JSON, completed by the plugin), `report/tests/livingdoc/`; in a `report` run also `badges/coverage.json`, `result/coverage-test.json` and `report/coverage/` |
+| `unit` | `badges/tests.json` and `result/unit-test.json` (counts from `report/tests/junit.xml`), `result/scenarios.json`, `report/tests/cucumber/pytest-bdd.json` (classic Cucumber JSON, completed by the plugin), `report/tests/livingdoc/`; in a `report` run also `badges/coverage.json`, `result/coverage-test.json` and `report/coverage/` |
 | `mutation` | `badges/mutation.json` and `result/mutation-test.json` (from `mutmut export-cicd-stats`), `report/mutation/results.txt` (every mutant and its status), `report/mutation/mutmut.log` |
 
 # Rules
@@ -75,8 +75,8 @@ init:
   - Fix: keep the single run of the script; every caller goes through `make test-kind-unit`.
 - Load the `unit_scenarios` plugin in that run (`-p unit_scenarios`, `PYTHONPATH=tools/testing/kinds`) and feed its output to `tools/testing/normalize-scenarios.sh`.
   - Violation: a run without the plugin, with the scenario results and the living doc taken from `--cucumberjson` as `pytest-bdd` writes it.
-  - Risk: `pytest-bdd`'s Cucumber JSON gives every row of a `Scenario Outline` the outline's line and drops the tags of its `Examples:` block — the scenario report cannot tell one block from another and marks them all `not-run`, and the living doc shows the rows with no type tag to filter by.
-  - Fix: keep the plugin — it reports each row's own line to the scenario report, and completes the Cucumber JSON file with that line and every inherited tag (`@category/happy`, `@category/negative`, …).
+  - Risk: `pytest-bdd`'s Cucumber JSON gives every row of a `Scenario Outline` the outline's line and drops the tags of its `Examples:` block — `result/scenarios.json` cannot tell one block from another and marks them all `not-run`, and the living doc shows the rows with no type tag to filter by.
+  - Fix: keep the plugin — it reports each row's own line to `normalize-scenarios.sh`, and completes the Cucumber JSON file with that line and every inherited tag (`@category/happy`, `@category/negative`, …).
 - Pass `--fail-under=0` to the `coverage html` / `coverage json` calls of a `report` run.
   - Risk: with `fail_under` in `pyproject.toml` these commands exit `2` below the threshold, and a `report` run goes red over a score.
   - Fix: keep the flag in `unit.sh`; the project enforces its threshold with its own `coverage report` where it gates.

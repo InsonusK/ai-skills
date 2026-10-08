@@ -51,7 +51,7 @@ src/{package}/                    or {package}/ without a src/ layout
 ### One step module per feature, shared steps in conftest.py
 Bind exactly one feature in each step module with `scenarios("../features/{rule}.feature")`, keep the steps only that feature uses in it, and put steps and fixtures several features of the package share — generic comparators included — into `test/conftest.py`.
 - Violation: a step module with step functions and no `scenarios(...)` call; one step copied into two step modules.
-- Risk: without `scenarios(...)` no scenario of the feature is collected — the run is green and the scenario report shows `not-run`; a copied step drifts, per [Generic comparator steps](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#generic-comparator-steps).
+- Risk: without `scenarios(...)` no scenario of the feature is collected — the run is green and the living doc lists them as `not-run`; a copied step drifts, per [Generic comparator steps](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#generic-comparator-steps).
 - Fix: one `scenarios(...)` call per step module; `pytest-bdd` finds the steps of `conftest.py` for every module of that folder.
 
 ### Register every pytest-bdd parse() placeholder as a parameterType

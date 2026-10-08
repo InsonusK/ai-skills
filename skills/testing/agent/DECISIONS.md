@@ -307,3 +307,16 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 ## Agent note — a defect of commit d16859c6
 
 - In W14 the Go skill example's `check.feature` and `extract.feature` were rolled back to the bare tags by a `git checkout --` used to undo a deliberate breakage, and committed that way: the example's unit kind failed its own tag check. Found by the next full run, repaired in the following commit (both files equal the TypeScript example's again). Reverting a test breakage is done from a copy, not from git, while other changes are uncommitted.
+
+## Owner-decided (2026-10-08, scenarios page, next task)
+
+- The scenarios page goes: with every tag in the living doc there is no need for it.
+- The repository-wide work — analogous examples for the other stacks, the other skills checked and aligned — is one task for another agent, written into this folder (`TASK.md`).
+
+## Agent decisions — scenarios page, task
+
+- Removed in the Python stack only, as the owner's scope stands: `unit.sh` (asset and example copy) stops calling `kind_scenarios_report`; the shared `kind.sh` keeps the function until W16 removes it for every stack at once, so `check.sh` stays green. `result/scenarios.json` is kept — `kind_scenarios_check` and `render.mjs` read it.
+- What is lost with the page, said to the owner before the decision: the category × status and type × status tables, and a page that needs no Node.
+- `run-example.sh` no longer requires `reports/scenarios/index.html`; forbidding it waits for W16, the other examples still write it.
+- The Python feature template carried no tags — a project generated from it failed its first unit run. Tagged, with a check-list line.
+- `TASK.md` states four defaults the owner did not decide (TypeScript co-located, .NET separate test projects, plateau examples stay small, Go inventory per outline), marked as overridable. Angular test kinds and W4 are left out of it: no browser in the container, and both need owner decisions first.

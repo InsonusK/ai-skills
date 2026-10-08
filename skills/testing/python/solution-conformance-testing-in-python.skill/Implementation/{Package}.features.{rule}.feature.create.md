@@ -22,13 +22,16 @@ tags:
 
 # Implementation changes
 ```gherkin
+@type/domain
 Feature: Email format validation
 
+  @category/happy
   Scenario: Valid email is accepted
     Given the input "user@example.com"
     When the email format rule validates it
     Then the result is valid
 
+  @category/negative
   Scenario: Missing "@" is rejected
     Given the input "user.example.com"
     When the email format rule validates it
@@ -43,4 +46,5 @@ Feature: Email format validation
   - Fix: write scenarios for the happy path, at least one boundary case, and at least one negative case per rule.
 
 # Check list
+- [ ] The `Feature:` line carries one `@type/…` tag and every scenario or `Examples:` block one `@category/…` tag, per [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md) — `make test-kind-unit` fails otherwise.
 - [ ] Every scenario has a matching step definition in `{package}/test/{rule}_steps_test.py`.

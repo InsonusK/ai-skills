@@ -4,7 +4,7 @@
 [![coverage](https://img.shields.io/endpoint?url=https://example.github.io/linkcheck/testing/badges/coverage.json)](https://example.github.io/linkcheck/testing/reports/coverage/)
 [![mutation](https://img.shields.io/endpoint?url=https://example.github.io/linkcheck/testing/badges/mutation.json)](https://example.github.io/linkcheck/testing/reports/mutation/)
 
-The minimal package `solution-conformance-testing-in-python` was proved on: one feature, one plain test, both test kinds.
+The package `solution-conformance-testing-in-python` was proved on, and the showcase of the tag scheme: eight features beside the code they describe - every `@type/…`, every `@category/…` and every `@status/…` tag at least once - one plain test, both test kinds.
 
 ```bash
 make init              # once: .venv with the dev dependencies

@@ -4,7 +4,7 @@ description: Sets up the Python side of the Cucumber/coverage/mutation quality g
 whenToUse: Set up or review the test suite of a Python package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing Python project, or wire coverage and mutation testing into a Python project's `make`/CI pipeline.
 domain: python
 type: architecture
-version: 20261009160000
+version: 20261009170000
 tags:
   - solution/conformance-testing-in-python
   - skill/architecture/solution
@@ -37,7 +37,7 @@ adr:
 - Gherkin `.feature` files execute against the package's real public functions/classes via `pytest-bdd` step definitions, in the same `pytest` run as the plain tests — one exit code, one coverage result.
 - `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` mutates only the source files changed since `<ref>`, without paying for a full-package mutation run on every call.
 - `make test-kind-unit TEST_RUN_PURPOSE=report` and `make test-report` give `master` an up-to-date coverage/mutation-score report and the data the README badges are generated from.
-- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type and category, its status, and `@status/todo` reason — and `make test-report` renders it as `$TEST_REPORT_DIR/reports/scenarios/`, per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report).
+- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type and category, its status, and `@status/todo` reason. The unit kind fails on an entry without its type or category tag, and the living doc takes from it the scenarios no runner executed. There is no separate scenarios page: the living doc is the one place a reader sees every scenario with its tags.
 
 # Core Principles
 - Features live in `{package}/features/`, step modules and the rare plain test in `{package}/test/`, per [cucumber-testing-in-python](skills/testing/python/cucumber-testing-in-python.skill/cucumber-testing-in-python.skill.md); `pytest` collects them from the source root.
@@ -88,7 +88,7 @@ REPOSITORY:
 
 # Ground truth
 [`example/`](./example/) is a small package carrying this solution as it is delivered (`src/` layout), and the place to see every tag at work: eight features, one for each `@type/…` (`domain` twice), with scenarios of every `@category/…`, two `@status/todo`, one `@status/broken` and one `@status/validated` — put there to show the tag; in a project only a person sets it. `src/linkcheck/` holds seven of the features in its `features/`, their step modules and a shared `conftest.py` in its `test/`; the sub-package `src/linkcheck/batch/` has its own `features/` and `test/`.
-- `make init`, then `make test-and-report`, with no Python package installed outside `.venv/` — exit `0`; 26/26 tests, coverage 99.2%, mutation score 87.4%; the scenario report lists both `Examples:` blocks and the `@status/todo` entry with its reason; the living doc shows every scenario — the `todo` and `broken` ones with their reason — with all its tags, and the status legend below.
+- `make init`, then `make test-and-report`, with no Python package installed outside `.venv/` — exit `0`; 26/26 tests, coverage 99.2%, mutation score 87.4%; `result/scenarios.json` lists both `Examples:` blocks and the `@status/todo` entry with its reason; the living doc shows every scenario — the `todo` and `broken` ones with their reason — with all its tags, and the status legend below.
 - `pip wheel .` — the wheel holds the package's modules only: no `test/` path, no `.feature` file.
 - `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped, no coverage report, only the `tests` badge.
 - A broken `Examples:` row — `make test-kind-unit` exits non-zero, that block is `failed` and its sibling `passed`.
@@ -109,4 +109,4 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] The built wheel holds no `test/` module and no `.feature` file.
 - [ ] `make test-kind-unit`, `make test-kind-mutation`, `make test-report`, and `make test-and-report` exist at the repository root and support the toggles defined by [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
 - [ ] `$TEST_KIND_DIR/result/*.json` — `scenarios.json` included, written on a red run too — and `$TEST_KIND_DIR/report/<kind>/` follow that same contract's schema.
-- [ ] `@status/todo` scenarios are excluded from the run and listed as `todo` in `$TEST_REPORT_DIR/reports/scenarios/`.
+- [ ] `@status/todo` scenarios are excluded from the run and listed with their reason in the living doc, `$TEST_REPORT_DIR/reports/tests/livingdoc/`.

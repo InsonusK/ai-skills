@@ -25,7 +25,7 @@ echo "-- A: make test-and-report"
 run A make test-and-report
 R=tmp/testing/report
 for f in index.html run.json badges/tests.json badges/coverage.json badges/mutation.json \
-         reports/tests/index.html reports/coverage reports/mutation reports/scenarios/index.html \
+         reports/tests/index.html reports/coverage reports/mutation \
          reports/tests/livingdoc/index.html; do has "$R/$f"; done
 hasnt public
 python3 "$A/report-links.py" "$R" || fail=1
@@ -37,7 +37,7 @@ rm -rf tmp out public
 run B make test-and-report TEST_RUN_PURPOSE=check TEST_WORK_DIR=out/work TEST_REPORT_DIR=out/site/testing
 R=out/site/testing
 hasnt tmp; hasnt public
-has "$R/index.html"; has "$R/run.json"; has "$R/badges/tests.json"; has "$R/reports/scenarios/index.html"
+has "$R/index.html"; has "$R/run.json"; has "$R/badges/tests.json"
 hasnt "$R/badges/coverage.json"; hasnt "$R/badges/mutation.json"; hasnt "$R/reports/coverage"; hasnt "$R/reports/mutation"
 [ "$(jq -r '.kinds[] | select(.kind == "mutation").state' "$R/run.json" 2>/dev/null)" = skipped ] \
   && ok "mutation skipped" || bad "mutation not skipped"
