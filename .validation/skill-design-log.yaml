@@ -53,11 +53,9 @@ skills/testing/core/code-coverage.skill.md: 19700101
 skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md: 19700101
 skills/testing/core/no-test-theater.skill/no-test-theater.skill.md: 19700101
 skills/testing/core/test-driven-development.skill/test-driven-development.skill.md: 19700101
-skills/testing/core/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill.md: 19700101
 skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md: 19700101
 skills/testing/dotnet/no-test-theater-in-dotnet.skill.md: 19700101
 skills/testing/dotnet/testing-strategy-in-dotnet.skill.md: 19700101
-skills/testing/dotnet/unittest-in-dotnet.skill/unittest-in-dotnet.skill.md: 19700101
 skills/testing/go/cucumber-testing-in-go.skill.md: 19700101
 skills/testing/python/cucumber-testing-in-python.skill.md: 19700101
 skills/testing/python/no-test-theater-in-python.skill.md: 19700101

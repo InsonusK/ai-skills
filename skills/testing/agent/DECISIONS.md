@@ -145,3 +145,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `solution-conformance-testing-in-typescript` drops Vitest: with services and classes tested by scenarios, the framework-agnostic package has one runner, `cucumber-js`, and `c8` for its coverage — which is what the unit kind already ran. `cucumber.mjs` and `stryker.conf.json` became assets. The ADR keeps Vitest as the rejected variant.
 - The Angular kinds (component, pixel) are not written: the Angular catalogs are not on the `make` contract yet, so that is a wave of its own — a `solution-conformance-testing-in-angular` with one kind script and one badge name per kind. Listed in `STATUS.md`.
 - Go delta mutation below the repository root works through git's `diff.relative`, set for the `gremlins` process only (`GIT_CONFIG_COUNT`/`KEY`/`VALUE`): measured in `plateau-http-service` — 27 mutants `SKIPPED` without it, the 2 on the changed line run with it. No effect when `go.mod` is in the root.
+
+## Owner-decided (2026-10-08, obsolete skills)
+
+- `workflow-unittest-testplan` (with its `usecases_list.md` template) and `unittest-in-dotnet` are removed: a hand-kept list of cases beside the `.feature` files is what the scenario report replaced.
+- Plain (non-Cucumber) tests stay only for a case whose implementation through Cucumber is unjustifiably complex. Technical tests are scenarios too — a person reads Cucumber text more easily than test code.
+
+## Agent decisions — obsolete skills
+
+- `cucumber-testing`'s "One scenario, one runner" named the runner entry point as the only exception; it now names the second one, and asks for the reason in a comment above such a plain test — the comment is the agent's addition, so the exception stays visible in review.
+- `test-driven-development` and `solid-decomposition` take their test cases from the unit's `.feature` file (`@todo` scenarios) instead of `usecases_list.md`. The step "show the list of cases to the user for confirmation" went with the removed skill; `solid-decomposition` still confirms the decomposition itself.
+- Lost with `unittest-in-dotnet` and not moved anywhere: the xUnit class template (`LoggingTestsBase`, `test_{group}_WHEN_{condition}__THEN_{result}`), "mocks in a separate folder", and the `{Project}.Test` / `{Class}_Test.cs` layout — the last contradicts `INVARIANTS.md` §1 (`{Project}.Tests`) and is W4's subject.
+- `moves.tsv` keeps both rows: it records W1.

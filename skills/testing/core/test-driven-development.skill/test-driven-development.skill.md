@@ -17,7 +17,7 @@ tags:
 
 # Scope
 This skill defines the order of writing tests vs. code. It does not define the test case format or coverage rules:
-- Use [usecases_list.md](skills/testing/core/workflow-unittest-testplan.skill/templates/usecases_list.md) (from [workflow-unittest-testplan](skills/testing/core/workflow-unittest-testplan.skill/workflow-unittest-testplan.skill.md)) as the source of test cases to drive red-green cycles for a unit.
+- The unit's `.feature` file is the source of test cases for the red-green cycles: its scenarios are written first, type-tagged and tagged `@todo`, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md)'s scenarios-first protocol.
 - Use [code-coverage](skills/testing/core/code-coverage.skill.md) to decide what must be covered.
 - When the task is new business logic decomposed into units, this skill governs step 4-5 of `solid-decomposition` (attach test cases, then generate code): drive each unit with red-green-refactor instead of writing the implementation first.
 
@@ -31,11 +31,11 @@ This skill defines the order of writing tests vs. code. It does not define the t
 
 ## New behavior (new unit, new function, new business rule)
 Full red-green-refactor, one test case at a time:
-1. Take the next uncovered case from the unit's [usecases_list.md](skills/testing/core/workflow-unittest-testplan.skill/templates/usecases_list.md) entry.
-2. **Red** — write the test for that case before the implementation exists. Run it and confirm it fails for the expected reason (missing behavior, not a typo).
+1. Take the next `@todo` scenario of the unit's `.feature` file and remove its `@todo` tag.
+2. **Red** — write the scenario's step definitions before the implementation exists. Run it and confirm it fails for the expected reason (missing behavior, not a typo).
 3. **Green** — write the minimum code to make that test pass. Do not implement unrelated cases yet.
 4. **Refactor** — clean up with the test suite green, without changing observable behavior.
-5. Repeat from step 1 until the unit's test case list is fully covered.
+5. Repeat from step 1 until every scenario of the unit runs.
 
 ## Large-scale refactor (structural change across many units/files, no intended behavior change)
 Characterization-first, not test-first:
@@ -63,7 +63,7 @@ Test-first is not required:
 - Never write implementation for multiple uncovered test cases before any of their tests exist.
 
 ## SHOULD
-- Drive red-green cycles in the order test cases appear in the unit's `usecases_list.md` entry.
+- Drive red-green cycles in the order scenarios appear in the unit's `.feature` file.
 - Keep each red-green cycle to one test case at a time; do not batch several cases into one implementation pass.
 - Never force full red-green-refactor ceremony on a trivial local/mechanical change — e.g. writing a new test class, fixtures, and a red-green cycle to fix a typo in a log message wastes time without reducing risk, since there was no design decision to pressure-test; treat it as a local/mechanical change instead (run tests before/after, add a regression test only if a real gap was found).
 - Never treat "no time for TDD" as a reason to skip writing any test for new business logic — write it after implementation instead of skipping entirely, but prefer before.

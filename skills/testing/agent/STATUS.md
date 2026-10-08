@@ -12,6 +12,7 @@ Worktree `.ai-worktree/skills-testing`, branch `skills-testing` (base `develop`)
 | W3 | DevOps: `pull-request` and `release-test-report` discover kinds through `make test-kinds` and name none; publish workflows gate on `make test-and-report TEST_RUN_PURPOSE=check` | written; shell steps run locally in W5, the YAML never ran on GitHub |
 | W6 | Code delivery per `skill-code-delivery`: every script, tool, `Makefile` and config of the testing skills is a real file under `assets/` or `templates/`, referenced by one line; no fenced code left in the descriptions | done |
 | W7 | One Makefile, one report builder, one script per kind (owner): the whole Makefile side is `tools/testing/testing.mk`, the runner `testing.sh`, the report builder `test-report.sh` — shared by every stack, Go included; a stack contributes only `tools/testing/kinds/{kind}.sh`. Go's own report tool and every per-project testing recipe removed | done, run in W5 |
+| W8 | Obsolete skills removed (owner, 2026-10-08): `workflow-unittest-testplan`, `unittest-in-dotnet`; `test-driven-development` and `solid-decomposition` work from `.feature` scenarios; `cucumber-testing` states when a plain test is allowed | done |
 | W5 | Run every example, fix what breaks; Python on `pytest-bdd`; runnable Python and TypeScript examples | done — see below |
 | W4 | Layout by convention and tests of pluggable modules as testing skills; plateau `*.Tests` structure skills removed; base plateaus name the testing skills | not started — needs the owner, see below |
 

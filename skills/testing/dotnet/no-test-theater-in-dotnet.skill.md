@@ -14,7 +14,7 @@ tags:
 - Add .NET/xUnit-specific rules on top of the language-agnostic test-quality rules.
 
 # Scope
-This skill extends [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) — apply both together; this skill only adds .NET-specific rules. It does not define test class/file naming or folder layout — see [unittest-in-dotnet](skills/testing/dotnet/unittest-in-dotnet.skill/unittest-in-dotnet.skill.md) for that, and [testing-strategy-in-dotnet](skills/testing/dotnet/testing-strategy-in-dotnet.skill.md) for which classes/usecases must have their own dedicated test class.
+This skill extends [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) — apply both together; this skill only adds .NET-specific rules. It does not define test class/file naming or folder layout; see [testing-strategy-in-dotnet](skills/testing/dotnet/testing-strategy-in-dotnet.skill.md) for which classes/usecases must have their own dedicated test class.
 
 # Core Principle
 - `IsSuccess == false` and "no exception thrown" are not assertions — they hide which of several failure states actually happened.
