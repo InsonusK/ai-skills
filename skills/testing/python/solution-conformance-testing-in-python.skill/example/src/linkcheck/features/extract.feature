@@ -26,6 +26,14 @@ Feature: Extract links from a text
       | text                                | count |
       | https://a.example https://a.example | 1     |
 
+  @category/regression
+  Scenario: A full stop after a link is not part of the link
+    Given the text "Read https://a.example/doc."
+    When I extract the links
+    Then the links are:
+      | link                  |
+      | https://a.example/doc |
+
   # broken: a closing bracket at the end is always cut off, also when it belongs to the link
   @status/broken @category/boundary
   Scenario: A link that ends with a closing bracket keeps it

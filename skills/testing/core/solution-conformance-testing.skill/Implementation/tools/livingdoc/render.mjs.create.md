@@ -14,6 +14,8 @@ tags:
 - Input is `$TEST_KIND_DIR/report/tests/cucumber/`: `*.ndjson` files are Cucumber Messages, `*.json` files are classic Cucumber JSON. A runner writes one protocol only.
 - Cucumber Messages → `@cucumber/html-formatter`, one page per `.ndjson` file (plus an index page when there are several). Classic JSON → `multiple-cucumber-html-reporter`, all files into one report.
 - Classic JSON is normalized in a temporary copy before rendering: a feature with no `tags` gets `tags: []` (godog omits the key). The runner's own files are never modified.
+- A classic-JSON runner reports only what it ran. The optional fourth argument, the unit kind's `result/scenarios.json`, adds every entry that did not run — `todo` as a pending scenario, `broken` as a skipped one, `not-run` as an undefined one — each with its tags and one step that states the reason. A Cucumber Messages stream holds those scenarios already.
+- The optional third argument is the status legend (`kind_status_legend_json`): shown in the footer of the classic-JSON report and on the index of several Messages reports. A single Messages report is the formatter's own page and takes none.
 
 # Implementation changes
 `tools/livingdoc/render.mjs`:
@@ -32,3 +34,4 @@ Copy verbatim to `tools/livingdoc/render.mjs`: [`assets/tools/livingdoc/render.m
 # Check list
 - [ ] `tools/livingdoc/render.mjs` is a byte-for-byte copy of the asset.
 - [ ] After `make test-kind-unit` with npm available, `$TEST_KIND_DIR/report/tests/livingdoc/index.html` exists.
+- [ ] For a classic-JSON stack the living doc lists a `@status/todo` and a `@status/broken` scenario with their reasons, shows every tag of every scenario, and ends with the status legend; no `[object Object]` appears on the page.

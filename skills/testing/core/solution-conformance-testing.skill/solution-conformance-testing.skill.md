@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 7
+version: 8
 updated: 20261007
 tags:
   - skill/architecture/solution
@@ -44,7 +44,7 @@ adr:
 - Mutation testing on top of coverage, so a weak assertion shows up as a surviving mutant instead of a passing coverage number.
 - Uniform `make` targets and variables a caller uses without knowing the project's stack, which test kinds exist, or how they run — see [# Caller contract](#caller-contract).
 - A report every kind fills itself — its own report folder and its own badge — so a new test kind is published with no change to the report builder; see [# Report contract](#report-contract).
-- A living-doc HTML view of every executed scenario — filterable by tag and status, identical in every stack — rendered from the runner's standard Cucumber report, see [## Living-doc report](#living-doc-report).
+- A living-doc HTML view of every scenario, the excluded ones with their reason — filterable by tag and status, identical in every stack — rendered from the runner's standard Cucumber report, see [## Living-doc report](#living-doc-report).
 
 # Core Principles
 - Every test run produces a report describing covered test cases in a readable form.
@@ -126,7 +126,7 @@ The report answers, without a separate hand-maintained test inventory file:
 - **classic Cucumber JSON** (`*.json`, `features[].elements[].steps[]`) — rendered by `multiple-cucumber-html-reporter`;
 - **Cucumber Messages** (`*.ndjson` envelope stream) — rendered by `@cucumber/html-formatter`.
 
-Then it renders `report/tests/livingdoc/` with the stack-independent [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]], from the isolated, pinned install in [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] — never from the project's own dependency manifest. It is what `reports/tests/` opens: where the runner's own report has no entry page, `kind_livingdoc` writes one that forwards to `livingdoc/`. `test-report` publishes it unchanged, next to the `reports/scenarios/` inventory, which it does not replace. The step needs Node 22+ and is skipped, never failed, where `npm` is missing.
+Then it renders `report/tests/livingdoc/` with the stack-independent [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]], from the isolated, pinned install in [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] — never from the project's own dependency manifest. It lists every scenario with all its tags — the ones a classic-JSON runner did not execute are added from `result/scenarios.json` — and ends with the legend of the status tags where the renderer has a place for it. It is what `reports/tests/` opens: where the runner's own report has no entry page, `kind_livingdoc` writes one that forwards to `livingdoc/`. `test-report` publishes it unchanged, next to the `reports/scenarios/` inventory, which it does not replace. The step needs Node 22+ and is skipped, never failed, where `npm` is missing.
 
 ## Report output
 `test-report` builds `$TEST_REPORT_DIR` — `index.html`, `reports/{name}/`, `badges/{name}.json`, `run.json` — per [[./Implementation/Repository.create.md#report-output|Report output]]: the one stack-independent artifact a publishing step uploads as-is. Where it is published, and under which path, is the publisher's choice; this solution owns no `.github/workflows/*` file and writes nothing outside the two directories the caller names.

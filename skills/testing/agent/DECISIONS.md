@@ -286,3 +286,24 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The exclusion filter names both tags in every stack — godog `~@status/todo && ~@status/broken`, pytest `-m "not status/todo and not status/broken"`, cucumber-js `not @status/todo and not @status/broken`, `dotnet test` and Stryker.NET `Category!=status/todo&Category!=status/broken`. Checked in all four, Stryker's filter included.
 - The legend is one JSON text in `kind.sh` (`kind_status_legend_json`): the scenarios page renders it, and `tools/livingdoc/render.mjs` shows it where its renderer has a place — the classic-JSON report (Go, Python) and the index of several Messages reports (.NET). A single Messages report (TypeScript) is the formatter's own page and takes none.
 - The three skill examples carry one `@status/broken` scenario — a real defect of the link extractor, stated and excluded — to show the tag with its reason. None carries `@status/validated`: only a person sets it.
+
+## Owner-decided (2026-10-09, living doc)
+
+- The living doc's header showed `[object Object],…` — a defect to fix.
+- An example must show every tag, to see how the living doc presents them.
+- Asked why the scenarios page is still there, the scenarios having "moved to the living doc" — see the agent's answer below; not decided.
+
+## Agent decisions — living doc
+
+- `[object Object]`: the legend was passed as `customData: {title, data: […]}`; `multiple-cucumber-html-reporter` 4.4.2 takes a flat key → text object there and printed the array as text. The legend is now the report's `pageFooter`, as two tables.
+- The living doc of a classic-JSON stack (Go, Python) now lists the scenarios the runner did not execute: `render.mjs` adds them from `result/scenarios.json` — `todo` as pending, `broken` as skipped, `not-run` as undefined — with their tags and one step that states the reason. Without it `@status/todo` and `@status/broken` could not be seen in the living doc at all. Messages stacks hold those scenarios in their stream already.
+- The Python example is the showcase: eight features covering every `@type/…`, scenarios of every `@category/…`, and all three status tags. Each new feature tests real code added for it (`cli.py`, `store.py`, `mapping.py`, a credentials rule in `checker.py`). It carries one `@status/validated` on purpose, at the owner's request to show every tag — the rule that only a person sets it stands, and the skill says so beside the example. The Go and TypeScript examples keep three features.
+- The scenarios page was not removed. What it still has that the living doc has not: the category × status and type × status tables, the `validated` column, the same page in every stack, and no need for Node. Left for the owner to decide.
+
+## Owner-decided (2026-10-09, scope)
+
+- Stop changing the whole repository: work on the Python example only. The repository-wide follow-up is collected into one task for a separate agent later.
+
+## Agent note — a defect of commit d16859c6
+
+- In W14 the Go skill example's `check.feature` and `extract.feature` were rolled back to the bare tags by a `git checkout --` used to undo a deliberate breakage, and committed that way: the example's unit kind failed its own tag check. Found by the next full run, repaired in the following commit (both files equal the TypeScript example's again). Reverting a test breakage is done from a copy, not from git, while other changes are uncommitted.

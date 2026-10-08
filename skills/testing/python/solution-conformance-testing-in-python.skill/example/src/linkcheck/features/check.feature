@@ -25,6 +25,12 @@ Feature: Check a URL
       | input    | error        |
       | https:// | MISSING_HOST |
 
+  @category/security
+  Scenario: A URL that carries credentials is rejected
+    Given the URL "https://user:secret@example.com/"
+    When I check the URL
+    Then the check is invalid with error "CREDENTIALS_NOT_ALLOWED"
+
   # todo: needs a resolver port
   @status/todo @category/error
   Scenario: An unreachable host is reported

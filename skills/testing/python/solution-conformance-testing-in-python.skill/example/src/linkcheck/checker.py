@@ -17,4 +17,6 @@ def check(raw_url: str) -> Result:
         return Result(False, error_code="UNSUPPORTED_SCHEME")
     if not parts.netloc:
         return Result(False, error_code="MISSING_HOST")
+    if "@" in parts.netloc:
+        return Result(False, error_code="CREDENTIALS_NOT_ALLOWED")
     return Result(True, normalized=f"{scheme}://{parts.netloc.lower()}{parts.path}")

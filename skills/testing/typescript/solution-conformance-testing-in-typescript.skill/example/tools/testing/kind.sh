@@ -38,7 +38,7 @@ kind_livingdoc() {
     kind_status_legend_json > "$TEST_KIND_DIR/status-legend.json"
     { npm ci --prefix tools/livingdoc --silent \
         && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc" \
-             "$TEST_KIND_DIR/status-legend.json"; } \
+             "$TEST_KIND_DIR/status-legend.json" "$RESULT_DIR/scenarios.json"; } \
       || { echo "livingdoc: render failed"; return 0; }
     [ -f "$REPORT_DIR/tests/index.html" ] || cat > "$REPORT_DIR/tests/index.html" <<'HTML'
 <!doctype html><html><head><meta charset="utf-8"><title>tests</title>
