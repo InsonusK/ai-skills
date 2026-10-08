@@ -320,3 +320,13 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `run-example.sh` no longer requires `reports/scenarios/index.html`; forbidding it waits for W16, the other examples still write it.
 - The Python feature template carried no tags — a project generated from it failed its first unit run. Tagged, with a check-list line.
 - `TASK.md` states four defaults the owner did not decide (TypeScript co-located, .NET separate test projects, plateau examples stay small, Go inventory per outline), marked as overridable. Angular test kinds and W4 are left out of it: no browser in the container, and both need owner decisions first.
+
+## Owner-decided (2026-10-08, legend)
+
+- The living doc's footer was not readable: split it by tag group, list every value of a group, align the descriptions.
+
+## Agent decisions — legend
+
+- The legend is `{groups: [{title, where, items: [{name, meaning, shownAs?}]}]}`: `@type/…`, `@category/…`, `@status/…`, results of a run. `render.mjs` renders each group as a heading, one line saying where the tag goes, and a two-column grid. In the classic-JSON report a result also says the word that report uses for it (`todo` - "pending", `broken` - "skipped", `not-run` - "undefined").
+- Changed in the shared assets and copied to all twelve examples, not in the Python example alone: the legend is one text for every stack, and a private copy would be the opposite of what the owner asks for. Re-run: Python in full; Go, .NET `plateau-core` and TypeScript as a `check` run - exit 0.
+- The meanings of the categories were not written down anywhere; the legend's wording is the agent's and should move into `cucumber-testing` in W16.

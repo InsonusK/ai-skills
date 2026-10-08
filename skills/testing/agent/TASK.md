@@ -50,6 +50,8 @@ Verified on 2026-10-08, commit `5ac788ab` plus this commit.
 | Status legend in the living doc | page footer | absent with one Messages file | index page only, with several files |
 | Scenarios page | still written | still written | still written |
 
+The legend was regrouped on 2026-10-08 at the owner's request — one section per tag namespace plus the results of a run, every value listed, meanings in one aligned column. It lives in the shared `kind.sh` (`kind_status_legend_json`) and `render.mjs`, so every example has it already; the owner approved its look in the Python living doc's footer. Keep that look wherever you put the legend in the Messages stacks.
+
 In the Python stack only `tools/testing/kinds/unit.sh` stopped calling `kind_scenarios_report`. Everything shared is untouched: `kind.sh` still holds the function, `test-report.sh` still has a hint line for it, and the core skill still has a `## Scenario report` section describing a page.
 
 `run-example.sh` no longer requires `reports/scenarios/index.html`; it does not forbid it yet.

@@ -15,7 +15,7 @@ tags:
 - Cucumber Messages → `@cucumber/html-formatter`, one page per `.ndjson` file (plus an index page when there are several). Classic JSON → `multiple-cucumber-html-reporter`, all files into one report.
 - Classic JSON is normalized in a temporary copy before rendering: a feature with no `tags` gets `tags: []` (godog omits the key). The runner's own files are never modified.
 - A classic-JSON runner reports only what it ran. The optional fourth argument, the unit kind's `result/scenarios.json`, adds every entry that did not run — `todo` as a pending scenario, `broken` as a skipped one, `not-run` as an undefined one — each with its tags and one step that states the reason. A Cucumber Messages stream holds those scenarios already.
-- The optional third argument is the status legend (`kind_status_legend_json`): shown in the footer of the classic-JSON report and on the index of several Messages reports. A single Messages report is the formatter's own page and takes none.
+- The optional third argument is the legend (`kind_status_legend_json`) — one group per tag namespace (`@type/…`, `@category/…`, `@status/…`) and one for the results of a run, each a list of every value with its meaning, the meanings aligned in one column: shown in the footer of the classic-JSON report and on the index of several Messages reports. A single Messages report is the formatter's own page and takes none.
 
 # Implementation changes
 `tools/livingdoc/render.mjs`:

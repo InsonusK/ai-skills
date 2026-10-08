@@ -74,30 +74,55 @@ kind_badge_percent() {
     if (s >= 80) print "brightgreen"; else if (s >= 60) print "yellowgreen"; else print "red" }')"
 }
 
-# kind_status_legend_json - the meaning of the status tags and of the statuses a run reports:
-# the one text behind the legend of the scenarios page and of the living doc.
+# kind_status_legend_json - what every tag and every run status means, group by group: the
+# one text behind the legend of the living doc. "shownAs" is the word the classic-JSON
+# living doc uses for that status.
 kind_status_legend_json() {
   cat <<'JSON'
-{ "tags": [
-    { "name": "@status/todo", "meaning": "planned, not implemented yet - excluded from the run; the reason is the \"# todo:\" comment above the tags" },
-    { "name": "@status/broken", "meaning": "implemented, known to fail - excluded from the run; the reason is the \"# broken:\" comment above the tags" },
-    { "name": "@status/validated", "meaning": "a person has checked the scenario - set by a person only, removed when the scenario or its steps change" } ],
-  "run": [
-    { "name": "passed, failed", "meaning": "the scenario ran" },
-    { "name": "todo, broken", "meaning": "excluded from the run by its status tag" },
-    { "name": "not-run", "meaning": "in a .feature file and not excluded, yet no runner executed it - a wiring defect, never a pass" } ],
-  "note": "Every feature carries one @type/... tag - the part of the program it specifies; every scenario one @category/... tag - the kind of test it is. \"none\" in those columns fails the unit test kind." }
+{ "groups": [
+  { "title": "@type/… - what the feature specifies",
+    "where": "On the Feature line, exactly one. A feature without it fails the unit test kind.",
+    "items": [
+      { "name": "@type/domain", "meaning": "a business rule of an entity, a value object, a validator or a pure function - no I/O" },
+      { "name": "@type/service", "meaning": "a use case: one operation end to end, its collaborators replaced at their ports" },
+      { "name": "@type/api", "meaning": "an inbound adapter: how a request, a message or a command line becomes a call" },
+      { "name": "@type/infrastructure", "meaning": "an outbound adapter against the real dependency or its emulator: a store, a cache, a client" },
+      { "name": "@type/mapping", "meaning": "the translation between two representations of the same data, no I/O" },
+      { "name": "@type/contract", "meaning": "the shape other code depends on: commands, events, a published schema" },
+      { "name": "@type/tech-check", "meaning": "a technical check of the plumbing, not of a business capability: logging, configuration, packaging" } ] },
+  { "title": "@category/… - what kind of test the scenario is",
+    "where": "On a Scenario or an Examples block, exactly one. A scenario without it fails the unit test kind.",
+    "items": [
+      { "name": "@category/happy", "meaning": "valid input, the expected result" },
+      { "name": "@category/boundary", "meaning": "an edge of what is allowed: empty, zero, the largest, the first, the last" },
+      { "name": "@category/negative", "meaning": "invalid input is rejected with its error" },
+      { "name": "@category/error", "meaning": "a dependency or the environment fails, and the program says so" },
+      { "name": "@category/concurrency", "meaning": "several actors at the same time" },
+      { "name": "@category/security", "meaning": "access, secrets, hostile input" },
+      { "name": "@category/regression", "meaning": "a defect found once, kept fixed" } ] },
+  { "title": "@status/… - the state of the scenario",
+    "where": "Optional, beside the category tag.",
+    "items": [
+      { "name": "@status/todo", "meaning": "planned, not implemented yet - excluded from the run; the reason is the \"# todo:\" comment above the tags" },
+      { "name": "@status/broken", "meaning": "implemented, known to fail - excluded from the run; the reason is the \"# broken:\" comment above the tags" },
+      { "name": "@status/validated", "meaning": "a person has checked the scenario - set by a person only, removed when the scenario or its steps change" } ] },
+  { "title": "Result of a run",
+    "where": "What happened to the scenario in this run.",
+    "items": [
+      { "name": "passed", "meaning": "ran, every step held" },
+      { "name": "failed", "meaning": "ran, a step did not hold" },
+      { "name": "todo", "shownAs": "pending", "meaning": "excluded from the run by @status/todo" },
+      { "name": "broken", "shownAs": "skipped", "meaning": "excluded from the run by @status/broken" },
+      { "name": "not-run", "shownAs": "undefined", "meaning": "in a .feature file and not excluded, yet no runner executed it - a wiring defect, never a pass" } ] } ] }
 JSON
 }
 
 # kind_status_legend - that legend as an HTML fragment.
 kind_status_legend() {
   kind_status_legend_json | jq -r '
-    def rows: map("<tr><td>\(.name | @html)</td><td>\(.meaning | @html)</td></tr>") | join("");
-    "<h2>Statuses</h2>",
-    "<table><tr><th>tag on a feature or a scenario</th><th>meaning</th></tr>\(.tags | rows)</table>",
-    "<table><tr><th>status of a run</th><th>meaning</th></tr>\(.run | rows)</table>",
-    "<p>\(.note | @html)</p>"'
+    "<h2>Tags and statuses</h2>",
+    (.groups[] | "<h3>\(.title | @html)</h3><p>\(.where | @html)</p><table>"
+      + (.items | map("<tr><td>\(.name | @html)</td><td>\(.meaning | @html)</td></tr>") | join("")) + "</table>")'
 }
 
 # kind_scenarios_report - result/scenarios.json -> report/scenarios/index.html: the status
