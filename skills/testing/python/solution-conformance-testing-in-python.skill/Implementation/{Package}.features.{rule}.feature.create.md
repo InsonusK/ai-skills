@@ -1,12 +1,12 @@
 ---
 description: Gherkin scenarios proving one business/validation rule
 project_name: "{Package}"
-name: "features/{rule}.feature"
+name: "{rule}.feature"
 element_kind: resource
 change_kind: create
 tags:
   - solution/conformance-testing-in-python
-  - element/features-rule-feature
+  - element/package-features-rule-feature
 ---
 
 # Goals
@@ -18,7 +18,7 @@ tags:
 # Naming convention
 | use case | path pattern | file name |
 | -------- | ------------ | --------- |
-| Scenarios for one rule | features/{rule}.feature | features/email-format.feature |
+| Scenarios for one rule | src/{package}/features/{rule}.feature | src/validators/features/email-format.feature |
 
 # Implementation changes
 ```gherkin
@@ -43,4 +43,4 @@ Feature: Email format validation
   - Fix: write scenarios for the happy path, at least one boundary case, and at least one negative case per rule.
 
 # Check list
-- [ ] Every scenario has a matching step definition in `features/steps/{rule}_steps.py`.
+- [ ] Every scenario has a matching step definition in `{package}/test/{rule}_steps_test.py`.

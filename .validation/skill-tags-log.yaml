@@ -57,7 +57,7 @@ skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md: 19700101
 skills/testing/dotnet/no-test-theater-in-dotnet.skill.md: 19700101
 skills/testing/dotnet/testing-strategy-in-dotnet.skill.md: 19700101
 skills/testing/go/cucumber-testing-in-go.skill.md: 19700101
-skills/testing/python/cucumber-testing-in-python.skill.md: 19700101
+skills/testing/python/cucumber-testing-in-python.skill/cucumber-testing-in-python.skill.md: 19700101
 skills/testing/python/no-test-theater-in-python.skill.md: 19700101
 skills/testing/typescript/cucumber-testing-in-typescript.skill.md: 19700101
 skills/typescript/devops/devops-github-action-check-changes-in-typescript.skill.md: 19700101

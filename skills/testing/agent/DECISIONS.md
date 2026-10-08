@@ -181,3 +181,16 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The badge on the page is drawn from `badges/{name}.json` with three CSS classes in the template — a shields.io image needs the report to be published first.
 - `cucumber-testing-in-go` got the layout as an explicit MUST: `solution-conformance-testing-in-go` already pointed at "its own convention", which the skill only implied through `Paths: "../features"`.
 - ⚠️ Python is laid out differently — `features/` and `test/` at the repository root, from `solution-test-layout-in-python`'s ADR and the former `behave` convention — and was not changed: see `STATUS.md`.
+
+## Owner-decided (2026-10-08, Python layout)
+
+- Python moves to features and tests beside the code. `solution-test-layout-in-python` is removed; `cucumber-testing-in-python` defines where a feature and its tests live. The example is updated, and so is everything that referred to the removed skill.
+
+## Agent decisions — Python layout
+
+- Layout: `{package}/features/{rule}.feature`, `{package}/test/{rule}_steps_test.py`, a plain test `{package}/test/{module}_test.py`, no `__init__.py` in `test/`. The step module ends in `_test.py` like Go's `_steps_test.go`, so one pattern (`*_test.py`) collects everything and `*_steps.py` left `python_files`.
+- `cucumber-testing-in-python` became a folder skill to hold the ADR (`adr/test-location.md`, with the costs measured on the example), and covers `pytest-bdd` only: the `behave` half described a runner the tool-choice ADR rejected, and `behave` needs its own `steps/` folder, which the layout rule cannot hold.
+- The `pyproject.toml` lines the layout needs — packaging exclusion, `testpaths`, `--import-mode=importlib`, coverage `omit`, `mutmut` `do_not_mutate` — are in `solution-conformance-testing-in-python`; the rule skill links there.
+- `plateau-python-cli` no longer composes a test-layout solution: its three test module skills are deleted and a `# Testing` section names the testing skills — INVARIANTS §1, "a base plateau names the testing skills it uses". Plateau ADR `remove-solution-test-layout-in-python`. This is W4 done for Python.
+- `solution-cli-packaging` carried the same exclusion `"*test*"`, which drops any production package with `test` in its name (measured: `latest`); now `["*.test", "*.test.*"]`.
+- `devops-github-action-check-changes-in-python`: tests sit below `src/`, so `code` needs negated patterns, which `dorny/paths-filter` evaluates only with `predicate-quantifier: every`. The patterns were checked against sample paths with `picomatch`, the library the action uses; the action itself was not run.

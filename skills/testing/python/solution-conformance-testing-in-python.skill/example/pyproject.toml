@@ -17,11 +17,12 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
-exclude = ["test*"]
+exclude = ["*.test", "*.test.*"]
 
 [tool.pytest.ini_options]
-testpaths = ["test", "features"]
-python_files = ["*_test.py", "*_steps.py"]
+testpaths = ["src"]
+python_files = ["*_test.py"]
+addopts = "--import-mode=importlib"
 markers = [
     "todo: scenario planned but not runnable yet - excluded from the run",
     "happy", "boundary", "negative", "error", "concurrency", "security", "regression",
@@ -30,11 +31,12 @@ markers = [
 [tool.coverage.run]
 source = ["linkcheck"]
 branch = true
+omit = ["*/test/*"]
 
 [tool.coverage.report]
 fail_under = 80
 
 [tool.mutmut]
 source_paths = ["src"]
-also_copy = ["features"]
+do_not_mutate = ["*/test/*"]
 pytest_add_cli_args = ["-m", "not todo"]

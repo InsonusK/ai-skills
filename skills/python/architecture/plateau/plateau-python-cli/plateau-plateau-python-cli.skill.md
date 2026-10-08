@@ -1,9 +1,9 @@
 ---
 name: plateau-plateau-python-cli
-description: Python CLI application plateau with layered architecture, mirrored test structure, and pip-installable packaging via pyproject.toml
+description: Python CLI application plateau with layered architecture and pip-installable packaging via pyproject.toml
 domain: skill
 type: template
-version: 20260720120000
+version: 20261008150000
 tags:
   - skill/template/plateau
   - plateau/plateau-python-cli
@@ -12,8 +12,9 @@ tags:
 
 created_by:
   - "[[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]"
-  - "[[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]"
   - "[[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]"
+adr:
+  - "[[skills/python/architecture/plateau/plateau-python-cli/adr/remove-solution-test-layout-in-python|Remove solution-test-layout-in-python]]"
 ---
 
 # Core Principles
@@ -22,13 +23,10 @@ created_by:
 - The CLI layer is thin: it parses arguments, configures logging, and dispatches to Commands.
 - Commands contain business logic and receive typed parameters, not raw `argparse.Namespace`.
 - Functions are stateless and reusable; Services encapsulate stateful or dependency-heavy behavior.
-- Test structure mirrors source structure so every source module has a predictable test location.
-- Tests are excluded from the installed package via explicit `pyproject.toml` rules.
 - `pyproject.toml` is the single descriptor for build system and project metadata, and exposes the CLI as a `pip`-installed console command (see [[skills/python/architecture/solutions/solution-cli-packaging.skill/glossary/pyproject-toml.md|glossary: pyproject.toml]]).
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
-- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]
 
 # Capabilities
@@ -41,10 +39,6 @@ __Applied solutions:__
   - Keep pure helper functions in `functions/` and stateful objects in `service/`.
 - **Observability**
   - Configure standard `logging` and enable debug output with `--debug`.
-- **Testing**
-  - Mirror source structure in `test/` with one test module per source module.
-  - Optionally co-locate tests next to source modules in large projects.
-  - Exclude test directories and modules from the installed package.
 - **Packaging**
   - Describe the application as an installable package with `pyproject.toml` (name, version, dependencies, supported Python versions).
   - Expose a console command via `[project.scripts]`, backed by `{App}.cli:main`.
@@ -52,7 +46,6 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]
-- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]]
 - [[skills/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]
 
 # Usecases
@@ -90,14 +83,6 @@ sequenceDiagram
 1. Create `cli/{command}.py` to declare arguments and dispatch typed values.
 2. Create `command/{command}.py` to implement the business operation.
 3. Register the new subcommand in `cli.py`.
-4. Create matching test modules under `test/`.
-
-## Add tests for a new module
-
-1. Locate the source module under `src/{Package}/{Module}.py` or `{App}/{Module}.py`.
-2. Create the matching test path under `test/{Package}/{Module}_test.py`.
-3. Import the module under test and write focused unit tests.
-4. Run the test module with `python -m unittest` or `pytest`.
 
 ## Enable debug logging
 
@@ -129,3 +114,6 @@ sequenceDiagram
 ```
 
 See [glossary: pyproject.toml](skills/python/architecture/solutions/solution-cli-packaging.skill/glossary/pyproject-toml.md) for why a bare `https://github.com/...` URL does not work and `git+` is required.
+
+# Testing
+This plateau defines no test structure of its own. Tests follow the testing skills: [[skills/testing/python/cucumber-testing-in-python.skill/cucumber-testing-in-python.skill.md|cucumber-testing-in-python]] — features in `{App}/{layer}/features/`, their step modules in `{App}/{layer}/test/` — and [[skills/testing/python/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md|solution-conformance-testing-in-python]] — the test kinds, the report, and the `pyproject.toml` settings that keep those tests out of the installed package. Decision recorded in [[skills/python/architecture/plateau/plateau-python-cli/adr/remove-solution-test-layout-in-python|Remove solution-test-layout-in-python]].

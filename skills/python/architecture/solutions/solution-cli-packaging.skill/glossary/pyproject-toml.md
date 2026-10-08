@@ -88,7 +88,7 @@ Two console commands (`ai-skill-manager` and `aism`, both aliases for the same `
 ## Related concepts
 
 - [[../../solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]] — defines the `cli.py`/`main()` function that `[project.scripts]` points at.
-- [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] — extends `[tool.setuptools.packages.find]` to keep tests out of the built wheel.
+- [[skills/testing/python/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md|solution-conformance-testing-in-python]] — names the `[tool.setuptools.packages.find]` exclusions that keep the co-located tests out of the built wheel.
 
 ## Sources
 

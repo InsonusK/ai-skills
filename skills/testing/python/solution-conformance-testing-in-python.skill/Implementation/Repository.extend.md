@@ -12,11 +12,11 @@ tags:
 ## Project Structure
 ```
 /src/{package}                 — or /{package} without a src/ layout
-/test
-/features
-  {rule}.feature
-  /steps
-    {rule}_steps.py
+  {module}.py
+  /features
+    {rule}.feature
+  /test
+    {rule}_steps_test.py
 /report-template
   index.html
 Makefile                       — one line added: include tools/testing/testing.mk
@@ -35,7 +35,8 @@ pyproject.toml
 ## Directory and class skills
 | Directory | file | Description |
 | --------- | ---- | ----------- |
-| /features | {rule}.feature, steps/{rule}_steps.py | Gherkin scenarios and their bindings |
+| /src/{package}/features | {rule}.feature | Gherkin scenarios, beside the code they specify |
+| /src/{package}/test | {rule}_steps_test.py | Their step modules; a plain `{module}_test.py` only where a scenario would be unjustifiably complex |
 | /report-template | index.html | Landing page `tools/testing/test-report.sh` publishes into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link; shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | /tools/testing/kinds | unit.sh, unit_scenarios.py, mutation.sh | This stack's two test kinds — run `pytest` / `mutmut`, write the normalized results |
 
@@ -68,7 +69,7 @@ init:
 # Rules
 
 ## MUST
-- Run every test — `pytest-bdd` scenarios and the plain `test/` suite — in the one `coverage run -m pytest` of `tools/testing/kinds/unit.sh`, and exit with its exit code after the results are written.
+- Run every test — `pytest-bdd` scenarios and plain tests — in the one `coverage run -m pytest` of `tools/testing/kinds/unit.sh`, and exit with its exit code after the results are written.
   - Violation: a second runner invocation for the scenarios, or `mutmut`/`pytest` called by a CI workflow directly.
   - Risk: two runs give two exit codes and two coverage data files to reconcile; a caller that names a tool needs Python knowledge the contract exists to hide.
   - Fix: keep the single run of the script; every caller goes through `make test-kind-unit`.

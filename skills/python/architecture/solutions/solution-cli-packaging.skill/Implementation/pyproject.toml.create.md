@@ -51,12 +51,12 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-exclude = ["test", "test.*", "*test*"]
+exclude = ["*.test", "*.test.*"]
 ```
 
 Notes:
 - `{app-name}` is the distribution/command name (kebab-case, e.g. `my-cli`); `{App}` is the importable package directory (snake_case, e.g. `my_cli`). They may differ.
-- When [[skills/testing/python/solution-test-layout-in-python.skill/solution-test-layout-in-python.skill.md|solution-test-layout-in-python]] is also applied, merge its `[tool.setuptools.packages.find]` exclusion list with the one shown here instead of declaring the table twice.
+- `exclude` keeps the `test/` folders that sit beside the code (per [[skills/testing/python/cucumber-testing-in-python.skill/cucumber-testing-in-python.skill.md|cucumber-testing-in-python]]) out of the wheel. Never widen it to `"*test*"`: that pattern also removes every production package with `test` in its name. When [[skills/testing/python/solution-conformance-testing-in-python.skill/solution-conformance-testing-in-python.skill.md|solution-conformance-testing-in-python]] is also applied, it names the same two patterns — keep one `[tool.setuptools.packages.find]` table.
 - When the repository uses a `src/` layout, set `where = ["src"]` instead of `where = ["."]`.
 
 # Rule changes
@@ -74,7 +74,7 @@ Notes:
 
 ## MUST NOT
 - Reference `{App}.cli:main` before `cli.py` exposes a callable, argument-optional `main()` function.
-- Add a second, conflicting `[tool.setuptools.packages.find]` table when solution-test-layout-in-python already defines one — merge exclusions instead.
+- Add a second, conflicting `[tool.setuptools.packages.find]` table when another applied solution already defines one — merge exclusions instead.
 - Hardcode local filesystem paths in `dependencies` — this breaks `pip install` from a fresh clone or from a Git/GitHub URL.
 
 # Anti-patterns

@@ -1,25 +1,25 @@
 ---
 description: Step definitions binding a Gherkin feature file to the package's real function/class
 project_name: "{Package}"
-name: "{rule}_steps"
+name: "{rule}_steps_test"
 element_kind: functions
 change_kind: create
 tags:
   - solution/conformance-testing-in-python
-  - element/features-steps-rule-steps-py
+  - element/package-test-rule-steps-test-py
 ---
 
 # Goals
-- Prove every scenario in `features/{rule}.feature` against `{Package}`'s real implementation of the rule.
+- Prove every scenario in `{package}/features/{rule}.feature` against `{Package}`'s real implementation of the rule.
 
 # Core Principles
 - Step functions hold no business logic of their own — they only translate Gherkin steps into calls against the package's real public API and assertions on the result.
-- The step module is the `pytest` module that runs the feature: `scenarios("../{rule}.feature")` turns every scenario into a test collected by the one `pytest` run.
+- The step module is the `pytest` module that runs the feature: `scenarios("../features/{rule}.feature")` turns every scenario into a test collected by the one `pytest` run.
 
 # Naming convention
 | use case | function name pattern | file name pattern | file name |
 | -------- | --------------------- | ------------------ | --------- |
-| Step definitions for one rule | step_{verb}_{...} | features/steps/{rule}_steps.py | features/steps/email_format_steps.py |
+| Step definitions for one rule | step_{verb}_{...} | src/{package}/test/{rule}_steps_test.py | src/validators/test/email_format_steps_test.py |
 
 # Implementation changes
 ```code example
@@ -28,7 +28,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 
 from {package}.{rule}_validator import validate
 
-scenarios("../{rule}.feature")
+scenarios("../features/{rule}.feature")
 
 
 @pytest.fixture
@@ -63,7 +63,7 @@ def step_then_invalid_with_error(world, error_code):
 # Rule changes
 
 ## MUST
-- Call `scenarios("../{rule}.feature")` once in the module, and write no other `test_*` function in it.
+- Call `scenarios("../features/{rule}.feature")` once in the module, and write no other `test_*` function in it.
   - Violation: a step module with step functions only, or a hand-written `test_*` beside the scenarios.
   - Risk: without `scenarios(...)` no scenario of the feature is collected — the run is green and the scenario report shows `missing`; a hand-written test duplicates a scenario outside the feature file.
   - Fix: one `scenarios(...)` call per step module, bound to that module's feature.
@@ -82,7 +82,7 @@ def step_then_invalid_with_error(world, error_code):
   - Fix: exercise `{package}`'s real validator end-to-end; stub only genuine external dependencies, never the validator itself.
 
 # Check list
-- [ ] The module calls `scenarios("../{rule}.feature")` and holds no hand-written `test_*` function.
+- [ ] The module calls `scenarios("../features/{rule}.feature")` and holds no hand-written `test_*` function.
 - [ ] Every `Given/When/Then` in `{rule}.feature` has a matching, non-duplicated step function.
 - [ ] Step functions call `{package}`'s real public API, not a local re-implementation; state travels through a fixture.
 
