@@ -35,7 +35,7 @@ Which test projects exist, and what each one references, is decided by the archi
 | Directory | file | Description |
 | ----------------- | ---- | ----------- |
 | /tests/{TestProject} | reqnroll.json | One per test project: Reqnroll's `html` formatter (native report) and `message` formatter (scenario report source), both written into that project's own `bin/` |
-| /report-template | index.html | Static landing page `tools/testing/test-report.sh` copies into `$TEST_REPORT_DIR/`; links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
+| /report-template | index.html | Landing page `tools/testing/test-report.sh` publishes into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link; shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | / | stryker-config.json | `solution` + `test-case-filter: Category!=todo`, so Stryker.NET's own test runs skip `@todo` scenarios |
 
 ## stryker-config.json

@@ -3,15 +3,21 @@
 <head>
   <meta charset="utf-8">
   <title>linkcheck — test report</title>
+  <style>
+    .badge span { padding: 2px 6px; color: #fff; font: 11px Verdana, sans-serif; }
+    .badge-label { background: #555; border-radius: 3px 0 0 3px; }
+    .badge-message { border-radius: 0 3px 3px 0; }
+    .badge-brightgreen { background: #4c1; }
+    .badge-yellowgreen { background: #a4a61d; }
+    .badge-red { background: #e05d44; }
+  </style>
 </head>
 <body>
   <h1>linkcheck — test report</h1>
   <ul>
-    <li><a href="reports/scenarios/">Scenarios</a></li>
-    <li><a href="reports/tests/">Tests</a></li>
-    <li><a href="reports/tests/livingdoc/">Living documentation</a></li>
-    <li><a href="reports/coverage/">Coverage</a></li>
-    <li><a href="reports/mutation/">Mutation</a></li>
+    <!-- tools/testing/test-report.sh replaces the next line: one item per report of this run - its badge, then its link. -->
+    <!-- test-reports -->
+    <li><a href="reports/tests/livingdoc/">living documentation</a> - the scenarios as readable pages</li>
   </ul>
   <h2>This run</h2>
   <pre id="run"></pre>

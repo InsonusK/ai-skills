@@ -77,6 +77,7 @@ while IFS= read -r mk; do
   make -s -C "$dir" test-readme-check >/dev/null 2>&1 || err "$dir: make test-readme-check fails"
   grep -qE '^/?tmp/?$' "$dir/.gitignore" 2>/dev/null || err "$dir/.gitignore does not ignore tmp/"
   grep -qE '^/?tools/livingdoc/node_modules/?$' "$dir/.gitignore" 2>/dev/null || err "$dir/.gitignore does not ignore tools/livingdoc/node_modules/"
+  grep -q '<!-- test-reports -->' "$dir/report-template/index.html" 2>/dev/null || err "$dir/report-template/index.html has no <!-- test-reports --> line"
   for k in $(echo "$kinds" | cut -d' ' -f1); do
     make -n -C "$dir" "test-kind-$k" >/dev/null 2>&1 || err "$dir: no target test-kind-$k"
   done

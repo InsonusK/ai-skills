@@ -169,3 +169,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `make test-kinds` prints `{kind} - badges: {badge} …` (`{kind} - no badge` without one). The kind stays the first word of its line, so the workflows' `cut -d' ' -f1` and `check.sh` are unchanged.
 - `.gitignore` was specified nowhere: the base now names `tmp/` and `tools/livingdoc/node_modules/` as a MUST with a check-list line, each stack skill names its own lines, and `check.sh` §7 checks the two base lines in every example. The repository's own `.gitignore` already ignores `tmp/` and `.venv/`.
 - `make init` creates `.venv` and installs the dev dependencies; the `Makefile` puts `.venv/bin` first on `PATH`, so the kinds use it with nothing to activate. Described in the Python `Repository.extend` as the way to give the kinds an environment. `run-example.sh` calls `make init` where an example has it.
+
+## Owner-decided (2026-10-08, report and layout)
+
+- The report's landing page lists its reports as "badge - link".
+- A feature file lies beside the code it specifies and the tests beside it (`{folder}/features/`, `{folder}/test/`) — the Go skill is expected to say so.
+
+## Agent decisions — report and layout
+
+- The list is built by `test-report.sh` into the project's own page: the line `<!-- test-reports -->` of `report-template/index.html` is replaced by one item per `reports/{name}/` of the run, reports with a badge first. Built, not fetched by script in the page: a page opened from disk cannot fetch, and the list must be there. A page without the marker is published unchanged. Side effect: a `check` run no longer links reports it did not produce.
+- The badge on the page is drawn from `badges/{name}.json` with three CSS classes in the template — a shields.io image needs the report to be published first.
+- `cucumber-testing-in-go` got the layout as an explicit MUST: `solution-conformance-testing-in-go` already pointed at "its own convention", which the skill only implied through `Paths: "../features"`.
+- ⚠️ Python is laid out differently — `features/` and `test/` at the repository root, from `solution-test-layout-in-python`'s ADR and the former `behave` convention — and was not changed: see `STATUS.md`.

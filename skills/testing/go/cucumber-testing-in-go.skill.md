@@ -2,7 +2,7 @@
 name: cucumber-testing-in-go
 description: Go/godog-specific rules for Cucumber testing — the single TestFeatures runner, stdout step logging, step-file layout, and VSCode glue configuration
 whenToUse: when writing or reviewing godog scenarios or step definitions in a Go project
-updated: 20261006
+updated: 20261008
 tags:
   - stack/go
   - concern/testing/bdd
@@ -53,6 +53,22 @@ Never rely on returning godog's `ErrSkip` from a step to exclude a scenario — 
 - Risk: the scenario shows green in `go test` output while verifying nothing, exactly the fake-green outcome [Tag unrunnable scenarios @todo and verify exclusion](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion) forbids.
 - Fix: tag the scenario `@todo` and rely on `Tags: "~@todo"` to exclude it from the run.
 
+### Features beside the code, steps in its test package
+Put a package's `.feature` files in a `features/` folder inside that package, and the godog runner with its step files in a `test/` folder beside it — never in a `features/` tree at the repository root.
+```
+{package}/
+  {file}.go
+  features/
+    {rule}.feature
+  test/
+    runner_test.go              TestFeatures, Paths: "../features"
+    world_test.go               the scenario state
+    {concept}_steps_test.go     step definitions
+```
+- Violation: `features/check.feature` at the repository root for code in `internal/domain/services/`.
+- Risk: a reader of the code does not find its specification, and a failing scenario does not say which package it belongs to; one root runner compiles every package's steps into a single test binary.
+- Fix: move the feature next to the package it specifies and give that package its own `test/` runner.
+
 ### Step functions take context.Context first
 Give every step function `ctx context.Context` as its first parameter, even when unused, so a future step can add tracing/cancellation without changing every call site's signature style.
 
@@ -99,6 +115,7 @@ When applying [Configure the Cucumber editor extension](skills/testing/core/cucu
 For a codec or serializer, write the scenario in-memory, `WriteFile`, reopen, and assert against the reopened document, plus a check that the raw output has no dangling id references.
 
 # Check list
+- [ ] Every `.feature` file sits in `{package}/features/`, its runner and steps in `{package}/test/`; the repository root has no `features/` tree.
 - [ ] Exactly one `TestFeatures` per test package; no other `func TestXxx` alongside it.
 - [ ] `godog.Options` sets `Format: "pretty"` (or another registered formatter), `Tags: "~@todo"`, `Strict: true`, `TestingT: t`.
 - [ ] With `CUCUMBER_JSON_DIR` set, `Format` adds `cucumber:<dir>/<package-unique-name>.json`.

@@ -100,7 +100,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 
 | File | Content | Source |
 | --- | --- | --- |
-| `index.html` | entry point; copied verbatim, never generated | `report-template/index.html` |
+| `index.html` | entry point: the project's landing page with its `<!-- test-reports -->` line replaced by one item per report of this run — the badge, then the link to `reports/{name}/`; reports with a badge first | `report-template/index.html`; `badges/`, `reports/` |
 | `reports/{name}/` | one folder per report: a copy of every `kinds/*/report/{name}/`, plus `reports/scenarios/index.html` | the kinds' `report/` folders; `result/scenarios.json` |
 | `reports/{name}/index.html` | when the tool wrote none: a list of what the folder holds, so `reports/{name}/` — the target of the landing page and of a README badge — opens on a static host | `test-report.sh` |
 | `badges/{name}.json` | shields.io endpoint-badge schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` — `tests`, `coverage`, `mutation` | computed from the kinds' `result/*.json` |
@@ -108,7 +108,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 
 A badge and its report share a name; a kind may produce several; a report may have no badge (`scenarios`). Names are unique across kinds. `label` is `tests`, `coverage`, or `mutation score`; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
 
-`report-template/index.html` is a small static landing page the project owns — links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and a block that shows `run.json`. Fill and copy [`templates/report-template/index.html`](../templates/report-template/index.html) — `{project-name}` = the project's name; adjust the links when a stack's native report has another entry file.
+`report-template/index.html` is a small landing page the project owns: the `<!-- test-reports -->` line `test-report.sh` fills, a link to the living doc, and a block that shows `run.json`. The list holds only what the run produced, so a `check` run links no coverage and no mutation report, and a new kind's report appears with no change to the page. Fill and copy [`templates/report-template/index.html`](../templates/report-template/index.html) — `{project-name}` = the project's name. A page without the marker line is published as it is.
 It lives at the repository root, never under `.github/`, since this solution owns no `.github/workflows/*` file.
 
 ## README badges

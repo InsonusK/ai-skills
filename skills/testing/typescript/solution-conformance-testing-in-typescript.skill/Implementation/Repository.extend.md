@@ -38,7 +38,7 @@ README.md
 ## Directory and class skills
 | Directory | file | Description |
 | ----------------- | ----------- |
-| /report-template | index.html | Static landing page `tools/testing/test-report.sh` copies into `$TEST_REPORT_DIR/`; links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
+| /report-template | index.html | Landing page `tools/testing/test-report.sh` publishes into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link; shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | /tools/livingdoc | package.json, package-lock.json, render.mjs | Copied verbatim from `solution-conformance-testing`; `tools/testing/kinds/unit.sh` renders `$TEST_KIND_DIR/report/tests/cucumber/messages.ndjson` → `$TEST_KIND_DIR/report/tests/livingdoc/` |
 | / | stryker.conf.json | Base Stryker config; `tools/testing/kinds/mutation.sh` runs a patched copy — `reporters`, the report file paths, `tempDirName` and `ignorePatterns`, and in a `report` run `thresholds.break = 0` — and never edits the file in place |
 

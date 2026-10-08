@@ -178,9 +178,9 @@ Apply the living-doc MUSTs in [[./Implementation/Repository.create.md#MUST|Repos
 - Fix: write the standard protocol to `report/tests/cucumber/` and call the shared renderer.
 
 ### Keep report-template/index.html in place
-Keep `report-template/index.html` at that path, copied verbatim by `tools/testing/test-report.sh` — never generated, never placed under `.github/`.
+Keep `report-template/index.html` at that path — `tools/testing/test-report.sh` publishes it with only its `<!-- test-reports -->` line filled in — never placed under `.github/`.
 - Risk: nesting a project-owned static asset inside `.github/` implies this solution owns a workflow or Pages configuration it does not — the actual publishing step is a separate, layered CI concern.
-- Fix: keep the file at `report-template/index.html` and have `tools/testing/test-report.sh` copy it as-is.
+- Fix: keep the file at `report-template/index.html`; everything but the marker line reaches the report unchanged.
 
 # Check list
 - [ ] Every scenario follows [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]]'s check list.

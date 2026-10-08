@@ -36,7 +36,7 @@ pyproject.toml
 | Directory | file | Description |
 | --------- | ---- | ----------- |
 | /features | {rule}.feature, steps/{rule}_steps.py | Gherkin scenarios and their bindings |
-| /report-template | index.html | Static landing page `tools/testing/test-report.sh` copies into `$TEST_REPORT_DIR/`; links to `reports/scenarios/`, `reports/tests/`, `reports/tests/livingdoc/`, `reports/coverage/`, `reports/mutation/`, and shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
+| /report-template | index.html | Landing page `tools/testing/test-report.sh` publishes into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link; shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | /tools/testing/kinds | unit.sh, unit_scenarios.py, mutation.sh | This stack's two test kinds — run `pytest` / `mutmut`, write the normalized results |
 
 ## Kind scripts

@@ -1,17 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>StatelessService Test Reports</title>
+  <meta charset="utf-8">
+  <title>StatelessService — test report</title>
+  <style>
+    .badge span { padding: 2px 6px; color: #fff; font: 11px Verdana, sans-serif; }
+    .badge-label { background: #555; border-radius: 3px 0 0 3px; }
+    .badge-message { border-radius: 0 3px 3px 0; }
+    .badge-brightgreen { background: #4c1; }
+    .badge-yellowgreen { background: #a4a61d; }
+    .badge-red { background: #e05d44; }
+  </style>
 </head>
 <body>
-  <h1>StatelessService Test Reports</h1>
+  <h1>StatelessService — test report</h1>
   <ul>
-    <li><a href="reports/scenarios/">Scenarios</a></li>
-    <li><a href="reports/tests/">Unit / Reqnroll scenario reports</a></li>
-    <li><a href="reports/tests/livingdoc/">Living documentation</a></li>
-    <li><a href="reports/coverage/">Coverage report</a></li>
-    <li><a href="reports/mutation/reports/mutation-report.html">Mutation report</a></li>
+    <!-- tools/testing/test-report.sh replaces the next line: one item per report of this run - its badge, then its link. -->
+    <!-- test-reports -->
+    <li><a href="reports/tests/livingdoc/">living documentation</a> - the scenarios as readable pages</li>
   </ul>
   <h2>This run</h2>
   <pre id="run"></pre>

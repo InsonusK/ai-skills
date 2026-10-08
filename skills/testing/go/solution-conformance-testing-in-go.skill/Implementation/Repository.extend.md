@@ -33,7 +33,7 @@ tools/
 | tools/normalize_unittest | main.go | `go test -json` → `$TEST_KIND_DIR/result/unit-test.json` |
 | tools/normalize_scenarios | main.go | `.feature` files + `go test -json` → `$TEST_KIND_DIR/result/scenarios.json` |
 | tools/normalize_mutation | main.go | `gremlins` report → `$TEST_KIND_DIR/result/mutation-test.json` |
-| report-template | index.html | Static landing page, copied verbatim into `$TEST_REPORT_DIR/` |
+| report-template | index.html | Landing page published into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link |
 | tools/testing | (base) | Copied verbatim from `solution-conformance-testing`: the Makefile side, the runner, the report builder |
 | tools/testing/kinds | unit.sh, mutation.sh | This stack's two test kinds — run `go test` / `gremlins`, write the normalized results |
 | tools/livingdoc | package.json, package-lock.json, render.mjs | Copied verbatim from `solution-conformance-testing`; renders `$TEST_KIND_DIR/report/tests/cucumber/` → `$TEST_KIND_DIR/report/tests/livingdoc/` |
