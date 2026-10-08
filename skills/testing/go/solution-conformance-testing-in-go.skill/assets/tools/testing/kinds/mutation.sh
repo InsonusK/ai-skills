@@ -25,7 +25,11 @@ COVERPKG=$(go list ./... | grep -Ev '/(gen|tools)(/|$)' | tr '\n' ',' | sed 's/,
 [ -x "$GREMLINS" ] || go install "github.com/go-gremlins/gremlins/cmd/gremlins@$GREMLINS_VERSION"
 mkdir -p "$REPORT_DIR/mutation"
 
+# diff.relative makes git name changed files from this directory: gremlins compares them
+# with module-relative paths, so without it --diff matches nothing in a module that sits
+# below the repository root.
 code=0
+GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=diff.relative GIT_CONFIG_VALUE_0=true \
 "$GREMLINS" unleash --coverpkg="$COVERPKG" --exclude-files='gen/.*' --exclude-files='tools/.*' "${run_args[@]}" \
   --output "$REPORT_DIR/mutation/gremlins.json" . || code=$?
 go run ./tools/normalize_mutation "$REPORT_DIR/mutation/gremlins.json"
