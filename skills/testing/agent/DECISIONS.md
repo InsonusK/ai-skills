@@ -267,3 +267,22 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `missing` (a scenario no runner executed) and a `@todo` without a reason are not made errors: nobody asked, and `gw009-001` has one `missing` entry by design (`@store-transient`, no such store yet).
 - `gw009-001`'s copy of `taskbox-conformance.feature` got `@infrastructure`, against "copied verbatim": without it the example's unit kind fails. Recorded in `STATUS.md` for the library's source.
 - `@tech-check` has a hyphen; checked that it works as a registered `pytest` marker.
+
+## Owner-decided (2026-10-09, tag scheme)
+
+- Every feature and every scenario carries at least one tag, in three namespaces:
+  - feature: `@type/…` — which part of the program it tests (`service`, `infrastructure`, …);
+  - scenario: `@category/…` — which kind of test it is (`happy`, `negative`, …);
+  - both, optional: `@status/…` — the state of the test: `todo`, `broken`, and on a scenario `validated`, which only the user sets once the test is checked.
+- A hint about the status values belongs in the living doc.
+- Asked and answered (2026-10-09): "untyped" / "uncategorized" are not tags — a missing `@type/…` or `@category/…` stays an error of the run; `@status/broken` is excluded from the run like `todo`, with a `# broken:` reason; an agent removes `@status/validated` from a scenario it changes and says so.
+
+## Agent decisions — tag scheme
+
+- The names swapped against W13: the feature-level tag is now "type" and the scenario-level one "category". Every field, column, rule title and anchor follows: `scenarios.json` has `type` (feature) and `category` (scenario); the rules are "One type tag per feature" and "One category tag per scenario".
+- The computed words the owner found confusing are gone: a missing tag is `none` in the report and an error of the unit kind; a scenario no runner executed is `not-run` (was `missing`).
+- Statuses of a run: `passed`, `failed`, `todo`, `broken`, `not-run`. `validated` is a separate yes/no column — it says who checked the scenario, not how it ran.
+- Values are a closed list in both normalizers: `@type/servce` counts as no type, so a typo is caught by the same check.
+- The exclusion filter names both tags in every stack — godog `~@status/todo && ~@status/broken`, pytest `-m "not status/todo and not status/broken"`, cucumber-js `not @status/todo and not @status/broken`, `dotnet test` and Stryker.NET `Category!=status/todo&Category!=status/broken`. Checked in all four, Stryker's filter included.
+- The legend is one JSON text in `kind.sh` (`kind_status_legend_json`): the scenarios page renders it, and `tools/livingdoc/render.mjs` shows it where its renderer has a place — the classic-JSON report (Go, Python) and the index of several Messages reports (.NET). A single Messages report (TypeScript) is the formatter's own page and takes none.
+- The three skill examples carry one `@status/broken` scenario — a real defect of the link extractor, stated and excluded — to show the tag with its reason. None carries `@status/validated`: only a person sets it.

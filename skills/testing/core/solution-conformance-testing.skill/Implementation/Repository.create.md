@@ -97,7 +97,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `report/scenarios/` | the scenario page rendered from `result/scenarios.json` | `unit` — `kind_scenarios_report` |
 | `result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit` |
 | `result/coverage-test.json` | `{ "linePct": <number> }` | `unit` (`report` only) |
-| `result/scenarios.json` | `{ "scenarios": [ { "feature", "category", "scenario", "examples", "uri", "line", "type", "tags", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
+| `result/scenarios.json` | `{ "scenarios": [ { "feature", "type", "scenario", "examples", "category", "status", "validated", "tags", "uri", "line", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
 | `result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation` |
 | `report/tests/` | the tool's native test report; its entry page forwards to `livingdoc/` when the tool wrote none | `unit` — `kind_livingdoc` |
 | `report/tests/cucumber/` | the runner's standard Cucumber report — `*.json` (classic Cucumber JSON) or `*.ndjson` (Cucumber Messages), one protocol per stack | `unit` |
@@ -161,10 +161,10 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
   - Risk: a caller reads the exit code as "the tests failed"; a run that is red over a score every time hides the run that is red over a broken test.
   - Fix: in a `report` run give the tool its never-break setting (`--break-at 0`, `thresholds.break = 0`) and return its exit code; a red test always returns non-zero.
 - Call `kind_scenarios_check` in `test-kind-unit` after the results are written, and exit non-zero when it fails.
-  - Violation: a unit kind that renders the scenarios page and exits `0` while it lists `untyped` or `uncategorized` entries.
+  - Violation: a unit kind that renders the scenarios page and exits `0` while it lists a feature without a type or a scenario without a category.
   - Risk: a missing tag is visible only to someone who opens the report; an agent that runs the tests and sees them green never learns that it left a scenario or a feature unclassified.
-  - Fix: `kind_scenarios_check || status=1` after `kind_scenarios_report` — it prints each feature without exactly one category tag and each scenario without exactly one type tag to stderr.
-- Write `result/scenarios.json` on every `test-kind-unit` run, listing every `.feature` entry, `@todo` ones included.
+  - Fix: `kind_scenarios_check || status=1` after `kind_scenarios_report` — it prints each feature without exactly one `@type/…` tag and each scenario without exactly one `@category/…` tag to stderr.
+- Write `result/scenarios.json` on every `test-kind-unit` run, listing every `.feature` entry, `@status/todo` and `@status/broken` ones included.
   - Risk: a report built only from executed scenarios hides planned-but-missing cases.
   - Fix: build the inventory from the `.feature` files and join the runner's result onto it.
 - Have `test-kind-unit` make the Cucumber runner write its standard report — the protocol its `cucumber-testing-in-{stack}` skill names — into `$TEST_KIND_DIR/report/tests/cucumber/`, then call `kind_livingdoc`.
@@ -191,9 +191,9 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - [ ] An existing `Makefile` kept its other targets.
 - [ ] `make test-kind-unit` runs Cucumber scenarios and plain tests together and writes only below `$TEST_KIND_DIR`.
 - [ ] Every kind leaves `mode` or `skipped`; `run.json` shows it.
-- [ ] `result/unit-test.json`, `result/coverage-test.json` (`report`), `result/mutation-test.json` follow [## Kind output](#kind-output); `result/scenarios.json` exists after every unit run, green or red, with `@todo` entries.
+- [ ] `result/unit-test.json`, `result/coverage-test.json` (`report`), `result/mutation-test.json` follow [## Kind output](#kind-output); `result/scenarios.json` exists after every unit run, green or red, with `@status/todo` entries.
 - [ ] `report/tests/cucumber/` holds the runner's standard report; `report/tests/livingdoc/index.html` exists when `npm` is available, and its absence never fails the kind.
-- [ ] `make test-kind-unit` exits non-zero, naming the place, when a scenario has no single type tag or a feature no single category tag — with every test green.
+- [ ] `make test-kind-unit` exits non-zero, naming the place, when a feature has no single `@type/…` tag or a scenario no single `@category/…` tag — with every test green.
 - [ ] Each kind exits with its tool's own exit code after writing its results. `make test-kind-unit` exits non-zero when a test failed; no kind exits non-zero over a score in a `report` run.
 - [ ] `make test-report` writes `index.html`, `reports/`, `badges/`, `run.json` into `$TEST_REPORT_DIR`; a different `TEST_WORK_DIR` / `TEST_REPORT_DIR` moves everything, and nothing is written to `public/`.
 - [ ] `make test-and-report TEST_RUN_PURPOSE=check` skips or narrows kinds as the table says and still builds a report.

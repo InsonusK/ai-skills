@@ -4,7 +4,7 @@ description: The .NET implementation of [[skills/testing/core/solution-conforman
 whenToUse: Set up or review the test tooling of a .NET solution that must prove conformance to a Cucumber/Gherkin spec, or wire coverage, mutation testing, and the scenario report into a .NET solution's `make`/CI pipeline.
 domain: skill
 type: architecture
-version: 20261008180000
+version: 20261009120000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-dotnet
@@ -93,5 +93,5 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] `make test-kind-unit`, `make test-kind-mutation`, `make test-report`, and `make test-and-report` exist at the repository root, run across every test project, and support the toggles defined by [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]].
 - [ ] `$TEST_KIND_DIR/result/*.json` — including `scenarios.json` — and `$TEST_KIND_DIR/report/<kind>/` aggregate every test project present and follow that same contract's schema.
 - [ ] No test project references `xunit.v3`/`Reqnroll.xunit.v3`, and no `global.json` opts `dotnet test` into Microsoft.Testing.Platform.
-- [ ] `stryker-config.json` sets `test-case-filter` to `Category!=todo`.
+- [ ] `stryker-config.json` sets `test-case-filter` to `Category!=status/todo&Category!=status/broken`.
 - [ ] `$TEST_REPORT_DIR/` follows [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-output|solution-conformance-testing's Public site output]] contract, and `report-template/index.html` exists at the repository root (not under `.github/`).

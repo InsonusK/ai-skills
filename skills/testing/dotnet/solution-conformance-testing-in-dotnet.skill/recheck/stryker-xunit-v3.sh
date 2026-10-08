@@ -57,7 +57,7 @@ run_stryker() { # build a copy and mutation-test it; prints "killed survived tim
   local dir="$1"
   (
     cd "$dir"
-    printf '{ "stryker-config": { "solution": "%s", "test-case-filter": "Category!=todo" } }\n' "$SOLUTION" > stryker-config.json
+    printf '{ "stryker-config": { "solution": "%s", "test-case-filter": "Category!=status/todo&Category!=status/broken" } }\n' "$SOLUTION" > stryker-config.json
     dotnet tool restore >/dev/null
     dotnet tool update dotnet-stryker --local --version "$STRYKER_VERSION" >/dev/null
     dotnet build "$SOLUTION" -c Release >build.log 2>&1 || { echo "build failed: $dir/build.log" >&2; exit 2; }

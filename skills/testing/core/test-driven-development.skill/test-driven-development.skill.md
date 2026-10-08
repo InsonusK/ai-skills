@@ -17,7 +17,7 @@ tags:
 
 # Scope
 This skill defines the order of writing tests vs. code. It does not define the test case format or coverage rules:
-- The unit's `.feature` file is the source of test cases for the red-green cycles: its scenarios are written first, type-tagged and tagged `@todo`, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md)'s scenarios-first protocol.
+- The unit's `.feature` file is the source of test cases for the red-green cycles: its scenarios are written first, category-tagged and tagged `@status/todo`, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md)'s scenarios-first protocol.
 - Use [code-coverage](skills/testing/core/code-coverage.skill.md) to decide what must be covered.
 - When the task is new business logic decomposed into units, this skill governs step 4-5 of `solid-decomposition` (attach test cases, then generate code): drive each unit with red-green-refactor instead of writing the implementation first.
 
@@ -31,7 +31,7 @@ This skill defines the order of writing tests vs. code. It does not define the t
 
 ## New behavior (new unit, new function, new business rule)
 Full red-green-refactor, one test case at a time:
-1. Take the next `@todo` scenario of the unit's `.feature` file and remove its `@todo` tag.
+1. Take the next `@status/todo` scenario of the unit's `.feature` file and remove its `@status/todo` tag.
 2. **Red** — write the scenario's step definitions before the implementation exists. Run it and confirm it fails for the expected reason (missing behavior, not a typo).
 3. **Green** — write the minimum code to make that test pass. Do not implement unrelated cases yet.
 4. **Refactor** — clean up with the test suite green, without changing observable behavior.

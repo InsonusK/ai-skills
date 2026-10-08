@@ -44,10 +44,10 @@ Name step files by domain concept (`connection.steps.ts`, `query.steps.ts`, `res
 - Risk: mixing comparators and actions in one file makes the comparator harder to find and audit once, per [Generic comparator steps](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#generic-comparator-steps).
 - Fix: split step files by concept under the configured `require`/`import` glob (e.g. `features/step-definitions/*.steps.ts`).
 
-### Tag @todo scenarios and exclude them from the run
-Tag a not-yet-runnable scenario `@todo`, exclude it via cucumber-js's `--tags 'not @todo'` (or the `tags` field in `cucumber.js`/`.cucumberrc`), and confirm the runner reports it as skipped, not passed.
-- Risk: an unfiltered `@todo` scenario either fails the run (undefined step) or passes on an incomplete implementation, contradicting [Tag unrunnable scenarios @todo and verify exclusion](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion).
-- Fix: set `tags: 'not @todo'` in the runner config and confirm the summary counts the scenario as skipped.
+### Exclude @status/todo and @status/broken scenarios from the run
+Tag a scenario that must not run yet `@status/todo` or `@status/broken`, exclude both via cucumber-js's `--tags 'not @status/todo and not @status/broken'` (or the `tags` field in `cucumber.js`/`.cucumberrc`), and confirm the runner reports it as skipped, not passed.
+- Risk: an unfiltered scenario either fails the run (undefined step) or passes on an incomplete implementation, contradicting [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason).
+- Fix: set `tags: 'not @status/todo and not @status/broken'` in the runner config and confirm the summary counts the scenario as skipped.
 
 ### Register a custom parameter type instead of parsing inside the step
 When a step's placeholder needs a shape beyond cucumber-js's built-ins (`{string}`, `{int}`, `{float}`), register it with `defineParameterType` (giving it a `name` and `regexp`) rather than accepting a raw `{string}` and parsing it manually inside the step body.
@@ -76,7 +76,7 @@ List any `defineParameterType` custom type under `cucumber.parameterTypes` too, 
 - [ ] Cross-step state lives on a custom `World`, never a module-level variable.
 - [ ] Every step with a body logs via `this.attach(...)` or `console.log`, visible in the runner's report.
 - [ ] Step files are grouped by domain concept; generic comparator steps sit in their own file.
-- [ ] `@todo`-tagged scenarios are excluded via the runner's tag filter, confirmed as skipped rather than passing.
+- [ ] `@status/todo`-tagged scenarios are excluded via the runner's tag filter, confirmed as skipped rather than passing.
 - [ ] A structured placeholder is a registered `defineParameterType`, not parsed by hand inside the step.
 - [ ] `cucumber.glue`/`cucumber.parameterTypes` in `.vscode/settings.json` matches this skill's TypeScript configuration when proposed to the user.
 - [ ] The runner writes Cucumber Messages per [Emit Cucumber Messages](#emit-cucumber-messages).

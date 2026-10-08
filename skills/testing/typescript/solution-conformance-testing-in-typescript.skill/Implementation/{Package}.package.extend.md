@@ -33,7 +33,7 @@ tags:
 ```
 
 ## Files
-- Copy verbatim to `cucumber.mjs`: [`assets/cucumber.mjs`](../assets/cucumber.mjs) — the default profile: feature paths, the `tsx/cjs` loader, the step definitions, `not @todo`.
+- Copy verbatim to `cucumber.mjs`: [`assets/cucumber.mjs`](../assets/cucumber.mjs) — the default profile: feature paths, the `tsx/cjs` loader, the step definitions, `not @status/todo and not @status/broken`.
 - Copy verbatim to `stryker.conf.json`: [`assets/stryker.conf.json`](../assets/stryker.conf.json) — the `command` test runner calling `cucumber-js`, `src/**/*.ts` mutated; the package then owns its `thresholds`.
 
 ## Directory and class skills
@@ -73,4 +73,4 @@ tags:
 
 # Check list
 - [ ] `package.json` lists `@cucumber/cucumber`, `tsx`, `c8`, `@stryker-mutator/core` under `devDependencies`.
-- [ ] `npx cucumber-js` with no argument runs every scenario but the `@todo` ones; `stryker.conf.json` names no feature path.
+- [ ] `npx cucumber-js` with no argument runs every scenario but the `@status/todo` ones; `stryker.conf.json` names no feature path.

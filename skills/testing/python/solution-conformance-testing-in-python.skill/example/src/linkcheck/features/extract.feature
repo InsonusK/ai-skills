@@ -1,8 +1,8 @@
-@domain
+@type/domain
 Feature: Extract links from a text
   A caller pulls the links out of a text before checking them.
 
-  @happy
+  @category/happy
   Scenario: Every link of the text is returned in order
     Given the text "See https://a.example/x and http://b.example."
     When I extract the links
@@ -11,7 +11,7 @@ Feature: Extract links from a text
       | https://a.example/x |
       | http://b.example    |
 
-  @boundary
+  @category/boundary
   Scenario Outline: A text without a new link adds nothing
     Given the text "<text>"
     When I extract the links
@@ -25,3 +25,12 @@ Feature: Extract links from a text
     Examples: the same link twice
       | text                                | count |
       | https://a.example https://a.example | 1     |
+
+  # broken: a closing bracket at the end is always cut off, also when it belongs to the link
+  @status/broken @category/boundary
+  Scenario: A link that ends with a closing bracket keeps it
+    Given the text "See https://a.example/x_(y)"
+    When I extract the links
+    Then the links are:
+      | link                    |
+      | https://a.example/x_(y) |

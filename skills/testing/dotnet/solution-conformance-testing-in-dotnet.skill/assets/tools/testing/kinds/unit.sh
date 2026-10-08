@@ -40,13 +40,13 @@ fi
 # make every project overwrite the same file), so we glob for every "test-results*.trx".
 #
 # verbosity=detailed prints every Feature/Scenario/step Reqnroll executed (with
-# pass/fail), which is invaluable in CI logs on failure. @todo scenarios are excluded
-# through Reqnroll's tag-to-trait mapping (Category=todo). The exit code is kept, not
+# pass/fail), which is invaluable in CI logs on failure. @status/todo and @status/broken scenarios are excluded
+# through Reqnroll's tag-to-trait mapping (Category=status/todo, Category=status/broken). The exit code is kept, not
 # acted on yet, so the normalized results below are written on a red run too.
 set +e
 dotnet test "$SOLUTION" \
   --no-build --configuration Release \
-  --filter "Category!=todo" \
+  --filter "Category!=status/todo&Category!=status/broken" \
   --results-directory "$TEST_RESULTS_DIR" \
   --logger "console;verbosity=detailed" \
   --logger "trx;LogFilePrefix=test-results" \

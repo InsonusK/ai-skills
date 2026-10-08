@@ -4,7 +4,7 @@ description: Sets up the Go side of the Cucumber/coverage/mutation quality gate 
 whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario report into a Go project's Makefile/CI pipeline
 domain: skill
 type: architecture
-version: 20261008220000
+version: 20261009120000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-go
@@ -37,7 +37,7 @@ adr:
 
 # Capabilities
 - `go test -json ./...` runs godog scenarios and plain Go tests in one invocation; a normalizer collapses godog's parent/subtest duplication so a scenario is counted once.
-- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type tag, status, and `@todo` reason — and `make test-report` renders it as `$TEST_REPORT_DIR/reports/scenarios/`.
+- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type and category, its status, and `@status/todo` reason — and `make test-report` renders it as `$TEST_REPORT_DIR/reports/scenarios/`.
 - `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` scopes a mutation run to files changed since `<ref>`, so a pull request's gate does not pay for a full-module run.
 - `make test-report` gathers the kinds' reports and badges into a stack-independent `$TEST_REPORT_DIR/` site, matching the parent solution's report contract exactly — nothing downstream needs to know this is a Go module.
 
@@ -81,8 +81,8 @@ FILES:
 2. Whoever notices it (via the published report or a coverage/mutation badge) strengthens the corresponding scenario's assertion in a follow-up change, or explicitly accepts it per the parent solution's own rule.
 
 # Ground truth
-[`example/`](./example/) is a small module carrying this solution as it is delivered: `internal/linkcheck/` with two features in its `features/` and their steps in its `test/`, and the sub-package `internal/linkcheck/batch/` with its own `features/` and `test/` runner. The three features hold plain scenarios, a `Scenario Outline` with two `Examples:` blocks, data tables, two `@todo` scenarios, and a tag on each feature. Verified on 2026-10-08 with Go 1.26, `godog` 0.16, `gremlins` 0.6.0:
-- `make init`, then `make test-and-report` — exit `0`; 10/10 scenarios, coverage 96.3%, mutation score 100%; the scenario report lists both `Examples:` blocks and the `@todo` entry with its reason, and the living doc shows each row with its type tag.
+[`example/`](./example/) is a small module carrying this solution as it is delivered: `internal/linkcheck/` with two features in its `features/` and their steps in its `test/`, and the sub-package `internal/linkcheck/batch/` with its own `features/` and `test/` runner. The three features hold plain scenarios, a `Scenario Outline` with two `Examples:` blocks, data tables, two `@status/todo` scenarios and a `@status/broken` one, and a tag on each feature. Verified on 2026-10-08 with Go 1.26, `godog` 0.16, `gremlins` 0.6.0:
+- `make init`, then `make test-and-report` — exit `0`; 10/10 scenarios, coverage 96.3%, mutation score 100%; the scenario report lists both `Examples:` blocks and the `@status/todo` entry with its reason, and the living doc shows each row with its type tag.
 - `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped, no coverage report, only the `tests` badge.
 - `make test-kind-mutation` without `--integration`, measured when the example had one feature — 4 of its 7 mutants lived and the score was 42.9%: the measurement behind the `--integration` rule.
 

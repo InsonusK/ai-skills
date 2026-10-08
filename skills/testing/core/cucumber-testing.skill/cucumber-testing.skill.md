@@ -14,9 +14,10 @@ tags:
 # Goal
 - Every `.feature` scenario written as an explicit input/expected-result matrix, never a narrative walkthrough.
 - Every assertion step implemented as a generic comparator that reads its expected data from the feature file, reused across scenarios instead of duplicated per domain object.
-- A scenario that cannot run yet tagged `@todo` with its reason, and excluded from the executed suite, never reported as a fake pass.
-- Every scenario classified by exactly one type tag, so the test report shows which kinds of behavior are covered and which are missing.
-- Every feature classified by exactly one category tag, so the test report shows which layers of the program have a specification.
+- A scenario that must not run yet tagged `@status/todo` or `@status/broken` with its reason, and excluded from the executed suite, never reported as a fake pass.
+- Every feature classified by exactly one `@type/…` tag, so the test report shows which parts of the program have a specification.
+- Every scenario classified by exactly one `@category/…` tag, so the test report shows which kinds of behavior are covered and which are missing.
+- `@status/validated` on a scenario only where a person put it.
 - A VSCode workspace with the Cucumber extension declared in the devcontainer and `cucumber.glue`/`cucumber.features` set in `.vscode/settings.json`.
 
 # Scope
@@ -44,59 +45,75 @@ Delete code that cannot be reached through the public API rather than writing a 
 - Risk: the test suite grows to cover code that provides no behavior guarantee, and the false coverage hides that the code is actually dead.
 - Fix: remove the unreachable code; if it later becomes reachable, add its scenario then.
 
-### Tag unrunnable scenarios @todo and verify exclusion
-Tag a scenario that cannot run yet (missing fixture or dependency, or planned but not implemented) `@todo`, put its reason in a `# todo: <reason>` comment on the line directly above its tags, exclude `@todo` from the executed run, and confirm the runner reports it as excluded rather than passed.
-- Violation: leaving an unimplemented scenario in the executed run where a runner treats "skipped" as "passed"; or a bare `@todo` with no `# todo:` reason.
-- Risk: a fake-green scenario hides that the case is not actually verified, and nobody investigates it again; a `@todo` without a reason cannot be told apart from a forgotten case in the report.
-- Fix: tag it `@todo` with a `# todo:` reason, filter `@todo` out of the run, and check the stack-specific skill for how that runner reports exclusion versus a pass.
+### One type tag per feature
+Give every feature exactly one `@type/…` tag on its `Feature:` line — the tag says which part of the program the feature specifies:
+
+| Tag | The feature specifies |
+| --- | --- |
+| `@type/domain` | a business rule of an entity, a value object, a validator or a pure function — no I/O |
+| `@type/service` | a use case: one operation orchestrated end to end, its collaborators replaced at their ports |
+| `@type/api` | an inbound adapter: how a request, a message or a command line becomes a call, and its result a response |
+| `@type/infrastructure` | an outbound adapter against the real dependency or its emulator: a store, a cache, a client of another service, a queue |
+| `@type/mapping` | the translation between two representations of the same data, with no I/O: transport object, domain model, stored row |
+| `@type/contract` | the shape other code depends on: commands, queries, events, interface markers, a published schema |
+| `@type/tech-check` | a technical check of the plumbing every module passes through, not of a business capability: a pipeline behavior, logging, configuration, error handling |
+
+- Violation: a feature with no `@type/…` tag, with two, or with a value outside the table; a `@type/…` tag on a single scenario instead of the `Feature:` line.
+- Risk: the report cannot show which parts of the program have a specification at all — a service whose rules are fully specified while its adapters have none looks like a fully specified one. A feature that needs two type tags specifies two things.
+- Fix: tag the feature with the type of the code it sits beside; split a feature that spans two types into two files; tag a feature copied verbatim from another repository at its source. The unit test kind fails, naming each feature without exactly one `@type/…` tag.
 ```gherkin
-  # todo: needs a fake clock to trigger the expiry
-  @todo @error
-  Scenario: Expired token is rejected
+@type/service
+Feature: Add item
+
+  @category/happy
+  Scenario: A valid item is stored
 ```
 
-### One type tag per scenario
-Give every scenario exactly one type tag — `@happy`, `@boundary`, `@negative`, `@error`, `@concurrency`, `@security`, or `@regression` — on the scenario itself or inherited from its `Feature`/`Rule`; in a `Scenario Outline` whose rows exercise different types, split the rows into separately tagged `Examples:` blocks.
-- Violation: an untagged scenario, a scenario with both `@happy` and `@negative`, or one `Examples:` table mixing valid and invalid inputs under a single tag.
+### One category tag per scenario
+Give every scenario exactly one `@category/…` tag — `@category/happy`, `@category/boundary`, `@category/negative`, `@category/error`, `@category/concurrency`, `@category/security`, or `@category/regression` — on the scenario itself or inherited from its `Feature`/`Rule`; in a `Scenario Outline` whose rows exercise different categories, split the rows into separately tagged `Examples:` blocks.
+- Violation: a scenario with no `@category/…` tag, with both `@category/happy` and `@category/negative`, or one `Examples:` table mixing valid and invalid inputs under a single tag.
 - Risk: the test report cannot show that, for example, a feature has only happy-path scenarios — the gap stays invisible until a bug finds it.
-- Fix: tag each scenario (or each `Examples:` block) with the one type it exercises. The unit test kind fails, naming each scenario without exactly one type tag, and the report lists it as `untyped`.
+- Fix: tag each scenario (or each `Examples:` block) with the one category it exercises. The unit test kind fails, naming each scenario without exactly one `@category/…` tag.
 ```gherkin
   Scenario Outline: Check a URL
     ...
-    @happy
+    @category/happy
     Examples: well-formed
       | input              | outcome |
       | https://a.example  | valid   |
 
-    @negative
+    @category/negative
     Examples: malformed
       | input      | outcome |
       | not-a-url  | invalid |
 ```
 
-### One category tag per feature
-Give every feature exactly one category tag on its `Feature:` line — the tag says what kind of code the feature specifies:
+### Exclude an unrunnable scenario with a status tag and its reason
+Tag a scenario — or a whole feature — that must not run yet with one status tag, put the reason in a comment on the line directly above its tags, exclude both tags from the executed run, and confirm the runner reports the scenario as excluded rather than passed:
 
-| Tag | The feature specifies |
-| --- | --- |
-| `@domain` | a business rule of an entity, a value object, a validator or a pure function — no I/O |
-| `@service` | a use case: one operation orchestrated end to end, its collaborators replaced at their ports |
-| `@api` | an inbound adapter: how a request, a message or a command line becomes a call, and its result a response |
-| `@infrastructure` | an outbound adapter against the real dependency or its emulator: a store, a cache, a client of another service, a queue |
-| `@mapping` | the translation between two representations of the same data, with no I/O: transport object, domain model, stored row |
-| `@contract` | the shape other code depends on: commands, queries, events, interface markers, a published schema |
-| `@tech-check` | a technical check of the plumbing every module passes through, not of a business capability: a pipeline behavior, logging, configuration, error handling |
+| Tag | When | Reason comment |
+| --- | --- | --- |
+| `@status/todo` | planned, not implemented yet — a missing fixture or dependency, or simply not written | `# todo: <reason>` |
+| `@status/broken` | implemented, and known to fail — the defect is not fixed yet | `# broken: <reason>` |
 
-- Violation: a feature with no category tag or with two; a category tag on a single scenario instead of the `Feature:` line.
-- Risk: the report cannot show which layers have a specification at all — a service whose rules are fully specified while its adapters have none looks like a fully specified one. A feature that needs two category tags specifies two things.
-- Fix: tag the feature with the category of the code it sits beside; split a feature that spans two categories into two files; tag a feature copied verbatim from another repository at its source. The unit test kind fails, naming each feature without exactly one category tag, and the report lists it as `uncategorized`.
+- Violation: an unimplemented or known-failing scenario left in the executed run where a runner treats "skipped" as "passed"; a failing scenario deleted or its assertion weakened instead of tagged; a status tag with no reason comment.
+- Risk: a fake-green scenario hides that the case is not verified, and nobody investigates it again; a deleted scenario takes the knowledge of the defect with it; a status tag without a reason cannot be told apart from a forgotten case.
+- Fix: tag it with its reason, filter `@status/todo` and `@status/broken` out of the run, and check the stack-specific skill for how that runner reports exclusion versus a pass. A status tag adds to the `@category/…` tag, it never replaces it.
 ```gherkin
-@service
-Feature: Add item
+  # todo: needs a fake clock to trigger the expiry
+  @status/todo @category/error
+  Scenario: Expired token is rejected
 
-  @happy
-  Scenario: A valid item is stored
+  # broken: a closing bracket at the end is cut off also when it belongs to the link
+  @status/broken @category/boundary
+  Scenario: A link that ends with a closing bracket keeps it
 ```
+
+### Only a person sets @status/validated
+Never add `@status/validated` to a scenario: a person adds it after checking that the scenario states what the program must do. Remove the tag from a scenario whose text, examples or step definitions you change, and say so in your report.
+- Violation: an agent tagging the scenarios it wrote `@status/validated`; a validated scenario edited with its tag left in place.
+- Risk: the tag is the only record that a person, not the author of the code, confirmed the expectation — set by an agent, or left on a changed scenario, it certifies something nobody checked.
+- Fix: leave new scenarios untagged; on changing a validated scenario or a step it uses, delete the tag and list the scenario as waiting for validation.
 
 ### Generic comparator steps
 Implement an assertion step as a generic comparator — it reads the actual result and compares it against expected data supplied by the scenario (a data table, `Scenario Outline` parameter, or argument), never against a value baked into the step's code.
@@ -186,9 +203,10 @@ Use the runner's own step-listing/generation facility, when it has one, instead 
 - [ ] Every scenario is structured as an input/expected-result matrix (data table or `Examples:`), not a narrative.
 - [ ] No unit-test-framework test duplicates what a `.feature` scenario could express, other than the one runner entry point.
 - [ ] No test exists solely to cover code unreachable through the public API.
-- [ ] Every not-yet-runnable scenario is tagged `@todo` with a `# todo:` reason, filtered out of the executed run, and confirmed excluded rather than reported as passing.
-- [ ] Every scenario (or `Examples:` block) carries exactly one type tag: `@happy`, `@boundary`, `@negative`, `@error`, `@concurrency`, `@security`, `@regression`.
-- [ ] Every feature carries exactly one category tag on its `Feature:` line: `@domain`, `@service`, `@api`, `@infrastructure`, `@mapping`, `@contract`, `@tech-check`.
+- [ ] Every feature carries exactly one `@type/…` tag on its `Feature:` line: `domain`, `service`, `api`, `infrastructure`, `mapping`, `contract`, `tech-check`.
+- [ ] Every scenario (or `Examples:` block) carries exactly one `@category/…` tag: `happy`, `boundary`, `negative`, `error`, `concurrency`, `security`, `regression`.
+- [ ] Every scenario that must not run yet is tagged `@status/todo` or `@status/broken` with its `# todo:` / `# broken:` reason, filtered out of the executed run, and confirmed excluded rather than reported as passing.
+- [ ] No `@status/validated` tag was added by an agent, and none is left on a scenario changed in this work.
 - [ ] Every assertion step is a generic comparator reading expected data from the feature file — no domain-specific hardcoded step.
 - [ ] No expected value is hardcoded in step-definition code.
 - [ ] Structured responses are asserted via deserialization, never substring matching.

@@ -30,7 +30,7 @@ CUCUMBER_ARGS=(
   'features/**/*.feature'
   --require-module tsx/cjs
   --require 'features/step-definitions/**/*.ts'
-  --tags 'not @todo'
+  --tags 'not @status/todo and not @status/broken'
   --format progress
   --format "html:$REPORT_DIR/tests/index.html"
   --format "json:$CUCUMBER_JSON"

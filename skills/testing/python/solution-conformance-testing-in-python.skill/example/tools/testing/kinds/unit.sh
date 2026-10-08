@@ -18,13 +18,13 @@ trap 'rm -f "$SCENARIO_RESULTS"' EXIT
 echo '[]' > "$SCENARIO_RESULTS"   # stays empty when pytest stops before its session ends
 export COVERAGE_FILE="$TEST_KIND_DIR/.coverage"
 
-# One run, one exit code. @todo scenarios are excluded through pytest-bdd's tag-to-marker
-# mapping. --cucumberjson is the standard report tools/livingdoc renders; the unit_scenarios
+# One run, one exit code. @status/todo and @status/broken scenarios are excluded through
+# pytest-bdd's tag-to-marker mapping. --cucumberjson is the standard report tools/livingdoc renders; the unit_scenarios
 # plugin beside this script records each scenario's own line for the scenario report. The
 # exit code is kept, not acted on yet, so the normalized results are written on a red run too.
 status=0
 SCENARIO_RESULTS_FILE="$SCENARIO_RESULTS" PYTHONPATH="tools/testing/kinds${PYTHONPATH:+:$PYTHONPATH}" \
-  coverage run -m pytest -p unit_scenarios -p no:cacheprovider -m "not todo" \
+  coverage run -m pytest -p unit_scenarios -p no:cacheprovider -m "not status/todo and not status/broken" \
     --cucumberjson="$REPORT_DIR/tests/cucumber/pytest-bdd.json" \
     --junitxml="$JUNIT" || status=$?
 

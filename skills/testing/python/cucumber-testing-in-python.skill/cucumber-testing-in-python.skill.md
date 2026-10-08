@@ -1,8 +1,8 @@
 ---
 name: cucumber-testing-in-python
-description: Python/pytest-bdd-specific rules for Cucumber testing — where feature files and their tests live, step modules and shared steps, scenario state in fixtures, @todo exclusion, step logging, and VSCode glue/parameterTypes configuration
+description: Python/pytest-bdd-specific rules for Cucumber testing — where feature files and their tests live, step modules and shared steps, scenario state in fixtures, @status/todo exclusion, step logging, and VSCode glue/parameterTypes configuration
 whenToUse: when writing or reviewing pytest-bdd scenarios or step definitions in a Python project, or when deciding where a `.feature` file or a test module goes
-updated: 20261008
+updated: 20261009
 tags:
   - stack/python
   - concern/testing/bdd
@@ -51,7 +51,7 @@ src/{package}/                    or {package}/ without a src/ layout
 ### One step module per feature, shared steps in conftest.py
 Bind exactly one feature in each step module with `scenarios("../features/{rule}.feature")`, keep the steps only that feature uses in it, and put steps and fixtures several features of the package share — generic comparators included — into `test/conftest.py`.
 - Violation: a step module with step functions and no `scenarios(...)` call; one step copied into two step modules.
-- Risk: without `scenarios(...)` no scenario of the feature is collected — the run is green and the scenario report shows `missing`; a copied step drifts, per [Generic comparator steps](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#generic-comparator-steps).
+- Risk: without `scenarios(...)` no scenario of the feature is collected — the run is green and the scenario report shows `not-run`; a copied step drifts, per [Generic comparator steps](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#generic-comparator-steps).
 - Fix: one `scenarios(...)` call per step module; `pytest-bdd` finds the steps of `conftest.py` for every module of that folder.
 
 ### Register every pytest-bdd parse() placeholder as a parameterType
@@ -75,10 +75,10 @@ Pass state between step functions through a function-scoped `pytest` fixture eve
 - Risk: a module global leaks state across scenarios that should run isolated, causing order-dependent flakiness under parallel or repeated runs.
 - Fix: a fixture (`world`) returning a fresh object per scenario, injected into every step that reads or writes state.
 
-### Tag @todo scenarios and exclude them from the run
-Tag a not-yet-runnable scenario `@todo`, exclude it with `pytest -m "not todo"` — `pytest-bdd` turns every tag into a marker — and register `todo` under `markers` in `pyproject.toml`.
-- Risk: an unfiltered `@todo` scenario either fails the run (undefined step) or passes on an incomplete implementation, contradicting [Tag unrunnable scenarios @todo and verify exclusion](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion); an unregistered marker warns on every run.
-- Fix: run with `-m "not todo"` and check that the summary counts the scenario as deselected, not passed.
+### Exclude @status/todo and @status/broken scenarios from the run
+Tag a scenario that must not run yet `@status/todo` or `@status/broken`, exclude both with `pytest -m "not status/todo and not status/broken"` — `pytest-bdd` turns every tag into a marker — and register every `status/…`, `category/…` and `type/…` tag under `markers` in `pyproject.toml`.
+- Risk: an unfiltered scenario either fails the run (undefined step) or passes on an incomplete implementation, contradicting [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason); an unregistered marker warns on every run.
+- Fix: run with `-m "not status/todo and not status/broken"` and check that the summary counts the scenario as deselected, not passed.
 
 ### Print step output so it is visible on failure
 Have every step with a body `print()` its action and what it observed, matching [Steps log action and observation](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#steps-log-action-and-observation).
@@ -107,7 +107,7 @@ and add [Register every pytest-bdd parse() placeholder as a parameterType](#regi
 - [ ] Every step module calls `scenarios(...)` once; steps shared by several features are in `test/conftest.py`.
 - [ ] Every `parsers.parse()` placeholder has a matching `cucumber.parameterTypes` entry in `.vscode/settings.json`.
 - [ ] Cross-step state travels through a fixture, never a module-level global.
-- [ ] `@todo`-tagged scenarios are excluded with `-m "not todo"`, confirmed as deselected rather than passing; `todo` is a registered marker.
+- [ ] `@status/todo` and `@status/broken` scenarios are excluded with `-m "not status/todo and not status/broken"`, confirmed as deselected rather than passing; every `status/…`, `category/…` and `type/…` tag is a registered marker.
 - [ ] Every step with a body prints its action/observation, visible when the scenario fails.
 - [ ] `cucumber.glue` and `cucumber.features` in `.vscode/settings.json` match this skill's Python configuration when proposed to the user.
 - [ ] The run writes classic Cucumber JSON per [Emit classic Cucumber JSON](#emit-classic-cucumber-json).

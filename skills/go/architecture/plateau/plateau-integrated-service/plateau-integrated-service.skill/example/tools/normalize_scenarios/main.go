@@ -1,7 +1,7 @@
 // Command normalize_scenarios writes the normalized result/scenarios.json
 // the parent solution-conformance-testing Scenario report defines. The
-// inventory comes from every .feature file under the repository (so @todo
-// entries godog never runs are listed too); the status of each entry comes
+// inventory comes from every .feature file under the repository (so @status/todo
+// and @status/broken entries godog never runs are listed too); the status of each entry comes
 // from the `go test -json` event stream whose path is argv[1].
 //
 // godog runs every pickle as a Go subtest named TestFeatures/{pickle name};
@@ -25,33 +25,38 @@ import (
 	messages "github.com/cucumber/messages/go/v34"
 )
 
-var typeTags = map[string]bool{
-	"happy": true, "boundary": true, "negative": true, "error": true,
-	"concurrency": true, "security": true, "regression": true,
-}
-
-// categoryTags say what a feature specifies; exactly one sits on the Feature line.
-var categoryTags = map[string]bool{
+// featureTypes are the values of @type/<x>: what part of the program a feature
+// specifies. Exactly one sits on the Feature line.
+var featureTypes = map[string]bool{
 	"domain": true, "service": true, "api": true, "infrastructure": true,
 	"mapping": true, "contract": true, "tech-check": true,
 }
 
-var todoComment = regexp.MustCompile(`^\s*#\s*todo:\s*(.*?)\s*$`)
+// scenarioCategories are the values of @category/<x>: what kind of test a scenario is.
+// Exactly one is on the scenario or inherited.
+var scenarioCategories = map[string]bool{
+	"happy": true, "boundary": true, "negative": true, "error": true,
+	"concurrency": true, "security": true, "regression": true,
+}
+
+// reasonComment is the "# todo: ..." / "# broken: ..." line directly above the tags.
+var reasonComment = regexp.MustCompile(`^\s*#\s*(?:todo|broken):\s*(.*?)\s*$`)
 
 // skipDirs are never scanned for .feature files.
 var skipDirs = map[string]bool{".git": true, "node_modules": true, "vendor": true, "tmp": true, "public": true}
 
 type entry struct {
-	Feature  string   `json:"feature"`
-	Scenario string   `json:"scenario"`
-	Examples string   `json:"examples"`
-	URI      string   `json:"uri"`
-	Line     int64    `json:"line"`
-	Category string   `json:"category"`
-	Type     string   `json:"type"`
-	Tags     []string `json:"tags"`
-	Status   string   `json:"status"`
-	Note     string   `json:"note"`
+	Feature   string   `json:"feature"`
+	Type      string   `json:"type"`
+	Scenario  string   `json:"scenario"`
+	Examples  string   `json:"examples"`
+	Category  string   `json:"category"`
+	Status    string   `json:"status"`
+	Validated bool     `json:"validated"`
+	Tags      []string `json:"tags"`
+	URI       string   `json:"uri"`
+	Line      int64    `json:"line"`
+	Note      string   `json:"note"`
 
 	pickleNames []string
 }
@@ -99,7 +104,7 @@ func run(eventsPath string) error {
 		return err
 	}
 	for _, e := range entries {
-		if e.Status != "todo" {
+		if e.Status == "" { // not excluded from the run by @status/todo or @status/broken
 			e.Status = statusOf(e.pickleNames, results)
 		}
 	}
@@ -168,7 +173,7 @@ func statusOf(pickleNames []string, results map[string][]string) string {
 			}
 		}
 		if !passedOrFailed {
-			status = "missing"
+			status = "not-run"
 		}
 	}
 	return status
@@ -218,7 +223,7 @@ func parseFeature(uri string) ([]*entry, error) {
 	}
 	notes := map[int64]string{} // line -> "# todo:" reason
 	for _, c := range doc.Comments {
-		if m := todoComment.FindStringSubmatch(c.Text); m != nil {
+		if m := reasonComment.FindStringSubmatch(c.Text); m != nil {
 			notes[c.Location.Line] = m[1]
 		}
 	}
@@ -291,56 +296,71 @@ type scope struct {
 	note string
 }
 
-// newEntry derives type, @todo status, and note from the entry's tag scopes,
+// newEntry derives type, category, status and note from the entry's tag scopes,
 // outermost (feature) first.
 func newEntry(feature, scenario, examples, uri string, line int64, chain []scope) *entry {
 	e := &entry{Feature: feature, Scenario: scenario, Examples: examples, URI: uri, Line: line, Tags: []string{}}
-	types := map[string]bool{}
 	seen := map[string]bool{}
+	all := []string{}
 	for _, sc := range chain {
-		for _, t := range sc.tags {
-			name := strings.TrimPrefix(t.Name, "@")
+		own := tagNames(sc.tags)
+		for _, name := range own {
 			if !seen[name] {
 				seen[name] = true
+				all = append(all, name)
 				e.Tags = append(e.Tags, "@"+name)
 			}
-			if typeTags[name] {
-				types[name] = true
-			}
-			if name == "todo" {
-				e.Status = "todo"
-				if e.Note == "" {
-					e.Note = sc.note
-				}
+		}
+		// The outermost level that excludes the entry from the run decides its status.
+		if e.Status == "" {
+			switch {
+			case contains(own, "status/todo"):
+				e.Status, e.Note = "todo", sc.note
+			case contains(own, "status/broken"):
+				e.Status, e.Note = "broken", sc.note
 			}
 		}
 	}
 	sort.Strings(e.Tags)
-	e.Category = categoryOf(chain[0].tags)
-	e.Type = "untyped"
-	if len(types) == 1 {
-		for t := range types {
-			e.Type = t
-		}
-	}
+	e.Type = oneOf(tagNames(chain[0].tags), "type/", featureTypes)
+	e.Category = oneOf(all, "category/", scenarioCategories)
+	e.Validated = seen["status/validated"]
 	return e
 }
 
-// categoryOf is the one category tag among the Feature line's tags, or
-// "uncategorized" when there is none or more than one.
-func categoryOf(featureTags []*messages.Tag) string {
-	category := "uncategorized"
-	found := 0
-	for _, t := range featureTags {
-		if name := strings.TrimPrefix(t.Name, "@"); categoryTags[name] && name != category {
-			category = name
-			found++
+func tagNames(tags []*messages.Tag) []string {
+	names := make([]string, 0, len(tags))
+	for _, t := range tags {
+		names = append(names, strings.TrimPrefix(t.Name, "@"))
+	}
+	return names
+}
+
+func contains(names []string, want string) bool {
+	for _, n := range names {
+		if n == want {
+			return true
 		}
 	}
-	if found != 1 {
-		return "uncategorized"
+	return false
+}
+
+// oneOf is the value of the one tag "<prefix><value>" with an allowed value among
+// names, or "none" when there is none or more than one.
+func oneOf(names []string, prefix string, allowed map[string]bool) string {
+	found := map[string]bool{}
+	for _, n := range names {
+		if value, ok := strings.CutPrefix(n, prefix); ok && allowed[value] {
+			found[value] = true
+		}
 	}
-	return category
+	if len(found) != 1 {
+		return "none"
+	}
+	for value := range found {
+		return value
+	}
+	return "none"
 }
 
 // kindDir is the only directory this test kind may write to - tools/testing/testing.mk

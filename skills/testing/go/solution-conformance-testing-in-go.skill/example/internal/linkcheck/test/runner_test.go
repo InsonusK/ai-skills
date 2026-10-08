@@ -32,7 +32,7 @@ func TestFeatures(t *testing.T) {
 		Options: &godog.Options{
 			Format:   format,
 			Paths:    []string{"../features"},
-			Tags:     "~@todo",
+			Tags:     "~@status/todo && ~@status/broken",
 			Strict:   true,
 			TestingT: t,
 		},

@@ -75,8 +75,8 @@ init:
   - Fix: keep the single run of the script; every caller goes through `make test-kind-unit`.
 - Load the `unit_scenarios` plugin in that run (`-p unit_scenarios`, `PYTHONPATH=tools/testing/kinds`) and feed its output to `tools/testing/normalize-scenarios.sh`.
   - Violation: a run without the plugin, with the scenario results and the living doc taken from `--cucumberjson` as `pytest-bdd` writes it.
-  - Risk: `pytest-bdd`'s Cucumber JSON gives every row of a `Scenario Outline` the outline's line and drops the tags of its `Examples:` block — the scenario report cannot tell one block from another and marks them all `missing`, and the living doc shows the rows with no type tag to filter by.
-  - Fix: keep the plugin — it reports each row's own line to the scenario report, and completes the Cucumber JSON file with that line and every inherited tag (`@happy`, `@negative`, …).
+  - Risk: `pytest-bdd`'s Cucumber JSON gives every row of a `Scenario Outline` the outline's line and drops the tags of its `Examples:` block — the scenario report cannot tell one block from another and marks them all `not-run`, and the living doc shows the rows with no type tag to filter by.
+  - Fix: keep the plugin — it reports each row's own line to the scenario report, and completes the Cucumber JSON file with that line and every inherited tag (`@category/happy`, `@category/negative`, …).
 - Pass `--fail-under=0` to the `coverage html` / `coverage json` calls of a `report` run.
   - Risk: with `fail_under` in `pyproject.toml` these commands exit `2` below the threshold, and a `report` run goes red over a score.
   - Fix: keep the flag in `unit.sh`; the project enforces its threshold with its own `coverage report` where it gates.
@@ -103,7 +103,7 @@ init:
 - [ ] WHEN `make test-kind-unit` runs THEN `$TEST_KIND_DIR/result/unit-test.json` counts scenarios and plain tests together, and `report/tests/junit.xml`, `report/tests/cucumber/pytest-bdd.json`, `report/tests/livingdoc/index.html` exist.
 - [ ] WHEN `make test-kind-unit` runs as a `report` run with coverage below `fail_under` THEN it exits `0` and writes `result/coverage-test.json` and `report/coverage/`.
 - [ ] WHEN `make test-kind-unit` ran THEN every element of `report/tests/cucumber/pytest-bdd.json` that comes from an `Examples:` row carries that row's line and the block's tags, and the living doc shows them.
-- [ ] WHEN a scenario fails THEN `make test-kind-unit` exits non-zero, and `result/scenarios.json` still lists every `.feature` entry — the failed `Examples:` block as `failed`, its sibling blocks as `passed`, `@todo` entries as `todo`.
+- [ ] WHEN a scenario fails THEN `make test-kind-unit` exits non-zero, and `result/scenarios.json` still lists every `.feature` entry — the failed `Examples:` block as `failed`, its sibling blocks as `passed`, `@status/todo` entries as `todo`.
 - [ ] WHEN `make test-kind-unit` or `make test-kind-mutation` ends THEN the repository root holds no `.coverage`, `.pytest_cache` or `mutants/`.
 - [ ] WHEN `make test-kind-mutation` runs as a `report` run and mutants survive THEN it exits `0`; WHEN a test is red THEN it exits non-zero and writes no result.
 - [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants of the source files changed since `<ref>` are evaluated; without `DELTA_BASE`, or with no source file changed, the kind skips itself.

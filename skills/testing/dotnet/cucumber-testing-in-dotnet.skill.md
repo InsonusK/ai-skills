@@ -45,10 +45,10 @@ Pass state between step methods through Reqnroll's `ScenarioContext` (or a POCO 
 - Risk: a static field leaks state between scenarios that Reqnroll otherwise runs isolated, causing order-dependent flakiness.
 - Fix: use `ScenarioContext.Get<T>()`/`Set<T>()`, or a plain class Reqnroll injects into every binding class sharing that scenario's execution.
 
-### Tag @todo scenarios and exclude them from the run
-Tag a not-yet-runnable scenario `@todo` and exclude it via the test runner's category/trait filter (e.g. `dotnet test --filter "Category!=todo"` with Reqnroll's tag-to-trait mapping), confirming it is reported as skipped, not passed.
-- Risk: an unfiltered `@todo` scenario either fails the build (if its step is undefined) or, worse, passes on an incomplete implementation, contradicting [Tag unrunnable scenarios @todo and verify exclusion](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion).
-- Fix: map the `@todo` Gherkin tag to a runner category/trait and filter it out of the default run.
+### Exclude @status/todo and @status/broken scenarios from the run
+Tag a scenario that must not run yet `@status/todo` or `@status/broken` and exclude both via the test runner's category/trait filter (e.g. `dotnet test --filter "Category!=status/todo&Category!=status/broken"` with Reqnroll's tag-to-trait mapping), confirming it is reported as skipped, not passed.
+- Risk: an unfiltered scenario either fails the build (if its step is undefined) or, worse, passes on an incomplete implementation, contradicting [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason).
+- Fix: map the `@status/todo` Gherkin tag to a runner category/trait and filter it out of the default run.
 
 ### Emit Cucumber Messages
 Reqnroll emits **Cucumber Messages**: configure the `message` formatter in each test project's `reqnroll.json` (`"formatters": { "message": { "outputFilePath": "<path>.ndjson" } }`), one `.ndjson` file per test project.
@@ -71,6 +71,6 @@ When applying [Configure the Cucumber editor extension](skills/testing/core/cucu
 - [ ] Every step logs through `ITestOutputHelper`/`TestContext.Out`, never `Console.WriteLine`.
 - [ ] Binding classes are grouped by domain concept; generic comparator steps sit in their own binding class.
 - [ ] Cross-step state travels through `ScenarioContext` or context injection, never a static field.
-- [ ] `@todo`-tagged scenarios are mapped to a runner category/trait and excluded from the default run, confirmed as skipped rather than passing.
+- [ ] `@status/todo`-tagged scenarios are mapped to a runner category/trait and excluded from the default run, confirmed as skipped rather than passing.
 - [ ] `cucumber.glue` in `.vscode/settings.json` matches this skill's .NET glob when proposed to the user.
 - [ ] The runner writes Cucumber Messages per [Emit Cucumber Messages](#emit-cucumber-messages).

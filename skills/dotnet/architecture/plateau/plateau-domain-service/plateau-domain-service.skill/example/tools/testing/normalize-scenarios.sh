@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 # Writes $TEST_KIND_DIR/result/scenarios.json (solution-conformance-testing's Scenario report).
 #
-# The inventory comes from every .feature file in the repository, so @todo entries the
-# runner never executes are listed too. The status comes from $1: a JSON array of
+# The inventory comes from every .feature file in the repository, so @status/todo and
+# @status/broken entries the runner never executes are listed too. Per entry it reads:
+#   @type/<x>       on the Feature line - what part of the program the feature specifies
+#   @category/<x>   on the scenario or inherited - what kind of test it is
+#   @status/todo, @status/broken - excluded from the run; the "# todo:" / "# broken:"
+#                   comment directly above the tags is the reason
+#   @status/validated - a person has checked the scenario
+# The result of the run comes from $1: a JSON array of
 # {"uri": "<repo-relative .feature path>", "line": <scenario or Examples row line>,
 #  "status": "passed" | "failed" | "<anything else>"} produced from the runner's output.
 #
@@ -21,28 +27,31 @@ trap 'rm -f "$INVENTORY"' EXIT
 # copies of the .feature files.
 WORK_REL="$(realpath -m --relative-to=. "${TEST_WORK_DIR:-tmp/testing}")/"
 
-# One TSV line per entry: feature, scenario, examples, uri, line, tags, todo, note, lines,
-# and the tags of the Feature line alone.
+# One TSV line per entry: feature, scenario, examples, uri, line, tags, state (todo, broken
+# or empty), note, lines, and the tags of the Feature line alone.
 find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tmp -o -name public -o -name .venv \) -prune \
   -o -name '*.feature' -print | sed 's#^\./##' | awk -v work="$WORK_REL" 'index($0, work) != 1' | sort | while IFS= read -r uri; do
   awk -v uri="$uri" '
     function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t\r]+$/, "", s); return s }
     function after_colon(s) { sub(/^[^:]*:[ \t]*/, "", s); return s }
     function take_level(   i, n, t) {          # consume pending tags into one level
-      lvl_tags = pend_tags; lvl_todo = 0
+      lvl_tags = pend_tags; lvl_todo = ""
       n = split(pend_tags, t, " ")
-      for (i = 1; i <= n; i++) if (t[i] == "todo") lvl_todo = 1
+      for (i = 1; i <= n; i++) {
+        if (t[i] == "status/todo") lvl_todo = "todo"
+        else if (t[i] == "status/broken" && lvl_todo == "") lvl_todo = "broken"
+      }
       lvl_note = (note_line == pend_top - 1 || (pend_top == 0 && note_line == NR - 1)) ? note_text : ""
       pend_tags = ""; pend_top = 0
     }
     function emit(ex_name, ex_line, ex_tags, ex_todo, ex_note, rows,   tags, todo, note) {
       tags = feat_tags " " rule_tags " " sc_tags " " ex_tags
-      todo = 0; note = ""
-      if (feat_todo) { todo = 1; note = feat_note }
-      else if (rule_todo) { todo = 1; note = rule_note }
-      else if (sc_todo) { todo = 1; note = sc_note }
-      else if (ex_todo) { todo = 1; note = ex_note }
-      printf "%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%s\t%s\n", feat_name, sc_name, ex_name, uri, ex_line, tags, todo, note, rows, feat_tags
+      todo = ""; note = ""
+      if (feat_todo != "") { todo = feat_todo; note = feat_note }
+      else if (rule_todo != "") { todo = rule_todo; note = rule_note }
+      else if (sc_todo != "") { todo = sc_todo; note = sc_note }
+      else if (ex_todo != "") { todo = ex_todo; note = ex_note }
+      printf "%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\n", feat_name, sc_name, ex_name, uri, ex_line, tags, todo, note, rows, feat_tags
     }
     function flush_examples() {
       if (ex_open) emit(ex_name, ex_line, ex_tags, ex_todo, ex_note, ex_rows)
@@ -50,8 +59,8 @@ find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tm
     }
     function flush_scenario() {
       flush_examples()
-      if (sc_open && !sc_outline) emit("", sc_line, "", 0, "", sc_line)
-      if (sc_open && sc_outline && !sc_blocks) emit("", sc_line, "", 0, "", "")
+      if (sc_open && !sc_outline) emit("", sc_line, "", "", "", sc_line)
+      if (sc_open && sc_outline && !sc_blocks) emit("", sc_line, "", "", "", "")
       sc_open = 0
     }
     {
@@ -60,7 +69,7 @@ find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tm
       if (line ~ /^("""|```)/) { doc = substr(line, 1, 3); next }
       if (line == "") next
       if (line ~ /^#/) {
-        if (match(line, /^#[ \t]*todo:[ \t]*/)) { note_line = NR; note_text = substr(line, RLENGTH + 1) }
+        if (match(line, /^#[ \t]*(todo|broken):[ \t]*/)) { note_line = NR; note_text = substr(line, RLENGTH + 1) }
         next
       }
       if (line ~ /^@/) {
@@ -101,27 +110,33 @@ find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tm
 done > "$INVENTORY"
 
 jq -R -s --slurpfile results "$RESULTS" '
-  def types: ["happy","boundary","negative","error","concurrency","security","regression"];
-  def categories: ["domain","service","api","infrastructure","mapping","contract","tech-check"];
+  # The one allowed value of a tag namespace among the given tags ("type/service" ->
+  # "service"), or "none" when there is none or more than one.
+  def one($ns; $allowed): [.[] | select(startswith($ns + "/")) | ltrimstr($ns + "/")
+      | select(. as $v | $allowed | index($v))] | unique
+    | if length == 1 then .[0] else "none" end;
+  ["domain","service","api","infrastructure","mapping","contract","tech-check"] as $types
+  | ["happy","boundary","negative","error","concurrency","security","regression"] as $categories
+  |
   ($results[0] | map({key: "\(.uri):\(.line)", value: .status}) | group_by(.key)
      | map({key: .[0].key, value: map(.value)}) | from_entries) as $status
   | split("\n") | map(select(length > 0) | split("\t")) | map(
-      . as [$feature, $scenario, $examples, $uri, $line, $tags, $todo, $note, $lines, $featureTags]
-      | ([($featureTags // "") | split(" ")[] | select(. as $t | categories | index($t))] | unique) as $categoryTags
-      | ($tags | split(" ") | map(select(length > 0))) as $tagList
-      | ([$tagList[] | select(. as $t | types | index($t))] | unique) as $typeTags
+      . as [$feature, $scenario, $examples, $uri, $line, $tags, $state, $note, $lines, $featureTags]
+      | ($tags | split(" ") | map(select(length > 0)) | unique) as $tagList
       | ($lines | split(",") | map(select(length > 0)) | map($status["\($uri):\(.)"] // [])) as $perRow
       | {
-          feature: $feature, scenario: $scenario, examples: $examples,
-          uri: $uri, line: ($line | tonumber),
-          type: (if ($typeTags | length) == 1 then $typeTags[0] else "untyped" end),
-          category: (if ($categoryTags | length) == 1 then $categoryTags[0] else "uncategorized" end),
-          tags: ($tagList | unique | map("@" + .)),
+          feature: $feature,
+          type: (($featureTags // "") | split(" ") | map(select(length > 0)) | one("type"; $types)),
+          scenario: $scenario, examples: $examples,
+          category: ($tagList | one("category"; $categories)),
           status: (
-            if $todo == "1" then "todo"
+            if $state != "" then $state
             elif any($perRow[]; index("failed")) then "failed"
-            elif ($perRow | length) == 0 or any($perRow[]; index("passed") | not) then "missing"
+            elif ($perRow | length) == 0 or any($perRow[]; index("passed") | not) then "not-run"
             else "passed" end),
+          validated: ($tagList | index("status/validated") != null),
+          tags: ($tagList | map("@" + .)),
+          uri: $uri, line: ($line | tonumber),
           note: $note
         })
   | {scenarios: .}

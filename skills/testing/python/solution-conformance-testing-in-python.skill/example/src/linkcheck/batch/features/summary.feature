@@ -1,8 +1,8 @@
-@service
+@type/service
 Feature: Summarize a batch of URLs
   A caller checks many URLs at once and reads the totals.
 
-  @happy
+  @category/happy
   Scenario: Valid and invalid URLs are counted apart
     Given the URLs:
       | url               |
@@ -14,14 +14,14 @@ Feature: Summarize a batch of URLs
     And the count of "UNSUPPORTED_SCHEME" errors is 1
     And the count of "MISSING_HOST" errors is 1
 
-  @boundary
+  @category/boundary
   Scenario: An empty batch has no totals
     Given no URLs
     When I summarize the batch
     Then the batch has 0 valid and 0 invalid URLs
 
   # todo: the size limit is not agreed with the API owner yet
-  @todo @security
+  @status/todo @category/security
   Scenario: A batch over the size limit is refused
     Given a batch of 10001 URLs
     When I summarize the batch

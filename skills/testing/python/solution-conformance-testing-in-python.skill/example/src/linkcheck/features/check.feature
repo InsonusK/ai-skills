@@ -1,8 +1,8 @@
-@domain
+@type/domain
 Feature: Check a URL
   A caller validates and normalizes a URL before using it.
 
-  @happy
+  @category/happy
   Scenario: A well-formed URL is accepted
     Given the URL "https://Example.com/Path"
     When I check the URL
@@ -14,19 +14,19 @@ Feature: Check a URL
     When I check the URL
     Then the check is invalid with error "<error>"
 
-    @negative
+    @category/negative
     Examples: unsupported scheme
       | input                  | error              |
       | ftp://example.com/file | UNSUPPORTED_SCHEME |
       | not-a-url              | UNSUPPORTED_SCHEME |
 
-    @boundary
+    @category/boundary
     Examples: no host
       | input    | error        |
       | https:// | MISSING_HOST |
 
   # todo: needs a resolver port
-  @todo @error
+  @status/todo @category/error
   Scenario: An unreachable host is reported
     Given the URL "https://unreachable.invalid"
     When I check the URL

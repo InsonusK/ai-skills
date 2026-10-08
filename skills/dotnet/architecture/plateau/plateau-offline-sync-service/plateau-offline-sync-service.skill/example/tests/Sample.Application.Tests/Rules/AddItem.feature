@@ -1,7 +1,7 @@
-@service
+@type/service
 Feature: Add item feature
 
-  @happy
+  @category/happy
   Scenario: A valid add-item command persists the item and records the user timestamp
     Given a title "buy milk"
     When the add-item command is handled

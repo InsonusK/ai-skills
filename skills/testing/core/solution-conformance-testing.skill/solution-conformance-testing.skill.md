@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 6
+version: 7
 updated: 20261007
 tags:
   - skill/architecture/solution
@@ -40,7 +40,7 @@ adr:
 - Create one unified approach to writing tests across projects, to increase control over testing quality.
 
 # Capabilities
-- One readable report per project describing which test cases — business and technical/architectural alike — are covered: every scenario with its type, status, and location, plus a type × status summary that makes a missing negative/error case visible — see [## Scenario report](#scenario-report).
+- One readable report per project describing which test cases — business and technical/architectural alike — are covered: every scenario with its type, status, and location, plus a category × status summary that makes a missing negative/error case visible — see [## Scenario report](#scenario-report).
 - Mutation testing on top of coverage, so a weak assertion shows up as a surviving mutant instead of a passing coverage number.
 - Uniform `make` targets and variables a caller uses without knowing the project's stack, which test kinds exist, or how they run — see [# Caller contract](#caller-contract).
 - A report every kind fills itself — its own report folder and its own badge — so a new test kind is published with no change to the report builder; see [# Report contract](#report-contract).
@@ -81,29 +81,42 @@ Every kind writes its whole output below its own `$TEST_KIND_DIR`, per [[./Imple
 `test-kind-unit` writes `result/scenarios.json` on every run — also when a test failed:
 ```json
 { "scenarios": [
-  { "feature": "Check a URL", "scenario": "Check a URL", "examples": "malformed",
-    "uri": "internal/domain/services/features/check.feature", "line": 18,
-    "category": "service", "type": "negative", "tags": ["@negative", "@service"], "status": "passed", "note": "" }
+  { "feature": "Check a URL", "type": "service",
+    "scenario": "Check a URL", "examples": "malformed", "category": "negative",
+    "status": "passed", "validated": false,
+    "tags": ["@category/negative", "@type/service"],
+    "uri": "internal/domain/services/features/check.feature", "line": 18, "note": "" }
 ] }
 ```
 - **Entry** — one `Scenario`/`Example`, or one `Examples:` block of a `Scenario Outline`. `examples` is that block's name (`""` for a plain scenario); `line` is the `Scenario` line, or the `Examples:` line for a block; `uri` is the `.feature` path relative to the repository root.
-- **Inventory source** — the `.feature` files themselves, so `@todo` entries the runner never executes are listed too. Only the status comes from the runner's own result.
-- **`type`** — the one type tag among the entry's own and inherited (`Feature`, `Rule`, `Scenario`, `Examples`) tags, without `@`, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-type-tag-per-scenario|One type tag per scenario]]; `untyped` when there is none or more than one.
-- **`category`** — the one category tag on the `Feature:` line, without `@`, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-category-tag-per-feature|One category tag per feature]]; `uncategorized` when there is none or more than one.
-- **`tags`** — every tag the entry carries or inherits, with `@`, sorted: the category tag, the type tag, `@todo`, and whatever other tags the project uses.
-- **`status`** — `passed`; `failed` (for an `Examples:` block: any of its rows failed); `todo` (tagged `@todo`, excluded from the run); `missing` (not `@todo`, but the runner reported no result for it — a wiring defect, never a pass).
-- **`note`** — the `# todo:` reason of a `@todo` entry, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion|Tag unrunnable scenarios @todo]]; `""` otherwise.
+- **Inventory source** — the `.feature` files themselves, so `@status/todo` and `@status/broken` entries the runner never executes are listed too. Only `passed` / `failed` come from the runner's own result.
+- **`type`** — the value of the one `@type/…` tag on the `Feature:` line, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-type-tag-per-feature|One type tag per feature]]; `none` when there is none, more than one, or an unknown value.
+- **`category`** — the value of the one `@category/…` tag among the entry's own and inherited (`Feature`, `Rule`, `Scenario`, `Examples`) tags, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-category-tag-per-scenario|One category tag per scenario]]; `none` when there is none, more than one, or an unknown value.
+- **`status`** — what the run says about the entry:
 
-The unit kind renders `report/scenarios/index.html` from `scenarios.json` alone (`kind_scenarios_report`): a type × status and a category × status count table, then one table of every entry — feature, category, scenario, examples, type, tags, status, `uri:line`, note. The unit kind then fails when an entry is `uncategorized` or `untyped`, naming each (`kind_scenarios_check`). The page highlights `uncategorized`, `untyped` and `missing` entries, and `todo` entries of type `happy`, `negative`, or `error` that have no note.
+  | Status | Meaning |
+  | --- | --- |
+  | `passed` | it ran and passed |
+  | `failed` | it ran and failed — for an `Examples:` block: any of its rows failed |
+  | `todo` | tagged `@status/todo`: planned, excluded from the run |
+  | `broken` | tagged `@status/broken`: known to fail, excluded from the run |
+  | `not-run` | not excluded, yet the runner reported no result for it — a wiring defect, never a pass |
+
+- **`validated`** — `true` when the entry carries `@status/validated`: a person has checked it, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#only-a-person-sets-statusvalidated|Only a person sets @status/validated]].
+- **`tags`** — every tag the entry carries or inherits, with `@`, sorted.
+- **`note`** — the `# todo:` or `# broken:` reason of an excluded entry, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason|Exclude an unrunnable scenario with a status tag and its reason]]; `""` otherwise.
+
+The unit kind renders `report/scenarios/index.html` from `scenarios.json` alone (`kind_scenarios_report`): a category × status and a type × status count table, one table of every entry — feature, type, scenario, examples, category, status, validated, tags, `uri:line`, note — and a legend of the status tags and run statuses. The same legend is shown in the living doc where its renderer has a place for it. The unit kind then fails when a feature has no single type or a scenario no single category, naming each (`kind_scenarios_check`). The page highlights those entries, `failed` and `not-run` ones, and `todo` or `broken` ones without a reason.
 
 The report answers, without a separate hand-maintained test inventory file:
 
 | Question | Where it is answered |
 | --- | --- |
-| Which behaviors are specified, and of which type? | `reports/scenarios/` — one row per entry |
-| Which kinds of behavior have no scenario at all? | `reports/scenarios/` — the type × status table |
-| Which layers of the program have no specification? | `reports/scenarios/` — the category × status table |
-| Which scenarios are planned but not implemented, and why? | `reports/scenarios/` — `todo` rows with their note |
+| Which behaviors are specified, and of which kind? | `reports/scenarios/` — one row per entry |
+| Which kinds of behavior have no scenario at all? | `reports/scenarios/` — the category × status table |
+| Which parts of the program have no specification? | `reports/scenarios/` — the type × status table |
+| Which scenarios are planned but not implemented, or known broken, and why? | `reports/scenarios/` — `todo` and `broken` rows with their note |
+| Which scenarios has a person checked? | `reports/scenarios/` — the `validated` column |
 | What exactly does a scenario assert? | the `Then` step's data table in the `.feature` file at `uri:line` |
 | Which scenarios pass but assert too little? | `reports/mutation/` — surviving mutants in the code those scenarios exercise |
 | Which changed method or branch no scenario reaches? | `reports/coverage/` and `reports/mutation/` (no-coverage mutants) for the changed files |
@@ -154,7 +167,7 @@ Have `tools/testing/test-report.sh` copy the kinds' `report/` and `badges/` fold
 
 ### Write scenarios.json on every run
 Have `test-kind-unit` write `result/scenarios.json` per [## Scenario report](#scenario-report) on every run — including a run where a test failed — with its inventory taken from the `.feature` files, not only from the runner's result.
-- Violation: building the list only from what the runner executed, so `@todo` entries vanish; or skipping the write because the runner exited non-zero.
+- Violation: building the list only from what the runner executed, so `@status/todo` entries vanish; or skipping the write because the runner exited non-zero.
 - Risk: the report hides exactly the cases that most need attention — planned-but-missing scenarios and the run that failed.
 - Fix: parse every `.feature` file for the inventory, join the runner's per-scenario result onto it, write the file, then exit with the runner's own exit code.
 

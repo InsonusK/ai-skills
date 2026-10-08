@@ -2,7 +2,7 @@
 name: cucumber-testing-in-go
 description: Go/godog-specific rules for Cucumber testing — the single TestFeatures runner, stdout step logging, step-file layout, and VSCode glue configuration
 whenToUse: when writing or reviewing godog scenarios or step definitions in a Go project
-updated: 20261008
+updated: 20261009
 tags:
   - stack/go
   - concern/testing/bdd
@@ -15,7 +15,7 @@ tags:
 # Goal
 - A single `TestFeatures` function per test package that runs godog against that package's `.feature` files, with no other plain `func TestXxx` test in the same package.
 - Every step-definition function logging via `fmt.Printf`-based output, never `godog.T(ctx).Logf`.
-- `Options.Tags="~@todo"`, `Strict=true`, and `TestingT=t` set on every godog runner.
+- `Options.Tags="~@status/todo && ~@status/broken"`, `Strict=true`, and `TestingT=t` set on every godog runner.
 
 # Scope
 This skill adds Go/godog-specific mechanics on top of [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md) — apply both together; this skill only covers what godog and Go add.
@@ -40,18 +40,18 @@ Keep `"go.testFlags": ["-v"]` in `.vscode/settings.json`, and use `go test ... -
 - Fix: set `go.testFlags: ["-v"]` in the repository's `.vscode/settings.json`, and pass `-v` when running from the terminal (e.g. `go test ./client/eaxmi/test/ -v -run 'TestFeatures/<name>'` to target one scenario).
 
 ### One TestFeatures runner per test package
-Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Format: "pretty", Paths: []string{"../features"}, Tags: "~@todo", Strict: true, TestingT: t}`, and no other `func TestXxx` in that package. `Format` starts from `"pretty"` and gains a `cucumber:` output per [Emit classic Cucumber JSON](#emit-classic-cucumber-json).
+Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Format: "pretty", Paths: []string{"../features"}, Tags: "~@status/todo && ~@status/broken", Strict: true, TestingT: t}`, and no other `func TestXxx` in that package. `Format` starts from `"pretty"` and gains a `cucumber:` output per [Emit classic Cucumber JSON](#emit-classic-cucumber-json).
 - Violation: omitting `Format` from `godog.Options`.
 - Risk: godog has no default formatter — an omitted `Format` fails every run with `unregistered formatter name: ""` before a single step executes, regardless of whether the scenarios themselves are correct (verified against a real `godog v0.16.0` run, not assumed).
 - Fix: always set `Format: "pretty"` explicitly (or another registered formatter — `cucumber`, `events`, `junit`, `progress` — if the suite specifically needs one of those).
-- Risk: a second plain Go test in the same package duplicates what a scenario should express, and a missing `Tags: "~@todo"` runs scenarios meant to stay excluded per [Tag unrunnable scenarios @todo and verify exclusion](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion).
+- Risk: a second plain Go test in the same package duplicates what a scenario should express, and a missing `Tags: "~@status/todo && ~@status/broken"` runs scenarios meant to stay excluded per [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason).
 - Fix: keep `TestFeatures` as the package's only test function; set `Strict: true` so an undefined/pending step fails the build instead of passing silently.
 
 ### godog ErrSkip is not exclusion
 Never rely on returning godog's `ErrSkip` from a step to exclude a scenario — `go test` counts an `ErrSkip`'d scenario as a pass.
-- Violation: a not-yet-implemented step returning `godog.ErrSkip` instead of the scenario being tagged `@todo`.
-- Risk: the scenario shows green in `go test` output while verifying nothing, exactly the fake-green outcome [Tag unrunnable scenarios @todo and verify exclusion](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion) forbids.
-- Fix: tag the scenario `@todo` and rely on `Tags: "~@todo"` to exclude it from the run.
+- Violation: a not-yet-implemented step returning `godog.ErrSkip` instead of the scenario being tagged `@status/todo`.
+- Risk: the scenario shows green in `go test` output while verifying nothing, exactly the fake-green outcome [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason) forbids.
+- Fix: tag the scenario `@status/todo` and rely on `Tags: "~@status/todo && ~@status/broken"` to exclude it from the run.
 
 ### Features beside the code, steps in its test package
 Put a package's `.feature` files in a `features/` folder inside that package, and the godog runner with its step files in a `test/` folder beside it — never in a `features/` tree at the repository root.
@@ -117,9 +117,9 @@ For a codec or serializer, write the scenario in-memory, `WriteFile`, reopen, an
 # Check list
 - [ ] Every `.feature` file sits in `{package}/features/`, its runner and steps in `{package}/test/`; the repository root has no `features/` tree.
 - [ ] Exactly one `TestFeatures` per test package; no other `func TestXxx` alongside it.
-- [ ] `godog.Options` sets `Format: "pretty"` (or another registered formatter), `Tags: "~@todo"`, `Strict: true`, `TestingT: t`.
+- [ ] `godog.Options` sets `Format: "pretty"` (or another registered formatter), `Tags: "~@status/todo && ~@status/broken"`, `Strict: true`, `TestingT: t`.
 - [ ] With `CUCUMBER_JSON_DIR` set, `Format` adds `cucumber:<dir>/<package-unique-name>.json`.
-- [ ] No step returns `godog.ErrSkip` to mean "not implemented yet" — such scenarios are tagged `@todo` instead.
+- [ ] No step returns `godog.ErrSkip` to mean "not implemented yet" — such scenarios are tagged `@status/todo` instead.
 - [ ] Every step log goes through a `fmt.Printf`-based helper, never `godog.T(ctx).Logf`.
 - [ ] `.vscode/settings.json` sets `"go.testFlags": ["-v"]`.
 - [ ] Every step function's first parameter is `ctx context.Context`.

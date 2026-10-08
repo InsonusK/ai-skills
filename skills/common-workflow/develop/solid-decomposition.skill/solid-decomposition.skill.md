@@ -46,7 +46,7 @@ This skill governs the process of decomposing and confirming design, independent
    - `depends_on` — the roles/abstractions it needs (not concrete classes)
    - `usage_scenario` — 1-3 sentences: who calls it, when, with what result
 3. **Confirm with the user.** Present the draft decomposition (see [decomposition list format](#decomposition-list-format)) before writing any code. Do not proceed until the user confirms or edits it.
-4. **Attach test cases.** For each confirmed unit, write its cases as type-tagged scenarios in a `.feature` file, each tagged `@todo` until it runs, following [code-coverage](skills/testing/core/code-coverage.skill.md) rules for what to cover.
+4. **Attach test cases.** For each confirmed unit, write its cases as category-tagged scenarios in a `.feature` file, each tagged `@status/todo` until it runs, following [code-coverage](skills/testing/core/code-coverage.skill.md) rules for what to cover.
 5. **Generate code.** Implement exactly the confirmed units, one responsibility per unit, following [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md) for the test/implementation order: a brand-new unit gets full red-green-refactor per test case; a unit created by refactoring existing code needs a green baseline before restructuring. Apply the stack's plateau/module skill if one exists for the unit's kind.
 6. **Validate.** Run [architect-validator](skills/testing/core/architect-validator.skill.md) against the generated files.
 7. **Update the feature index.** Create or update `docs/features/{feature}.md` from [feature-index.template.md](skills/common-workflow/develop/solid-decomposition.skill/templates/feature-index.template.md): capabilities, units, links to their `.feature` files, and frontmatter `depends_on` links to every unit touched.
@@ -72,9 +72,9 @@ This skill governs the process of decomposing and confirming design, independent
   - Risk: nobody can tell what the service does or which cases it must handle; changes to email logic risk breaking data fetching.
   - Fix: split into `ReportDataFetcher`, `ReportFormatter`, `ReportMailer` (Functions or Services depending on state), orchestrated by a `Command`.
 - Express `depends_on` as roles/abstractions the unit needs, not concrete classes it constructs itself.
-- Attach test cases — type-tagged scenarios in a `.feature` file — to every confirmed unit before or immediately after generating its code.
+- Attach test cases — category-tagged scenarios in a `.feature` file — to every confirmed unit before or immediately after generating its code.
   - Risk: without test cases attached at design time, nobody knows whether current behavior is correct or which cases are missing, and regressions go unnoticed.
-  - Fix: write the unit's `.feature` file at design time; a scenario not implemented yet carries `@todo`.
+  - Fix: write the unit's `.feature` file at design time; a scenario not implemented yet carries `@status/todo`.
 - Keep the orchestrator/entry point free of business logic; it only calls units in sequence and never branches on business rules that belong to a unit.
 - Create or update `docs/features/{feature}.md` for every feature that added or changed units.
   - Risk: without it, nobody can see what a feature is built from without re-reading all the code.
@@ -93,7 +93,7 @@ This skill governs the process of decomposing and confirming design, independent
 - [ ] The decomposition list was shown to and confirmed by the user before code was written.
 - [ ] Every unit has exactly one responsibility sentence with no "and".
 - [ ] Every unit's `depends_on` lists roles/abstractions, not concrete classes.
-- [ ] Every confirmed unit has its test cases as type-tagged scenarios in a `.feature` file.
+- [ ] Every confirmed unit has its test cases as category-tagged scenarios in a `.feature` file.
 - [ ] The orchestrator/entry point contains no business logic.
 - [ ] `docs/features/{feature}.md` exists and links every touched unit and its test cases.
 - [ ] The feature diagram was produced by `diagram-renderer`, not drawn by hand.

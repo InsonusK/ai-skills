@@ -37,9 +37,13 @@ testpaths = ["{source-root}"]
 python_files = ["*_test.py"]
 addopts = "--import-mode=importlib"
 markers = [
-    "todo: scenario planned but not runnable yet - excluded from the run",
-    "happy", "boundary", "negative", "error", "concurrency", "security", "regression",
-    "domain", "service", "api", "infrastructure", "mapping", "contract", "tech-check",
+    "status/todo: planned, not implemented yet - excluded from the run",
+    "status/broken: implemented, known to fail - excluded from the run",
+    "status/validated: checked by a person",
+    "category/happy", "category/boundary", "category/negative", "category/error",
+    "category/concurrency", "category/security", "category/regression",
+    "type/domain", "type/service", "type/api", "type/infrastructure",
+    "type/mapping", "type/contract", "type/tech-check",
 ]
 
 [tool.coverage.run]
@@ -53,7 +57,7 @@ fail_under = 80
 [tool.mutmut]
 source_paths = ["{source-root}"]
 do_not_mutate = ["*/test/*"]
-pytest_add_cli_args = ["-m", "not todo"]
+pytest_add_cli_args = ["-m", "not status/todo and not status/broken"]
 ```
 
 # Rule changes
@@ -73,14 +77,14 @@ pytest_add_cli_args = ["-m", "not todo"]
 - Keep `omit = ["*/test/*"]` under `[tool.coverage.run]` and `do_not_mutate = ["*/test/*"]` under `[tool.mutmut]`.
   - Risk: measured on the example — `mutmut` mutated the test module too, 6 mutants no test can kill, and the score fell from 93.5% to 78.4%; coverage counts test code as product code once a `test/` folder gets an `__init__.py`.
   - Fix: keep both lines.
-- Register `todo`, the seven scenario type tags and the seven feature category tags as `markers`.
+- Register the three `status/…` tags, the seven `category/…` tags and the seven `type/…` tags as `markers`.
   - Risk: `pytest-bdd` turns every Gherkin tag into a marker — an unregistered one warns on every run, and fails it under `--strict-markers`.
   - Fix: keep the `markers` list; add a project's own tags to it.
 - Point `[tool.coverage.run] source` at the package, and `[tool.mutmut] source_paths` at the source root.
   - Risk: a wrong `source` silently leaves code out of the coverage number; without `source_paths` `mutmut` guesses the directory and stops when it cannot.
   - Fix: `source = ["{package}"]`, `source_paths = ["{source-root}"]`.
-- Keep `pytest_add_cli_args = ["-m", "not todo"]` under `[tool.mutmut]`.
-  - Risk: `mutmut` runs the tests in a copy under `./mutants`; without the marker filter `@todo` scenarios run and fail its clean run.
+- Keep `pytest_add_cli_args = ["-m", "not status/todo and not status/broken"]` under `[tool.mutmut]`.
+  - Risk: `mutmut` runs the tests in a copy under `./mutants`; without the marker filter `@status/todo` scenarios run and fail its clean run.
   - Fix: keep the key.
 
 # Check list

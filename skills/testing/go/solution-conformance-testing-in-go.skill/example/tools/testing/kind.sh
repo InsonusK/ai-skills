@@ -35,8 +35,10 @@ kind_skip() {
 # without npm.
 kind_livingdoc() {
   if command -v npm >/dev/null 2>&1; then
+    kind_status_legend_json > "$TEST_KIND_DIR/status-legend.json"
     { npm ci --prefix tools/livingdoc --silent \
-        && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc"; } \
+        && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc" \
+             "$TEST_KIND_DIR/status-legend.json"; } \
       || { echo "livingdoc: render failed"; return 0; }
     [ -f "$REPORT_DIR/tests/index.html" ] || cat > "$REPORT_DIR/tests/index.html" <<'HTML'
 <!doctype html><html><head><meta charset="utf-8"><title>tests</title>
@@ -72,51 +74,82 @@ kind_badge_percent() {
     if (s >= 80) print "brightgreen"; else if (s >= 60) print "yellowgreen"; else print "red" }')"
 }
 
-# kind_scenarios_report - result/scenarios.json -> report/scenarios/index.html: a type x
-# status and a category x status table, then one table of every entry - feature, category,
-# scenario, examples, type, tags, status, location, note. "attention" marks uncategorized,
-# untyped, missing, failed, and todo happy/negative/error entries without a note.
+# kind_status_legend_json - the meaning of the status tags and of the statuses a run reports:
+# the one text behind the legend of the scenarios page and of the living doc.
+kind_status_legend_json() {
+  cat <<'JSON'
+{ "tags": [
+    { "name": "@status/todo", "meaning": "planned, not implemented yet - excluded from the run; the reason is the \"# todo:\" comment above the tags" },
+    { "name": "@status/broken", "meaning": "implemented, known to fail - excluded from the run; the reason is the \"# broken:\" comment above the tags" },
+    { "name": "@status/validated", "meaning": "a person has checked the scenario - set by a person only, removed when the scenario or its steps change" } ],
+  "run": [
+    { "name": "passed, failed", "meaning": "the scenario ran" },
+    { "name": "todo, broken", "meaning": "excluded from the run by its status tag" },
+    { "name": "not-run", "meaning": "in a .feature file and not excluded, yet no runner executed it - a wiring defect, never a pass" } ],
+  "note": "Every feature carries one @type/... tag - the part of the program it specifies; every scenario one @category/... tag - the kind of test it is. \"none\" in those columns fails the unit test kind." }
+JSON
+}
+
+# kind_status_legend - that legend as an HTML fragment.
+kind_status_legend() {
+  kind_status_legend_json | jq -r '
+    def rows: map("<tr><td>\(.name | @html)</td><td>\(.meaning | @html)</td></tr>") | join("");
+    "<h2>Statuses</h2>",
+    "<table><tr><th>tag on a feature or a scenario</th><th>meaning</th></tr>\(.tags | rows)</table>",
+    "<table><tr><th>status of a run</th><th>meaning</th></tr>\(.run | rows)</table>",
+    "<p>\(.note | @html)</p>"'
+}
+
+# kind_scenarios_report - result/scenarios.json -> report/scenarios/index.html: the status
+# legend, a category x status and a type x status table, then one table of every entry.
+# "attention" marks an entry without a type or a category, a failed or not-run one, and a
+# todo or broken one without a reason.
 kind_scenarios_report() {
   [ -f "$RESULT_DIR/scenarios.json" ] || return 0
   mkdir -p "$REPORT_DIR/scenarios"
-  jq -r '
-    ["happy","boundary","negative","error","concurrency","security","regression","untyped"] as $types
-    | ["passed","failed","todo","missing"] as $statuses
-    | .scenarios as $all
-    | ["domain","service","api","infrastructure","mapping","contract","tech-check","uncategorized"] as $categories
-    | def category: .category // "uncategorized";
-      def attention: .type == "untyped" or category == "uncategorized" or .status == "missing" or .status == "failed"
-        or (.status == "todo" and .note == "" and (.type == "happy" or .type == "negative" or .type == "error"));
-    "<!doctype html><html><head><meta charset=\"utf-8\"><title>Scenarios</title>",
-    "<style>td,th{border:1px solid #999;padding:2px 6px;text-align:left}table{border-collapse:collapse}.attention{background:#fdd}</style></head><body>",
-    "<h1>Scenarios</h1><h2>By type</h2><table><tr><th>type</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
-    ($types[] as $t | "<tr><td>\($t)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(.type == $t and .status == $s)] | length)</td>") | join("")) + "</tr>"),
-    "</table>",
-    "<h2>By category</h2><table><tr><th>category</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
-    ($categories[] as $c | "<tr><td>\($c)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(category == $c and .status == $s)] | length)</td>") | join("")) + "</tr>"),
-    "</table>",
-    "<h2>Every scenario</h2><table><tr><th>feature</th><th>category</th><th>scenario</th><th>examples</th><th>type</th><th>tags</th><th>status</th><th>location</th><th>note</th></tr>",
-    ($all | sort_by(.feature, .uri, .line)[] |
-      "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.feature | @html)</td><td>\(category)</td><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.type)</td><td>\((.tags // []) | join(" ") | @html)</td><td>\(.status)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
-    "</table></body></html>"
-  ' "$RESULT_DIR/scenarios.json" > "$REPORT_DIR/scenarios/index.html"
+  {
+    echo '<!doctype html><html><head><meta charset="utf-8"><title>Scenarios</title>'
+    echo '<style>td,th{border:1px solid #999;padding:2px 6px;text-align:left}table{border-collapse:collapse;margin-bottom:1em}.attention{background:#fdd}</style></head><body>'
+    echo '<h1>Scenarios</h1>'
+    jq -r '
+      ["happy","boundary","negative","error","concurrency","security","regression","none"] as $categories
+      | ["domain","service","api","infrastructure","mapping","contract","tech-check","none"] as $types
+      | ["passed","failed","todo","broken","not-run"] as $statuses
+      | .scenarios as $all
+      | def attention: .type == "none" or .category == "none" or .status == "failed" or .status == "not-run"
+          or ((.status == "todo" or .status == "broken") and .note == "");
+        def summary($title; $key; $values):
+          "<h2>\($title)</h2><table><tr><th>\($key)</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
+          ($values[] as $v | "<tr><td>\($v)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(.[$key] == $v and .status == $s)] | length)</td>") | join("")) + "</tr>"),
+          "</table>";
+      summary("By category - the kind of test"; "category"; $categories),
+      summary("By type - the part of the program"; "type"; $types),
+      "<h2>Every scenario</h2><table><tr><th>feature</th><th>type</th><th>scenario</th><th>examples</th><th>category</th><th>status</th><th>validated</th><th>tags</th><th>location</th><th>note</th></tr>",
+      ($all | sort_by(.feature, .uri, .line)[] |
+        "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.feature | @html)</td><td>\(.type)</td><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.category)</td><td>\(.status)</td><td>\(if .validated then "yes" else "" end)</td><td>\(.tags | join(" ") | @html)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
+      "</table>"
+    ' "$RESULT_DIR/scenarios.json"
+    kind_status_legend
+    echo '</body></html>'
+  } > "$REPORT_DIR/scenarios/index.html"
 }
 
 # kind_scenarios_check - fails when result/scenarios.json holds a feature without exactly one
-# category tag or an entry without exactly one type tag, and names each one. A kind
-# calls it after its results are written and makes its own exit code non-zero when it fails.
+# @type/... tag or a scenario without exactly one @category/... tag, and names each one. A
+# kind calls it after its results are written and makes its own exit code non-zero when it
+# fails.
 kind_scenarios_check() {
   [ -f "$RESULT_DIR/scenarios.json" ] || return 0
   local found
   found=$(jq -r '
-    (.scenarios | map(select((.category // "uncategorized") == "uncategorized")) | group_by(.uri)[]
-      | "  \(.[0].uri)  Feature \"\(.[0].feature)\" - no single category tag (@domain @service @api @infrastructure @mapping @contract @tech-check)"),
-    (.scenarios[] | select(.type == "untyped")
-      | "  \(.uri):\(.line)  \(.scenario)\(if .examples != "" then " / " + .examples else "" end) - no single type tag (@happy @boundary @negative @error @concurrency @security @regression)")
+    (.scenarios | map(select(.type == "none")) | group_by(.uri)[]
+      | "  \(.[0].uri)  Feature \"\(.[0].feature)\" - needs exactly one of @type/domain @type/service @type/api @type/infrastructure @type/mapping @type/contract @type/tech-check on its Feature line"),
+    (.scenarios[] | select(.category == "none")
+      | "  \(.uri):\(.line)  \(.scenario)\(if .examples != "" then " / " + .examples else "" end) - needs exactly one of @category/happy @category/boundary @category/negative @category/error @category/concurrency @category/security @category/regression")
     ' "$RESULT_DIR/scenarios.json")
   [ -z "$found" ] && return 0
   {
-    echo "test-kind-$TEST_KIND: not tagged as cucumber-testing requires (\"One category tag per feature\", \"One type tag per scenario\"):"
+    echo "test-kind-$TEST_KIND: not tagged as cucumber-testing requires (\"One type tag per feature\", \"One category tag per scenario\"):"
     echo "$found"
   } >&2
   return 1

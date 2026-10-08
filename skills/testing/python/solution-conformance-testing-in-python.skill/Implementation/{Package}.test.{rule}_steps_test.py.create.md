@@ -65,7 +65,7 @@ def step_then_invalid_with_error(world, error_code):
 ## MUST
 - Call `scenarios("../features/{rule}.feature")` once in the module, and write no other `test_*` function in it.
   - Violation: a step module with step functions only, or a hand-written `test_*` beside the scenarios.
-  - Risk: without `scenarios(...)` no scenario of the feature is collected — the run is green and the scenario report shows `missing`; a hand-written test duplicates a scenario outside the feature file.
+  - Risk: without `scenarios(...)` no scenario of the feature is collected — the run is green and the scenario report shows `not-run`; a hand-written test duplicates a scenario outside the feature file.
   - Fix: one `scenarios(...)` call per step module, bound to that module's feature.
 - Pass state between steps through a fixture (`world`), never a module-level variable.
   - Risk: a module global leaks from one scenario into the next and makes the result depend on the order.
