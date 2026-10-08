@@ -19,7 +19,7 @@ tools/
   testing/
     testing.mk          ← the Makefile side: caller targets and variables
     testing.sh          ← runs a kind, builds and checks the report, checks the README
-    kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_badge*, kind_scenarios_report, kind_livingdoc
+    kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_badge*, kind_scenarios_report, kind_scenarios_check, kind_livingdoc
     test-report.sh      ← gathers report/ and badges/ of every kind into the report directory
     normalize-scenarios.sh, messages-results.jq   ← helpers a kind script may call
     kinds/
@@ -156,10 +156,14 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - Write a kind's `report/{name}/`, its `badges/{name}.json` and its `result/` data per [## Kind output](#kind-output), before exiting with the tool's own exit code — also when a test failed.
   - Risk: a failed run leaves no report to read, or a real failure is swallowed while normalizing.
   - Fix: write the results, then `exit` with the code the runner or the mutation tool returned.
-- Exit non-zero from a kind only for a failed check — a red test, a tool that could not run, or in a `check` run a threshold the kind enforces — never for a score in a `report` run.
+- Exit non-zero from a kind only for a failed check — a red test, an untagged scenario or feature, a tool that could not run, or in a `check` run a threshold the kind enforces — never for a score in a `report` run.
   - Violation: a mutation kind that fails a `report` run because a mutant survived.
   - Risk: a caller reads the exit code as "the tests failed"; a run that is red over a score every time hides the run that is red over a broken test.
   - Fix: in a `report` run give the tool its never-break setting (`--break-at 0`, `thresholds.break = 0`) and return its exit code; a red test always returns non-zero.
+- Call `kind_scenarios_check` in `test-kind-unit` after the results are written, and exit non-zero when it fails.
+  - Violation: a unit kind that renders the scenarios page and exits `0` while it lists `untyped` or `uncategorized` entries.
+  - Risk: a missing tag is visible only to someone who opens the report; an agent that runs the tests and sees them green never learns that it left a scenario or a feature unclassified.
+  - Fix: `kind_scenarios_check || status=1` after `kind_scenarios_report` — it prints each feature without exactly one category tag and each scenario without exactly one type tag to stderr.
 - Write `result/scenarios.json` on every `test-kind-unit` run, listing every `.feature` entry, `@todo` ones included.
   - Risk: a report built only from executed scenarios hides planned-but-missing cases.
   - Fix: build the inventory from the `.feature` files and join the runner's result onto it.
@@ -189,6 +193,7 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - [ ] Every kind leaves `mode` or `skipped`; `run.json` shows it.
 - [ ] `result/unit-test.json`, `result/coverage-test.json` (`report`), `result/mutation-test.json` follow [## Kind output](#kind-output); `result/scenarios.json` exists after every unit run, green or red, with `@todo` entries.
 - [ ] `report/tests/cucumber/` holds the runner's standard report; `report/tests/livingdoc/index.html` exists when `npm` is available, and its absence never fails the kind.
+- [ ] `make test-kind-unit` exits non-zero, naming the place, when a scenario has no single type tag or a feature no single category tag — with every test green.
 - [ ] Each kind exits with its tool's own exit code after writing its results. `make test-kind-unit` exits non-zero when a test failed; no kind exits non-zero over a score in a `report` run.
 - [ ] `make test-report` writes `index.html`, `reports/`, `badges/`, `run.json` into `$TEST_REPORT_DIR`; a different `TEST_WORK_DIR` / `TEST_REPORT_DIR` moves everything, and nothing is written to `public/`.
 - [ ] `make test-and-report TEST_RUN_PURPOSE=check` skips or narrows kinds as the table says and still builds a report.

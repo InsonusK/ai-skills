@@ -1,4 +1,4 @@
-@crosscutting
+@tech-check
 Feature: MediatR pipeline behaviors
 
   @negative

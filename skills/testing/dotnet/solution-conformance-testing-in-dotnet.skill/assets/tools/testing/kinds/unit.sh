@@ -88,6 +88,7 @@ done < <(find . -path "*/bin/Release/*/reqnroll_messages.ndjson" -print0) \
   | jq -s 'add // []' > "$SCENARIO_RESULTS"
 bash tools/testing/normalize-scenarios.sh "$SCENARIO_RESULTS"
 kind_scenarios_report
+kind_scenarios_check || TEST_EXIT=1   # an untagged scenario or feature is a failed check
 
 # Living doc: every project's Cucumber Messages file becomes the runner's standard report
 # under report/tests/cucumber/, rendered by the shared tools/livingdoc.

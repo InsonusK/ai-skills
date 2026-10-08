@@ -255,3 +255,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - Every example feature is tagged (30 files). The three skill examples' illustrative `@validation` / `@extraction` / `@batch` tags were replaced by categories. One file is left untagged on purpose: `gw009-001`'s `taskbox-conformance.feature` is a verbatim copy from the `taskbox-go` library — its 23 entries show as `uncategorized` until the tag is added there.
 - Component and pixel tests of a UI are other test kinds (owner, 2026-10-08), so there is no `@ui` category: a category classifies Cucumber features only.
 - Scenarios inside the living doc — asked, not built. Measured: for classic Cucumber JSON (Go, Python) a `@todo` scenario added to the runner's report as a `pending` element renders in the living doc with its note; in Cucumber Messages (TypeScript, .NET) the scenario is already in the stream. The summaries and the `untyped` / `uncategorized` / `missing` marks have no place in either renderer.
+
+## Owner-decided (2026-10-08, tag check)
+
+- `@crosscutting` is unclear; the category is named `@tech-check`.
+- `untyped` and `uncategorized` must be an error of the script, so an agent that only runs the tests sees that it did not tag everything.
+
+## Agent decisions — tag check
+
+- The check is `kind_scenarios_check` in `kind.sh`; every unit kind calls it after its results are written and exits non-zero when it fails — in a `check` and in a `report` run alike: it is a failed check, not a score. It prints one line per feature without a category tag and one per scenario without a type tag, with `file:line`.
+- `missing` (a scenario no runner executed) and a `@todo` without a reason are not made errors: nobody asked, and `gw009-001` has one `missing` entry by design (`@store-transient`, no such store yet).
+- `gw009-001`'s copy of `taskbox-conformance.feature` got `@infrastructure`, against "copied verbatim": without it the example's unit kind fails. Recorded in `STATUS.md` for the library's source.
+- `@tech-check` has a hyphen; checked that it works as a registered `pytest` marker.

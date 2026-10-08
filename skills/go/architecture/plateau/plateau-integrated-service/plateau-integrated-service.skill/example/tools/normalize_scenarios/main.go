@@ -33,7 +33,7 @@ var typeTags = map[string]bool{
 // categoryTags say what a feature specifies; exactly one sits on the Feature line.
 var categoryTags = map[string]bool{
 	"domain": true, "service": true, "api": true, "infrastructure": true,
-	"mapping": true, "contract": true, "crosscutting": true,
+	"mapping": true, "contract": true, "tech-check": true,
 }
 
 var todoComment = regexp.MustCompile(`^\s*#\s*todo:\s*(.*?)\s*$`)

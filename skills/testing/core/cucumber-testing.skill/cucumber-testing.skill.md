@@ -59,7 +59,7 @@ Tag a scenario that cannot run yet (missing fixture or dependency, or planned bu
 Give every scenario exactly one type tag — `@happy`, `@boundary`, `@negative`, `@error`, `@concurrency`, `@security`, or `@regression` — on the scenario itself or inherited from its `Feature`/`Rule`; in a `Scenario Outline` whose rows exercise different types, split the rows into separately tagged `Examples:` blocks.
 - Violation: an untagged scenario, a scenario with both `@happy` and `@negative`, or one `Examples:` table mixing valid and invalid inputs under a single tag.
 - Risk: the test report cannot show that, for example, a feature has only happy-path scenarios — the gap stays invisible until a bug finds it.
-- Fix: tag each scenario (or each `Examples:` block) with the one type it exercises; the report lists anything without exactly one type tag as `untyped`.
+- Fix: tag each scenario (or each `Examples:` block) with the one type it exercises. The unit test kind fails, naming each scenario without exactly one type tag, and the report lists it as `untyped`.
 ```gherkin
   Scenario Outline: Check a URL
     ...
@@ -85,11 +85,11 @@ Give every feature exactly one category tag on its `Feature:` line — the tag s
 | `@infrastructure` | an outbound adapter against the real dependency or its emulator: a store, a cache, a client of another service, a queue |
 | `@mapping` | the translation between two representations of the same data, with no I/O: transport object, domain model, stored row |
 | `@contract` | the shape other code depends on: commands, queries, events, interface markers, a published schema |
-| `@crosscutting` | a technical building block every module passes through: a pipeline behavior, logging, configuration, error handling |
+| `@tech-check` | a technical check of the plumbing every module passes through, not of a business capability: a pipeline behavior, logging, configuration, error handling |
 
 - Violation: a feature with no category tag or with two; a category tag on a single scenario instead of the `Feature:` line.
 - Risk: the report cannot show which layers have a specification at all — a service whose rules are fully specified while its adapters have none looks like a fully specified one. A feature that needs two category tags specifies two things.
-- Fix: tag the feature with the category of the code it sits beside; split a feature that spans two categories into two files; tag a feature copied verbatim from another repository at its source. The report lists a feature without exactly one category tag as `uncategorized`.
+- Fix: tag the feature with the category of the code it sits beside; split a feature that spans two categories into two files; tag a feature copied verbatim from another repository at its source. The unit test kind fails, naming each feature without exactly one category tag, and the report lists it as `uncategorized`.
 ```gherkin
 @service
 Feature: Add item
@@ -188,7 +188,7 @@ Use the runner's own step-listing/generation facility, when it has one, instead 
 - [ ] No test exists solely to cover code unreachable through the public API.
 - [ ] Every not-yet-runnable scenario is tagged `@todo` with a `# todo:` reason, filtered out of the executed run, and confirmed excluded rather than reported as passing.
 - [ ] Every scenario (or `Examples:` block) carries exactly one type tag: `@happy`, `@boundary`, `@negative`, `@error`, `@concurrency`, `@security`, `@regression`.
-- [ ] Every feature carries exactly one category tag on its `Feature:` line: `@domain`, `@service`, `@api`, `@infrastructure`, `@mapping`, `@contract`, `@crosscutting`.
+- [ ] Every feature carries exactly one category tag on its `Feature:` line: `@domain`, `@service`, `@api`, `@infrastructure`, `@mapping`, `@contract`, `@tech-check`.
 - [ ] Every assertion step is a generic comparator reading expected data from the feature file — no domain-specific hardcoded step.
 - [ ] No expected value is hardcoded in step-definition code.
 - [ ] Structured responses are asserted via deserialization, never substring matching.

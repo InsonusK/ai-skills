@@ -1,3 +1,4 @@
+@infrastructure
 Feature: TaskBox conformance
   Every stack realization of the TaskBox storage contract (VP-C003) passes these
   scenarios, once per store it supports.

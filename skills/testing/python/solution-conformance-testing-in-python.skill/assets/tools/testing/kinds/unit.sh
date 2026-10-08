@@ -39,6 +39,7 @@ kind_badge_count tests tests "$((TOTAL - FAILED))" "$TOTAL"
 
 bash tools/testing/normalize-scenarios.sh "$SCENARIO_RESULTS"
 kind_scenarios_report
+kind_scenarios_check || status=1   # an untagged scenario or feature is a failed check
 
 if [ "$TEST_RUN_PURPOSE" = report ]; then
   # --fail-under=0: a threshold in pyproject.toml must not fail a report run over a score.

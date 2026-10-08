@@ -83,7 +83,7 @@ kind_scenarios_report() {
     ["happy","boundary","negative","error","concurrency","security","regression","untyped"] as $types
     | ["passed","failed","todo","missing"] as $statuses
     | .scenarios as $all
-    | ["domain","service","api","infrastructure","mapping","contract","crosscutting","uncategorized"] as $categories
+    | ["domain","service","api","infrastructure","mapping","contract","tech-check","uncategorized"] as $categories
     | def category: .category // "uncategorized";
       def attention: .type == "untyped" or category == "uncategorized" or .status == "missing" or .status == "failed"
         or (.status == "todo" and .note == "" and (.type == "happy" or .type == "negative" or .type == "error"));
@@ -100,4 +100,24 @@ kind_scenarios_report() {
       "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.feature | @html)</td><td>\(category)</td><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.type)</td><td>\((.tags // []) | join(" ") | @html)</td><td>\(.status)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
     "</table></body></html>"
   ' "$RESULT_DIR/scenarios.json" > "$REPORT_DIR/scenarios/index.html"
+}
+
+# kind_scenarios_check - fails when result/scenarios.json holds a feature without exactly one
+# category tag or an entry without exactly one type tag, and names each one. A kind
+# calls it after its results are written and makes its own exit code non-zero when it fails.
+kind_scenarios_check() {
+  [ -f "$RESULT_DIR/scenarios.json" ] || return 0
+  local found
+  found=$(jq -r '
+    (.scenarios | map(select((.category // "uncategorized") == "uncategorized")) | group_by(.uri)[]
+      | "  \(.[0].uri)  Feature \"\(.[0].feature)\" - no single category tag (@domain @service @api @infrastructure @mapping @contract @tech-check)"),
+    (.scenarios[] | select(.type == "untyped")
+      | "  \(.uri):\(.line)  \(.scenario)\(if .examples != "" then " / " + .examples else "" end) - no single type tag (@happy @boundary @negative @error @concurrency @security @regression)")
+    ' "$RESULT_DIR/scenarios.json")
+  [ -z "$found" ] && return 0
+  {
+    echo "test-kind-$TEST_KIND: not tagged as cucumber-testing requires (\"One category tag per feature\", \"One type tag per scenario\"):"
+    echo "$found"
+  } >&2
+  return 1
 }

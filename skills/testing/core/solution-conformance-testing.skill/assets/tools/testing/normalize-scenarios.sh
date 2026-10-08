@@ -102,7 +102,7 @@ done > "$INVENTORY"
 
 jq -R -s --slurpfile results "$RESULTS" '
   def types: ["happy","boundary","negative","error","concurrency","security","regression"];
-  def categories: ["domain","service","api","infrastructure","mapping","contract","crosscutting"];
+  def categories: ["domain","service","api","infrastructure","mapping","contract","tech-check"];
   ($results[0] | map({key: "\(.uri):\(.line)", value: .status}) | group_by(.key)
      | map({key: .[0].key, value: map(.value)}) | from_entries) as $status
   | split("\n") | map(select(length > 0) | split("\t")) | map(

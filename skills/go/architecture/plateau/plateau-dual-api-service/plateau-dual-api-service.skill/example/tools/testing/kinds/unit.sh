@@ -27,6 +27,7 @@ if [ -f "$RESULT_DIR/unit-test.json" ]; then
   kind_badge_count tests tests "$(jq '.passed' "$RESULT_DIR/unit-test.json")" "$(jq '.total' "$RESULT_DIR/unit-test.json")"
 fi
 kind_scenarios_report
+kind_scenarios_check || status=1   # an untagged scenario or feature is a failed check
 
 if [ "$TEST_RUN_PURPOSE" = report ]; then
   go tool cover -html="$REPORT_DIR/coverage/coverage.out" -o "$REPORT_DIR/coverage/index.html"

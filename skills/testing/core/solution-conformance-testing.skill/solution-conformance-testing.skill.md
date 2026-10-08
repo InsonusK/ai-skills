@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 5
+version: 6
 updated: 20261007
 tags:
   - skill/architecture/solution
@@ -94,7 +94,7 @@ Every kind writes its whole output below its own `$TEST_KIND_DIR`, per [[./Imple
 - **`status`** — `passed`; `failed` (for an `Examples:` block: any of its rows failed); `todo` (tagged `@todo`, excluded from the run); `missing` (not `@todo`, but the runner reported no result for it — a wiring defect, never a pass).
 - **`note`** — the `# todo:` reason of a `@todo` entry, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion|Tag unrunnable scenarios @todo]]; `""` otherwise.
 
-The unit kind renders `report/scenarios/index.html` from `scenarios.json` alone (`kind_scenarios_report`): a type × status and a category × status count table, then one table of every entry — feature, category, scenario, examples, type, tags, status, `uri:line`, note. It highlights `uncategorized`, `untyped` and `missing` entries, and `todo` entries of type `happy`, `negative`, or `error` that have no note.
+The unit kind renders `report/scenarios/index.html` from `scenarios.json` alone (`kind_scenarios_report`): a type × status and a category × status count table, then one table of every entry — feature, category, scenario, examples, type, tags, status, `uri:line`, note. The unit kind then fails when an entry is `uncategorized` or `untyped`, naming each (`kind_scenarios_check`). The page highlights `uncategorized`, `untyped` and `missing` entries, and `todo` entries of type `happy`, `negative`, or `error` that have no note.
 
 The report answers, without a separate hand-maintained test inventory file:
 
