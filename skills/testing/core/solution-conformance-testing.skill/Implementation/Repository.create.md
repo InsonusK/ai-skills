@@ -33,6 +33,7 @@ tools/
 - Copy verbatim, as a folder, to `tools/testing/`: [`assets/tools/testing/`](../assets/tools/testing/) — `testing.mk`, `testing.sh`, `kind.sh`, `test-report.sh`, `normalize-scenarios.sh`, `messages-results.jq`. Identical in every stack.
 - Copy verbatim, as a folder, to `tools/livingdoc/`: [`assets/tools/livingdoc/`](../assets/tools/livingdoc/).
 - Add to the `Makefile`: `include tools/testing/testing.mk`.
+- Add to the repository's `.gitignore` (create it when missing): `tmp/` — the default work directory — and `tools/livingdoc/node_modules/`, plus the lines the stack's `solution-conformance-testing-in-{stack}` skill names.
 - `tools/testing/kinds/{kind}.sh` comes from the stack's `solution-conformance-testing-in-{stack}` skill.
 
 ## A kind script
@@ -53,7 +54,7 @@ A kind exists because its script exists: `make test-kinds` lists `tools/testing/
 ## Targets a caller uses
 | Target | Purpose |
 | --- | --- |
-| `make test-kinds` | Print one line per kind — `{kind} {badge} {badge} …` — and run nothing |
+| `make test-kinds` | Print one line per kind — `{kind} - badges: {badge} {badge} …`, or `{kind} - no badge` — and run nothing. The kind is the first word of the line |
 | `make test-kind-{kind}` | Run one test kind. Kinds are independent: any order, in parallel, each from a clean checkout |
 | `make test-report` | Build the report from whatever the kinds left in the work directory |
 | `make test-readme-check` | Fail when the README lacks a declared badge or shows an undeclared one. Runs no tests |
@@ -154,6 +155,10 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - Add one README badge per declared badge, per [## README badges](#readme-badges), in the same change that declares it.
   - Risk: `make test-readme-check` fails the pull request with "you forgot to add a badge".
   - Fix: add the badge line; remove it when the kind is removed.
+- Add `tmp/`, `tools/livingdoc/node_modules/` and the stack's own lines to the repository's `.gitignore` in the same change that adds the kinds.
+  - Violation: the skill's files copied into a project whose `.gitignore` was left as it was.
+  - Risk: the first `make test-and-report` leaves hundreds of untracked report files, and one `git add -A` commits them.
+  - Fix: append the missing lines to the existing `.gitignore`; `git status --short` is empty after a run.
 - Accept no caller-facing variable beyond `TEST_RUN_PURPOSE`, `DELTA_BASE`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`.
   - Risk: a caller needs stack knowledge to invoke the targets, defeating the uniform contract.
   - Fix: derive anything tool-specific inside the kind from those four.
@@ -169,4 +174,5 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - [ ] Each kind exits with its tool's own exit code after writing its results. `make test-kind-unit` exits non-zero when a test failed; no kind exits non-zero over a score in a `report` run.
 - [ ] `make test-report` writes `index.html`, `reports/`, `badges/`, `run.json` into `$TEST_REPORT_DIR`; a different `TEST_WORK_DIR` / `TEST_REPORT_DIR` moves everything, and nothing is written to `public/`.
 - [ ] `make test-and-report TEST_RUN_PURPOSE=check` skips or narrows kinds as the table says and still builds a report.
+- [ ] After `make test-and-report`, `git status --short` shows nothing: `.gitignore` holds `tmp/`, `tools/livingdoc/node_modules/` and the stack's lines.
 - [ ] `make test-readme-check` passes; `report-template/index.html` exists at the repository root (not under `.github/`).

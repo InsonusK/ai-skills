@@ -157,3 +157,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `test-driven-development` and `solid-decomposition` take their test cases from the unit's `.feature` file (`@todo` scenarios) instead of `usecases_list.md`. The step "show the list of cases to the user for confirmation" went with the removed skill; `solid-decomposition` still confirms the decomposition itself.
 - Lost with `unittest-in-dotnet` and not moved anywhere: the xUnit class template (`LoggingTestsBase`, `test_{group}_WHEN_{condition}__THEN_{result}`), "mocks in a separate folder", and the `{Project}.Test` / `{Class}_Test.cs` layout — the last contradicts `INVARIANTS.md` §1 (`{Project}.Tests`) and is W4's subject.
 - `moves.tsv` keeps both rows: it records W1.
+
+## Owner-decided (2026-10-08, the Python example)
+
+- The example gets a `make init` that prepares it.
+- The `.gitignore` lines of an example must reach the `.gitignore` of the repository the skill is applied to.
+- `make test-kinds` printed `unit tests coverage` — not readable; at least a separator.
+
+## Agent decisions — the Python example
+
+- `make test-kinds` prints `{kind} - badges: {badge} …` (`{kind} - no badge` without one). The kind stays the first word of its line, so the workflows' `cut -d' ' -f1` and `check.sh` are unchanged.
+- `.gitignore` was specified nowhere: the base now names `tmp/` and `tools/livingdoc/node_modules/` as a MUST with a check-list line, each stack skill names its own lines, and `check.sh` §7 checks the two base lines in every example. The repository's own `.gitignore` already ignores `tmp/` and `.venv/`.
+- `make init` creates `.venv` and installs the dev dependencies; the `Makefile` puts `.venv/bin` first on `PATH`, so the kinds use it with nothing to activate. Described in the Python `Repository.extend` as the way to give the kinds an environment. `run-example.sh` calls `make init` where an example has it.

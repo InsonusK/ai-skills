@@ -2,7 +2,7 @@
 # tools/testing/testing.sh - runs the testing contract (solution-conformance-testing).
 # Copied verbatim into every project; never edited there. Called by tools/testing/testing.mk.
 #
-#   testing.sh kinds          one line per kind: "<kind> <badge> <badge> ..."
+#   testing.sh kinds          one line per kind: "<kind> - badges: <badge> <badge> ..."
 #   testing.sh kind <kind>    run tools/testing/kinds/<kind>.sh in its own directory
 #   testing.sh report         build the report directory and check it
 #   testing.sh readme-check   the README shows exactly the declared badges
@@ -100,7 +100,11 @@ report() {
 }
 
 case "${1:-}" in
-  kinds)        for k in $(kinds); do echo "$k $(badges "$k")"; done ;;
+  kinds)        # The kind is the first word of its line - what a caller cuts out.
+                for k in $(kinds); do
+                  b=$(badges "$k")
+                  if [ -n "$b" ]; then echo "$k - badges: $b"; else echo "$k - no badge"; fi
+                done ;;
   kind)         run_kind "${2:?usage: testing.sh kind <kind>}" ;;
   report)       report ;;
   readme-check) readme_check ;;

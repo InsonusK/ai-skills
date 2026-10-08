@@ -19,6 +19,7 @@ run()   { local name=$1; shift; "$@" > "$log/$name.log" 2>&1; local rc=$?
 
 echo "== $(pwd)"
 rm -rf tmp out public
+make -n init > /dev/null 2>&1 && run init make init   # an example that needs initializing has the target
 
 echo "-- A: make test-and-report"
 run A make test-and-report

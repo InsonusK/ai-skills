@@ -6,7 +6,7 @@ To repeat it after a change to `tools/testing/`, a kind script or a normalizer:
 
 1. `bash skills/testing/agent/check.sh` — copies and examples consistent.
 2. `bash skills/testing/agent/run-example.sh {example-dir}` for every example — the Go and .NET plateau examples, and `skills/testing/{python,typescript}/solution-conformance-testing-in-*.skill/example`. It needs the example's toolchain, `jq`, `node` and `python3`.
-   - Python: run it inside a virtual environment — the kinds `pip install -e ".[dev]"`.
+   - Python: nothing to prepare — the script runs the example's `make init`, which creates `.venv`.
    - `gw009-001`: set `TEST_DATABASE_DSN` to a PostgreSQL the run may write to.
 3. Break one scenario → `make test-kind-unit` exits non-zero, `result/scenarios.json` exists, `make test-report` exits 0 and `run.json` shows the kind as `failed`. Revert.
 4. Delta mutation on a real change needs a repository whose `HEAD~1` differs in a production file: copy the example out, `git init`, commit twice, `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=HEAD~1`.

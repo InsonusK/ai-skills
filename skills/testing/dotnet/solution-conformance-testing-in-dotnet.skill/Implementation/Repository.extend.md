@@ -54,6 +54,9 @@ The only stack-specific code: each runs this stack's tool and writes the normali
 - Copy verbatim to `tools/testing/kinds/unit.sh`: [`assets/tools/testing/kinds/unit.sh`](../assets/tools/testing/kinds/unit.sh)
 - Copy verbatim to `tools/testing/kinds/mutation.sh`: [`assets/tools/testing/kinds/mutation.sh`](../assets/tools/testing/kinds/mutation.sh)
 
+## .gitignore
+Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `*.feature.cs` (Reqnroll's generated code-behind), `TestResults/` (a test run started from an IDE), `StrykerOutput/` (a `dotnet stryker` started by hand).
+
 # Rules
 
 ## MUST

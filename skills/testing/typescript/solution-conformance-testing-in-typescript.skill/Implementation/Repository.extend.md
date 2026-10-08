@@ -47,6 +47,9 @@ The only stack-specific code: each runs this stack's tool and writes the normali
 - Copy verbatim to `tools/testing/kinds/unit.sh`: [`assets/tools/testing/kinds/unit.sh`](../assets/tools/testing/kinds/unit.sh)
 - Copy verbatim to `tools/testing/kinds/mutation.sh`: [`assets/tools/testing/kinds/mutation.sh`](../assets/tools/testing/kinds/mutation.sh)
 
+## .gitignore
+Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `node_modules/`, and `.stryker-tmp/` and `reports/` (a `stryker run` started by hand).
+
 # Rules
 
 ## MUST

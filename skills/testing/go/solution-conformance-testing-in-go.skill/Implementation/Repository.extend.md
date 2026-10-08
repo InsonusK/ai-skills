@@ -46,6 +46,8 @@ Kind scripts — the only stack-specific code; the Makefile, the runner and the 
 
 `Makefile` — add `include tools/testing/testing.mk` after the repository's own targets; create the file with that line when there is none.
 
+`.gitignore` — nothing beyond the base's `tmp/` and `tools/livingdoc/node_modules/`.
+
 `go.mod` — the parser `tools/normalize_scenarios` uses, promoted from godog's indirect requirements to direct ones (same versions godog pulls in; `go mod tidy` keeps them in sync):
 ```
 require (
@@ -89,5 +91,5 @@ require (
 - [ ] `make test-kind-unit` produces `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` on every run, green or red, and exits non-zero when a test failed.
 - [ ] `make test-kind-unit` (a `report` run) additionally produces `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/index.html`.
 - [ ] `make test-kind-mutation` installs `gremlins` on first use; in a `report` run it exits `0` when mutants survive — also with a threshold in `.gremlins.yaml` — and non-zero only when `gremlins` could not run (a red test fails its coverage step).
-- [ ] `make test-kind-mutation TEST_RUN_PURPOSE=check` skips itself without `DELTA_BASE` and passes `--diff` with one, also in a module below the repository root; `make test-kinds` prints `unit tests coverage` and `mutation mutation`.
+- [ ] `make test-kind-mutation TEST_RUN_PURPOSE=check` skips itself without `DELTA_BASE` and passes `--diff` with one, also in a module below the repository root; `make test-kinds` prints `mutation - badges: mutation` and `unit - badges: tests coverage`.
 - [ ] `make test-report` fills `$TEST_REPORT_DIR` with `index.html`, `reports/{tests,coverage,mutation,scenarios}/`, `badges/{tests,coverage,mutation}.json`, and `run.json`; `make test-readme-check` passes.

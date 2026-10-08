@@ -68,12 +68,15 @@ for f in tools/testing/testing.mk tools/testing/testing.sh tools/testing/kind.sh
   done < <(git ls-files -co --exclude-standard "skills/**/example/$f")
 done
 
-# 7. Every example on the contract: its Makefile parses, lists kinds, and its README shows every declared badge.
+# 7. Every example on the contract: its Makefile parses, lists kinds, its README shows every declared badge,
+#    and its .gitignore covers the default work directory.
 while IFS= read -r mk; do
   dir=$(dirname "$mk")
   kinds=$(make -s -C "$dir" test-kinds 2>/dev/null) || { err "$dir: make test-kinds fails"; continue; }
   [ -n "$kinds" ] || err "$dir: make test-kinds prints nothing"
   make -s -C "$dir" test-readme-check >/dev/null 2>&1 || err "$dir: make test-readme-check fails"
+  grep -qE '^/?tmp/?$' "$dir/.gitignore" 2>/dev/null || err "$dir/.gitignore does not ignore tmp/"
+  grep -qE '^/?tools/livingdoc/node_modules/?$' "$dir/.gitignore" 2>/dev/null || err "$dir/.gitignore does not ignore tools/livingdoc/node_modules/"
   for k in $(echo "$kinds" | cut -d' ' -f1); do
     make -n -C "$dir" "test-kind-$k" >/dev/null 2>&1 || err "$dir: no target test-kind-$k"
   done

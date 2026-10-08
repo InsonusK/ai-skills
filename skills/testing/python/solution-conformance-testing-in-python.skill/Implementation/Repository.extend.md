@@ -21,7 +21,7 @@ tags:
   index.html
 Makefile                       — one line added: include tools/testing/testing.mk
 README.md                      — one badge per declared badge
-.gitignore                     — tmp/, mutants/, .coverage, *.egg-info/, tools/livingdoc/node_modules/
+.gitignore                     — lines added, see below
 /tools
   /testing                     — copied verbatim from solution-conformance-testing
     /kinds
@@ -43,6 +43,21 @@ pyproject.toml
 The only stack-specific code — the Makefile, the runner and the report builder are the base's `tools/testing/`. Copy verbatim, as a folder, to `tools/testing/kinds/`: [`assets/tools/testing/kinds/`](../assets/tools/testing/kinds/) — `unit.sh`, `unit_scenarios.py`, `mutation.sh`.
 
 `report-template/index.html` — fill and copy the base's template, `{project-name}` = the package name: [`templates/report-template/index.html`](skills/testing/core/solution-conformance-testing.skill/templates/report-template/index.html)
+
+## .gitignore
+Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `.venv/`, `*.egg-info/`, `__pycache__/`, and `mutants/`, `.coverage`, `.pytest_cache/` (a `mutmut` or `pytest` started by hand — the kinds leave none of them).
+
+## Virtual environment
+The kinds run `pip install -e ".[dev]"` and call `coverage` and `mutmut` from `PATH`, so they need an environment of the project's own. Add to the `Makefile`, before the include line — `make init` once, and every `make test-kind-*` uses it; where the environment already exists (a CI job after its Python setup step) the block changes nothing:
+```makefile
+VENV := .venv
+export PATH := $(CURDIR)/$(VENV)/bin:$(PATH)
+
+.PHONY: init
+init:
+	python3 -m venv $(VENV)
+	$(VENV)/bin/pip install --quiet -e ".[dev]"
+```
 
 ## What the kinds write
 | Kind | Below `$TEST_KIND_DIR` |
@@ -90,4 +105,5 @@ The only stack-specific code — the Makefile, the runner and the report builder
 - [ ] WHEN `make test-kind-unit` or `make test-kind-mutation` ends THEN the repository root holds no `.coverage`, `.pytest_cache` or `mutants/`.
 - [ ] WHEN `make test-kind-mutation` runs as a `report` run and mutants survive THEN it exits `0`; WHEN a test is red THEN it exits non-zero and writes no result.
 - [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants of the source files changed since `<ref>` are evaluated; without `DELTA_BASE`, or with no source file changed, the kind skips itself.
+- [ ] WHEN `make init` ran in a fresh checkout THEN `make test-and-report` passes with no Python package installed outside `.venv/`.
 - [ ] WHEN `make test-and-report` runs THEN `$TEST_REPORT_DIR` holds `index.html`, `run.json`, `badges/{tests,coverage,mutation}.json` and `reports/{tests,coverage,mutation,scenarios}/`.
