@@ -1,3 +1,4 @@
+@domain
 Feature: ItemTitle rule
 
   The centralized title condition — one Gherkin source, re-proven by every layer

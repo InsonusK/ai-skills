@@ -1,4 +1,4 @@
-@extraction
+@domain
 Feature: Extract links from a text
   A caller pulls the links out of a text before checking them.
 

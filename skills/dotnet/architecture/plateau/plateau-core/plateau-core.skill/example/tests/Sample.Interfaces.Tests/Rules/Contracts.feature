@@ -1,3 +1,4 @@
+@contract
 Feature: Sample module public contracts
 
   @happy

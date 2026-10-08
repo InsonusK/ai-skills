@@ -1,3 +1,4 @@
+@contract
 Feature: MediatR request markers
 
   The markers in Shared/MediatR are member-free and carry the request kind

@@ -1,4 +1,4 @@
-@batch
+@service
 Feature: Summarize a batch of URLs
   A caller checks many URLs at once and reads the totals.
 

@@ -26,7 +26,7 @@ addopts = "--import-mode=importlib"
 markers = [
     "todo: scenario planned but not runnable yet - excluded from the run",
     "happy", "boundary", "negative", "error", "concurrency", "security", "regression",
-    "validation", "extraction", "batch",
+    "domain", "service", "api", "infrastructure", "mapping", "contract", "crosscutting",
 ]
 
 [tool.coverage.run]

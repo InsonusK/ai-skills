@@ -21,7 +21,8 @@ trap 'rm -f "$INVENTORY"' EXIT
 # copies of the .feature files.
 WORK_REL="$(realpath -m --relative-to=. "${TEST_WORK_DIR:-tmp/testing}")/"
 
-# One TSV line per entry: feature, scenario, examples, uri, line, tags, todo, note, lines.
+# One TSV line per entry: feature, scenario, examples, uri, line, tags, todo, note, lines,
+# and the tags of the Feature line alone.
 find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tmp -o -name public -o -name .venv \) -prune \
   -o -name '*.feature' -print | sed 's#^\./##' | awk -v work="$WORK_REL" 'index($0, work) != 1' | sort | while IFS= read -r uri; do
   awk -v uri="$uri" '
@@ -41,7 +42,7 @@ find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tm
       else if (rule_todo) { todo = 1; note = rule_note }
       else if (sc_todo) { todo = 1; note = sc_note }
       else if (ex_todo) { todo = 1; note = ex_note }
-      printf "%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%s\n", feat_name, sc_name, ex_name, uri, ex_line, tags, todo, note, rows
+      printf "%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%s\t%s\n", feat_name, sc_name, ex_name, uri, ex_line, tags, todo, note, rows, feat_tags
     }
     function flush_examples() {
       if (ex_open) emit(ex_name, ex_line, ex_tags, ex_todo, ex_note, ex_rows)
@@ -101,10 +102,12 @@ done > "$INVENTORY"
 
 jq -R -s --slurpfile results "$RESULTS" '
   def types: ["happy","boundary","negative","error","concurrency","security","regression"];
+  def categories: ["domain","service","api","infrastructure","mapping","contract","crosscutting"];
   ($results[0] | map({key: "\(.uri):\(.line)", value: .status}) | group_by(.key)
      | map({key: .[0].key, value: map(.value)}) | from_entries) as $status
   | split("\n") | map(select(length > 0) | split("\t")) | map(
-      . as [$feature, $scenario, $examples, $uri, $line, $tags, $todo, $note, $lines]
+      . as [$feature, $scenario, $examples, $uri, $line, $tags, $todo, $note, $lines, $featureTags]
+      | ([($featureTags // "") | split(" ")[] | select(. as $t | categories | index($t))] | unique) as $categoryTags
       | ($tags | split(" ") | map(select(length > 0))) as $tagList
       | ([$tagList[] | select(. as $t | types | index($t))] | unique) as $typeTags
       | ($lines | split(",") | map(select(length > 0)) | map($status["\($uri):\(.)"] // [])) as $perRow
@@ -112,6 +115,7 @@ jq -R -s --slurpfile results "$RESULTS" '
           feature: $feature, scenario: $scenario, examples: $examples,
           uri: $uri, line: ($line | tonumber),
           type: (if ($typeTags | length) == 1 then $typeTags[0] else "untyped" end),
+          category: (if ($categoryTags | length) == 1 then $categoryTags[0] else "uncategorized" end),
           tags: ($tagList | unique | map("@" + .)),
           status: (
             if $todo == "1" then "todo"

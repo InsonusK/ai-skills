@@ -30,6 +30,12 @@ var typeTags = map[string]bool{
 	"concurrency": true, "security": true, "regression": true,
 }
 
+// categoryTags say what a feature specifies; exactly one sits on the Feature line.
+var categoryTags = map[string]bool{
+	"domain": true, "service": true, "api": true, "infrastructure": true,
+	"mapping": true, "contract": true, "crosscutting": true,
+}
+
 var todoComment = regexp.MustCompile(`^\s*#\s*todo:\s*(.*?)\s*$`)
 
 // skipDirs are never scanned for .feature files.
@@ -41,6 +47,7 @@ type entry struct {
 	Examples string   `json:"examples"`
 	URI      string   `json:"uri"`
 	Line     int64    `json:"line"`
+	Category string   `json:"category"`
 	Type     string   `json:"type"`
 	Tags     []string `json:"tags"`
 	Status   string   `json:"status"`
@@ -309,6 +316,7 @@ func newEntry(feature, scenario, examples, uri string, line int64, chain []scope
 		}
 	}
 	sort.Strings(e.Tags)
+	e.Category = categoryOf(chain[0].tags)
 	e.Type = "untyped"
 	if len(types) == 1 {
 		for t := range types {
@@ -316,6 +324,23 @@ func newEntry(feature, scenario, examples, uri string, line int64, chain []scope
 		}
 	}
 	return e
+}
+
+// categoryOf is the one category tag among the Feature line's tags, or
+// "uncategorized" when there is none or more than one.
+func categoryOf(featureTags []*messages.Tag) string {
+	category := "uncategorized"
+	found := 0
+	for _, t := range featureTags {
+		if name := strings.TrimPrefix(t.Name, "@"); categoryTags[name] && name != category {
+			category = name
+			found++
+		}
+	}
+	if found != 1 {
+		return "uncategorized"
+	}
+	return category
 }
 
 // kindDir is the only directory this test kind may write to - tools/testing/testing.mk

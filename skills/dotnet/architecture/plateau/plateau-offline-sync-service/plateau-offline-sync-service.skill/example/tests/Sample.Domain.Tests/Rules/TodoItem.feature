@@ -1,3 +1,4 @@
+@domain
 Feature: TodoItem domain rules
 
   @negative

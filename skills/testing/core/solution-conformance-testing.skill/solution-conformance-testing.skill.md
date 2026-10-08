@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 4
+version: 5
 updated: 20261007
 tags:
   - skill/architecture/solution
@@ -83,17 +83,18 @@ Every kind writes its whole output below its own `$TEST_KIND_DIR`, per [[./Imple
 { "scenarios": [
   { "feature": "Check a URL", "scenario": "Check a URL", "examples": "malformed",
     "uri": "internal/domain/services/features/check.feature", "line": 18,
-    "type": "negative", "tags": ["@negative", "@validation"], "status": "passed", "note": "" }
+    "category": "service", "type": "negative", "tags": ["@negative", "@service"], "status": "passed", "note": "" }
 ] }
 ```
 - **Entry** — one `Scenario`/`Example`, or one `Examples:` block of a `Scenario Outline`. `examples` is that block's name (`""` for a plain scenario); `line` is the `Scenario` line, or the `Examples:` line for a block; `uri` is the `.feature` path relative to the repository root.
 - **Inventory source** — the `.feature` files themselves, so `@todo` entries the runner never executes are listed too. Only the status comes from the runner's own result.
 - **`type`** — the one type tag among the entry's own and inherited (`Feature`, `Rule`, `Scenario`, `Examples`) tags, without `@`, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-type-tag-per-scenario|One type tag per scenario]]; `untyped` when there is none or more than one.
-- **`tags`** — every tag the entry carries or inherits, with `@`, sorted: the type tag, `@todo`, and whatever tags the project puts on its features and scenarios.
+- **`category`** — the one category tag on the `Feature:` line, without `@`, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-category-tag-per-feature|One category tag per feature]]; `uncategorized` when there is none or more than one.
+- **`tags`** — every tag the entry carries or inherits, with `@`, sorted: the category tag, the type tag, `@todo`, and whatever other tags the project uses.
 - **`status`** — `passed`; `failed` (for an `Examples:` block: any of its rows failed); `todo` (tagged `@todo`, excluded from the run); `missing` (not `@todo`, but the runner reported no result for it — a wiring defect, never a pass).
 - **`note`** — the `# todo:` reason of a `@todo` entry, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#tag-unrunnable-scenarios-todo-and-verify-exclusion|Tag unrunnable scenarios @todo]]; `""` otherwise.
 
-The unit kind renders `report/scenarios/index.html` from `scenarios.json` alone (`kind_scenarios_report`): a type × status count table, then one table of every entry — feature, scenario, examples, type, tags, status, `uri:line`, note. It highlights `untyped` and `missing` entries, and `todo` entries of type `happy`, `negative`, or `error` that have no note.
+The unit kind renders `report/scenarios/index.html` from `scenarios.json` alone (`kind_scenarios_report`): a type × status and a category × status count table, then one table of every entry — feature, category, scenario, examples, type, tags, status, `uri:line`, note. It highlights `uncategorized`, `untyped` and `missing` entries, and `todo` entries of type `happy`, `negative`, or `error` that have no note.
 
 The report answers, without a separate hand-maintained test inventory file:
 
@@ -101,6 +102,7 @@ The report answers, without a separate hand-maintained test inventory file:
 | --- | --- |
 | Which behaviors are specified, and of which type? | `reports/scenarios/` — one row per entry |
 | Which kinds of behavior have no scenario at all? | `reports/scenarios/` — the type × status table |
+| Which layers of the program have no specification? | `reports/scenarios/` — the category × status table |
 | Which scenarios are planned but not implemented, and why? | `reports/scenarios/` — `todo` rows with their note |
 | What exactly does a scenario assert? | the `Then` step's data table in the `.feature` file at `uri:line` |
 | Which scenarios pass but assert too little? | `reports/mutation/` — surviving mutants in the code those scenarios exercise |

@@ -1,3 +1,4 @@
+@service
 Feature: Check a URL
   As a caller of the link-check service
   I want to validate and normalize a URL

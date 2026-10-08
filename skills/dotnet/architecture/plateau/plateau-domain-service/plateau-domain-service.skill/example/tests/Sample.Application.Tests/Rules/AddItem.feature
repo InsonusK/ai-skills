@@ -1,3 +1,4 @@
+@service
 Feature: Add item feature
 
   @happy

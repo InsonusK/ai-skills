@@ -231,3 +231,27 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The table is the scenarios page: `scenarios.json` gained `tags` (own and inherited, with `@`), and the page is one table — feature, scenario, examples, type, tags, status, location, note — under the type × status summary, instead of one table per feature.
 - The three skill examples carry the same three features: a second feature in the same package, and a sub-package with its own `features/` and `test/` — data tables, an outline with two `Examples:` blocks, two `@todo` scenarios. Python also shows steps' shared fixture in `test/conftest.py`.
 - Each feature carries one tag of the project's own (`@validation`, `@extraction`, `@batch`) to show what a feature-level tag looks like in the living doc and in the scenarios table. The skills prescribe only the type tags and `@todo`; a project's own tags are free, and in Python each must be a registered marker.
+
+## Owner-decided (2026-10-08, feature tags)
+
+- Features are tagged too: the tag says what the feature tests — infrastructure, service, mapping, and whatever other categories the plateaus call for (left to the agent).
+
+## Agent decisions — feature tags
+
+- Seven category tags, one per feature, on the `Feature:` line — the rule "One category tag per feature" in `cucumber-testing`. The set comes from the layers the plateaus actually have:
+
+  | Tag | Go plateaus | .NET plateaus | Python CLI plateau |
+  | --- | --- | --- | --- |
+  | `@domain` | pure rule code | `{Module}.Domain`, `{Module}.Domain.Rules` | `functions/` |
+  | `@service` | `internal/domain/services` | `{Module}.Application` | `command/` |
+  | `@api` | `internal/api/http`, `grpc`, `tasks` | host endpoints | `cli/` |
+  | `@infrastructure` | `internal/infrastructure/*`, TaskBox store | `App.Infrastructure` | `service/` talking to the outside |
+  | `@mapping` | converters beside an adapter | mappers, persistence configuration | — |
+  | `@contract` | `internal/domain/interfaces` | `{Module}.Interfaces`, `Shared` | — |
+  | `@crosscutting` | `internal/config`, `internal/logging` | `BuildingBlocks` | logging set-up |
+
+- The category follows the code the feature sits beside, so it needs no judgement per scenario; a feature that would need two specifies two things and is split.
+- Made checkable like the type tag: `scenarios.json` carries `category` (`uncategorized` without exactly one), and the scenarios page shows the column, a category × status table, and marks `uncategorized` for attention.
+- Every example feature is tagged (30 files). The three skill examples' illustrative `@validation` / `@extraction` / `@batch` tags were replaced by categories. One file is left untagged on purpose: `gw009-001`'s `taskbox-conformance.feature` is a verbatim copy from the `taskbox-go` library — its 23 entries show as `uncategorized` until the tag is added there.
+- Component and pixel tests of a UI are other test kinds (owner, 2026-10-08), so there is no `@ui` category: a category classifies Cucumber features only.
+- Scenarios inside the living doc — asked, not built. Measured: for classic Cucumber JSON (Go, Python) a `@todo` scenario added to the runner's report as a `pending` element renders in the living doc with its note; in Cucumber Messages (TypeScript, .NET) the scenario is already in the stream. The summaries and the `untyped` / `uncategorized` / `missing` marks have no place in either renderer.

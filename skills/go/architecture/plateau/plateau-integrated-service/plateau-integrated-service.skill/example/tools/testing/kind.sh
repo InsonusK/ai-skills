@@ -73,9 +73,9 @@ kind_badge_percent() {
 }
 
 # kind_scenarios_report - result/scenarios.json -> report/scenarios/index.html: a type x
-# status table, then one table of every entry - feature, scenario, examples, type, tags,
-# status, location, note. "attention" marks untyped, missing, failed, and todo
-# happy/negative/error entries without a note.
+# status and a category x status table, then one table of every entry - feature, category,
+# scenario, examples, type, tags, status, location, note. "attention" marks uncategorized,
+# untyped, missing, failed, and todo happy/negative/error entries without a note.
 kind_scenarios_report() {
   [ -f "$RESULT_DIR/scenarios.json" ] || return 0
   mkdir -p "$REPORT_DIR/scenarios"
@@ -83,16 +83,21 @@ kind_scenarios_report() {
     ["happy","boundary","negative","error","concurrency","security","regression","untyped"] as $types
     | ["passed","failed","todo","missing"] as $statuses
     | .scenarios as $all
-    | def attention: .type == "untyped" or .status == "missing" or .status == "failed"
+    | ["domain","service","api","infrastructure","mapping","contract","crosscutting","uncategorized"] as $categories
+    | def category: .category // "uncategorized";
+      def attention: .type == "untyped" or category == "uncategorized" or .status == "missing" or .status == "failed"
         or (.status == "todo" and .note == "" and (.type == "happy" or .type == "negative" or .type == "error"));
     "<!doctype html><html><head><meta charset=\"utf-8\"><title>Scenarios</title>",
     "<style>td,th{border:1px solid #999;padding:2px 6px;text-align:left}table{border-collapse:collapse}.attention{background:#fdd}</style></head><body>",
     "<h1>Scenarios</h1><h2>By type</h2><table><tr><th>type</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
     ($types[] as $t | "<tr><td>\($t)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(.type == $t and .status == $s)] | length)</td>") | join("")) + "</tr>"),
     "</table>",
-    "<h2>Every scenario</h2><table><tr><th>feature</th><th>scenario</th><th>examples</th><th>type</th><th>tags</th><th>status</th><th>location</th><th>note</th></tr>",
+    "<h2>By category</h2><table><tr><th>category</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
+    ($categories[] as $c | "<tr><td>\($c)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(category == $c and .status == $s)] | length)</td>") | join("")) + "</tr>"),
+    "</table>",
+    "<h2>Every scenario</h2><table><tr><th>feature</th><th>category</th><th>scenario</th><th>examples</th><th>type</th><th>tags</th><th>status</th><th>location</th><th>note</th></tr>",
     ($all | sort_by(.feature, .uri, .line)[] |
-      "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.feature | @html)</td><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.type)</td><td>\((.tags // []) | join(" ") | @html)</td><td>\(.status)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
+      "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.feature | @html)</td><td>\(category)</td><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.type)</td><td>\((.tags // []) | join(" ") | @html)</td><td>\(.status)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
     "</table></body></html>"
   ' "$RESULT_DIR/scenarios.json" > "$REPORT_DIR/scenarios/index.html"
 }

@@ -39,6 +39,7 @@ addopts = "--import-mode=importlib"
 markers = [
     "todo: scenario planned but not runnable yet - excluded from the run",
     "happy", "boundary", "negative", "error", "concurrency", "security", "regression",
+    "domain", "service", "api", "infrastructure", "mapping", "contract", "crosscutting",
 ]
 
 [tool.coverage.run]
@@ -72,7 +73,7 @@ pytest_add_cli_args = ["-m", "not todo"]
 - Keep `omit = ["*/test/*"]` under `[tool.coverage.run]` and `do_not_mutate = ["*/test/*"]` under `[tool.mutmut]`.
   - Risk: measured on the example — `mutmut` mutated the test module too, 6 mutants no test can kill, and the score fell from 93.5% to 78.4%; coverage counts test code as product code once a `test/` folder gets an `__init__.py`.
   - Fix: keep both lines.
-- Register `todo` and the seven scenario type tags as `markers`.
+- Register `todo`, the seven scenario type tags and the seven feature category tags as `markers`.
   - Risk: `pytest-bdd` turns every Gherkin tag into a marker — an unregistered one warns on every run, and fails it under `--strict-markers`.
   - Fix: keep the `markers` list; add a project's own tags to it.
 - Point `[tool.coverage.run] source` at the package, and `[tool.mutmut] source_paths` at the source root.

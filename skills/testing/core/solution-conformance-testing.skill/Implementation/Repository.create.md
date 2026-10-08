@@ -97,7 +97,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `report/scenarios/` | the scenario page rendered from `result/scenarios.json` | `unit` — `kind_scenarios_report` |
 | `result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit` |
 | `result/coverage-test.json` | `{ "linePct": <number> }` | `unit` (`report` only) |
-| `result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "tags", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
+| `result/scenarios.json` | `{ "scenarios": [ { "feature", "category", "scenario", "examples", "uri", "line", "type", "tags", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
 | `result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation` |
 | `report/tests/` | the tool's native test report; its entry page forwards to `livingdoc/` when the tool wrote none | `unit` — `kind_livingdoc` |
 | `report/tests/cucumber/` | the runner's standard Cucumber report — `*.json` (classic Cucumber JSON) or `*.ndjson` (Cucumber Messages), one protocol per stack | `unit` |

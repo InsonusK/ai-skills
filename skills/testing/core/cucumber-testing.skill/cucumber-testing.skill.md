@@ -2,7 +2,7 @@
 name: cucumber-testing
 description: Language-independent rules for writing and organizing Cucumber/Gherkin scenarios and their step definitions — generic comparators, expected-data placement, ordering, logging, and BDD editor setup
 whenToUse: when writing or reviewing a `.feature` file or its step definitions, when deciding whether an assertion step is reusable across scenarios, or when configuring an editor/devcontainer for Cucumber
-updated: 20261008
+updated: 20261009
 tags:
   - stack
   - concern/testing/bdd
@@ -16,6 +16,7 @@ tags:
 - Every assertion step implemented as a generic comparator that reads its expected data from the feature file, reused across scenarios instead of duplicated per domain object.
 - A scenario that cannot run yet tagged `@todo` with its reason, and excluded from the executed suite, never reported as a fake pass.
 - Every scenario classified by exactly one type tag, so the test report shows which kinds of behavior are covered and which are missing.
+- Every feature classified by exactly one category tag, so the test report shows which layers of the program have a specification.
 - A VSCode workspace with the Cucumber extension declared in the devcontainer and `cucumber.glue`/`cucumber.features` set in `.vscode/settings.json`.
 
 # Scope
@@ -71,6 +72,30 @@ Give every scenario exactly one type tag — `@happy`, `@boundary`, `@negative`,
     Examples: malformed
       | input      | outcome |
       | not-a-url  | invalid |
+```
+
+### One category tag per feature
+Give every feature exactly one category tag on its `Feature:` line — the tag says what kind of code the feature specifies:
+
+| Tag | The feature specifies |
+| --- | --- |
+| `@domain` | a business rule of an entity, a value object, a validator or a pure function — no I/O |
+| `@service` | a use case: one operation orchestrated end to end, its collaborators replaced at their ports |
+| `@api` | an inbound adapter: how a request, a message or a command line becomes a call, and its result a response |
+| `@infrastructure` | an outbound adapter against the real dependency or its emulator: a store, a cache, a client of another service, a queue |
+| `@mapping` | the translation between two representations of the same data, with no I/O: transport object, domain model, stored row |
+| `@contract` | the shape other code depends on: commands, queries, events, interface markers, a published schema |
+| `@crosscutting` | a technical building block every module passes through: a pipeline behavior, logging, configuration, error handling |
+
+- Violation: a feature with no category tag or with two; a category tag on a single scenario instead of the `Feature:` line.
+- Risk: the report cannot show which layers have a specification at all — a service whose rules are fully specified while its adapters have none looks like a fully specified one. A feature that needs two category tags specifies two things.
+- Fix: tag the feature with the category of the code it sits beside; split a feature that spans two categories into two files; tag a feature copied verbatim from another repository at its source. The report lists a feature without exactly one category tag as `uncategorized`.
+```gherkin
+@service
+Feature: Add item
+
+  @happy
+  Scenario: A valid item is stored
 ```
 
 ### Generic comparator steps
@@ -163,6 +188,7 @@ Use the runner's own step-listing/generation facility, when it has one, instead 
 - [ ] No test exists solely to cover code unreachable through the public API.
 - [ ] Every not-yet-runnable scenario is tagged `@todo` with a `# todo:` reason, filtered out of the executed run, and confirmed excluded rather than reported as passing.
 - [ ] Every scenario (or `Examples:` block) carries exactly one type tag: `@happy`, `@boundary`, `@negative`, `@error`, `@concurrency`, `@security`, `@regression`.
+- [ ] Every feature carries exactly one category tag on its `Feature:` line: `@domain`, `@service`, `@api`, `@infrastructure`, `@mapping`, `@contract`, `@crosscutting`.
 - [ ] Every assertion step is a generic comparator reading expected data from the feature file — no domain-specific hardcoded step.
 - [ ] No expected value is hardcoded in step-definition code.
 - [ ] Structured responses are asserted via deserialization, never substring matching.

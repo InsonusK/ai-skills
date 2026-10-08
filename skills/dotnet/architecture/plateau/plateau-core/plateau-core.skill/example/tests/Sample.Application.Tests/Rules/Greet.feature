@@ -1,3 +1,4 @@
+@service
 Feature: Greet feature
 
   @happy
