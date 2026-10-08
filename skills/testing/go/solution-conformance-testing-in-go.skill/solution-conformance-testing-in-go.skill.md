@@ -1,10 +1,10 @@
 ---
 name: solution-conformance-testing-in-go
-description: Sets up the Go side of the Cucumber/coverage/mutation quality gate — godog for scenarios, go test -cover for coverage, gremlins for mutation testing, the scenario report, and the unit and mutation test kinds behind the shared make test-kind-{kind} / test-report contract
-whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario report into a Go project's Makefile/CI pipeline
+description: Sets up the Go side of the Cucumber/coverage/mutation quality gate — godog for scenarios, go test -cover for coverage, gremlins for mutation testing, the scenario inventory, and the unit and mutation test kinds behind the shared make test-kind-{kind} / test-report contract
+whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario inventory into a Go project's Makefile/CI pipeline
 domain: skill
 type: architecture
-version: 20261009120000
+version: 20261008170000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-go
@@ -28,6 +28,7 @@ depends_on:
   - "[[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 built_on_plateau:
 adr:
+  - "[[./adr/distribution-version.md|Distribution version]]"
   - "[[skills/testing/go/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]"
 ---
 
@@ -37,7 +38,7 @@ adr:
 
 # Capabilities
 - `go test -json ./...` runs godog scenarios and plain Go tests in one invocation; a normalizer collapses godog's parent/subtest duplication so a scenario is counted once.
-- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type and category, its status, and `@status/todo` reason — and `make test-report` renders it as `$TEST_REPORT_DIR/reports/scenarios/`.
+- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type and category, its status, and `@status/todo` reason — for the tag check and the living doc; no separate scenarios page is generated.
 - `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` scopes a mutation run to files changed since `<ref>`, so a pull request's gate does not pay for a full-module run.
 - `make test-report` gathers the kinds' reports and badges into a stack-independent `$TEST_REPORT_DIR/` site, matching the parent solution's report contract exactly — nothing downstream needs to know this is a Go module.
 
@@ -47,6 +48,7 @@ adr:
 - `test-kind-mutation` always exits with the underlying `gremlins` exit code after writing its normalized result, per the parent solution's contract.
 
 # Adr
+- [[./adr/distribution-version.md|Distribution version]] — compare the public Go version with a shipped VERSION manifest; local Go build metadata does not carry a release version.
 - [[skills/testing/go/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]
   - Selected variant: `gremlins` (`github.com/go-gremlins/gremlins`)
 
@@ -81,10 +83,13 @@ FILES:
 2. Whoever notices it (via the published report or a coverage/mutation badge) strengthens the corresponding scenario's assertion in a follow-up change, or explicitly accepts it per the parent solution's own rule.
 
 # Ground truth
-[`example/`](./example/) is a small module carrying this solution as it is delivered: `internal/linkcheck/` with two features in its `features/` and their steps in its `test/`, and the sub-package `internal/linkcheck/batch/` with its own `features/` and `test/` runner. The three features hold plain scenarios, a `Scenario Outline` with two `Examples:` blocks, data tables, two `@status/todo` scenarios and a `@status/broken` one, and a tag on each feature. Verified on 2026-10-08 with Go 1.26, `godog` 0.16, `gremlins` 0.6.0:
-- `make init`, then `make test-and-report` — exit `0`; 10/10 scenarios, coverage 96.3%, mutation score 100%; the scenario report lists both `Examples:` blocks and the `@status/todo` entry with its reason, and the living doc shows each row with its type tag.
-- `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped, no coverage report, only the `tests` badge.
-- `make test-kind-mutation` without `--integration`, measured when the example had one feature — 4 of its 7 mutants lived and the score was 42.9%: the measurement behind the `--integration` rule.
+[`example/`](./example/) is a runnable linkcheck module: eight co-located features cover checking, extraction, batch summaries, CLI, file storage, mapping, the result contract, and distribution metadata. The scenarios and tags match the Python reference, including two excluded `@status/todo` scenarios, one excluded `@status/broken`, all seven type and category values, and the unchanged store scenario marked `@status/validated` for owner confirmation. The store uses a mutex and the concurrency scenario uses a start barrier and waits for both writers; it has no timing assertion. Verified with Go 1.26, godog 0.16, gremlins 0.6.0:
+- `make init && make test-and-report` — exit `0`; 25/25 scenarios, coverage 94.7%, mutation score 100% (18 killed, no survivors/timeouts/uncovered mutants).
+- `run-example.sh` — report/check runs, caller-selected directories, inventory/tag/reason/legend assertions, and all five report pages pass with no broken links. A deliberate bad step and removed category each fail the unit kind, which still writes its inventory; the failed report records `unit` as `failed`.
+- `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped without a delta base, coverage gathered but not published.
+- Real delta mutation in an isolated two-commit repository changes the scheme predicate: 2 mutants killed, 16 skipped, score 100%; only the changed checker condition is mutated. `go test -race -count=5` passes both scenario packages.
+- The `tests` link opens the living doc; every scenario appears with all tags and excluded reasons, plus the status legend. `result/scenarios.json` remains the tag-check and rendering input; there is no scenarios report directory.
+- Mutation keeps `--integration`, `GOFLAGS=-count=1`, and `--timeout-coefficient 10`: tests run in sibling `test/` packages, so package-only mutation runs would measure little.
 
 # Rules
 
@@ -97,6 +102,6 @@ FILES:
 # Check list
 - [ ] `make test-kinds` lists `unit` and `mutation`; `make test-kind-unit`, `make test-kind-mutation`, `make test-report`, `make test-readme-check`, and `make test-and-report` all exist and match [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|the parent solution's report contract]].
 - [ ] `COVERPKG` excludes `gen/` and `tools/`.
-- [ ] `$TEST_KIND_DIR/result/scenarios.json` is written on every `make test-kind-unit` run and `$TEST_REPORT_DIR/reports/scenarios/index.html` is rendered from it.
+- [ ] `$TEST_KIND_DIR/result/scenarios.json` is written on every `make test-kind-unit` run and the living doc includes every inventory entry with its tags, excluded reason, and status legend.
 - [ ] Every `.feature` file's scenarios follow [[skills/testing/go/cucumber-testing-in-go.skill.md|cucumber-testing-in-go]]'s check list.
 - [ ] `make test-kind-unit` writes godog's classic Cucumber JSON to `$TEST_KIND_DIR/report/tests/cucumber/` and renders `$TEST_KIND_DIR/report/tests/livingdoc/` per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#living-doc-report|the parent solution's living-doc report]].

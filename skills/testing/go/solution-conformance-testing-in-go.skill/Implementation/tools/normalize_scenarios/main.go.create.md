@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goals
-- Write the normalized `$TEST_KIND_DIR/result/scenarios.json` [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]] defines: one entry per `Scenario`, or per `Examples:` block of a `Scenario Outline`, with its type tag, status, location, and `# todo:` reason.
+- Write the normalized `$TEST_KIND_DIR/result/scenarios.json` [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-inventory|the parent solution's scenario inventory]] defines: one entry per `Scenario`, or per `Examples:` block of a `Scenario Outline`, with its type tag, status, location, and `# todo:` reason.
 
 # Core Principles
 - The inventory comes from parsing every `.feature` file with `github.com/cucumber/gherkin/go/v42` — the parser godog itself uses — so `@status/todo` entries godog never runs are listed too.
@@ -34,7 +34,7 @@ Copy verbatim to `tools/normalize_scenarios/main.go`: [`assets/tools/normalize_s
   - Fix: write the file and return; `test-kind-unit` exits with the test run's status.
 
 # Check list
-- [ ] `$TEST_KIND_DIR/result/scenarios.json` lists every `.feature` entry, `@status/todo` ones included, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|the parent solution's Scenario report]].
+- [ ] `$TEST_KIND_DIR/result/scenarios.json` lists every `.feature` entry, `@status/todo` ones included, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-inventory|the parent solution's scenario inventory]].
 - [ ] An `Examples:` block tagged `@category/negative` under a `Scenario Outline` is its own entry with `"category": "negative"`.
 - [ ] A feature tagged `@type/service` on its `Feature:` line gives every entry of it `"type": "service"`; without exactly one `@type/…` tag there, `"none"`.
 - [ ] Every entry lists its own and inherited tags in `"tags"`, with `@`, sorted — a feature tagged `@type/service` gives every entry of it that tag.

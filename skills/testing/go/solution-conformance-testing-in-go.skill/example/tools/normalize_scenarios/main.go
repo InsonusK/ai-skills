@@ -1,5 +1,5 @@
 // Command normalize_scenarios writes the normalized result/scenarios.json
-// the parent solution-conformance-testing Scenario report defines. The
+// the parent solution-conformance-testing scenario inventory defines. The
 // inventory comes from every .feature file under the repository (so @status/todo
 // and @status/broken entries godog never runs are listed too); the status of each entry comes
 // from the `go test -json` event stream whose path is argv[1].
@@ -151,7 +151,7 @@ func readResults(path string) (map[string][]string, error) {
 	return results, sc.Err()
 }
 
-// statusOf is "failed" if any run of any pickle failed, "missing" if a
+// statusOf is "failed" if any run of any pickle failed, "not-run" if a
 // pickle has no pass/fail result (never run, or skipped), else "passed".
 func statusOf(pickleNames []string, results map[string][]string) string {
 	status := "passed"

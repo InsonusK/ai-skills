@@ -1,8 +1,9 @@
 ---
+version: 20261008170000
 name: cucumber-testing-in-go
 description: Go/godog-specific rules for Cucumber testing — the single TestFeatures runner, stdout step logging, step-file layout, and VSCode glue configuration
 whenToUse: when writing or reviewing godog scenarios or step definitions in a Go project
-updated: 20261009
+updated: 20261008
 tags:
   - stack/go
   - concern/testing/bdd
@@ -69,6 +70,11 @@ Put a package's `.feature` files in a `features/` folder inside that package, an
 - Risk: a reader of the code does not find its specification, and a failing scenario does not say which package it belongs to; one root runner compiles every package's steps into a single test binary.
 - Fix: move the feature next to the package it specifies and give that package its own `test/` runner.
 
+### Enforce the tag scheme through the unit kind
+Apply the core tag rules to every feature, scenario and Examples block and run `make test-kind-unit` before accepting them.
+- Risk: an untagged case passes godog but cannot be classified by the report.
+- Fix: the unit kind normalizes the inventory and calls `kind_scenarios_check`; missing, conflicting and unknown type/category values fail with the offender location.
+
 ### Step functions take context.Context first
 Give every step function `ctx context.Context` as its first parameter, even when unused, so a future step can add tracing/cancellation without changing every call site's signature style.
 
@@ -115,6 +121,8 @@ When applying [Configure the Cucumber editor extension](skills/testing/core/cucu
 For a codec or serializer, write the scenario in-memory, `WriteFile`, reopen, and assert against the reopened document, plus a check that the raw output has no dangling id references.
 
 # Check list
+- [ ] Every feature has exactly one allowed `@type/…`; every scenario or Examples block inherits exactly one allowed `@category/…`.
+- [ ] The living doc includes all scenarios and tags, excluded reasons, and the status legend; `tests` opens it directly.
 - [ ] Every `.feature` file sits in `{package}/features/`, its runner and steps in `{package}/test/`; the repository root has no `features/` tree.
 - [ ] Exactly one `TestFeatures` per test package; no other `func TestXxx` alongside it.
 - [ ] `godog.Options` sets `Format: "pretty"` (or another registered formatter), `Tags: "~@status/todo && ~@status/broken"`, `Strict: true`, `TestingT: t`.
