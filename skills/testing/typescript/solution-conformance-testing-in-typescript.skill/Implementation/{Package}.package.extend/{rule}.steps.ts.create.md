@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goals
-- Prove every scenario in `features/{rule}.feature` against the package's real implementation of the rule.
+- Prove every scenario in `src/{package}/features/{rule}.feature` against the package's real implementation of the rule.
 
 # Core Principles
 - The step-definition module holds no business logic of its own — it only translates Gherkin steps into calls against the package's real exported function/class and assertions on the result.
@@ -18,32 +18,38 @@ tags:
 # Naming convention
 | use case | file name pattern | file name |
 | -------- | ------------------ | --------- |
-| Step definitions for one rule | features/step-definitions/{rule}.steps.ts | features/step-definitions/email-format.steps.ts |
+| Step definitions for one rule | src/{package}/test/{rule}.steps.ts | src/{package}/test/email-format.steps.ts |
 
 # Implementation changes
 ```typescript
 import { Given, When, Then } from "@cucumber/cucumber";
 import assert from "node:assert/strict";
-import { validateEmailFormat } from "../../src/index";
+import { validateEmailFormat } from "../{rule}-validator";
 
 interface World {
+  attach: (message: string, mediaType: string) => void;
   input: string;
   result: { isValid: boolean; errorCode?: string };
 }
 
 Given("the input {string}", function (this: World, input: string) {
   this.input = input;
+  this.attach(`given: input=${input}`, "text/plain");
 });
 
 When("the email format rule validates it", function (this: World) {
   this.result = validateEmailFormat(this.input);
+  this.attach(`when: result=${JSON.stringify(this.result)}`, "text/plain");
 });
 
 Then("the result is valid", function (this: World) {
+  this.attach(`then: valid=${this.result.isValid}`, "text/plain");
   assert.equal(this.result.isValid, true);
 });
 
 Then("the result is invalid with error {string}", function (this: World, errorCode: string) {
+  this.attach(`then: error=${this.result.errorCode}`, "text/plain");
+  assert.equal(this.result.isValid, false);
   assert.equal(this.result.errorCode, errorCode);
 });
 ```
@@ -51,7 +57,7 @@ Then("the result is invalid with error {string}", function (this: World, errorCo
 # Rule changes
 
 ## MUST
-- Import `validateEmailFormat` (or the package's equivalent real entry point) from `src/index.ts` — never re-implement the validation logic inline in a step.
+- Import `validateEmailFormat` (or the package's equivalent real entry point) from the production module beside `test/` — never re-implement the validation logic inline in a step.
   - Violation: the `When` step computes validity with a local regex instead of calling `validateEmailFormat`.
   - Risk: the scenario can stay green after `validateEmailFormat` is broken.
   - Fix: call the real exported function and assert on its actual return value.
@@ -64,7 +70,7 @@ Then("the result is invalid with error {string}", function (this: World, errorCo
 
 # Check list
 - [ ] Every `Given/When/Then` in `{rule}.feature` has a matching, non-duplicated step definition.
-- [ ] The step-definition module imports from `src/index.ts`, not from an internal module path.
+- [ ] The step-definition module imports the real module beside `test/`; a contract scenario imports the package entry point.
 
 # Unittest TestCases
 - [ ] WHEN a scenario's input is valid THEN the `Then` step passes against the real validator.

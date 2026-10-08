@@ -1,6 +1,6 @@
 export default {
-  paths: ["features/**/*.feature"],
+  paths: ["src/**/features/**/*.feature"],
   requireModule: ["tsx/cjs"],
-  require: ["features/step-definitions/**/*.ts"],
+  require: ["src/**/test/**/*.steps.ts"],
   tags: "not @status/todo and not @status/broken",
 };

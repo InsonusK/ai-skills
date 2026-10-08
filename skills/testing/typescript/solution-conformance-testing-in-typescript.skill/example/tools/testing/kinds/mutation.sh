@@ -12,7 +12,7 @@ if [ "$TEST_RUN_PURPOSE" = check ]; then
   [ -n "$DELTA_BASE" ] || kind_skip "a check run mutates only changed files and no DELTA_BASE was given"
   SINCE=$(git rev-parse --verify --quiet "$DELTA_BASE^{commit}") \
     || { echo "DELTA_BASE '$DELTA_BASE' does not name a commit" >&2; exit 2; }
-  FILES=$(git diff --relative --name-only --diff-filter=ACMR "$SINCE" -- ':(glob)src/**/*.ts' | paste -sd, -)
+  FILES=$(git diff --relative --name-only --diff-filter=ACMR "$SINCE" -- ':(glob)src/**/*.ts' ':(exclude,glob)src/**/test/**' | paste -sd, -)
   [ -n "$FILES" ] || kind_skip "no src/**/*.ts file changed since $DELTA_BASE"
   MUTATE_ARGS=(--mutate "$FILES")
   kind_mode "mutating only the files changed since $DELTA_BASE"

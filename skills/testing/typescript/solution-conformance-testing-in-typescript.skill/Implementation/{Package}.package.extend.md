@@ -12,24 +12,22 @@ tags:
 - Give `{Package}` the dependencies and the two config files `tools/testing/kinds/unit.sh` and `mutation.sh` run on.
 
 # Core Principles
-- `.feature` files live under `features/`, one file per business rule; step definitions live under `features/step-definitions/`, one file per feature file.
-- Step definitions import from `src/index.ts`, never from an internal module path directly.
+- Features and steps live beside their module in `src/{package}/features/` and `src/{package}/test/`, per [cucumber-testing-in-typescript](skills/testing/typescript/cucumber-testing-in-typescript.skill/cucumber-testing-in-typescript.skill.md).
+- Step definitions call the real module beside their `test/` folder; public contract scenarios import the package entry point.
 
 # Structure
 
 ## Project Structure
 ```
-/{package-name}
-  /src
-    index.ts
-    {rule}-validator.ts
-  /features
-    {rule}.feature
-    /step-definitions
-      {rule}.steps.ts
-  package.json
-  cucumber.mjs
-  stryker.conf.json
+/src/{package}
+  index.ts
+  {rule}-validator.ts
+  features/{rule}.feature
+  test/{rule}.steps.ts
+package.json
+cucumber.mjs
+stryker.conf.json
+tsconfig.json
 ```
 
 ## Files
@@ -39,8 +37,8 @@ tags:
 ## Directory and class skills
 | Directory | file   | Description           |
 | ------------------- | --------------------- |
-| /features | {rule}.feature | Gherkin scenarios for one business rule |
-| /features/step-definitions | {rule}.steps.ts | Bindings that call the package's real exported API |
+| /src/{package}/features | {rule}.feature | Gherkin scenarios for one business rule |
+| /src/{package}/test | {rule}.steps.ts | Bindings that call the package's real exported API |
 
 # npm Packages
 | Package   | Version constraint | Purpose                |
@@ -66,11 +64,13 @@ tags:
 - Configure `cucumber-js` to load `.ts` step definitions through `tsx` (`--require-module tsx/cjs`) — never `ts-node`.
   - Risk: without a TypeScript loader configured, `cucumber-js` cannot import `.steps.ts` files and every scenario fails to run.
   - Fix: pass `--require-module tsx/cjs` (in `tools/testing/kinds/unit.sh` or `cucumber.mjs`); `ts-node` does not load under TypeScript 6+ and is no longer maintained.
-- Never import a validator inside a step definition from anywhere other than `src/index.ts`.
-  - Violation: importing `src/{rule}-validator.ts` directly from a step definition instead of `src/index.ts`.
-  - Risk: the step definition depends on internal file layout that is free to change, defeating the purpose of a stable public API.
-  - Fix: import only the symbols `index.ts` re-exports.
+- Import internal behavior from the production module beside `test/`; use the package entry point for public contract scenarios.
+  - Risk: forcing internal tests through the public root creates exports solely for testing.
+  - Fix: call real production code without re-implementing the rule.
+- Exclude `src/**/test/**` from `tsconfig.json`, c8 coverage and Stryker mutation, and publish only `dist/` via `package.json`'s `files` field.
+  - Risk: the distribution ships development tests, and quality metrics measure the test harness as production.
+  - Fix: inspect `npm pack --dry-run` after `npm run build` and keep test exclusion in both kind configurations.
 
 # Check list
 - [ ] `package.json` lists `@cucumber/cucumber`, `tsx`, `c8`, `@stryker-mutator/core` under `devDependencies`.
-- [ ] `npx cucumber-js` with no argument runs every scenario but the `@status/todo` ones; `stryker.conf.json` names no feature path.
+- [ ] `npx cucumber-js` with no argument runs every scenario but the `@status/todo` and `@status/broken` ones; `stryker.conf.json` names no feature path.

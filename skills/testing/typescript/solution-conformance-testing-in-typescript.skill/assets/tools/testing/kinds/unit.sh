@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # badges: tests coverage
 # The unit test kind for TypeScript: the Cucumber suite via cucumber-js, normalized into
-# result/*.json with the native HTML report under report/. Coverage is collected and reported
+# result/*.json with the native HTML report under report/. Coverage is always collected and reported
 # only in a report run.
 set -euo pipefail
 source tools/testing/kind.sh
@@ -27,10 +27,6 @@ SCENARIO_RESULTS="$(mktemp)"
 trap 'rm -f "$CUCUMBER_JSON" "$SCENARIO_RESULTS"' EXIT
 
 CUCUMBER_ARGS=(
-  'features/**/*.feature'
-  --require-module tsx/cjs
-  --require 'features/step-definitions/**/*.ts'
-  --tags 'not @status/todo and not @status/broken'
   --format progress
   --format "html:$REPORT_DIR/tests/index.html"
   --format "json:$CUCUMBER_JSON"
@@ -40,13 +36,12 @@ CUCUMBER_ARGS=(
 # The exit code is kept, not acted on yet, so the normalized results below are
 # written on a red run too.
 set +e
+C8_REPORT_ARGS=(--reporter=json-summary --report-dir="$TEST_KIND_DIR/coverage-data")
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then
-  npx c8 --reporter=html --reporter=json-summary --report-dir="$REPORT_DIR/coverage" \
-    --temp-directory="$TEST_KIND_DIR/c8-tmp" -- \
-    npx cucumber-js "${CUCUMBER_ARGS[@]}"
-else
-  npx cucumber-js "${CUCUMBER_ARGS[@]}"
+  C8_REPORT_ARGS=(--reporter=html --reporter=json-summary --report-dir="$REPORT_DIR/coverage")
 fi
+npx c8 "${C8_REPORT_ARGS[@]}" --temp-directory="$TEST_KIND_DIR/c8-tmp" -- \
+  npx cucumber-js "${CUCUMBER_ARGS[@]}"
 CUCUMBER_EXIT=$?
 set -e
 

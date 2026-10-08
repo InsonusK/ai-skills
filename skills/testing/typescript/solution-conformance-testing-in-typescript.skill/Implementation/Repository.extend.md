@@ -10,14 +10,14 @@ tags:
 # Structure
 
 ## Project Structure
-This `Makefile`/`scripts/` pair assumes a single-package repository, where the repository root is the package root (matching `{Package}.package.extend`'s `src/`, `features/`, `package.json`). In a monorepo with several packages, adapt every path below (`src/`, `features/`, `package.json`, `stryker.conf.json`, `cucumber.mjs`) to the one package this instance of the solution targets.
+This `Makefile`/`scripts/` pair assumes a single-package repository, where the repository root is the package root (matching `{Package}.package.extend`'s `src/`, `package.json`). In a monorepo with several packages, adapt every path below (`src/`, `package.json`, `stryker.conf.json`, `cucumber.mjs`) to the one package this instance of the solution targets.
 ```
-/src
+/src/{package}
   index.ts
   {rule}-validator.ts
-/features
-  {rule}.feature
-  /step-definitions
+  /features
+    {rule}.feature
+  /test
     {rule}.steps.ts
 /report-template
   index.html
@@ -48,7 +48,7 @@ The only stack-specific code: each runs this stack's tool and writes its `result
 - Copy verbatim to `tools/testing/kinds/mutation.sh`: [`assets/tools/testing/kinds/mutation.sh`](../assets/tools/testing/kinds/mutation.sh)
 
 ## .gitignore
-Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `node_modules/`, and `.stryker-tmp/` and `reports/` (a `stryker run` started by hand).
+Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `node_modules/`, `dist/`, and `.stryker-tmp/` and `reports/` (a `stryker run` started by hand).
 
 # Rules
 
@@ -59,21 +59,21 @@ Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `node_modules/`, a
   - Fix: every caller (CI or a developer) goes through the `Makefile`; the project's own CI workflows call these targets stack-agnostically instead of the underlying tools directly.
 - `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write each report into `$TEST_KIND_DIR/report/{name}/` and its badge through `kind_badge_count` / `kind_badge_percent`, per the same contract.
   - Risk: a badge printed by hand drifts from the other stacks' in schema and colors; a report outside `report/{name}/` is not published.
-  - Fix: keep the `kind_badge_*` and `kind_scenarios_report` calls the scripts carry.
+  - Fix: keep the `kind_badge_*` and `kind_livingdoc` calls the scripts carry.
 - `stryker.conf.json` must exist at the path `tools/testing/kinds/mutation.sh` reads (repository root for a single-package repository) — the script patches a copy of it per run, it never creates one from scratch.
   - Risk: without the base config file present, the script has nothing to patch and `make test-kind-mutation` fails outright.
   - Fix: commit a base `stryker.conf.json` at the path the script expects.
 - `tools/testing/kinds/mutation.sh` must still exit with `stryker run`'s own exit code after writing `$TEST_KIND_DIR/result/mutation-test.json` — normalizing the result must never swallow a real mutation-testing failure.
   - Risk: a real mutation-testing failure gets swallowed by the normalization step, and CI reports success on a run that actually found unkilled mutants.
   - Fix: propagate `stryker run`'s exit code from the script after it finishes writing the normalized result.
-- `tools/testing/kinds/unit.sh` must exclude `@status/todo` scenarios from the run, write `$TEST_KIND_DIR/result/scenarios.json` through `tools/testing/normalize-scenarios.sh` on every run — including a red one — and only then exit with the runner's own code.
-  - Risk: under `set -e` a failing runner ends the script before the scenario report is written, so the report is missing or stale exactly on the red run it should describe.
+- `tools/testing/kinds/unit.sh` must exclude `@status/todo` and `@status/broken` scenarios from the run, write `$TEST_KIND_DIR/result/scenarios.json` through `tools/testing/normalize-scenarios.sh` on every run — including a red one — and only then exit with the runner's own code.
+  - Risk: under `set -e` a failing runner ends the script before the scenario inventory is written, so the report is missing or stale exactly on the red run it should describe.
   - Fix: wrap the runner in `set +e`/`set -e`, keep its exit code, normalize, then `exit` with it.
 - Keep Stryker's sandbox (`tempDirName`) and `c8`'s temp directory below `$TEST_KIND_DIR`, and the work directory in Stryker's `ignorePatterns`, as the kind scripts set them.
   - Violation: Stryker's default `.stryker-tmp/` in the repository root.
   - Risk: a mutation run that stops early leaves a sandbox holding copies of the `.feature` files; the unit kind then lists every scenario twice, the copy as `not-run`. Raw V8 coverage files under `report/coverage/tmp/` get published with the report.
   - Fix: copy both scripts unchanged.
-- Scope a `check` run of `mutation.sh` with `--mutate` over `git diff --relative --name-only {commit} -- ':(glob)src/**/*.ts'`, and skip the kind when the list is empty.
+- Scope a `check` run of `mutation.sh` with `--mutate` over `git diff --relative --name-only {commit} -- ':(glob)src/**/*.ts' ':(exclude,glob)src/**/test/**'`, and skip the kind when the list is empty.
   - Violation: the pathspec `'src/**/*.ts'` without `:(glob)`.
   - Risk: without the magic word git's `**` needs a directory level, so a changed `src/{file}.ts` is not listed and the kind skips itself over a real change.
   - Fix: keep the pathspec and the `git rev-parse` of `DELTA_BASE` as `mutation.sh` has them.
@@ -94,7 +94,7 @@ Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `node_modules/`, a
 - [ ] WHEN `make test-kind-unit` runs THEN `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/report/tests/` exist.
 - [ ] WHEN `make test-kind-unit TEST_RUN_PURPOSE=report` runs THEN `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/` also exist.
 - [ ] WHEN `make test-kind-unit` runs and a scenario fails THEN `$TEST_KIND_DIR/result/scenarios.json` still lists every `.feature` entry, `@status/todo` ones with status `todo`, and the target exits non-zero.
-- [ ] WHEN `make test-report` runs THEN `$TEST_REPORT_DIR/reports/scenarios/index.html` shows the category × status table and every entry.
+- [ ] WHEN `make test-report` runs THEN the tests link opens the living doc, which shows every scenario with all its tags and excluded reasons; no `reports/scenarios/` exists.
 - [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in the `src/**/*.ts` files changed since `<ref>` are evaluated — a file directly in `src/` included — with the project's `thresholds.break` in force; with none changed the kind skips itself.
 - [ ] WHEN a kind ends THEN the repository root holds no `.stryker-tmp/` and `$TEST_KIND_DIR/report/coverage/` no `tmp/`.
 - [ ] WHEN `make test-report` runs after both `*-test` targets THEN `$TEST_REPORT_DIR/` contains the badge JSON files and copies of the native reports.
