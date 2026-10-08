@@ -45,10 +45,10 @@ The landing page was not opened in a browser (the container has none): its links
 | --- | --- |
 | 1 | The three Go normalizers build and pass `go vet`; the shared `test-report.sh` works on Go results. |
 | 2 | Go `unit.sh` works as written. |
-| 3 | `gremlins` v0.6.0 exits `0` when mutants survive and `10` under a configured threshold — the kind now forces both thresholds to `0` in a `report` run. `mutmut` 3.8 exits `0` on survivors and has no threshold. |
+| 3 | Delta mutation also works in a module below the repository root (git's `diff.relative`, 2026-10-08). `gremlins` v0.6.0 exits `0` when mutants survive and `10` under a configured threshold — the kind now forces both thresholds to `0` in a `report` run. `mutmut` 3.8 exits `0` on survivors and has no threshold. |
 | 4 | dotnet `unit.sh` died before its first line of output (`ls *.slnx *.sln` under `pipefail`) — fixed. The Cucumber Messages living doc renders. |
 | 5 | dotnet `mutation.sh`: the report link is right. `--since` rejected `HEAD~1` and, once given a commit id, ignored every mutant of a changed file — replaced by `--mutate` patterns. |
-| 6 | Both stacks now have a runnable example inside their skill. TypeScript: three faults fixed in the kind scripts. |
+| 6 | Both stacks now have a runnable example inside their skill. TypeScript: three faults fixed in the kind scripts; Vitest, which the unit kind never ran, removed from the skill on 2026-10-08. |
 | 7 | Read; the shell of every step run locally — the kind list, each kind on its own clean clone, the artifact hand-over, `make test-report` on a third clone with no Go on `PATH`. The YAML itself has not run on GitHub. |
 | 8 | Run with PostgreSQL: 48/48, as the plateau skill records. Without `TEST_DATABASE_DSN` it is red by design. |
 | 9 | Done: `pytest-bdd`, one `pytest` run, JUnit counts, `mutmut` 3.8, ADR, example. |
@@ -62,10 +62,8 @@ What was broken and is fixed — the commit messages carry the detail:
 
 - ⚠️ **Mutation testing in a pull request.** The mutation kind runs in a `check` run only when `DELTA_BASE` is given, over the changed code. The pull-request workflow passes none, so it skips itself there — today's policy ("never gate a PR on mutation testing") is unchanged. Adding `DELTA_BASE: origin/${{ github.base_ref }}` to that workflow turns delta mutation into part of the merge gate.
 - **Consumers' `ai-skills.yaml`** that list `skills/common-workflow/test` or `skills/{stack}/test` must switch to `skills/testing/core` and `skills/testing/{stack}`.
-- ⚠️ **TypeScript: Vitest.** `solution-conformance-testing-in-typescript` says Vitest unit tests and Vitest coverage are part of the gate; its unit kind runs `cucumber-js` under `c8` and nothing else, and no file of the skill specifies `cucumber.mjs`, `stryker.conf.json` or the `c8` dependency. The new example carries what the scripts needed. Either the unit kind runs Vitest too (the base requires scenarios and plain tests in one kind), or the skill drops Vitest.
-- **Go scenario report is per outline, not per `Examples:` block.** `normalize_scenarios` matches results by test name, and godog names every row of an outline alike — one failed row marks every block of that outline `failed`. The other three stacks match by row line. Fixing it means reading godog's Cucumber JSON instead of `go test -json`.
-- **Go Cucumber JSON file names** carry the absolute checkout path (`_home_runner_work_…_test.json`) — the runner snippet in `cucumber-testing-in-go` builds the name from `os.Getwd()`. It ends up in the published report. A module-relative name needs the rule and every runner changed.
-- **Go delta mutation in a module below the repository root** runs over nothing: `gremlins --diff` compares repository-relative paths with module-relative ones. Noted in the Go check list; no workaround found short of not using `--diff`.
+- **Go scenario report is per outline, not per `Examples:` block.** `normalize_scenarios` matches results by test name, and godog names every row of an outline alike — one failed row marks every block of that outline `failed`. The other three stacks match by row line. godog's Cucumber JSON carries each row's own line (checked), so the fix is to join on it and keep the name match for a runner that writes no Cucumber JSON. Shown to the owner; not started.
+- **Angular on the `make` contract** (owner, 2026-10-08): component tests and pixel tests as test kinds of their own beside the scenario-based `unit` kind — a `solution-conformance-testing-in-angular` with one kind script and one badge name per kind. Not started; the Angular catalogs do not use the contract yet.
 - **`gw009-001`'s TaskBox runner** (the pre-release library copy) writes no Cucumber JSON, so its 30 scenarios are in the scenario report but not in the living doc.
 - **Stryker.NET** logs `test coverage capture failed` twice in a `plateau-core` run and disables its coverage-based test selection for those projects. The score still matches the xUnit v2 ADR (55%), so nothing was changed.
 - **A pull request for this branch** is not opened: W4 is not started and the points above are open.

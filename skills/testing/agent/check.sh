@@ -101,6 +101,10 @@ for s in python typescript; do   # these stacks' runnable example sits inside th
     cmp -s "$src/assets/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/assets/tools/testing/kinds/"
   done < <(git ls-files -co --exclude-standard "$src/example/tools/testing/kinds/*")
 done
+ts=skills/testing/typescript/solution-conformance-testing-in-typescript.skill
+for f in cucumber.mjs stryker.conf.json; do
+  cmp -s "$ts/assets/$f" "$ts/example/$f" || err "$ts/example/$f differs from $ts/assets/$f"
+done
 go=skills/testing/go/solution-conformance-testing-in-go.skill/assets
 while IFS= read -r copy; do
   cmp -s "$go/tools/$(basename "$(dirname "$copy")")/main.go" "$copy" || err "$copy differs from $go"

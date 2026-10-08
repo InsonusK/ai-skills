@@ -133,3 +133,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - TypeScript: only what the run broke was fixed in the kind scripts (git pathspec, Stryker sandbox and `c8` temp directory below the kind directory). The Vitest half of that skill was not touched — ⚠️ in `STATUS.md`.
 - `run-example.sh` and `report-links.py` in this folder repeat W5 for one example; they need the toolchains, so `check.sh` does not call them.
 - `no-test-theater-in-angular` was not re-stamped in `.validation`: `validation_queue.py` registered the moved skills as never validated, and a stamp means a validation that did not happen here.
+
+## Owner-decided (2026-10-08, after W5)
+
+- Front-end tests are several test kinds: pixel (visual) tests, component tests, and tests of services and classes. Only the last become Cucumber scenarios. Every kind runs through `make test-kind-{kind}`, so CI picks it up with no workflow change.
+- The name of the Cucumber JSON file a Go runner writes does not matter, as long as the HTML report is built from it correctly. Nothing changes there.
+- Go delta mutation in a module below the repository root: try to make it work.
+
+## Agent decisions — after W5
+
+- `solution-conformance-testing-in-typescript` drops Vitest: with services and classes tested by scenarios, the framework-agnostic package has one runner, `cucumber-js`, and `c8` for its coverage — which is what the unit kind already ran. `cucumber.mjs` and `stryker.conf.json` became assets. The ADR keeps Vitest as the rejected variant.
+- The Angular kinds (component, pixel) are not written: the Angular catalogs are not on the `make` contract yet, so that is a wave of its own — a `solution-conformance-testing-in-angular` with one kind script and one badge name per kind. Listed in `STATUS.md`.
+- Go delta mutation below the repository root works through git's `diff.relative`, set for the `gremlins` process only (`GIT_CONFIG_COUNT`/`KEY`/`VALUE`): measured in `plateau-http-service` — 27 mutants `SKIPPED` without it, the 2 on the changed line run with it. No effect when `go.mod` is in the root.
