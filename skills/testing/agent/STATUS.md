@@ -15,6 +15,7 @@ Worktree `.ai-worktree/skills-testing`, branch `skills-testing` (base `develop`)
 | W8 | Obsolete skills removed (owner, 2026-10-08): `workflow-unittest-testplan`, `unittest-in-dotnet`; `test-driven-development` and `solid-decomposition` work from `.feature` scenarios; `cucumber-testing` states when a plain test is allowed | done |
 | W9 | Python: features and tests beside the code (owner, 2026-10-08) — `solution-test-layout-in-python` removed, the layout is a rule of `cucumber-testing-in-python` with its ADR; example, `plateau-python-cli`, `solution-cli-packaging` and the Python check-changes action updated | done; the check-changes YAML not run on GitHub |
 | W10 | Kinds own their output (owner, 2026-10-08): each kind script writes `badges/{name}.json` (through `kind.sh`) and its reports, the scenario page included; `test-report.sh` only gathers | done, all eleven examples re-run |
+| W11 | Python living doc shows the type tag of every `Examples:` row (owner). A runnable example inside `solution-conformance-testing-in-go` (owner) — which showed the Go mutation kind measuring nothing; fixed with `gremlins --integration`, an uncached first run and a longer timeout | done, the seven Go examples and the Python example re-run |
 | W5 | Run every example, fix what breaks; Python on `pytest-bdd`; runnable Python and TypeScript examples | done — see below |
 | W4 | Layout by convention and tests of pluggable modules as testing skills; plateau `*.Tests` structure skills removed; base plateaus name the testing skills | not started — needs the owner, see below |
 
@@ -24,19 +25,20 @@ Container: Go 1.26.8, .NET SDK 10.0.401, Node 24.21, Python 3.13.16; no Docker. 
 
 | Example | `make test-and-report` | tests | coverage | mutation score |
 | --- | --- | --- | --- | --- |
-| go `plateau-http-service` | exit 0 | 5/5 | 10.4% | 11.1% |
-| go `plateau-cached-service` | exit 0 | 11/11 | 12.0% | 7.3% |
-| go `plateau-dual-api-service` | exit 0 | 5/5 | 8.5% | 10% |
-| go `plateau-integrated-service` | exit 0 | 9/9 | 9.4% | 8.6% |
-| go `plateau-persistent-service` | exit 0 | 13/13 | 10.5% | 5.5% |
-| go `gw009-001` (PostgreSQL 18 from unpacked binaries, `TEST_DATABASE_DSN`) | exit 0 | 48/48 | 42.7% | 2.1% |
+| go `solution-conformance-testing-in-go` (new, W11) | exit 0 | 4/4 | 90.0% | 100% |
+| go `plateau-http-service` | exit 0 | 5/5 | 10.4% | 25.9% |
+| go `plateau-cached-service` | exit 0 | 11/11 | 12.0% | 24.4% |
+| go `plateau-dual-api-service` | exit 0 | 5/5 | 8.5% | 23.3% |
+| go `plateau-integrated-service` | exit 0 | 9/9 | 9.4% | 22.9% |
+| go `plateau-persistent-service` | exit 0 | 13/13 | 10.5% | 20% |
+| go `gw009-001` (PostgreSQL 18 from unpacked binaries, `TEST_DATABASE_DSN`) | exit 0 | 48/48 | 42.7% | 56% |
 | dotnet `plateau-core` | exit 0 | 7/7 | 72.4% | 55.0% |
 | dotnet `plateau-domain-service` | exit 0 | 10/10 | 41.7% | 31.1% |
 | dotnet `plateau-offline-sync-service` | exit 0 | 14/14 | 40.1% | 29.3% |
 | python `solution-conformance-testing-in-python` (new) | exit 0 | 5/5 | 100% | 93.5% |
 | typescript `solution-conformance-testing-in-typescript` (new) | exit 0 | 4/4 | 100% | 86.1% |
 
-In every one: the report holds `index.html`, `run.json`, three badges, `reports/{tests,coverage,mutation,scenarios}/` and the living doc, and every link of the landing page resolves; the `check` run writes nothing to `tmp/` or `public/`, skips mutation, and produces the `tests` badge only. The low Go mutation scores are the examples' own: `gremlins` runs only the mutated package's tests, and the godog runners sit in `test/` subpackages (recorded in the `gw009-001` plateau skill).
+In every one: the report holds `index.html`, `run.json`, three badges, `reports/{tests,coverage,mutation,scenarios}/` and the living doc, and every link of the landing page resolves; the `check` run writes nothing to `tmp/` or `public/`, skips mutation, and produces the `tests` badge only. The Go mutation scores are those of W11 (2026-10-08), after the mutation kind got `gremlins --integration`: no example has a surviving mutant; what keeps the plateau examples low is `noCoverage` — `main`, config and server code no scenario reaches. Before W11 the scores were 2–11% and meant nothing: gremlins ran only the mutated package's own tests.
 
 Broken scenario: `make test-kind-unit` exits non-zero, `result/scenarios.json` is written, `make test-report` builds the report with exit 0 and shows the kind as `failed` — after the fix below.
 

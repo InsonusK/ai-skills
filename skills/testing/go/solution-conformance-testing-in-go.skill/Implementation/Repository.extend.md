@@ -75,6 +75,10 @@ require (
   - Violation: a `.gremlins.yaml` with `unleash.threshold.efficacy: 80` and a `report` run that passes no threshold flag — `gremlins` exits `10` ("below efficacy-threshold").
   - Risk: the report workflow goes red over a score, which the parent contract forbids in a `report` run.
   - Fix: keep the two flags in `tools/testing/kinds/mutation.sh`; `0` switches a threshold off and overrides the configuration file. Without any threshold `gremlins` exits `0` however many mutants survive.
+- `test-kind-mutation` must run `gremlins unleash --integration --timeout-coefficient 10`, with `GOFLAGS=-count=1` set for that process.
+  - Violation: `gremlins unleash .` with neither.
+  - Risk: without `--integration` gremlins runs only the tests of the mutated package, and that package has none — its scenarios run from the `test/` package beside it — so every mutant that compiles survives: measured on this skill's example, 4 of 7 mutants lived and the score was 42.9%, against 7 killed and 100% with the flag. Without `-count=1` the first, unmutated run can come from the `go test` cache in no time; gremlins sizes each mutant's timeout from it, and a suite that takes seconds then has every mutant reported as timed out (measured on `gw009-001`: 81 timed out, none killed).
+  - Fix: keep all three on the `gremlins` line of `tools/testing/kinds/mutation.sh`. The coefficient covers the opposite case — a suite that runs in under a second: with the default, 4–5 killable mutants of the cached- and persistent-service examples were reported as timed out; with 10, none. The price is the whole suite once per mutant.
 - `test-kind-mutation` must run `gremlins` with git's `diff.relative` switched on (`GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=diff.relative GIT_CONFIG_VALUE_0=true`).
   - Violation: `gremlins unleash --diff origin/main .` in a module at `services/api/` of a larger repository.
   - Risk: git names changed files from the repository root, `gremlins` compares them with module-relative paths — nothing matches, every mutant is `SKIPPED`, and the run is green over nothing.
@@ -90,6 +94,7 @@ require (
 - [ ] `$TEST_KIND_DIR/report/tests/cucumber/*.json` exists after `make test-kind-unit`; `$TEST_KIND_DIR/report/tests/livingdoc/index.html` exists when `npm` is available, and `test-kind-unit`'s exit code is unaffected by that step.
 - [ ] `make test-kind-unit` produces `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` on every run, green or red, and exits non-zero when a test failed.
 - [ ] `make test-kind-unit` (a `report` run) additionally produces `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/index.html`.
+- [ ] A mutant in a package whose scenarios run from its `test/` folder is reported `KILLED`, not `LIVED`, when a scenario covers the changed line.
 - [ ] `make test-kind-mutation` installs `gremlins` on first use; in a `report` run it exits `0` when mutants survive — also with a threshold in `.gremlins.yaml` — and non-zero only when `gremlins` could not run (a red test fails its coverage step).
 - [ ] `make test-kind-mutation TEST_RUN_PURPOSE=check` skips itself without `DELTA_BASE` and passes `--diff` with one, also in a module below the repository root; `make test-kinds` prints `mutation - badges: mutation` and `unit - badges: tests coverage`.
 - [ ] `make test-report` fills `$TEST_REPORT_DIR` with `index.html`, `reports/{tests,coverage,mutation,scenarios}/`, `badges/{tests,coverage,mutation}.json`, and `run.json`; `make test-readme-check` passes.

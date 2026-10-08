@@ -99,7 +99,7 @@ for s in go dotnet; do
     cmp -s "$src/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/tools/testing/kinds/"
   done < <(git ls-files -co --exclude-standard "skills/$s/**/example/tools/testing/kinds/*.sh")
 done
-for s in python typescript; do   # these stacks' runnable example sits inside the testing skill itself
+for s in go python typescript; do   # the runnable example inside the testing skill itself
   src=skills/testing/$s/solution-conformance-testing-in-$s.skill
   while IFS= read -r copy; do
     cmp -s "$src/assets/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/assets/tools/testing/kinds/"
@@ -112,7 +112,7 @@ done
 go=skills/testing/go/solution-conformance-testing-in-go.skill/assets
 while IFS= read -r copy; do
   cmp -s "$go/tools/$(basename "$(dirname "$copy")")/main.go" "$copy" || err "$copy differs from $go"
-done < <(git ls-files -co --exclude-standard 'skills/go/**/example/tools/normalize_*/main.go')
+done < <(git ls-files -co --exclude-standard 'skills/go/**/example/tools/normalize_*/main.go' 'skills/testing/go/**/example/tools/normalize_*/main.go')
 
 # 11. One Makefile, one report builder: no testing recipe in an example Makefile, no stack-own report builder.
 out=$(git grep -lE '^test-(kind|report|and-report)[a-z-]*:' -- 'skills/**/example/Makefile'; git ls-files 'skills/**/tools/test_report/*' 'skills/**/example/scripts/test-report.sh')

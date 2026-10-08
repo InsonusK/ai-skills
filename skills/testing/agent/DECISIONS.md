@@ -206,3 +206,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `result/*.json` stays, as the kind's own data with the same four shapes in every stack — the Go normalizers and anyone comparing runs use them — but it is no longer part of what the report builder needs.
 - This removes the limit noted for the Angular kinds on 2026-10-08: a new kind publishes its badge and report by writing them, with no change to the shared builder.
 - `test-report` now also fails on two kinds writing a badge of the same name; the three checks of `testing.sh` (a badge has a report, a declaring kind, and every declared badge of a kind that ran exists) are unchanged.
+
+## Owner-decided (2026-10-08, living doc and the Go example)
+
+- The Python living doc must show the type tags. The scenario page stays beside the living doc.
+- `solution-conformance-testing-in-go` gets a runnable example like Python's.
+
+## Agent decisions — living doc and the Go example
+
+- Python tags: `unit_scenarios.py` completes the file `--cucumberjson` wrote — each `Examples:` row gets its own line and every tag it inherits, written `@tag` as godog does. It runs `trylast` in `pytest_sessionfinish`, after `pytest-bdd` has written the file. Checked on `pytest-bdd` 9.0 and 8.1.
+- The Go example is the Python example's twin: `internal/linkcheck/` with the same feature file, its `test/` runner, and a `Makefile` with `init` (module download, `gremlins`) and the include line. `check.sh` §10 covers it.
+- ⚠️ The example showed that the Go mutation kind measured almost nothing: `gremlins` runs the tests of the mutated package only, and under the layout rule that package has none — the scenarios run from `{package}/test/`. The limit was known (the common map's `agent/DECISIONS.md`; `gw009-001` said its mutation run "is not evidence"). `gremlins unleash --integration` runs the whole module's tests per mutant: the example went from 42.9% to 100%, and no example has a surviving mutant left. It is in `mutation.sh` now, with two settings it needs: `GOFLAGS=-count=1` (a cached first run gives every mutant a timeout of nearly zero — `gw009-001`: 81 timed out) and `--timeout-coefficient 10` (the default times out killable mutants of a suite that runs in under a second). The price is the whole suite per mutant.
+- The Go mutation scores in `STATUS.md` changed with it; the remaining gap to 100% in the plateau examples is `noCoverage` — `main`, config and HTTP server code no scenario reaches.
