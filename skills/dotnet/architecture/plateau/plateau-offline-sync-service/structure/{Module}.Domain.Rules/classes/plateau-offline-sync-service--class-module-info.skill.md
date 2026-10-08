@@ -5,7 +5,7 @@ whenToUse: when creating {Module}.Domain.Rules for a new module, or checking a r
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20261008170000
 tags:
   - skill/template/class
   - plateau/offline-sync-service

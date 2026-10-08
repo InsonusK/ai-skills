@@ -14,7 +14,7 @@ tags:
 - Input is `$TEST_KIND_DIR/report/tests/cucumber/`: `*.ndjson` files are Cucumber Messages, `*.json` files are classic Cucumber JSON. A runner writes one protocol only.
 - Cucumber Messages → classic JSON with actual step results; both protocols → `multiple-cucumber-html-reporter`, all files into one report.
 - Classic JSON is normalized in a temporary copy before rendering: a feature with no `tags` gets `tags: []` (godog omits the key). The runner's own files are never modified.
-- A classic-JSON runner reports only what it ran. The optional fourth argument, the unit kind's `result/scenarios.json`, adds every entry that did not run — `todo` as a pending scenario, `broken` as a skipped one, `not-run` as an undefined one — each with its tags and one step that states the reason. This also completes the Messages view; unexecuted pickles alone cannot carry run results or exclusion reasons.
+- A classic-JSON runner reports only what it ran. The optional fourth argument, the unit kind's `result/scenarios.json`, adds every entry that did not run — `todo` as a pending scenario, `broken` as a skipped one, `not-run` as an undefined one — each with its tags and one step that states the reason. An executed inventory entry without a runner step report is also added with its real result and an explicit no-step-details note. This also completes the Messages view; unexecuted pickles alone cannot carry run results or exclusion reasons.
 - The optional third argument is the status legend (`kind_status_legend_json`): shown in the footer of every report.
 
 # Implementation changes

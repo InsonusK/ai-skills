@@ -4,7 +4,7 @@ description: Sets up the Python side of the Cucumber/coverage/mutation quality g
 whenToUse: Set up or review the test suite of a Python package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing Python project, or wire coverage and mutation testing into a Python project's `make`/CI pipeline.
 domain: python
 type: architecture
-version: 20261009170000
+version: 20261008170000
 tags:
   - solution/conformance-testing-in-python
   - skill/architecture/solution

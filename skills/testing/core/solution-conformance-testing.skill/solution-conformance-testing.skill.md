@@ -78,8 +78,6 @@ Every kind writes its whole output below its own `$TEST_KIND_DIR`, per [[./Imple
 
 `make test-report` computes nothing: it gathers every kind's reports and badges, adds an entry page to a report that has none, and lists them on the landing page. A kind exits with its tool's own exit code after writing its output — writing it is a side effect, never a reason to swallow a real failure.
 
-<a id="scenario-report"></a>
-
 ## Scenario inventory
 `test-kind-unit` writes `result/scenarios.json` on every run — also when a test failed:
 ```json

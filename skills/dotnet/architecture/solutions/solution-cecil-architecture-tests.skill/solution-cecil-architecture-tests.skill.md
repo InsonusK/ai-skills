@@ -4,7 +4,7 @@ description: Four Mono.Cecil-based architecture tests that verify structural fac
 whenToUse: When a .NET module needs a build-time guarantee that plain xUnit/Reqnroll tests cannot give by construction — a rule/predicate is dead code, an exception type leaks out of its intended layer, a generated code/constant collides or is malformed, or an Entity method/setter/constructor writes a property a Semantic/Domain rule is supposed to guard without calling that rule. Also when deciding whether a new invariant needs a bespoke Cecil test or fits one of the four existing ones.
 domain: skill
 type: architecture
-version: 20260901000000
+version: 20261008170000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -27,6 +27,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]"
 built_on_plateau:
 adr:
+  - adr/feature-tag-contract.md
   - "[[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/cecil-over-reflection|Mono.Cecil over Reflection/Roslyn for architecture tests]]"
   - "[[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/registry-driven-coverage-over-per-rule-tests|Registry-driven coverage check over one test per rule]]"
   - "[[skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/checks-degrade-without-domain-layer|The four checks degrade to an applicable subset when VP1/VP3 are absent]]"
@@ -167,3 +168,5 @@ PROJECT:
 - [ ] A guarded property's setter is narrowed to `private` wherever the write pattern allows it, not left `internal`/`$TEST_REPORT_DIR` "because the test will catch misuse anyway."
 - [ ] Each of the four checks has a companion documentary `.feature` file (in the same `Architecture/` folder as its `[Fact]`), scenario titles matching `[Fact]` method names, with no fabricated step-definition binding.
 - [ ] `GuardedPropertyRuleCoverageTests` scans `{Module}.Domain` only — no other module's assembly.
+
+Feature templates apply [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]]'s mandatory type/category tags; [[./adr/feature-tag-contract.md|feature-tag-contract]] records the decision.

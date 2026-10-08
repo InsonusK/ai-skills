@@ -58,7 +58,12 @@ for tag in ("@status/todo", "@status/broken", "@status/validated"):
         errors.append(f"status legend is missing {tag}")
 # All showcase stacks carry the same eight named feature files; small plateau examples
 # are checked against their inventories above, without requiring tags they do not use.
-if {Path(e["uri"]).stem for e in inventory} >= {"check", "extract", "summary", "cli", "store", "mapping", "contract", "package"}:
+feature_names = {Path(e["uri"]).stem for e in inventory}
+showcase_features = {"check", "extract", "summary", "cli", "store", "mapping", "contract", "package"}
+is_showcase = any(part.startswith("solution-conformance-testing-in-") for part in Path(sys.argv[1]).parts)
+if is_showcase or feature_names >= showcase_features:
+    for feature in sorted(showcase_features - feature_names):
+        errors.append(f"showcase inventory is missing feature {feature}")
     expected = ({f"@type/{v}" for v in ("domain", "service", "api", "infrastructure", "mapping", "contract", "tech-check")}
                 | {f"@category/{v}" for v in ("happy", "boundary", "negative", "error", "concurrency", "security", "regression")}
                 | {"@status/todo", "@status/broken", "@status/validated"})

@@ -15,8 +15,8 @@ const legendHtml = legend
   ? `<h2>Statuses</h2>${legendTable('tag on a feature or a scenario', legend.tags)}${legendTable('status of a run', legend.run)}<p>${escapeHtml(legend.note)}</p>`
   : '';
 
-// Entries of the inventory the runner did not execute, as classic-JSON scenarios with one
-// step that states why: todo -> pending, broken -> skipped, not-run -> undefined.
+// Complete excluded/unwired scenarios and actual runner results with no published steps.
+// Each fallback states why details are absent; its status comes from the real inventory.
 const inventory = scenariosFile && fs.existsSync(scenariosFile)
   ? JSON.parse(fs.readFileSync(scenariosFile, 'utf8')).scenarios : [];
 const stepStatus = { passed: 'passed', failed: 'failed', todo: 'pending', broken: 'skipped', 'not-run': 'undefined' };

@@ -118,5 +118,9 @@ done < <(git ls-files -co --exclude-standard 'skills/go/**/example/tools/normali
 out=$(git grep -lE '^test-(kind|report|and-report)[a-z-]*:' -- 'skills/**/example/Makefile'; git ls-files 'skills/**/tools/test_report/*' 'skills/**/example/scripts/test-report.sh')
 [ -n "$out" ] && { err "testing recipe or report builder outside tools/testing/:"; echo "$out"; }
 
+# 12. The removed page must not come back as a live function/call.
+out=$(git grep -n 'kind_scenarios_report' -- skills ':!*/agent/*' ':!*/adr/*')
+[ -n "$out" ] && { err "removed scenario-page function/call:"; echo "$out"; }
+
 [ $fail -eq 0 ] && echo "skills/testing: all checks passed"
 exit $fail

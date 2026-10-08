@@ -4,7 +4,7 @@ description: Consolidates the scattered, locally-owned conditions already writte
 whenToUse: when the same condition has been duplicated by two or more of solution-value-objects/solution-dto-property-validators/solution-domain-behaviour and needs one shared, reusable, cross-adapter home — or when authoring a brand-new module and choosing to start with shared rules from the beginning.
 domain: skill
 type: architecture
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -37,6 +37,7 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]"
 built_on_plateau:
 adr:
+  - adr/feature-tag-contract.md
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rule-as-irulebuilder-extension|Rule as bool primitive + IRuleBuilder extension]]"
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/format-semantic-domain-unification|Format/Semantic/Domain are one mechanism]]"
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rules-project-references-interfaces-only|Domain.Rules references {Module}.Interfaces only — not gated on DomainLogic]]"
@@ -225,3 +226,5 @@ flowchart LR
 - [ ] `{Module}.Domain.Rules.Tests` references `{Module}.Domain.Rules` only, and proves every scenario in the rule's `.feature` file directly against `IsValid()`/`Check()`
 - [ ] Every `@format`-tagged scenario is also proven in `{Module}.Domain.Tests` against the VO/Entity adapter; every `@semantic`/`@domain`-tagged scenario is also proven in `{Module}.Application.Tests` against the DtoValidator/`{Feature}Check` adapter
 - [ ] No scenario text is duplicated across `{Module}.Domain.Rules.Tests`/`{Module}.Domain.Tests`/`{Module}.Application.Tests` — all three link the same physical `.feature` file from `{Module}.Domain.Rules.Spec`
+
+Feature templates apply [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]]'s mandatory type/category tags; [[./adr/feature-tag-contract.md|feature-tag-contract]] records the decision.

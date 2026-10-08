@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test for an entity invariant, 
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -79,3 +79,5 @@ __Applied solutions:__
 - [ ] `{Module}.Domain.Tests.csproj` references only `{Module}.Domain` plus the five test packages.
 - [ ] `/Rules` + `/StepDefinitions` + `reqnroll.json` present.
 - [ ] Failure scenarios assert the exact `DomainException.Code`.
+
+Feature files follow [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]] for mandatory feature type and scenario/Examples category tags; architecture classification tags and the existing documentary exceptions remain separate.
