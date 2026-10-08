@@ -63,7 +63,7 @@ init:
 ## What the kinds write
 | Kind | Below `$TEST_KIND_DIR` |
 | --- | --- |
-| `unit` | `badges/tests.json` and `result/unit-test.json` (counts from `report/tests/junit.xml`), `result/scenarios.json` and `report/scenarios/`, `report/tests/cucumber/pytest-bdd.json` (classic Cucumber JSON), `report/tests/livingdoc/`; in a `report` run also `badges/coverage.json`, `result/coverage-test.json` and `report/coverage/` |
+| `unit` | `badges/tests.json` and `result/unit-test.json` (counts from `report/tests/junit.xml`), `result/scenarios.json` and `report/scenarios/`, `report/tests/cucumber/pytest-bdd.json` (classic Cucumber JSON, completed by the plugin), `report/tests/livingdoc/`; in a `report` run also `badges/coverage.json`, `result/coverage-test.json` and `report/coverage/` |
 | `mutation` | `badges/mutation.json` and `result/mutation-test.json` (from `mutmut export-cicd-stats`), `report/mutation/results.txt` (every mutant and its status), `report/mutation/mutmut.log` |
 
 # Rules
@@ -74,9 +74,9 @@ init:
   - Risk: two runs give two exit codes and two coverage data files to reconcile; a caller that names a tool needs Python knowledge the contract exists to hide.
   - Fix: keep the single run of the script; every caller goes through `make test-kind-unit`.
 - Load the `unit_scenarios` plugin in that run (`-p unit_scenarios`, `PYTHONPATH=tools/testing/kinds`) and feed its output to `tools/testing/normalize-scenarios.sh`.
-  - Violation: building the scenario results from `--cucumberjson`.
-  - Risk: `pytest-bdd`'s Cucumber JSON gives every row of a `Scenario Outline` the outline's line, so the scenario report cannot tell one `Examples:` block from another and marks them all `missing`.
-  - Fix: keep the plugin — it reports the row's own line; `--cucumberjson` stays as the standard report for the living doc only.
+  - Violation: a run without the plugin, with the scenario results and the living doc taken from `--cucumberjson` as `pytest-bdd` writes it.
+  - Risk: `pytest-bdd`'s Cucumber JSON gives every row of a `Scenario Outline` the outline's line and drops the tags of its `Examples:` block — the scenario report cannot tell one block from another and marks them all `missing`, and the living doc shows the rows with no type tag to filter by.
+  - Fix: keep the plugin — it reports each row's own line to the scenario report, and completes the Cucumber JSON file with that line and every inherited tag (`@happy`, `@negative`, …).
 - Pass `--fail-under=0` to the `coverage html` / `coverage json` calls of a `report` run.
   - Risk: with `fail_under` in `pyproject.toml` these commands exit `2` below the threshold, and a `report` run goes red over a score.
   - Fix: keep the flag in `unit.sh`; the project enforces its threshold with its own `coverage report` where it gates.
@@ -102,6 +102,7 @@ init:
 # Unittest TestCases
 - [ ] WHEN `make test-kind-unit` runs THEN `$TEST_KIND_DIR/result/unit-test.json` counts scenarios and plain tests together, and `report/tests/junit.xml`, `report/tests/cucumber/pytest-bdd.json`, `report/tests/livingdoc/index.html` exist.
 - [ ] WHEN `make test-kind-unit` runs as a `report` run with coverage below `fail_under` THEN it exits `0` and writes `result/coverage-test.json` and `report/coverage/`.
+- [ ] WHEN `make test-kind-unit` ran THEN every element of `report/tests/cucumber/pytest-bdd.json` that comes from an `Examples:` row carries that row's line and the block's tags, and the living doc shows them.
 - [ ] WHEN a scenario fails THEN `make test-kind-unit` exits non-zero, and `result/scenarios.json` still lists every `.feature` entry — the failed `Examples:` block as `failed`, its sibling blocks as `passed`, `@todo` entries as `todo`.
 - [ ] WHEN `make test-kind-unit` or `make test-kind-mutation` ends THEN the repository root holds no `.coverage`, `.pytest_cache` or `mutants/`.
 - [ ] WHEN `make test-kind-mutation` runs as a `report` run and mutants survive THEN it exits `0`; WHEN a test is red THEN it exits non-zero and writes no result.

@@ -88,7 +88,7 @@ Have every step with a body `print()` its action and what it observed, matching 
 ### Emit classic Cucumber JSON
 Have the run write **classic Cucumber JSON** with `--cucumberjson=<path>.json`.
 - Risk: without the standard report the living-doc view has no input.
-- Fix: pass `--cucumberjson` in the one `pytest` run; it is the input of the living doc only — it reports the outline's line for every `Examples:` row, so per-row results come from elsewhere.
+- Fix: pass `--cucumberjson` in the one `pytest` run. As `pytest-bdd` writes it, every `Examples:` row carries the outline's line and no tag of its block; `solution-conformance-testing-in-python`'s plugin completes the file, so the living doc can be filtered by type tag.
 
 ## SHOULD
 

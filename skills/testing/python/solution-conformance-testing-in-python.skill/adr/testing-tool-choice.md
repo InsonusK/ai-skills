@@ -35,7 +35,7 @@ Use `pytest-bdd` for Gherkin scenarios — each scenario becomes a `pytest` test
 
 ### Costs
 - The Gherkin layer is tied to `pytest`: a project on plain `unittest` adds `pytest` as its runner (it runs `unittest` test cases unchanged).
-- `pytest-bdd`'s Cucumber JSON reports the outline's line for every `Examples:` row, so the scenario report needs a small `pytest` plugin (`tools/testing/kinds/unit_scenarios.py`) that takes the row's line from the feature file.
+- `pytest-bdd`'s Cucumber JSON reports the outline's line for every `Examples:` row and drops the block's tags, so the unit kind needs a small `pytest` plugin (`tools/testing/kinds/unit_scenarios.py`) that takes the row's line from the feature file and writes both back into that JSON.
 - `mutmut` 3 accepts no working directory but `./mutants` and no path option on the command line: the kind script deletes the directory afterwards and scopes a delta run by mutant-name patterns.
 
 ## behave coverage.py mutmut
