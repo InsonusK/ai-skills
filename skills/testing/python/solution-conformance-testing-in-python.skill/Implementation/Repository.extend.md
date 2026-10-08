@@ -63,8 +63,8 @@ init:
 ## What the kinds write
 | Kind | Below `$TEST_KIND_DIR` |
 | --- | --- |
-| `unit` | `result/unit-test.json` (counts from `report/tests/junit.xml`), `result/scenarios.json`, `report/tests/cucumber/pytest-bdd.json` (classic Cucumber JSON), `report/tests/livingdoc/`; in a `report` run also `result/coverage-test.json` and `report/coverage/` |
-| `mutation` | `result/mutation-test.json` (from `mutmut export-cicd-stats`), `report/mutation/results.txt` (every mutant and its status), `report/mutation/mutmut.log` |
+| `unit` | `badges/tests.json` and `result/unit-test.json` (counts from `report/tests/junit.xml`), `result/scenarios.json` and `report/scenarios/`, `report/tests/cucumber/pytest-bdd.json` (classic Cucumber JSON), `report/tests/livingdoc/`; in a `report` run also `badges/coverage.json`, `result/coverage-test.json` and `report/coverage/` |
+| `mutation` | `badges/mutation.json` and `result/mutation-test.json` (from `mutmut export-cicd-stats`), `report/mutation/results.txt` (every mutant and its status), `report/mutation/mutmut.log` |
 
 # Rules
 

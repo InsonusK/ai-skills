@@ -4,7 +4,7 @@ description: Sets up the Python side of the Cucumber/coverage/mutation quality g
 whenToUse: Set up or review the test suite of a Python package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing Python project, or wire coverage and mutation testing into a Python project's `make`/CI pipeline.
 domain: python
 type: architecture
-version: 20261008150000
+version: 20261008180000
 tags:
   - solution/conformance-testing-in-python
   - skill/architecture/solution
@@ -78,7 +78,7 @@ REPOSITORY:
 2. `src/{package}/test/{rule}_steps_test.py` is created with `scenarios("../features/{rule}.feature")` and `@given`/`@when`/`@then` bindings that call the package's real function/class.
 3. `make test-kind-unit` runs one `coverage run -m pytest` over the source root, and normalizes the result into `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` (plus `$TEST_KIND_DIR/result/coverage-test.json` in a `report` run).
 4. `make test-kind-mutation` runs `mutmut run` — across the whole package in a `report` run; in a `check` run scoped to the source files changed since `DELTA_BASE`, and skipped without one or when none changed — and normalizes the result into `$TEST_KIND_DIR/result/mutation-test.json`.
-5. `make test-report` assembles `$TEST_REPORT_DIR/` — `scenarios/` included — from `$TEST_KIND_DIR/result/*.json` and `$TEST_KIND_DIR/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
+5. `make test-report` gathers every kind's `report/` and `badges/` into `$TEST_REPORT_DIR/`, ready to publish. `make test-and-report` runs all three targets in sequence.
 6. Which of these `make` targets run on which trigger, and how `$TEST_REPORT_DIR/` gets published, is decided by the project's own CI configuration — not by this solution.
 
 ## Surviving mutant found (report path)

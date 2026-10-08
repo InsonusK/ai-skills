@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 2
+version: 3
 updated: 20261007
 tags:
   - skill/architecture/solution
@@ -43,7 +43,7 @@ adr:
 - One readable report per project describing which test cases — business and technical/architectural alike — are covered: every scenario with its type, status, and location, plus a type × status summary that makes a missing negative/error case visible — see [## Scenario report](#scenario-report).
 - Mutation testing on top of coverage, so a weak assertion shows up as a surviving mutant instead of a passing coverage number.
 - Uniform `make` targets and variables a caller uses without knowing the project's stack, which test kinds exist, or how they run — see [# Caller contract](#caller-contract).
-- A stack-independent, normalized `result/*.json` per test kind, so the report builder never has to parse a tool's native report format — see [# Report contract](#report-contract).
+- A report every kind fills itself — its own report folder and its own badge — so a new test kind is published with no change to the report builder; see [# Report contract](#report-contract).
 - A living-doc HTML view of every executed scenario — filterable by tag and status, identical in every stack — rendered from the runner's standard Cucumber report, see [## Living-doc report](#living-doc-report).
 
 # Core Principles
@@ -69,12 +69,13 @@ adr:
 Whoever runs the tests — a developer, an agent, a CI workflow — uses only the targets and variables in [[./Implementation/Repository.create.md#targets-a-caller-uses|Repository]], shipped identically to every stack as `tools/testing/`: `make test-kinds` to learn the kinds, `make test-kind-{kind}` to run one, `make test-report` to build the report, `make test-readme-check` for the README badges, and `TEST_RUN_PURPOSE`, `DELTA_BASE`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`. A caller never names a test tool, a coverage switch, or a report file other than `index.html`, `reports/{name}/`, and `badges/{name}.json`. Decision in [[./adr/caller-contract.md|adr/caller-contract]].
 
 # Report contract
-Every kind writes two kinds of output below its own `$TEST_KIND_DIR`, per [[./Implementation/Repository.create.md#kind-output|Kind output]], so the report builder has a stack-independent source instead of each tool's native format:
+Every kind writes its whole output below its own `$TEST_KIND_DIR`, per [[./Implementation/Repository.create.md#kind-output|Kind output]], and decides what that output is:
 
-- **Normalized result** — small JSON files under `result/`, identical in shape regardless of stack: `unit-test.json`, `coverage-test.json`, `scenarios.json`, `mutation-test.json`.
-- **Native report** — the underlying tool's own report, kept as-is under `report/{name}/` (`tests`, `coverage`, `mutation`), for a human to open directly.
+- **Report** — `report/{name}/`: what a person opens. The tool's own report where it has one, a page the kind renders where it has none.
+- **Badge** — `badges/{name}.json`: the one-line result of the report of the same name, written through the `kind_badge` functions of `tools/testing/kind.sh`, which fix its schema and colors.
+- **Result** — `result/*.json`: the kind's data. The `unit` and `mutation` kinds keep the same four files in every stack — `unit-test.json`, `coverage-test.json`, `scenarios.json`, `mutation-test.json`; nothing outside the kind reads them.
 
-`make test-report` computes badges and the scenario page from the normalized results only and copies the native reports unchanged. A kind exits with its tool's own exit code after writing its results — normalizing is a side effect, never a reason to swallow a real failure.
+`make test-report` computes nothing: it gathers every kind's reports and badges, adds an entry page to a report that has none, and lists them on the landing page. A kind exits with its tool's own exit code after writing its output — writing it is a side effect, never a reason to swallow a real failure.
 
 ## Scenario report
 `test-kind-unit` writes `result/scenarios.json` on every run — also when a test failed:
@@ -143,10 +144,10 @@ Collect coverage as part of every `test-kind-unit` run; report it in a `report` 
 - Risk: a run without coverage gives mutation testing nothing to scope against and leaves "was this even executed" unanswered.
 - Fix: wire coverage collection into `test-kind-unit` unconditionally; only writing `result/coverage-test.json` and `report/coverage/` depends on the purpose.
 
-### Read only the normalized result files
-Have `tools/testing/test-report.sh` read only the kinds' normalized `result/*.json` files defined in [# Report contract](#report-contract) — never parse a tool's native report format directly.
-- Risk: switching the underlying tool later breaks every consumer that learned to parse its specific native format.
-- Fix: read `result/*.json` only; treat `report/{name}/` as opaque, human-facing output.
+### Gather, never compute, in test-report
+Have `tools/testing/test-report.sh` copy the kinds' `report/` and `badges/` folders and build the landing page from them — never read a `result/` file, never parse a tool's native report.
+- Risk: a builder that computes a badge knows which kinds exist; the next kind — a component test, a pixel test — cannot publish its badge without the shared builder being changed in every project.
+- Fix: the kind writes its badge with `kind_badge*` and renders its own page; `report/{name}/` and `badges/{name}.json` stay opaque to the builder.
 
 ### Write scenarios.json on every run
 Have `test-kind-unit` write `result/scenarios.json` per [## Scenario report](#scenario-report) on every run — including a run where a test failed — with its inventory taken from the `.feature` files, not only from the runner's result.

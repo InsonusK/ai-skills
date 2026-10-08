@@ -4,7 +4,7 @@ description: Sets up the TypeScript side of the Cucumber/coverage/mutation quali
 whenToUse: Set up or review the test suite of a framework-agnostic TypeScript package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing TypeScript package, or wire coverage and mutation testing into a TypeScript package's `make`/CI pipeline.
 domain: skill
 type: architecture
-version: 20261008090000
+version: 20261008180000
 tags:
   - solution/conformance-testing-in-typescript
   - skill/architecture/solution
@@ -79,7 +79,7 @@ PACKAGE:
 2. `features/step-definitions/{rule}.steps.ts` is created with `Given`/`When`/`Then` bindings that import from `src/index.ts` and call the real exported function/class.
 3. `make test-kind-unit` runs `cucumber-js` — under `c8` in a `report` run — and normalizes the result into `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` (plus `$TEST_KIND_DIR/result/coverage-test.json`).
 4. `make test-kind-mutation` runs `stryker run` — across the whole package in a `report` run; in a `check` run scoped to the `src/**/*.ts` files changed since `DELTA_BASE`, and skipped without one or when none changed — and normalizes the result into `$TEST_KIND_DIR/result/mutation-test.json`.
-5. `make test-report` assembles `$TEST_REPORT_DIR/` — `scenarios/` included — from `$TEST_KIND_DIR/result/*.json` and `$TEST_KIND_DIR/report/*`, ready to publish. `make test-and-report` runs all three targets in sequence.
+5. `make test-report` gathers every kind's `report/` and `badges/` into `$TEST_REPORT_DIR/`, ready to publish. `make test-and-report` runs all three targets in sequence.
 6. Which of these `make` targets run on which trigger, and how `$TEST_REPORT_DIR/` gets published, is decided by the project's own CI configuration — not by this solution.
 
 ## Surviving mutant found (report path)

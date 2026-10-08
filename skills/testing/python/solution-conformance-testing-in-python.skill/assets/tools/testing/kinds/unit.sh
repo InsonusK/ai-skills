@@ -35,8 +35,10 @@ count() { grep -oP " $1=\"\K[0-9]+" <<<"$SUITE" || echo 0; }
 TOTAL=$(( $(count tests) - $(count skipped) ))
 FAILED=$(( $(count failures) + $(count errors) ))
 printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$((TOTAL - FAILED))" "$FAILED" > "$RESULT_DIR/unit-test.json"
+kind_badge_count tests tests "$((TOTAL - FAILED))" "$TOTAL"
 
 bash tools/testing/normalize-scenarios.sh "$SCENARIO_RESULTS"
+kind_scenarios_report
 
 if [ "$TEST_RUN_PURPOSE" = report ]; then
   # --fail-under=0: a threshold in pyproject.toml must not fail a report run over a score.
@@ -44,6 +46,7 @@ if [ "$TEST_RUN_PURPOSE" = report ]; then
   coverage json --fail-under=0 -o "$TEST_KIND_DIR/coverage.json"
   LINE_PCT=$(jq '.totals.percent_covered * 10 | round / 10' "$TEST_KIND_DIR/coverage.json")
   printf '{"linePct":%s}' "$LINE_PCT" > "$RESULT_DIR/coverage-test.json"
+  kind_badge_percent coverage coverage "$LINE_PCT"
 fi
 
 kind_livingdoc

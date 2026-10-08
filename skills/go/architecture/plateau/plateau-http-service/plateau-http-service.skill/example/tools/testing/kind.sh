@@ -2,14 +2,19 @@
 # Copied verbatim into every project; never edited there.
 #
 # A kind script gets from the environment:
-#   TEST_KIND_DIR      the only directory it may write to; result/ and report/ exist and are empty
+#   TEST_KIND_DIR      the only directory it may write to; result/, report/ and badges/ exist
+#                      and are empty
 #   TEST_RUN_PURPOSE   check | report        DELTA_BASE   a ref, or empty
-# It writes result/*.json and report/<name>/, says what the purpose changed through
-# kind_mode (or leaves through kind_skip), and exits with its tool's own exit code.
+# It decides everything about its own output: result/ holds its data, report/<name>/ what a
+# person opens, badges/<name>.json the badge of that report - written through the kind_badge
+# functions below. It says what the purpose changed through kind_mode (or leaves through
+# kind_skip) and exits with its tool's own exit code. tools/testing/test-report.sh only
+# gathers what the kinds left.
 
 : "${TEST_KIND_DIR:?run this through make test-kind-<kind>}"
 RESULT_DIR="$TEST_KIND_DIR/result"
 REPORT_DIR="$TEST_KIND_DIR/report"
+BADGE_DIR="$TEST_KIND_DIR/badges"
 
 # kind_mode <text> - what the kind does because of the run's purpose: to the log and the report.
 kind_mode() {
@@ -34,4 +39,53 @@ kind_livingdoc() {
   else
     echo "livingdoc: npm not found - skipping living-doc report"
   fi
+}
+
+# kind_badge <name> <label> <message> <color> - badges/<name>.json, a shields.io endpoint
+# badge. <name> is one the script declares in its "# badges:" line; the kind also writes a
+# report/<name>/.
+kind_badge() {
+  mkdir -p "$BADGE_DIR"
+  jq -nc --arg label "$2" --arg message "$3" --arg color "$4" \
+    '{schemaVersion: 1, label: $label, message: $message, color: $color}' > "$BADGE_DIR/$1.json"
+}
+
+# kind_badge_count <name> <label> <passed> <total> - "<passed>/<total> passed"; green only
+# when every one passed.
+kind_badge_count() {
+  local color=red
+  [ "$3" = "$4" ] && color=brightgreen
+  kind_badge "$1" "$2" "$3/$4 passed" "$color"
+}
+
+# kind_badge_percent <name> <label> <percent> - "<percent>%"; >=80 brightgreen,
+# >=60 yellowgreen, below that red.
+kind_badge_percent() {
+  kind_badge "$1" "$2" "$3%" "$(awk -v s="$3" 'BEGIN {
+    if (s >= 80) print "brightgreen"; else if (s >= 60) print "yellowgreen"; else print "red" }')"
+}
+
+# kind_scenarios_report - result/scenarios.json -> report/scenarios/index.html: a type x
+# status table, then every entry grouped by feature. "attention" marks untyped, missing,
+# failed, and todo happy/negative/error entries without a note.
+kind_scenarios_report() {
+  [ -f "$RESULT_DIR/scenarios.json" ] || return 0
+  mkdir -p "$REPORT_DIR/scenarios"
+  jq -r '
+    ["happy","boundary","negative","error","concurrency","security","regression","untyped"] as $types
+    | ["passed","failed","todo","missing"] as $statuses
+    | .scenarios as $all
+    | def attention: .type == "untyped" or .status == "missing" or .status == "failed"
+        or (.status == "todo" and .note == "" and (.type == "happy" or .type == "negative" or .type == "error"));
+    "<!doctype html><html><head><meta charset=\"utf-8\"><title>Scenarios</title>",
+    "<style>td,th{border:1px solid #999;padding:2px 6px}table{border-collapse:collapse}.attention{background:#fdd}</style></head><body>",
+    "<h1>Scenarios</h1><h2>By type</h2><table><tr><th>type</th>" + ($statuses | map("<th>\(.)</th>") | join("")) + "</tr>",
+    ($types[] as $t | "<tr><td>\($t)</td>" + ($statuses | map(. as $s | "<td>\([$all[] | select(.type == $t and .status == $s)] | length)</td>") | join("")) + "</tr>"),
+    "</table>",
+    ($all | group_by(.feature)[] |
+      "<h2>\(.[0].feature | @html)</h2><table><tr><th>scenario</th><th>examples</th><th>type</th><th>status</th><th>location</th><th>note</th></tr>",
+      (.[] | "<tr\(if attention then " class=\"attention\"" else "" end)><td>\(.scenario | @html)</td><td>\(.examples | @html)</td><td>\(.type)</td><td>\(.status)</td><td>\(.uri | @html):\(.line)</td><td>\(.note | @html)</td></tr>"),
+      "</table>"),
+    "</body></html>"
+  ' "$RESULT_DIR/scenarios.json" > "$REPORT_DIR/scenarios/index.html"
 }

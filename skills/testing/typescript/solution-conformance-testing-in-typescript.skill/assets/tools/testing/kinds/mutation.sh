@@ -62,6 +62,7 @@ if [ -f "$MUTATION_JSON" ]; then
   fi
   printf '{"killed":%s,"survived":%s,"timedout":%s,"noCoverage":%s,"score":%s}' \
     "$KILLED" "$SURVIVED" "$TIMEDOUT" "$NO_COVERAGE" "$SCORE" > "$RESULT_DIR/mutation-test.json"
+  kind_badge_percent mutation "mutation score" "$SCORE"
 fi
 
 # The normalized result is a side effect - the script's own exit code must still be

@@ -35,7 +35,7 @@ tools/
 | tools/normalize_mutation | main.go | `gremlins` report → `$TEST_KIND_DIR/result/mutation-test.json` |
 | report-template | index.html | Landing page published into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link |
 | tools/testing | (base) | Copied verbatim from `solution-conformance-testing`: the Makefile side, the runner, the report builder |
-| tools/testing/kinds | unit.sh, mutation.sh | This stack's two test kinds — run `go test` / `gremlins`, write the normalized results |
+| tools/testing/kinds | unit.sh, mutation.sh | This stack's two test kinds — run `go test` / `gremlins`, call the normalizers, then write the badges (`kind_badge_count`, `kind_badge_percent`) and the scenario page (`kind_scenarios_report`) |
 | tools/livingdoc | package.json, package-lock.json, render.mjs | Copied verbatim from `solution-conformance-testing`; renders `$TEST_KIND_DIR/report/tests/cucumber/` → `$TEST_KIND_DIR/report/tests/livingdoc/` |
 
 # Implementation changes

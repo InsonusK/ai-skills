@@ -74,6 +74,7 @@ while IFS= read -r -d '' trx; do
   FAILED=$((FAILED + $(echo "$COUNTERS" | grep -oP 'failed="\K[0-9]+')))
 done < <(find "$TEST_RESULTS_DIR" -name 'test-results*.trx' -print0)
 printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/unit-test.json"
+kind_badge_count tests tests "$PASSED" "$TOTAL"
 
 # Scenario report: each test project's Reqnroll "message" formatter output (Cucumber
 # Messages) -> [{uri, line, status}], its project-relative uri made repo-relative.
@@ -86,6 +87,7 @@ while IFS= read -r -d '' messages; do
 done < <(find . -path "*/bin/Release/*/reqnroll_messages.ndjson" -print0) \
   | jq -s 'add // []' > "$SCENARIO_RESULTS"
 bash tools/testing/normalize-scenarios.sh "$SCENARIO_RESULTS"
+kind_scenarios_report
 
 # Living doc: every project's Cucumber Messages file becomes the runner's standard report
 # under report/tests/cucumber/, rendered by the shared tools/livingdoc.
@@ -107,6 +109,7 @@ if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   LINE_PCT=$(jq '.summary.linecoverage' "$REPORT_DIR/coverage/Summary.json")
   rm "$REPORT_DIR/coverage/Summary.json"
   printf '{"linePct":%s}' "$LINE_PCT" > "$RESULT_DIR/coverage-test.json"
+  kind_badge_percent coverage coverage "$LINE_PCT"
 fi
 
 exit "$TEST_EXIT"

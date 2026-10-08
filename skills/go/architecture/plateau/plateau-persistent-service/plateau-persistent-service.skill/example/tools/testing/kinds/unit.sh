@@ -23,11 +23,16 @@ CUCUMBER_JSON_DIR="$REPORT_DIR/tests/cucumber" \
   | tee "$REPORT_DIR/tests/go-test.json" \
   | go run ./tools/normalize_unittest || status=$?
 go run ./tools/normalize_scenarios "$REPORT_DIR/tests/go-test.json" || status=$?
+if [ -f "$RESULT_DIR/unit-test.json" ]; then
+  kind_badge_count tests tests "$(jq '.passed' "$RESULT_DIR/unit-test.json")" "$(jq '.total' "$RESULT_DIR/unit-test.json")"
+fi
+kind_scenarios_report
 
 if [ "$TEST_RUN_PURPOSE" = report ]; then
   go tool cover -html="$REPORT_DIR/coverage/coverage.out" -o "$REPORT_DIR/coverage/index.html"
   pct=$(go tool cover -func="$REPORT_DIR/coverage/coverage.out" | tail -1 | awk '{print $3}' | tr -d '%')
   echo "{\"linePct\": $pct}" > "$RESULT_DIR/coverage-test.json"
+  kind_badge_percent coverage coverage "$pct"
 else
   rm -rf "$REPORT_DIR/coverage"
 fi

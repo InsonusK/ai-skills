@@ -49,7 +49,7 @@ Which test projects exist, and what each one references, is decided by the archi
 ```
 
 ## Kind scripts
-The only stack-specific code: each runs this stack's tool and writes the normalized `result/*.json` and native `report/{name}/` — the Makefile, the runner and the report builder are the base's `tools/testing/`.
+The only stack-specific code: each runs this stack's tool and writes its `result/` data, its `report/{name}/` and its `badges/{name}.json` — the Makefile, the runner and the report builder are the base's `tools/testing/`.
 - Copy verbatim to every test project as `reqnroll.json`: [`assets/reqnroll.json`](../assets/reqnroll.json)
 - Copy verbatim to `tools/testing/kinds/unit.sh`: [`assets/tools/testing/kinds/unit.sh`](../assets/tools/testing/kinds/unit.sh)
 - Copy verbatim to `tools/testing/kinds/mutation.sh`: [`assets/tools/testing/kinds/mutation.sh`](../assets/tools/testing/kinds/mutation.sh)
@@ -67,9 +67,9 @@ Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `*.feature.cs` (Re
 - `tools/testing/kinds/unit.sh` must aggregate every test project's TRX counters and coverage files into one `$TEST_KIND_DIR/result/unit-test.json`/`$TEST_KIND_DIR/result/coverage-test.json` pair, not one per project.
   - Risk: without aggregation — or with a fixed trx `LogFileName` every project overwrites — `make test-kind-unit` reports only the project that ran last, silently hiding the others.
   - Fix: log with `trx;LogFilePrefix=test-results`, sum counters across every `test-results*.trx`, and let ReportGenerator's glob pick up every project's `coverage.cobertura.xml`.
-- `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write their normalized JSON into `$TEST_KIND_DIR/result/` and keep the native HTML report under `$TEST_KIND_DIR/report/<kind>/`, per the same contract.
-  - Risk: without the normalized JSON, `make test-report` and badge generation have nothing stack-independent to read.
-  - Fix: write both outputs exactly as [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] specifies.
+- `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write each report into `$TEST_KIND_DIR/report/{name}/` and its badge through `kind_badge_count` / `kind_badge_percent`, per the same contract.
+  - Risk: a badge printed by hand drifts from the other stacks' in schema and colors; a report outside `report/{name}/` is not published.
+  - Fix: keep the `kind_badge_*` and `kind_scenarios_report` calls the scripts carry.
 - Every test project's `reqnroll.json` must configure Reqnroll's `html` and `message` formatters to paths inside that project's own output folder — `tools/testing/kinds/unit.sh` merges them into one browsable report and one scenario report.
   - Risk: two test projects writing to the same formatter output path silently overwrite each other; a project without the `message` formatter shows all its scenarios as `missing`.
   - Fix: keep both formatters in every `reqnroll.json`, with project-relative output paths; merge them explicitly in the script.

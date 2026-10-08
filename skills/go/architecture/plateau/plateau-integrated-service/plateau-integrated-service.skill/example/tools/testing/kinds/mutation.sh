@@ -33,4 +33,5 @@ GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=diff.relative GIT_CONFIG_VALUE_0=true \
 "$GREMLINS" unleash --coverpkg="$COVERPKG" --exclude-files='gen/.*' --exclude-files='tools/.*' "${run_args[@]}" \
   --output "$REPORT_DIR/mutation/gremlins.json" . || code=$?
 go run ./tools/normalize_mutation "$REPORT_DIR/mutation/gremlins.json"
+kind_badge_percent mutation "mutation score" "$(jq '.score' "$RESULT_DIR/mutation-test.json")"
 exit "$code"

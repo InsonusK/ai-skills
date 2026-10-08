@@ -43,7 +43,7 @@ README.md
 | / | stryker.conf.json | Base Stryker config; `tools/testing/kinds/mutation.sh` runs a patched copy — `reporters`, the report file paths, `tempDirName` and `ignorePatterns`, and in a `report` run `thresholds.break = 0` — and never edits the file in place |
 
 ## Kind scripts
-The only stack-specific code: each runs this stack's tool and writes the normalized `result/*.json` and native `report/{name}/` — the Makefile, the runner and the report builder are the base's `tools/testing/`.
+The only stack-specific code: each runs this stack's tool and writes its `result/` data, its `report/{name}/` and its `badges/{name}.json` — the Makefile, the runner and the report builder are the base's `tools/testing/`.
 - Copy verbatim to `tools/testing/kinds/unit.sh`: [`assets/tools/testing/kinds/unit.sh`](../assets/tools/testing/kinds/unit.sh)
 - Copy verbatim to `tools/testing/kinds/mutation.sh`: [`assets/tools/testing/kinds/mutation.sh`](../assets/tools/testing/kinds/mutation.sh)
 
@@ -57,9 +57,9 @@ Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `node_modules/`, a
   - Violation: a CI workflow or a developer runs `stryker run`/`cucumber-js` directly instead of through `make test-kind-mutation`/`make test-kind-unit`.
   - Risk: the workflow now needs TypeScript-specific knowledge, and switching or reconfiguring Stryker later becomes a breaking change for every CI file that calls it directly.
   - Fix: every caller (CI or a developer) goes through the `Makefile`; the project's own CI workflows call these targets stack-agnostically instead of the underlying tools directly.
-- `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write their normalized JSON into `$TEST_KIND_DIR/result/` and keep the native HTML report under `$TEST_KIND_DIR/report/<kind>/`, per the same contract.
-  - Risk: without the normalized JSON, `make test-report` and badge generation have nothing stack-independent to read.
-  - Fix: write both outputs exactly as [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] specifies.
+- `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write each report into `$TEST_KIND_DIR/report/{name}/` and its badge through `kind_badge_count` / `kind_badge_percent`, per the same contract.
+  - Risk: a badge printed by hand drifts from the other stacks' in schema and colors; a report outside `report/{name}/` is not published.
+  - Fix: keep the `kind_badge_*` and `kind_scenarios_report` calls the scripts carry.
 - `stryker.conf.json` must exist at the path `tools/testing/kinds/mutation.sh` reads (repository root for a single-package repository) — the script patches a copy of it per run, it never creates one from scratch.
   - Risk: without the base config file present, the script has nothing to patch and `make test-kind-mutation` fails outright.
   - Fix: commit a base `stryker.conf.json` at the path the script expects.

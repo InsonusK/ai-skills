@@ -19,8 +19,8 @@ tools/
   testing/
     testing.mk          ← the Makefile side: caller targets and variables
     testing.sh          ← runs a kind, builds and checks the report, checks the README
-    kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_livingdoc
-    test-report.sh      ← result/*.json + report/* of every kind → the report directory
+    kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_badge*, kind_scenarios_report, kind_livingdoc
+    test-report.sh      ← gathers report/ and badges/ of every kind into the report directory
     normalize-scenarios.sh, messages-results.jq   ← helpers a kind script may call
     kinds/
       unit.sh           ← one script per test kind — the only stack-specific part
@@ -41,14 +41,24 @@ tools/
 #!/usr/bin/env bash
 # badges: tests coverage            ← the badges this kind produces in a report run
 set -euo pipefail
-source tools/testing/kind.sh        # RESULT_DIR, REPORT_DIR, kind_mode, kind_skip, kind_livingdoc
+source tools/testing/kind.sh        # RESULT_DIR, REPORT_DIR, BADGE_DIR and the kind_* functions
 
 if [ "$TEST_RUN_PURPOSE" = report ]; then kind_mode "every test with coverage reported"
 else kind_mode "every test - coverage not reported"; fi
 
-…run the stack's tool; write $RESULT_DIR/*.json and $REPORT_DIR/{name}/…
+…run the stack's tool, keeping its exit code in $status; write $REPORT_DIR/tests/…
+kind_badge_count tests tests "$passed" "$total"        # badges/tests.json
+kind_badge_percent coverage coverage "$line_pct"      # badges/coverage.json, report run only
 exit "$status"                      # the tool's own exit code
 ```
+A kind decides everything about its own output — what it measures, which badge shows it, which report explains it; `test-report` only gathers. Its badges go through `kind.sh`, so their schema and colors are the same in every kind and stack:
+
+| Function | Badge |
+| --- | --- |
+| `kind_badge_count {name} {label} {passed} {total}` | `{passed}/{total} passed` — `brightgreen` when all passed, else `red` |
+| `kind_badge_percent {name} {label} {percent}` | `{percent}%` — `>=80` `brightgreen`, `>=60` `yellowgreen`, else `red` |
+| `kind_badge {name} {label} {message} {color}` | anything else |
+
 A kind exists because its script exists: `make test-kinds` lists `tools/testing/kinds/*.sh`, and `make test-kind-{kind}` runs one of them in an emptied `$TEST_KIND_DIR`.
 
 ## Targets a caller uses
@@ -83,6 +93,8 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `mode` | one line: what the kind did because of the run's purpose | every kind that ran — `kind_mode "…"` |
 | `skipped` | one line: why the kind does not apply to this run | a kind that skipped itself — `kind_skip "…"` |
 | `exit-code` | the kind script's exit code | `testing.sh`, after the script ends |
+| `badges/{name}.json` | the badge of the report of the same name — shields.io endpoint schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` | the kind, through `kind_badge*`; `unit`: `tests`, and `coverage` in a `report` run; `mutation`: `mutation` |
+| `report/scenarios/` | the scenario page rendered from `result/scenarios.json` | `unit` — `kind_scenarios_report` |
 | `result/unit-test.json` | `{ "total": <int>, "passed": <int>, "failed": <int> }` | `unit` |
 | `result/coverage-test.json` | `{ "linePct": <number> }` | `unit` (`report` only) |
 | `result/scenarios.json` | `{ "scenarios": [ { "feature", "scenario", "examples", "uri", "line", "type", "status", "note" } ] }` — see [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report|Scenario report]] | `unit` (every run, also when a test failed) |
@@ -93,6 +105,8 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `report/coverage/` | the tool's native coverage report | `unit` (`report` only) |
 | `report/mutation/` | the tool's native mutation report | `mutation` |
 
+`result/` is the kind's own data: nothing outside the kind reads it. The four files above keep one shape in every stack so a person or a tool can compare runs; a new kind names its result files as it likes.
+
 `score` in `mutation-test.json` is `killed / (killed+survived+timedout+noCoverage) * 100`, rounded to 1 decimal, `"0.0"` when nothing was mutated.
 
 ## Report output
@@ -101,12 +115,12 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | File | Content | Source |
 | --- | --- | --- |
 | `index.html` | entry point: the project's landing page with its `<!-- test-reports -->` line replaced by one item per report of this run — the badge, then the link to `reports/{name}/`; reports with a badge first | `report-template/index.html`; `badges/`, `reports/` |
-| `reports/{name}/` | one folder per report: a copy of every `kinds/*/report/{name}/`, plus `reports/scenarios/index.html` | the kinds' `report/` folders; `result/scenarios.json` |
+| `reports/{name}/` | one folder per report: a copy of every `kinds/*/report/{name}/` | the kinds' `report/` folders |
 | `reports/{name}/index.html` | when the tool wrote none: a list of what the folder holds, so `reports/{name}/` — the target of the landing page and of a README badge — opens on a static host | `test-report.sh` |
-| `badges/{name}.json` | shields.io endpoint-badge schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` — `tests`, `coverage`, `mutation` | computed from the kinds' `result/*.json` |
+| `badges/{name}.json` | shields.io endpoint-badge schema: `{"schemaVersion":1,"label":"<label>","message":"<value>","color":"<color>"}` | a copy of every `kinds/*/badges/{name}.json` |
 | `run.json` | `{ "purpose", "kinds": [ { "kind", "state": "ran"\|"failed"\|"skipped"\|"missing", "note" } ] }` — `failed`: the kind exited non-zero or never finished | `testing.sh`, from each kind's `mode` / `skipped` / `exit-code` |
 
-A badge and its report share a name; a kind may produce several; a report may have no badge (`scenarios`). Names are unique across kinds. `label` is `tests`, `coverage`, or `mutation score`; `color` follows `>=80 brightgreen / >=60 yellowgreen / else red` for percentage metrics, `brightgreen`/`red` for the pass/fail count.
+A badge and its report share a name; a kind may produce several; a report may have no badge (`scenarios`). Names are unique across kinds. The labels in use are `tests`, `coverage` and `mutation score`.
 
 `report-template/index.html` is a small landing page the project owns: the `<!-- test-reports -->` line `test-report.sh` fills, a link to the living doc, and a block that shows `run.json`. The list holds only what the run produced, so a `check` run links no coverage and no mutation report, and a new kind's report appears with no change to the page. Fill and copy [`templates/report-template/index.html`](../templates/report-template/index.html) — `{project-name}` = the project's name. A page without the marker line is published as it is.
 It lives at the repository root, never under `.github/`, since this solution owns no `.github/workflows/*` file.
@@ -125,7 +139,7 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
   - Fix: keep `tools/testing/` verbatim; write only the kind scripts, and only what a stack's tool needs.
 - Produce the report with the shared `tools/testing/test-report.sh` in every stack — never a stack's own report builder.
   - Risk: two builders drift, and the same results give different reports per stack.
-  - Fix: a kind writes the normalized `result/*.json`; everything after that is shared.
+  - Fix: a kind writes `report/{name}/` and `badges/{name}.json`; gathering them, the landing page and the checks are shared.
 - Add the include line to an existing `Makefile` after its first target, leaving everything else as it is; create the `Makefile` when the repository has none.
   - Risk: replacing a `Makefile` removes the project's targets; an include placed first makes `test-kinds` the default goal.
   - Fix: append the line at the end.
@@ -139,7 +153,7 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - Keep `test-kind-unit` running both Cucumber scenarios and plain technical tests in a single invocation — never split them into two kinds.
   - Risk: a caller running one kind gets an incomplete picture of whether the tests pass.
   - Fix: configure the stack's test runner so one `make test-kind-unit` executes everything.
-- Write a kind's normalized `result/*.json` and its native `report/{name}/` per [## Kind output](#kind-output), before exiting with the tool's own exit code — also when a test failed.
+- Write a kind's `report/{name}/`, its `badges/{name}.json` and its `result/` data per [## Kind output](#kind-output), before exiting with the tool's own exit code — also when a test failed.
   - Risk: a failed run leaves no report to read, or a real failure is swallowed while normalizing.
   - Fix: write the results, then `exit` with the code the runner or the mutation tool returned.
 - Exit non-zero from a kind only for a failed check — a red test, a tool that could not run, or in a `check` run a threshold the kind enforces — never for a score in a `report` run.
@@ -159,6 +173,10 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
   - Violation: the skill's files copied into a project whose `.gitignore` was left as it was.
   - Risk: the first `make test-and-report` leaves hundreds of untracked report files, and one `git add -A` commits them.
   - Fix: append the missing lines to the existing `.gitignore`; `git status --short` is empty after a run.
+- Write every badge through `kind_badge_count`, `kind_badge_percent` or `kind_badge`, under a name the script declares in its `# badges:` line, and write a `report/{name}/` of the same name.
+  - Violation: a kind script that prints the JSON itself; a badge computed in `test-report.sh`.
+  - Risk: a hand-written badge drifts in schema and colors from the others; a builder that computes badges knows a fixed list of kinds, and a new kind's badge needs the builder changed.
+  - Fix: call the function that fits; `test-report` fails when a badge has no report, no declaring kind, or when a kind that ran produced no badge it declares.
 - Accept no caller-facing variable beyond `TEST_RUN_PURPOSE`, `DELTA_BASE`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`.
   - Risk: a caller needs stack knowledge to invoke the targets, defeating the uniform contract.
   - Fix: derive anything tool-specific inside the kind from those four.

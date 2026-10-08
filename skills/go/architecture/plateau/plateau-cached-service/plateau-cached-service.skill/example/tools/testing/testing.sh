@@ -32,7 +32,7 @@ run_kind() {
   local kind="$1" script="$KINDS_SRC/$1.sh" status=0
   [ -f "$script" ] || { echo "test-kind-$kind: no such kind - $script is missing (kinds: $(kinds | tr '\n' ' '))" >&2; exit 2; }
   export TEST_KIND="$kind" TEST_KIND_DIR="$TEST_WORK_DIR/kinds/$kind"
-  rm -rf "$TEST_KIND_DIR" && mkdir -p "$TEST_KIND_DIR/result" "$TEST_KIND_DIR/report"
+  rm -rf "$TEST_KIND_DIR" && mkdir -p "$TEST_KIND_DIR/result" "$TEST_KIND_DIR/report" "$TEST_KIND_DIR/badges"
   bash "$script" || status=$?
   # Kept beside the kind's results: the report tells a failed kind from one that ran.
   echo "$status" > "$TEST_KIND_DIR/exit-code"

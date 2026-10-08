@@ -55,16 +55,19 @@ TOTAL=$(jq -s '[.[][]?.elements[]?] | length' "$CUCUMBER_JSON")
 PASSED=$(jq -s '[.[][]?.elements[]? | select(all(.steps[]; .result.status == "passed"))] | length' "$CUCUMBER_JSON")
 FAILED=$((TOTAL - PASSED))
 printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/unit-test.json"
+kind_badge_count tests tests "$PASSED" "$TOTAL"
 
 # Scenario report: cucumber-js's Cucumber Messages -> [{uri, line, status}]; its uris
 # are already relative to the repository root.
 jq -s --arg prefix "" -f tools/testing/messages-results.jq "$CUCUMBER_MESSAGES" > "$SCENARIO_RESULTS"
 bash tools/testing/normalize-scenarios.sh "$SCENARIO_RESULTS"
+kind_scenarios_report
 
 if [ "$WITH_CODE_COVERAGE" = "true" ]; then
   LINE_PCT=$(jq '.total.lines.pct' "$REPORT_DIR/coverage/coverage-summary.json")
   rm "$REPORT_DIR/coverage/coverage-summary.json"
   printf '{"linePct":%s}' "$LINE_PCT" > "$RESULT_DIR/coverage-test.json"
+  kind_badge_percent coverage coverage "$LINE_PCT"
 fi
 
 # Living-doc report from the standard Cucumber report.

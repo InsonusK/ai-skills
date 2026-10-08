@@ -56,6 +56,7 @@ if [ "$code" -eq 0 ]; then
   fi
   printf '{"killed":%s,"survived":%s,"timedout":%s,"noCoverage":%s,"score":%s}' \
     "$KILLED" "$SURVIVED" "$TIMEDOUT" "$NO_COVERAGE" "$SCORE" > "$RESULT_DIR/mutation-test.json"
+  kind_badge_percent mutation "mutation score" "$SCORE"
 fi
 rm -rf mutants
 

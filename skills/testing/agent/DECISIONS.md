@@ -194,3 +194,15 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - `plateau-python-cli` no longer composes a test-layout solution: its three test module skills are deleted and a `# Testing` section names the testing skills — INVARIANTS §1, "a base plateau names the testing skills it uses". Plateau ADR `remove-solution-test-layout-in-python`. This is W4 done for Python.
 - `solution-cli-packaging` carried the same exclusion `"*test*"`, which drops any production package with `test` in its name (measured: `latest`); now `["*.test", "*.test.*"]`.
 - `devops-github-action-check-changes-in-python`: tests sit below `src/`, so `code` needs negated patterns, which `dorny/paths-filter` evaluates only with `predicate-quantifier: every`. The patterns were checked against sample paths with `picomatch`, the library the action uses; the action itself was not run.
+
+## Owner-decided (2026-10-08, who makes a badge)
+
+- A kind's script decides how its result is produced and how the badge and the report are made from it; the badge is stored with the kind (`kinds/{kind}/badges/`). `test-report.sh` only gathers the finished pieces into the report.
+
+## Agent decisions — who makes a badge
+
+- The badge is still drawn in one place: three functions in `kind.sh` (`kind_badge_count`, `kind_badge_percent`, `kind_badge`) fix the schema and the colors. A kind chooses the name, the label and the numbers; it does not print JSON.
+- The scenario page moved the same way: `kind_scenarios_report` in `kind.sh`, called by the unit kind, writing `report/scenarios/`. `test-report.sh` no longer reads any `result/` file.
+- `result/*.json` stays, as the kind's own data with the same four shapes in every stack — the Go normalizers and anyone comparing runs use them — but it is no longer part of what the report builder needs.
+- This removes the limit noted for the Angular kinds on 2026-10-08: a new kind publishes its badge and report by writing them, with no change to the shared builder.
+- `test-report` now also fails on two kinds writing a badge of the same name; the three checks of `testing.sh` (a badge has a report, a declaring kind, and every declared badge of a kind that ran exists) are unchanged.
