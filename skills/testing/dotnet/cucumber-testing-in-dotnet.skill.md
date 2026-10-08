@@ -1,8 +1,9 @@
 ---
+version: 20261008170000
 name: cucumber-testing-in-dotnet
 description: .NET/Reqnroll-specific rules for Cucumber testing — hook-based logging via ITestOutputHelper/ScenarioContext, binding-class layout, and VSCode glue configuration
 whenToUse: when writing or reviewing Reqnroll (or SpecFlow) scenarios or step bindings in a .NET project
-updated: 20261006
+updated: 20261008
 tags:
   - stack/dotnet
   - concern/testing/bdd
@@ -28,6 +29,11 @@ This skill adds .NET/Reqnroll-specific mechanics on top of [cucumber-testing](sk
 
 ## MUST
 
+### Keep tests in separate test projects
+Keep a `{Project}.Tests` project beside each production project, with features under `features/` and bindings under `Steps/`, and reference only that project's allowed architectural dependencies.
+- Risk: putting tests inside the production assembly ships test tooling and violates .NET's assembly isolation; a shared catch-all project can bypass module boundaries.
+- Fix: add every separate test project to the solution and collect its formatter output independently.
+
 ### Log through the test runner's captured output
 Inject and use `ITestOutputHelper` (xUnit) or `TestContext.Out` (NUnit) for a step's action/observation log, never `Console.WriteLine` or `Debug.WriteLine`.
 - Violation: a step logging via `Console.WriteLine` instead of the injected output helper.
@@ -46,14 +52,14 @@ Pass state between step methods through Reqnroll's `ScenarioContext` (or a POCO 
 - Fix: use `ScenarioContext.Get<T>()`/`Set<T>()`, or a plain class Reqnroll injects into every binding class sharing that scenario's execution.
 
 ### Exclude @status/todo and @status/broken scenarios from the run
-Tag a scenario that must not run yet `@status/todo` or `@status/broken` and exclude both via the test runner's category/trait filter (e.g. `dotnet test --filter "Category!=status/todo&Category!=status/broken"` with Reqnroll's tag-to-trait mapping), confirming it is reported as skipped, not passed.
+Tag a scenario that must not run yet `@status/todo` or `@status/broken` and exclude both via the test runner's category/trait filter (e.g. `dotnet test --filter "Category!=status/todo&Category!=status/broken"` with Reqnroll's tag-to-trait mapping), confirming the inventory and living doc retain it with its exclusion reason.
 - Risk: an unfiltered scenario either fails the build (if its step is undefined) or, worse, passes on an incomplete implementation, contradicting [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason).
 - Fix: map the `@status/todo` Gherkin tag to a runner category/trait and filter it out of the default run.
 
 ### Emit Cucumber Messages
 Reqnroll emits **Cucumber Messages**: configure the `message` formatter in each test project's `reqnroll.json` (`"formatters": { "message": { "outputFilePath": "<path>.ndjson" } }`), one `.ndjson` file per test project.
 - Violation: a project relying only on Reqnroll's `html` formatter or on TRX for scenario results.
-- Risk: no standard report reaches the living-doc renderer, and the scenario report has no per-scenario status source.
+- Risk: no standard report reaches the living-doc renderer, and the scenario inventory has no per-scenario status source.
 - Fix: keep the `message` formatter configured in every test project.
 
 ## SHOULD
@@ -71,6 +77,6 @@ When applying [Configure the Cucumber editor extension](skills/testing/core/cucu
 - [ ] Every step logs through `ITestOutputHelper`/`TestContext.Out`, never `Console.WriteLine`.
 - [ ] Binding classes are grouped by domain concept; generic comparator steps sit in their own binding class.
 - [ ] Cross-step state travels through `ScenarioContext` or context injection, never a static field.
-- [ ] `@status/todo`-tagged scenarios are mapped to a runner category/trait and excluded from the default run, confirmed as skipped rather than passing.
+- [ ] `@status/todo` and `@status/broken` scenarios are mapped to a runner category/trait and excluded from the default run, retained in the inventory and living doc with its reason.
 - [ ] `cucumber.glue` in `.vscode/settings.json` matches this skill's .NET glob when proposed to the user.
 - [ ] The runner writes Cucumber Messages per [Emit Cucumber Messages](#emit-cucumber-messages).

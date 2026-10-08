@@ -1,7 +1,8 @@
 ---
+version: 20261008170000
 name: no-test-theater-in-dotnet
 description: xUnit/.NET-specific rules for assertion strength — Ardalis.Result status checks, branch vs. line coverage, Stryker.NET mutation testing, and integration-test requirements per API endpoint.
-whenToUse: When writing or reviewing xUnit tests in a .NET project.
+whenToUse: When writing or reviewing Reqnroll scenario bindings and assertions in a .NET project.
 tags:
   - stack/dotnet
   - concern/testing/unit
@@ -11,52 +12,55 @@ tags:
 ---
 
 # Goal
-- Add .NET/xUnit-specific rules on top of the language-agnostic test-quality rules.
+- Reqnroll bindings assert complete .NET outcomes, validation errors and orchestration order.
+- Coverage and mutation reports expose untested branches and weak assertions.
 
 # Scope
-This skill extends [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) — apply both together; this skill only adds .NET-specific rules. It does not define test class/file naming or folder layout; see [testing-strategy-in-dotnet](skills/testing/dotnet/testing-strategy-in-dotnet.skill.md) for which classes/usecases must have their own dedicated test class.
+Apply [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) together with this .NET extension; choose scenario scope through [testing-strategy-in-dotnet](skills/testing/dotnet/testing-strategy-in-dotnet.skill.md).
 
 # Core Principle
-- `IsSuccess == false` and "no exception thrown" are not assertions — they hide which of several failure states actually happened.
+- A concrete result status and its payload prove behavior; a success boolean alone does not.
 
 # Rule
 
 ## MUST
-- Follow the naming convention `MethodOrScenario_ExpectedBehavior_WhenCondition`, or BDD style via `[Fact(DisplayName = "...")]` with a full sentence.
-- For methods returning `Ardalis.Result`, assert the concrete `Result.Status` (`Ok`, `NotFound`, `Invalid`, `Conflict`, etc.) — not only `result.IsSuccess == false`.
-- For `Invalid` results, assert the concrete `ValidationErrors` (field + message) — not only their count.
-- Measure coverage as branch coverage via `coverlet` + `reportgenerator`, not line coverage — line coverage does not show that only one side of an `if/else` was exercised.
-- Add an integration test (`WebApplicationFactory` / Testcontainers) for every new API endpoint, covering at minimum the happy path plus one applicable error path (401/404/409/422).
-- For a usecase/workflow test (inbound sync call, inbound async message, cron job) that orchestrates several components, assert both the full expected response and that the components were called in the expected order — not just that each method was called at some point.
+
+### Author scenarios through Reqnroll
+Author package tests as Gherkin scenarios following [cucumber-testing-in-dotnet](skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md).
+- Risk: direct xUnit tests duplicate scenario coverage and disappear from the living doc.
+- Fix: keep xUnit as Reqnroll's runner; justify an exceptional plain test in a comment per the core Cucumber rule.
+
+### Assert concrete result states
+Assert the concrete `Ardalis.Result.Status` and complete relevant payload, including each invalid field and its validation message.
+- Risk: checking `IsSuccess == false` or counting errors passes for the wrong failure state.
+- Fix: compare the expected status, field names, messages and values explicitly.
+
+### Review branch coverage
+Review coverlet's branch coverage in ReportGenerator alongside the line coverage badge.
+- Risk: line coverage can hide an untested conditional branch.
+- Fix: add a scenario for each behavior-changing branch and review both coverage measurements.
+
+### Exercise endpoint boundaries
+Exercise each new API endpoint through `WebApplicationFactory` or an applicable integration boundary with a happy scenario and an applicable error scenario.
+- Risk: isolated mocks omit routing, authentication and transport failures.
+- Fix: assert the full response and concrete 401/404/409/422 behavior where applicable.
+
+### Assert orchestration order
+Assert the full expected response and the required order of component calls in usecase and workflow scenarios.
+- Risk: independent call checks pass when the workflow executes its operations out of order.
+- Fix: use Moq `MockSequence` or NSubstitute `Received.InOrder` when ordering belongs to the contract.
 
 ## SHOULD
-- Run mutation testing via **Stryker.NET** on core business logic (skip DTOs/mappers). Treat a mutation score below 60% on changed files as a review trigger, not an automatic blocker — tune the exact threshold per project.
 
-# Anti-patterns
-- **Checking only `IsSuccess == false`**
-  - Example: `Assert.False(result.IsSuccess)` for a test named `Update_ReturnsNotFound_WhenMissing`.
-  - Consequence: the test also passes if the result is `Invalid` or `Conflict` instead of `NotFound` — it does not prove what its name claims.
-  - Instead: `Assert.Equal(ResultStatus.NotFound, result.Status)`.
-
-- **Counting `ValidationErrors` instead of checking them**
-  - Example: `Assert.Single(result.ValidationErrors)`.
-  - Consequence: passes even if the single error is for the wrong field or has the wrong message.
-  - Instead: assert the specific field name and message.
-
-- **Trusting line coverage for conditional logic**
-  - Example: 100% line coverage on a method with an `if/else`, but only the `if` branch has a test.
-  - Consequence: the `else` branch can be broken with no test failing.
-  - Instead: use branch coverage reports and add a test for each branch.
-
-- **Call order asserted only as "was called", not "called in order"**
-  - Example: `mock.Verify(x => x.StepA()); mock.Verify(x => x.StepB());` with no ordering check, for a usecase where `StepA` must run before `StepB`.
-  - Consequence: passes even if `StepB` runs before `StepA`, which can be the actual orchestration bug.
-  - Instead: use an ordered verification (e.g. Moq `MockSequence`, NSubstitute `Received.InOrder`) to assert the call sequence.
+### Measure mutation strength
+Run Stryker.NET through the project's mutation kind on changed production rules, including mappings.
+- Risk: omitting mappings leaves `@type/mapping` behavior unmeasured.
+- Fix: inspect survivors and strengthen the scenario assertion or record why the mutant is equivalent; thresholds belong to the project's kind configuration.
 
 # Check list
-- [ ] Every `Ardalis.Result`-returning test asserts a concrete `Result.Status`, not just `IsSuccess`.
-- [ ] Every `Invalid`-result test asserts specific `ValidationErrors` (field + message).
-- [ ] Coverage reviewed is branch coverage, not line coverage.
-- [ ] Every new API endpoint has an integration test for the happy path and at least one error path.
-- [ ] Usecase/workflow tests assert both the full response and the call order of orchestrated components.
-- [ ] Mutation testing (where configured) reviewed for changed files.
+- [ ] Package tests follow [Author scenarios through Reqnroll](#author-scenarios-through-reqnroll).
+- [ ] Assertions satisfy [Assert concrete result states](#assert-concrete-result-states).
+- [ ] Coverage review follows [Review branch coverage](#review-branch-coverage).
+- [ ] Endpoint scenarios follow [Exercise endpoint boundaries](#exercise-endpoint-boundaries).
+- [ ] Workflow assertions satisfy [Assert orchestration order](#assert-orchestration-order).
+- [ ] Mutation review follows [Measure mutation strength](#measure-mutation-strength).

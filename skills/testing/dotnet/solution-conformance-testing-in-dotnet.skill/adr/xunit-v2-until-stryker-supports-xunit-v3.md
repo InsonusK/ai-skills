@@ -1,4 +1,5 @@
 ---
+version: 20261009130000
 name: xunit-v2-until-stryker-supports-xunit-v3
 description: Why .NET conformance testing stays on xUnit v2 + Reqnroll.xUnit on the VSTest runner instead of xunit.v3 on Microsoft.Testing.Platform, and how to re-check that when Stryker.NET is updated
 problem: xunit.v3 on Microsoft.Testing.Platform (MTP) is xUnit's current line and the direction of `dotnet test` on the .NET 10 SDK, and the dotnet plateau examples had moved to it. Stryker.NET 4.16.0 runs such a solution without an error but reports every mutant as survived — a false 0% mutation score — while the same code and tests on xUnit v2 / VSTest score 55%.
@@ -56,7 +57,7 @@ When it reports `SUPPORTED`: record a new ADR superseding this one, move the tes
 ### Benefits
 
 - Mutation testing — a MUST of [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] — gives a real score.
-- The stack is verified end to end: build, `unit-test` with coverage, `mutation-test`, scenario report.
+- The stack is verified end to end: build, `unit-test` with coverage, `mutation-test`, scenario inventory.
 
 ### Costs
 
