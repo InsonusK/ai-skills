@@ -1,4 +1,5 @@
 ---
+version: 20261009220000
 description: Dedicated test project for {Module}.Domain.Rules — proves every rule's own IsValid()/Check()/IRuleBuilder extension, isolated from the broader Entity/VO mutation surface of {Module}.Domain.Tests
 project_name: "{Module}.Domain.Rules.Tests"
 name: "{Module}.Domain.Rules.Tests.csproj"
@@ -15,26 +16,19 @@ tags:
 
 # Core Principles
 - References `{Module}.Domain.Rules` only — mirrors `{Module}.Domain.Rules.csproj`'s own zero project references (plus FluentValidation/`{Module}.Interfaces`, already transitive through it)
-- Takes `.feature` files from two sources: its own `/Rules` folder (rule-only edge cases no other layer needs to prove) and, linked in as `<ReqnrollFeatureFiles>`, every file under every classification folder of `{Module}.Domain.Rules.Spec` — the shared scenarios also proven by `{Module}.Domain.Tests`/`{Module}.Application.Tests`
+- Takes `.feature` files from two sources: its own `/features` folder (rule-only edge cases no other layer needs to prove) and, linked in as `<ReqnrollFeatureFiles>`, every file under every classification folder of `{Module}.Domain.Rules.Spec` — the shared scenarios also proven by `{Module}.Domain.Tests`/`{Module}.Application.Tests`
 - Step definitions here call the rule's own `Check()` (or the raw `IsValid()` for a pure-predicate scenario) directly — never a VO constructor, an Entity method, or a validator; those adapters are proven in their own test projects
 
 # Implementation changes
 
-```
-/src/Modules/{ModuleName}
-  /{ModuleName}.Domain.Rules.Tests
-    /Rules
-      {Rule}.feature          (rule-only scenarios, not shared with other layers)
-    /StepDefinitions
-      {Rule}RuleSteps.cs
-    {ModuleName}.Domain.Rules.Tests.csproj
-```
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for project contents and tooling.
+The optional local features cover rule-only edge cases; the shared spec is linked as follows.
 
 `{Module}.Domain.Rules.Tests.csproj` links the shared spec directory in:
 
 ```xml
 <ItemGroup>
-  <ReqnrollFeatureFiles Include="..\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="Rules\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
+  <ReqnrollFeatureFiles Include="..\{ModuleName}.Domain.Rules.Spec\**\*.feature" Link="features\Shared\%(RecursiveDir)%(Filename)%(Extension)" />
 </ItemGroup>
 
 <ItemGroup>
@@ -51,7 +45,7 @@ Reqnroll generates a fixture only for `ReqnrollFeatureFiles` items — a file li
 - Link the entire `{Module}.Domain.Rules.Spec` directory in as `<ReqnrollFeatureFiles Include>` — never `<None Include>`, which generates no test — not copy scenario text into this project's own `.feature` files
 - Step definitions call `{Rule}.Check()`/`.IsValid()` directly, never a VO/Entity/validator adapter
 - Never add a project reference to `{Module}.Domain`, `{Module}.Application`, or any other module project
-- Never duplicate a scenario already present in `{Module}.Domain.Rules.Spec` inside this project's own `/Rules` folder
+- Never duplicate a scenario already present in `{Module}.Domain.Rules.Spec` inside this project's own `/features` folder
 
 # Check list
 - [ ] `{Module}.Domain.Rules.Tests.csproj` references `{Module}.Domain.Rules` only

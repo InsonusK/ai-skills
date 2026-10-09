@@ -6,7 +6,7 @@ The .NET testing rules now live in `skills/testing/dotnet/`. The .NET architectu
 
 | Where | Feature files | Bindings |
 | --- | --- | --- |
-| `skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md`, rule "Keep tests in separate test projects" | `features/` | `Steps/` |
+| `skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md`, rule "Keep tests in separate test projects" | `features/` | `Steps/` |
 | The showcase `skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/example` | `features/`, `batch/features/` | `Steps/` |
 | `skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend.md` | — | `StepDefinitions/` |
 | Catalog solution `skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill` | `Rules/` | `StepDefinitions/` |

@@ -4,7 +4,7 @@ description: The dotnet plateau catalog's test-project layout — one test proje
 whenToUse: Decide which test project a scenario or unit test belongs in, create the test project for a production project of the dotnet plateau catalog, or review whether a test project's references mirror its production project's Allowed Dependencies.
 domain: skill
 type: architecture
-version: 20260924000000
+version: 20261009220000
 tags:
   - skill/architecture/solution
   - solution/dotnet-conformance-testing
@@ -19,12 +19,13 @@ creates:
   - "{Module}.Interfaces.Tests.csproj"
   - Shared.Tests.csproj
   - BuildingBlocks.Tests.csproj
-  - "{TestProject}.StepDefinitions.{Rule}Steps.cs"
+  - "{TestProject}.Steps.{Rule}Steps.cs"
 extends:
 depends_on:
   - "[[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]"
 built_on_plateau:
 adr:
+  - "skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/testing-rules-owned-by-testing-skills.md"
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|One test project per production project, not per module]]"
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/tooling-moved-to-stack-testing-skill|Test tooling moved to solution-conformance-testing-in-dotnet]]"
 ---
@@ -40,9 +41,9 @@ adr:
 # Core Principles
 - One test project per production project **that exists**, never one combined project per module. At the v3.1 baseline that is `{Module}.Application.Tests`, `{Module}.Interfaces.Tests`, `Shared.Tests`, `BuildingBlocks.Tests`. `{Module}.Domain.Tests` appears only when the module has a domain layer (`solution-domain-behaviour`, VP1); `{Module}.Domain.Rules.Tests` only with VP4. `{Module}.Api` has no dedicated test project — it is a thin MediatR adapter with no business logic of its own to prove (see [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|ADR]]).
 - Each test project's Allowed Dependencies mirror its production counterpart's exactly: `{Module}.Application.Tests` may reference `{Module}.Application` and `{Module}.Domain` (the same two `{Module}.Application.csproj` itself is allowed to reference), `BuildingBlocks.Tests` may reference `BuildingBlocks` and `Shared`, and so on. A test project never reaches further than the production project it tests is itself allowed to reach.
-- Every test project contains unit tests, Reqnroll feature files, and their step definitions together — never a separate project split out just for Gherkin scenarios.
-- Step definitions call the tested project's real public API; they never re-implement the rule under test.
-- The `Makefile`, scripts, `reqnroll.json`, and report are owned by [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]; this solution only decides the test-project layout.
+- Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for generic project contents and tooling.
+- Apply [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [binding organization](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#one-binding-class-per-domain-concept) for scenario implementation.
+- The `Makefile`, scripts, `reqnroll.json`, and report are owned by [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]; this solution only decides project selection, reference boundaries and layer responsibilities.
 
 # Adr
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|One test project per production project, not per module]]
@@ -56,9 +57,6 @@ SOLUTION:
   - Provides the Reqnroll/coverlet/Stryker.NET tooling and the `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` contract that runs every test project created here.
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]
   - Defines the production projects (`{Module}.Domain`, `{Module}.Application`, `{Module}.Interfaces`, `Shared`, `BuildingBlocks`) and their Allowed Dependencies, which each test project here mirrors.
-
-NUGET:
-- Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk — referenced by every test project; chosen in [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]'s own ADR.
 
 # Template Skill Mutations
 PROJECT:
@@ -76,8 +74,8 @@ PROJECT:
 # Workflow
 ## Add conformance coverage for a new validation rule (happy path)
 1. Decide which production project owns the rule (e.g. an entity invariant lives in `{Module}.Domain`, a transport check lives in `{Module}.Application`).
-2. A `.feature` file describing the rule (e.g. `Rules/{Rule}.feature`) is added or extended, inside that project's own test project (e.g. `{Module}.Domain.Tests/Rules/{Rule}.feature`), with `Given/When/Then` scenarios.
-3. `{Rule}Steps.cs` is created in that same test project with `[Given]`/`[When]`/`[Then]` bindings that call the real production code.
+2. Add or extend the owning feature in that test project following [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects).
+3. Implement the layer-specific action and observation using [binding organization](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#one-binding-class-per-domain-concept) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must).
 4. The gate runs as described in [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]'s own Workflow.
 
 # Rules
@@ -102,5 +100,8 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 - [ ] Every production project that exists has exactly one test project (`{Module}.Domain.Tests` only with VP1).
 - [ ] Each test project's references match its production counterpart's Allowed Dependencies exactly — no wider, no narrower.
 - [ ] `{Module}.Api` has no dedicated test project.
-- [ ] Every `.feature` scenario has a matching step definition, in the same test project as the code it proves, that calls production code.
+- [ ] [cucumber-testing-in-dotnet](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) are applied.
 - [ ] [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]] is applied, so `make test-kind-unit` picks up every test project.
+
+# Layout decision
+[Generic testing rules delegated to testing skills](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/testing-rules-owned-by-testing-skills.md) — The catalog links the testing skills for layout, packages, runner behavior, bindings and assertion strength; it retains project selection, mirrored Allowed Dependencies and layer-specific step shapes.

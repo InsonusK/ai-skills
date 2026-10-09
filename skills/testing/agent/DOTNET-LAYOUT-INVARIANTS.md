@@ -43,5 +43,9 @@ Known Stryker coverage-capture warnings in plateau-core are documented in the ta
 - Separate branch/worktree created from `skills-testing` at `b3570c54`; base pushed (already up to date).
 - Baseline `bash skills/testing/agent/check.sh`: passed.
 - .NET, jq, and Node are available.
-- Contract prepared for review under bulk-authoring-harness; bulk edits have not started.
-- Solution, plateau, example waves and final pull request into `skills-testing`: pending.
+- Contract reviewed by the owner on 2026-10-09; bulk work authorized.
+- Wave 1: solution and stack owners updated; testing check and task-specific wave gate passed; separate conformance audit completed.
+- Plateau and example waves and final pull request into `skills-testing`: pending.
+
+- Wave 1 decision: VP4 solution also produced the obsolete layout; updated its rule-test contribution before propagating to plateaus. Recorded its own ADR.
+- Wave 1 audit: corrected an unintended production-path substitution before commit; production paths are preserved. Moved the generic production-binding rule into the .NET Cucumber owner.

@@ -1,15 +1,18 @@
 ---
-version: 20261008170000
+version: 20261009220000
 name: cucumber-testing-in-dotnet
 description: .NET/Reqnroll-specific rules for Cucumber testing — hook-based logging via ITestOutputHelper/ScenarioContext, binding-class layout, and VSCode glue configuration
 whenToUse: when writing or reviewing Reqnroll (or SpecFlow) scenarios or step bindings in a .NET project
-updated: 20261008
+updated: 20261009
 tags:
   - stack/dotnet
   - concern/testing/bdd
   - concern/testing
   - cucumber
   - reqnroll
+
+adr:
+  - "skills/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/features-and-steps-layout.md"
 
 ---
 
@@ -33,6 +36,12 @@ This skill adds .NET/Reqnroll-specific mechanics on top of [cucumber-testing](sk
 Keep a `{Project}.Tests` project beside each production project, with features under `features/` and bindings under `Steps/`, and reference only that project's allowed architectural dependencies.
 - Risk: putting tests inside the production assembly ships test tooling and violates .NET's assembly isolation; a shared catch-all project can bypass module boundaries.
 - Fix: add every separate test project to the solution and collect its formatter output independently.
+
+### Exercise production code from bindings
+Call the tested project's public entry point from bindings; never re-implement its logic or replace the code under test with a stand-in, and stub only its collaborators where the scenario requires isolation.
+- Violation: a binding computes validity with a local regex instead of calling the validator being proven.
+- Risk: the scenario remains green after the production implementation breaks.
+- Fix: call the production entry point and observe its returned value; the architecture catalog selects the entry point for each layer.
 
 ### Log through the test runner's captured output
 Inject and use `ITestOutputHelper` (xUnit) or `TestContext.Out` (NUnit) for a step's action/observation log, never `Console.WriteLine` or `Debug.WriteLine`.
@@ -80,3 +89,6 @@ When applying [Configure the Cucumber editor extension](skills/testing/core/cucu
 - [ ] `@status/todo` and `@status/broken` scenarios are mapped to a runner category/trait and excluded from the default run, retained in the inventory and living doc with its reason.
 - [ ] `cucumber.glue` in `.vscode/settings.json` matches this skill's .NET glob when proposed to the user.
 - [ ] The runner writes Cucumber Messages per [Emit Cucumber Messages](#emit-cucumber-messages).
+
+# Layout decision
+[One .NET test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/features-and-steps-layout.md) — The owner selected `features/` and `Steps/` on 2026-10-09. This skill owns the convention; catalog skills link it and retain their layer-specific constraints.
