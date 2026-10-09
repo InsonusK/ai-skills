@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Interfaces.Tests fea
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20261009220001
 tags:
   - skill/template/class
   - plateau/offline-sync-service
@@ -14,64 +14,38 @@ created_by:
 ---
 
 # Goal
-- Prove every scenario in `Rules/{Rule}.feature` against the module's real public contract types — a command implements the right marker, a DTO carries the expected fields.
+- Prove every scenario in `features/{Rule}.feature` against the module's real public contract types — a command implements the right marker, a DTO carries the expected fields.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Core Principles
+- Apply the linked [testing conventions](#testing-conventions).
 - Apply ONE plateau template per class.
-- `[Binding] sealed class {Rule}Steps` — Reqnroll bindings.
 - Contract-shaped: construct the declared type, assert it is assignable to the right marker / exposes the right members.
-- References only the module's `Interfaces` — never a handler, validator, or domain type.
+- Contract scenarios enter through the module's declared Interfaces types; supporting references follow the owning test project's mirrored boundary.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
 | Step definitions for one contract group | `{Rule}Steps` | `ContractsSteps` | `{Rule}Steps.cs` | `ContractsSteps.cs` |
 
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
+
 # Implementation
-```csharp
-// Skill: plateau-offline-sync-service--class-module-interfaces-rule-steps
-// Plateau: core
-// Version: 20260902000000
-using Ardalis.Result;
-using Reqnroll;
-using {Module}.Interfaces.Commands;
-using {Module}.Interfaces.Events;
-using Shared.MediatR;
-using Xunit;
-
-namespace {Module}.Interfaces.Tests.StepDefinitions;
-
-[Binding]
-public sealed class ContractsSteps
-{
-    private CreateTaskCommand? _command;
-
-    [When("a CreateTaskCommand is created with title {string}")]
-    public void WhenCreated(string title) => _command = new CreateTaskCommand(title, 1);
-
-    [Then("it implements ICommand of Result of CreateTaskResult")]
-    public void ThenShape() => Assert.IsAssignableFrom<ICommand<Result<CreateTaskResult>>>(_command);
-
-    [Then("TaskClosed implements INotificationEvent")]
-    public void ThenEvent() => Assert.True(typeof(INotificationEvent).IsAssignableFrom(typeof(TaskClosed)));
-}
-```
+The layer-specific action and observation follow the contributing solution linked below; generic binding code comes from the testing skills.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Rules
 MUST:
-- `[Binding] sealed class {Rule}Steps` in `{Module}.Interfaces.Tests/StepDefinitions`.
-- Construct and inspect the real contract type; give every `Given/When/Then` a matching step.
+- Apply [production-code bindings](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#exercise-production-code-from-bindings) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must).
 - Never reference `{Module}.Application` or `{Module}.Domain`.
 - Never apply several plateau templates per class.
 
 # Check list
-- [ ] Every `Given/When/Then` in `{Rule}.feature` has a matching step.
 - [ ] Only `{Module}.Interfaces` types are referenced.
 
 # Unittest TestCases

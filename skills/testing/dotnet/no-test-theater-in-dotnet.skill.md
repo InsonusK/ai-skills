@@ -1,5 +1,5 @@
 ---
-version: 20261009210000
+version: 20261009220000
 name: no-test-theater-in-dotnet
 description: The .NET names for the assertion-strength rules of no-test-theater — Ardalis.Result status and validation errors, ordered mock verification, WebApplicationFactory, coverlet branch coverage, Stryker.NET.
 whenToUse: When writing or reviewing Reqnroll scenario bindings and assertions in a .NET project.
@@ -15,7 +15,7 @@ tags:
 - Reqnroll bindings that apply the rules of no-test-theater with the .NET types and tools that carry them.
 
 # Scope
-Every rule is in [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md), and which classes need scenarios of their own is in [testing-strategy](skills/testing/core/testing-strategy.skill.md); this skill only names how .NET expresses them. Authoring and placing the scenarios: [cucumber-testing-in-dotnet](skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md).
+Every rule is in [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md), and which classes need scenarios of their own is in [testing-strategy](skills/testing/core/testing-strategy.skill.md); this skill only names how .NET expresses them. Authoring and placing the scenarios: [cucumber-testing-in-dotnet](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md).
 
 # Core Principle
 - A concrete `Result.Status` and its payload prove behavior; `IsSuccess == false` does not.

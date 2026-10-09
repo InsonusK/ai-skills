@@ -1,0 +1,94 @@
+---
+version: 20261009220000
+name: cucumber-testing-in-dotnet
+description: .NET/Reqnroll-specific rules for Cucumber testing — hook-based logging via ITestOutputHelper/ScenarioContext, binding-class layout, and VSCode glue configuration
+whenToUse: when writing or reviewing Reqnroll (or SpecFlow) scenarios or step bindings in a .NET project
+updated: 20261009
+tags:
+  - stack/dotnet
+  - concern/testing/bdd
+  - concern/testing
+  - cucumber
+  - reqnroll
+
+adr:
+  - "skills/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/features-and-steps-layout.md"
+
+---
+
+# Goal
+- Every `.feature` file's scenarios executed through Reqnroll, with the underlying xUnit/NUnit test runner treated as the single entry point per test project, never hand-written tests duplicating a scenario.
+- Every `[Binding]` class's step methods logging via the runner's captured output (`ITestOutputHelper` for xUnit), never `Console.WriteLine`.
+- One `[Binding]` class per domain concept, generic comparator steps kept separate from per-operation action steps.
+
+# Scope
+This skill adds .NET/Reqnroll-specific mechanics on top of [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md) — apply both together; this skill only covers what Reqnroll and .NET add.
+
+# Core Principle
+- **The test runner is the one exception** - The xUnit/NUnit test method Reqnroll generates per scenario is the runner entry point; every case a human writes is a `.feature` scenario, per [One scenario, one runner](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-scenario-one-runner).
+- **Captured output keeps logs attached to their scenario** - `ITestOutputHelper` (or NUnit's `TestContext.Out`) ties a log line to the currently running test; `Console.WriteLine` does not reliably surface inside a test-runner report.
+
+# Rule
+
+## MUST
+
+### Keep tests in separate test projects
+Keep a `{Project}.Tests` project beside each production project, with features under `features/` and bindings under `Steps/`, and reference only that project's allowed architectural dependencies.
+- Risk: putting tests inside the production assembly ships test tooling and violates .NET's assembly isolation; a shared catch-all project can bypass module boundaries.
+- Fix: add every separate test project to the solution and collect its formatter output independently.
+
+### Exercise production code from bindings
+Call the tested project's public entry point from bindings; never re-implement its logic or replace the code under test with a stand-in, and stub only its collaborators where the scenario requires isolation.
+- Violation: a binding computes validity with a local regex instead of calling the validator being proven.
+- Risk: the scenario remains green after the production implementation breaks.
+- Fix: call the production entry point and observe its returned value; the architecture catalog selects the entry point for each layer.
+
+### Log through the test runner's captured output
+Inject and use `ITestOutputHelper` (xUnit) or `TestContext.Out` (NUnit) for a step's action/observation log, never `Console.WriteLine` or `Debug.WriteLine`.
+- Violation: a step logging via `Console.WriteLine` instead of the injected output helper.
+- Risk: `Console.WriteLine` output is not reliably captured per-test by the runner, so the log line either disappears or is not attached to the failing scenario, defeating [Steps log action and observation](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#steps-log-action-and-observation).
+- Fix: constructor-inject `ITestOutputHelper` into the `[Binding]` class (Reqnroll/xUnit resolves it per scenario) and log through it.
+
+### One [Binding] class per domain concept
+Name binding classes by domain concept (`ConnectionSteps`, `QuerySteps`, `ResultSteps`, ...), and keep generic comparator steps (e.g. "the result is exactly") in their own binding class, separate from per-operation action steps.
+- Risk: mixing comparators and actions in one binding class makes the comparator harder to find and audit once, per [Generic comparator steps](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#generic-comparator-steps).
+- Fix: split by concept; a `ScenarioContext`/`ObjectContainer`-shared fixture ("world") for cross-step state lives in its own binding-independent class.
+
+### Share scenario state via ScenarioContext or an injected context class
+Pass state between step methods through Reqnroll's `ScenarioContext` (or a POCO injected via its context-injection/`[Binding]` constructor), never through static fields.
+- Violation: a static field on a binding class holding the last query result for the next step to read.
+- Risk: a static field leaks state between scenarios that Reqnroll otherwise runs isolated, causing order-dependent flakiness.
+- Fix: use `ScenarioContext.Get<T>()`/`Set<T>()`, or a plain class Reqnroll injects into every binding class sharing that scenario's execution.
+
+### Exclude @status/todo and @status/broken scenarios from the run
+Tag a scenario that must not run yet `@status/todo` or `@status/broken` and exclude both via the test runner's category/trait filter (e.g. `dotnet test --filter "Category!=status/todo&Category!=status/broken"` with Reqnroll's tag-to-trait mapping), confirming the inventory and living doc retain it with its exclusion reason.
+- Risk: an unfiltered scenario either fails the build (if its step is undefined) or, worse, passes on an incomplete implementation, contradicting [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason).
+- Fix: map the `@status/todo` Gherkin tag to a runner category/trait and filter it out of the default run.
+
+### Emit Cucumber Messages
+Reqnroll emits **Cucumber Messages**: configure the `message` formatter in each test project's `reqnroll.json` (`"formatters": { "message": { "outputFilePath": "<path>.ndjson" } }`), one `.ndjson` file per test project.
+- Violation: a project relying only on Reqnroll's `html` formatter or on TRX for scenario results.
+- Risk: no standard report reaches the living-doc renderer, and the scenario inventory has no per-scenario status source.
+- Fix: keep the `message` formatter configured in every test project.
+
+## SHOULD
+
+### Configure the VSCode Cucumber glue for .NET
+When applying [Configure the Cucumber editor extension](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#configure-the-cucumber-editor-extension), use:
+```json
+{
+  "cucumber.glue": ["**/*Steps.cs", "**/Steps/**/*.cs"],
+  "cucumber.features": ["**/*.feature"]
+}
+```
+
+# Check list
+- [ ] Every step logs through `ITestOutputHelper`/`TestContext.Out`, never `Console.WriteLine`.
+- [ ] Binding classes are grouped by domain concept; generic comparator steps sit in their own binding class.
+- [ ] Cross-step state travels through `ScenarioContext` or context injection, never a static field.
+- [ ] `@status/todo` and `@status/broken` scenarios are mapped to a runner category/trait and excluded from the default run, retained in the inventory and living doc with its reason.
+- [ ] `cucumber.glue` in `.vscode/settings.json` matches this skill's .NET glob when proposed to the user.
+- [ ] The runner writes Cucumber Messages per [Emit Cucumber Messages](#emit-cucumber-messages).
+
+# Layout decision
+[One .NET test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/features-and-steps-layout.md) — The owner selected `features/` and `Steps/` on 2026-10-09. This skill owns the convention; catalog skills link it and retain their layer-specific constraints.
