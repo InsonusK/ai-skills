@@ -1,5 +1,5 @@
 ---
-description: Declare project applicability, native targets and dependency edges.
+description: What a generated Nx project needs so the test kinds find and run its tests
 element_kind: project
 change_kind: extend
 updated: 20261009
@@ -12,22 +12,27 @@ tags:
 ---
 
 # Goal
-- Make every [Nx project's](../glossary/nx.md) test obligations explicit.
+- A project made by the official generator whose tests the kinds find and run.
 
 # Mutations
-The Angular base and repository refinement are applied; no per-role testing skill or alternate spec framework is applied.
+Create the project with its generator — `nx g @nx/angular:application`, `nx g @nx/angular:library` (unit test runner `vitest-analog`), `nx g @nx/js:library` — and keep its `project.json` as generated. The examples: [application](../example/apps/portal/project.json), [its e2e project](../example/apps/portal-e2e/project.json), [Angular library](../example/libs/linkcheck/project.json), [logic-only library](../example/libs/formatter/project.json).
 
-Use [the application config](../example/apps/portal/project.json), [Angular library config](../example/libs/linkcheck/project.json) and [domain library config](../example/libs/formatter/project.json) as concrete mutations. Merge native targets into existing `project.json`; do not introduce a parallel `angular.json`. Copy source/configuration shape, replacing project identifiers and paths for the real workspace.
+In a project with components, set `test.include` of its `vite.config.mts` to `['src/**/spec/*.component.spec.ts']` — see [the library's](../example/libs/linkcheck/vite.config.mts). Component specs follow the base skill's rules.
 
-Each project declares `metadata.testing.unit/components/ui` as true or false, plus `uiHost` naming a real application's `serve` target when UI applies. Every true kind has a `conformance-<kind>` target invoking `node tools/testing/nx-project.mjs <kind> <project>` through `nx:run-commands`, with `forwardAllArgs: false` and `cache: false`.
+In the application's `-e2e` project, replace the generated `playwright.config.mts` with [the template](../templates/playwright.config.mts), putting the e2e project's name for `{E2eProject}` and the application's for `{HostProject}`. Browser specs go into its `src/` as `*.ui.spec.ts` (also `*.visual.spec.ts`, `*.style-snapshot.spec.ts`, `*.a11y.spec.ts`), screenshot baselines into `src/__screenshots__/`. Run by `make`, the config writes below the kind directory and serves the application on the free port it is given; run as `nx e2e`, it falls back to `tmp/` and port 4200.
 
-A component-bearing project also has `component-native`, using the Angular unit-test builder, its own spec tsconfig, the inherited Vitest runner config, native JSON reporter, coverage and an application development `buildTarget`. Existing compatible executors can be kept after checking their runtime options; the delivered command passes `outputFile` through Nx and skips cache. Native test/build/serve targets in the runnable example use `@angular/build` builders directly through Nx core.
+Beside framework-independent code — in a library or in the application — add `features/` and `test/` by the TypeScript parent's rules. Add `src/**/spec/**`, `src/**/test/**` and `src/**/features/**` to the `exclude` of the project's `tsconfig.app.json` or `tsconfig.lib.json`.
 
-Declare or infer dependency edges accurately: the example's portal depends on both libraries, so a formatter change selects the portal too. `false` is a deliberate applicability decision (the formatter has no DOM/browser boundary), not a workaround for missing tests. Native specs stay in `spec/`; features and steps stay beside the logic.
+A project needs nothing else: no testing metadata, no extra target, no hand-written dependency. Nx reads the dependencies from the imports of the path aliases in `tsconfig.base.json`.
 
 # Rule
 ## MUST
-### Validate the project inventory
-Run the full kinds after adding or changing a project, then check its selection record and evidence.
-- Risk: inaccurate applicability or dependencies silently omits necessary tests from delta checks.
-- Fix: add the required suite and target for true kinds; require a reason for false kinds and verify dependency propagation in the affected fixture.
+### Keep the generated project configuration
+Leave `project.json` and the plugin-inferred targets as the generator made them.
+- Risk: a renamed or hand-rolled `test` or `e2e` target is not found by the kind, and the project drops out of its report without an error.
+- Fix: keep the target names `test` and `e2e`; check the project list a kind writes to `result/projects.json` after adding a project.
+
+### Keep tests out of the production build
+Exclude `spec/`, `test/` and `features/` in every production `tsconfig`.
+- Risk: the application build compiles Cucumber step files and fails on their loose typing, or ships them.
+- Fix: the three `exclude` patterns above, in each project.

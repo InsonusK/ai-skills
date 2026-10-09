@@ -23,7 +23,7 @@ How can Nx caching avoid masking whether this run executed the tests?
 **Selected.**
 
 ### Description
-Set cache false on targets and bypass local/remote caches at every Nx invocation. Give kinds and nested project hosts their own Nx data/cache paths, and reject missing native output or project exit records. Preserve the installed Playwright browser location before moving XDG cache.
+Pass `--skip-nx-cache` to every Nx call a kind makes and keep Nx's own data below the kind directory; the standard targets and their cache settings stay as the generators wrote them, so a developer's `nx test` is still cached. Reject a selected project whose run left no native result. Preserve the installed Playwright browser location before moving XDG cache.
 
 ### Benefits
 - Every selected suite provides fresh evidence; sequential host shutdown cannot leave invocation state blocking another project host.

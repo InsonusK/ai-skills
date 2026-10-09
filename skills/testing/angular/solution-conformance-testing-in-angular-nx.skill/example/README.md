@@ -24,10 +24,19 @@ CI calls these same commands. Publish `tmp/testing/report/` as a static artifact
 
 For a check run with caller-selected output paths, use `make test-and-report TEST_RUN_PURPOSE=check TEST_WORK_DIR=out/work TEST_REPORT_DIR=out/report`. Without DELTA_BASE all applicable Cucumber/components/UI projects still run; mutation skips without `DELTA_BASE`, and domain coverage is collected without being published. For changed domain mutation, provide `DELTA_BASE=<commit>` to `make test-kind-mutation TEST_RUN_PURPOSE=check`.
 
-The reviewed Linux/Chromium visual baseline is committed beside the UI spec. Normal tests never update it. Follow the owning skill's baseline-review procedure when intentionally changing the UI or execution environment.
+The reviewed Linux/Chromium visual baseline is committed beside the UI spec, in `apps/portal-e2e/src/__screenshots__/`. Normal tests never update it. Follow the owning skill's baseline-review procedure when intentionally changing the UI or execution environment.
 
-The workspace has `apps/portal`, `libs/linkcheck` (the component and inherited domain showcase) and `libs/formatter` (domain logic). The application has its own scenarios beside `src/logic`. Every project declares test applicability in `project.json`; the formatter explicitly has no component/browser boundary.
+The workspace was created with the official tooling — `create-nx-workspace --preset=angular-monorepo`, then `nx g @nx/angular:application`, `nx g @nx/angular:library` and `nx g @nx/js:library` — and holds four projects: `apps/portal`, its browser-test project `apps/portal-e2e`, `libs/linkcheck` (a component and the domain showcase) and `libs/formatter` (logic only). Nothing about testing is declared in a `project.json`: a kind reads the workspace as Nx sees it.
 
-A report runs every applicable project. A check with `DELTA_BASE=<commit>` runs affected unit/component/UI targets; without a base it runs all applicable projects. Unaffected scenarios remain visible as `not-run` in the full living documentation. Mutation retains the parent's changed-file scope. Every Nx invocation skips local and remote task caches. Component/UI reports link per-project logs, coverage and Playwright evidence; `reports/tests/projects.json` describes unit selection.
+| Kind | Runs for a project that has | Through |
+| --- | --- | --- |
+| `unit` | a `.feature` file | `cucumber-js`, the project's features only |
+| `components` | the standard `test` target | `nx run {project}:test` |
+| `ui` | the standard `e2e` target | `nx run {project}:e2e` |
+| `mutation` | — | Stryker over the `mutate` patterns of `stryker.conf.json` |
 
-Run `python3 ../scripts/check-nx.py` for a two-commit affected fixture, cache-bypass failure, missing output and empty-project checks. Targets use Nx core and native Angular builders directly, without a second `angular.json` source of project configuration. Full contract verification: run `bash skills/testing/agent/run-example.sh <example-dir>` from the repository root.
+A developer's own commands keep working beside `make`: `nx test linkcheck`, `nx e2e portal-e2e`, `npx cucumber-js`.
+
+A `report` run takes every project a kind applies to. A `check` run with `DELTA_BASE=<commit>` takes the projects `nx show projects --affected` names — dependencies come from the imports, so a change in `libs/formatter` selects `apps/portal` and `apps/portal-e2e` too; without a base it takes all. Scenarios of an unaffected project stay in the living documentation as `not-run`. Every Nx call skips the task cache. The component and UI reports link each project's log, coverage and Playwright report; `reports/tests/projects.html` shows the unit selection.
+
+`python3 ../scripts/check-nx.py` proves the selection and the failure cases on a two-commit copy. The whole contract: `bash skills/testing/agent/run-example.sh <example-dir>` from the repository root.

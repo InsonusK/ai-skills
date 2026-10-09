@@ -8,6 +8,10 @@ import subprocess
 import tempfile
 
 source = Path(__file__).resolve().parents[1] / 'example'
+template = (source.parent / 'templates/playwright.config.mts').read_text()
+assert template.replace('{E2eProject}', 'portal-e2e').replace('{HostProject}', 'portal') == (source / 'apps/portal-e2e/playwright.config.mts').read_text(), 'e2e config differs from its template'
+for project in source.glob('*/*/project.json'):
+    assert 'metadata' not in json.loads(project.read_text()), f'{project}: testing declaration in a generated project'
 with tempfile.TemporaryDirectory(prefix='nx-shapes-proof-') as tmp:
     root = Path(tmp) / 'workspace'
     shutil.copytree(source, root, ignore=shutil.ignore_patterns(
@@ -31,7 +35,7 @@ with tempfile.TemporaryDirectory(prefix='nx-shapes-proof-') as tmp:
     command(['git', 'commit', '-m', 'change formatter'])
     command(['make', 'test-and-report', 'TEST_RUN_PURPOSE=check', 'DELTA_BASE=HEAD~1'])
     work = root / 'tmp/testing/kinds'
-    for kind, expected in [('unit', {'formatter', 'portal'}), ('components', {'portal'}), ('ui', {'portal'})]:
+    for kind, expected in [('unit', {'formatter', 'portal'}), ('components', {'portal'}), ('ui', {'portal-e2e'})]:
         data = json.loads((work / kind / 'result/projects.json').read_text())
         actual = {project['name'] for project in data['projects'] if project['selected']}
         assert actual == expected, (kind, actual)
@@ -43,7 +47,7 @@ with tempfile.TemporaryDirectory(prefix='nx-shapes-proof-') as tmp:
     assert any('libs/linkcheck/' in scenario['uri'] and scenario['status'] == 'not-run' for scenario in inventory)
     mutation = json.loads((work / 'mutation/report/mutation/reports/mutation-report.json').read_text())
     assert set(mutation['files']) == {'libs/formatter/src/index.ts'}, mutation['files'].keys()
-    print('Two-commit check: unit formatter+portal, components/UI portal, mutation formatter file; linkcheck did not run')
+    print('Two-commit check: unit formatter+portal, components portal, UI portal-e2e, mutation formatter file; linkcheck did not run')
     # Repeat the same target, then change only a spec to prove cache cannot mask failure.
     command(['make', 'test-kind-components'])
     spec = root / 'apps/portal/src/app/spec/portal.component.spec.ts'
@@ -57,37 +61,30 @@ with tempfile.TemporaryDirectory(prefix='nx-shapes-proof-') as tmp:
     spec.write_bytes(saved)
     print('Changed component expectation: second run executes and fails with portal identity')
     # Catalog browser suffixes must execute as part of UI, alongside *.ui.spec.ts.
-    catalog_spec = root / 'apps/portal/src/app/spec/portal.a11y.spec.ts'
+    catalog_spec = root / 'apps/portal-e2e/src/portal.a11y.spec.ts'
     catalog_spec.write_text("import { test, expect } from '@playwright/test';\ntest('catalog suite discovery', async ({ page }) => { await page.goto('/'); await expect(page.getByRole('button', { name: 'Check URL' })).toBeVisible(); });\n")
     command(['make', 'test-kind-ui'])
     assert any('catalog suite discovery' in test['name'] for test in json.loads((work / 'ui/result/ui-test.json').read_text())['tests'])
     catalog_spec.unlink()
     print('Catalog *.a11y.spec.ts suite executes in the UI kind')
-    # A selected project cannot disappear because it has no tests.
-    empty = root / 'libs/empty'
-    empty.mkdir(parents=True)
-    (empty / 'project.json').write_text(json.dumps({
-        'name': 'empty', 'root': 'libs/empty', 'projectType': 'library',
-        'metadata': {'testing': {'unit': True, 'components': False, 'ui': False}},
-        'targets': {'conformance-unit': {'executor': 'nx:run-commands', 'cache': False,
-          'options': {'command': 'node tools/testing/nx-project.mjs unit empty', 'forwardAllArgs': False}}}
-    }))
-    command(['make', 'test-kind-unit'], expected=1)
-    assert json.loads((work / 'unit/badges/tests.json').read_text())['color'] == 'red'
-    assert any('empty' in error for error in json.loads((work / 'unit/result/unit-test.json').read_text())['errors'])
-    shutil.rmtree(empty)
-    print('Declared empty project: failed unit kind and red repository badge')
-    # A command that exits zero but publishes no data is not a successful project test.
-    project = root / 'apps/portal/project.json'
-    saved = project.read_bytes()
-    data = json.loads(saved)
-    data['targets']['conformance-components']['options']['command'] = 'node -e "process.exit(0)"'
-    project.write_text(json.dumps(data))
+    # A project with the standard test target and no spec cannot turn the kind green.
+    spec_dir = root / 'libs/linkcheck/src/lib/spec'
+    hidden = root / 'libs/linkcheck/src/lib/spec.hidden'
+    spec_dir.rename(hidden)
     command(['make', 'test-kind-components'], expected=1)
     assert json.loads((work / 'components/badges/components.json').read_text())['color'] == 'red'
-    assert any('portal' in error for error in json.loads((work / 'components/result/projects.json').read_text())['errors'])
-    project.write_bytes(saved)
-    print('Zero-exit target without fresh result: failed component kind and portal evidence')
+    assert any('linkcheck' in error for error in json.loads((work / 'components/result/projects.json').read_text())['errors'])
+    hidden.rename(spec_dir)
+    print('Project with a test target and no spec: failed component kind, linkcheck named')
+    # A feature file whose scenarios are all excluded leaves its project with nothing run.
+    feature = root / 'libs/formatter/src/features/heading.feature'
+    saved_feature = feature.read_bytes()
+    feature.write_text(feature.read_text().replace('Feature:', '@status/todo\nFeature:', 1))
+    command(['make', 'test-kind-unit'], expected=1)
+    assert json.loads((work / 'unit/badges/tests.json').read_text())['color'] == 'red'
+    assert any('formatter' in error for error in json.loads((work / 'unit/result/unit-test.json').read_text())['errors'])
+    feature.write_bytes(saved_feature)
+    print('Project whose scenarios all are excluded: failed unit kind, formatter named')
     command(['make', 'test-kind-components', 'TEST_RUN_PURPOSE=check', 'DELTA_BASE=HEAD'])
     assert (work / 'components/skipped').is_file()
     print('No affected applicable projects: explicit skip, no green empty suite')
@@ -99,10 +96,3 @@ with tempfile.TemporaryDirectory(prefix='nx-shapes-proof-') as tmp:
     assert not list((work / 'unit/badges').iterdir())
     assert not list((work / 'unit/report').iterdir())
     print('Zero-affected unit: complete retained inventory, explicit skip, no badge/report')
-    # Missing metadata/target is a declaration failure, rather than disappearing from run-many.
-    data = json.loads(saved)
-    del data['targets']['conformance-components']
-    project.write_text(json.dumps(data))
-    command(['make', 'test-kind-components'], expected=1)
-    assert json.loads((work / 'components/badges/components.json').read_text())['color'] == 'red'
-    print('Missing declared target: failed kind, red badge')

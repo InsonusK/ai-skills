@@ -1,66 +1,39 @@
 {
   "name": "portal",
-  "root": "apps/portal",
-  "sourceRoot": "apps/portal/src",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "implicitDependencies": [
-    "linkcheck",
-    "formatter"
-  ],
-  "metadata": {
-    "testing": {
-      "unit": true,
-      "components": true,
-      "ui": true,
-      "uiHost": "portal"
-    }
-  },
+  "prefix": "app",
+  "sourceRoot": "apps/portal/src",
+  "tags": [],
   "targets": {
-    "conformance-unit": {
-      "executor": "nx:run-commands",
-      "cache": false,
-      "options": {
-        "command": "node tools/testing/nx-project.mjs unit portal",
-        "forwardAllArgs": false
-      }
-    },
-    "conformance-components": {
-      "executor": "nx:run-commands",
-      "cache": false,
-      "options": {
-        "command": "node tools/testing/nx-project.mjs components portal",
-        "forwardAllArgs": false
-      }
-    },
-    "conformance-ui": {
-      "executor": "nx:run-commands",
-      "cache": false,
-      "options": {
-        "command": "node tools/testing/nx-project.mjs ui portal",
-        "forwardAllArgs": false
-      }
-    },
     "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
+        "outputPath": "dist/apps/portal",
         "browser": "apps/portal/src/main.ts",
         "tsConfig": "apps/portal/tsconfig.app.json",
-        "styles": [
-          "apps/portal/src/styles.css"
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/portal/public"
+          }
         ],
-        "index": "apps/portal/src/index.html"
+        "styles": ["apps/portal/src/styles.css"]
       },
       "configurations": {
         "production": {
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kB",
-              "maximumError": "1MB"
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "4kB",
-              "maximumError": "8kB"
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
             }
           ],
           "outputHashing": "all"
@@ -70,12 +43,12 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production",
-      "executor": "@angular/build:application",
-      "cache": false
+      }
     },
     "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
       "configurations": {
         "production": {
           "buildTarget": "portal:build:production"
@@ -83,28 +56,20 @@
         "development": {
           "buildTarget": "portal:build:development"
         }
-      },
-      "defaultConfiguration": "development",
-      "executor": "@angular/build:dev-server",
-      "cache": false
+      }
     },
-    "component-native": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
       "options": {
-        "tsConfig": "apps/portal/tsconfig.spec.json",
-        "buildTarget": "portal:build:development",
-        "watch": false,
-        "runner": "vitest",
-        "runnerConfig": "vitest.components.config.mts",
-        "include": [
-          "**/spec/*.component.spec.ts"
-        ],
-        "coverage": true,
-        "reporters": [
-          "json"
-        ]
-      },
-      "executor": "@angular/build:unit-test",
-      "cache": false
+        "buildTarget": "portal:build",
+        "port": 4200,
+        "staticFilePath": "dist/apps/portal/browser",
+        "spa": true
+      }
     }
   }
 }
