@@ -278,15 +278,24 @@ if (action === "run") {
             )
             .join(" ")
         : "";
-      return `<tr><td>${escape(project.name)}</td><td>${escape(project.reason)}</td><td>${links}</td></tr>`;
+      const summary = resolve(
+        report,
+        "projects",
+        project.name,
+        "coverage/coverage-summary.json",
+      );
+      const covered = existsSync(summary)
+        ? `lines ${json(summary).total.lines.pct}%`
+        : "";
+      return `<tr><td>${escape(project.name)}</td><td>${escape(project.reason)}</td><td>${covered}</td><td>${links}</td></tr>`;
     })
     .join("");
   const index = resolve(report, "index.html");
   writeFileSync(
     index,
     readFileSync(index, "utf8").replace(
-      "</html>",
-      `<h2>Projects</h2><table>${rows}</table><pre>${escape(errors.join("\n"))}</pre></html>`,
+      "<!-- projects -->",
+      `<h2>Projects</h2><table><thead><tr><th>Project</th><th>Selection</th><th>Coverage</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table>`,
     ),
   );
   save("result/projects.json", selection);

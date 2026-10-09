@@ -50,6 +50,11 @@ Serve the application on the port `ui.sh` passes in `UI_TEST_PORT`; write no por
 - Risk: with a fixed port, a run that starts while the server of the previous run on the same machine is still shutting down fails before its first assertion.
 - Fix: keep the delivered `ui.sh` and config template; they take a free loopback port for every run.
 
+### Show every reviewed screenshot
+Keep the delivered result adapter's report page: it lists each committed baseline under `__screenshots__/` with the image itself, says whether this run compared it, and puts the run's image and the difference beside it when the comparison failed.
+- Risk: a reader of the report sees "4/5 passed" and cannot tell what the reference looks like or what changed without opening the repository and the Playwright trace.
+- Fix: copy `angular-results.mjs` unchanged; keep baselines in a `__screenshots__` folder, as the config template places them.
+
 ### Preserve native evidence
 Keep native JSON, runner logs, coverage, traces and screenshot diffs inside the owning kind directory and publish the assembled report without dropping its subdirectories.
 - Risk: a badge has no inspectable proof or the HTML links lose their assets.
