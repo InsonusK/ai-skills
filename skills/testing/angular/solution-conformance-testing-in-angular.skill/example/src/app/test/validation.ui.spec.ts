@@ -4,7 +4,9 @@ test('normalizes the URL through the user form', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('URL', { exact: true }).fill('  HTTPS://EXAMPLE.COM/path  ');
   await page.getByRole('button', { name: 'Check URL' }).click();
-  await expect(page.getByRole('status', { name: 'Validation result' })).toContainText('https://example.com/path');
+  await expect(page.getByRole('status', { name: 'Validation result' })).toContainText(
+    'https://example.com/path',
+  );
 });
 test('shows a visible error for an unsupported scheme', async ({ page }) => {
   await page.goto('/');

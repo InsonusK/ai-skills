@@ -1,5 +1,7 @@
 using Linkcheck;
+
 namespace Linkcheck.Tests;
+
 public sealed class World
 {
     public string Url { get; set; } = "";

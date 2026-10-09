@@ -12,7 +12,9 @@ async function submit(fixture: Awaited<ReturnType<typeof open>>, value: string) 
   const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
   input.value = value;
   input.dispatchEvent(new Event('input', { bubbles: true }));
-  fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  fixture.nativeElement
+    .querySelector('form')
+    .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   await fixture.whenStable();
 }
 
