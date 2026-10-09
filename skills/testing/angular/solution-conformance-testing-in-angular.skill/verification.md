@@ -1,4 +1,4 @@
-# Verification — 2026-10-08
+# Verification — 2026-10-09
 
 # Contract and scope
 
@@ -28,6 +28,8 @@ A deliberately incorrect component expectation was then tested through the same 
 
 # Runtime boundary
 
-Tested: Node 24.21, Angular core/compiler 22.2.1, Angular CLI/build 22.2.2, TypeScript 6.0.2, Vitest/coverage-v8 5.0.3, jsdom 30.1.2 and Playwright 1.64.0 with matching Chromium. This workspace lacks Chromium system libraries; the runs used runtime libraries previously extracted into `/tmp/angular-chromium-libs` via `LD_LIBRARY_PATH`. That is environment preparation, not an extra testing caller parameter. The supplied devcontainer provisions the browser/system prerequisites, but its Docker build was not executed because this workspace has no Docker binary.
+Tested: Node 24.21, Angular core/compiler 22.2.1, Angular CLI/build 22.2.2, TypeScript 6.0.2, Vitest/coverage-v8 5.0.3, jsdom 30.1.2 and Playwright 1.64.0 with matching Chromium. On 2026-10-09, `make init` successfully installed Chromium system libraries through the pinned Playwright `install --with-deps chromium` command. Ordinary Make runs no longer depend on `/tmp/angular-chromium-libs` or a private `LD_LIBRARY_PATH`. Earlier successful runs had used that workaround and did not prove host initialization; this correction supersedes that limitation. The Docker build remains unexecuted because this workspace has no Docker binary.
+
+The installer also provisioned the standard Liberation Sans font used for CSS Arial. The old baseline used fallback fonts from the incomplete environment (720×325); inspection of expected/actual/diff showed a typography-only difference. The example baseline was deliberately refreshed in the prepared environment (720×321), keeping application source and screenshot tolerances unchanged. Normal UI runs still use `updateSnapshots: 'none'`.
 
 Earlier adapter-level proof also verified red results for an empty component suite, missing native JSON, missing browser libraries and missing visual baseline; missing baselines were not silently created. Multi-application aggregates and older Angular executors remain outside the verified scope.

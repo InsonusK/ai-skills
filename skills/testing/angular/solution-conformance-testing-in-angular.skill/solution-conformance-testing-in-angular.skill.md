@@ -4,8 +4,8 @@ description: Extends TypeScript conformance testing with Angular TestBed compone
 whenToUse: Add component behavior and browser UI coverage to an Angular application that already uses the TypeScript Cucumber, coverage and mutation solution.
 domain: skill
 type: architecture
-version: 20261008220000
-updated: 20261008
+version: 20261009120000
+updated: 20261009
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-angular
@@ -33,6 +33,7 @@ depends_on:
 adr:
   - "[Angular test kinds](adr/angular-test-kinds.md)"
   - "[Complete Makefile example](adr/complete-makefile-example.md)"
+  - "[Chromium system dependencies](adr/chromium-system-dependencies.md)"
 ---
 
 # Goal
@@ -61,6 +62,8 @@ adr:
 - [Angular test kinds](adr/angular-test-kinds.md): native Angular builder for compilation/TestBed and Playwright for browser evidence, two discovered kinds.
 
 - [Complete Makefile example](adr/complete-makefile-example.md): one runnable Angular app executes all four kinds and generates its report through Make.
+
+- [Chromium system dependencies](adr/chromium-system-dependencies.md): initialization installs the browser runtime libraries through the pinned installer.
 
 # Requirements
 SOLUTION:

@@ -8,7 +8,7 @@
 
 This Angular application validates and normalizes a URL through the same real domain function exercised by the inherited TypeScript Cucumber suite. The form supports button/keyboard submission, validation errors and resubmission.
 
-Use the supplied [.devcontainer](.devcontainer/devcontainer.json), which provisions Node 24, Make, jq, Chromium and its system libraries, or a host with the same prerequisites. `make init` installs the committed lockfile and browser. In a prepared environment, run `make init && make test-and-report`; open `tmp/testing/report/index.html`.
+Use the supplied [.devcontainer](.devcontainer/devcontainer.json), which provisions Node 24, Make, jq, Chromium and its system libraries, or a host with the same prerequisites. `make init` installs the committed lockfile, Chromium and its system libraries. On Linux, system-package installation requires root or sudo; initialization fails if it cannot prepare the runtime. In a prepared environment, run `make init && make test-and-report`; open `tmp/testing/report/index.html`.
 
 | Make command | Result |
 | --- | --- |

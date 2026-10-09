@@ -32,6 +32,7 @@ for source in (ts/'example/src').rglob('*'):
 assert (example/'src/app/test/__screenshots__/validation.ui.spec.ts/linkcheck-form.png').is_file()
 assert json.loads((example/'package-lock.json').read_text())['packages']['']['version'] == '0.1.0'
 assert 'test-and-report:' not in (example/'Makefile').read_text()
+assert 'playwright install --with-deps chromium' in (example/'Makefile').read_text()
 PY
 make -s -C "$EXAMPLE" test-kinds
 make -s -C "$EXAMPLE" test-readme-check

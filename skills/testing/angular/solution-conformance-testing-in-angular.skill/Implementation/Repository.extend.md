@@ -2,7 +2,7 @@
 description: Add Angular component and browser kinds to the inherited report contract.
 element_kind: repository
 change_kind: extend
-updated: 20261008
+updated: 20261009
 tags:
   - solution/conformance-testing-in-angular
   - element/testing-repository
@@ -39,9 +39,9 @@ Use the existing Makefile include, shared core scripts and supplied `TEST_KIND_D
 - Fix: let filenames and `# badges:` declare the kinds; use their existing automatic `test-kind-components` and `test-kind-ui` targets.
 
 ### Prepare dependencies before running kinds
-Install from the committed lockfile and provision the matching Chromium browser before invoking these kinds.
+Install from the committed lockfile and provision the matching Chromium browser and its system libraries before invoking these kinds.
 - Risk: implicit downloads change versions or a missing runtime gets mistaken for a successful skip.
-- Fix: run `npm ci` and the pinned local Playwright `install chromium` command as environment preparation; retain a nonzero kind result when prerequisites are absent.
+- Fix: run `npm ci` and the pinned local Playwright `install --with-deps chromium` command as environment preparation; on Linux this uses the system package manager and may require sudo; fail initialization when installation fails instead of proceeding to tests with missing libraries.
 
 ### Preserve native evidence
 Keep native JSON, runner logs, coverage, traces and screenshot diffs inside the owning kind directory and publish the assembled report without dropping its subdirectories.
