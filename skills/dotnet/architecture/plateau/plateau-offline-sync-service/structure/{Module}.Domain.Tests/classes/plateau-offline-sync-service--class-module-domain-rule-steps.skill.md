@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Domain.Tests feature
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/class
   - plateau/offline-sync-service

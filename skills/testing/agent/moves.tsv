@@ -8,7 +8,7 @@ skills/common-workflow/test/cucmber-testing.skill	skills/testing/core/cucumber-t
 skills/dotnet/test/cucmber-testing-in-dotnet.skill.md	skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md
 skills/go/test/cucmber-testing-in-go.skill.md	skills/testing/go/cucumber-testing-in-go.skill.md
 skills/python/test/cucmber-testing-in-python.skill.md	skills/testing/python/cucumber-testing-in-python.skill.md
-skills/typescript/test/cucmber-testing-in-typescript.skill.md	skills/testing/typescript/cucumber-testing-in-typescript.skill.md
+skills/typescript/test/cucmber-testing-in-typescript.skill.md	skills/testing/typescript/cucumber-testing-in-typescript.skill/cucumber-testing-in-typescript.skill.md
 skills/common-workflow/test/no-test-theater.skill	skills/testing/core/no-test-theater.skill
 skills/angular/test/no-test-theater-angular.skill.md	skills/testing/angular/no-test-theater-in-angular.skill.md
 skills/dotnet/test/no-test-theater-dotnet.skill.md	skills/testing/dotnet/no-test-theater-in-dotnet.skill.md

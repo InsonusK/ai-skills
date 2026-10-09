@@ -1,6 +1,6 @@
 # Status
 
-Worktree `.ai-worktree/skills-testing`, branch `skills-testing` (base `develop`). Check: `bash skills/testing/agent/check.sh`.
+W16 worktree `.ai-worktree/testing-w16`, branch `testing-w16` (base local `skills-testing`); no push or PR. Earlier waves ran in `.ai-worktree/skills-testing` from `develop`. Check: `bash skills/testing/agent/check.sh`.
 
 | Wave | Content | State |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ Worktree `.ai-worktree/skills-testing`, branch `skills-testing` (base `develop`)
 | W14 | Namespaced tags (owner, 2026-10-09): `@type/…` on a feature, `@category/…` on a scenario, optional `@status/todo` / `@status/broken` / `@status/validated`; the report says `none` for a missing tag and `not-run` for a scenario no runner executed; a status legend on the scenarios page and in the living doc; 31 features retagged, the filters of the four runners switched | done, all twelve examples re-run |
 | W15 | Living doc (owner, 2026-10-09): the `[object Object]` header fixed — the status legend is the page footer now; the scenarios a classic-JSON runner did not execute (`todo`, `broken`, `not-run`) are added to the living doc; the Python example shows every type, category and status tag | done, all twelve examples re-run |
 | W15a | Scenarios page removed (owner, 2026-10-08) — in the Python stack only, the reference the owner narrowed the work to: its `unit.sh` no longer writes `report/scenarios/`, the skill texts and the feature template follow; `result/scenarios.json` stays for the tag check and the living doc. `run-example.sh` no longer requires the page | done, the Python example re-run: 26/26, 99.2%, 87.4% |
-| W16 | Every stack brought to the Python reference: the page removed everywhere, one living-doc content in all four stacks, showcase examples for Go, TypeScript and .NET, stack skills and catalog feature templates aligned | **not started — the task for the next agent is `TASK.md`** |
+| W16 | Every stack brought to the Python reference: the page removed everywhere, one living-doc content in all four stacks, showcase examples for Go, TypeScript and .NET, stack skills and catalog feature templates aligned | done — all thirteen examples verified; five W16 wave commits on `testing-w16` |
 | W5 | Run every example, fix what breaks; Python on `pytest-bdd`; runnable Python and TypeScript examples | done — see below |
 | W4 | Layout by convention and tests of pluggable modules as testing skills; plateau `*.Tests` structure skills removed; base plateaus name the testing skills | not started — needs the owner, see below |
 
@@ -73,22 +73,49 @@ What was broken and is fixed — the commit messages carry the detail:
 
 - ⚠️ **Mutation testing in a pull request.** The mutation kind runs in a `check` run only when `DELTA_BASE` is given, over the changed code. The pull-request workflow passes none, so it skips itself there — today's policy ("never gate a PR on mutation testing") is unchanged. Adding `DELTA_BASE: origin/${{ github.base_ref }}` to that workflow turns delta mutation into part of the merge gate.
 - **Consumers' `ai-skills.yaml`** that list `skills/common-workflow/test` or `skills/{stack}/test` must switch to `skills/testing/core` and `skills/testing/{stack}`.
-- **TypeScript keeps features in a root `features/` tree** with `features/step-definitions/`, while Go and Python keep them beside the code. `solution-conformance-testing-in-typescript` and `cucumber-testing-in-typescript` were not moved to the co-located layout; nobody asked yet.
-- **Feature templates of the architecture catalogs** (e.g. the dotnet catalog's test solutions) were not retagged: a project generated from them gets features without `@type/…`, and its unit kind fails until they are tagged. Belongs to W4.
-- **The TypeScript living doc has no status legend**: it is cucumber-js's own page. The legend is on the scenarios page there.
-- **Go scenario report is per outline, not per `Examples:` block.** `normalize_scenarios` matches results by test name, and godog names every row of an outline alike — one failed row marks every block of that outline `failed`. The other three stacks match by row line. godog's Cucumber JSON carries each row's own line (checked), so the fix is to join on it and keep the name match for a runner that writes no Cucumber JSON. Shown to the owner; not started.
+- **Go result matching aggregates same-named outline rows.** The inventory has separate `Examples:` entries, but `normalize_scenarios` matches results by test name, and godog names every row of an outline alike — one failed row marks every block of that outline `failed`. The other three stacks match by row line. godog's Cucumber JSON carries each row's own line (checked), so the fix is to join on it and keep the name match for a runner that writes no Cucumber JSON. Shown to the owner; not started.
 - **Angular on the `make` contract** (owner, 2026-10-08): component tests and pixel tests as test kinds of their own beside the scenario-based `unit` kind — a `solution-conformance-testing-in-angular` with one kind script and one badge name per kind. Not started; the Angular catalogs do not use the contract yet. Since W10 a new kind needs no change to the shared report builder.
 - **`taskbox-conformance.feature` is retagged in the `gw009-001` copy only** (`@type/infrastructure`, `@category/…`, `@status/todo`): the file is a verbatim copy from the `taskbox-go` library. The same tags have to be applied at the source — the next verbatim sync would drop it, and the unit kind would then fail.
-- **The stacks differ until W16 is done**: Go, TypeScript and .NET still write the scenarios page the owner removed, and only Python has the eight-feature showcase. `TASK.md` lists the differences and four defaults the owner may overrule before the work starts: TypeScript moves to the co-located layout, .NET keeps separate test projects, the plateau examples stay small, the Go inventory stays per outline.
-- **`gw009-001`'s TaskBox runner** (the pre-release library copy) writes no Cucumber JSON, so its 30 scenarios are in the scenario report but not in the living doc.
 - **Stryker.NET** logs `test coverage capture failed` twice in a `plateau-core` run and disables its coverage-based test selection for those projects. The score still matches the xUnit v2 ADR (55%), so nothing was changed.
-- **A pull request for this branch** is not opened: W4 is not started and the points above are open.
 - **The Python check-changes filter** names no path of `tools/testing/`, so a change to a kind script alone starts no test job. It was so before; noted while rewriting the filter.
 - **W4** (done for Python in W9) needs decisions before it can start: what happens to the dotnet catalog's `solution-dotnet-conformance-testing` (test-project layout) and the plateau `*.Tests` structure skills once the layout rule moves into `skills/testing/dotnet/`; and how a VP attaches its own test detail (deferred by the owner).
 
 ## Not changed
 
-- `.validation/*-log.yaml`: `validation_queue.py queue --dry-run` registered the moved skills under their new paths and pruned the old ones. `no-test-theater-in-angular` lost its date (20260909) and is due again; the rest were never validated.
+- `.validation/*-log.yaml`: `validation_queue.py queue --dry-run` registered the moved skills under their new paths and pruned the old ones. `no-test-theater-in-angular` is due again; the rest were never validated. W16 reran the dry-run queue and restored its registration-only log side effects, preserving the task's edits-under-skills rule.
 - ADRs and catalog `agent/DECISIONS.md` journals keep the old directory names in prose where they describe a past decision.
 - Catalog testing solutions stay where they are until W4: dotnet `solution-dotnet-conformance-testing`, `solution-cecil-architecture-tests`; angular `solution-app-testing`, `solution-ui-testing`, `solution-design-system-ui-testing`.
 - 140 broken links elsewhere in the repository existed before this branch and are untouched.
+
+
+## W16 — execution and review (2026-10-08)
+
+Waves: (1) shared inventory/living-doc pipeline and verbatim copies; (2) Go showcase and skill audit; (3) TypeScript showcase, co-location ADR and production-only package; (4) .NET showcase and skill audit; (5) catalog feature templates, dependent skill metadata, final measurements and validation queue. Every code wave was exercised and reviewed independently; no new caller target or variable. `INVARIANTS.md` plus the owner's `TASK.md` are the reviewed anchor.
+
+The four showcases have identical eight feature files, all 17 tags, two todo reasons and one broken reason. Go/TypeScript/.NET run 25 Cucumber scenarios; Python runs those 25 plus its pre-existing plain whitespace test. New plain tests were not added solely to equalize counts. Reports are left under each testing solution's `example/tmp/testing/report/index.html`.
+
+| Example | last full run exit | tests | coverage | mutation score |
+| --- | --- | --- | --- | --- |
+| Go solution-conformance-testing-in-go | 0 | 25/25 | 94.7% | 100% |
+| Go plateau-http-service | 0 | 5/5 | 10.4% | 25.9% |
+| Go plateau-cached-service | 0 | 11/11 | 12.0% | 24.4% |
+| Go plateau-dual-api-service | 0 | 5/5 | 8.5% | 23.3% |
+| Go plateau-integrated-service | 0 | 9/9 | 9.4% | 22.9% |
+| Go plateau-persistent-service | 0 | 13/13 | 10.5% | 20% |
+| Go gw009-001 (local PostgreSQL 18.1) | 0 | 48/48 | 42.7% | 56% |
+| .NET plateau-core | 0 | 7/7 | 72.4% | 55.0% |
+| .NET plateau-domain-service | 0 | 10/10 | 41.7% | 31.1% |
+| .NET plateau-offline-sync-service | 0 | 14/14 | 40.1% | 29.3% |
+| Python solution-conformance-testing-in-python | 0 | 26/26 | 99.2% | 87.4% |
+| TypeScript solution-conformance-testing-in-typescript | 0 | 25/25 | 99.31% | 90.2% |
+| .NET solution-conformance-testing-in-dotnet | 0 | 25/25 | 100% | 94.4% |
+
+Verification: `check.sh`; complete report/check/delta harness in every example; missing scenario category and feature type, failed scenario inventory and failed kind report state; real production-file delta in isolated Git copies for each stack. Go also passes `go test -race -count=5`; TypeScript build/npm pack excludes tests and features. Final shared changes are followed by unit/report refreshes and caller-directory check runs. `test-livingdoc.py` covers failed lifecycle hooks, excluded/not-run reasons, absent step JSON and wrong-green rejection. No browser is installed, so HTML, individual scenario cards, tags, status/reasons and local links were verified; interactive filtering was not tested.
+
+TaskBox's executed scenarios with no Cucumber step JSON now appear from real normalized runner results with an explicit “this runner did not publish step details” note. Its step-detail gap remains a library-runner limitation, not an absent scenario. The two documentary Cecil templates retain their named plain-test exception and may show `not-run`; they now carry required tags.
+
+One `@status/validated` was copied into each new showcase: `store.feature / A stored check is read back`; the exact reference scenario text was left unchanged. The existing Python tag was retained. No validated tag was removed. The owner should confirm or remove the three copied tags.
+
+Differences intentionally retained: .NET's separate test project; Go's VERSION manifest (local Go build info says devel); idiomatic .NET assembly metadata and TypeScript package manifest versus Python installed distribution metadata; Go's outline-row result aggregation. W4, Angular test-kind design, workflows, consumer configs and taskbox-go source changes remain outside W16.
+
+Final review tightened HTML matching so separate inventory entries cannot reuse one scenario card, and a showcase missing a whole feature cannot bypass the all-tags assertion.

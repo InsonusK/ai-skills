@@ -1,4 +1,5 @@
 ---
+version: 20261009130000
 description: Add the .NET test kinds (unit, mutation), the report builder and their normalization scripts to the Makefile behind the shared testing contract, aggregated across whichever test projects exist
 element_kind: repository
 change_kind: extend
@@ -29,14 +30,14 @@ Makefile                       — one line added: include tools/testing/testing
 README.md
 ```
 
-Which test projects exist, and what each one references, is decided by the architecture solution that applies this one (e.g. `solution-dotnet-conformance-testing`); every one of them must be part of the solution `dotnet test` runs.
+Keep a separate `{Project}.Tests` project for each production project, referencing that project and respecting its architectural reference boundary; include every test project in the solution.
 
 ## Directory and class skills
 | Directory | file | Description |
 | ----------------- | ---- | ----------- |
-| /tests/{TestProject} | reqnroll.json | One per test project: Reqnroll's `html` formatter (native report) and `message` formatter (scenario report source), both written into that project's own `bin/` |
+| /tests/{TestProject} | reqnroll.json | One per test project: Reqnroll's `html` formatter (native report) and `message` formatter (scenario inventory source), both written into that project's own `bin/` |
 | /report-template | index.html | Landing page `tools/testing/test-report.sh` publishes into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link; shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
-| / | stryker-config.json | `solution` + `test-case-filter: Category!=status/todo&Category!=status/broken`, so Stryker.NET's own test runs skip `@status/todo` scenarios |
+| / | stryker-config.json | `solution` + `test-case-filter: Category!=status/todo&Category!=status/broken`, so Stryker.NET's own test runs skip `@status/todo` and `@status/broken` scenarios |
 
 ## stryker-config.json
 ```json
@@ -69,12 +70,12 @@ Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `*.feature.cs` (Re
   - Fix: log with `trx;LogFilePrefix=test-results`, sum counters across every `test-results*.trx`, and let ReportGenerator's glob pick up every project's `coverage.cobertura.xml`.
 - `tools/testing/kinds/unit.sh` and `tools/testing/kinds/mutation.sh` must write each report into `$TEST_KIND_DIR/report/{name}/` and its badge through `kind_badge_count` / `kind_badge_percent`, per the same contract.
   - Risk: a badge printed by hand drifts from the other stacks' in schema and colors; a report outside `report/{name}/` is not published.
-  - Fix: keep the `kind_badge_*` and `kind_scenarios_report` calls the scripts carry.
-- Every test project's `reqnroll.json` must configure Reqnroll's `html` and `message` formatters to paths inside that project's own output folder — `tools/testing/kinds/unit.sh` merges them into one browsable report and one scenario report.
+  - Fix: keep the `kind_badge_*`, `kind_scenarios_check` and `kind_livingdoc` calls the scripts carry.
+- Every test project's `reqnroll.json` must configure Reqnroll's `html` and `message` formatters to paths inside that project's own output folder — `tools/testing/kinds/unit.sh` merges them into one browsable report and one scenario inventory.
   - Risk: two test projects writing to the same formatter output path silently overwrite each other; a project without the `message` formatter shows all its scenarios as `not-run`.
   - Fix: keep both formatters in every `reqnroll.json`, with project-relative output paths; merge them explicitly in the script.
-- `tools/testing/kinds/unit.sh` must exclude `@status/todo` scenarios from the run, write `$TEST_KIND_DIR/result/scenarios.json` through `tools/testing/normalize-scenarios.sh` on every run — including a red one — and only then exit with the runner's own code.
-  - Risk: under `set -e` a failing runner ends the script before the scenario report is written, so the report is missing or stale exactly on the red run it should describe.
+- `tools/testing/kinds/unit.sh` must exclude `@status/todo` and `@status/broken` scenarios from the run, write `$TEST_KIND_DIR/result/scenarios.json` through `tools/testing/normalize-scenarios.sh` on every run — including a red one — and only then exit with the runner's own code.
+  - Risk: under `set -e` a failing runner ends the script before the scenario inventory is written, so the report is missing or stale exactly on the red run it should describe.
   - Fix: wrap the runner in `set +e`/`set -e`, keep its exit code, normalize, then `exit` with it.
 - `stryker-config.json` must set `test-case-filter` to `Category!=status/todo&Category!=status/broken`.
   - Risk: Stryker.NET runs its own test pass, ignoring `dotnet test`'s filter; a `@status/todo` scenario with an undefined step fails the initial run and aborts every mutation run.
@@ -100,9 +101,9 @@ Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `*.feature.cs` (Re
 - [ ] WHEN `make test-kind-unit` runs THEN `$TEST_KIND_DIR/result/unit-test.json` reflects the sum of every test project's results, and `$TEST_KIND_DIR/report/tests/` merges every project's native report.
 - [ ] WHEN `make test-kind-unit` runs in a `report` run THEN `$TEST_KIND_DIR/result/coverage-test.json` and `$TEST_KIND_DIR/report/coverage/` reflect coverage across every test project.
 - [ ] WHEN `make test-kind-unit` runs and a scenario fails THEN `$TEST_KIND_DIR/result/scenarios.json` still lists every `.feature` entry, `@status/todo` ones with status `todo`, and the target exits non-zero.
-- [ ] WHEN `make test-report` runs THEN `$TEST_REPORT_DIR/reports/scenarios/index.html` shows the category × status table and every entry.
+- [ ] WHEN `make test-report` runs THEN the `tests` link opens the living doc, which shows every scenario, all its tags, exclusion reasons and the status legend; no separate scenarios page exists.
 - [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` runs THEN only mutants in production `.cs` files changed since `<ref>` (any commit expression — `HEAD~1`, `origin/main`) are evaluated, and the kind skips itself when none changed.
-- [ ] WHEN `make test-report` runs after both kinds THEN `$TEST_REPORT_DIR/` contains `index.html`, `badges/{tests,coverage,mutation}.json`, `reports/{tests,coverage,mutation,scenarios}/`, and `run.json`.
+- [ ] WHEN `make test-report` runs after both kinds THEN `$TEST_REPORT_DIR/` contains `index.html`, `badges/{tests,coverage,mutation}.json`, `reports/{tests,coverage,mutation}/`, and `run.json`.
 - [ ] WHEN `make test-kind-unit` runs with `npm` available THEN `report/tests/cucumber/*.ndjson` and `report/tests/livingdoc/index.html` exist; without `npm` the kind's exit code is unchanged.
 - [ ] WHEN `make test-kind-mutation TEST_RUN_PURPOSE=check` runs without `DELTA_BASE` THEN the kind skips itself, leaving `skipped` and no badge.
 - [ ] WHEN `make test-readme-check` runs THEN it passes with one README badge per declared badge.

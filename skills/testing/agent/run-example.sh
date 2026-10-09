@@ -28,6 +28,8 @@ for f in index.html run.json badges/tests.json badges/coverage.json badges/mutat
          reports/tests/index.html reports/coverage reports/mutation \
          reports/tests/livingdoc/index.html; do has "$R/$f"; done
 hasnt public
+hasnt "$R/reports/scenarios"
+python3 "$A/livingdoc-check.py" tmp/testing/kinds/unit/result/scenarios.json "$R/reports/tests/livingdoc" || fail=1
 python3 "$A/report-links.py" "$R" || fail=1
 jq -r '.kinds[] | "  \(.kind): \(.state) - \(.note)"' "$R/run.json" 2>/dev/null
 cat "$R"/badges/*.json 2>/dev/null | sed 's/}{/}\n{/g; s/^/  /'; echo
@@ -38,6 +40,8 @@ run B make test-and-report TEST_RUN_PURPOSE=check TEST_WORK_DIR=out/work TEST_RE
 R=out/site/testing
 hasnt tmp; hasnt public
 has "$R/index.html"; has "$R/run.json"; has "$R/badges/tests.json"
+hasnt "$R/reports/scenarios"
+python3 "$A/livingdoc-check.py" out/work/kinds/unit/result/scenarios.json "$R/reports/tests/livingdoc" || fail=1
 hasnt "$R/badges/coverage.json"; hasnt "$R/badges/mutation.json"; hasnt "$R/reports/coverage"; hasnt "$R/reports/mutation"
 [ "$(jq -r '.kinds[] | select(.kind == "mutation").state' "$R/run.json" 2>/dev/null)" = skipped ] \
   && ok "mutation skipped" || bad "mutation not skipped"

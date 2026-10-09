@@ -55,5 +55,5 @@ Reqnroll generates a fixture only for `ReqnrollFeatureFiles` items — a file li
 
 # Check list
 - [ ] `{Module}.Domain.Rules.Tests.csproj` references `{Module}.Domain.Rules` only
-- [ ] `{Module}.Domain.Rules.Spec/**/*.feature` is linked in as `<ReqnrollFeatureFiles Include>`, and the scenario report lists none of its scenarios as `missing`
+- [ ] `{Module}.Domain.Rules.Spec/**/*.feature` is linked in as `<ReqnrollFeatureFiles Include>`, and the `result/scenarios.json` inventory lists none of its scenarios as `not-run`
 - [ ] Every scenario in the linked spec has a passing step-definition binding here, regardless of classification tag

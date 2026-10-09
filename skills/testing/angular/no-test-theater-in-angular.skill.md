@@ -2,7 +2,8 @@
 name: no-test-theater-in-angular
 description: Angular/TestBed-specific rules for assertion strength — DOM/output assertions over toBeTruthy(), HttpClientTestingModule verification, form-validation assertions, RxJS timing, and the E2E-vs-unit boundary.
 whenToUse: When writing or reviewing TestBed/Jasmine/Jest tests in an Angular project.
-updated: 20260909
+version: 20261008170000
+updated: 20261008
 tags:
   - stack/typescript
   - concern/testing/unit
@@ -18,7 +19,7 @@ tags:
 - Unit/component coverage gaps closed by unit/component tests, not by a single E2E test.
 
 # Scope
-Adds Angular-specific rules to [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md); the language-agnostic assertion-strength protocol lives there. Covers TestBed/Jasmine/Jest component and service tests. Does not cover E2E test design or non-Angular test suites.
+Adds Angular-specific rules to [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md); the language-agnostic assertion-strength protocol lives there. Covers TestBed/Jasmine/Jest component and service tests. Business/service rules use category-tagged Cucumber scenarios under type-tagged features beside their TypeScript modules. UI component and pixel tests belong to the UI framework's test kinds; their wiring remains a separate design task. Does not cover E2E test design or non-Angular test suites.
 
 # Core Principle
 - **Creation is not behaviour** - "the component was created" is not a behaviour claim; a component test must prove what the component renders, emits, or calls.
@@ -41,7 +42,7 @@ Name every test `it('should <behavior> when <condition>', ...)`.
 Assert a DOM result (`fixture.debugElement.query(...)`) or an emitted event/output in every component test.
 - Violation: `expect(component).toBeTruthy()` as a component spec's only assertion.
 - Risk: the component can render nothing, emit nothing, or call the wrong thing and the test still passes.
-- Fix: keep `toBeTruthy()` only as the first smoke test; assert rendered DOM or an emitted output for the behaviour under test.
+- Fix: assert rendered DOM or an emitted output for the behaviour under test.
 
 ### Verify HTTP requests
 For services with HTTP calls, use `HttpClientTestingModule` + `httpMock.expectOne(...)` and call `httpMock.verify()` in `afterEach`.
@@ -66,7 +67,7 @@ Close a unit or component coverage gap with a unit/component test, never with a 
 - Fix: add a unit/component test for the behaviour; keep E2E for cross-component flows.
 
 # Check list
-- [ ] Every component spec file has at least one assertion beyond `toBeTruthy()`.
+- [ ] Every component test checks a concrete DOM result or emitted output.
 - [ ] Every HTTP-calling service test calls `httpMock.verify()` in `afterEach`.
 - [ ] Every form has a test for the invalid state and the specific validator error message.
 - [ ] No test uses real timers/`setTimeout` where `fakeAsync`/marble testing would apply.

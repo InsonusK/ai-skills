@@ -1,0 +1,14 @@
+{
+  "name": "Angular conformance example",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": [
+    "--ipc=host"
+  ],
+  "postCreateCommand": "make init",
+  "forwardPorts": [
+    4200
+  ],
+  "remoteUser": "root"
+}

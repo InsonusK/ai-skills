@@ -4,7 +4,7 @@ description: Sets up the TypeScript side of the Cucumber/coverage/mutation quali
 whenToUse: Set up or review the test suite of a framework-agnostic TypeScript package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing TypeScript package, or wire coverage and mutation testing into a TypeScript package's `make`/CI pipeline.
 domain: skill
 type: architecture
-version: 20261009120000
+version: 20261008170000
 tags:
   - solution/conformance-testing-in-typescript
   - skill/architecture/solution
@@ -17,7 +17,7 @@ tags:
 
 creates:
   - "{Package}/features/{rule}.feature"
-  - "{Package}/features/step-definitions/{rule}.steps.ts"
+  - "{Package}/test/{rule}.steps.ts"
 
   - tools/testing/normalize-scenarios.sh
   - tools/testing/messages-results.jq
@@ -39,10 +39,10 @@ adr:
 - Gherkin `.feature` files execute against the package's real exported functions/classes via `@cucumber/cucumber` step definitions.
 - `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` fails fast on a changed line's surviving mutant, without paying for a full-package mutation run on every call.
 - `make test-kind-unit TEST_RUN_PURPOSE=report` and `make test-report` give `master` an up-to-date coverage/mutation-score report and the data the README badges are generated from.
-- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type and category, its status, and `@status/todo` reason — and `make test-report` renders it as `$TEST_REPORT_DIR/reports/scenarios/`, per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-report).
+- `make test-kind-unit` also writes `$TEST_KIND_DIR/result/scenarios.json` — every `.feature` entry with its type and category, its status, and `@status/todo` reason — the unit kind validates its tags and the living doc includes excluded scenarios from it, per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-inventory).
 
 # Core Principles
-- Step definitions import from the package's `src/index.ts` public API, never from an internal module path directly.
+- Features and tests sit beside their production module, per [cucumber-testing-in-typescript](skills/testing/typescript/cucumber-testing-in-typescript.skill/cucumber-testing-in-typescript.skill.md); steps call adjacent real modules, and contract scenarios call the public entry point.
 - Step definitions call the package's real exported function/class; they never re-implement the rule under test.
 - Every test of the package is a Cucumber scenario: coverage and mutation testing run against that one suite. Tests that need a UI framework — components, pixels, a browser — are other test kinds, defined by that framework's testing solution.
 
@@ -57,7 +57,7 @@ SOLUTION:
 
 NPM:
 - @cucumber/cucumber
-  - Runs `.feature` files against `features/step-definitions/*.steps.ts`.
+  - Runs `.feature` files against `src/{package}/test/*.steps.ts`.
 - c8
   - Measures the coverage of the `cucumber-js` run (V8 coverage, HTML and summary reports).
 - @stryker-mutator/core
@@ -71,12 +71,13 @@ REPOSITORY:
 
 PACKAGE:
 - [[skills/testing/typescript/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend|{Package}]] - extend - add the Cucumber, `c8` and Stryker dependencies and config
+  - [[skills/testing/typescript/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend/{rule}.feature.create|{rule}.feature]] - create - tagged scenarios beside the production module
   - [[skills/testing/typescript/solution-conformance-testing-in-typescript.skill/Implementation/{Package}.package.extend/{rule}.steps.ts.create|{rule}.steps.ts]] - create - step definitions binding a `.feature` file to the package's real API
 
 # Workflow
 ## Add conformance coverage for a new validation rule (happy path)
-1. A `.feature` file describing the rule (e.g. `features/{rule}.feature`) is added or extended with `Given/When/Then` scenarios.
-2. `features/step-definitions/{rule}.steps.ts` is created with `Given`/`When`/`Then` bindings that import from `src/index.ts` and call the real exported function/class.
+1. A `.feature` file describing the rule (e.g. `src/{package}/features/{rule}.feature`) is added or extended with `Given/When/Then` scenarios.
+2. `src/{package}/test/{rule}.steps.ts` is created with `Given`/`When`/`Then` bindings that import the adjacent real module and call the real exported function/class.
 3. `make test-kind-unit` runs `cucumber-js` — under `c8` in a `report` run — and normalizes the result into `$TEST_KIND_DIR/result/unit-test.json` and `$TEST_KIND_DIR/result/scenarios.json` (plus `$TEST_KIND_DIR/result/coverage-test.json`).
 4. `make test-kind-mutation` runs `stryker run` — across the whole package in a `report` run; in a `check` run scoped to the `src/**/*.ts` files changed since `DELTA_BASE`, and skipped without one or when none changed — and normalizes the result into `$TEST_KIND_DIR/result/mutation-test.json`.
 5. `make test-report` gathers every kind's `report/` and `badges/` into `$TEST_REPORT_DIR/`, ready to publish. `make test-and-report` runs all three targets in sequence.
@@ -88,11 +89,14 @@ PACKAGE:
 3. Whoever notices the survivor (via the report or the README's mutation-score badge) either strengthens the assertion in the corresponding scenario/step definition in a follow-up PR, or explicitly accepts it per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
 
 # Ground truth
-[`example/`](./example/) is a small package carrying the kind scripts as they are delivered: three features — plain scenarios, a `Scenario Outline` with two `Examples:` blocks, data tables, two `@status/todo` scenarios and a `@status/broken` one, a tag on each feature — over three modules exported from `src/index.ts`. Verified on 2026-10-07 with Node 24, `@cucumber/cucumber` 10, `c8` 10, `@stryker-mutator/core` 8 (`command` test runner), `tsx` 4, with `cucumber.mjs` and `stryker.conf.json` as delivered in `assets/`:
-- `make test-and-report` — exit `0`; 10/10 scenarios, coverage 100%, mutation score 89.4%; the scenario report lists both `Examples:` blocks and the `@status/todo` entry with its reason.
-- `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped, no coverage report, only the `tests` badge.
-- A broken `Examples:` row — `make test-kind-unit` exits non-zero, that block is `failed` and its sibling `passed`.
-- `make test-kind-mutation TEST_RUN_PURPOSE=check DELTA_BASE=<ref>` in a copy with its own git history — only the changed file is mutated, and the project's `thresholds.break` fails the run.
+[`example/`](./example/) ports the Python reference's eight features beside real TypeScript production modules: URL checks, extraction, batch summary, CLI, file store, record mapping, result contract and package metadata. All seven type tags, seven categories, two todos with reasons, one broken scenario and one validated scenario are present. The unchanged validated scenario is `store.feature` / `A stored check is read back`, for owner confirmation.
+
+Verified on 2026-10-08 with Node 24, cucumber-js 10, c8 10, StrykerJS 8 and tsx 4:
+- `make init && make test-and-report`: exit 0; 25/25 Cucumber scenarios, coverage 99.31%, mutation score 90.2% (101 killed, 11 survived). Python also has one plain whitespace test, so its test count is 26.
+- `npm run build && npm pack --dry-run`: only production `dist/` output, README and package metadata are shipped; no feature or step file is compiled into the distribution.
+- `run-example.sh`: report and caller-selected check directories, living-doc completeness, zero broken links, and delta mutation pass.
+- On an isolated copy, a broken scenario fails the unit kind while `make test-report` succeeds and reports it as failed; removing a category names the offending scenario. Delta mutation evaluates only the changed `extractor.ts` (93.3%).
+- The store uses a per-instance promise queue; concurrent async writers complete before assertions, with no sleeps or network dependencies.
 
 # Rules
 Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at the target — this index only points to where the actual rule lives.
@@ -104,8 +108,8 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 
 # Check list
 - [ ] `package.json` lists `@cucumber/cucumber`, `tsx`, `c8`, `@stryker-mutator/core` as dev dependencies; `cucumber.mjs` and `stryker.conf.json` are in the package root.
-- [ ] Every `.feature` scenario has a matching step definition that imports from `src/index.ts` and calls production code.
+- [ ] Every `.feature` scenario has a matching step definition that imports the adjacent real module and calls production code.
 - [ ] `make test-kind-unit`, `make test-kind-mutation`, `make test-report`, and `make test-and-report` exist at the repository root and support the toggles defined by [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract).
 - [ ] `$TEST_KIND_DIR/result/*.json` — `scenarios.json` included, written on a red run too — and `$TEST_KIND_DIR/report/<kind>/` follow that same contract's schema.
-- [ ] `@status/todo` scenarios are excluded from the run and listed as `todo` in `$TEST_REPORT_DIR/reports/scenarios/`.
+- [ ] `@status/todo` and `@status/broken` scenarios are excluded from the run and shown with their tags and reasons in the living doc.
 - [ ] `make test-kind-unit` keeps cucumber-js's Cucumber Messages in `$TEST_KIND_DIR/report/tests/cucumber/` and renders `$TEST_KIND_DIR/report/tests/livingdoc/` per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#living-doc-report|the parent solution's living-doc report]], from `tools/livingdoc/`, never the project's `package.json`.

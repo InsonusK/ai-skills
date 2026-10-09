@@ -28,6 +28,11 @@ func TestFeatures(t *testing.T) {
 			registerWorldHooks(sc, w)
 			registerCheckSteps(sc, w)
 			registerExtractSteps(sc, w)
+			registerCliSteps(sc, w)
+			registerContractSteps(sc, w)
+			registerMappingSteps(sc, w)
+			registerPackageSteps(sc, w)
+			registerStoreSteps(sc, w, t)
 		},
 		Options: &godog.Options{
 			Format:   format,

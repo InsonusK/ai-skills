@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 
@@ -21,8 +22,17 @@ type World struct {
 	input  string
 	result linkcheck.Result
 
-	text  string
-	links []string
+	out        bytes.Buffer
+	errOut     bytes.Buffer
+	exitCode   int
+	record     map[string]any
+	mapped     linkcheck.Result
+	mappingErr error
+	store      *linkcheck.HistoryStore
+	history    []linkcheck.Result
+	storeErr   error
+	text       string
+	links      []string
 }
 
 func newWorld() *World {

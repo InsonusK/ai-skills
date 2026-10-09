@@ -11,6 +11,8 @@ tags:
 ---
 
 # Problem
+
+This records the earlier choice. Its page/renderer output is superseded by [[./one-livingdoc-view.md|One living-doc view]]: the inventory now drives the tag check and completes one shared living doc, which is the only scenario view.
 `public/scenarios/` lists the inventory but is a plain table. Several ecosystems already produce a polished, filterable living-doc view from the runner's report. The runners split into two protocols — classic Cucumber JSON (godog, Cucumber-JVM, cucumber-ruby, pytest-bdd, behave via plugin) and Cucumber Messages (cucumber-js, Reqnroll) — and each protocol has a well-known Node renderer. Open points were: who pins the renderer version, which renderer handles Messages, and where the Node install lives in a project whose primary language is already Node.
 
 # Selected variant

@@ -5,7 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "test": "cucumber-js",
-    "mutation": "stryker run"
+    "mutation": "stryker run",
+    "build": "tsc"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^10",
@@ -13,5 +14,9 @@
     "c8": "^10",
     "tsx": "^4",
     "typescript": "^5"
-  }
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ]
 }

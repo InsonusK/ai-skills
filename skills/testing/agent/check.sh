@@ -99,7 +99,7 @@ for s in go dotnet; do
     cmp -s "$src/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/tools/testing/kinds/"
   done < <(git ls-files -co --exclude-standard "skills/$s/**/example/tools/testing/kinds/*.sh")
 done
-for s in go python typescript; do   # the runnable example inside the testing skill itself
+for s in go python typescript dotnet; do   # the runnable example inside the testing skill itself
   src=skills/testing/$s/solution-conformance-testing-in-$s.skill
   while IFS= read -r copy; do
     cmp -s "$src/assets/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/assets/tools/testing/kinds/"
@@ -117,6 +117,10 @@ done < <(git ls-files -co --exclude-standard 'skills/go/**/example/tools/normali
 # 11. One Makefile, one report builder: no testing recipe in an example Makefile, no stack-own report builder.
 out=$(git grep -lE '^test-(kind|report|and-report)[a-z-]*:' -- 'skills/**/example/Makefile'; git ls-files 'skills/**/tools/test_report/*' 'skills/**/example/scripts/test-report.sh')
 [ -n "$out" ] && { err "testing recipe or report builder outside tools/testing/:"; echo "$out"; }
+
+# 12. The removed page must not come back as a live function/call.
+out=$(git grep -n 'kind_scenarios_report' -- skills ':!*/agent/*' ':!*/adr/*')
+[ -n "$out" ] && { err "removed scenario-page function/call:"; echo "$out"; }
 
 [ $fail -eq 0 ] && echo "skills/testing: all checks passed"
 exit $fail

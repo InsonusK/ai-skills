@@ -2,7 +2,7 @@
 # badges: tests coverage
 # The unit test kind for .NET: builds the solution, runs every test project in one
 # `dotnet test`, and normalizes the combined results into result/*.json, keeping a merged,
-# browsable native report under report/. Coverage is collected and reported only in a
+# browsable native report under report/. Coverage is always collected and reported only in a
 # report run.
 set -euo pipefail
 source tools/testing/kind.sh
@@ -17,7 +17,7 @@ if [ "$TEST_RUN_PURPOSE" = report ]; then
   WITH_CODE_COVERAGE=true
   kind_mode "every test with coverage collected and reported"
 else
-  kind_mode "every test - coverage not collected"
+  kind_mode "every test - coverage collected, not reported"
 fi
 
 dotnet restore "$SOLUTION"
@@ -30,10 +30,7 @@ rm -rf "$TEST_RESULTS_DIR"
 find . -name reqnroll_messages.ndjson -path "*/bin/*" -delete
 mkdir -p "$RESULT_DIR" "$REPORT_DIR/tests"
 
-COLLECT_ARGS=()
-if [ "$WITH_CODE_COVERAGE" = "true" ]; then
-  COLLECT_ARGS=(--collect:"XPlat Code Coverage")
-fi
+COLLECT_ARGS=(--collect:"XPlat Code Coverage")
 
 # Running at the solution level picks up every test project in one command.
 # LogFilePrefix gives each project's trx its own file name (a fixed LogFileName would
@@ -76,7 +73,7 @@ done < <(find "$TEST_RESULTS_DIR" -name 'test-results*.trx' -print0)
 printf '{"total":%s,"passed":%s,"failed":%s}' "$TOTAL" "$PASSED" "$FAILED" > "$RESULT_DIR/unit-test.json"
 kind_badge_count tests tests "$PASSED" "$TOTAL"
 
-# Scenario report: each test project's Reqnroll "message" formatter output (Cucumber
+# Scenario inventory: each test project's Reqnroll "message" formatter output (Cucumber
 # Messages) -> [{uri, line, status}], its project-relative uri made repo-relative.
 SCENARIO_RESULTS="$(mktemp)"
 trap 'rm -f "$SCENARIO_RESULTS"' EXIT
@@ -87,7 +84,6 @@ while IFS= read -r -d '' messages; do
 done < <(find . -path "*/bin/Release/*/reqnroll_messages.ndjson" -print0) \
   | jq -s 'add // []' > "$SCENARIO_RESULTS"
 bash tools/testing/normalize-scenarios.sh "$SCENARIO_RESULTS"
-kind_scenarios_report
 kind_scenarios_check || TEST_EXIT=1   # an untagged scenario or feature is a failed check
 
 # Living doc: every project's Cucumber Messages file becomes the runner's standard report

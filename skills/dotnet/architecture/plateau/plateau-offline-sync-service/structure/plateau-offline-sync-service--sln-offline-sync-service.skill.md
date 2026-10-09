@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level project in a plateau
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/sln
   - plateau/offline-sync-service

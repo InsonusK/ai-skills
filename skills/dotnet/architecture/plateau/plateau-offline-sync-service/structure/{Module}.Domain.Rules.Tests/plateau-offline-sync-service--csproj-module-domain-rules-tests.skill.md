@@ -5,7 +5,7 @@ whenToUse: when adding a scenario proving a Rule's own Check() / IsValid() / IRu
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -82,3 +82,5 @@ __Applied solutions:__
 - [ ] `{Module}.Domain.Rules.Tests.csproj` references only `{Module}.Domain.Rules` plus the five test packages.
 - [ ] Proves every `.feature` scenario against `IsValid()`/`Check()`.
 - [ ] No scenario text duplicated across the three rule-proving test projects.
+
+Feature files follow [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]] for mandatory feature type and scenario/Examples category tags; architecture classification tags and the existing documentary exceptions remain separate.

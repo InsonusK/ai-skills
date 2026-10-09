@@ -35,7 +35,7 @@ tools/
 | tools/normalize_mutation | main.go | `gremlins` report → `$TEST_KIND_DIR/result/mutation-test.json` |
 | report-template | index.html | Landing page published into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link |
 | tools/testing | (base) | Copied verbatim from `solution-conformance-testing`: the Makefile side, the runner, the report builder |
-| tools/testing/kinds | unit.sh, mutation.sh | This stack's two test kinds — run `go test` / `gremlins`, call the normalizers, then write the badges (`kind_badge_count`, `kind_badge_percent`) and the scenario page (`kind_scenarios_report`) |
+| tools/testing/kinds | unit.sh, mutation.sh | This stack's two test kinds — run `go test` / `gremlins`, call the normalizers, then write the badges (`kind_badge_count`, `kind_badge_percent`) and the living doc (`kind_livingdoc`) |
 | tools/livingdoc | package.json, package-lock.json, render.mjs | Copied verbatim from `solution-conformance-testing`; renders `$TEST_KIND_DIR/report/tests/cucumber/` → `$TEST_KIND_DIR/report/tests/livingdoc/` |
 
 # Implementation changes
@@ -97,4 +97,4 @@ require (
 - [ ] A mutant in a package whose scenarios run from its `test/` folder is reported `KILLED`, not `LIVED`, when a scenario covers the changed line.
 - [ ] `make test-kind-mutation` installs `gremlins` on first use; in a `report` run it exits `0` when mutants survive — also with a threshold in `.gremlins.yaml` — and non-zero only when `gremlins` could not run (a red test fails its coverage step).
 - [ ] `make test-kind-mutation TEST_RUN_PURPOSE=check` skips itself without `DELTA_BASE` and passes `--diff` with one, also in a module below the repository root; `make test-kinds` prints `mutation - badges: mutation` and `unit - badges: tests coverage`.
-- [ ] `make test-report` fills `$TEST_REPORT_DIR` with `index.html`, `reports/{tests,coverage,mutation,scenarios}/`, `badges/{tests,coverage,mutation}.json`, and `run.json`; `make test-readme-check` passes.
+- [ ] `make test-report` fills `$TEST_REPORT_DIR` with `index.html`, `reports/{tests,coverage,mutation}/`, `badges/{tests,coverage,mutation}.json`, and `run.json`; `make test-readme-check` passes.
