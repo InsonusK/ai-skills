@@ -1,6 +1,6 @@
 # Angular repository shapes — review contract
 
-Status: preparation complete; owner review pending before bulk authoring.
+Status: owner approved contract and delta decisions; wave 1 verified, wave 2 in progress.
 Task: [TASK-angular-shapes.md](TASK-angular-shapes.md).
 Base: `skills-testing` at `b3570c54`; task branch: `angular-testing-shapes`.
 Work stays local: no push or PR, per [TASK.md](TASK.md).
@@ -42,8 +42,8 @@ Each wave receives a separate conformance review and commit after its checks pas
 
 - Decided by owner: three skills by repository shape; scenarios beside logic in both applications and libraries.
 - Recommendation: one badge per kind; project breakdown inside the report.
-- ⚠️ Confirm invariant 9: full domain mutation across app/library projects in report runs; changed source files only in check runs. The unchanged TypeScript runner uses `git diff` filtered by Stryker patterns, so mutating whole affected projects would contradict the task's requirement to retain that runner.
-- ⚠️ Confirm invariant 10: affected native kinds in delta check runs change the base's always-full behavior and require the owner's decision.
+- Owner approved invariant 9: full domain mutation across app/library projects in report runs; changed source files only in check runs. The unchanged TypeScript runner uses `git diff` filtered by Stryker patterns, so mutating whole affected projects would contradict the task's requirement to retain that runner.
+- Owner approved invariant 10: affected native kinds in delta check runs change the base's always-full behavior and require the owner's decision.
 - Recommendation: a project explicitly declares applicability; absent tests for an applicable kind fail. Non-UI domain libraries do not need dummy browser tests.
 - Implementation detail to verify: how Nx test targets expose native output for the pinned Angular/Nx versions. No measured compatibility claim before execution.
 
@@ -53,3 +53,10 @@ Each wave receives a separate conformance review and commit after its checks pas
 - `bash skills/testing/agent/check.sh`: exit 0, all checks passed.
 - Node: `v24.21.0`; available disk exceeds 200 GB.
 - No new skill or runnable example authored before owner review.
+
+## Wave 1 evidence and review
+
+- Library harness passes report/check, living-doc tags/reasons and links: 25/25, coverage 98.11%, mutation 90.2%, component/UI 4/4 each. Dependency-cold npm-ci plus report: 35.3 seconds with warmed download/browser caches. Package dry run lists 4 production files, no tests.
+- Native assertion failures, missing browser, missing/empty adapter evidence are red. All temporary breaks restored from byte copies.
+- Independent audit (`review_library`) found missing public-entry alias and ng-packagr installation instructions; both fixed. No runner/config defect remained.
+- Shape names explicitly match the owner's task; check.sh §4 allows only the two named refinements and §10 resolves replacement/inherited scripts and checks config/adapter copies.
