@@ -3,7 +3,8 @@ name: solution-ui-testing
 description: Three-layer UI component testing in the monolith — behavioral (Testing Library), visual regression (Playwright screenshots), and accessibility (@axe-core/playwright), each visual spec paired with a computed-style snapshot, run against a minimal apps/component-preview harness, without Storybook or Chromatic
 domain: skill
 type: architecture
-version: 20261009210000
+version: 20261009210100
+updated: 20261009
 tags:
   - skill/architecture/solution
   - stack/typescript
@@ -49,7 +50,7 @@ adr:
 - Checks run against `apps/component-preview` — a minimal harness this solution introduces — never Storybook, never Chromatic.
 
 # Boundaries
-- This solution defines which component tests exist and what each layer asserts. How those tests are run by CI and reported — the `make test-kind-components` / `make test-kind-ui` kinds, their badges and the common report — is defined by [[skills/testing/angular/solution-conformance-testing-in-angular.skill/solution-conformance-testing-in-angular.skill.md|solution-conformance-testing-in-angular]], which adds to these rules and keeps the same `spec/` folder for Angular-native specs; its delivered runner setup targets one Angular CLI application, so an Nx workspace needs its own adapter.
+- This solution defines which component tests exist and what each layer asserts. How those tests are run by CI and reported — the `make test-kind-components` / `make test-kind-ui` kinds, their badges and the common report — is defined by [[skills/testing/angular/solution-conformance-testing-in-angular.skill/solution-conformance-testing-in-angular.skill.md|solution-conformance-testing-in-angular]], which adds to these rules and keeps the same `spec/` folder for Angular-native specs; its delivered runner setup targets one Angular CLI application, for an Nx workspace apply [[skills/testing/angular/solution-conformance-testing-in-angular-nx.skill/solution-conformance-testing-in-angular-nx.skill.md|solution-conformance-testing-in-angular-nx]].
 - The **monolith** side. The identical approach applied to the design system's `ds-*` components against `projects/demo` is [[skills/angular/architecture/solutions/solution-design-system-ui-testing.skill/solution-design-system-ui-testing.skill.md|solution-design-system-ui-testing]], which reuses this solution's three ADRs and spec patterns.
 - monolith `ComponentTesting` (flagged common — feature-model open question). Assumes the `solution-repository-structure` baseline + `solution-app-testing` (Vitest/Playwright tool ADRs).
 - Business-layer testing (Client/Facade/Store, `HttpTestingController`, MSW) is `solution-app-testing`, not this — a component test never needs it.

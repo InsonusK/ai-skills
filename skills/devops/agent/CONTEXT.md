@@ -37,7 +37,8 @@ Fourteen runnable examples implement it: `skills/testing/{go,python,typescript,d
 4. **Angular has no DevOps skill.** No change filter, no version check. Its example's `make init` installs Chromium with its system libraries (`playwright install --with-deps chromium`), which needs root or a prepared image; native specs are `src/**/spec/*.spec.ts`, Cucumber steps `src/**/test/*.steps.ts`.
 5. **`make init` is not part of the contract.** Every example that needs preparing has the target, and the workflows prepare the toolchain with `actions/setup-{stack}` instead. Whether a workflow should call `make init` — which would keep the knowledge of a stack's preparation out of the workflow — is not decided.
 6. **Services a test needs.** The `gw009-001` example needs a PostgreSQL through `TEST_DATABASE_DSN`. No workflow provides a service to a test kind.
-7. **Run time.** A `report` run of `gw009-001` takes about eleven minutes, most of it mutation testing; a kind runs in its own matrix leg.
+7. **Nx runner and browser preparation.** The Angular Nx testing refinement now bypasses both local and remote task caches, isolates task state per kind/project, and requires fresh outputs. Workflow preparation must install the pinned dependencies and matching Chromium/system libraries (or use a prepared browser image). Checkout history must contain the caller's `DELTA_BASE` for affected checks. Cache dependencies/browser downloads if useful, but do not replace native evidence with cached Nx target output. No workflow or image has been tested for this refinement.
+8. **Run time.** A `report` run of `gw009-001` takes about eleven minutes, most of it mutation testing; a kind runs in its own matrix leg.
 
 ## Decisions that stand
 
@@ -48,7 +49,7 @@ Fourteen runnable examples implement it: `skills/testing/{go,python,typescript,d
 
 ## Still open on the testing side
 
-- Angular in an Nx workspace: the testing skill is delivered for one Angular CLI application, the Angular catalog builds on Nx. Under discussion; expect a second set of kinds or an adapter.
+- Angular repository-shape adapters are now delivered by `solution-conformance-testing-in-angular-library` and `solution-conformance-testing-in-angular-nx`; the shared caller contract is unchanged. Nx workflow/image preparation remains unverified.
 - The details are in `skills/testing/agent/STATUS.md` ("Waiting on the owner") and `DECISIONS.md`.
 
 ## The environment the testing work ran in

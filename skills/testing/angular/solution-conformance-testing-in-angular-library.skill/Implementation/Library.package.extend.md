@@ -17,7 +17,7 @@ tags:
 # Mutations
 The Angular and TypeScript parents are applied; no Nx or alternate test framework is applied.
 
-Install a matching `ng-packagr` development dependency (the example locks Angular/ng-packagr 22), and commit the resulting package lockfile.
+Install a matching [ng-packagr](../glossary/ng-packagr.md) development dependency (the example locks Angular/ng-packagr 22), and commit the resulting package lockfile.
 
 Configure [Cucumber](../assets/cucumber.mjs) for every library `features/` and adjacent `test/` directory. Configure [Stryker](../assets/stryker.conf.json) and package `c8.include` for the framework-independent library source, excluding steps/specs. Keep the TypeScript mutation script unchanged: its delta scope comes from these patterns.
 

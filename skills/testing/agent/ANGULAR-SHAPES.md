@@ -1,6 +1,6 @@
 # Angular repository shapes — review contract
 
-Status: owner approved contract and delta decisions; wave 1 verified, wave 2 in progress.
+Status: complete; all waves checked and independently reviewed.
 Task: [TASK-angular-shapes.md](TASK-angular-shapes.md).
 Base: `skills-testing` at `b3570c54`; task branch: `angular-testing-shapes`.
 Work stays local: no push or PR, per [TASK.md](TASK.md).
@@ -60,3 +60,25 @@ Each wave receives a separate conformance review and commit after its checks pas
 - Native assertion failures, missing browser, missing/empty adapter evidence are red. All temporary breaks restored from byte copies.
 - Independent audit (`review_library`) found missing public-entry alias and ng-packagr installation instructions; both fixed. No runner/config defect remained.
 - Shape names explicitly match the owner's task; check.sh §4 allows only the two named refinements and §10 resolves replacement/inherited scripts and checks config/adapter copies.
+
+## Wave 2 evidence and review
+
+- Nx full report and caller-selected check harness pass: 31/31 scenarios, 29 inventory entries, final line coverage 98.24%, mutation 91.5%, component/UI 5/5 each. Dependency-cold npm-ci plus report: 56.4 seconds with warmed download/browser caches.
+- Two-commit fixture changes formatter: only formatter+portal unit, portal components/UI and the changed formatter mutation file run. Correct dependency propagation is proved by actual project outputs.
+- Real changed-spec failure, empty declared project, zero-exit target with missing output, missing target, and explicit zero-affected skip all verified. A catalog-named a11y suite executes.
+- Independent audit (`review_nx`) found the inventory assertion schema, zero-affected inventory loss and omitted catalog browser suffixes. Fixed; follow-up audit passes. Project selection/count/evidence has a readable page linked from the unit living doc.
+- New source formatted with an ephemeral formatter; no formatter dependency added. Parent mutation and shared result/core adapters remain unchanged.
+
+## Integration review
+
+- Base delivery exposes a single-app whenToUse; both refinements select by repository shape. The base browser matcher now includes the catalog's UI/visual/style/accessibility suffixes, and all instantiated copies agree. Decisions recorded in owning ADRs.
+- Only the two catalog adapter-gap sentences and their change metadata are updated; catalog assertion/layout rules remain unchanged. No plateau copies of these adapter sentences or base adapter were found, so no structural propagation is needed.
+- DevOps records browser-image, fresh-cache evidence and checkout-history preparation gaps; no workflow edits.
+- Library independent audit and Nx follow-up audit pass. Base source-contract check and base full harness pass. No inherited validated scenario text or steps was changed.
+
+## Handoff
+
+- Local commits: preparation `d1682658`; library delivery `eebe8c9d`; Nx delivery `6b1c4b73`; final integration is the following commit. No push or PR per TASK.md.
+- Both examples retain generated reports at `example/tmp/testing/report/index.html`; reproduce with `make init && make test-and-report`.
+- Mechanical check, all three example harnesses, the base source check, library package inspection and native failure checks, and final Nx proof script pass.
+- No Docker image or remote workflow run was attempted; first-download timing remains unverified. Measured npm-ci cold runs used warmed package/browser/system caches. Every owning skill lists its measured numbers and unverified cases.

@@ -11,7 +11,8 @@ const baseURL = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
   testDir: './{SourceRoot}',
-  testMatch: '**/spec/*.ui.spec.ts',
+  testMatch: ['**/spec/*.ui.spec.ts', '**/spec/*.visual.spec.ts',
+    '**/spec/*.style-snapshot.spec.ts', '**/spec/*.a11y.spec.ts'],
   outputDir: resolve(kindDir, 'report/ui/artifacts'),
   snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{testFileName}/{arg}{ext}',
   updateSnapshots: 'none',

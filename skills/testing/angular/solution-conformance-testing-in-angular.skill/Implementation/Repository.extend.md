@@ -25,7 +25,9 @@ Copy these files verbatim from this skill's `assets/` to the corresponding proje
 
 Copy [playwright.ui.config.ts](../templates/playwright.ui.config.ts) to the project root; replace only the `{SourceRoot}` and `{ServeCommand}` string literals with the real source root and the Angular serve command of the intended application (for example `npm run start --`). [Playwright](../glossary/playwright.md)'s other brace expressions are native snapshot placeholders; leave them intact. The config appends `--host 127.0.0.1 --port` with the free port `ui.sh` picked for this run (`UI_TEST_PORT`), so the serve command names neither; it must stay alive until Playwright stops it.
 
-For a multi-project workspace, append the intended application name to the `ng test` command through a separately recorded project adapter decision since its delivered command assumes a single application.
+Select the repository-shape refinement for a library or Nx workspace: `solution-conformance-testing-in-angular-library` or `solution-conformance-testing-in-angular-nx`. The direct command here assumes one application; refinements inherit these assets and replace selection/configuration.
+
+The Playwright template discovers all existing browser layers under `spec/`: `.ui.spec.ts`, `.visual.spec.ts`, `.style-snapshot.spec.ts`, `.a11y.spec.ts`. Keep the same matcher when instantiating it; assertion rules remain the component/catalog responsibility.
 
 Extend README Shields endpoint links with `badges/components.json` and `badges/ui.json` beside the inherited badges. Their destination links open `reports/components/` and `reports/ui/` under the published report root.
 
