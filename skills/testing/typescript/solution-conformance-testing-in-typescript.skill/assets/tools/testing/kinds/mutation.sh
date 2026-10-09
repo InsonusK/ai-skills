@@ -12,8 +12,11 @@ if [ "$TEST_RUN_PURPOSE" = check ]; then
   [ -n "$DELTA_BASE" ] || kind_skip "a check run mutates only changed files and no DELTA_BASE was given"
   SINCE=$(git rev-parse --verify --quiet "$DELTA_BASE^{commit}") \
     || { echo "DELTA_BASE '$DELTA_BASE' does not name a commit" >&2; exit 2; }
-  FILES=$(git diff --relative --name-only --diff-filter=ACMR "$SINCE" -- ':(glob)src/**/*.ts' ':(exclude,glob)src/**/test/**' | paste -sd, -)
-  [ -n "$FILES" ] || kind_skip "no src/**/*.ts file changed since $DELTA_BASE"
+  # The delta is taken inside the project's own mutation scope: --mutate replaces the
+  # mutate patterns of stryker.conf.json, so the changed files are filtered by them.
+  mapfile -t SCOPE < <(jq -r '.mutate[] | if startswith("!") then ":(exclude,glob)" + .[1:] else ":(glob)" + . end' stryker.conf.json)
+  FILES=$(git diff --relative --name-only --diff-filter=ACMR "$SINCE" -- "${SCOPE[@]}" | paste -sd, -)
+  [ -n "$FILES" ] || kind_skip "no file of stryker.conf.json's mutate patterns changed since $DELTA_BASE"
   MUTATE_ARGS=(--mutate "$FILES")
   kind_mode "mutating only the files changed since $DELTA_BASE"
 else

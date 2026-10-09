@@ -1,8 +1,8 @@
 ---
 name: angular-test-kinds
-description: Selects native runners and the report boundary for Angular component and browser tests.
-version: 20261008210000
-updated: 20261008
+description: Which runners test Angular components and the served application, and how their results reach the common report
+problem: The TypeScript parent proves framework-independent rules through Cucumber and leaves component and browser tests to the UI framework; Angular needs template compilation, TestBed and a served application, and their results must reach the same report without changing the shared tools
+decision: Two test kinds of their own - components (Angular CLI unit-test builder, Vitest, TestBed, jsdom) and ui (Playwright, Chromium) - each with its native evidence and its badge
 tags:
   - solution/conformance-testing-in-angular
   - concern/documentation
@@ -10,41 +10,56 @@ tags:
   - stack/typescript
   - framework/angular
 ---
-# Context
-The TypeScript parent covers framework-independent contracts through Cucumber, c8 and Stryker; it explicitly delegates component/browser tests to framework kinds. Angular needs template compilation and [TestBed](../glossary/testbed.md); browser interactions need a served application. The shared core discovers kinds and assembles their evidence without runner-specific changes.
+
+# Problem
+The TypeScript parent covers framework-independent contracts through Cucumber, c8 and Stryker, and delegates component and browser tests to the UI framework's own solution. Angular needs template compilation and [TestBed](../glossary/testbed.md) for a component test; a browser interaction needs the served application. The shared core discovers kinds by file name and assembles their evidence, so the choice is which runners to use and whether their tests become kinds of their own.
 
 # Selected variant
-[Native Angular builder and Playwright kinds](#native-angular-builder-and-playwright-kinds).
+**Selected variant:** [[#Native Angular builder and Playwright kinds]]
 
-# Variants
+# Searched variants
+
 ## Native Angular builder and Playwright kinds
+
 **Selected.**
 
-Description: Angular CLI compiles and initializes TestBed for [Vitest](../glossary/vitest.md) under `components`; Playwright runs browser and optional visual assertions under `ui` using [Playwright](../glossary/playwright.md). Their JSON adapters publish distinct native evidence through the inherited contract.
+### Description
+The Angular CLI compiles the specs and initializes TestBed for [Vitest](../glossary/vitest.md) under the `components` kind; [Playwright](../glossary/playwright.md) runs browser and optional screenshot assertions under the `ui` kind. An adapter turns each runner's native JSON into the kind's result, badge and report page. Both kinds run their whole suite in a `check` and in a `report` run. Domain coverage and mutation stay with the inherited `unit` and `mutation` kinds, limited to the framework-independent modules; component coverage belongs to the component report.
 
-Benefits: framework-owned compilation, distinct test discovery and coverage scopes, native browser artifacts, no duplicated report assembler or Cucumber wrappers.
+### Benefits
+- The framework owns compilation; each runner discovers its own files and measures its own coverage scope.
+- Native browser evidence - traces, screenshots, diffs - is published as it is.
+- No second report builder and no Cucumber wrapper around TestBed or the browser.
 
-Costs: two additional runner dependencies and a browser installation; the delivered CLI adapter targets version 22 and needs an explicit adaptation for older executors.
+### Costs
+- Two more runner dependencies and a browser installation.
+- The delivered setup targets Angular CLI 22; an older executor needs its own adapter.
+- Native specs are not in the living doc: it lists Gherkin scenarios only.
 
 ## Wrap every UI assertion in Cucumber steps
-Description: run TestBed and browser lifecycles behind the existing step runner.
 
-Benefits: one narrative scenario inventory for all tests.
+### Description
+Run TestBed and the browser lifecycle behind the existing step runner.
 
-Costs: custom template compilation/browser orchestration and fixtures; step counts conflate domain specification with UI execution and native artifacts require extra wiring.
+### Benefits
+- One scenario inventory for every test.
+
+### Costs
+- Custom template compilation, browser orchestration and fixtures inside step code.
+- Step counts mix the domain specification with UI execution; native artifacts need extra wiring.
 
 ## Replace the TypeScript suite with a framework test runner
-Description: move business scenarios into Vitest and use Playwright alongside it.
 
-Benefits: fewer runtime entry points.
+### Description
+Move the business scenarios into Vitest and run Playwright beside it.
 
-Costs: loses inherited executable Gherkin/living documentation and changes the requested extension into a replacement.
+### Benefits
+- Fewer runtime entry points.
 
-# Consequences
-Domain coverage/mutation remain inherited and scope-limited, including the delta selector that otherwise overrides Stryker’s configured `mutate` paths; native component coverage belongs to the component report. Both added kinds run full suites in check/report modes and fail visibly on missing evidence. Visual baselines are reviewed source artifacts, never automatically accepted by a normal run.
+### Costs
+- Loses the executable Gherkin and its living doc; the extension becomes a replacement of its parent.
 
 # Sources
-- [Angular testing](https://angular.dev/guide/testing): native Vitest builder and TestBed setup.
-- [Angular test command](https://angular.dev/cli/test): runner config, inclusion, JSON reporting and coverage options.
-- [Vitest coverage configuration](https://vitest.dev/config/coverage): report directory and reporters.
-- [Playwright reporters](https://playwright.dev/docs/test-reporters), [web server](https://playwright.dev/docs/test-webserver), [screenshots](https://playwright.dev/docs/test-snapshots): native evidence, owned server and reviewed expectations.
+- [Angular testing](https://angular.dev/guide/testing) and the [Angular test command](https://angular.dev/cli/test): the Vitest builder, TestBed setup, runner config, JSON reporting, coverage.
+- [Vitest coverage configuration](https://vitest.dev/config/coverage).
+- Playwright [reporters](https://playwright.dev/docs/test-reporters), [web server](https://playwright.dev/docs/test-webserver), [screenshots](https://playwright.dev/docs/test-snapshots).

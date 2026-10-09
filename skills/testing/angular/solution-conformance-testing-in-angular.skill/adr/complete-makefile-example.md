@@ -1,9 +1,8 @@
 ---
 name: complete-makefile-example
-description: Require one runnable Angular application demonstrating the complete testing report contract.
-problem: Loose component illustrations do not demonstrate the consumer-facing Makefile contract.
-decision: Ship a complete Angular example using inherited domain tests and the two Angular kinds.
-updated: 20261008
+description: What the skill ships as its ground truth - a complete Angular application behind the Makefile, or separate spec illustrations
+problem: The solution's deliverable is a Makefile that hides the runners from CI and produces one report; spec snippets alone do not show that deliverable working
+decision: One runnable Angular application in example/ that runs all four kinds and assembles the report through make
 tags:
   - solution/conformance-testing-in-angular
   - concern/documentation
@@ -13,27 +12,35 @@ tags:
 ---
 
 # Problem
-The solution's output is a Makefile that hides runner-specific details from CI and users and generates an inspectable testing report. Component snippets and a temporary proof omitted that deliverable from the repository.
+The solution delivers a `Makefile` contract: a caller runs `make` targets, knows no runner, and gets one report. Illustrations of a component spec and a browser spec do not show that contract working, nor that the inherited Cucumber and mutation kinds still run beside the two Angular ones.
 
 # Selected variant
-[Complete Angular application behind the inherited Makefile](#complete-angular-application-behind-the-inherited-makefile).
+**Selected variant:** [[#Complete Angular application behind the inherited Makefile]]
 
 # Searched variants
+
 ## Complete Angular application behind the inherited Makefile
+
 **Selected.**
 
-Description: ship the real TypeScript Link checker domain/scenarios, an Angular form consuming it, native component/browser specs, a reviewed screenshot baseline, lockfile, all four kind adapters and unchanged shared report tools in `example/`.
+### Description
+`example/` holds the Link checker domain and its scenarios unchanged from the TypeScript example, an Angular form that uses it, component and browser specs, a reviewed screenshot baseline, the lockfile, the four kind scripts and the unchanged shared report tools.
 
-Benefits: `make init && make test-and-report` is the complete public path; CI needs no runner commands; every badge has real evidence and failure reports can be inspected.
+### Benefits
+- `make init && make test-and-report` is the whole public path; CI needs no runner command.
+- Every badge has real evidence behind it, and a failure report can be inspected.
 
-Costs: more dependencies and a browser runtime; the visual baseline assumes a controlled Linux/Chromium environment.
+### Costs
+- More dependencies and a browser runtime in the repository's examples.
+- The screenshot baseline assumes a controlled Linux and Chromium environment.
 
-## Keep loose source illustrations and a temporary verification project
-Description: preserve individual spec snippets and document verification outside the repository.
+## Separate spec illustrations
 
-Benefits: smaller source footprint.
+### Description
+Keep single spec snippets in the skill and verify the whole outside the repository.
 
-Costs: users cannot reproduce the full report from the skill's example; inherited Cucumber/mutation integration remains unproved.
+### Benefits
+- A smaller source footprint.
 
-# Consequences
-The runnable example replaces loose illustrations as the source of truth. The shared core Makefile/report assembler remains unchanged; only the project-specific domain mutation selector is scoped. Component coverage remains distinct from inherited domain coverage. No dependent solution or plateau currently references this Angular extension.
+### Costs
+- A reader cannot reproduce the report from the skill; the integration with the inherited Cucumber and mutation kinds stays unproved.

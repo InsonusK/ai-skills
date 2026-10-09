@@ -3,10 +3,15 @@ import { resolve } from 'node:path';
 
 const kindDir = process.env['TEST_KIND_DIR'];
 if (!kindDir) throw new Error('Run through make test-kind-ui');
+// The kind script picks a free loopback port for every run, so a server that is still
+// shutting down from a previous run can never collide with this one.
+const port = process.env['UI_TEST_PORT'];
+if (!port) throw new Error('Run through make test-kind-ui');
+const baseURL = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
   testDir: './src',
-  testMatch: '**/test/*.ui.spec.ts',
+  testMatch: '**/spec/*.ui.spec.ts',
   outputDir: resolve(kindDir, 'report/ui/artifacts'),
   snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{testFileName}/{arg}{ext}',
   updateSnapshots: 'none',
@@ -19,7 +24,7 @@ export default defineConfig({
   ],
   use: {
     browserName: 'chromium',
-    baseURL: 'http://127.0.0.1:4387',
+    baseURL,
     viewport: { width: 1280, height: 720 },
     locale: 'en-US',
     timezoneId: 'UTC',
@@ -30,8 +35,8 @@ export default defineConfig({
   },
   expect: { toHaveScreenshot: { animations: 'disabled' } },
   webServer: {
-    command: 'npm run start -- --host 127.0.0.1 --port 4387',
-    url: 'http://127.0.0.1:4387',
+    command: `npm run start -- --host 127.0.0.1 --port ${port}`,
+    url: baseURL,
     reuseExistingServer: false,
     timeout: 120_000,
   },

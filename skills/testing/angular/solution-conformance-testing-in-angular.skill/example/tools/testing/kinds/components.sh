@@ -8,7 +8,7 @@ export TMPDIR="$TEST_KIND_DIR/tmp"
 export XDG_CACHE_HOME="$TEST_KIND_DIR/cache"
 set +e
 ./node_modules/.bin/ng test --watch=false --runner=vitest \
-  --runner-config=vitest.components.config.mts --include='**/test/*.component.spec.ts' \
+  --runner-config=vitest.components.config.mts --include='**/spec/*.component.spec.ts' \
   --coverage --reporters=json --output-file="$RESULT_DIR/components.native.json" \
   2>&1 | tee "$REPORT_DIR/components/runner.log"
 runner_exit=${PIPESTATUS[0]}

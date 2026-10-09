@@ -350,3 +350,16 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The one real conflict: `kind.sh` and `render.mjs` — the grouped legend on `skills-testing`, the single renderer for both report protocols on `testing-w16`. Resolved as the W16 files with the grouped legend on top; the legend is now in the footer of every stack's living doc. `livingdoc-check.py` and `test-livingdoc.py` follow the new legend heading and shape.
 - All fourteen examples re-run after the merge through `run-example.sh` — exit 0, living-doc assertion included. The first attempt failed for thirteen of them on a full disk, not on the code.
 - Review notes left for the owner: the TypeScript and .NET showcase sources are compressed into very long lines; the Angular skill and example were outside the written task.
+
+## Owner-decided (2026-10-09, after the W16 merge)
+
+- `testing-strategy-in-dotnet` holds nothing of .NET: it moves to the core as `testing-strategy`. The general rules of `no-test-theater-in-dotnet` move into the core `no-test-theater`; the .NET skill keeps only its .NET names.
+- The Angular skill and the Angular catalog must not conflict on where specs live; the catalog solutions point at the testing skill as the one that adds how the tests are run and reported.
+- No work log inside a skill (`verification.md`); ADRs in the accepted format; the Angular example's `mutation.sh` equal to its original.
+
+## Agent decisions — Angular and .NET follow-up
+
+- Angular-native specs live in `spec/` (the catalog's `solution-ui-testing` layout, and Angular's own `*.spec.ts` naming); Cucumber step files stay in `test/` beside `features/`. Two folders for two kinds of test, no rule of either skill changed for the other.
+- The UI kind takes a free loopback port for every run (`UI_TEST_PORT`, picked in `ui.sh`). The fixed port failed one run in five when two runs followed each other on one machine; one `make test-kind-ui` alone, or a CI job in its own container, was never affected.
+- The TypeScript `mutation.sh` takes its delta scope from the `mutate` patterns of `stryker.conf.json` instead of a second scope written into the script. The Angular example then needs no patched copy, and `check.sh` §10 compares its four kind scripts with their originals.
+- The showcase sources of TypeScript, Angular and .NET were formatted with prettier and CSharpier; neither tool was added to the projects.

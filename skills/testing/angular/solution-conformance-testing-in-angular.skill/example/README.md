@@ -16,7 +16,7 @@ Use the supplied [.devcontainer](.devcontainer/devcontainer.json), which provisi
 | `make test-kind-unit` | Cucumber scenarios, domain coverage and living documentation |
 | `make test-kind-mutation` | Domain-only Stryker mutation report |
 | `make test-kind-components` | Angular DOM behavior and native component coverage |
-| `make test-kind-ui` | Browser interactions and visual comparison; starts/stops the app server |
+| `make test-kind-ui` | Browser interactions and visual comparison; starts the app server on a free port and stops it |
 | `make test-report` | Assemble the results already produced |
 | `make test-and-report` | Run every kind and assemble the report, even if a kind fails |
 
@@ -28,4 +28,4 @@ The reviewed Linux/Chromium visual baseline is committed beside the UI spec. Nor
 
 To explore the app manually, run `npm run start`. Its production build is `npm run build`; testing remains behind Make.
 
-The example source-contract check is `bash ../scripts/check-example.sh`; recorded executions and environment limitations are in the owning skill’s verification document.
+The example source-contract check is `bash ../scripts/check-example.sh`.

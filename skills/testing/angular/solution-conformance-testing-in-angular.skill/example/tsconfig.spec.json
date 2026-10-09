@@ -1,1 +1,16 @@
-{"extends": "./tsconfig.json", "compilerOptions": {"types": ["vitest/globals"]}, "include": ["src/**/*.d.ts", "src/**/test/*.component.spec.ts"], "exclude": ["src/**/test/*.ui.spec.ts", "src/**/test/*.steps.ts"]}
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/spec/*.component.spec.ts"
+  ],
+  "exclude": [
+    "src/**/spec/*.ui.spec.ts",
+    "src/**/test/*.steps.ts"
+  ]
+}

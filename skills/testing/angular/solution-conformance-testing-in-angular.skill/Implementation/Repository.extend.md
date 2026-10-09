@@ -23,7 +23,7 @@ Copy these files verbatim from this skill's `assets/` to the corresponding proje
 - [angular-results.mjs](../assets/tools/testing/angular-results.mjs) → `tools/testing/angular-results.mjs`.
 - [vitest.components.config.mts](../assets/vitest.components.config.mts) → `vitest.components.config.mts`.
 
-Copy [playwright.ui.config.ts](../templates/playwright.ui.config.ts) to the project root; replace only `{SourceRoot}`, `{BaseUrl}`, `{ServeCommand}` string literals with the real source root, owned loopback URL and Angular serve command. [Playwright](../glossary/playwright.md)'s other brace expressions are native snapshot placeholders; leave them intact. The serve command must select the intended application, bind the chosen port and stay alive until Playwright stops it.
+Copy [playwright.ui.config.ts](../templates/playwright.ui.config.ts) to the project root; replace only the `{SourceRoot}` and `{ServeCommand}` string literals with the real source root and the Angular serve command of the intended application (for example `npm run start --`). [Playwright](../glossary/playwright.md)'s other brace expressions are native snapshot placeholders; leave them intact. The config appends `--host 127.0.0.1 --port` with the free port `ui.sh` picked for this run (`UI_TEST_PORT`), so the serve command names neither; it must stay alive until Playwright stops it.
 
 For a multi-project workspace, append the intended application name to the `ng test` command through a separately recorded project adapter decision since its delivered command assumes a single application.
 
@@ -42,6 +42,11 @@ Use the existing Makefile include, shared core scripts and supplied `TEST_KIND_D
 Install from the committed lockfile and provision the matching Chromium browser and its system libraries before invoking these kinds.
 - Risk: implicit downloads change versions or a missing runtime gets mistaken for a successful skip.
 - Fix: run `npm ci` and the pinned local Playwright `install --with-deps chromium` command as environment preparation; on Linux this uses the system package manager and may require sudo; fail initialization when installation fails instead of proceeding to tests with missing libraries.
+
+### Let the kind choose the port
+Serve the application on the port `ui.sh` passes in `UI_TEST_PORT`; write no port number into the config or the serve command.
+- Risk: with a fixed port, a run that starts while the server of the previous run on the same machine is still shutting down fails before its first assertion.
+- Fix: keep the delivered `ui.sh` and config template; they take a free loopback port for every run.
 
 ### Preserve native evidence
 Keep native JSON, runner logs, coverage, traces and screenshot diffs inside the owning kind directory and publish the assembled report without dropping its subdirectories.

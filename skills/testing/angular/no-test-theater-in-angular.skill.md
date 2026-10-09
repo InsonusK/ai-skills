@@ -1,8 +1,8 @@
 ---
 name: no-test-theater-in-angular
 description: Angular/TestBed-specific rules for assertion strength — DOM/output assertions over toBeTruthy(), HttpClientTestingModule verification, form-validation assertions, RxJS timing, and the E2E-vs-unit boundary.
-whenToUse: When writing or reviewing TestBed/Jasmine/Jest tests in an Angular project.
-version: 20261008170000
+whenToUse: When writing or reviewing TestBed component and service tests run by Vitest in an Angular project.
+version: 20261009210000
 updated: 20261008
 tags:
   - stack/typescript
@@ -19,7 +19,7 @@ tags:
 - Unit/component coverage gaps closed by unit/component tests, not by a single E2E test.
 
 # Scope
-Adds Angular-specific rules to [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md); the language-agnostic assertion-strength protocol lives there. Covers TestBed/Jasmine/Jest component and service tests. Business/service rules use category-tagged Cucumber scenarios under type-tagged features beside their TypeScript modules. UI component and pixel tests belong to the UI framework's test kinds; their wiring remains a separate design task. Does not cover E2E test design or non-Angular test suites.
+Adds Angular-specific rules to [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md); the language-agnostic assertion-strength protocol lives there. Covers TestBed component and service tests run by Vitest through the Angular unit-test builder. Business/service rules use category-tagged Cucumber scenarios under type-tagged features beside their TypeScript modules. UI component and pixel tests belong to the UI framework's test kinds; their wiring remains a separate design task. Does not cover E2E test design or non-Angular test suites.
 
 # Core Principle
 - **Creation is not behaviour** - "the component was created" is not a behaviour claim; a component test must prove what the component renders, emits, or calls.

@@ -1,9 +1,8 @@
 ---
 name: chromium-system-dependencies
-description: Prepare browser system libraries through the public make init command.
-problem: Browser download alone leaves Chromium unable to start on a minimal Linux host.
-decision: Include Playwright system dependency installation in initialization.
-updated: 20261009
+description: Who installs the system libraries and fonts Chromium needs for the ui kind
+problem: Downloading Chromium alone leaves it unable to start on a minimal Linux host, so make init succeeds and the first UI run fails before any assertion
+decision: make init installs the browser together with its system dependencies through the pinned Playwright installer
 tags:
   - solution/conformance-testing-in-angular
   - concern/documentation
@@ -13,29 +12,34 @@ tags:
 ---
 
 # Problem
-`make init` downloaded Chromium but omitted its Linux runtime libraries. Ordinary UI runs failed before assertions with missing libglib; the earlier passing proof depended on a temporary LD_LIBRARY_PATH.
+On a minimal Linux host a downloaded Chromium does not start: its runtime libraries are missing, and so are the fonts a screenshot comparison depends on. Decide whether the public preparation command provides them or the environment must.
 
 # Selected variant
-[Install browser and system dependencies during initialization](#install-browser-and-system-dependencies-during-initialization).
+**Selected variant:** [[#Install browser and system dependencies during initialization]]
 
 # Searched variants
+
 ## Install browser and system dependencies during initialization
+
 **Selected.**
 
-Description: after installing the committed npm lockfile, `make init` calls the pinned local Playwright installer with `install --with-deps chromium`.
+### Description
+After installing the committed npm lockfile, `make init` calls the pinned local Playwright installer with `install --with-deps chromium`. The preparation belongs to initialization, not to a test kind; the devcontainer image installs the same packages.
 
-Benefits: the public preparation command supplies the browser runtime; ordinary Make testing commands require no private library-path workaround.
+### Benefits
+- The public preparation command gives a working browser; a test run needs no private library path.
+- The same step installs the fonts, so the screenshot baseline is taken and compared with the same typography.
 
-Costs: Linux package installation uses root/sudo and the package repositories; unavailable privileges or packages make initialization fail visibly.
+### Costs
+- Installing Linux packages needs root or sudo and the package repositories; without them initialization fails, visibly.
 
-## Require preinstalled system libraries or a private library path
-Description: download only Chromium and expect another environment preparation step.
+## Require preinstalled system libraries
 
-Benefits: initialization performs no operating-system package changes.
+### Description
+Download only Chromium and leave its libraries to another preparation step.
 
-Costs: a clean host still fails despite successful initialization; consumers need runner-specific knowledge and the reported success cannot be reproduced with the documented commands.
+### Benefits
+- Initialization changes no operating-system package.
 
-# Consequences
-System dependency preparation belongs to initialization, not to individual test kinds. The shared Make testing/report contract and test adapters remain unchanged. The devcontainer already installs these dependencies; this change supplies the same preparation on the host.
-
-The same runtime preparation supplies system fonts. The example’s earlier snapshot came from fallback fonts in the incomplete environment; its typography-only diff was inspected and the baseline refreshed with the installed Liberation Sans font. Screenshot tolerances and normal read-only snapshot behavior remain unchanged.
+### Costs
+- A clean host fails after a successful initialization; the caller needs runner-specific knowledge to repair it.

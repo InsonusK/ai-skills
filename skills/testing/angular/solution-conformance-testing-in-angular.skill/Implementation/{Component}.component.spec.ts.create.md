@@ -15,13 +15,13 @@ tags:
 - Prove the real Angular component's observable behavior through [TestBed](../glossary/testbed.md).
 
 # Mutations
-Create `{SourceRoot}/{Component}/test/{Component}.component.spec.ts` beside its production component. This uses the Angular extension's package setup; business contracts keep the inherited Cucumber bindings.
+Create `{SourceRoot}/{Component}/spec/{Component}.component.spec.ts` beside its production component. This uses the Angular extension's package setup; business contracts keep the inherited Cucumber bindings.
 
 Import the real standalone component in TestBed (or its real NgModule for a module-based application), create its fixture, set inputs with `fixture.componentRef.setInput`, await `fixture.whenStable()`, and assert the rendered text, accessible state or emitted output. Trigger the actual DOM event to exercise template bindings; a direct method call alone does not test the template.
 
 Cover the component's meaningful initial, loading, success, empty and error states as applicable. Subscribe to an output before clicking its real button and assert the emitted payload. For HTTP-backed state, provide the real HttpClient with `provideHttpClient()` and a testing backend with `provideHttpClientTesting()` in that order, flush the expected request and verify no pending requests remain after each test. Use a framework-independent domain fixture already checked by Cucumber when helpful rather than restating the business algorithm.
 
-The [runnable Angular example](../example/README.md) uses the [real form component](../example/src/app/app.ts) and [component specs](../example/src/app/test/validation.component.spec.ts); `make test-kind-components` executes them and produces the shared report inputs.
+The [runnable Angular example](../example/README.md) uses the [real form component](../example/src/app/app.ts) and [component specs](../example/src/app/spec/validation.component.spec.ts); `make test-kind-components` executes them and produces the shared report inputs.
 
 # Rules
 ## MUST

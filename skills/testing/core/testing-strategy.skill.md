@@ -1,11 +1,11 @@
 ---
-version: 20261008170000
-name: testing-strategy-in-dotnet
-description: Defines which .NET classes and workflows require their own dedicated Gherkin scenarios — Validators, ValueObjects, Entities, and usecases — and the isolation boundary between them.
-whenToUse: When deciding whether a .NET class needs its own dedicated feature and binding class, or reviewing whether a Validator/ValueObject/Entity is tested only indirectly through another component's test.
+version: 20261009210000
+name: testing-strategy
+description: Defines which classes and workflows require their own dedicated Gherkin scenarios — Validators, ValueObjects, Entities, and usecases — and the isolation boundary between them.
+whenToUse: When deciding whether a class needs its own dedicated feature and step file, or reviewing whether a Validator/ValueObject/Entity is tested only indirectly through another component's test.
 tags:
+  - stack
   - concern/testing/unit
-  - stack/dotnet
   - concern/testing
 
 ---
@@ -15,7 +15,7 @@ tags:
 - Scenario isolation follows the component's behavioral boundary.
 
 # Scope
-Choose scenario scope here and assertion strength through [no-test-theater-in-dotnet](skills/testing/dotnet/no-test-theater-in-dotnet.skill.md); author and place tests through [cucumber-testing-in-dotnet](skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md).
+Choose scenario scope here and assertion strength through [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md); author and place tests through [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md) and the stack's own `cucumber-testing-in-{stack}` skill. The rules apply to every stack.
 
 # Core Principle
 - Validation rules need direct scenarios; incidental coverage through another component does not prove their contract.
@@ -26,14 +26,14 @@ Choose scenario scope here and assertion strength through [no-test-theater-in-do
 ## MUST
 
 ### Prove validation components directly
-Give every Validator, ValueObject and Entity its own feature and concept-specific binding class covering every behavior-changing value or combination.
+Give every Validator, ValueObject and Entity its own feature and concept-specific step file covering every behavior-changing value or combination.
 - Risk: incidental usecase coverage misses validation branches and attributes failures to the wrong component.
 - Fix: assert concrete outcomes directly at the component boundary and enumerate categories using [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md).
 
 ### Prove usecase orchestration
 Give each inbound sync call, async message handler and scheduled workflow scenarios covering its main success and applicable invalid outcomes.
 - Risk: testing only its collaborators misses the workflow's response and ordering rules.
-- Fix: exercise the workflow boundary and apply [Assert orchestration order](skills/testing/dotnet/no-test-theater-in-dotnet.skill.md#assert-orchestration-order).
+- Fix: exercise the workflow boundary and assert the full response and the order of the orchestrated calls, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md).
 
 ### Cover other component rules
 Cover other components' main and edge behaviors through scenarios without requiring a separate feature for every trivial implementation class.

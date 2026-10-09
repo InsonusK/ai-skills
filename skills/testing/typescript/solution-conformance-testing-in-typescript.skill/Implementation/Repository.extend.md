@@ -73,9 +73,9 @@ Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `node_modules/`, `
   - Violation: Stryker's default `.stryker-tmp/` in the repository root.
   - Risk: a mutation run that stops early leaves a sandbox holding copies of the `.feature` files; the unit kind then lists every scenario twice, the copy as `not-run`. Raw V8 coverage files under `report/coverage/tmp/` get published with the report.
   - Fix: copy both scripts unchanged.
-- Scope a `check` run of `mutation.sh` with `--mutate` over `git diff --relative --name-only {commit} -- ':(glob)src/**/*.ts' ':(exclude,glob)src/**/test/**'`, and skip the kind when the list is empty.
-  - Violation: the pathspec `'src/**/*.ts'` without `:(glob)`.
-  - Risk: without the magic word git's `**` needs a directory level, so a changed `src/{file}.ts` is not listed and the kind skips itself over a real change.
+- Scope a `check` run of `mutation.sh` with `--mutate` over `git diff --relative --name-only {commit}` limited to the `mutate` patterns of `stryker.conf.json`, each turned into a `:(glob)` or `:(exclude,glob)` pathspec, and skip the kind when the list is empty.
+  - Violation: a pathspec without `:(glob)`, or a delta scope written into the script beside the one in `stryker.conf.json`.
+  - Risk: without the magic word git's `**` needs a directory level, so a changed `src/{file}.ts` is not listed and the kind skips itself over a real change; a second scope in the script drifts from the configured one, and `--mutate` then mutates files the project excluded.
   - Fix: keep the pathspec and the `git rev-parse` of `DELTA_BASE` as `mutation.sh` has them.
 - Add only `include tools/testing/testing.mk` to the `Makefile`, after its first target; never a testing recipe.
   - Risk: a recipe in the project's `Makefile` duplicates a kind script and drifts from it; an include placed first makes `test-kinds` the default goal.

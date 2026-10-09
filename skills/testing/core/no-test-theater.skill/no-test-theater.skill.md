@@ -1,5 +1,5 @@
 ---
-version: 20261008170000
+version: 20261009210000
 name: no-test-theater
 description: Prevents "coverage theater" — tests that execute code but do not verify real behavior. Defines the scenarios-first protocol (tagged .feature entries before step code, a separate review pass over the scenario/coverage/mutation report after), mandatory test properties, and banned weak-test patterns.
 whenToUse: When writing new unit/integration tests, reviewing existing tests, or changing an existing test's assertions, mocks, timeouts, or skip/xfail state — for any language.
@@ -45,6 +45,10 @@ This skill does not define test naming/folder structure for a specific stack or 
 - Give each test exactly one logical reason to fail; split a test that can fail for several unrelated reasons into separate tests.
 - Name each test as a behavior claim: Given is embedded in the test's context/fixture, When is the action, Then is the expected outcome, and the name reflects it.
 - Assert a specific error type/code/status in negative and error-path tests — not just "an exception was thrown" or "it's not successful".
+- Assert, for a validation failure, every invalid field with its message — not only that the result is invalid, and not only how many errors there are.
+- Review branch coverage, not line coverage alone — a line count does not show that only one side of a condition ran.
+- Give every inbound endpoint a happy scenario and at least one applicable error scenario through its real boundary — routing, authentication, serialization — asserting the full response.
+- Assert, in a scenario of a use case that orchestrates several components, both the full response and the order of the calls when the order is part of the contract — not only that each call happened.
 - Tag a scenario `@status/todo` with a `# todo: needs clarification — <question>` reason and explicitly ask the user when the expected behavior is unclear.
 - Tag a scenario that fails over a defect you cannot fix now `@status/broken` with a `# broken:` reason — never delete it, weaken its assertion, or leave it red.
 - Never add `@status/validated`, and remove it from every scenario whose text, examples or steps you changed, naming those scenarios in your report — only a person validates.

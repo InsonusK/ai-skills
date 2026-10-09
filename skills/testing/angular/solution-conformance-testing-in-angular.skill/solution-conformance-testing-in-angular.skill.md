@@ -4,7 +4,7 @@ description: Extends TypeScript conformance testing with Angular TestBed compone
 whenToUse: Add component behavior and browser UI coverage to an Angular application that already uses the TypeScript Cucumber, coverage and mutation solution.
 domain: skill
 type: architecture
-version: 20261009120000
+version: 20261009210000
 updated: 20261009
 tags:
   - skill/architecture/solution
@@ -18,8 +18,8 @@ creates:
   - tools/testing/angular-results.mjs
   - vitest.components.config.mts
   - playwright.ui.config.ts
-  - "{SourceRoot}/{Component}/test/{Component}.component.spec.ts"
-  - "{SourceRoot}/{Component}/test/{Flow}.ui.spec.ts"
+  - "{SourceRoot}/{Component}/spec/{Component}.component.spec.ts"
+  - "{SourceRoot}/{Component}/spec/{Flow}.ui.spec.ts"
 extends:
   - package.json
   - angular.json
@@ -52,6 +52,7 @@ adr:
 - **Test boundary** — A scenario stays in Cucumber when it exercises a framework-independent business contract; a native component or UI spec exercises the Angular rendering or browser boundary.
 - A TestBed test uses the real component template; a browser test visits the real served Angular application.
 - **Native inventory** — These native suites extend the parent suite; they do not contribute Gherkin tags, steps or scenario counts to its living documentation.
+- **Two folders, two kinds of test** — Angular-native specs (`*.component.spec.ts`, `*.ui.spec.ts`) live in the component's `spec/` folder, the layout of the Angular catalog's `solution-ui-testing`; Cucumber step files stay in `test/` beside `features/`, the layout of the TypeScript parent.
 
 # Boundaries
 - The application already builds and has an Angular CLI `serve` target; application deployment and backend provisioning remain project responsibilities.
@@ -101,7 +102,12 @@ PACKAGE:
 3. Follow the baseline review procedure in [UI tests](Implementation/{Flow}.ui.spec.ts.create.md#MUST); the normal kind never updates committed expectations.
 
 # Ground truth
-[The complete Angular example](example/README.md) builds and serves a real Link checker form over the inherited domain package. Its Makefile runs all four kinds and assembles the common report; [verification](verification.md) records actual executions and failure paths.
+[The complete Angular example](example/README.md) builds and serves a real Link checker form over the inherited domain package; its Makefile runs all four kinds and assembles the common report. Verified on 2026-10-09 with Node 24, Angular 22, Vitest 5, Playwright 1.64 and Chromium:
+- `make init && make test-and-report` — exit `0`; 25/25 Cucumber scenarios, domain coverage 98.1%, domain mutation score 90.2%, 4/4 component tests, 4/4 browser tests with one screenshot comparison.
+- `make test-and-report TEST_RUN_PURPOSE=check` with caller-chosen directories — every kind but mutation runs, mutation is skipped without `DELTA_BASE`, the domain coverage report is not published.
+- A deliberately wrong component expectation — the run exits non-zero, the `components` badge is red (3/4), the other kinds still run and the report is assembled.
+- Two UI runs one right after the other on one machine — both pass: each run serves the application on a free port of its own.
+- Not verified: the `.devcontainer` image build, a workspace with several applications, an Angular version before 22.
 
 # Rules
 ## MUST

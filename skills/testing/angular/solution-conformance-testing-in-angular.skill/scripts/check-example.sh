@@ -15,21 +15,17 @@ for file in tools/testing/kinds/components.sh tools/testing/kinds/ui.sh \
   tools/testing/angular-results.mjs vitest.components.config.mts; do
   cmp "$SKILL/assets/$file" "$EXAMPLE/$file"
 done
-cmp "$TS/assets/tools/testing/kinds/unit.sh" "$EXAMPLE/tools/testing/kinds/unit.sh"
+for kind in unit.sh mutation.sh; do cmp "$TS/assets/tools/testing/kinds/$kind" "$EXAMPLE/tools/testing/kinds/$kind"; done
 cmp "$TS/assets/cucumber.mjs" "$EXAMPLE/cucumber.mjs"
 python3 - "$SKILL" "$TS" <<'PY'
 from pathlib import Path
 import sys, json
 skill, ts = map(Path, sys.argv[1:]); example = skill/'example'
-base = (ts/'assets/tools/testing/kinds/mutation.sh').read_text()
-selector = '  ' + (skill/'templates/domain-delta-selection.sh').read_text().strip().replace('{DomainRoot}', 'src/linkcheck')
-old = next(line for line in base.splitlines() if line.startswith('  FILES='))
-assert (example/'tools/testing/kinds/mutation.sh').read_text() == base.replace(old, selector).replace('no src/**/*.ts file changed', 'no domain source file changed')
-config = (skill/'templates/playwright.ui.config.ts').read_text().replace('{SourceRoot}', 'src').replace('{BaseUrl}', 'http://127.0.0.1:4387').replace('{ServeCommand}', 'npm run start -- --host 127.0.0.1 --port 4387')
+config = (skill/'templates/playwright.ui.config.ts').read_text().replace('{SourceRoot}', 'src').replace('{ServeCommand}', 'npm run start --')
 assert (example/'playwright.ui.config.ts').read_text() == config
 for source in (ts/'example/src').rglob('*'):
     if source.is_file(): assert source.read_bytes() == (example/'src'/source.relative_to(ts/'example/src')).read_bytes(), source
-assert (example/'src/app/test/__screenshots__/validation.ui.spec.ts/linkcheck-form.png').is_file()
+assert (example/'src/app/spec/__screenshots__/validation.ui.spec.ts/linkcheck-form.png').is_file()
 assert json.loads((example/'package-lock.json').read_text())['packages']['']['version'] == '0.1.0'
 assert 'test-and-report:' not in (example/'Makefile').read_text()
 assert 'playwright install --with-deps chromium' in (example/'Makefile').read_text()

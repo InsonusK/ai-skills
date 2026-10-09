@@ -105,6 +105,11 @@ for s in go python typescript dotnet; do   # the runnable example inside the tes
     cmp -s "$src/assets/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/assets/tools/testing/kinds/"
   done < <(git ls-files -co --exclude-standard "$src/example/tools/testing/kinds/*")
 done
+ng=skills/testing/angular/solution-conformance-testing-in-angular.skill; tsk=skills/testing/typescript/solution-conformance-testing-in-typescript.skill/assets/tools/testing/kinds
+while IFS= read -r copy; do   # the Angular example: its own two kinds, the TypeScript parent's two unchanged
+  k=$(basename "$copy"); src=$ng/assets/tools/testing/kinds/$k; [ -f "$src" ] || src=$tsk/$k
+  cmp -s "$src" "$copy" || err "$copy differs from $src"
+done < <(git ls-files -co --exclude-standard "$ng/example/tools/testing/kinds/*")
 ts=skills/testing/typescript/solution-conformance-testing-in-typescript.skill
 for f in cucumber.mjs stryker.conf.json; do
   cmp -s "$ts/assets/$f" "$ts/example/$f" || err "$ts/example/$f differs from $ts/assets/$f"
