@@ -25,19 +25,22 @@ The contract is per repository: CI calls `make` at the repository root and gets 
 
 How a component spec or a browser spec is written is the same in all three. Only how a kind script finds and runs the tests differs.
 
-## Decided by default — the owner may overrule before you start
-
-Recommended by the previous agent on 2026-10-09; the owner had not answered when this was written.
+## Decided by the owner (2026-10-09)
 
 - **Three skills by repository shape.** The existing one stays the base and keeps the rules for writing specs and the result adapter. Two new ones refine it and replace only the kind scripts and the configuration:
   - `solution-conformance-testing-in-angular-library`
   - `solution-conformance-testing-in-angular-nx`
 - **Not** one skill per Nx role (a "package" skill and an "application with Nx" skill): inside one workspace both are tested by one run and give one report.
+- **Scenarios lie wherever the logic lies.** In an Nx workspace logic can be in a library and in the application itself, and both are tested: any project with framework-independent logic has its own `features/` and `test/` beside that code, by the same rule as everywhere else. The `unit` kind finds them in every project.
+
+## Decided by default — the owner may overrule
+
+Recommended by the previous agent; the owner has not answered.
+
 - **One badge per kind**, with the projects broken down inside the kind's report — not a badge per library.
 
 Open, and yours to bring to the owner with a recommendation:
 
-- **Where the Cucumber scenarios live in an Nx workspace.** Today they sit beside a framework-independent domain folder. Which library types of the catalog carry such logic, and does each get its own `features/` and `test/`? Read the catalog's library taxonomy before proposing.
 - **What the mutation kind covers in a workspace**: every library with logic in a `report` run, and the affected ones in a `check` run with `DELTA_BASE`, is the obvious reading — confirm it holds with Stryker's `mutate` patterns across projects.
 
 ## What done looks like
@@ -47,7 +50,7 @@ For each of the two new skills:
 1. A skill folder beside the existing one, depending on it, whose `whenToUse` lets an agent choose by one fact — what the repository holds. The three `whenToUse` texts together must leave no situation of the four without exactly one skill.
 2. A runnable `example/` that passes `run-example.sh`. The owner must be able to run `make init && make test-and-report` and see the report: the same four kinds, the same landing page, the living doc with every scenario and its tags.
    - Library: a publishable Angular library with one component and some framework-independent logic; a host application the `ui` kind serves; `npm pack --dry-run` showing no spec, step or feature file in the package.
-   - Nx: one application and at least two libraries, one of them with framework-independent logic covered by scenarios; a `check` run with `DELTA_BASE` in a two-commit copy showing that only the affected projects ran.
+   - Nx: one application and at least two libraries, with framework-independent logic covered by scenarios in a library and in the application; a `check` run with `DELTA_BASE` in a two-commit copy showing that only the affected projects ran.
 3. `# Ground truth` in the skill with the numbers you measured and a plain list of what you did not verify.
 4. The kind scripts of each example compared with their originals by `check.sh` §10, as the existing Angular example is.
 5. The two catalog solutions updated: their sentence "an Nx workspace needs its own adapter" becomes a link to the Nx skill. The catalog's rules are not otherwise changed.
@@ -68,7 +71,7 @@ Reuse before writing: the result adapter `assets/tools/testing/angular-results.m
 
 - **Aggregation in Nx.** Each project has its own runner output; the kind must bring them into one result, one badge and one report page without losing which project a failure belongs to. A project with no tests must not turn the kind green by being absent. Decide what an empty project means and make the red case a test of your own.
 - **`nx affected` against `DELTA_BASE`.** The contract says a kind decides what `DELTA_BASE` means for it and writes that decision to its `mode`. For `components` and `ui`, which today always run in full, running only the affected projects in a `check` run is a change of behaviour — raise it with the owner before doing it.
-- **Weight.** An Nx example brings hundreds of megabytes of dependencies and a slow first run. Measure a cold `make init && make test-and-report` and put the time into the skill; if it passes ten minutes, say so and propose what to cut.
+- **Weight.** The example's own source stays small and `node_modules/` is never committed — `make init` installs it. What costs is the first run on a clean checkout: the download and the Nx start-up. Measure a cold `make init && make test-and-report` and put the time into the skill; if it passes ten minutes, say so and propose what to cut.
 - **The library's host application.** The catalog already has such hosts — `apps/component-preview` for the monolith, `projects/demo` for the design system. Follow one of them rather than inventing a third.
 - **Nx caching.** A cached target replays an old result. A test kind must run its tests; find how the kind keeps Nx from answering from cache, and prove it by changing a spec between two runs.
 

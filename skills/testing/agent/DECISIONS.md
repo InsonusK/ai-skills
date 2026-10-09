@@ -363,3 +363,10 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The UI kind takes a free loopback port for every run (`UI_TEST_PORT`, picked in `ui.sh`). The fixed port failed one run in five when two runs followed each other on one machine; one `make test-kind-ui` alone, or a CI job in its own container, was never affected.
 - The TypeScript `mutation.sh` takes its delta scope from the `mutate` patterns of `stryker.conf.json` instead of a second scope written into the script. The Angular example then needs no patched copy, and `check.sh` §10 compares its four kind scripts with their originals.
 - The showcase sources of TypeScript, Angular and .NET were formatted with prettier and CSharpier; neither tool was added to the projects.
+
+## Owner-decided (2026-10-09, the two open tasks)
+
+- .NET test projects keep feature files in `features/` and bindings in `Steps/`; `Rules/` and `StepDefinitions/` go.
+- Angular testing skills are split by repository shape: one application (the existing skill), one library, an Nx workspace. An Nx application with its Nx packages in one repository is the workspace shape.
+- In an Nx workspace logic lies in packages and in the application alike, and both are tested: scenarios lie beside the logic in any project.
+- The TaskBox feature file gets its tags at the source when the owner returns to the TaskBox work.

@@ -14,9 +14,9 @@ The .NET testing rules now live in `skills/testing/dotnet/`. The .NET architectu
 
 An agent that applies the catalog and the testing skill to one project gets two layouts. The owner's instruction (2026-10-09): what in the architecture skills repeats `cucumber-testing-in-dotnet` becomes a link to it; what adds to it stays.
 
-## Decided by default — the owner may overrule before you start
+## Decided by the owner (2026-10-09)
 
-- **The folders are `features/` and `Steps/`**, as the testing skill and the showcase have them, so that `features/` means the same in every stack. The previous agent recommended this; the owner has not answered. The other choice — `Rules/` and `StepDefinitions/` everywhere — touches fewer files and keeps .NET on names of its own. Do not start renaming until one is confirmed.
+- **The folders are `features/` and `Steps/`** in every .NET test project, as the testing skill and the showcase have them, so that `features/` means the same in every stack. `Rules/` and `StepDefinitions/` go.
 
 ## What done looks like
 
