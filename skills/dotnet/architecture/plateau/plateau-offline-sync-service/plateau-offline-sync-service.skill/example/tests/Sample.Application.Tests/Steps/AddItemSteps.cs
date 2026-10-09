@@ -10,7 +10,7 @@ using Sample.Interfaces.ValueObjects;
 using Shared.Repositories;
 using Xunit;
 
-namespace Sample.Application.Tests.StepDefinitions;
+namespace Sample.Application.Tests.Steps;
 
 [Binding]
 public sealed class AddItemSteps

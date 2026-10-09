@@ -3,7 +3,7 @@ using Sample.Domain.ValueObjects;
 using Shared.Exceptions;
 using Xunit;
 
-namespace Sample.Domain.Tests.StepDefinitions;
+namespace Sample.Domain.Tests.Steps;
 
 // The @format scenarios from Sample.Domain.Rules.Spec/ItemTitle.feature, re-proven fail-fast
 // through the ItemTitle constructor. Same Gherkin text the rule's own ItemTitleRuleSteps binds

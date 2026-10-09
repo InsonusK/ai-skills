@@ -46,3 +46,7 @@ An agent that applies the catalog and the testing skill to one project gets two 
 - The mutation scores of the plateau examples are low (29–55%) by content, not by defect. A rename must not change them; if one moves, the run lost or gained tests.
 
 Numbers to compare with, measured 2026-10-09: `plateau-core` 7/7, 72.4%, 55.0%; `plateau-domain-service` 10/10, 41.7%, 31.1%; `plateau-offline-sync-service` 14/14, 40.1%, 29.3%; the showcase 25/25, 100%, 94.4%.
+
+## Implementation status
+
+Implemented on `dotnet-test-layout`, branched from `skills-testing`; [migration contract, decisions and validation](DOTNET-LAYOUT-INVARIANTS.md). Both mechanical gates and all four runtime harnesses pass with unchanged reference metrics.

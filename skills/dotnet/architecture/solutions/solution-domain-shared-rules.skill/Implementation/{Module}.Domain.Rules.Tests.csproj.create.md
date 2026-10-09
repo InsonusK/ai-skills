@@ -15,7 +15,7 @@ tags:
 - Isolate `{Module}.Domain.Rules`'s mutation-testing surface from `{Module}.Domain.Tests`'s broader one (which also covers Entities/VOs) — a survived mutant here is unambiguously a rule bug, not noise from an unrelated Entity method
 
 # Core Principles
-- References `{Module}.Domain.Rules` and mirrors its [Allowed Dependencies](skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md#allowed-dependencies).
+- References `{Module}.Domain.Rules` and mirrors its [production reference boundary](skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.csproj.create.md#core-principles).
 - Takes `.feature` files from two sources: its own `/features` folder (rule-only edge cases no other layer needs to prove) and, linked in as `<ReqnrollFeatureFiles>`, every file under every classification folder of `{Module}.Domain.Rules.Spec` — the shared scenarios also proven by `{Module}.Domain.Tests`/`{Module}.Application.Tests`
 - Step definitions here call the rule's own `Check()` (or the raw `IsValid()` for a pure-predicate scenario) directly — never a VO constructor, an Entity method, or a validator; those adapters are proven in their own test projects
 

@@ -4,7 +4,7 @@ using Sample.Domain.Rules;
 using Sample.Interfaces.ValueObjects;
 using Xunit;
 
-namespace Sample.Domain.Rules.Tests.StepDefinitions;
+namespace Sample.Domain.Rules.Tests.Steps;
 
 [Binding]
 public sealed class ItemTitleRuleSteps

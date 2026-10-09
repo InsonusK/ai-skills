@@ -65,6 +65,11 @@ for name in sorted(changed):
         m = re.search(r'^created_by:\n((?:[ \t]+.*\n)*)', text, re.M)
         return set(re.findall(r'\[\[([^]|]+)', m[1])) if m else set()
     check(contributors(before) <= contributors(s), f'{p}: original contributor removed')
+    # Ensure metadata names keep their established identity through propagation.
+    for field in ('name', 'plateau', 'element_kind', 'change_kind'):
+        old_field = re.search(rf'^{field}:.*$', before, re.M)
+        new_field = re.search(rf'^{field}:.*$', s, re.M)
+        check(not old_field or new_field and old_field[0] == new_field[0], f'{p}: {field} changed')
 
 # The existing resolver excludes fenced examples; every real link in the affected files must resolve.
 link_files = sorted({str(p) for p in markdown} | {n for n in changed if Path(n).is_file() and n.endswith('.md')})
@@ -73,6 +78,16 @@ for row in rows.splitlines():
     cols = row.split('\t')
     if cols[-1] == 'broken':
         failures.append(f'{cols[0]}:{cols[1]}: broken link {cols[2]}')
+    # Verify concrete Markdown fragments on task-owned rule links, not just file existence.
+    if cols[-1] == 'ok' and '#' in cols[2] and cols[3].endswith('.md'):
+        anchor = cols[2].split('#', 1)[1]
+        headings = re.findall(r'^#{1,6}\s+(.+?)\s*$', Path(cols[3]).read_text(), re.M)
+        def slug(heading):
+            return re.sub(r'[^\w\s-]', '', heading.lower()).replace(' ', '-')
+        if anchor in ('keep-tests-in-separate-test-projects', 'exercise-production-code-from-bindings',
+                      'one-binding-class-per-domain-concept', 'assert-the-concrete-ardalisresult-state',
+                      'allowed-dependencies', 'testing-conventions'):
+            check(anchor in {slug(heading) for heading in headings}, f'{cols[0]}:{cols[1]}: missing rule anchor {anchor}')
 
 if args.wave >= 2:
     plateau = Path('skills/dotnet/architecture/plateau')
@@ -81,6 +96,11 @@ if args.wave >= 2:
         test_projects = list((root / 'structure').glob('*.Tests/*csproj*.skill.md'))
         check(len(test_projects) == projects, f'{root}: wrong test-project count')
         for p in test_projects:
+            project = p.parent.name.removesuffix('.Tests')
+            production = list((root / 'structure' / project).glob('*csproj*.skill.md'))
+            check(len(production) == 1, f'{p}: production counterpart missing/ambiguous')
+            if len(production) == 1:
+                check(str(production[0]) + '#allowed-dependencies' in p.read_text(), f'{p}: production dependency boundary not linked')
             check('cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md' in p.read_text(), f'{p}: no layout owner link')
         for p in (root / 'structure').glob('*.Tests/classes/*rule-steps.skill.md'):
             check('```csharp' not in p.read_text(), f'{p}: duplicate binding template')
@@ -91,6 +111,21 @@ if args.wave >= 3:
     examples = list(Path('skills/dotnet/architecture/plateau').glob('*/plateau-*.skill/example'))
     examples.append(Path('skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/example'))
     tracked = git('ls-files', '-co', '--exclude-standard').splitlines()
+    # A folder migration must preserve both feature text and executable behavior.
+    for old in git('ls-tree', '-r', '--name-only', base).splitlines():
+        if not any(old.startswith(str(example) + '/') for example in examples):
+            continue
+        source = Path(old)
+        if source.suffix not in ('.feature', '.cs'):
+            continue
+        target = Path(*('features' if part == 'Rules' else 'Steps' if part == 'StepDefinitions' else part for part in source.parts))
+        check(target.is_file(), f'{target}: original feature/production/step file lost')
+        if target.is_file():
+            before = git('show', f'{base}:{old}')
+            after = target.read_text()
+            if source.suffix == '.cs':
+                before = before.replace('.StepDefinitions;', '.Steps;')
+            check(before == after, f'{target}: behavior or feature text changed during rename')
     for example in examples:
         paths = [Path(n) for n in tracked if n.startswith(str(example) + '/') and Path(n).is_file()]
         check(any(p.suffix == '.feature' for p in paths), f'{example}: no feature files')

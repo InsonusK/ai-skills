@@ -6,7 +6,7 @@ using Reqnroll;
 using Shared.MediatR;
 using Xunit;
 
-namespace BuildingBlocks.Tests.StepDefinitions;
+namespace BuildingBlocks.Tests.Steps;
 
 [Binding]
 public sealed class PipelineSteps

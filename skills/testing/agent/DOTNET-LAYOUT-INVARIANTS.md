@@ -46,7 +46,8 @@ Known Stryker coverage-capture warnings in plateau-core are documented in the ta
 - Contract reviewed by the owner on 2026-10-09; bulk work authorized.
 - Wave 1: solution and stack owners updated; testing check and task-specific wave gate passed; separate conformance audit completed.
 - Wave 2: three root skills and 33 structural skills refreshed through the parent chain; generic class templates and package tables removed; other solution provenance and VP4/Cecil contributions preserved. Both gates passed.
-- Example wave and final pull request into `skills-testing`: pending.
+- Wave 3: three plateau examples renamed; the showcase already had the correct layout. All four `run-example.sh` invocations passed A/B/C; tests, coverage and mutation badges exactly match the reference table.
+- Final task-specific gate and testing check passed. Pull request into `skills-testing`: awaiting GitHub CLI authentication.
 
 - Wave 1 decision: VP4 solution also produced the obsolete layout; updated its rule-test contribution before propagating to plateaus. Recorded its own ADR.
 - Wave 1 audit: corrected an unintended production-path substitution before commit; production paths are preserved. Moved the generic production-binding rule into the .NET Cucumber owner.
@@ -55,3 +56,9 @@ Known Stryker coverage-capture warnings in plateau-core are documented in the ta
 
 - Boundary audit correction: old catalog lists did not actually mirror production Allowed Dependencies. Replaced them with production-skill links, preserving test layer entry points and the existing Cecil scan extension. Source ADR updated; each plateau records this conflict resolution and the full propagation set.
 - Completed example runs so far: core 7/7, 72.4%, 55.0%; domain-service 10/10, 41.7%, 31.1%; both harnesses passed A/B/C and report-link checks.
+
+- Wave 3 audit: all original `.feature` text and production `.cs` files preserved byte-for-byte; binding files changed only their namespace suffix. No validation tag or assertion was changed. Three VP4 linked-feature project items now use `features\Shared`. `reqnroll.json`, Stryker settings and kind-script message discovery already use output paths independent of the feature folder and are preserved; the full harness confirms discovery/reporting.
+- Report-link evidence: core 21 pages, domain-service 36, offline-sync-service 41, showcase 16; zero broken links. Living-doc inventories: 7, 10, 11, 25 entries respectively (offline-sync also runs its existing plain architecture tests, hence 14 total tests).
+- Final link audit checks concrete rule anchors as well as file existence. Corrected the VP4 production-boundary link to its existing Core Principles section rather than inventing an Allowed Dependencies anchor.
+- Re-run static audit: `python3 skills/testing/agent/check-dotnet-layout.py` (historical migration audit against task base `b3570c54`) and `bash skills/testing/agent/check.sh`.
+- The unrelated catalog index still has pre-existing historical v3 links; the task-specific gate checks the affected owners and three current plateaus, including all links changed by this migration.

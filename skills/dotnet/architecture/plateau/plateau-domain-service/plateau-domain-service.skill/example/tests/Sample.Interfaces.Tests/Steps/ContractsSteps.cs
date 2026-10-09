@@ -7,7 +7,7 @@ using Shared.MediatR;
 using Shared.Timestamps;
 using Xunit;
 
-namespace Sample.Interfaces.Tests.StepDefinitions;
+namespace Sample.Interfaces.Tests.Steps;
 
 [Binding]
 public sealed class ContractsSteps

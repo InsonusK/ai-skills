@@ -6,7 +6,7 @@ using Sample.Interfaces.Commands;
 using Sample.Interfaces.ValueObjects;
 using Xunit;
 
-namespace Sample.Application.Tests.StepDefinitions;
+namespace Sample.Application.Tests.Steps;
 
 [Binding]
 public sealed class GreetSteps

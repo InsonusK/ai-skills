@@ -3,7 +3,7 @@ using Reqnroll;
 using Shared.MediatR;
 using Xunit;
 
-namespace Shared.Tests.StepDefinitions;
+namespace Shared.Tests.Steps;
 
 [Binding]
 public sealed class CommandMarkersSteps
