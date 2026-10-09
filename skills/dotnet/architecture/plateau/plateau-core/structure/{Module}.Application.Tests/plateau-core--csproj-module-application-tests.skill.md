@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test for a handler or validato
 domain: skill
 type: template
 plateau: core
-version: 20260924000000
+version: 20261009220000
 tags:
   - skill/template/csproj
   - plateau/core
@@ -21,10 +21,12 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create|{Module}.Application.Tests.csproj]]
 
 # Core Principles
-- Scenarios are command-shaped: a command goes in, a `Result` comes out, asserted against the real handler — the step never re-implements the orchestration.
-- A failure scenario asserts the exact error code/message, not just `IsSuccess == false`.
+- Apply the linked [testing conventions](#testing-conventions).
+- Scenarios are command-shaped: a command goes in, a `Result` comes out, asserted against the real handler.
 - Validator scenarios run the real `AbstractValidator<T>` and assert the failing rule.
-- Unit tests and scenarios live together in this one project.
+
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
 
 # Structure
 
@@ -34,22 +36,12 @@ __Applied solutions:__
 ```
 
 ## Project Structure
-- /{Module}.Application.Tests
-  - /Rules/{Rule}.feature
-  - /StepDefinitions/[{Rule}Steps.cs](skills/dotnet/architecture/plateau/plateau-core/structure/{Module}.Application.Tests/classes/plateau-core--class-module-application-rule-steps.skill.md)
-  - reqnroll.json
-  - {Module}.Application.Tests.csproj
+Apply the linked [testing conventions](#testing-conventions).
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
-| /Rules/{Rule}.feature | Gherkin scenarios for one handler / validator | |
-| /StepDefinitions/{Rule}Steps.cs | Bindings driving the real handler / validator | [[skills/dotnet/architecture/plateau/plateau-core/structure/{Module}.Application.Tests/classes/plateau-core--class-module-application-rule-steps.skill\|class-module-application-rule-steps]] |
-
-## NuGet Packages
-| Package | Version constraint | Purpose |
-| --- | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | central | test host, assertions, Gherkin, coverage |
+| {Rule}Steps.cs | Bindings driving the real handler / validator | [[skills/dotnet/architecture/plateau/plateau-core/structure/{Module}.Application.Tests/classes/plateau-core--class-module-application-rule-steps.skill\|class-module-application-rule-steps]] |
 
 ## What Does NOT Belong Here
 - Contract-shape assertions — belong to `{Module}.Interfaces.Tests`.
@@ -60,14 +52,13 @@ __Applied solutions:__
 
 # Rules
 MUST:
+- Apply the linked [testing conventions](#testing-conventions).
 - Reference `{Module}.Application` (and `{Module}.Domain` once it exists) only — no other module's project, no `{Module}.Interfaces`-only shortcut around `{Module}.Application`'s boundary.
-- Call the real handler / validator; assert the exact `Result` or failing rule; keep unit tests and scenarios together; set `<TreatWarningsAsErrors>false</TreatWarningsAsErrors>`.
-- Never re-implement a handler's load/dispatch/return logic inside a step.
+- Handler scenarios prove command orchestration; validator scenarios prove the input boundary.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Check list
-- [ ] `{Module}.Application.Tests.csproj` references only `{Module}.Application` (+ `{Module}.Domain` from VP1) plus the five test packages.
-- [ ] `/Rules` + `/StepDefinitions` + `reqnroll.json` present.
+- [ ] `{Module}.Application.Tests.csproj` references only `{Module}.Application` (+ `{Module}.Domain` from VP1).
 - [ ] Every scenario calls the real handler/validator and asserts its actual result.

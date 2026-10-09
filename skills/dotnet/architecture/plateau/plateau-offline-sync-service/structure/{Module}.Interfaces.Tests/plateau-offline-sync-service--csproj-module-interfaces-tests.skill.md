@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test that pins a public contra
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260924000000
+version: 20261009220000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -21,9 +21,12 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create|{Module}.Interfaces.Tests.csproj]]
 
 # Core Principles
+- Apply the linked [testing conventions](#testing-conventions).
 - Scenarios are contract-shaped: construct the declared type and assert it is assignable to the right marker / carries the right members.
 - No handler, no validator, no domain type is referenced — only the module's `Interfaces`.
-- Unit tests and scenarios live together in this one project.
+
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
 
 # Structure
 
@@ -33,22 +36,12 @@ __Applied solutions:__
 ```
 
 ## Project Structure
-- /{Module}.Interfaces.Tests
-  - /Rules/{Rule}.feature
-  - /StepDefinitions/[{Rule}Steps.cs](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Interfaces.Tests/classes/plateau-offline-sync-service--class-module-interfaces-rule-steps.skill.md)
-  - reqnroll.json
-  - {Module}.Interfaces.Tests.csproj
+Apply the linked [testing conventions](#testing-conventions).
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
-| /Rules/{Rule}.feature | Gherkin scenarios pinning contract shapes | |
-| /StepDefinitions/{Rule}Steps.cs | Bindings constructing and inspecting the real contract types | [[skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Interfaces.Tests/classes/plateau-offline-sync-service--class-module-interfaces-rule-steps.skill\|class-module-interfaces-rule-steps]] |
-
-## NuGet Packages
-| Package | Version constraint | Purpose |
-| --- | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | central | test host, assertions, Gherkin, coverage |
+| {Rule}Steps.cs | Bindings constructing and inspecting the real contract types | [[skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Interfaces.Tests/classes/plateau-offline-sync-service--class-module-interfaces-rule-steps.skill\|class-module-interfaces-rule-steps]] |
 
 ## What Does NOT Belong Here
 - Handler/validator behavior — belongs to `{Module}.Application.Tests`.
@@ -59,14 +52,13 @@ __Applied solutions:__
 
 # Rules
 MUST:
+- Apply the linked [testing conventions](#testing-conventions).
 - Reference `{Module}.Interfaces` only.
-- Assert against the real declared contract type; keep unit tests and scenarios in this one project; set `<TreatWarningsAsErrors>false</TreatWarningsAsErrors>`.
 - Never reach into `{Module}.Application` or `{Module}.Domain` for a shortcut.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create|{Module}.Interfaces.Tests.csproj]]
 
 # Check list
-- [ ] `{Module}.Interfaces.Tests.csproj` references only `{Module}.Interfaces` plus the five test packages.
-- [ ] `/Rules` + `/StepDefinitions` + `reqnroll.json` present.
+- [ ] `{Module}.Interfaces.Tests.csproj` references only `{Module}.Interfaces`.
 - [ ] Every scenario constructs and inspects a real contract type.

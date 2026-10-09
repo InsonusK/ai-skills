@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Domain.Tests feature
 domain: skill
 type: template
 plateau: domain-service
-version: 20260902000000
+version: 20261009220000
 tags:
   - skill/template/class
   - plateau/domain-service
@@ -14,61 +14,34 @@ created_by:
 ---
 
 # Goal
-- Prove every scenario in `Rules/{Rule}.feature` against `{Module}.Domain`'s real entity method / domain service / strict Value Object constructor.
+- Prove every scenario in `features/{Rule}.feature` against `{Module}.Domain`'s real entity method / domain service / strict Value Object constructor.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Core Principles
+- Apply the linked [testing conventions](#testing-conventions).
 - Apply ONE plateau template per class.
-- `[Binding] sealed class {Rule}Steps` — Reqnroll bindings.
 - Validator-shaped: construct the entity / VO, invoke the real method, capture the outcome; on a failure scenario assert `DomainException.Code`.
-- `Record.Exception(() => ...) as DomainException` is the idiom for a throw expectation.
 - References `{Module}.Domain` only.
 
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
+
 # Implementation
-```csharp
-// Skill: plateau-domain-service--class-module-domain-rule-steps
-// Plateau: domain-service
-// Version: 20260902000000
-using Reqnroll;
-using {Module}.Domain.Entities;
-using {Module}.Domain.ValueObjects;
-using Shared.Exceptions;
-using Xunit;
-
-namespace {Module}.Domain.Tests.StepDefinitions;
-
-[Binding]
-public sealed class {Entity}Steps
-{
-    private DomainException? _error;
-
-    [When("a title {string} is constructed")]
-    public void WhenTitle(string v) => _error = Record.Exception(() => new {ValueObject}(v)) as DomainException;
-
-    [Then("a domain error {string} is raised")]
-    public void ThenError(string code)
-    {
-        Assert.NotNull(_error);
-        Assert.Equal(code, _error!.Code);
-    }
-}
-```
+The layer-specific action and observation follow the contributing solution linked below; generic binding code comes from the testing skills.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Rules
 MUST:
-- `[Binding] sealed class {Rule}Steps` in `{Module}.Domain.Tests/StepDefinitions`.
-- Invoke the real entity method / VO constructor; on a failure scenario assert the exact `DomainException.Code`.
+- Apply [production-code bindings](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#exercise-production-code-from-bindings) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must).
 - Reference `{Module}.Domain` only; never reach into `{Module}.Application`.
 - Never apply several plateau templates per class.
 
 # Check list
-- [ ] Every `Given/When/Then` has a matching step; the real Domain type is exercised.
-- [ ] Failure scenarios assert `DomainException.Code`.
+- [ ] The action and observation prove this layer's contract, with the linked testing conventions applied.
 
 # Unittest TestCases
 - [ ] WHEN the feature runs THEN each scenario's assertion passes against the real Domain type.

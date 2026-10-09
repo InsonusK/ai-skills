@@ -32,7 +32,7 @@ for root in roots:
     for p in root.rglob('*.md'):
         if 'example' in p.parts or 'adr' in p.parts or 'agent' in p.parts:
             continue
-        if root.name == 'plateau' and 'solution-dotnet-conformance-testing' not in p.read_text():
+        if root.name == 'plateau' and not any(part in ('plateau-core', 'plateau-domain-service', 'plateau-offline-sync-service') for part in p.parts):
             continue
         markdown.append(p)
         s = p.read_text()

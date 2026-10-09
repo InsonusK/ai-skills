@@ -45,7 +45,10 @@ Known Stryker coverage-capture warnings in plateau-core are documented in the ta
 - .NET, jq, and Node are available.
 - Contract reviewed by the owner on 2026-10-09; bulk work authorized.
 - Wave 1: solution and stack owners updated; testing check and task-specific wave gate passed; separate conformance audit completed.
-- Plateau and example waves and final pull request into `skills-testing`: pending.
+- Wave 2: three root skills and 33 structural skills refreshed through the parent chain; generic class templates and package tables removed; other solution provenance and VP4/Cecil contributions preserved. Both gates passed.
+- Example wave and final pull request into `skills-testing`: pending.
 
 - Wave 1 decision: VP4 solution also produced the obsolete layout; updated its rule-test contribution before propagating to plateaus. Recorded its own ADR.
 - Wave 1 audit: corrected an unintended production-path substitution before commit; production paths are preserved. Moved the generic production-binding rule into the .NET Cucumber owner.
+
+- Wave 2 audit: found and removed a composite Application bullet still repeating unit/scenario and assertion rules. Confirmed VP1/VP4 selection, all contributor lists, shared-spec XML links, and the separate rule-only/Domain Cecil scopes. No conflict resolution, solution removal or structural-skill deletion required a plateau ADR.

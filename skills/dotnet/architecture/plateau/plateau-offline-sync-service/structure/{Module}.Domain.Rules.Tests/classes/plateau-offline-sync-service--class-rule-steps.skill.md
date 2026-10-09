@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Domain.Rules.Tests f
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20261008170000
+version: 20261009220000
 tags:
   - skill/template/class
   - plateau/offline-sync-service
@@ -20,57 +20,28 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill|solution-domain-shared-rules]] - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create|{Rule}RuleSteps.cs]]
 
 # Core Principles
+- Apply the linked [testing conventions](#testing-conventions).
 - Apply ONE plateau template per class.
-- `[Binding] sealed class {Rule}RuleSteps` — Reqnroll bindings.
 - Build the wrapper (`Soft{ValueObject}` or a tuple), call `.Check()`, assert on the `ValidationResult`: passing scenario → `IsValid`; failing → the exact `ErrorCode` present in `Errors`.
 - References `{Module}.Domain.Rules` only.
 
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
+
 # Implementation
-```csharp
-// Skill: plateau-offline-sync-service--class-rule-steps
-// Plateau: offline-sync-service
-// Version: 20260902000000
-using FluentValidation.Results;
-using Reqnroll;
-using {Module}.Domain.Rules;
-using {Module}.Interfaces.ValueObjects;
-using Xunit;
-
-namespace {Module}.Domain.Rules.Tests.StepDefinitions;
-
-[Binding]
-public sealed class {ValueObject}RuleSteps
-{
-    private ValidationResult _result = null!;
-
-    [When("the value {string} is checked")]
-    public void WhenChecked(string value) => _result = new Soft{ValueObject}(value).Check();
-
-    [Then("the check fails with error code {string}")]
-    public void ThenFails(string code)
-    {
-        Assert.False(_result.IsValid);
-        Assert.Contains(_result.Errors, e => e.ErrorCode == code);
-    }
-
-    [Then("the check passes")]
-    public void ThenPasses() => Assert.True(_result.IsValid);
-}
-```
+The layer-specific action and observation follow the contributing solution linked below; generic binding code comes from the testing skills.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill|solution-domain-shared-rules]] - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create|{Rule}RuleSteps.cs]]
 
 # Rules
 MUST:
-- `[Binding] sealed class {Rule}RuleSteps` in `{Module}.Domain.Rules.Tests/StepDefinitions`.
-- Call the real `{Rule}.Check()`; assert the exact `ErrorCode` on a failure scenario.
+- Apply [production-code bindings](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#exercise-production-code-from-bindings) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must).
 - Reference `{Module}.Domain.Rules` only.
 - Never apply several plateau templates per class.
 
 # Check list
-- [ ] Every `Given/When/Then` has a matching step; the real `Check()` is invoked.
-- [ ] Failure scenarios assert the exact `ErrorCode`.
+- [ ] The action and observation prove this layer's contract, with the linked testing conventions applied.
 
 # Unittest TestCases
 - [ ] WHEN the feature runs THEN each scenario's assertion passes against the real rule.

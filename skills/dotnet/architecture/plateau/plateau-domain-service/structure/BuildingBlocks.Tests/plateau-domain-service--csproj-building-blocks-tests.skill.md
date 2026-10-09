@@ -5,7 +5,7 @@ whenToUse: when adding a Gherkin scenario or unit test for a MediatR pipeline be
 domain: skill
 type: template
 plateau: domain-service
-version: 20260924000000
+version: 20261009220000
 tags:
   - skill/template/csproj
   - plateau/domain-service
@@ -21,9 +21,12 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create|BuildingBlocks.Tests.csproj]]
 
 # Core Principles
-- Scenarios drive the real behavior through a hand-built `RequestHandlerDelegate` and assert on the returned `Result` — the behavior is never re-implemented in the step.
+- Apply the linked [testing conventions](#testing-conventions).
+- Pipeline scenarios supply a hand-built `RequestHandlerDelegate` and observe the returned `Result`.
 - At plateau-core the covered behaviors are `ValidationBehavior` (short-circuit with `Result.Invalid`) and `ExceptionHandlingBehavior` (throw → generic `Result.Error`).
-- Unit tests and scenarios live together in this one project.
+
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
 
 # Structure
 
@@ -33,22 +36,12 @@ __Applied solutions:__
 ```
 
 ## Project Structure
-- /BuildingBlocks.Tests
-  - /Rules/{Rule}.feature
-  - /StepDefinitions/[{Rule}Steps.cs](skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks.Tests/classes/plateau-domain-service--class-building-blocks-rule-steps.skill.md)
-  - reqnroll.json
-  - BuildingBlocks.Tests.csproj
+Apply the linked [testing conventions](#testing-conventions).
 
 ## Directory and class skills
 | `Directory\|file` | Description | Pattern skill |
 | --- | --- | --- |
-| /Rules/{Rule}.feature | Gherkin scenarios for one pipeline behavior | |
-| /StepDefinitions/{Rule}Steps.cs | Bindings driving the real behavior | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks.Tests/classes/plateau-domain-service--class-building-blocks-rule-steps.skill\|class-building-blocks-rule-steps]] |
-
-## NuGet Packages
-| Package | Version constraint | Purpose |
-| --- | --- | --- |
-| Microsoft.NET.Test.Sdk / xunit / xunit.runner.visualstudio / Reqnroll.xUnit / coverlet.collector | central | test host, assertions, Gherkin, coverage |
+| {Rule}Steps.cs | Bindings driving the real behavior | [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks.Tests/classes/plateau-domain-service--class-building-blocks-rule-steps.skill\|class-building-blocks-rule-steps]] |
 
 ## What Does NOT Belong Here
 - A module-specific concept — belongs to that module's `.Tests`.
@@ -59,14 +52,12 @@ __Applied solutions:__
 
 # Rules
 MUST:
+- Apply the linked [testing conventions](#testing-conventions).
 - Reference `BuildingBlocks` only.
-- Call the real behavior class through a hand-built next-delegate; assert on the actual `Result` status and message, never a hand-computed expected value.
-- Keep unit tests and scenarios in this one project; set `<TreatWarningsAsErrors>false</TreatWarningsAsErrors>`.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create|BuildingBlocks.Tests.csproj]]
 
 # Check list
-- [ ] `BuildingBlocks.Tests.csproj` references only `BuildingBlocks` plus the five test packages.
-- [ ] `/Rules` + `/StepDefinitions` + `reqnroll.json` present.
+- [ ] `BuildingBlocks.Tests.csproj` references only `BuildingBlocks`.
 - [ ] Each scenario asserts the exact `Result` the real behavior returns.
