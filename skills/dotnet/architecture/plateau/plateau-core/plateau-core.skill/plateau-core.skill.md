@@ -4,7 +4,7 @@ description: The v3.1 common baseline — Central Package Management, the two-pr
 whenToUse: when scaffolding a brand-new service repository or a new module before any domain logic, persistence, or API exists; or when reviewing whether a change to the composition root, the MediatR conventions, the validation/exception pipeline, Soft Value Objects, logging, or the test-project layout follows this baseline
 domain: skill
 type: template
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/plateau
   - plateau/core
@@ -21,6 +21,8 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]"
   - "[[skills/dotnet/architecture/solutions/solution-app-logging.skill/solution-app-logging.skill|solution-app-logging]]"
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]"
+adr:
+  - "skills/dotnet/architecture/plateau/plateau-core/adr/test-boundary-mirrors-production.md"
 standalone: false
 ---
 
@@ -89,3 +91,6 @@ A complete, runnable minimal service is in [`example/`](./example/) — a `Sampl
 
 # Testing ownership
 The updated [catalog solution](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md) contributes project selection and layer responsibilities; its generic testing conventions are applied through the linked stack skills.
+
+# Dependency-boundary decision
+[Test boundary mirrors production](skills/dotnet/architecture/plateau/plateau-core/adr/test-boundary-mirrors-production.md) records the correction of narrower generated lists; the production Allowed Dependencies remain the authority.

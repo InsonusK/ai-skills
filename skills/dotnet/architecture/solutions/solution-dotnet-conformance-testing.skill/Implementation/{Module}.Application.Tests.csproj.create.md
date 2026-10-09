@@ -1,5 +1,5 @@
 ---
-version: 20261009220000
+version: 20261009220001
 description: Create the catalog test project for {Module}.Application and define its reference boundary
 name: "{Module}.Application.Tests"
 element_kind: project
@@ -11,7 +11,7 @@ tags:
 ---
 
 # Goals
-- Give `{Module}.Application` a dedicated test project, referencing exactly what `{Module}.Application.csproj` itself is allowed to reference.
+- Give `{Module}.Application` its catalog-selected test project with its production dependency boundary mirrored.
 
 # Core Principles
 - Step definitions are command-shaped, not validator-shaped — see [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]: a command goes in, a `Result` comes out, proven against the real handler, never `{Module}.Domain`'s types directly.
@@ -20,18 +20,18 @@ tags:
 Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for the project contents, packages and runner configuration.
 
 # Allowed Dependencies
-- `{Module}.Application`, `{Module}.Domain` — the same two projects `{Module}.Application.csproj` itself is allowed to reference (per `solution-sln-structure`). No other module's project.
+- Reference `{Module}.Application` and mirror the tested production project's [Allowed Dependencies](skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/{Module}.Application.csproj.create.md#allowed-dependencies), including only contributions of solutions actually applied to it.
 
 # Rules
 
 ## MUST
-- Reference `{Module}.Application` and `{Module}.Domain` only — no other module's project, no `{Module}.Interfaces`-only shortcut around `{Module}.Application`'s own boundary.
-  - Risk: referencing more than `{Module}.Application` itself is allowed to reach lets a test pass by exercising code that would be an architectural violation in production.
-  - Fix: keep this project's references to exactly `{Module}.Application` and `{Module}.Domain`.
+- Mirror the tested production project's [Allowed Dependencies](#allowed-dependencies), plus that production project itself.
+  - Risk: an independently maintained list either permits an illegal dependency or forbids a legitimate production dependency.
+  - Fix: derive the boundary from the production skill after its applied solution contributions are assembled.
 - Step definitions must call `{Module}.Application`'s real handlers/validators — never `{Module}.Domain`'s types directly.
   - Risk: calling `{Module}.Domain` directly bypasses the orchestration `{Module}.Application` is responsible for, proving the wrong layer.
   - Fix: call the handler/validator under test the same way a real caller would.
 
 # Check list
-- [ ] `{Module}.Application.Tests.csproj` references only `{Module}.Application` and `{Module}.Domain`.
+- [ ] Project references stay within the tested production project and its applied Allowed Dependencies.
 - [ ] Step definitions call `{Module}.Application`'s handlers/validators, not `{Module}.Domain` directly.

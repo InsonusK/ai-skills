@@ -1,11 +1,11 @@
 ---
 name: plateau-core--csproj-module-application-tests
-description: Project {Module}.Application.Tests in the plateau-core plateau — the dedicated test project for {Module}.Application, referencing the same projects {Module}.Application itself may reference
+description: Project {Module}.Application.Tests in the plateau-core plateau — tests its production counterpart within the mirrored Allowed Dependencies
 whenToUse: when adding a Gherkin scenario or unit test for a handler or validator, or checking {Module}.Application.Tests keeps to the same reference boundary as {Module}.Application
 domain: skill
 type: template
 plateau: core
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/csproj
   - plateau/core
@@ -14,7 +14,7 @@ created_by:
 ---
 
 # Goal
-- Give `{Module}.Application` a dedicated test project referencing exactly what `{Module}.Application.csproj` may reference. At plateau-core that is `{Module}.Application` (and transitively `{Module}.Interfaces`, `Shared`); `{Module}.Domain` is added to the reference set only once VP1 creates it.
+- Give `{Module}.Application` its catalog-selected test project with its production dependency boundary mirrored.
 - Prove each handler's orchestration and each validator's rules against the real classes.
 
 __Applied solutions:__
@@ -48,17 +48,17 @@ Apply the linked [testing conventions](#testing-conventions).
 - A reference to another module's project, or to `App.Host` / infrastructure.
 
 ## Allowed Dependencies
-- `{Module}.Application` (and, from VP1 on, `{Module}.Domain`); transitively `{Module}.Interfaces`, `Shared`. No other module's project.
+- Reference `{Module}.Application` and mirror its production project's assembled [Allowed Dependencies](skills/dotnet/architecture/plateau/plateau-core/structure/{Module}.Application/plateau-core--csproj-module-application.skill.md#allowed-dependencies); no wider project boundary.
 
 # Rules
 MUST:
 - Apply the linked [testing conventions](#testing-conventions).
-- Reference `{Module}.Application` (and `{Module}.Domain` once it exists) only — no other module's project, no `{Module}.Interfaces`-only shortcut around `{Module}.Application`'s boundary.
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 - Handler scenarios prove command orchestration; validator scenarios prove the input boundary.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Check list
-- [ ] `{Module}.Application.Tests.csproj` references only `{Module}.Application` (+ `{Module}.Domain` from VP1).
+- [ ] References match the mirrored production boundary and any explicitly applied architecture-test extension.
 - [ ] Every scenario calls the real handler/validator and asserts its actual result.

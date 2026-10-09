@@ -52,3 +52,6 @@ Known Stryker coverage-capture warnings in plateau-core are documented in the ta
 - Wave 1 audit: corrected an unintended production-path substitution before commit; production paths are preserved. Moved the generic production-binding rule into the .NET Cucumber owner.
 
 - Wave 2 audit: found and removed a composite Application bullet still repeating unit/scenario and assertion rules. Confirmed VP1/VP4 selection, all contributor lists, shared-spec XML links, and the separate rule-only/Domain Cecil scopes. No conflict resolution, solution removal or structural-skill deletion required a plateau ADR.
+
+- Boundary audit correction: old catalog lists did not actually mirror production Allowed Dependencies. Replaced them with production-skill links, preserving test layer entry points and the existing Cecil scan extension. Source ADR updated; each plateau records this conflict resolution and the full propagation set.
+- Completed example runs so far: core 7/7, 72.4%, 55.0%; domain-service 10/10, 41.7%, 31.1%; both harnesses passed A/B/C and report-link checks.

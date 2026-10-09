@@ -4,7 +4,7 @@ description: A standalone domain service on top of plateau-core — a persisted 
 whenToUse: when scaffolding or reviewing a service that owns domain entities in its own database and exposes them over HTTP — checking the domain layer, the persistence stack, optimistic concurrency, timestamping, the API layer, or the outbound gRPC client against this baseline
 domain: skill
 type: template
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/plateau
   - plateau/domain-service
@@ -24,6 +24,8 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/solution-api-project.skill/solution-api-project.skill|solution-api-project]]"
   - "[[skills/dotnet/architecture/solutions/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]]"
   - "[[skills/dotnet/architecture/solutions/solution-grpc-client.skill/solution-grpc-client.skill|solution-grpc-client]]"
+adr:
+  - "skills/dotnet/architecture/plateau/plateau-domain-service/adr/test-boundary-mirrors-production.md"
 standalone: true
 ---
 
@@ -118,3 +120,6 @@ See [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/platea
 
 # Testing ownership
 The [catalog solution](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md) contributes project selection, mirrored dependency boundaries and layer responsibilities. `{Module}.Domain.Tests` is added only with VP1.
+
+# Dependency-boundary decision
+[Test boundary mirrors production](skills/dotnet/architecture/plateau/plateau-domain-service/adr/test-boundary-mirrors-production.md) records the correction of narrower generated lists; the production Allowed Dependencies remain the authority.

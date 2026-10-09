@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Interfaces.Tests fea
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/class
   - plateau/offline-sync-service
@@ -23,7 +23,7 @@ __Applied solutions:__
 - Apply the linked [testing conventions](#testing-conventions).
 - Apply ONE plateau template per class.
 - Contract-shaped: construct the declared type, assert it is assignable to the right marker / exposes the right members.
-- References only the module's `Interfaces` — never a handler, validator, or domain type.
+- Contract scenarios enter through the module's declared Interfaces types; supporting references follow the owning test project's mirrored boundary.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |

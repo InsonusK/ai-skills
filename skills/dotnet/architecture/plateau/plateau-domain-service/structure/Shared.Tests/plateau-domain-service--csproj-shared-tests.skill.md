@@ -1,11 +1,11 @@
 ---
 name: plateau-domain-service--csproj-shared-tests
-description: Project Shared.Tests in the plateau-domain-service plateau — the dedicated test project for Shared, referencing Shared only
+description: Project Shared.Tests in the plateau-domain-service plateau — tests its production counterpart within the mirrored Allowed Dependencies
 whenToUse: when adding a Gherkin scenario or unit test for a Shared primitive/marker, or checking that Shared.Tests keeps to Shared's own zero-project-reference boundary
 domain: skill
 type: template
 plateau: domain-service
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/csproj
   - plateau/domain-service
@@ -14,7 +14,7 @@ created_by:
 ---
 
 # Goal
-- Give `Shared` a dedicated test project referencing `Shared` and nothing else — mirroring `Shared`'s own zero project references.
+- Give `Shared` its catalog-selected test project with its production dependency boundary mirrored.
 - Prove `Shared`'s primitives/markers with value-shaped Gherkin scenarios.
 
 __Applied solutions:__
@@ -44,19 +44,19 @@ Apply the linked [testing conventions](#testing-conventions).
 
 ## What Does NOT Belong Here
 - Any module-specific concept — a module's scenarios go in that module's own `.Tests` project.
-- A reference to any project other than `Shared`.
+- A project reference outside the production Allowed Dependencies and any explicitly applied architecture-test extension.
 
 ## Allowed Dependencies
-- `Shared` — nothing else.
+- Reference `Shared` and mirror its production project's assembled [Allowed Dependencies](skills/dotnet/architecture/plateau/plateau-domain-service/structure/Shared/plateau-domain-service--csproj-shared.skill.md#allowed-dependencies); no wider project boundary.
 
 # Rules
 MUST:
 - Apply the linked [testing conventions](#testing-conventions).
-- Reference `Shared` and nothing else — a wider reference would let a test pass by relying on something `Shared` may not depend on.
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 - Never introduce a module-specific concept into a `Shared.Tests` scenario.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/Shared.Tests.csproj.create|Shared.Tests.csproj]]
 
 # Check list
-- [ ] `Shared.Tests.csproj` references only `Shared`.
+- [ ] References match the mirrored production boundary and any explicitly applied architecture-test extension.

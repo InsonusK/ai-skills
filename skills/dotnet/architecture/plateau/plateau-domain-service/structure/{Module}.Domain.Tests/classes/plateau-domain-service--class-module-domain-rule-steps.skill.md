@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Domain.Tests feature
 domain: skill
 type: template
 plateau: domain-service
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/class
   - plateau/domain-service
@@ -23,7 +23,7 @@ __Applied solutions:__
 - Apply the linked [testing conventions](#testing-conventions).
 - Apply ONE plateau template per class.
 - Validator-shaped: construct the entity / VO, invoke the real method, capture the outcome; on a failure scenario assert `DomainException.Code`.
-- References `{Module}.Domain` only.
+- Domain scenarios enter through the entity, domain service or strict Value Object; supporting references follow the owning test project's mirrored boundary.
 
 # Testing conventions
 Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
@@ -37,7 +37,7 @@ __Applied solutions:__
 # Rules
 MUST:
 - Apply [production-code bindings](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#exercise-production-code-from-bindings) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must).
-- Reference `{Module}.Domain` only; never reach into `{Module}.Application`.
+- Invoke the Domain entry point; do not substitute an Application handler for the behavior being proven.
 - Never apply several plateau templates per class.
 
 # Check list

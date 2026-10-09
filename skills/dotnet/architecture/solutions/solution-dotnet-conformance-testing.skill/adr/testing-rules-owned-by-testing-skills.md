@@ -11,6 +11,8 @@ tags:
 ---
 
 # Problem
+The previous test lists also contradicted their mirrored-boundary promise: Domain was treated as a dependency-free leaf, while production allows Interfaces/Shared, and Application contract dependencies were excluded. Resolve those lists by linking the production project's assembled Allowed Dependencies, as the owner's task requires.
+
 Catalog test templates duplicate testing rules and conflict with the stack-owned folder convention.
 
 # Selected variant

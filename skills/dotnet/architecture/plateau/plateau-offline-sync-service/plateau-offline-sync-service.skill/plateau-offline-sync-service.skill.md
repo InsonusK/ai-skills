@@ -4,7 +4,7 @@ description: A domain service built for an offline-first front end — everythin
 whenToUse: when scaffolding or reviewing a service whose entities are created offline by a client and synced later — checking idempotent-create wiring (IHasGuid, GuidResolvingBehavior, the Guid resolver), the {Module}.Domain.Rules project, or the entity classification against this baseline
 domain: skill
 type: template
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/plateau
   - plateau/offline-sync-service
@@ -19,6 +19,8 @@ created_by:
 registry:
   - "[[skills/dotnet/architecture/registry/command-cs|registry-command-cs]]"
   - "[[skills/dotnet/architecture/registry/pipelineregistration-cs|registry-pipelineregistration-cs]]"
+adr:
+  - "skills/dotnet/architecture/plateau/plateau-offline-sync-service/adr/test-boundary-mirrors-production.md"
 standalone: true
 ---
 
@@ -95,3 +97,6 @@ See [[skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/
 
 # Testing ownership
 The [catalog solution](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md) contributes project selection, mirrored dependency boundaries and layer responsibilities. `{Module}.Domain.Rules.Tests` is added only with VP4; shared spec classification and Cecil companions retain their existing scope.
+
+# Dependency-boundary decision
+[Test boundary mirrors production](skills/dotnet/architecture/plateau/plateau-offline-sync-service/adr/test-boundary-mirrors-production.md) records the correction of narrower generated lists; the production Allowed Dependencies remain the authority.

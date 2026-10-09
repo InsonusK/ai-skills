@@ -1,11 +1,11 @@
 ---
 name: plateau-domain-service--csproj-building-blocks-tests
-description: Project BuildingBlocks.Tests in the plateau-domain-service plateau — the dedicated test project for BuildingBlocks (and transitively Shared)
+description: Project BuildingBlocks.Tests in the plateau-domain-service plateau — tests its production counterpart within the mirrored Allowed Dependencies
 whenToUse: when adding a Gherkin scenario or unit test for a MediatR pipeline behavior, or checking that BuildingBlocks.Tests keeps to BuildingBlocks' own allowed references
 domain: skill
 type: template
 plateau: domain-service
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/csproj
   - plateau/domain-service
@@ -14,7 +14,7 @@ created_by:
 ---
 
 # Goal
-- Give `BuildingBlocks` a dedicated test project referencing exactly what `BuildingBlocks.csproj` references — `BuildingBlocks` (and transitively `Shared`).
+- Give `BuildingBlocks` its catalog-selected test project with its production dependency boundary mirrored.
 - Prove each pipeline behavior's contract as a Gherkin scenario against the real behavior class.
 
 __Applied solutions:__
@@ -48,16 +48,16 @@ Apply the linked [testing conventions](#testing-conventions).
 - A reference to any module, `App.Host`, or infrastructure project.
 
 ## Allowed Dependencies
-- `BuildingBlocks` (and transitively `Shared`) — nothing else.
+- Reference `BuildingBlocks` and mirror its production project's assembled [Allowed Dependencies](skills/dotnet/architecture/plateau/plateau-domain-service/structure/BuildingBlocks/plateau-domain-service--csproj-building-blocks.skill.md#allowed-dependencies); no wider project boundary.
 
 # Rules
 MUST:
 - Apply the linked [testing conventions](#testing-conventions).
-- Reference `BuildingBlocks` only.
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create|BuildingBlocks.Tests.csproj]]
 
 # Check list
-- [ ] `BuildingBlocks.Tests.csproj` references only `BuildingBlocks`.
+- [ ] References match the mirrored production boundary and any explicitly applied architecture-test extension.
 - [ ] Each scenario asserts the exact `Result` the real behavior returns.

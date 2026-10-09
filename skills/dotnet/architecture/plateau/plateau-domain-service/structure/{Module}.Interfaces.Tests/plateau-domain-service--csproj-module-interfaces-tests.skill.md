@@ -1,11 +1,11 @@
 ---
 name: plateau-domain-service--csproj-module-interfaces-tests
-description: Project {Module}.Interfaces.Tests in the plateau-domain-service plateau — the dedicated test project for {Module}.Interfaces, referencing that module's Interfaces only
+description: Project {Module}.Interfaces.Tests in the plateau-domain-service plateau — tests its production counterpart within the mirrored Allowed Dependencies
 whenToUse: when adding a Gherkin scenario or unit test that pins a public contract's shape (a command's marker, a DTO's fields), or checking {Module}.Interfaces.Tests keeps to the Interfaces-only boundary
 domain: skill
 type: template
 plateau: domain-service
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/csproj
   - plateau/domain-service
@@ -14,7 +14,7 @@ created_by:
 ---
 
 # Goal
-- Give `{Module}.Interfaces` a dedicated test project referencing that module's `Interfaces` only.
+- Give `{Module}.Interfaces` its catalog-selected test project with its production dependency boundary mirrored.
 - Pin the shape of the module's public contracts — a command implements the right marker, a response DTO carries the expected fields as `Soft{ValueObject}`/primitives.
 
 __Applied solutions:__
@@ -48,17 +48,17 @@ Apply the linked [testing conventions](#testing-conventions).
 - A reference to `{Module}.Application`, `{Module}.Domain`, or another module.
 
 ## Allowed Dependencies
-- `{Module}.Interfaces` (and transitively `Shared`) — nothing else.
+- Reference `{Module}.Interfaces` and mirror its production project's assembled [Allowed Dependencies](skills/dotnet/architecture/plateau/plateau-domain-service/structure/{Module}.Interfaces/plateau-domain-service--csproj-module-interfaces.skill.md#allowed-dependencies); no wider project boundary.
 
 # Rules
 MUST:
 - Apply the linked [testing conventions](#testing-conventions).
-- Reference `{Module}.Interfaces` only.
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 - Never reach into `{Module}.Application` or `{Module}.Domain` for a shortcut.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create|{Module}.Interfaces.Tests.csproj]]
 
 # Check list
-- [ ] `{Module}.Interfaces.Tests.csproj` references only `{Module}.Interfaces`.
+- [ ] References match the mirrored production boundary and any explicitly applied architecture-test extension.
 - [ ] Every scenario constructs and inspects a real contract type.

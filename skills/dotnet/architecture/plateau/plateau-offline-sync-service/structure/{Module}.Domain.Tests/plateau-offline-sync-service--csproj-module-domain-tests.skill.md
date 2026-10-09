@@ -1,11 +1,11 @@
 ---
 name: plateau-offline-sync-service--csproj-module-domain-tests
-description: Project {Module}.Domain.Tests in the plateau-offline-sync-service plateau — the dedicated test project for {Module}.Domain, referencing that module's Domain only
+description: Project {Module}.Domain.Tests in the plateau-offline-sync-service plateau — tests its production counterpart within the mirrored Allowed Dependencies
 whenToUse: when adding a Gherkin scenario or unit test for an entity invariant, a domain service, or a strict Value Object
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -16,7 +16,7 @@ created_by:
 ---
 
 # Goal
-- Give `{Module}.Domain` a dedicated test project referencing that module's `Domain` only, proving entity invariants, domain-service conditions, and strict Value Object validation against the real types.
+- Give `{Module}.Domain` its catalog-selected test project with its production dependency boundary mirrored.
 - Exists only once `{Module}.Domain` exists (VP1).
 
 __Applied solutions:__
@@ -25,7 +25,7 @@ __Applied solutions:__
 # Core Principles
 - Apply the linked [testing conventions](#testing-conventions).
 - Scenarios are validator-shaped: an input goes in, valid/invalid comes out — proven against the real entity method / VO constructor, asserting the `DomainException` code on failure.
-- References `{Module}.Domain` only — never `{Module}.Application`, never infrastructure.
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 
 # Testing conventions
 Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
@@ -58,17 +58,17 @@ Apply the linked [testing conventions](#testing-conventions).
 - A reference to `{Module}.Application` or any infrastructure project.
 
 ## Allowed Dependencies
-- `{Module}.Domain` (and transitively `{Module}.Interfaces`, `Shared`) — nothing else.
+- Reference `{Module}.Domain` and mirror its production project's assembled [Allowed Dependencies](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Domain/plateau-offline-sync-service--csproj-module-domain.skill.md#allowed-dependencies); no wider project boundary.
 
 # Rules
 MUST:
 - Apply the linked [testing conventions](#testing-conventions).
-- Reference `{Module}.Domain` only.
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Check list
-- [ ] `{Module}.Domain.Tests.csproj` references only `{Module}.Domain`.
+- [ ] References match the mirrored production boundary and any explicitly applied architecture-test extension.
 
 Feature files follow [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]] for mandatory feature type and scenario/Examples category tags; architecture classification tags and the existing documentary exceptions remain separate.

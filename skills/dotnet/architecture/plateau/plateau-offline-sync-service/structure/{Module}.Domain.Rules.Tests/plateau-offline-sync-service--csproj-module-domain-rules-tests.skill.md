@@ -1,11 +1,11 @@
 ---
 name: plateau-offline-sync-service--csproj-module-domain-rules-tests
-description: Project {Module}.Domain.Rules.Tests in the plateau-offline-sync-service plateau — the dedicated test project for {Module}.Domain.Rules, isolating its mutation-testing surface
+description: Project {Module}.Domain.Rules.Tests in the plateau-offline-sync-service plateau — tests its production counterpart within the mirrored Allowed Dependencies
 whenToUse: when adding a scenario proving a Rule's own Check() / IsValid() / IRuleBuilder extension, or checking the Domain.Rules test isolation
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20261009220000
+version: 20261009220001
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service
@@ -16,7 +16,7 @@ created_by:
 ---
 
 # Goal
-- Give `{Module}.Domain.Rules` a dedicated test project referencing it only, so the rule mechanism's mutation-testing surface is isolated from the broader entity/VO surface of `{Module}.Domain.Tests`.
+- Give `{Module}.Domain.Rules` its catalog-selected test project with its production dependency boundary mirrored.
 - Prove every scenario in the rule's `.feature` file directly against `IsValid()` / `Check()` / the `IRuleBuilder` extension — the one place the rule's own correctness is proven in isolation.
 
 __Applied solutions:__
@@ -24,7 +24,7 @@ __Applied solutions:__
 
 # Core Principles
 - Apply the linked [testing conventions](#testing-conventions).
-- References `{Module}.Domain.Rules` (+ `Mono.Cecil` and the production assemblies the Cecil dead-rule check inspects).
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 - Links in both its own `features/*.feature` (rule-only edge cases) and, physically, `{Module}.Domain.Rules.Spec`'s shared `.feature` files, generating its own Reqnroll fixture bound to its own step definitions.
 - Proves every scenario regardless of `@format`/`@semantic`/`@domain` tag — the other layers only re-prove their applicable subset.
 
@@ -57,15 +57,16 @@ The whole spec directory is linked (this project proves every scenario regardles
 ## What Does NOT Belong Here
 - The VO/entity fail-fast adapter proof — that is `{Module}.Domain.Tests`.
 - The DTO-validator collect-all adapter proof — that is `{Module}.Application.Tests`.
-- A reference to any project other than `{Module}.Domain.Rules`.
+- A project reference outside the production Allowed Dependencies and any explicitly applied architecture-test extension.
 
 ## Allowed Dependencies
-- `{Module}.Domain.Rules` (and transitively `{Module}.Interfaces`, `Shared`); plus `{Module}.Domain` / `{Module}.Application` for the Cecil dead-rule scan when they exist. NuGet: `Mono.Cecil` for the architecture scan.
+- Reference `{Module}.Domain.Rules` and mirror its production project's assembled [Allowed Dependencies](skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/{Module}.Domain.Rules/plateau-offline-sync-service--csproj-module-domain-rules.skill.md#allowed-dependencies); no wider project boundary.
+- With the Cecil companion, also reference `Mono.Cecil` and the production assemblies inspected by [the dead-rule scan](skills/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.extend.md).
 
 # Rules
 MUST:
 - Apply the linked [testing conventions](#testing-conventions).
-- Reference `{Module}.Domain.Rules` (+ `Mono.Cecil` for the Architecture checks, + the production assemblies the dead-rule check inspects).
+- Apply the mirrored [dependency boundary](#allowed-dependencies), including any explicitly applied architecture-test extension.
 - Host **only** the two rules-only Cecil checks (`{Module}RuleArchitectureTests`) in `/Architecture` — exception-scoping and guarded-property-coverage belong in `{Module}.Domain.Tests`.
 - Prove every scenario in the rule's `.feature` directly against `IsValid()`/`Check()`.
 - Never duplicate scenario text — link the physical `.feature` file from `{Module}.Domain.Rules.Spec`.
@@ -74,7 +75,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/solution-domain-shared-rules.skill|solution-domain-shared-rules]] - [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Tests.csproj.create/{Rule}RuleSteps.cs.create|{Rule}RuleSteps.cs]]
 
 # Check list
-- [ ] `{Module}.Domain.Rules.Tests.csproj` references only `{Module}.Domain.Rules`.
+- [ ] References match the mirrored production boundary and any explicitly applied architecture-test extension.
 - [ ] Proves every `.feature` scenario against `IsValid()`/`Check()`.
 - [ ] No scenario text duplicated across the three rule-proving test projects.
 
