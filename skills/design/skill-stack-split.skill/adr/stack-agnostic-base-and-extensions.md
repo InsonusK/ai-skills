@@ -2,7 +2,7 @@
 name: stack-agnostic-base-and-extensions
 description: How a skill whose implementation differs across stacks is split and named — a stack-agnostic `{skill-name}` base plus `{skill-name}-in-{stack}` extensions — and when the split does not apply
 problem: The same skill is written for several stacks with different implementations, but nothing says whether it is one skill, independent per-stack skills, or a base plus extensions, nor how those are named. The repository already holds all three shapes (cucumber-testing + -in-{stack}; solution-app-logging vs solution-go-app-logging; devops-*-in-{stack} with no base).
-decision: When a skill's implementation differs between stacks and it is written — or is committed to be written — for more than one stack, it SHOULD be a stack-agnostic base `{skill-name}` under skills/common-workflow/ plus one `{skill-name}-in-{stack}` extension per stack under skills/{stack}/. A single-stack skill with no second stack planned, and a skill identical for every stack, are not split. The `-in-{stack}` suffix appears only on an extension of an existing base. A category-specific skill may override or detail the split. Existing skills are brought in line when they are next edited, not in a bulk migration.
+decision: When a skill's implementation differs between stacks and it is written — or is committed to be written — for more than one stack, it SHOULD be a stack-agnostic base `{skill-name}` plus one `{skill-name}-in-{stack}` extension per stack; where each lives depends on the category and is not fixed by this decision. A single-stack skill with no second stack planned, and a skill identical for every stack, are not split. The `-in-{stack}` suffix appears only on an extension of an existing base. A category-specific skill may override or detail the split. Existing skills are brought in line when they are next edited, not in a bulk migration.
 tags:
   - stack
   - concern/documentation
@@ -30,7 +30,7 @@ An agent writing a new multi-stack skill, or adding a stack to an existing one, 
 **Selected.**
 
 ### Description
-A SHOULD rule in skill-design. The split applies when (1) the implementation differs between stacks and (2) the skill is written, or is committed to be written, for more than one stack. The base `{skill-name}` (bare `stack` tag, under `skills/common-workflow/`) holds the shared goal, rules, and contract. Each extension `{skill-name}-in-{stack}` (one `stack/<value>` tag, under `skills/{stack}/`) holds only that stack's implementation. A single-stack skill keeps its plain name, and a stack-identical skill stays one agnostic skill. The `-in-{stack}` suffix marks an extension only. A category-specific skill (e.g. solution-create) may override or detail the split. Existing skills are migrated when next edited.
+A SHOULD rule, written in skill-design and since moved to skill-stack-split, with the when-to-split condition kept in skill-design. The split applies when (1) the implementation differs between stacks and (2) the skill is written, or is committed to be written, for more than one stack. The base `{skill-name}` (bare `stack` tag) holds the shared goal, rules, and contract. Each extension `{skill-name}-in-{stack}` (one `stack/<value>` tag) holds only that stack's implementation. A single-stack skill keeps its plain name, and a stack-identical skill stays one agnostic skill. The `-in-{stack}` suffix marks an extension only. Where the base and the extensions live is not fixed: it depends on the category, and a category-specific skill (e.g. solution-create) may fix it or detail the split. Existing skills are migrated when next edited.
 
 ### Benefits
 - Shared rules live once, so stacks cannot drift apart on the contract.
@@ -81,7 +81,7 @@ Mark the stack at the front of the name, as the go catalog's `solution-go-app-lo
 ### Costs
 - The base name is no longer a prefix of its extensions, so a name search for the base does not find them.
 - Conflicts with the existing `-in-{stack}` precedent used by `cucumber-testing` and `solution-conformance-testing`.
-- Rejected: stack grouping already comes from the `skills/{stack}/` folder and the `stack/<value>` tag.
+- Rejected: stack grouping already comes from the `stack/<value>` tag.
 
 ## One skill with a section per stack
 

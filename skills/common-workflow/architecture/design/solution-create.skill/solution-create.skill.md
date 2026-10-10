@@ -2,7 +2,7 @@
 name: solution-create
 description: Define how to create new solution skills by patterns
 whenToUse: when you write a solution skill
-updated: 20260929
+updated: 20261007
 adr:
   - adr/multi-stack-solution-location.md
   - adr/contract-vp-realized-by-libraries.md
@@ -136,7 +136,7 @@ Deliver a VP whose behaviour is fixed by a stack-agnostic contract with conforma
 ## SHOULD
 
 ### Multi-stack solutions: base in common-workflow, extension per stack
-When [skill-design's stack split](skills/design/skill-design.skill/skill-design.skill.md#split-a-multi-stack-skill-into-an-agnostic-base-and-stack-extensions) applies to a solution, put the stack-agnostic base `solution-{name}` in `skills/common-workflow/architecture/solutions/` and each extension `solution-{name}-in-{stack}` in `skills/{stack}/architecture/solutions/`. The base's `Implementation/` holds only stack-independent elements (a contract, a Makefile target set), and every stack-specific element lives in the extension. Decision recorded in [adr/multi-stack-solution-location.md](./adr/multi-stack-solution-location.md).
+When [skill-stack-split](skills/design/skill-stack-split.skill/skill-stack-split.skill.md) applies to a solution, put the stack-agnostic base `solution-{name}` in `skills/common-workflow/architecture/solutions/` and each extension `solution-{name}-in-{stack}` in `skills/{stack}/architecture/solutions/`. The base's `Implementation/` holds only stack-independent elements (a contract, a Makefile target set), and every stack-specific element lives in the extension. Decision recorded in [adr/multi-stack-solution-location.md](./adr/multi-stack-solution-location.md).
 - Violation: a new `solution-go-kafka-producer` written next to the existing dotnet `solution-kafka-producer`, each restating the shared delivery rules.
 - Risk: the shared rules drift between stacks, and plateaus in different stacks reference unrelated names for the same capability.
 - Fix: write `solution-kafka-producer` as the base in `skills/common-workflow/architecture/solutions/`, and write `solution-kafka-producer-in-go` / `solution-kafka-producer-in-dotnet` as extensions that link it.

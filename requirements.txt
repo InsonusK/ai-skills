@@ -1,2 +1,1 @@
-ai-skill-manager @ git+https://github.com/InsonusK/ai-skill-manager.git
 diagram-renderer @ git+https://github.com/InsonusK/ai-skill-graph-draw.git
