@@ -25,6 +25,7 @@ None.
 - **Go version source** (2026-10-10). A Go project records its version only as `var Version` in `internal/version/version.go`; the root `VERSION` file is dropped. Changed with it: `devops-project-version-in-go` and its ADR, `solution-go-repository-structure`, six plateau version-file skills and their examples, the Go testing example and its ADR `distribution-version`.
 - **Workflow skills in `core/`** (2026-10-10). The two workflow skills are stack-agnostic and live in `skills/devops/core/`; there is no `workflows/` folder. (Agent: `deploy/` stays apart — a project that deploys nothing selects `core` and its stack and leaves it out.)
 - **Delivery behind one action** (2026-10-10, the owner's proposal). Both workflows are files copied verbatim; what a project delivers is `.github/actions/release`, taken from one of N release skills. `assemble-workflow.sh`, the marked blocks, `devops-package-publish*`, and `devops-app-release-in-go` are removed.
+- **`devops-service-deploy` in `core/`** (2026-10-10). It is stack-agnostic like the rest of `core/`; there is no `deploy/` folder. No stack extension is created: nothing in it differs by stack yet.
 - Forgotten items accepted: the library project type, an image build in a pull request, the report on Pages, the image tags, a docs-only change.
 
 ## Made by the agent
