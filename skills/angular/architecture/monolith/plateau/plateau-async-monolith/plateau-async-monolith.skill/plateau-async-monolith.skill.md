@@ -50,17 +50,17 @@ This is not about rendering data progressively or showing cached data offline �
 
 # Structure
 
-See [`structure/`](structure/plateau-async-monolith--repo-async-monolith.skill.md) — the parent's workspace skills (repo + `apps/platform-shell`, `apps/platform-shell-e2e`, `apps/component-preview`, `libs/shared/{ui,util,state,http-core,logging}`, `libs/{feature}/{feature,data-access}`) carried forward, with `solution-performance-tuned-routing`'s contributions merged into the repo skill, the `platform-shell` project skill, and the generic `{feature}.routes.ts` class skill, plus one new class skill: [`class-selective-preloading-strategy`](structure/platform-shell/classes/plateau-async-monolith--class-selective-preloading-strategy.skill.md).
+See [`structure/`](skills/angular/architecture/monolith/plateau/plateau-async-monolith/structure/plateau-async-monolith--repo-async-monolith.skill.md) — the parent's workspace skills (repo + `apps/platform-shell`, `apps/platform-shell-e2e`, `apps/component-preview`, `libs/shared/{ui,util,state,http-core,logging}`, `libs/{feature}/{feature,data-access}`) carried forward, with `solution-performance-tuned-routing`'s contributions merged into the repo skill, the `platform-shell` project skill, and the generic `{feature}.routes.ts` class skill, plus one new class skill: [`class-selective-preloading-strategy`](skills/angular/architecture/monolith/plateau/plateau-async-monolith/structure/platform-shell/classes/plateau-async-monolith--class-selective-preloading-strategy.skill.md).
 
 # Example
 
-See [`examples/`](plateau-async-monolith.skill/examples/) — the parent's runnable Nx workspace, evolved: `apps/platform-shell` gains `preloading/selective-preloading.strategy.ts` (+ spec) and `withPreloading(...)`; the `orders` route is marked `data: { preload: true }` at the shell; `orders.routes.ts` splits a `report` sub-route via `loadComponent` (its own chunk, verified in the production build output); `apps/platform-shell/project.json` carries `error`-level `initial` + `anyScript` budgets. `npm test` (Vitest) and `npm run lint` green; `nx build platform-shell --configuration=production` green with the report screen in its own lazy chunk.
+See [`examples/`](skills/angular/architecture/monolith/plateau/plateau-async-monolith/plateau-async-monolith.skill/examples/) — the parent's runnable Nx workspace, evolved: `apps/platform-shell` gains `preloading/selective-preloading.strategy.ts` (+ spec) and `withPreloading(...)`; the `orders` route is marked `data: { preload: true }` at the shell; `orders.routes.ts` splits a `report` sub-route via `loadComponent` (its own chunk, verified in the production build output); `apps/platform-shell/project.json` carries `error`-level `initial` + `anyScript` budgets. `npm test` (Vitest) and `npm run lint` green; `nx build platform-shell --configuration=production` green with the report screen in its own lazy chunk.
 
 # Intersection registry
 
 New this plateau, per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
-- [`feature-routes-ts`](registry/feature-routes-ts.md) — `solution-app-routing` `.create` + `solution-performance-tuned-routing` `.extend` (`loadComponent` sub-splitting), `FMN`/`TMN`, `source: ordering-only`.
+- [`feature-routes-ts`](skills/angular/architecture/monolith/registry/feature-routes-ts.md) — `solution-app-routing` `.create` + `solution-performance-tuned-routing` `.extend` (`loadComponent` sub-splitting), `FMN`/`TMN`, `source: ordering-only`.
 
 The parent chain's `monolith-repository` and `platform-shell-project` entries (`plateau-online-monolith/registry/`) also gain `solution-performance-tuned-routing` as another benign `.extend`.
 
