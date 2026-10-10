@@ -3,6 +3,8 @@ package test
 import (
 	"context"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -25,8 +27,18 @@ func TestFeatures(t *testing.T) {
 
 	for _, sut := range []storeUnderTest{pg} {
 		w := newWorld(sut)
+		name := "taskbox-" + sut.name()
+
+		// Classic Cucumber JSON for the living-doc report - see cucumber-testing-in-go's
+		// "Emit classic Cucumber JSON" rule. One file per suite: this package runs one per store.
+		format := "pretty"
+		if dir := os.Getenv("CUCUMBER_JSON_DIR"); dir != "" {
+			wd, _ := os.Getwd()
+			format += ",cucumber:" + filepath.Join(dir, strings.NewReplacer("/", "_", "\\", "_", ":", "_").Replace(wd)+"_"+name+".json")
+		}
+
 		suite := godog.TestSuite{
-			Name: "taskbox-" + sut.name(),
+			Name: name,
 			ScenarioInitializer: func(sc *godog.ScenarioContext) {
 				registerWorldHooks(sc, w)
 				registerSetupSteps(sc, w)
@@ -34,7 +46,7 @@ func TestFeatures(t *testing.T) {
 				registerAssertSteps(sc, w)
 			},
 			Options: &godog.Options{
-				Format:   "pretty",
+				Format:   format,
 				Paths:    []string{"../features"},
 				Tags:     "~@status/todo && ~@status/broken && ~@store-" + sut.excludedKind(),
 				Strict:   true,

@@ -1,5 +1,5 @@
 ---
-version: 20261009210000
+version: 20261010120000
 name: no-test-theater
 description: Prevents "coverage theater" — tests that execute code but do not verify real behavior. Defines the scenarios-first protocol (tagged .feature entries before step code, a separate review pass over the scenario/coverage/mutation report after), mandatory test properties, and banned weak-test patterns.
 whenToUse: When writing new unit/integration tests, reviewing existing tests, or changing an existing test's assertions, mocks, timeouts, or skip/xfail state — for any language.
@@ -16,10 +16,7 @@ tags:
 - Stop silent weakening of an existing test (removed assert, raised timeout, added `Skip`) to force it green.
 
 # Scope
-This skill defines the language-agnostic protocol, mandatory test properties, and banned patterns. Language-specific rules live in their own skills and extend for:
-- for xUnit/.NET.
-- for pytest/Python.
-- for TestBed/Jasmine/Jest.
+This skill defines the language-agnostic protocol, mandatory test properties, and banned patterns. A stack whose test framework needs rules of its own adds them in a companion skill named `no-test-theater-in-{stack}`; a stack without one follows this skill alone.
 
 This skill does not define test naming/folder structure for a specific stack or when to write tests before vs. after implementation (see [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md)).
 
@@ -46,6 +43,7 @@ This skill does not define test naming/folder structure for a specific stack or 
 - Name each test as a behavior claim: Given is embedded in the test's context/fixture, When is the action, Then is the expected outcome, and the name reflects it.
 - Assert a specific error type/code/status in negative and error-path tests — not just "an exception was thrown" or "it's not successful".
 - Assert, for a validation failure, every invalid field with its message — not only that the result is invalid, and not only how many errors there are.
+- Keep line coverage of the code at 80% or above, read from `reports/coverage/` — a floor, never a proof: an error branch is covered by its own scenario like any other, not left to the uncovered remainder.
 - Review branch coverage, not line coverage alone — a line count does not show that only one side of a condition ran.
 - Give every inbound endpoint a happy scenario and at least one applicable error scenario through its real boundary — routing, authentication, serialization — asserting the full response.
 - Assert, in a scenario of a use case that orchestrates several components, both the full response and the order of the calls when the order is part of the contract — not only that each call happened.
@@ -70,6 +68,7 @@ This skill does not define test naming/folder structure for a specific stack or 
 - [ ] Every `todo` entry of type happy/negative/error has a `# todo:` reason.
 - [ ] No test in this change asserts only `NotNull`/truthy, forces a mock to succeed in an error-path test, swallows an exception instead of asserting it, or relies solely on a snapshot for complex logic.
 - [ ] Negative/error tests assert a specific error type/code, not just "something went wrong".
+- [ ] Line coverage is 80% or above.
 - [ ] Coverage and mutation reports show every changed public method/branch reached by a scenario.
 - [ ] Mutation testing (where configured) showed no new surviving mutants in changed files without an explanation.
 - [ ] Any weakened existing test is called out explicitly in the PR description with a reason.

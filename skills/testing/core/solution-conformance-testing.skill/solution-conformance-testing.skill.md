@@ -4,8 +4,8 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 9
-updated: 20261008
+version: 10
+updated: 20261010
 tags:
   - skill/architecture/solution
   - solution/conformance-testing
@@ -52,13 +52,13 @@ adr:
 - Mutation testing verifies testing quality — coverage alone only proves a code path executed, not that its result was checked.
 - Every test case — business and technical/architectural alike — is written as a Cucumber scenario; see [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]] for how to author and organize scenarios and step definitions.
 - Code coverage is always collected; it is reported in a `report` run.
-- The mutation-testing tool is chosen per stack, not per project: Stryker for C#/.NET and for Angular/TypeScript, Mutmut for Python — see [[./adr/mutation-tool-per-stack.md|ADR]].
+- The mutation-testing tool is chosen per stack, not per project: Stryker for C#/.NET and for Angular/TypeScript, Mutmut for Python, Gremlins for Go — see [[./adr/mutation-tool-per-stack.md|ADR]].
 - Tests run as independent kinds (`make test-kind-{kind}`) and `make test-report` builds one report; a caller states what the run is for, never how to test.
 - One `Makefile`, one report builder, and one script per test kind: only `tools/testing/kinds/{kind}.sh` differs between stacks — it runs the stack's tool and writes normalized JSON; everything before and after it is shared.
 
 # Adr
 - [[./adr/mutation-tool-per-stack.md|Mutation-testing tool per stack]]
-  - Selected variant: Stryker for C#/.NET and Angular/TypeScript, Mutmut for Python
+  - Selected variant: Stryker for C#/.NET and Angular/TypeScript, Mutmut for Python, Gremlins for Go
 - [[./adr/scenario-report.md|Scenario report from tagged .feature files]]
   - Selected variant: the `unit` kind writes a normalized `result/scenarios.json` built from the `.feature` files plus the runner's result; the unit kind checks its tags and the living doc reads excluded entries — no hand-maintained test inventory file
 - [[./adr/livingdoc-renderer-per-protocol.md|Living-doc renderer per Cucumber report protocol]]

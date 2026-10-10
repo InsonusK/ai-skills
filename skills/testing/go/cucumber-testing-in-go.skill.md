@@ -1,9 +1,9 @@
 ---
-version: 20261008170000
+version: 20261010120000
 name: cucumber-testing-in-go
 description: Go/godog-specific rules for Cucumber testing — the single TestFeatures runner, stdout step logging, step-file layout, and VSCode glue configuration
 whenToUse: when writing or reviewing godog scenarios or step definitions in a Go project
-updated: 20261008
+updated: 20261010
 tags:
   - stack/go
   - concern/testing/bdd
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Goal
-- A single `TestFeatures` function per test package that runs godog against that package's `.feature` files, with no other plain `func TestXxx` test in the same package.
+- A single `TestFeatures` function per test package that runs godog against that package's `.feature` files; any other `func TestXxx` beside it carries the reason it is not a scenario.
 - Every step-definition function logging via `fmt.Printf`-based output, never `godog.T(ctx).Logf`.
 - `Options.Tags="~@status/todo && ~@status/broken"`, `Strict=true`, and `TestingT=t` set on every godog runner.
 
@@ -22,7 +22,7 @@ tags:
 This skill adds Go/godog-specific mechanics on top of [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md) — apply both together; this skill only covers what godog and Go add.
 
 # Core Principle
-- **The runner is the one exception** - `TestFeatures` is the single `func TestXxx` godog needs to execute the suite; every other case is a scenario, per [One scenario, one runner](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-scenario-one-runner).
+- **The runner is the one test function godog needs** - `TestFeatures` executes the suite; every other case is a scenario, and a plain `func TestXxx` exists only under the exception of [One scenario, one runner](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-scenario-one-runner).
 - **stdout keeps logs attached to their step** - godog's pretty output interleaves whatever a step writes to stdout with that step's line; going through Go's `testing.T` instead detaches the log from its step.
 
 # Rule
@@ -41,12 +41,12 @@ Keep `"go.testFlags": ["-v"]` in `.vscode/settings.json`, and use `go test ... -
 - Fix: set `go.testFlags: ["-v"]` in the repository's `.vscode/settings.json`, and pass `-v` when running from the terminal (e.g. `go test ./client/eaxmi/test/ -v -run 'TestFeatures/<name>'` to target one scenario).
 
 ### One TestFeatures runner per test package
-Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Format: "pretty", Paths: []string{"../features"}, Tags: "~@status/todo && ~@status/broken", Strict: true, TestingT: t}`, and no other `func TestXxx` in that package. `Format` starts from `"pretty"` and gains a `cucumber:` output per [Emit classic Cucumber JSON](#emit-classic-cucumber-json).
+Wire exactly one `func TestFeatures(t *testing.T)` per test package, configured with `godog.Options{Format: "pretty", Paths: []string{"../features"}, Tags: "~@status/todo && ~@status/broken", Strict: true, TestingT: t}`. Another `func TestXxx` in that package is allowed only for a case whose scenario would be unjustifiably complex, with the reason in a comment above it, per [One scenario, one runner](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-scenario-one-runner). `Format` starts from `"pretty"` and gains a `cucumber:` output per [Emit classic Cucumber JSON](#emit-classic-cucumber-json).
 - Violation: omitting `Format` from `godog.Options`.
 - Risk: godog has no default formatter — an omitted `Format` fails every run with `unregistered formatter name: ""` before a single step executes, regardless of whether the scenarios themselves are correct (verified against a real `godog v0.16.0` run, not assumed).
 - Fix: always set `Format: "pretty"` explicitly (or another registered formatter — `cucumber`, `events`, `junit`, `progress` — if the suite specifically needs one of those).
-- Risk: a second plain Go test in the same package duplicates what a scenario should express, and a missing `Tags: "~@status/todo && ~@status/broken"` runs scenarios meant to stay excluded per [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason).
-- Fix: keep `TestFeatures` as the package's only test function; set `Strict: true` so an undefined/pending step fails the build instead of passing silently.
+- Risk: a plain Go test with no stated reason duplicates what a scenario should express and is missing from the living doc, and a missing `Tags: "~@status/todo && ~@status/broken"` runs scenarios meant to stay excluded per [Exclude an unrunnable scenario with a status tag and its reason](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#exclude-an-unrunnable-scenario-with-a-status-tag-and-its-reason).
+- Fix: keep `TestFeatures` as the package's only godog runner and move a plain test without a reason into a scenario; set `Strict: true` so an undefined/pending step fails the build instead of passing silently.
 
 ### godog ErrSkip is not exclusion
 Never rely on returning godog's `ErrSkip` from a step to exclude a scenario — `go test` counts an `ErrSkip`'d scenario as a pass.
@@ -93,7 +93,7 @@ Never rely on an escaped double quote (`\"`) inside a Gherkin step's text or in 
 - Fix: format spy call strings without quotes (`Element(Model/Pkg/Goal1)`).
 
 ### Emit classic Cucumber JSON
-godog emits **classic Cucumber JSON**: when the `CUCUMBER_JSON_DIR` environment variable is set, add a `cucumber:` output next to `pretty`, one file per test package (godog runs once per package, so a shared file name would be overwritten):
+godog emits **classic Cucumber JSON**: when the `CUCUMBER_JSON_DIR` environment variable is set, add a `cucumber:` output next to `pretty`, one file per godog run — a shared file name would be overwritten. A runner with one `godog.TestSuite` names the file after its package:
 ```go
 format := "pretty"
 if dir := os.Getenv("CUCUMBER_JSON_DIR"); dir != "" {
@@ -102,8 +102,9 @@ if dir := os.Getenv("CUCUMBER_JSON_DIR"); dir != "" {
 }
 // godog.Options{Format: format, ...}
 ```
-- Violation: `Format: "pretty"` hard-coded with no `cucumber:` output, or one fixed file name shared by every package.
-- Risk: no standard report reaches the living-doc renderer, or packages overwrite each other's report.
+A runner that runs several suites in one `TestFeatures` (one per store, per transport) gives each `godog.TestSuite` its own `Name` and appends it to the file name — `...Replace(wd)+"_"+name+".json"` — building `format` inside the loop.
+- Violation: `Format: "pretty"` hard-coded with no `cucumber:` output, one fixed file name shared by every package, or one name shared by several suites of the same package.
+- Risk: no standard report reaches the living-doc renderer, or packages or suites overwrite each other's report — only the last run reaches the living doc.
 - Fix: build `Format` as above; `make test-kind-unit` sets `CUCUMBER_JSON_DIR`.
 
 ## SHOULD
@@ -122,11 +123,10 @@ For a codec or serializer, write the scenario in-memory, `WriteFile`, reopen, an
 
 # Check list
 - [ ] Every feature has exactly one allowed `@type/…`; every scenario or Examples block inherits exactly one allowed `@category/…`.
-- [ ] The living doc includes all scenarios and tags, excluded reasons, and the status legend; `tests` opens it directly.
 - [ ] Every `.feature` file sits in `{package}/features/`, its runner and steps in `{package}/test/`; the repository root has no `features/` tree.
-- [ ] Exactly one `TestFeatures` per test package; no other `func TestXxx` alongside it.
+- [ ] Exactly one `TestFeatures` per test package; any other `func TestXxx` alongside it has its reason in a comment above it.
 - [ ] `godog.Options` sets `Format: "pretty"` (or another registered formatter), `Tags: "~@status/todo && ~@status/broken"`, `Strict: true`, `TestingT: t`.
-- [ ] With `CUCUMBER_JSON_DIR` set, `Format` adds `cucumber:<dir>/<package-unique-name>.json`.
+- [ ] With `CUCUMBER_JSON_DIR` set, `Format` adds `cucumber:<dir>/<package-unique-name>.json`, with the suite `Name` appended when the package runs several suites.
 - [ ] No step returns `godog.ErrSkip` to mean "not implemented yet" — such scenarios are tagged `@status/todo` instead.
 - [ ] Every step log goes through a `fmt.Printf`-based helper, never `godog.T(ctx).Logf`.
 - [ ] `.vscode/settings.json` sets `"go.testFlags": ["-v"]`.

@@ -119,7 +119,7 @@ right mode.
 
 The condition for choosing MigrateOnStart is stated generically, not as a fixed platform mapping:
 **it is safe only when at most one instance of the migrating process can ever run concurrently for
-that deployment.** `devops-service-deploy.skill.md`'s own "migration step" rule states this
+that deployment.** `devops-service-deploy.skill.md`'s own "Apply migrations in exactly one mode" rule states this
 condition — because that skill is shared by every service in this repository, not only ones on this
 owner's own known topology, a future service with a multi-replica Docker Stack deployment must still
 use Job mode, and the skill's own generic Stack template (`replicas: 2` by default) is left

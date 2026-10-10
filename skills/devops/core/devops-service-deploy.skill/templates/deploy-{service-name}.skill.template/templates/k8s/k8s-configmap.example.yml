@@ -4,5 +4,5 @@ metadata:
   name: {service-name}-config
   namespace: {namespace}
 data:
-  ASPNETCORE_ENVIRONMENT: "Production"
-  LOG_LEVEL: "Information"
+  APP_ENVIRONMENT: "production"
+  LOG_LEVEL: "info"
