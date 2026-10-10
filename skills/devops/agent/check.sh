@@ -72,8 +72,9 @@ done
 # 6. INVARIANTS §1: no shipped workflow or action names a test tool, a coverage or mutation switch, or a version source.
 forbidden='go test|go vet|pytest|mutmut|gremlins|stryker|dotnet test|coverlet|npm test|npx (cucumber|jest|vitest|playwright|ng)|ng test|godog|--cov|--coverage|-cover\b|cat VERSION|internal/version/version\.go|pyproject\.toml|package\.json|Directory\.Build\.props|test-kind-(unit|mutation|components|ui)\b'
 #    Not checked: setup-toolchain reads the toolchain version, not the project's, from the manifest;
-#    the Python package job writes the snapshot version into the manifest (DECISIONS.md).
-for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | grep -vE "^$D/deploy/|/setup-toolchain/action\.yml$|/devops-package-publish-in-python\.skill/"); do
+#    a release action reads the package name from the manifest, and the Python one writes the
+#    snapshot version into it (DECISIONS.md).
+for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | grep -vE "^$D/deploy/|/setup-toolchain/action\.yml$|/actions/release/action\.yml$"); do
   out=$(grep -nE "$forbidden" "$f" | grep -vE '^\s*[0-9]+:\s*#')
   [ -n "$out" ] && { err "$f names a test tool or a version source:"; echo "$out"; }
 done
@@ -103,6 +104,16 @@ if command -v actionlint >/dev/null 2>&1; then
 else
   echo "note: actionlint is not installed - workflows are not linted"
 fi
+
+# 9b. Every shipped composite action parses, names a shell on every run step, and a release
+#     action keeps the contract the workflows call.
+if [ -d "$A/node_modules/yaml" ]; then
+  node "$A/actions-check.mjs" $(git ls-files -co --exclude-standard "$D/**/action.yml") >/tmp/devops-actions.log 2>&1 || { err "actions-check.mjs:"; grep FAIL /tmp/devops-actions.log; }
+fi
+# Exactly the release actions the release skill lists exist.
+listed=$(grep -oE '`devops-release-[a-z-]+`' $D/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md | tr -d '`' | sort -u)
+found=$(ls -d $D/*/devops-release-*.skill | xargs -n1 basename | sed 's/\.skill$//' | sort -u)
+[ "$listed" = "$found" ] || err "release actions listed in devops-github-wf-release differ from the skills that exist: $(echo $listed) / $(echo $found)"
 
 # 10. Ground truth: the version tools of every stack.
 bash "$A/fixtures.sh" >/tmp/devops-fixtures.log 2>&1 || { err "fixtures.sh:"; grep -E 'FAIL|fixtures' /tmp/devops-fixtures.log; }

@@ -13,6 +13,7 @@ work=$(mktemp -d); trap 'rm -rf "$work"' EXIT
 bash "$root/test/devops/build-sample.sh" "$work/sample"
 cd "$work/sample"
 rm .github/workflows/release.yml
+# The one edit of a file that is otherwise copied verbatim: the experiment's branch name.
 sed -i 's/^      - develop$/      - develop-devops/' .github/workflows/pull-request.yml
 git init -q -b develop-devops .
 commit() { git add -A && git -c user.name="devops sample" -c user.email=sample@example.invalid commit -q -m "$1"; }

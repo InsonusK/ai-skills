@@ -24,6 +24,7 @@ None.
 - (2026-10-10) The owner reads the results of GitHub runs himself.
 - **Go version source** (2026-10-10). A Go project records its version only as `var Version` in `internal/version/version.go`; the root `VERSION` file is dropped. Changed with it: `devops-project-version-in-go` and its ADR, `solution-go-repository-structure`, six plateau version-file skills and their examples, the Go testing example and its ADR `distribution-version`.
 - **Workflow skills in `core/`** (2026-10-10). The two workflow skills are stack-agnostic and live in `skills/devops/core/`; there is no `workflows/` folder. (Agent: `deploy/` stays apart — a project that deploys nothing selects `core` and its stack and leaves it out.)
+- **Delivery behind one action** (2026-10-10, the owner's proposal). Both workflows are files copied verbatim; what a project delivers is `.github/actions/release`, taken from one of N release skills. `assemble-workflow.sh`, the marked blocks, `devops-package-publish*`, and `devops-app-release-in-go` are removed.
 - Forgotten items accepted: the library project type, an image build in a pull request, the report on Pages, the image tags, a docs-only change.
 
 ## Made by the agent
@@ -55,3 +56,9 @@ None.
 - 2026-10-10 `skills/typescript/` held only DevOps skills and no longer exists; `test/ai-skills.yaml` drops that subpath.
 - 2026-10-10 `check.sh` §12 runs the repository's `aism sync` validation: the first run after W7 found five descriptions that were invalid YAML and one relative link the repointing missed.
 - 2026-10-10 The GitHub experiment covers `pull-request.yml` only: `test/devops/push-sample.sh` pushes the built sample as the orphan branch `develop-devops` and a branch `devops-sample-change` with one code change; the owner opens the pull request between them.
+- 2026-10-10 The release action has three channels — `check`, `snapshot`, `release` — and the pull-request workflow calls it with `check`: a pull request now builds the package or the binaries too, not only the image.
+- 2026-10-10 A composite action cannot read secrets or declare permissions, so the `deliver` job passes two generic secrets, `RELEASE_REGISTRY_TOKEN` and `SNAPSHOT_REGISTRY_TOKEN`, and holds `packages: write` and `id-token: write` for every project type.
+- 2026-10-10 Release actions read what they need from the project instead of placeholders — the package name from the manifest, the Go commands from `cmd/*`, the module path from `go list -m`. Only the TypeScript one is a template, for `{package-dir}`.
+- 2026-10-10 `devops-release-tag-only` exists so that the workflows have an action to call in a project that delivers nothing; it is also the release action of a Go library.
+- 2026-10-10 Stack-specific release skills stay in `skills/devops/{stack}/`, not in a `core/release/` folder: a project that selects `skills/devops/core` would otherwise load every stack's release skill. The shared prefix `devops-release-` and the table in `devops-github-wf-release` show them together; `check.sh` keeps that table equal to the skills that exist.
+- 2026-10-10 `agent/run-action-step.mjs` prints one `run` step of a composite action with its inputs filled, so that the naming and build steps of a release action run locally.

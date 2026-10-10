@@ -25,7 +25,7 @@ tags:
 ### Copy the stack's action verbatim
 Copy `action.yml` from the extension for the project's stack to `.github/actions/setup-toolchain/action.yml`, and do not modify it.
 - Violation: `actions/setup-go` called directly in a workflow.
-- Risk: the workflow becomes stack-specific and can no longer be assembled from the shared template.
+- Risk: the workflow becomes stack-specific and is no longer the file every project copies.
 - Fix: call `./.github/actions/setup-toolchain` after the checkout.
 
 ### Only the toolchain and its cache

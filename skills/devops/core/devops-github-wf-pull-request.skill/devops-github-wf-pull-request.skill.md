@@ -1,6 +1,6 @@
 ---
 name: devops-github-wf-pull-request
-description: Stack-agnostic GitHub Actions workflow that validates a pull request into develop or master — what changed, a raised version into master, the README badges, every test kind as a parallel check run, the image build — and reports one required status
+description: Stack-agnostic GitHub Actions workflow that validates a pull request into develop or master — what changed, a raised version into master, the README badges, every test kind as a parallel check run, a build of what the project delivers — and reports one required status
 whenToUse: when you create or update `.github/workflows/pull-request.yml`, or set up branch protection for `develop`/`master`
 updated: 20261010
 tags:
@@ -12,8 +12,8 @@ tags:
 ---
 
 # Goal
-- `.github/workflows/pull-request.yml` written by `assemble-workflow.sh` from this skill's template.
-- The actions and targets the workflow calls present in the project: `check-changes`, `setup-toolchain`, `make init`, `make version-check`, the testing targets.
+- `.github/workflows/pull-request.yml`, an unchanged copy of this skill's asset.
+- The actions and targets the workflow calls present in the project: `check-changes`, `setup-toolchain`, `release`, `make init`, `make version-check`, the testing targets.
 - Branch protection of `develop` and `master` requiring the status `Pull request report` and no other job.
 
 # Core Principle
@@ -26,25 +26,22 @@ tags:
 2. `version-check` — into `master`, when `code` or `docker` changed: `make version-check` against the tip of `master`.
 3. `readme-check` — `make test-readme-check`.
 4. `test-kinds`, `test-kind` — when `code`, `test`, or `ci` changed: one parallel job per kind `make test-kinds` lists, each `setup-toolchain`, `make init`, `make test-kind-{kind}`.
-5. `image-build` — only in a project with a `Dockerfile`, when `code` or `docker` changed: the image is built and not pushed.
+5. `delivery-check` — when `code` or `docker` changed: `./.github/actions/release` with `channel: check` builds what the project delivers and publishes nothing.
 6. `report` — writes the summary and fails when a job failed or was cancelled.
 
 # Rule
 
 ## MUST
 
-### Assemble the workflow with the script
-Write the file with [[skills/devops/core/devops-ci-orchestration.skill/scripts/assemble-workflow.sh|assemble-workflow.sh]] from [[./templates/pull-request.yml|pull-request.yml]], naming `docker` only for a project with a `Dockerfile`, and do not edit the result.
-```bash
-sh assemble-workflow.sh templates/pull-request.yml docker > .github/workflows/pull-request.yml
-```
-- Violation: the template copied by hand with the `# docker` lines left in, or the YAML written from this skill's text.
-- Risk: `report` needs a job that does not exist and the workflow is rejected; a retyped workflow drops a condition.
-- Fix: run the script again; propose a needed change to the user and make it in the template.
+### Copy the workflow verbatim
+Copy [[./assets/.github/workflows/pull-request.yml|pull-request.yml]] verbatim to `.github/workflows/pull-request.yml`; do not modify it.
+- Violation: a job for the project's stack or delivery typed into the file.
+- Risk: the file stops being the one every project has, and a fix in the skill no longer applies to it.
+- Fix: restore the file; what differs between projects belongs in the `setup-toolchain` and `release` actions and behind `make`.
 
 ### Provide what the workflow calls
-Before the first run, apply [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]], [[skills/devops/core/devops-ci-toolchain.skill.md|devops-ci-toolchain]], [[skills/devops/core/devops-project-version.skill/devops-project-version.skill.md|devops-project-version]], and [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]], and give the `Makefile` an `init` target.
-- Violation: the workflow added to a project without `tools/version/` or without an `init` target.
+Before the first run, apply [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]], [[skills/devops/core/devops-ci-toolchain.skill.md|devops-ci-toolchain]], [[skills/devops/core/devops-project-version.skill/devops-project-version.skill.md|devops-project-version]], and [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]], take the project's release action per [[skills/devops/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]], and give the `Makefile` an `init` target.
+- Violation: the workflow added to a project without `tools/version/`, without `.github/actions/release`, or without an `init` target.
 - Risk: the first pull request fails on a missing action or target.
 - Fix: run `make init`, `make -s version`, `make test-kinds`, and `make test-readme-check` locally; add an `init` target that does nothing when a checkout needs no preparation.
 
@@ -72,8 +69,8 @@ Open a pull request from a separate branch for every change.
 - Fix: create a branch, push it, open the pull request.
 
 # Check list
-- [ ] `.github/workflows/pull-request.yml` equals the output of `assemble-workflow.sh` for the project's types.
-- [ ] `check-changes`, `setup-toolchain`, `tools/version/`, the testing targets, and `make init` exist and run locally.
+- [ ] `.github/workflows/pull-request.yml` is byte-identical to this skill's asset.
+- [ ] `check-changes`, `setup-toolchain`, `release`, `tools/version/`, the testing targets, and `make init` exist and run locally.
 - [ ] Branch protection requires `Pull request report` only.
 - [ ] The `test-kind` job sets `TEST_RUN_PURPOSE: check` and no `DELTA_BASE`.
 - [ ] No test kind, tool, or version file is named in the workflow.

@@ -13,7 +13,7 @@ adr:
 
 # Goal
 - **Make for what changes** - Every workflow step that runs tests, builds the test report, or reads or checks the version is one call of a `make` target from [[#Call only the caller contract|The caller contract]].
-- **Ready files for the rest** - Every part decided once per stack — the change-detection action, the toolchain action, the workflow file — is a file copied or assembled from the skill that ships it.
+- **Ready files for the rest** - Every part decided once — the change-detection action, the toolchain action, the release action, both workflow files — is a file copied from the skill that ships it.
 - No workflow or action names a test tool, a coverage or mutation switch, or the file the version is recorded in.
 
 # Core Principle
@@ -53,10 +53,10 @@ Pass a workflow's knowledge of the run as `TEST_RUN_PURPOSE` (`check` or `report
 - Fix: set the two variables in the workflow; let each script decide what they mean for it.
 
 ### Copy what is decided once
-Take the change-detection action, the toolchain action, and each workflow file from the skill that ships it, and change only what that skill lists as a placeholder.
+Take the change-detection action, the toolchain action, the release action, and both workflow files from the skills that ship them, and change only what a skill lists as a placeholder.
 - Violation: path patterns or a tag string typed into a workflow from memory.
 - Risk: each project gets a slightly different copy, and a fix in the skill reaches none of them.
-- Fix: copy the action; write a workflow with [[./scripts/assemble-workflow.sh|assemble-workflow.sh]] from its template; propose a needed deviation to the user and fold it back into the skill's file.
+- Fix: copy the file; propose a needed deviation to the user and fold it back into the skill's file.
 
 ### Toolchain in the workflow, the rest in make init
 Install the stack's toolchain with the `setup-toolchain` action of [[skills/devops/core/devops-ci-toolchain.skill.md|devops-ci-toolchain]], then run `make init`.
@@ -78,6 +78,6 @@ Start a database or another service the tests need from `.devcontainer/docker-co
 - [ ] Every test, report, and version step is a `make` target of [[#Call only the caller contract|The caller contract]].
 - [ ] No workflow or action names a test tool, a test kind, a coverage or mutation switch, or a version file.
 - [ ] The workflow sets only `TEST_RUN_PURPOSE`, `DELTA_BASE`, and the two test directories; no script reads a `GITHUB_*` variable.
-- [ ] The change-detection action and the workflow files are copies of their skills' files, differing only in listed placeholders.
+- [ ] The three actions and the two workflow files are copies of their skills' files, differing only in listed placeholders.
 - [ ] Preparation beyond the toolchain is in `make init`.
 - [ ] Services for tests are started from `.devcontainer/docker-compose.yml`; the workflow has no `services:` block.

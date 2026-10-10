@@ -1,0 +1,52 @@
+# .github/actions/release/action.yml - cross-compiles every command under cmd/ into dist/release, which the workflow attaches to the GitHub Release
+# Source: skill devops-release-binaries-in-go. Copied verbatim; never edited in the project.
+name: release
+description: cross-compiles every command under cmd/ into dist/release, which the workflow attaches to the GitHub Release
+inputs:
+  channel:
+    description: check - build and publish nothing; snapshot - a build of develop; release - a build of master
+    required: true
+  version:
+    description: The project's version, MAJOR.MINOR.PATCH
+    required: true
+  timestamp:
+    description: UTC time of the run, YYYYMMDDhhmmss - what makes a snapshot's name unique
+    required: true
+  registry-token:
+    description: Not used
+    required: false
+  snapshot-registry-token:
+    description: Not used
+    required: false
+outputs:
+  notes:
+    description: Lines for the text of the GitHub Release
+    value: ${{ steps.names.outputs.notes }}
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/setup-toolchain
+    - id: names
+      shell: bash
+      env:
+        CHANNEL: ${{ inputs.channel }}
+        VERSION: ${{ inputs.version }}
+        TIMESTAMP: ${{ inputs.timestamp }}
+        CGO_ENABLED: 0
+      run: |
+        publish="$VERSION"; [ "$CHANNEL" = snapshot ] && publish="$VERSION-$TIMESTAMP"
+        module=$(go list -m)
+        mkdir -p dist/release
+        for main in ./cmd/*/; do
+          app=$(basename "$main")
+          for target in linux/amd64 linux/arm64 windows/amd64 darwin/amd64 darwin/arm64; do
+            goos="${target%%/*}"; goarch="${target##*/}"
+            ext=""; [ "$goos" = windows ] && ext=".exe"
+            # The flag only overrides: on the release channel it carries the recorded version.
+            GOOS="$goos" GOARCH="$goarch" go build -trimpath \
+              -ldflags "-s -w -X $module/internal/version.Version=$publish" \
+              -o "dist/release/${app}_${publish}_${goos}_${goarch}${ext}" "$main"
+          done
+        done
+        ( cd dist/release && sha256sum * > "checksums_${publish}.txt" )
+        echo "notes=- Binaries for linux, windows, and darwin are attached below, with \`checksums_${publish}.txt\`." >> "$GITHUB_OUTPUT"

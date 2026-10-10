@@ -1,7 +1,7 @@
 ---
 name: devops-github-wf-release
-description: Stack-agnostic GitHub Actions workflow for a push to develop or master — one file that detects changes, reads the version once, runs every test kind in parallel, publishes the test report from master, delivers what the project's type ships (Docker image, package, release binaries), and records the GitHub Release
-whenToUse: when you create or update `.github/workflows/release.yml`, add a delivery (Docker image, package, binaries) to a project, or set up the published test report and its README badges
+description: Stack-agnostic GitHub Actions workflow for a push to develop or master — one file, the same in every project, that detects changes, reads the version once, runs every test kind in parallel, publishes the test report from master, calls the project's release action to deliver, and records the GitHub Release; also the contract of that release action and the list of its variants
+whenToUse: when you create or update `.github/workflows/release.yml`, choose or change what a project delivers on release (Docker image, package, binaries, nothing), or set up the published test report and its README badges
 updated: 20261010
 tags:
   - stack
@@ -16,55 +16,68 @@ adr:
 ---
 
 # Goal
-- `.github/workflows/release.yml` written by `assemble-workflow.sh` from this skill's template, with the delivery jobs of the project's types.
+- `.github/workflows/release.yml`, an unchanged copy of this skill's asset.
+- `.github/actions/release/action.yml` taken from exactly one skill of [[#Take one release action]].
 - No other workflow that starts on a push to `develop` or `master`.
-- **Per branch** - On `develop`: a snapshot `{version}-{timestamp}` of each delivery. On `master`: the delivery as `{version}`, the test report on GitHub Pages, the tag `v{version}` with a GitHub Release.
+- **Per branch** - On `develop`: a snapshot of what the project delivers. On `master`: the delivery as `{version}`, the test report on GitHub Pages, the tag `v{version}` with a GitHub Release.
 - The README carrying the workflow badge, the report link, and one badge per declared test badge.
 
 # Core Principle
 - **One push, one workflow** - Changes, the version, and the tests are computed once and every delivery waits for them. Decision recorded in [[./adr/one-release-workflow.md|one-release-workflow]].
 - The workflow follows [[skills/devops/core/devops-ci-orchestration.skill/devops-ci-orchestration.skill.md|devops-ci-orchestration]] and starts jobs by the categories of [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]].
-- **Type decided when written** - Whether a project ships an image, a package, or binaries is decided when the file is assembled; the workflow never looks for a `Dockerfile` at run time.
+- **Delivery behind one action** - What a project delivers is decided once, by which release action it takes; the workflow calls `./.github/actions/release` and never looks for a `Dockerfile` at run time.
 - A version is released once: the tag `v{version}` is what says it was.
-- **Delivery jobs per stack** - The `package` job is in `devops-package-publish-in-python`, `devops-package-publish-in-typescript`, `devops-package-publish-in-dotnet`, the `app` job in `devops-app-release-in-go`; ask the user which one to load.
 
 # Workflow
 1. `changes` — `./.github/actions/check-changes` against the commit before the push; a manual run counts as a change of `code`.
-2. `version` — `make version` and one UTC timestamp; `publish` is `{version}` on `master` and `{version}-{timestamp}` on `develop`; on `master` the job fails when `v{version}` exists and `code` or `docker` changed.
+2. `version` — `make version` and one UTC timestamp; on `master` the job fails when `v{version}` exists and `code` or `docker` changed.
 3. `test-kinds`, `test-kind` — when `code`, `test`, or `ci` changed: one parallel job per kind, `TEST_RUN_PURPOSE` `check` on `develop` and `report` on `master`.
 4. `test-report`, `pages` — `master` only, also after a failed kind: `make test-report`, deployed to GitHub Pages under `/testing/`.
-5. `image`, `package`, `app` — the project's types, when `code` or `docker` changed and no test job failed.
-6. `release` — `master` only: the tag `v{version}`, generated notes, links to the image and the package, and every `release-*` artifact attached.
+5. `deliver` — when `code` or `docker` changed and no test job failed: `./.github/actions/release` with `channel` `snapshot` on `develop` and `release` on `master`.
+6. `release` — `master` only: the tag `v{version}`, generated notes preceded by the action's `notes`, and the files the action left in `dist/release` attached.
 
 # Rule
 
 ## MUST
 
-### Assemble the workflow with the script
-Write the file with [[skills/devops/core/devops-ci-orchestration.skill/scripts/assemble-workflow.sh|assemble-workflow.sh]] from [[./templates/release.yml|release.yml]], naming each type the project ships — `docker`, `package={job file}`, `app={job file}` — then fill the placeholders the job file's skill lists.
-```bash
-sh assemble-workflow.sh templates/release.yml docker package=package-job.yml > .github/workflows/release.yml
-```
-- Violation: a hand copy with the `# package` lines left in, or a `docker` job kept "for later" in a project without a `Dockerfile`.
-- Risk: `release` needs a job that does not exist and the workflow is rejected, or every push fails building an image that has no `Dockerfile`.
-- Fix: run the script with exactly the project's types; run it again when a type is added.
+### Copy the workflow verbatim
+Copy [[./assets/.github/workflows/release.yml|release.yml]] verbatim to `.github/workflows/release.yml`; do not modify it.
+- Violation: a publishing step for the project's registry typed into the workflow.
+- Risk: the file stops being the one every project has, and a fix in the skill no longer applies to it.
+- Fix: restore the file; delivery belongs in the release action.
+
+### Take one release action
+Decide what the project delivers and apply the one skill of this table that matches; ask the user when it is not evident.
+
+| The project delivers | Skill | Stack |
+| --- | --- | --- |
+| a Docker image | `devops-release-docker-image` | any |
+| a Python package | `devops-release-package-in-python` | Python |
+| an npm package | `devops-release-package-in-typescript` | TypeScript, Angular |
+| NuGet packages | `devops-release-package-in-dotnet` | .NET |
+| executables a person downloads | `devops-release-binaries-in-go` | Go |
+| nothing but its tag — a Go library, documents | `devops-release-tag-only` | any |
+
+- Violation: two release actions merged by hand, or none taken.
+- Risk: the workflows call `./.github/actions/release`; without the file every push and every pull request fails.
+- Fix: one skill of the table; a project that must deliver two things is raised with the user.
+
+### Keep the contract of the release action
+Keep every release action to this contract: inputs `channel` (`check` builds and publishes nothing, `snapshot`, `release`), `version`, `timestamp`, `registry-token`, `snapshot-registry-token`; output `notes`; files for the GitHub Release in `dist/release`.
+- Violation: an action that reads `github.ref_name` to decide what to publish, or publishes on `check`.
+- Risk: a pull request publishes, or the workflow's `channel` and the action's own reading of the branch disagree.
+- Fix: decide only by `inputs.channel`.
 
 ### One workflow on push
 Keep `release.yml` the only workflow that starts on a push to `develop` or `master`.
 - Violation: a separate `docker-publish.yml` or `test-report.yml` beside it.
 - Risk: the tests run once per workflow, and two workflows race to create the same Release.
-- Fix: add the delivery as a type of this workflow.
+- Fix: put the delivery into the release action.
 
 ### Provide what the workflow calls
 Before the first run, apply [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]], [[skills/devops/core/devops-ci-toolchain.skill.md|devops-ci-toolchain]], [[skills/devops/core/devops-project-version.skill/devops-project-version.skill.md|devops-project-version]], and [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]], and give the `Makefile` an `init` target.
 - Risk: the first push fails on a missing action or target.
 - Fix: run `make init`, `make -s version`, `make test-kinds`, and `make test-and-report` locally.
-
-### Declare ARG VERSION in the Dockerfile
-Declare `ARG VERSION` in the `Dockerfile` of a project assembled with `docker`, and pass it into the build of the program.
-- Violation: a `Dockerfile` that ignores the build argument.
-- Risk: the image tagged `1.4.0` holds a program that reports `dev`.
-- Fix: `ARG VERSION=dev` in the build stage, used the way the stack's `devops-project-version-in-{stack}` skill states.
 
 ### Enable GitHub Pages from Actions
 Set the repository's Settings → Pages → Source to "GitHub Actions" before the first push to `master`.
@@ -84,9 +97,9 @@ When `version` fails with "is already released", raise the version in a pull req
 - Fix: a pull request that raises the version; after a failed release, re-run only the failed jobs.
 
 # Check list
-- [ ] `.github/workflows/release.yml` equals the output of `assemble-workflow.sh` for the project's types, placeholders filled.
+- [ ] `.github/workflows/release.yml` is byte-identical to this skill's asset.
+- [ ] `.github/actions/release/action.yml` comes from exactly one skill of [[#Take one release action]].
 - [ ] No other workflow triggers on a push to `develop` or `master`.
 - [ ] `check-changes`, `setup-toolchain`, `tools/version/`, the testing targets, and `make init` exist and run locally.
-- [ ] A project assembled with `docker` has a `Dockerfile` that uses `ARG VERSION`.
 - [ ] GitHub Pages source is "GitHub Actions"; the README has the three kinds of badge lines.
 - [ ] No test kind, tool, or version file is named in the workflow.

@@ -1,0 +1,223 @@
+# .github/workflows/release.yml - what a push to develop or master tests, delivers, and releases.
+# Source: skill devops-github-wf-release. Copied verbatim; never edited in the project.
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  workflow_dispatch:
+
+# A newer push to develop replaces a running snapshot; a release on master runs to its end.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'master' }}
+
+permissions:
+  contents: read
+
+env:
+  # Facts about this run and the directories this workflow chose - the whole of what it tells
+  # the project's tests. master builds the full reports; develop only decides pass or fail.
+  TEST_RUN_PURPOSE: ${{ github.ref_name == 'master' && 'report' || 'check' }}
+  TEST_WORK_DIR: tmp/testing
+  TEST_REPORT_DIR: site/testing
+
+jobs:
+  changes:
+    name: Detect changed files
+    runs-on: ubuntu-latest
+    outputs:
+      # A manual run has nothing to compare with: it counts as a change of code.
+      code: ${{ github.event_name == 'workflow_dispatch' && 'true' || steps.filter.outputs.code }}
+      test: ${{ steps.filter.outputs.test }}
+      ci: ${{ steps.filter.outputs.ci }}
+      docker: ${{ steps.filter.outputs.docker }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/check-changes
+        id: filter
+
+  # Read once and handed to every later job, so that everything one push delivers carries one name.
+  version:
+    name: Version
+    needs: changes
+    runs-on: ubuntu-latest
+    outputs:
+      current: ${{ steps.version.outputs.current }}
+      timestamp: ${{ steps.version.outputs.timestamp }}
+      released: ${{ steps.tag.outputs.released }}
+      deliver: ${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.docker == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: version
+        run: |
+          echo "current=$(make -s version)" >> "$GITHUB_OUTPUT"
+          echo "timestamp=$(date -u +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
+      - id: tag
+        env:
+          TAG: v${{ steps.version.outputs.current }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "released=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "released=false" >> "$GITHUB_OUTPUT"
+          fi
+      # The pull request demanded a raised version; a push that got around it stops here.
+      - name: Refuse to release a version twice
+        if: github.ref_name == 'master' && steps.tag.outputs.released == 'true' && (needs.changes.outputs.code == 'true' || needs.changes.outputs.docker == 'true')
+        run: |
+          echo "::error::Version ${{ steps.version.outputs.current }} is already released - raise it"
+          exit 1
+
+  # The project's Makefile says which test kinds exist; this workflow never names one.
+  test-kinds:
+    name: List test kinds
+    needs: changes
+    if: needs.changes.outputs.code == 'true' || needs.changes.outputs.test == 'true' || needs.changes.outputs.ci == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      kinds: ${{ steps.kinds.outputs.kinds }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: kinds
+        run: echo "kinds=$(make -s test-kinds | cut -d' ' -f1 | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
+
+  test-kind:
+    name: Test (${{ matrix.kind }})
+    needs: test-kinds
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: ${{ fromJSON(needs.test-kinds.outputs.kinds) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-toolchain
+      - run: make init
+      # A kind exits non-zero when its checks failed; it wrote its results first.
+      - run: make test-kind-${{ matrix.kind }}
+      # The kind's one directory - handed to the report job as it is.
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && github.ref_name == 'master' }}
+        with:
+          name: test-kind-${{ matrix.kind }}
+          path: ${{ env.TEST_WORK_DIR }}/kinds/${{ matrix.kind }}
+          include-hidden-files: true
+          if-no-files-found: warn
+
+  # master only, also after a failed kind: the report that shows the failure is still published.
+  test-report:
+    name: Test report
+    needs: [test-kinds, test-kind]
+    if: ${{ !cancelled() && github.ref_name == 'master' && needs.test-kinds.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: test-kind-*
+          path: tmp/artifacts
+      - name: Put every kind's directory back under the work directory
+        run: |
+          mkdir -p "$TEST_WORK_DIR/kinds"
+          for d in tmp/artifacts/test-kind-*; do
+            [ -d "$d" ] && mv "$d" "$TEST_WORK_DIR/kinds/${d##*/test-kind-}"
+          done
+      - run: make test-report
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  pages:
+    name: Publish the test report
+    needs: test-report
+    if: ${{ !cancelled() && needs.test-report.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  # What the project delivers - an image, a package, binaries - is the business of the release
+  # action the project took from the skill of its delivery; this workflow is the same for all.
+  deliver:
+    name: Deliver
+    needs: [version, test-kinds, test-kind]
+    # always(): the tests are skipped when only the Dockerfile changed, and a skipped job must
+    # not skip this one. A failed or cancelled test job does.
+    if: >-
+      always() &&
+      needs.version.result == 'success' && needs.version.outputs.deliver == 'true' &&
+      !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    # A job's permissions replace the defaults: contents is listed, or the checkout fails.
+    # The other two are what a registry push and a signed upload need.
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    outputs:
+      notes: ${{ steps.release.outputs.notes }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: release
+        uses: ./.github/actions/release
+        with:
+          channel: ${{ github.ref_name == 'master' && 'release' || 'snapshot' }}
+          version: ${{ needs.version.outputs.current }}
+          timestamp: ${{ needs.version.outputs.timestamp }}
+          registry-token: ${{ secrets.RELEASE_REGISTRY_TOKEN }}
+          snapshot-registry-token: ${{ secrets.SNAPSHOT_REGISTRY_TOKEN }}
+      # What the action left in dist/release is attached to the GitHub Release on master.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: dist/release
+          if-no-files-found: ignore
+
+  # master only: the tag v{version} and the GitHub Release, once per version.
+  release:
+    name: GitHub Release
+    needs: [version, test-kinds, test-kind, deliver]
+    if: >-
+      always() && github.ref_name == 'master' &&
+      needs.version.result == 'success' && needs.version.outputs.deliver == 'true' &&
+      needs.version.outputs.released == 'false' &&
+      !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-files
+          path: dist
+          merge-multiple: true
+      - id: notes
+        env:
+          VERSION: ${{ needs.version.outputs.current }}
+          NOTES: ${{ needs.deliver.outputs.notes }}
+        run: |
+          {
+            echo "value<<EOF"
+            echo "Version $VERSION"
+            echo
+            echo "$NOTES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.version.outputs.current }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          body: ${{ steps.notes.outputs.value }}
+          files: dist/*
+          fail_on_unmatched_files: false

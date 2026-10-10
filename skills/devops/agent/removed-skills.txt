@@ -14,3 +14,8 @@ devops-github-wf-stack-lib-release-publish
 devops-github-wf-stack-lib-release-publish-in-python
 devops-github-wf-stack-lib-release-publish-in-typescript
 devops-github-wf-stack-lib-release-publish-in-dotnet
+devops-package-publish
+devops-package-publish-in-python
+devops-package-publish-in-typescript
+devops-package-publish-in-dotnet
+devops-app-release-in-go
