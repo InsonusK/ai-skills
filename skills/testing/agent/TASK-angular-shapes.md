@@ -1,5 +1,7 @@
 # Task: Angular testing for a library repository and for an Nx workspace
 
+Completed on branch `angular-testing-shapes`; implementation, decisions and verification are in [ANGULAR-SHAPES.md](ANGULAR-SHAPES.md).
+
 ## Why
 
 `skills/testing/angular/solution-conformance-testing-in-angular.skill` gives an Angular project four test kinds behind the `make` contract — `unit` and `mutation` from the TypeScript parent, `components` (Angular unit-test builder, Vitest, TestBed) and `ui` (Playwright) — with a runnable example. It is delivered for one shape of repository: a single Angular CLI application.

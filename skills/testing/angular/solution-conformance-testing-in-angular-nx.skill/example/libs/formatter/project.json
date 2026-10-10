@@ -1,0 +1,25 @@
+{
+  "name": "formatter",
+  "root": "libs/formatter",
+  "sourceRoot": "libs/formatter/src",
+  "projectType": "library",
+  "implicitDependencies": [],
+  "metadata": {
+    "testing": {
+      "unit": true,
+      "components": false,
+      "ui": false,
+      "uiHost": null
+    }
+  },
+  "targets": {
+    "conformance-unit": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/testing/nx-project.mjs unit formatter",
+        "forwardAllArgs": false
+      }
+    }
+  }
+}

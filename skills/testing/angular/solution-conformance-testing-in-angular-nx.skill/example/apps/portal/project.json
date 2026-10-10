@@ -1,0 +1,110 @@
+{
+  "name": "portal",
+  "root": "apps/portal",
+  "sourceRoot": "apps/portal/src",
+  "projectType": "application",
+  "implicitDependencies": [
+    "linkcheck",
+    "formatter"
+  ],
+  "metadata": {
+    "testing": {
+      "unit": true,
+      "components": true,
+      "ui": true,
+      "uiHost": "portal"
+    }
+  },
+  "targets": {
+    "conformance-unit": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/testing/nx-project.mjs unit portal",
+        "forwardAllArgs": false
+      }
+    },
+    "conformance-components": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/testing/nx-project.mjs components portal",
+        "forwardAllArgs": false
+      }
+    },
+    "conformance-ui": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/testing/nx-project.mjs ui portal",
+        "forwardAllArgs": false
+      }
+    },
+    "build": {
+      "options": {
+        "browser": "apps/portal/src/main.ts",
+        "tsConfig": "apps/portal/tsconfig.app.json",
+        "styles": [
+          "apps/portal/src/styles.css"
+        ],
+        "index": "apps/portal/src/index.html"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kB",
+              "maximumError": "8kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production",
+      "executor": "@angular/build:application",
+      "cache": false
+    },
+    "serve": {
+      "configurations": {
+        "production": {
+          "buildTarget": "portal:build:production"
+        },
+        "development": {
+          "buildTarget": "portal:build:development"
+        }
+      },
+      "defaultConfiguration": "development",
+      "executor": "@angular/build:dev-server",
+      "cache": false
+    },
+    "component-native": {
+      "options": {
+        "tsConfig": "apps/portal/tsconfig.spec.json",
+        "buildTarget": "portal:build:development",
+        "watch": false,
+        "runner": "vitest",
+        "runnerConfig": "vitest.components.config.mts",
+        "include": [
+          "**/spec/*.component.spec.ts"
+        ],
+        "coverage": true,
+        "reporters": [
+          "json"
+        ]
+      },
+      "executor": "@angular/build:unit-test",
+      "cache": false
+    }
+  }
+}

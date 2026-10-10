@@ -1,9 +1,9 @@
 # Tasks
 
-The W16 task this file held is done; `STATUS.md` has its results. Two tasks are open, independent of each other — each can go to its own agent:
+The W16 task this file held is done; `STATUS.md` has its results. Two follow-up tasks were opened, independent of each other — each can go to its own agent:
 
 - [`TASK-dotnet-layout.md`](./TASK-dotnet-layout.md) — one folder layout for .NET tests, and the .NET catalog pointing at the testing skill instead of repeating it.
-- [`TASK-angular-shapes.md`](./TASK-angular-shapes.md) — Angular testing for a library repository and for an Nx workspace, beside the existing single-application skill.
+- [`TASK-angular-shapes.md`](./TASK-angular-shapes.md) — Angular testing for a library repository and for an Nx workspace, beside the existing single-application skill. Completed locally on `angular-testing-shapes`; see [verification and decisions](ANGULAR-SHAPES.md).
 
 Each states which decisions are the owner's and which the previous agent took by default; ask the owner about the second kind before building on one.
 

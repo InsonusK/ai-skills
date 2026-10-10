@@ -46,7 +46,7 @@ for d in skills/testing/*/; do
       [[ "$n" =~ -in-($stacks)$ ]] && err "$e: a stack-specific skill in core/"
       grep -qE "^\s*- stack$" "$f" || err "$f: missing bare stack tag"
     else
-      [[ "$n" == *-in-$dir ]] || err "$e: name does not end with -in-$dir"
+      [[ "$n" == *-in-$dir || ( "$dir" = angular && "$n" =~ ^solution-conformance-testing-in-angular-(library|nx)$ ) ]] || err "$e: name does not end with -in-$dir"
       want="stack/$dir"; [ "$dir" = angular ] && want="framework/angular"   # angular is a framework on stack/typescript
       grep -qE "^\s*- $want$" "$f" || err "$f: missing tag $want"
     fi
@@ -110,6 +110,21 @@ while IFS= read -r copy; do   # the Angular example: its own two kinds, the Type
   k=$(basename "$copy"); src=$ng/assets/tools/testing/kinds/$k; [ -f "$src" ] || src=$tsk/$k
   cmp -s "$src" "$copy" || err "$copy differs from $src"
 done < <(git ls-files -co --exclude-standard "$ng/example/tools/testing/kinds/*")
+for shape in library nx; do
+  refinement=skills/testing/angular/solution-conformance-testing-in-angular-$shape.skill
+  [ -d "$refinement" ] || continue
+  while IFS= read -r copy; do
+    k=$(basename "$copy"); src=$refinement/assets/tools/testing/kinds/$k
+    [ -f "$src" ] || src=$ng/assets/tools/testing/kinds/$k
+    [ -f "$src" ] || src=$tsk/$k
+    cmp -s "$src" "$copy" || err "$copy differs from $src"
+  done < <(git ls-files -co --exclude-standard "$refinement/example/tools/testing/kinds/*")
+  while IFS= read -r asset; do
+    relative=${asset#"$refinement/assets/"}
+    cmp -s "$asset" "$refinement/example/$relative" || err "$refinement/example/$relative differs from $asset"
+  done < <(git ls-files -co --exclude-standard "$refinement/assets/*")
+  cmp -s "$ng/assets/tools/testing/angular-results.mjs" "$refinement/example/tools/testing/angular-results.mjs" || err "$refinement: changed inherited Angular result adapter"
+done
 ts=skills/testing/typescript/solution-conformance-testing-in-typescript.skill
 for f in cucumber.mjs stryker.conf.json; do
   cmp -s "$ts/assets/$f" "$ts/example/$f" || err "$ts/example/$f differs from $ts/assets/$f"

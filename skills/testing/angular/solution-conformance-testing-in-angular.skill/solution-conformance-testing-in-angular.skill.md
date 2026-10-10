@@ -1,10 +1,10 @@
 ---
 name: solution-conformance-testing-in-angular
 description: Extends TypeScript conformance testing with Angular TestBed component tests and Playwright browser UI tests through the same discovered make kinds and report contract.
-whenToUse: Add component behavior and browser UI coverage to an Angular application that already uses the TypeScript Cucumber, coverage and mutation solution.
+whenToUse: Add or maintain conformance testing in a non-Nx repository whose product is one Angular application, including applications consuming npm libraries from other repositories.
 domain: skill
 type: architecture
-version: 20261009210000
+version: 20261009210200
 updated: 20261009
 tags:
   - skill/architecture/solution
@@ -34,6 +34,8 @@ adr:
   - "[Angular test kinds](adr/angular-test-kinds.md)"
   - "[Complete Makefile example](adr/complete-makefile-example.md)"
   - "[Chromium system dependencies](adr/chromium-system-dependencies.md)"
+  - "[Repository shape selection](adr/repository-shape-selection.md)"
+  - "[Browser spec discovery](adr/browser-spec-discovery.md)"
 ---
 
 # Goal
@@ -56,8 +58,8 @@ adr:
 
 # Boundaries
 - The application already builds and has an Angular CLI `serve` target; application deployment and backend provisioning remain project responsibilities.
-- The delivered native builder setup targets Angular CLI 22; older Angular/Karma or Nx executors need an explicit adapter decision rather than copying these commands unchanged.
-- The delivered adapter assumes one Angular application with one test target; multi-application workspaces require an explicit project-selection/aggregation adapter.
+- The delivered native builder setup targets Angular CLI 22; older Angular/Karma builders need a verified version adapter rather than copying these commands unchanged.
+- The direct delivery assumes one Angular application with one test target. Library repositories use `solution-conformance-testing-in-angular-library`; Nx repositories use `solution-conformance-testing-in-angular-nx`, inheriting these spec and evidence rules.
 
 # Adr
 - [Angular test kinds](adr/angular-test-kinds.md): native Angular builder for compilation/TestBed and Playwright for browser evidence, two discovered kinds.
@@ -65,6 +67,9 @@ adr:
 - [Complete Makefile example](adr/complete-makefile-example.md): one runnable Angular app executes all four kinds and generates its report through Make.
 
 - [Chromium system dependencies](adr/chromium-system-dependencies.md): initialization installs the browser runtime libraries through the pinned installer.
+
+- [Repository shape selection](adr/repository-shape-selection.md): choose one entry skill by what the repository holds.
+- [Browser spec discovery](adr/browser-spec-discovery.md): run UI, visual, computed-style and accessibility browser suffixes together.
 
 # Requirements
 SOLUTION:
@@ -107,7 +112,8 @@ PACKAGE:
 - `make test-and-report TEST_RUN_PURPOSE=check` with caller-chosen directories — every kind but mutation runs, mutation is skipped without `DELTA_BASE`, the domain coverage report is not published.
 - A deliberately wrong component expectation — the run exits non-zero, the `components` badge is red (3/4), the other kinds still run and the report is assembled.
 - Two UI runs one right after the other on one machine — both pass: each run serves the application on a free port of its own.
-- Not verified: the `.devcontainer` image build, a workspace with several applications, an Angular version before 22.
+- `run-example.sh` and the base source-contract check pass with the shared catalog browser-suffix matcher; 25/25 scenarios, components/UI 4/4, living-doc tags and report links verified again.
+- Not verified: the `.devcontainer` image build, a workspace with several applications through this direct delivery, an Angular version before 22.
 
 # Rules
 ## MUST

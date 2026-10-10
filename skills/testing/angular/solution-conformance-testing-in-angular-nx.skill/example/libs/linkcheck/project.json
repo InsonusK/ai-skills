@@ -1,0 +1,67 @@
+{
+  "name": "linkcheck",
+  "root": "libs/linkcheck",
+  "sourceRoot": "libs/linkcheck/src",
+  "projectType": "library",
+  "implicitDependencies": [],
+  "metadata": {
+    "testing": {
+      "unit": true,
+      "components": true,
+      "ui": true,
+      "uiHost": "portal"
+    }
+  },
+  "targets": {
+    "conformance-unit": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/testing/nx-project.mjs unit linkcheck",
+        "forwardAllArgs": false
+      }
+    },
+    "conformance-components": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/testing/nx-project.mjs components linkcheck",
+        "forwardAllArgs": false
+      }
+    },
+    "conformance-ui": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/testing/nx-project.mjs ui linkcheck",
+        "forwardAllArgs": false
+      }
+    },
+    "build": {
+      "options": {
+        "project": "libs/linkcheck/ng-package.json",
+        "tsConfig": "libs/linkcheck/tsconfig.lib.json"
+      },
+      "executor": "@angular/build:ng-packagr",
+      "cache": false
+    },
+    "component-native": {
+      "options": {
+        "tsConfig": "libs/linkcheck/tsconfig.spec.json",
+        "buildTarget": "portal:build:development",
+        "watch": false,
+        "runner": "vitest",
+        "runnerConfig": "vitest.components.config.mts",
+        "include": [
+          "**/spec/*.component.spec.ts"
+        ],
+        "coverage": true,
+        "reporters": [
+          "json"
+        ]
+      },
+      "executor": "@angular/build:unit-test",
+      "cache": false
+    }
+  }
+}
