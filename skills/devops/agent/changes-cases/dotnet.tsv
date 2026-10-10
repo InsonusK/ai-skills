@@ -1,0 +1,8 @@
+Directory.Build.props	code
+Shop.sln	code
+src/Shop.Domain/Order.cs	code
+src/Shop.Domain/Shop.Domain.csproj	code
+tests/Shop.Domain.Tests/OrderSteps.cs	test
+tests/Shop.Domain.Tests/Shop.Domain.Tests.csproj	test
+tests/Shop.Domain.Tests/features/order.feature	test
+src/Shop.TestsSupport/Fake.cs	code
