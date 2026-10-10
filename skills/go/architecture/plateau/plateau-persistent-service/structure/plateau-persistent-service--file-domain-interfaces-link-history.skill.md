@@ -51,7 +51,7 @@ type LinkHistory interface {
 	Recent(ctx context.Context, limit int) ([]LinkHistoryEntry, error)
 }
 ```
-Verified against this plateau's own `example/internal/domain/interfaces/link_history.go` — `go build`/`go vet` clean; exercised by 2 new godog scenarios (a successful check is recorded, a history failure fails the check) plus verified against a real PostgreSQL instance in the runtime smoke test, including across a process restart.
+Verified against this plateau's own `examples/internal/domain/interfaces/link_history.go` — `go build`/`go vet` clean; exercised by 2 new godog scenarios (a successful check is recorded, a history failure fails the check) plus verified against a real PostgreSQL instance in the runtime smoke test, including across a process restart.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/domain/interfaces/{store-port}.go.create.md|link_history.go]]

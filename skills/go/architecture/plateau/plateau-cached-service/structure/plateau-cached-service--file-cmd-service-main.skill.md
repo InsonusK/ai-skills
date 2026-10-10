@@ -67,6 +67,7 @@ import (
 	"{module-path}/internal/infrastructure/reputationcache"
 	"{module-path}/internal/infrastructure/reputationclient"
 	"{module-path}/internal/logging"
+	"{module-path}/internal/version"
 )
 
 func main() {
@@ -83,6 +84,7 @@ func run() error {
 	}
 
 	logging.Init(cfg.LogLevel)
+	slog.Info("starting", "version", version.Version)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -136,7 +138,7 @@ func run() error {
 	return g.Wait()
 }
 ```
-Verified against this plateau's own `example/cmd/linkcheck/main.go` — `go build`/`go vet` clean; against a **real Redis instance** (not mocked) and a throwaway fake reputation gRPC server: 3 HTTP requests for the same URL produced exactly one reputation-service call; a gRPC request for the same URL immediately after hit the cache too.
+Verified against this plateau's own `examples/cmd/linkcheck/main.go` — `go build`/`go vet` clean; against a **real Redis instance** (not mocked) and a throwaway fake reputation gRPC server: 3 HTTP requests for the same URL produced exactly one reputation-service call; a gRPC request for the same URL immediately after hit the cache too.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]]
@@ -166,6 +168,7 @@ __Applied solutions:__
 # Check list
 - [ ] `SIGINT`/`SIGTERM` triggers both `grpcServer.GracefulStop()` and `httpServer.Shutdown`, not an abrupt process exit.
 - [ ] `logging.Init` runs before the first adapter constructor.
+- [ ] `run()` logs `starting` with the `version` attribute right after `logging.Init`.
 - [ ] `run()` uses exactly one `errgroup.Group`; no serve loop runs outside it.
 - [ ] `reputationclient.Dial` and `reputationcache.New` are both called before `services.NewLinkCheckService`, and their results passed directly into that call.
 

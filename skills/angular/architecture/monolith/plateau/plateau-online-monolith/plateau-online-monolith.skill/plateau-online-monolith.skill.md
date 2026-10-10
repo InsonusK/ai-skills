@@ -59,7 +59,7 @@ See [`structure/`](structure/plateau-online-monolith--repo-online-monolith.skill
 
 # Example
 
-See [`example/`](plateau-online-monolith.skill/example/) — a runnable Nx workspace with one feature (`orders`) end to end: a routed feature lib with a Signal Forms create form + feature Signal Store, an `orders` data-access lib (Facade/Client/Mapper/errors), `libs/shared/http-core`, `libs/shared/logging`, the empty-but-wired `libs/shared/state`, and the full four-layer test suite. `npm test` (Vitest) and `npm run e2e` (Playwright) green.
+See [`examples/`](plateau-online-monolith.skill/examples/) — a runnable Nx workspace with one feature (`orders`) end to end: a routed feature lib with a Signal Forms create form + feature Signal Store, an `orders` data-access lib (Facade/Client/Mapper/errors), `libs/shared/http-core`, `libs/shared/logging`, the empty-but-wired `libs/shared/state`, and the full four-layer test suite. `npm test` (Vitest) and `npm run e2e` (Playwright) green.
 
 # Intersection registry
 

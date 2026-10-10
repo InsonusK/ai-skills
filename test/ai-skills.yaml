@@ -10,6 +10,7 @@ sources:
       - skills/typescript
       - skills/go
       - skills/design
+      - skills/testing
 
 target:
   default:

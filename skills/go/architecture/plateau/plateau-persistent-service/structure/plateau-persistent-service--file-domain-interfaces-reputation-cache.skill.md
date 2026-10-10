@@ -40,7 +40,7 @@ type ReputationCache interface {
 	Set(ctx context.Context, url string, rep Reputation) error
 }
 ```
-Verified against this plateau's own `example/internal/domain/interfaces/reputation_cache.go` — `go build`/`go vet` clean; exercised by 2 new godog scenarios (cache hit skips the external call, a fresh lookup is written to the cache) plus verified against a real Redis instance in the runtime smoke test.
+Verified against this plateau's own `examples/internal/domain/interfaces/reputation_cache.go` — `go build`/`go vet` clean; exercised by 2 new godog scenarios (cache hit skips the external call, a fresh lookup is written to the cache) plus verified against a real Redis instance in the runtime smoke test.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]] - [[skills/go/architecture/solutions/solution-cached-db.skill/Implementation/internal/domain/interfaces/{cache-port}.go.create.md|reputation_cache.go]]

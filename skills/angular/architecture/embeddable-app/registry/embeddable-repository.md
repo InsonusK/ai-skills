@@ -24,7 +24,7 @@ The retag from the shared `element/repository` `.create` conflation is recorded 
 `source: ordering-only` — the federation config is additive (an `exposes` entry, a `shared` entry, a `session/` folder). No solution must run before another to place its entry beyond the recorded `depends_on solution-federation-remote`.
 
 # Resolution
-**Canonical — resolved by design, no resolver.** A small remote repo where each of its (one common + two VP) solutions adds one distinct piece — the analogue of `monolith-repository` / `design-system-repository`. The [`plateau-embeddable-app` example](skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/plateau-embeddable-app.skill/example/) builds it: `ng build` emits a `remoteEntry.json` exposing `./Routes` and sharing `@platform/contracts` as a strict singleton; `ng test` covers `requirePermission` + the not-authenticated state.
+**Canonical — resolved by design, no resolver.** A small remote repo where each of its (one common + two VP) solutions adds one distinct piece — the analogue of `monolith-repository` / `design-system-repository`. The [`plateau-embeddable-app` example](skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/plateau-embeddable-app.skill/examples/) builds it: `ng build` emits a `remoteEntry.json` exposing `./Routes` and sharing `@platform/contracts` as a strict singleton; `ng test` covers `requirePermission` + the not-authenticated state.
 
 # Architectural signal
 N = 3. **Benign.** A contract-conformant remote repo touched by its own common + VP solutions is the correct design, not a mis-drawn variation point. Recorded per the delta-conflict-detection N≥3 rule.

@@ -38,6 +38,7 @@ import (
 	"net/http"
 
 	"{module-path}/internal/domain/services"
+	"{module-path}/internal/version"
 )
 
 type Server struct {
@@ -55,9 +56,16 @@ func (s *Server) Handler() http.Handler {
 	return mux
 }
 
+type healthResponse struct {
+	Status  string `json:"status"`
+	Version string `json:"version"`
+}
+
+// handleHealth reports liveness and the running binary's version, so a
+// consumer can tell which build it is talking to.
 func handleHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte("ok"))
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(healthResponse{Status: "ok", Version: version.Version})
 }
 
 type checkRequest struct {
@@ -97,7 +105,7 @@ func writeError(w http.ResponseWriter, code int, err error) {
 	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 }
 ```
-Verified against this plateau's own `example/internal/api/http/server.go` — smoke-tested: `GET /health` → `200`; `POST /v1/links/check {"url":"HTTPS://Example.com/Foo"}` → `200 {"url":"...","normalized":"https://example.com/Foo"}`; `POST /v1/links/check {"url":"not-a-url"}` → `400`.
+Verified against this plateau's own `examples/internal/api/http/server.go` — smoke-tested: `GET /health` → `200`; `POST /v1/links/check {"url":"HTTPS://Example.com/Foo"}` → `200 {"url":"...","normalized":"https://example.com/Foo"}`; `POST /v1/links/check {"url":"not-a-url"}` → `400`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/internal/api/http/server.go.create.md|server.go]]
@@ -112,14 +120,14 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/internal/api/http/server.go.create.md#MUST|server.go]]
 
 # Check list
-- [ ] `GET /health` returns `200` unconditionally.
+- [ ] `GET /health` returns `200` with `{"status":"ok","version":<version.Version>}` unconditionally.
 - [ ] Every handler's error path writes a JSON `{"error": "..."}` body.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/internal/api/http/server.go.create.md|server.go]]
 
 # Unittest TestCases
-- [ ] WHEN `GET /health` is called THEN it returns `200`
+- [ ] WHEN `GET /health` is called with `version.Version` set to `1.2.3` THEN it returns `200` and a JSON body whose `version` is `1.2.3`
 - [ ] WHEN `POST /v1/links/check` is given a well-formed URL THEN it returns `200` with the normalized form
 - [ ] WHEN `POST /v1/links/check` is given an invalid URL THEN it returns `400`
 

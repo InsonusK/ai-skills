@@ -49,6 +49,7 @@ import (
 
 	"{module-path}/internal/domain/interfaces"
 	"{module-path}/internal/domain/services"
+	"{module-path}/internal/version"
 )
 
 type Server struct {
@@ -67,9 +68,16 @@ func (s *Server) Handler() http.Handler {
 	return mux
 }
 
+type healthResponse struct {
+	Status  string `json:"status"`
+	Version string `json:"version"`
+}
+
+// handleHealth reports liveness and the running binary's version, so a
+// consumer can tell which build it is talking to.
 func handleHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte("ok"))
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(healthResponse{Status: "ok", Version: version.Version})
 }
 
 type checkRequest struct {
@@ -151,7 +159,7 @@ func writeError(w http.ResponseWriter, code int, err error) {
 	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 }
 ```
-Verified against this plateau's own `example/internal/api/http/server.go` — smoke-tested: two `POST /v1/links/check` calls followed by `GET /v1/links/recent?limit=10` returned both entries, most-recent-first, with correct `checked_at`; a direct `psql` query against `link_checks` confirmed the same two rows; **the service was then killed and restarted, and `GET /v1/links/recent` (no new checks made) returned the identical two entries** — proving durable persistence across a process restart, not just within one process lifetime.
+Verified against this plateau's own `examples/internal/api/http/server.go` — smoke-tested: two `POST /v1/links/check` calls followed by `GET /v1/links/recent?limit=10` returned both entries, most-recent-first, with correct `checked_at`; a direct `psql` query against `link_checks` confirmed the same two rows; **the service was then killed and restarted, and `GET /v1/links/recent` (no new checks made) returned the identical two entries** — proving durable persistence across a process restart, not just within one process lifetime.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/internal/api/http/server.go.create.md|server.go]]
@@ -172,7 +180,7 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/api/http/server.go.extend.md#MUST|server.go]]
 
 # Check list
-- [ ] `GET /health` returns `200` unconditionally.
+- [ ] `GET /health` returns `200` with `{"status":"ok","version":<version.Version>}` unconditionally.
 - [ ] Every handler's error path writes a JSON `{"error": "..."}` body.
 - [ ] `checkResponse` carries `flagged`/`reason`; the unavailable sentinel maps to `502`.
 - [ ] `GET /v1/links/recent` returns entries most-recent-first and respects `limit`.
@@ -183,7 +191,7 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/api/http/server.go.extend.md|server.go]]
 
 # Unittest TestCases
-- [ ] WHEN `GET /health` is called THEN it returns `200`
+- [ ] WHEN `GET /health` is called with `version.Version` set to `1.2.3` THEN it returns `200` and a JSON body whose `version` is `1.2.3`
 - [ ] WHEN `POST /v1/links/check` is given a well-formed, unflagged URL THEN it returns `200` with `"flagged":false`
 - [ ] WHEN `POST /v1/links/check` is given a URL the reputation service flags THEN it returns `200` with `"flagged":true` and the reason
 - [ ] WHEN `POST /v1/links/check` is given an invalid URL THEN it returns `400`

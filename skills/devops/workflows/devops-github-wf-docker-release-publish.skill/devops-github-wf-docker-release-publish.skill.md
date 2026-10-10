@@ -2,7 +2,7 @@
 name: devops-github-wf-docker-release-publish
 description: Stack-agnostic GitHub Actions workflow that builds and pushes the project's Docker image to GHCR on every relevant push to master (tagged version and latest) or develop (tagged version-timestamp only) — the only one of the three release-publish workflows that never needs a stack-specific companion, since Docker build/push is already generic
 whenToUse: when you need to create or update `.github/workflows/docker-release-publish.yml` for a project that has a Dockerfile
-updated: 20260915
+updated: 20261006
 tags:
   - concern/ci
   - github-actions
@@ -19,8 +19,8 @@ tags:
 
 # Core Principle
 - This workflow is entirely stack-agnostic: `docker/build-push-action` builds whatever `Dockerfile` the project already has, so unlike [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]], it needs no stack-specific companion skill at all.
-- It shares its `changes`/`check-version`/`unit-test` jobs, unmodified, with every `stack-lib-release-publish-in-{stack}` implementation — see [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]]. This workflow's only own job is `docker-publish`; the three jobs above it are never rewritten per workflow.
-- `unit-test` runs in parallel with `check-version` (both `needs: changes` only), the same shape as [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]'s `unit-test`/`version-check` pair, so a direct push to `master`/`develop` still can't build and publish an image from code that fails its own tests.
+- It shares its `changes`/`check-version`/`tests` jobs, unmodified, with every `stack-lib-release-publish-in-{stack}` implementation — see [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]]. This workflow's only own job is `docker-publish`; the three jobs above it are never rewritten per workflow.
+- `tests` runs in parallel with `check-version` (both `needs: changes` only), the same shape as [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]'s `tests`/`version-check` pair, so a direct push to `master`/`develop` still can't build and publish an image from code that fails its own tests.
 - It still calls the same two reusable composite actions every other release workflow uses — `./.github/actions/check-changes` and `./.github/actions/check-version` — never inline path-filter/version logic.
 - Gating is purely "did something relevant change" (via `check-changes`) — **not** "did the version bump." A `master` push already went through [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]'s `version-check`, which already required the bump before merge; re-checking `bumped` here would be redundant. This also means a `master` push that only touched the Dockerfile (no version bump needed for that) still rebuilds and republishes the image at the current version.
 - `master` and `develop` are two different kinds of build: a real, publicly-taggable release image vs. a disposable, uniquely-tagged snapshot. Never let a `develop` build acquire the `latest` tag, and never publish a GitHub Release from this workflow — that belongs to [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]].
@@ -28,8 +28,8 @@ tags:
 # Workflow
 1. `changes` job calls `./.github/actions/check-changes`; everything below runs only when `code`, `workflow`, or `docker` changed.
 2. `check-version` job calls `./.github/actions/check-version`, producing `current` and a shared UTC `timestamp` (`YYYYMMDDhhmmss`).
-3. `unit-test` job runs `make unit-test` in parallel with `check-version` (both `needs: changes` only) when `code` or `test` changed.
-4. `docker-publish` job — `needs: [changes, check-version, unit-test]`, `if: always()` gated so a skipped `unit-test` still passes but a failed one blocks it — logs into `ghcr.io`, builds the image, and pushes:
+3. `tests` job runs `make test-and-report TEST_RUN_PURPOSE=check` in parallel with `check-version` (both `needs: changes` only) when `code` or `test` changed.
+4. `docker-publish` job — `needs: [changes, check-version, tests]`, `if: always()` gated so a skipped `tests` still passes but a failed one blocks it — logs into `ghcr.io`, builds the image, and pushes:
    - on `master`: tags `{version}` and `latest`.
    - on `develop`: tag `{version}-{timestamp}` only.
 
@@ -55,17 +55,17 @@ Compute the image reference as `ghcr.io/$(echo '${{ github.repository }}' | tr '
 - Risk: a job-level `permissions:` block *replaces* the default token permissions entirely rather than adding to them — anything not listed becomes `none`. Without `contents: read`, `actions/checkout` in that job fails, and GitHub reports it as "Repository not found" rather than a permissions error, so the real cause is easy to miss.
 - Fix: list `contents: read` alongside every other permission the job needs, exactly as shown in [example](./templates/docker-release-publish.example.md).
 
-### Start from the shared changes/check-version/unit-test base, unmodified
-Copy the `changes`, `check-version`, and `unit-test` jobs from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] verbatim; add only the `docker-publish` job on top.
+### Start from the shared changes/check-version/tests base, unmodified
+Copy the `changes`, `check-version`, and `tests` jobs from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] verbatim; add only the `docker-publish` job on top.
 - Violation: pre-combining `check-changes`' raw outputs into a workflow-specific `relevant` boolean inside the `changes` job, or dropping one of `check-version`'s four outputs because this workflow doesn't read all of them.
-- Risk: as soon as this workflow's `changes`/`check-version`/`unit-test` jobs diverge from `stack-lib-release-publish-in-{stack}`'s — even a renamed output — a future change to change-detection, version-reading, or testing has to be re-applied by hand in every workflow file instead of once.
+- Risk: as soon as this workflow's `changes`/`check-version`/`tests` jobs diverge from `stack-lib-release-publish-in-{stack}`'s — even a renamed output — a future change to change-detection, version-reading, or testing has to be re-applied by hand in every workflow file instead of once.
 - Fix: keep all three jobs exactly as [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] defines them; read only the specific outputs `docker-publish` needs (`code`/`workflow`/`docker`, `current`, `timestamp`) in its own `if:`/`with:`.
 
 ### Never publish an image built from code that fails its own tests
-Add `unit-test` to `docker-publish`'s `needs`, and gate it with `if: always() && needs.changes.result == 'success' && needs.check-version.result == 'success' && needs.unit-test.result != 'failure' && (...)`, never a plain boolean `if:` with `unit-test` merely listed in `needs`.
-- Violation: `needs: [changes, check-version, unit-test]` with the same `if:` as before (no `unit-test.result` check), or `needs.unit-test.result == 'success'` (rejecting a legitimately skipped run).
-- Risk: this exists specifically for a direct push to `master`/`develop` that bypassed [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]'s PR gate — without it, a broken commit pushed straight to a protected branch still builds and publishes an image. But `unit-test` is itself conditionally skipped (no `code`/`test` change); GitHub's default `needs` gating treats a skipped job the same as a failed one, so a plain `if:` with no `always()` would wrongly cascade-skip `docker-publish` on a push that only touched the `Dockerfile` — a regression from today's behavior.
-- Fix: use the exact `always()`-based condition in [example](./templates/docker-release-publish.example.md); `!= 'failure'` (not `== 'success'`) is what lets a skipped `unit-test` still pass.
+Add `tests` to `docker-publish`'s `needs`, and gate it with `if: always() && needs.changes.result == 'success' && needs.check-version.result == 'success' && needs.tests.result != 'failure' && (...)`, never a plain boolean `if:` with `tests` merely listed in `needs`.
+- Violation: `needs: [changes, check-version, tests]` with the same `if:` as before (no `tests.result` check), or `needs.tests.result == 'success'` (rejecting a legitimately skipped run).
+- Risk: this exists specifically for a direct push to `master`/`develop` that bypassed [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]'s PR gate — without it, a broken commit pushed straight to a protected branch still builds and publishes an image. But `tests` is itself conditionally skipped (no `code`/`test` change); GitHub's default `needs` gating treats a skipped job the same as a failed one, so a plain `if:` with no `always()` would wrongly cascade-skip `docker-publish` on a push that only touched the `Dockerfile` — a regression from today's behavior.
+- Fix: use the exact `always()`-based condition in [example](./templates/docker-release-publish.example.md); `!= 'failure'` (not `== 'success'`) is what lets a skipped `tests` still pass.
 
 ### Trigger on push to both master and develop
 Trigger on `push` to `master` and `develop`, plus `workflow_dispatch`.
@@ -95,22 +95,36 @@ Compute the shared `YYYYMMDDhhmmss` UTC timestamp inside the `check-version` job
 - Risk: recomputing the timestamp separately can give the Docker image a different tag than the one [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s package uses for the same commit, breaking traceability between the two artifacts of one push.
 - Fix: emit `timestamp` from the shared `check-version` composite action's job and reuse it.
 
+### Pass the version to the image build
+Pass `build-args: VERSION=${{ needs.check-version.outputs.current }}` to `docker/build-push-action`.
+- Violation: the image is built without a `VERSION` build-arg.
+- Risk: the Dockerfile's `ARG VERSION` stays at its default, so the binary inside a release image reports `"dev"` instead of its tag.
+- Fix: add the `build-args` line from the [example](./templates/docker-release-publish.example.md); the project's Dockerfile declares `ARG VERSION` and injects it per its stack.
+
+### Set up buildx before build-push
+Run `docker/setup-buildx-action` immediately before `docker/build-push-action`.
+- Violation: `docker/build-push-action` called on the runner's default builder.
+- Risk: the default `docker` buildx driver cannot produce attestations — with `provenance`/`sbom` set, the build fails with "Attestation is not supported for the docker driver".
+- Fix: add `uses: docker/setup-buildx-action@v3` before the build step, as in the [example](./templates/docker-release-publish.example.md).
+
 ## SHOULD
 - Set `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` so a newer push on the same branch cancels an outdated, still-publishing run.
-- Attach build provenance/SBOM (`docker/build-push-action`'s `provenance`/`sbom` inputs) on the `master` build.
+- Attach build provenance/SBOM (`docker/build-push-action`'s `provenance`/`sbom` inputs) on the `master` build, as shown in the [example](./templates/docker-release-publish.example.md); this requires [a docker-container builder](#set-up-buildx-before-build-push).
 
 # Example
-See [Docker-release-publish workflow example](./templates/docker-release-publish.example.md) for the `docker-publish` job. Its `changes`/`check-version`/`unit-test` jobs are [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]], copied unmodified.
+See [Docker-release-publish workflow example](./templates/docker-release-publish.example.md) for the `docker-publish` job. Its `changes`/`check-version`/`tests` jobs are [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]], copied unmodified.
 
 # Check list
 - [ ] The workflow was implemented by copying [Docker-release-publish workflow example](./templates/docker-release-publish.example.md)/[[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]], not reconstructed from prose; any deviation was confirmed with the user and folded back into the example.
 - [ ] The image reference is lowercased (`tr '[:upper:]' '[:lower:]'` on `github.repository`), never interpolated as-is.
 - [ ] `docker-publish`'s `permissions:` block lists `contents: read` explicitly, alongside `packages: write`.
 - [ ] The workflow triggers on `push` to both `master` and `develop`, plus `workflow_dispatch`.
-- [ ] `changes`, `check-version`, and `unit-test` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
+- [ ] `changes`, `check-version`, and `tests` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
 - [ ] `docker-publish` is gated on `check-changes` (`code`/`workflow`/`docker`) — never on `check-version`'s `bumped`.
-- [ ] `docker-publish` also `needs: unit-test` and uses the `always()`-based condition (`unit-test.result != 'failure'`) — never a plain `if:` that would cascade-skip on a skipped `unit-test`, and never `unit-test.result == 'success'`.
+- [ ] `docker-publish` also `needs: tests` and uses the `always()`-based condition (`tests.result != 'failure'`) — never a plain `if:` that would cascade-skip on a skipped `tests`, and never `tests.result == 'success'`.
 - [ ] `docker-publish` has no runtime `Dockerfile`-existence check (`hashFiles` or otherwise); this workflow file simply does not exist for a project without one.
 - [ ] `master` images are tagged both `{version}` and `latest`; `develop` images are tagged only `{version}-{timestamp}`.
 - [ ] The timestamp is computed once in `check-version` and reused, never recomputed in `docker-publish`.
 - [ ] No GitHub Release is created by this workflow — that is [[skills/devops/workflows/devops-github-wf-release-info-publish.skill/devops-github-wf-release-info-publish.skill.md|devops-github-wf-release-info-publish]]'s job.
+- [ ] `docker/setup-buildx-action` runs before `docker/build-push-action`.
+- [ ] `docker/build-push-action` receives `build-args: VERSION=<check-version current>`.

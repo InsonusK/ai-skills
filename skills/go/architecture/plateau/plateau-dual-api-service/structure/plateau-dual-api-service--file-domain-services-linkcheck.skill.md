@@ -65,7 +65,7 @@ func (s *LinkCheckService) Check(ctx context.Context, rawURL string) (Result, er
 	return Result{URL: trimmed, Normalized: normalized}, nil
 }
 ```
-Verified against this plateau's own `example/internal/domain/services/linkcheck.go` — 5 godog scenarios green (`internal/domain/services/features/check.feature`), `go vet` clean, `gremlins` run (3 killed / 4 survived / 20 not-covered — the HTTP-adapter path isn't scenario-covered at this plateau, expected).
+Verified against this plateau's own `examples/internal/domain/services/linkcheck.go` — 5 godog scenarios green (`internal/domain/services/features/check.feature`), `go vet` clean, `gremlins` run (3 killed / 4 survived / 20 not-covered — the HTTP-adapter path isn't scenario-covered at this plateau, expected).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]] - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/Implementation/internal/domain/services/{service}.go.create.md|{service}.go]]

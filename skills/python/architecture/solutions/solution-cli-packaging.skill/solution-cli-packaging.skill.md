@@ -3,7 +3,7 @@ name: solution-cli-packaging
 description: Define how a Python CLI application declares its project metadata, build system, and console entry point in pyproject.toml so it can be installed with pip, including directly from a Git/GitHub URL
 domain: python
 type: architecture
-version:
+version: 20261008150000
 tags:
   - skill/architecture/solution
   - stack/python

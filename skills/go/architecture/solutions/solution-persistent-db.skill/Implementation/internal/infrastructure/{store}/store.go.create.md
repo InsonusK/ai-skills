@@ -83,7 +83,7 @@ func (s *Store) Recent(ctx context.Context, limit int) ([]interfaces.{Record}, e
 }
 ```
 
-This catalog's own runnable examples concretize this as `linkstore.Store` implementing `interfaces.LinkHistory` against a `link_checks` table — see `plateau-persistent-service`'s `example/`.
+This catalog's own runnable examples concretize this as `linkstore.Store` implementing `interfaces.LinkHistory` against a `link_checks` table — see `plateau-persistent-service`'s `examples/`.
 
 # Rule changes
 

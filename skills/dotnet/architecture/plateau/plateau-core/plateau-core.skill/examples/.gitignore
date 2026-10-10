@@ -1,0 +1,8 @@
+bin/
+obj/
+tmp/
+*.user
+TestResults/
+*.feature.cs
+tools/livingdoc/node_modules/
+StrykerOutput/

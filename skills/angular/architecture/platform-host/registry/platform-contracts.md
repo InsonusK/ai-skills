@@ -23,7 +23,7 @@ Both coexist at this plateau — VP2 `SessionSharing` requires the package `solu
 `source: constraint` — `solution-session-sharing` requires the package, so `solution-platform-contracts` (create) always precedes it. Recorded by `solution-session-sharing`'s `depends_on solution-platform-contracts`.
 
 # Resolution
-**Canonical — no resolver.** A contract package extended with more contract shapes is the design intent — the analogue of the `store.config.ts` slice seam and the `LOG_SINKS` sink seam. The `example/` vendors `@platform/contracts` (`SessionContract` + `SESSION_CONTRACT` + `EventBus` draft); the host provides the implementation (`HostSession`), the remote reads it (`requirePermission`), and both share it as a strict federation singleton.
+**Canonical — no resolver.** A contract package extended with more contract shapes is the design intent — the analogue of the `store.config.ts` slice seam and the `LOG_SINKS` sink seam. The `examples/` vendors `@platform/contracts` (`SessionContract` + `SESSION_CONTRACT` + `EventBus` draft); the host provides the implementation (`HostSession`), the remote reads it (`requirePermission`), and both share it as a strict federation singleton.
 
 # Architectural signal
 N = 2. **Benign.** Not a case for reconsidering VP boundaries — a shared contract package is meant to grow one shape at a time.
@@ -31,4 +31,4 @@ N = 2. **Benign.** Not a case for reconsidering VP boundaries — a shared contr
 # Growth history
 | Plateau | N | What changed | Verified |
 | --- | --- | --- | --- |
-| `plateau-platform-host` | 2 | First (and, so far, only) plateau where both solutions are simultaneously present | `example/` vendors `@platform/contracts`; host and remote both consume it as a strict federation singleton |
+| `plateau-platform-host` | 2 | First (and, so far, only) plateau where both solutions are simultaneously present | `examples/` vendors `@platform/contracts`; host and remote both consume it as a strict federation singleton |

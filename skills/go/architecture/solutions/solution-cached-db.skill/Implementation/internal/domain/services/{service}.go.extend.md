@@ -34,7 +34,7 @@ func (s *{Service}) {Method}(ctx context.Context, input string) error {
 
 If [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] is also applied on the same plateau, this cache sits in front of *that* solution's port call specifically — check the cache before calling the external service, populate it after — not in front of every operation the domain service performs.
 
-This catalog's own runnable examples cache `ReputationChecker.CheckReputation`'s result by URL in `LinkCheckService.Check` — see `plateau-cached-service`'s `example/`.
+This catalog's own runnable examples cache `ReputationChecker.CheckReputation`'s result by URL in `LinkCheckService.Check` — see `plateau-cached-service`'s `examples/`.
 
 # Rule changes
 

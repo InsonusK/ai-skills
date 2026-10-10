@@ -69,7 +69,7 @@ func (s *Store) Set(ctx context.Context, key string, value {Value}) error {
 func cacheKey(key string) string { return "{cache}:" + key }
 ```
 
-This catalog's own runnable examples concretize this as `reputationcache.Store` implementing `interfaces.ReputationCache` — see `plateau-cached-service`'s `example/`.
+This catalog's own runnable examples concretize this as `reputationcache.Store` implementing `interfaces.ReputationCache` — see `plateau-cached-service`'s `examples/`.
 
 # Rule changes
 

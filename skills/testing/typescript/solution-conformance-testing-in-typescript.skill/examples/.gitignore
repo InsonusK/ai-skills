@@ -1,0 +1,6 @@
+tmp/
+tools/livingdoc/node_modules/
+node_modules/
+.stryker-tmp/
+reports/
+dist/

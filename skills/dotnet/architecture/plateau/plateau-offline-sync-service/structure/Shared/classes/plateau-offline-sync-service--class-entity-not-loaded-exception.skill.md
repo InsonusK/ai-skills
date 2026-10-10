@@ -5,7 +5,7 @@ whenToUse: when a Domain-classified rule or an entity method requires a navigati
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20261008170000
 tags:
   - skill/template/class
   - plateau/offline-sync-service

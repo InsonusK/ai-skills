@@ -4,7 +4,7 @@ description: plateau-cached-service plus a PostgreSQL-backed durable history of 
 whenToUse: when a Go web-service needs to durably record its own outcomes and reload them across a restart, or reviewing whether a solution that computes new domain data also exposes it through every applied inbound adapter
 domain: skill
 type: template
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/plateau
   - plateau/plateau-persistent-service
@@ -54,7 +54,7 @@ A Go web-service with no database dependency for its core logic, a real domain l
   - `linkstore.Store` (PostgreSQL via `pgx`/`pgxpool`, table `link_checks`, schema ensured with `CREATE TABLE IF NOT EXISTS` at startup). Every successful `Check` call is recorded; `RecentChecks` reads the most recent entries back out, most-recent-first.
   - `GET /v1/links/recent?limit=N` (HTTP) and `RecentChecks` (gRPC) both expose the same recorded history, sourced from the same domain-service instance and the same `Store`.
 - testing
-  - `make unit-test`/`mutation-test`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `public/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -135,10 +135,10 @@ Six intersections — see `registry/`. Four canonical without further note; two 
 - [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (N=3, same retroactive-discovery story as above, conditional on `solution-grpc-api`)
 
 # Ground truth
-`example/` evolved from `plateau-cached-service`'s, verified:
+`examples/` evolved from `plateau-cached-service`'s, verified:
 - `go build ./...`, `go vet ./...` — clean.
-- `make unit-test` — 13/13 godog scenarios green (11 unchanged + 2 new: a successful check is recorded in history, a history-recording failure fails the check), using in-memory stub `LinkHistory`/`ReputationCache`/`ReputationChecker` — no network call in the unit-test suite.
-- `make mutation-test`/`test-report` — clean runs.
+- `make test-kind-unit` — 13/13 godog scenarios green (11 unchanged + 2 new: a successful check is recorded in history, a history-recording failure fails the check), using in-memory stub `LinkHistory`/`ReputationCache`/`ReputationChecker` — no network call in the unit-test suite.
+- `make test-kind-mutation`/`test-report` — clean runs.
 - **Full end-to-end runtime smoke test against a real PostgreSQL instance** (installed via `apt`, started manually — container init doesn't auto-start services), a real Redis instance, and a throwaway fake reputation gRPC server: two checks recorded via HTTP, read back identically via HTTP, gRPC, and a direct `psql` query — then **the service process was killed and restarted, and `GET /v1/links/recent` (no new checks made) returned the identical two entries**, the ground-truth proof this is genuine durable persistence, distinct in kind from `plateau-cached-service`'s Redis cache.
 
-To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make unit-test`. Running the full server needs a reachable PostgreSQL (`DATABASE_DSN`) in addition to Redis and the reputation service.
+To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a reachable PostgreSQL (`DATABASE_DSN`) in addition to Redis and the reputation service.

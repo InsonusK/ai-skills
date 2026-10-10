@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level project in a plateau
 domain: skill
 type: template
 plateau: domain-service
-version: 20260924000000
+version: 20261009220000
 tags:
   - skill/template/sln
   - plateau/domain-service
@@ -58,7 +58,7 @@ __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]] - [[skills/dotnet/architecture/solutions/solution-domain-behaviour.skill/Implementation/{Module}.Domain.csproj.create|{Module}.Domain.csproj]]
 - [[skills/dotnet/architecture/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]] - [[skills/dotnet/architecture/solutions/solution-infrastructure-project.skill/Implementation/App.Infrastructure.csproj.create|App.Infrastructure.csproj]]
 - [[skills/dotnet/architecture/solutions/solution-api-project.skill/solution-api-project.skill|solution-api-project]] - [[skills/dotnet/architecture/solutions/solution-api-project.skill/Implementation/{Module}.Api.csproj.create|{Module}.Api.csproj]]
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
 
 ## Directory and class skills
 | `Directory\|file` | template link | Description |
@@ -80,7 +80,7 @@ __Applied solutions:__
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]] - [[skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/Repository.create|Repository]]
-- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
+- [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/Implementation/Repository.extend|Repository]]
 
 ## NuGet Packages
 Every version is declared once in `Directory.Packages.props`; every `<PackageReference>` is versionless. On top of plateau-core's set (MediatR, FluentValidation, Ardalis.Result, Hosting, Logging, test packages):
@@ -114,4 +114,7 @@ __Applied solutions:__
 - [ ] `{Module}.Domain` present for a domain-bearing module; `App.Infrastructure` + `App.Queries` present; exactly one `DbContext`.
 - [ ] `App.Infrastructure` referenced only by `App.Host`; `Shared` has zero project references.
 - [ ] One test project per production project except `{Module}.Api`; `{Module}.Domain.Tests` present with `{Module}.Domain`.
-- [ ] `make unit-test` is green.
+- [ ] `make test-kind-unit` is green.
+
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.

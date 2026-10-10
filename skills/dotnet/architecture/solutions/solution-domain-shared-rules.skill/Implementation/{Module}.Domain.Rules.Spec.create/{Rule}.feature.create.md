@@ -25,15 +25,16 @@ tags:
 Worked example — `format/Complexity.feature` (Format-classified, one layer: the rule itself and the VO both prove it):
 
 ```gherkin
+@type/domain
 Feature: Complexity must be non-negative
 
-  @format
+  @format @category/negative
   Scenario: Negative complexity is rejected
     Given a complexity value of -1
     When the complexity value is checked
     Then the check fails with error code "TaskModule.Complexity.NonNegative"
 
-  @format
+  @format @category/boundary
   Scenario: Zero complexity is accepted
     Given a complexity value of 0
     When the complexity value is checked
@@ -43,16 +44,17 @@ Feature: Complexity must be non-negative
 Worked example — `domain/AccountWithdrawal.feature` (Domain-classified, proven at the rule itself and at the async `{Feature}Check`):
 
 ```gherkin
+@type/domain
 Feature: Withdrawal amount must not exceed account balance
 
-  @domain
+  @domain @category/negative
   Scenario: Withdrawal exceeding balance is rejected
     Given an account balance of 100
     And a withdrawal amount of 150
     When the withdrawal is checked
     Then the check fails with error code "TaskModule.AccountWithdrawal.InsufficientBalance"
 
-  @domain
+  @domain @category/happy
   Scenario: Withdrawal within balance is accepted
     Given an account balance of 100
     And a withdrawal amount of 50
@@ -65,6 +67,7 @@ A rule reused at two layers gets one file per classification folder — e.g. a `
 # Rule changes
 
 ## MUST
+- Carry one `@type/domain` on each feature and exactly one `@category/…` on each scenario/Examples block, in addition to the classification tags, per `cucumber-testing`.
 - Carry exactly one classification tag (`@format`/`@semantic`/`@domain`) per scenario, equal to the file's folder
 - Assert a specific error code on the invalid path, not just "is invalid"
 - Describe the rule's condition only — never the mechanics of which class/adapter proves it (that's the step definition's job, in whichever test project binds it)
@@ -73,6 +76,7 @@ A rule reused at two layers gets one file per classification folder — e.g. a `
 - Keep the rejection-code string exact — a consumer that re-proves this scenario asserts the same code, so it is part of the contract
 
 # Check list
+- [ ] Every feature has one type tag and every scenario/Examples block one category tag.
 - [ ] Every scenario has exactly one classification tag, and all of a file's scenarios share the tag of its folder
 - [ ] Every invalid-path scenario asserts a specific error code, verbatim
 - [ ] Gherkin text is domain language only — no .NET types, no adapter references — so the file stays portable to another language

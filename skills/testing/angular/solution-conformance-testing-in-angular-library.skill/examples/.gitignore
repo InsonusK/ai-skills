@@ -1,0 +1,6 @@
+node_modules/
+tools/livingdoc/node_modules/
+tmp/
+out/
+dist/
+.angular/

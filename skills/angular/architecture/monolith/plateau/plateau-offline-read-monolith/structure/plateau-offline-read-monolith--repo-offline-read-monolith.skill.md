@@ -101,7 +101,7 @@ __Applied solutions:__
 | `util` (scope:shared) | `type:util` (leaf) |
 | `store` (scope:shared) | `type:util`, `type:data-access` (`scope:shared`) |
 
-Scope axis: `scope:shared` → only `scope:shared`; a feature scope (`scope:orders`) → its own scope + `scope:shared`; `scope:platform` adds no scope constraint (it is the composition root). The two `data-access`/`preview` rows above are gaps the V1 `solution-repository-structure` allow-list did not state — see the [example README](../plateau-offline-read-monolith.skill/example/README.md).
+Scope axis: `scope:shared` → only `scope:shared`; a feature scope (`scope:orders`) → its own scope + `scope:shared`; `scope:platform` adds no scope constraint (it is the composition root). The two `data-access`/`preview` rows above are gaps the V1 `solution-repository-structure` allow-list did not state — see the [example README](../plateau-offline-read-monolith.skill/examples/README.md).
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]

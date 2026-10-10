@@ -46,7 +46,7 @@ FILES:
 - [[./Implementation/Repository.create.md|Repository]] - create - `go.mod`, `Makefile` (`build`/`run`/`lint` targets), `.gitignore`
 - [[./Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]] - create - composition root, loads config and returns
 - [[./Implementation/internal/config/config.go.create.md|internal/config/config.go]] - create - env-var `Config` loader, starting with zero `Config` fields
-- [[./Implementation/internal/version/version.go.create.md|internal/version/version.go]] - create - build-time version variable
+- [[./Implementation/internal/version/version.go.create.md|internal/version/version.go]] - create - build-time version receiver filled from the root `VERSION` file
 
 # Workflow
 
@@ -67,7 +67,7 @@ FILES:
 - [[./Implementation/Repository.create.md#MUST|Repository]]
 - [[./Implementation/cmd/{service}/main.go.create.md#MUST|cmd/{service}/main.go]]
 - [[./Implementation/internal/config/config.go.create.md#MUST|internal/config/config.go]]
-- [[./Implementation/internal/version/version.go.create.md|internal/version/version.go]]
+- [[./Implementation/internal/version/version.go.create.md#MUST|internal/version/version.go]]
 
 ## SHOULD
 - [[./Implementation/Repository.create.md#SHOULD|Repository]]
@@ -77,3 +77,5 @@ FILES:
 - [ ] `make build`, `make run`, and `make lint` all succeed against the empty baseline.
 - [ ] `cmd/{service}/main.go` contains no adapter construction — `run()` only loads config and returns.
 - [ ] `internal/config/config.go`'s `Config` struct compiles with zero fields.
+- [ ] The root `VERSION` file is the only version source; `internal/version.Version` is `"dev"` in source and set via `-ldflags`.
+- [ ] Every build path (Makefile, Dockerfile, release workflow) injects `{module-path}/internal/version.Version`.

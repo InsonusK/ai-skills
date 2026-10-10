@@ -70,6 +70,7 @@ import (
 	"{module-path}/internal/infrastructure/reputationcache"
 	"{module-path}/internal/infrastructure/reputationclient"
 	"{module-path}/internal/logging"
+	"{module-path}/internal/version"
 )
 
 func main() {
@@ -86,6 +87,7 @@ func run() error {
 	}
 
 	logging.Init(cfg.LogLevel)
+	slog.Info("starting", "version", version.Version)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -145,7 +147,7 @@ func run() error {
 	return g.Wait()
 }
 ```
-Verified against this plateau's own `example/cmd/linkcheck/main.go` — `go build`/`go vet` clean; against a **real PostgreSQL instance** (not mocked), a real Redis instance, and a throwaway fake reputation gRPC server: two checks recorded via `POST /v1/links/check`, read back identically via `GET /v1/links/recent` (HTTP), `RecentChecks` (gRPC), and a direct `psql` query — then the process was killed and restarted, and the same two entries were still returned with no new checks made, proving `linkstore.New`'s pool genuinely persists data outside the process lifetime.
+Verified against this plateau's own `examples/cmd/linkcheck/main.go` — `go build`/`go vet` clean; against a **real PostgreSQL instance** (not mocked), a real Redis instance, and a throwaway fake reputation gRPC server: two checks recorded via `POST /v1/links/check`, read back identically via `GET /v1/links/recent` (HTTP), `RecentChecks` (gRPC), and a direct `psql` query — then the process was killed and restarted, and the same two entries were still returned with no new checks made, proving `linkstore.New`'s pool genuinely persists data outside the process lifetime.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]]
@@ -177,6 +179,7 @@ __Applied solutions:__
 # Check list
 - [ ] `SIGINT`/`SIGTERM` triggers both `grpcServer.GracefulStop()` and `httpServer.Shutdown`, not an abrupt process exit.
 - [ ] `logging.Init` runs before the first adapter constructor.
+- [ ] `run()` logs `starting` with the `version` attribute right after `logging.Init`.
 - [ ] `run()` uses exactly one `errgroup.Group`; no serve loop runs outside it.
 - [ ] `reputationclient.Dial`, `reputationcache.New`, and `linkstore.New` are all called before `services.NewLinkCheckService`, and their results passed directly into that call.
 

@@ -1,5 +1,6 @@
 ---
-description: Create the test project for {Module}.Interfaces — unit tests, Reqnroll feature files, and step definitions together
+version: 20261009220001
+description: Create the catalog test project for {Module}.Interfaces and define its reference boundary
 name: "{Module}.Interfaces.Tests"
 element_kind: project
 change_kind: create
@@ -10,38 +11,23 @@ tags:
 ---
 
 # Goals
-- Give `{Module}.Interfaces` a dedicated test project, referencing `{Module}.Interfaces` only.
+- Give `{Module}.Interfaces` its catalog-selected test project with its production dependency boundary mirrored.
 
 # Core Principles
 - Step definitions are shape-shaped, not validator-shaped — see [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Interfaces.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]: `{Module}.Interfaces` is declarations-only, so scenarios prove equality/serialization round-trip, never "is this input valid".
 
-# Structure
-
-## Project Structure
-```
-/{Module}.Interfaces.Tests
-  /Rules
-    {Rule}.feature
-  /StepDefinitions
-    {Rule}Steps.cs
-  {Module}.Interfaces.Tests.csproj
-```
-
-# NuGet Packages
-Same as [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Domain.Tests.csproj.create|{Module}.Domain.Tests]]: Reqnroll.xUnit, coverlet.collector, Microsoft.NET.Test.Sdk.
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for the project contents, packages and runner configuration.
 
 # Allowed Dependencies
-- `{Module}.Interfaces` — nothing else. `{Module}.Interfaces.Tests` may reference exactly what `{Module}.Interfaces.csproj` itself is allowed to reference (per `solution-sln-structure`: nothing), plus `{Module}.Interfaces` itself.
+- Reference `{Module}.Interfaces` and mirror the tested production project's [Allowed Dependencies](skills/dotnet/architecture/solutions/solution-sln-structure.skill/Implementation/{Module}.Interfaces.csproj.create.md#allowed-dependencies), including only contributions of solutions actually applied to it.
 
 # Rules
 
 ## MUST
-- Reference `{Module}.Interfaces` and nothing else.
-  - Risk: referencing `{Module}.Application` or `{Module}.Domain` here would let a contract test depend on implementation details it is meant to be isolated from.
-  - Fix: keep this project scoped to `{Module}.Interfaces`'s own declarations.
-- Never add a second, separate test project just for `{Module}.Interfaces`'s Gherkin scenarios.
-  - Risk: coverage and mutation-testing reports get computed against only part of `{Module}.Interfaces`'s test suite.
-  - Fix: keep unit tests and scenarios together in this one project.
+- Mirror the tested production project's [Allowed Dependencies](#allowed-dependencies), plus that production project itself.
+  - Risk: an independently maintained list either permits an illegal dependency or forbids a legitimate production dependency.
+  - Fix: derive the boundary from the production skill after its applied solution contributions are assembled.
 
 # Check list
-- [ ] `{Module}.Interfaces.Tests.csproj` references only `{Module}.Interfaces`, plus Reqnroll.xUnit/coverlet.collector.
+- [ ] Project references stay within the tested production project and its applied Allowed Dependencies.

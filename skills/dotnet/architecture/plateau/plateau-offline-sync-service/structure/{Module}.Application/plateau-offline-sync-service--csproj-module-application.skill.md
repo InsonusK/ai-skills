@@ -5,7 +5,7 @@ whenToUse: when adding or editing a handler, a validator, or the module registra
 domain: skill
 type: template
 plateau: offline-sync-service
-version: 20260902000000
+version: 20261008170000
 tags:
   - skill/template/csproj
   - plateau/offline-sync-service

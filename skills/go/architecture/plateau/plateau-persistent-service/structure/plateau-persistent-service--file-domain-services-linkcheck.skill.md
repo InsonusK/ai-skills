@@ -120,7 +120,7 @@ func (s *LinkCheckService) reputationWithCache(ctx context.Context, normalized s
 	return rep, nil
 }
 ```
-Verified against this plateau's own `example/internal/domain/services/linkcheck.go` — 13 godog scenarios green (11 unchanged + 2 new: a successful check is recorded, a history-record failure fails the check), using in-memory stub `ReputationChecker`/`ReputationCache`/`LinkHistory` in the unit-test suite. Also verified against a **real PostgreSQL instance**: two checks recorded via HTTP, read back identically via HTTP, gRPC, and a direct `psql` query, and confirmed to survive a full process restart.
+Verified against this plateau's own `examples/internal/domain/services/linkcheck.go` — 13 godog scenarios green (11 unchanged + 2 new: a successful check is recorded, a history-record failure fails the check), using in-memory stub `ReputationChecker`/`ReputationCache`/`LinkHistory` in the unit-test suite. Also verified against a **real PostgreSQL instance**: two checks recorded via HTTP, read back identically via HTTP, gRPC, and a direct `psql` query, and confirmed to survive a full process restart.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]] - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/Implementation/internal/domain/services/{service}.go.create.md|{service}.go]]

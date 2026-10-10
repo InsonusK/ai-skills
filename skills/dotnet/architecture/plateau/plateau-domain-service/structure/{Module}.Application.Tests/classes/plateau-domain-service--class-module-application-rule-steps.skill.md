@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a {Module}.Application.Tests fe
 domain: skill
 type: template
 plateau: domain-service
-version: 20260902000000
+version: 20261009220000
 tags:
   - skill/template/class
   - plateau/domain-service
@@ -14,75 +14,37 @@ created_by:
 ---
 
 # Goal
-- Prove every scenario in `Rules/{Rule}.feature` against `{Module}.Application`'s real handler / validator — that it shapes and dispatches correctly and returns the expected `Result`, or that the validator fails the right rule.
+- Prove every scenario in `features/{Rule}.feature` against `{Module}.Application`'s real handler / validator — that it shapes and dispatches correctly and returns the expected `Result`, or that the validator fails the right rule.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Core Principles
+- Apply the linked [testing conventions](#testing-conventions).
 - Apply ONE plateau template per class.
-- `[Binding] sealed class {Rule}Steps` — Reqnroll bindings.
-- Command-shaped: a command goes in, a `Result` comes out, asserted against the real handler. The step never re-implements the orchestration.
-- A failure scenario asserts the exact error code/message, not just `IsSuccess == false`.
-- Test doubles are trivial fakes of a dependency contract (e.g. a no-op `IPublisher`); the handler / validator under test is the real one.
+- Command-shaped: a command goes in, a `Result` comes out, asserted against the real handler.
+- Application collaborator seams include `IPublisher`; the handler scenario can use a no-op publisher when notification effects are outside its claim.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
 | Step definitions for one handler / validator | `{Rule}Steps` | `GreetSteps` | `{Rule}Steps.cs` | `GreetSteps.cs` |
 
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
+
 # Implementation
-```csharp
-// Skill: plateau-domain-service--class-module-application-rule-steps
-// Plateau: core
-// Version: 20260902000000
-using MediatR;
-using Reqnroll;
-using {Module}.Application.Features.Greet;
-using {Module}.Interfaces.Commands;
-using Xunit;
-
-namespace {Module}.Application.Tests.StepDefinitions;
-
-[Binding]
-public sealed class GreetSteps
-{
-    private sealed class NoopPublisher : IPublisher
-    {
-        public Task Publish(object n, CancellationToken ct = default) => Task.CompletedTask;
-        public Task Publish<T>(T n, CancellationToken ct = default) where T : INotification => Task.CompletedTask;
-    }
-
-    private string _message = "";
-    private Result<GreetResult> _result = null!;
-
-    [Given("the greeting message {string}")]
-    public void GivenMessage(string message) => _message = message;
-
-    [When("the greet command is handled")]
-    public async Task WhenHandled()
-    {
-        var handler = new GreetHandler(new NoopPublisher());
-        _result = await handler.Handle(new GreetCommand(new(_message)), CancellationToken.None);
-    }
-
-    [Then("the rendered result is {string}")]
-    public void ThenRendered(string expected) => Assert.Equal(expected, _result.Value.Rendered);
-}
-```
+The layer-specific action and observation follow the contributing solution linked below; generic binding code comes from the testing skills.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/{Module}.Application.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Rules
 MUST:
-- `[Binding] sealed class {Rule}Steps` in `{Module}.Application.Tests/StepDefinitions`.
-- Call the real `{Handler}` / `{Validator}`; assert the exact `Result` or failing rule.
-- Never re-implement the handler's load/dispatch/return logic in a step; never hand-compute the expected `Result`.
+- Apply [production-code bindings](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#exercise-production-code-from-bindings) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must).
 - Never apply several plateau templates per class.
 
 # Check list
-- [ ] Every `Given/When/Then` in `{Rule}.feature` has a matching step.
 - [ ] The real handler/validator is invoked; assertions target its actual output.
 
 # Unittest TestCases

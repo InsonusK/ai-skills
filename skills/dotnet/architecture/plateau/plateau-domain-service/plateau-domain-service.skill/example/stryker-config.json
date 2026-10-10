@@ -1,6 +1,0 @@
-{
-  "stryker-config": {
-    "solution": "Sample.slnx",
-    "test-case-filter": "Category!=todo"
-  }
-}

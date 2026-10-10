@@ -31,6 +31,7 @@ import (
 	"net/http"
 
 	"{module-path}/internal/domain/services"
+	"{module-path}/internal/version"
 )
 
 type Server struct {
@@ -47,9 +48,16 @@ func (s *Server) Handler() http.Handler {
 	return mux
 }
 
+type healthResponse struct {
+	Status  string `json:"status"`
+	Version string `json:"version"`
+}
+
+// handleHealth reports liveness and the running binary's version, so a
+// consumer can tell which build it is talking to.
 func handleHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte("ok"))
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(healthResponse{Status: "ok", Version: version.Version})
 }
 
 func writeError(w http.ResponseWriter, code int, err error) {
@@ -59,7 +67,7 @@ func writeError(w http.ResponseWriter, code int, err error) {
 }
 ```
 
-This catalog's own runnable examples add the concrete route(s) calling `{Service}`'s real method (e.g. `POST /v1/links/check` calling `LinkCheckService.Check`) — see `plateau-http-service`'s `example/`.
+This catalog's own runnable examples add the concrete route(s) calling `{Service}`'s real method (e.g. `POST /v1/links/check` calling `LinkCheckService.Check`) — see `plateau-http-service`'s `examples/`.
 
 # Rule changes
 
@@ -72,8 +80,8 @@ This catalog's own runnable examples add the concrete route(s) calling `{Service
   - Fix: `errors.Is` against the domain's sentinel errors first; fall back to `500` only for the unmatched case.
 
 # Check list
-- [ ] `GET /health` returns `200` unconditionally once the process has finished wiring.
+- [ ] `GET /health` returns `200` with `{"status":"ok","version":<version.Version>}` unconditionally once the process has finished wiring.
 - [ ] Every handler's error path writes a JSON `{"error": "..."}` body.
 
 # Unittest TestCases
-- [ ] WHEN `GET /health` is called THEN it returns `200`
+- [ ] WHEN `GET /health` is called with `version.Version` set to `1.2.3` THEN it returns `200` and a JSON body whose `version` is `1.2.3`

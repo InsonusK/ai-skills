@@ -57,7 +57,7 @@ export class HostSession implements SessionContract {
 // app.config.ts:  { provide: SESSION_CONTRACT, useExisting: HostSession }
 ```
 
-> The `example/` uses a minimal signal-backed stand-in (`setSession` / `clearSession`) instead of an NgRx store, so the federation wiring can be exercised without composing the whole monolith.
+> The `examples/` uses a minimal signal-backed stand-in (`setSession` / `clearSession`) instead of an NgRx store, so the federation wiring can be exercised without composing the whole monolith.
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-session-sharing.skill/solution-session-sharing.skill.md|solution-session-sharing]] - [[skills/angular/architecture/solutions/solution-session-sharing.skill/Implementation/session-contract.extend.md|session-contract.extend]]

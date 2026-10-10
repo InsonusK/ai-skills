@@ -87,7 +87,7 @@ func (l *loader) getInt(key string, def int) int { return def }
 func (l *loader) getBool(key string, def bool) bool { return def }
 func (l *loader) require(key string) string { return "" }
 ```
-Verified against this plateau's own `example/internal/config/config.go` (`go build`/`go vet` clean).
+Verified against this plateau's own `examples/internal/config/config.go` (`go build`/`go vet` clean).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/config/config.go.create.md|internal/config/config.go]]

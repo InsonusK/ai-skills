@@ -74,7 +74,7 @@ func translateErr(err error) error {
 }
 ```
 
-This catalog's own runnable examples concretize this as `reputationclient.Client` implementing `interfaces.ReputationChecker.CheckReputation` — see `plateau-integrated-service`'s `example/`.
+This catalog's own runnable examples concretize this as `reputationclient.Client` implementing `interfaces.ReputationChecker.CheckReputation` — see `plateau-integrated-service`'s `examples/`.
 
 # Rule changes
 

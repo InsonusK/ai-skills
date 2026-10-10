@@ -4,7 +4,7 @@ description: A standalone domain service on top of plateau-core — a persisted 
 whenToUse: when scaffolding or reviewing a service that owns domain entities in its own database and exposes them over HTTP — checking the domain layer, the persistence stack, optimistic concurrency, timestamping, the API layer, or the outbound gRPC client against this baseline
 domain: skill
 type: template
-version: 20260924000000
+version: 20261009220001
 tags:
   - skill/template/plateau
   - plateau/domain-service
@@ -24,6 +24,8 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/solution-api-project.skill/solution-api-project.skill|solution-api-project]]"
   - "[[skills/dotnet/architecture/solutions/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]]"
   - "[[skills/dotnet/architecture/solutions/solution-grpc-client.skill/solution-grpc-client.skill|solution-grpc-client]]"
+adr:
+  - "skills/dotnet/architecture/plateau/plateau-domain-service/adr/test-boundary-mirrors-production.md"
 standalone: true
 ---
 
@@ -31,7 +33,8 @@ standalone: true
 Take plateau-core's contract-and-pipeline baseline and make it a deployable service that owns state: a module gains a domain layer (`{Module}.Domain` — guarded entities, strict `{ValueObject}`s), the repository writes to a real `AppDbContext`, every command commits atomically through `UnitOfWorkBehavior`, mutable entities are guarded against lost updates by `ConcurrencyBehavior`, user-initiated entities carry creation/update timestamps, an HTTP API exposes the module, and handlers can call other internal services over gRPC.
 
 # Core Principles
-- **Everything plateau-core defines still holds** — CPM, the two-then-more-project module, the MediatR mechanism, the exception + validation pipeline, Soft Value Objects, logging, the conformance harness. This plateau only adds.
+- **Testing conventions** — Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
+- **Everything plateau-core defines still holds** — CPM, the two-then-more-project module, the MediatR mechanism, the exception + validation pipeline, Soft Value Objects, logging, catalog test-project selection backed by the testing skills. This plateau only adds.
 - **Domain layer = a feature.** `{Module}.Domain` exists only for a module that has one (VP1). Entities have no public setters for guarded state; every mutating method validates via a locally-owned condition and throws `DomainException`. Bulky logic moves to `static` domain services in `/Services`.
 - **Strict Value Objects.** A value carrying a domain invariant is a `sealed record {ValueObject} : Soft{ValueObject}` in `{Module}.Domain/ValueObjects` — it reuses the Soft shape and validates in its constructor. DTOs and other modules still use `Soft{ValueObject}`.
 - **One persistence stack.** `App.Infrastructure` holds the single `AppDbContext` (applies every module's `IEntityTypeConfiguration` by assembly scan), one generic Ardalis `Repository<T>`, and `UnitOfWork`. `{Module}.Application` never sees `DbContext` — only `IRepository<T>` / `IReadRepository<T>` from `Shared` and named `Specification<T>` classes in `/Specifications`.
@@ -42,6 +45,8 @@ Take plateau-core's contract-and-pipeline baseline and make it a deployable serv
 - **Outbound gRPC.** Internal service-to-service calls go over gRPC. A handler injects `I{Dependency}Client` from `Shared` (returning `Result<T>`); `App.Infrastructure` wraps a generated stub as `{Dependency}GrpcClient`, mapping `RpcException` → `Result` with the mirror of the inbound status table.
 
 # Capabilities
+- conformance
+  - Inherit the parent's test-project selection and layer responsibilities; use the linked testing skills for execution and reporting.
 - domain
   - Entities with unbreakable invariants (guarded methods + strict `{ValueObject}`s); `DomainException` the single failure model, mapped to `Result.Error` by the exception behavior.
 - persistence
@@ -111,4 +116,10 @@ sequenceDiagram
 See [[skills/dotnet/architecture/plateau/plateau-domain-service/structure/plateau-domain-service--sln-domain-service.skill|plateau-domain-service--sln-domain-service]] for the repository layout and the per-project / per-class skills. `structure/` carries plateau-core's elements (union-merged, re-prefixed) plus the domain, persistence, concurrency, timestamp, API, and gRPC-client elements this plateau adds.
 
 # Example
-[`example/`](./example/) evolves plateau-core's: the `Sample` module now manages a persisted `TodoItem` (guarded `Rename`/`Complete`, strict `ItemTitle`, `IVersioned`, timestamps), with `App.Infrastructure` on the EF Core in-memory provider. `Program.cs` walks add → get → rename → stale-rename (`Conflict`) → complete → rename-completed (`Error`) → invalid (`Invalid`). `dotnet build` and `make unit-test` are green (10 scenarios across five test projects, including `Sample.Domain.Tests`). The API (VP8) and gRPC-client (VP-C005) surfaces are documented in `structure/` but only lightly exercised in the example.
+[`examples/`](./examples/) evolves plateau-core's: the `Sample` module now manages a persisted `TodoItem` (guarded `Rename`/`Complete`, strict `ItemTitle`, `IVersioned`, timestamps), with `App.Infrastructure` on the EF Core in-memory provider. `Program.cs` walks add → get → rename → stale-rename (`Conflict`) → complete → rename-completed (`Error`) → invalid (`Invalid`). `dotnet build` and `make test-kind-unit` are green (10 scenarios across five test projects, including `Sample.Domain.Tests`). The API (VP8) and gRPC-client (VP-C005) surfaces are documented in `structure/` but only lightly exercised in the example.
+
+# Testing ownership
+The [catalog solution](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md) contributes project selection, mirrored dependency boundaries and layer responsibilities. `{Module}.Domain.Tests` is added only with VP1.
+
+# Dependency-boundary decision
+[Test boundary mirrors production](skills/dotnet/architecture/plateau/plateau-domain-service/adr/test-boundary-mirrors-production.md) records the correction of narrower generated lists; the production Allowed Dependencies remain the authority.

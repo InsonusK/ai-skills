@@ -30,12 +30,11 @@ internal/
   version/
     version.go                     — build-time version var, set via -ldflags
 tools/
-  normalize_unittest/               — normalizes `go test -json` output into tmp/result/unit-test.json
-  normalize_scenarios/              — .feature files + go test -json into tmp/result/scenarios.json
-  normalize_mutation/               — normalizes the mutation tool's report into tmp/result/mutation-test.json
-  test_report/                     — assembles public/ from the normalized tmp/result/*.json files
+  normalize_unittest/               — normalizes `go test -json` output into the unit kind's result/unit-test.json
+  normalize_scenarios/              — .feature files + go test -json into the unit kind's result/scenarios.json
+  normalize_mutation/               — normalizes the mutation tool's report into the mutation kind's result/mutation-test.json
 report-template/
-  index.html                       — static landing page, copied verbatim by test_report
+  index.html                       — static landing page, copied verbatim by tools/testing/test-report.sh
 ```
 No `internal/domain/interfaces/` exists at this baseline — the domain layer has no outbound port to declare until a feature that needs one (`ExternalIntegration`, `CachedDb`, `PersistentDb`) is selected; whichever is selected first creates the folder, and any of the other two extends it. No `internal/infrastructure/`, `internal/api/grpc/`, `proto/`, `buf/`, or `gen/` exists at baseline either, for the same reason.
 
@@ -65,7 +64,7 @@ No parallel `Requires` edges point at the same target in this model — the sing
 | Cucumber Test | Every `.feature` scenario has a real, executing godog step-definition binding — no undefined/pending step reaches the build gate. | true |
 | Code Coverage Test | The build enforces code coverage collection on every run (`go test -coverprofile`). | true |
 | Mutation Test | The build runs mutation testing over the test suite via `gremlins`, catching tests that pass without exercising the behavior they claim to cover. | true |
-| Test Reports | Test/coverage/mutation results are normalized and published as a build artifact (`public/`) in a consistent report format. | true |
+| Test Reports | Test/coverage/mutation results are normalized and published as a build artifact (`$TEST_REPORT_DIR/`) in a consistent report format. | true |
 | GrpcApi | A second inbound entry point exposing the same domain calls as `HttpApi`, over gRPC, sharing the same domain-service instance — not an alternative to `HttpApi`, an addition on top of it. | false |
 | ExternalIntegration | The module calls out to another service through a narrow, business-named outbound port declared in `internal/domain/interfaces`, implemented by an `internal/infrastructure` adapter. | false |
 | CachedDb | Domain depends on a narrow, business-named outbound port backed by a cache-capable store with no durability guarantee assumed by the port itself (demonstrated over Redis). | false |

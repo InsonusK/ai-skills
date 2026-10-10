@@ -2,22 +2,22 @@
 
 Project: any stack with a `Dockerfile` and `.github/actions/check-changes`/`.github/actions/check-version` implemented (see the matching `devops-github-action-check-changes-in-{stack}`/`devops-github-action-check-version-in-{stack}` skills). This workflow needs no stack-specific companion skill of its own.
 
-Start from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] (the `on:` trigger plus the `changes`/`check-version`/`unit-test` jobs, copied unmodified), then add:
+Start from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] (the `on:` trigger plus the `changes`/`check-version`/`tests` jobs, copied unmodified), then add:
 
 ```yaml
   docker-publish:
-    needs: [changes, check-version, unit-test]
-    # `always()` is required because `unit-test` is conditionally skipped (no
+    needs: [changes, check-version, tests]
+    # `always()` is required because `tests` is conditionally skipped (no
     # code/test change) - GitHub's default needs-gating treats a skipped
     # upstream job the same as a failed one, which would wrongly cascade-skip
-    # this job on a push that only touched the Dockerfile. `unit-test.result
+    # this job on a push that only touched the Dockerfile. `tests.result
     # != 'failure'` accepts both `success` and `skipped`, only an actual test
     # failure blocks the image build - see base-jobs.example.md.
     if: >-
       always() &&
       needs.changes.result == 'success' &&
       needs.check-version.result == 'success' &&
-      needs.unit-test.result != 'failure' &&
+      needs.tests.result != 'failure' &&
       (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true' || needs.changes.outputs.docker == 'true')
     runs-on: ubuntu-latest
     # A job-level `permissions:` block replaces the default token permissions
@@ -53,10 +53,20 @@ Start from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.
             echo "$tags"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
+      # The runner's default "docker" buildx driver cannot produce
+      # provenance/SBOM attestations ("Attestation is not supported for the
+      # docker driver") - switch to a docker-container builder first.
+      - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
           push: true
           tags: ${{ steps.tags.outputs.value }}
+          # The Dockerfile injects this into the binary (Go: -ldflags, see the
+          # stack's repository-structure solution) and the OCI version label.
+          build-args: VERSION=${{ needs.check-version.outputs.current }}
+          # Attestations on the master (release) build only.
+          provenance: ${{ github.ref_name == 'master' && 'mode=max' || 'false' }}
+          sbom: ${{ github.ref_name == 'master' }}
 ```
 
 Add `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }` at the workflow level (see [[skills/devops/workflows/devops-github-wf-docker-release-publish.skill/devops-github-wf-docker-release-publish.skill.md#should|SHOULD]]).

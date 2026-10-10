@@ -51,6 +51,7 @@ import (
 	"{module-path}/internal/config"
 	"{module-path}/internal/domain/services"
 	"{module-path}/internal/logging"
+	"{module-path}/internal/version"
 )
 
 func main() {
@@ -67,6 +68,7 @@ func run() error {
 	}
 
 	logging.Init(cfg.LogLevel)
+	slog.Info("starting", "version", version.Version)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -90,7 +92,7 @@ func run() error {
 	return nil
 }
 ```
-Verified against this plateau's own `example/cmd/linkcheck/main.go` (`go build`/`go vet` clean, HTTP smoke-tested).
+Verified against this plateau's own `examples/cmd/linkcheck/main.go` (`go build`/`go vet` clean, HTTP smoke-tested).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]]
@@ -112,6 +114,7 @@ __Applied solutions:__
 # Check list
 - [ ] `SIGINT`/`SIGTERM` triggers `httpServer.Shutdown`, not an abrupt process exit.
 - [ ] `logging.Init` runs before the first adapter constructor.
+- [ ] `run()` logs `starting` with the `version` attribute right after `logging.Init`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/cmd/{service}/main.go.extend.md|cmd/{service}/main.go]]

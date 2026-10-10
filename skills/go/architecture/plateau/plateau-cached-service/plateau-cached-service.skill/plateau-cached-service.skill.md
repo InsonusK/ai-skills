@@ -4,7 +4,7 @@ description: plateau-integrated-service plus a Redis-backed cache in front of th
 whenToUse: when a Go web-service needs to avoid repeating an expensive lookup or external call, or reviewing whether a cache-store failure incorrectly fails a request instead of degrading gracefully
 domain: skill
 type: template
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/plateau
   - plateau/plateau-cached-service
@@ -46,7 +46,7 @@ A Go web-service with no database, a real domain layer, structured logging, the 
 - caching
   - `reputationcache.Store` (Redis, JSON-encoded `Reputation` values, keyed `reputation:{normalized-url}`, no TTL). A hit skips `reputationclient.Client.CheckReputation` entirely; a miss computes normally and writes the cache afterward.
 - testing
-  - `make unit-test`/`mutation-test`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `public/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -118,10 +118,10 @@ Four intersections — see `registry/`. Three canonical without qualification; o
 - [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=3; the `{external-integration, cached-db}` pairing is **borderline-`FMC`, defused not by a `depends_on` edge but by `solution-cached-db`'s own Implementation file explicitly naming `solution-external-integration` and stating the merge rule** — read this entry, it's the most interesting registry finding in this catalog so far)
 
 # Ground truth
-`example/` evolved from `plateau-integrated-service`'s, verified:
+`examples/` evolved from `plateau-integrated-service`'s, verified:
 - `go build ./...`, `go vet ./...` — clean.
-- `make unit-test` — 11/11 godog scenarios green (9 unchanged + 2 new), using in-memory stub `ReputationCache`/`ReputationChecker` — no network call in the unit-test suite.
-- `make mutation-test`/`test-report` — clean runs.
+- `make test-kind-unit` — 11/11 godog scenarios green (9 unchanged + 2 new), using in-memory stub `ReputationCache`/`ReputationChecker` — no network call in the unit-test suite.
+- `make test-kind-mutation`/`test-report` — clean runs.
 - **Full end-to-end runtime smoke test against a real Redis instance** (installed via `apt`, run manually — container init doesn't auto-start services) and a throwaway fake reputation gRPC server: 3 HTTP requests for the same URL → exactly 1 reputation-service call (confirmed by the fake server's own log and by `redis-cli get` returning the cached JSON) → a gRPC request for the same URL afterward also hit the cache.
 
-To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make unit-test`. Running the full server needs a reachable Redis (`REDIS_HOST`/`REDIS_PORT`) in addition to the reputation service.
+To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a reachable Redis (`REDIS_HOST`/`REDIS_PORT`) in addition to the reputation service.

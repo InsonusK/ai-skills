@@ -14,7 +14,7 @@ architectural fork that needs the owner's sign-off; everything else is execution
   version-prefixed staging folder (that convention exists in the dotnet/angular catalogs only to
   parallel-build against an existing older catalog; nothing to parallel here).
 - Base = a Go web-service with no DB, domain-logic separation, HTTP API, tested per
-  `cucmber-testing-in-go` + `solution-conformance-testing`.
+  `cucumber-testing-in-go` + `solution-conformance-testing`.
 - Six owner-named options become candidate variable features: gRPC alternative API,
   external integrations, Kafka publish (outbox when tied to a persisted-data change), Kafka
   consume, cached DB, persistent DB.
@@ -96,7 +96,7 @@ architectural fork that needs the owner's sign-off; everything else is execution
 - **Planned solutions (12), not yet all authored** — common baseline: `solution-go-repository-structure`,
   `solution-go-domain-logic`, `solution-go-http-api`, `solution-go-app-logging`,
   `solution-conformance-testing-in-go` (extends the shared
-  `skills/common-workflow/test/solution-conformance-testing.skill`, mirroring the
+  `skills/testing/core/solution-conformance-testing.skill`, mirroring the
   `ts`/`python`/`dotnet` per-stack extensions). VP-realizing: `solution-grpc-api` (VP1),
   `solution-external-integration` (VP2), `solution-go-messaging-infrastructure` +
   `solution-go-kafka-producer` (VP3, skeleton), `solution-go-transactional-outbox` (VP4, skeleton),
@@ -155,7 +155,7 @@ solution mapping is now final), then Stage 4 (5 plateaus).
   `make mutation-test`/a real network smoke test — none would have surfaced from reading the
   solution skills alone):
   1. `godog.Options` needs an explicit `Format: "pretty"` — fixed in
-     `skills/go/test/cucmber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
+     `skills/testing/go/cucumber-testing-in-go.skill.md` itself (a pre-existing skill, not authored
      in this build), since its own documented example carried the same latent bug.
   2. `solution-go-repository-structure`'s `main.go` was bundled into the repo-tier
      `Repository.create.md` while every solution that extends it expects a file-tier

@@ -44,4 +44,4 @@ npm i -D @testing-library/angular @testing-library/user-event @axe-core/playwrig
 - `npx nx run-many -t test` (Vitest, jsdom — no browser needed) → green.
 - `npx playwright install chromium` then `npx nx e2e platform-shell-e2e` + the visual specs → green.
 
-Once green: copy the workspace (minus `node_modules`, `.nx`, `dist`) into `skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/example/`.
+Once green: copy the workspace (minus `node_modules`, `.nx`, `dist`) into `skills/angular/architecture/v3.1/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/examples/`.

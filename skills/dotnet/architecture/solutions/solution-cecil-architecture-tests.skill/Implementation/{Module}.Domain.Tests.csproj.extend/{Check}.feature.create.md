@@ -34,8 +34,10 @@ Worked example — `DeadRuleDetection.feature`:
 # The actual proof is EveryDomainRuleCheck_IsCalledByProductionCodeOutsideRules,
 # in {Module}ArchitectureTests.cs, in this same folder.
 
+@type/tech-check
 Feature: Every centralized rule's Check() is actually called by production code
 
+  @category/happy
   Scenario: EveryDomainRuleCheck_IsCalledByProductionCodeOutsideRules
     A Check() extension declared in Domain.Rules that no production code outside
     Domain.Rules ever calls is dead weight — its own scenario proves the predicate
@@ -45,11 +47,13 @@ Feature: Every centralized rule's Check() is actually called by production code
 # Rule changes
 
 ## MUST
+- Carry exactly one `@type/tech-check` on the feature and one `@category/…` on every scenario; the documentary exception still appears as `not-run` in the inventory.
 - Carry an explicit banner stating the file is documentary and naming the `[Fact]` that is the real proof
 - Scenario title match the `[Fact]` method name exactly
 - Never have a `[Given]`/`[When]`/`[Then]` step definition bound to it — a binding that exists only to satisfy the base conformance rule, without calling anything meaningful, is worse than no binding
 
 # Check list
+- [ ] The feature and every scenario carry the required type/category tags.
 - [ ] Every check has a companion `.feature` file with a documentary banner
 - [ ] Scenario title matches the `[Fact]` method name
 - [ ] No step-definition binding exists for this file

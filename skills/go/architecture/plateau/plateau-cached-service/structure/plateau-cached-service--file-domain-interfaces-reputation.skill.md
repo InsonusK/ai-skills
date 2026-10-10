@@ -50,7 +50,7 @@ type ReputationChecker interface {
 	CheckReputation(ctx context.Context, url string) (Reputation, error)
 }
 ```
-Verified against this plateau's own `example/internal/domain/interfaces/reputation.go` — `go build`/`go vet` clean, exercised by 4 godog scenarios (flagged, clean, validation-fails-before-reputation-call, unavailable).
+Verified against this plateau's own `examples/internal/domain/interfaces/reputation.go` — `go build`/`go vet` clean, exercised by 4 godog scenarios (flagged, clean, validation-fails-before-reputation-call, unavailable).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] - [[skills/go/architecture/solutions/solution-external-integration.skill/Implementation/internal/domain/interfaces/{port}.go.create.md|reputation.go]]
