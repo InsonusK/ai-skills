@@ -1,3 +1,3 @@
 # Glossary
 
-- [Nx](nx.md): workspace project graph, targets and affected selection.
+- [Nx](./nx.md): workspace project graph, targets and affected selection.
