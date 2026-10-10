@@ -2,7 +2,7 @@
 name: job-only-not-startup-run
 description: Whether Migrate may be called from the app's own startup path, or only from a separate deploy-time job
 problem: An earlier version of this solution offered two call sites for Migrate — cmd/{service}/main.go's own startup path, or a separate cmd/migrate deploy-time job — and left the choice between them to each team, documented per plateau. The catalog owner asked for concrete selection criteria between the two, then asked to drop the startup-run option entirely in favor of always requiring a separate job gated ahead of the app.
-decision: cmd/migrate is the only caller of Migrate. cmd/{service}/main.go is never touched by this solution. The job/container that runs cmd/migrate is gated ahead of the app (re)starting via skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md's own "migration step" rule, on every platform that skill covers (Docker Compose, Docker Stack, Kubernetes).
+decision: cmd/migrate is the only caller of Migrate. cmd/{service}/main.go is never touched by this solution. The job/container that runs cmd/migrate is gated ahead of the app (re)starting via skills/devops/deploy/devops-service-deploy.skill/devops-service-deploy.skill.md's own "migration step" rule, on every platform that skill covers (Docker Compose, Docker Stack, Kubernetes).
 tags:
   - solution/go-db-migrations
   - concern/documentation

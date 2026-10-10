@@ -66,7 +66,7 @@ Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` 
 | Skill | Holds | Replaces |
 | --- | --- | --- |
 | `devops-ci-orchestration` (core) | §1 and §2 as rules | — |
-| `devops-project-version` (core) + `-in-{stack}` | `tools/version/`; per stack where the version is recorded, `read-version.sh`, how the version reaches the built artifact | `devops-github-action-check-version-in-{stack}` |
+| `devops-project-version` (core) + `-in-{go,python,typescript,dotnet}`; Angular uses the TypeScript one | `tools/version/`; per stack where the version is recorded, `read-version.sh`, how the version reaches the built artifact | `devops-github-action-check-version-in-{stack}` |
 | `devops-ci-changes` (core) + `-in-{stack}` | the categories and what each gates; per stack the ready `action.yml` | `devops-github-action-check-changes-in-{stack}` |
 | `devops-package-publish` (core) + `-in-{python,typescript,dotnet}` | the library delivery job | `devops-github-wf-stack-lib-release-publish(-in-{stack})` |
 | `devops-app-release-in-go` | the application delivery job | `devops-github-wf-release-info-publish-in-go` |

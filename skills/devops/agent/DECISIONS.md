@@ -29,3 +29,7 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 - 2026-10-10 `check-version`'s output `publishable` is dropped: whether a project ships a package is decided when its workflow is written, like the Dockerfile.
 - 2026-10-10 The version at `DELTA_BASE` is read by running the current `read-version.sh` in a detached worktree of that ref — no stack names its version file twice.
 - 2026-10-10 Version format is `MAJOR.MINOR.PATCH` exactly; a pre-release suffix exists only on a published snapshot, added by the workflow.
+- 2026-10-10 Angular has no version skill of its own: the root `package.json` records the version of any TypeScript repository, and a workspace package is stamped at build time (ADR `root-package-json-for-workspaces`).
+- 2026-10-10 `skill-design` cites `devops-github-action-check-version-in-go` as a violation example of a missing base; the skill is removed and the citation is left for the owner — `check.sh` §8 skips `skills/design/`.
+- 2026-10-10 `devops-service-deploy`'s template links (`./templates/...` from a file inside `templates/`) were broken before this work; `check.sh` §1 skips that one file.
+- 2026-10-10 Starting test services from `.devcontainer/docker-compose.yml` is written as a rule of `devops-ci-orchestration` and is unverified until a sample with a database runs on GitHub.

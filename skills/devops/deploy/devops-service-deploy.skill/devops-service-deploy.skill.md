@@ -2,6 +2,7 @@
 name: devops-service-deploy
 description: Require every service repository to contain a deploy skill that describes how to deploy the service with Docker Compose, Docker Stack (Swarm), and Kubernetes (plain manifests or a Helm chart), including configuration templates, secret handling, devcontainer setup, and deployment examples.
 whenToUse: when you are creating or updating a service and need to produce deployment documentation and artifacts for Docker Compose, Docker Stack, Kubernetes, or a Helm chart.
+updated: 20261010
 tags:
   - stack
   - app-type/service

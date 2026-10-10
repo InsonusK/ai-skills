@@ -13,7 +13,7 @@ tags:
 - Make the running binary's version observable to its consumer — a service in its health response, a CLI/desktop app via `--version` — without hand-editing a file per release.
 
 # Core Principles
-- The root `VERSION` file is the only source of the version value (see ADR [[skills/go/devops/devops-github-action-check-version-in-go.skill/adr/version-source-file.md|version-source-file]]). `Version` here is only the in-binary receiver: `"dev"` in source, overwritten at build time via `-ldflags -X`. It is not the "version.go constant" that ADR rejects — that variant meant a constant holding the real number.
+- The root `VERSION` file is the only source of the version value (see ADR [[skills/devops/go/devops-project-version-in-go.skill/adr/version-source-file.md|version-source-file]]). `Version` here is only the in-binary receiver: `"dev"` in source, overwritten at build time via `-ldflags -X`. It is not the "version.go constant" that ADR rejects — that variant meant a constant holding the real number.
 - Every build path — `make build`, the Docker image, a release binary — injects the same variable, `{module-path}/internal/version.Version`.
 
 # Implementation changes

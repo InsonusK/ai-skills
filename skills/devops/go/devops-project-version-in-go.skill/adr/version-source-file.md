@@ -16,7 +16,7 @@ tags:
 # Selected variant
 
 **Selected variant:** [[#Root VERSION file]]
-- Matches the other three stacks' pattern (one file, one field, diffable across commits) closely enough that `devops-github-action-check-version-in-go` can reuse the same read/compare logic, and keeps `devops-github-wf-pull-request`'s PR-time version-bump gate meaningful for Go projects too.
+- Matches the other three stacks' pattern (one file, one field, diffable across commits) closely enough that the version check can reuse the same read/compare logic, and keeps `devops-github-wf-pull-request`'s PR-time version-bump gate meaningful for Go projects too.
 
 # Searched variants
 
@@ -61,4 +61,4 @@ Store the release number itself as a Go constant (e.g. `const Version = "1.4.0"`
 - Parsing a Go source file for a string constant is more fragile and more code than reading a one-line text file, for a value `check-version` only ever treats as opaque text.
 - Ties `check-version`'s implementation to Go source syntax instead of the same trivial file-read every other stack's action already uses.
 
-This rejected variant is not the `-ldflags` receiver in [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]: that file holds `"dev"`, never a number, and is filled from `VERSION` at build time.
+This rejected variant is not the `-ldflags` receiver in `internal/version/version.go` of `solution-go-repository-structure`: that file holds `"dev"`, never a number, and is filled from `VERSION` at build time.

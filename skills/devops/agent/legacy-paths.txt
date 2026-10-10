@@ -1,0 +1,5 @@
+skills/devops/workflows/devops-github-wf-docker-release-publish.skill
+skills/devops/workflows/devops-github-wf-pull-request.skill
+skills/devops/workflows/devops-github-wf-release-info-publish.skill
+skills/devops/workflows/devops-github-wf-release-test-report.skill
+skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill
