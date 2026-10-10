@@ -23,13 +23,13 @@ What does DELTA_BASE mean for each kind in an Nx repository?
 **Selected.**
 
 ### Description
-Owner-approved: unit/components/UI use nx affected in check with DELTA_BASE; otherwise all applicable projects. No affected project explicitly skips. Mutation runs all domain patterns for reports and only changed matching files for checks, using the unchanged TypeScript runner. The scenario inventory remains complete and unaffected scenarios stay not-run.
+The owner's rule (2026-10-09): a check on a pull request tests only the delta. `unit`, `components` and `ui` take the projects `nx show projects --affected --base` names in a `check` run with `DELTA_BASE`, and every applicable project otherwise. Nx derives the dependencies from the imports, so a changed library also selects the application and its e2e project. No affected project explicitly skips. Mutation runs all domain patterns for reports and only changed matching files for checks, using the unchanged TypeScript runner. The scenario inventory remains complete and unaffected scenarios stay not-run.
 
 ### Benefits
 - Fast project-scoped checks and honest full reports without a new caller contract.
 
 ### Costs
-- Correct project dependencies are necessary; the kind mode and inventory must explain partial runs.
+- It relies on the dependency graph Nx infers; the kind mode and inventory must explain partial runs.
 
 ## All suites in every check
 ### Description

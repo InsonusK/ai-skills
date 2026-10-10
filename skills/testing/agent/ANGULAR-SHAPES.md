@@ -82,3 +82,12 @@ Each wave receives a separate conformance review and commit after its checks pas
 - Both examples retain generated reports at `example/tmp/testing/report/index.html`; reproduce with `make init && make test-and-report`.
 - Mechanical check, all three example harnesses, the base source check, library package inspection and native failure checks, and final Nx proof script pass.
 - No Docker image or remote workflow run was attempted; first-download timing remains unverified. Measured npm-ci cold runs used warmed package/browser/system caches. Every owning skill lists its measured numbers and unverified cases.
+
+## Rework of the Nx example (owner, 2026-10-10)
+
+- The owner creates his workspaces with the standard Nx tooling and asked for the example to be redone on it. The first version was a hand-assembled workspace: no `@nx/angular`, no plugins, dependencies declared by hand, and a `metadata.testing` block with three `conformance-*` targets in every `project.json`.
+- The example is now what `create-nx-workspace --preset=angular-monorepo` and the `@nx/angular` / `@nx/js` generators make. Invariant 6 changes with it: a project declares nothing; a kind applies where the project has a feature file, the standard `test` target or the standard `e2e` target. An empty suite of a project that has the target still fails.
+- Browser specs moved from `spec/` beside a component into the application's `-e2e` project, where Nx puts them. Component tests run on `@analogjs/vitest-angular`, the generators' runner, not on the Angular unit-test builder of the single-application base.
+- The owner on invariants 9 and 10: mutation covers the logic the project's own code holds, not third-party libraries; a check on a pull request tests only the delta. Both stand as implemented.
+- Verified: `run-example.sh` exit 0 (31/31, 98.24%, 91.5%, components 5/5, UI 5/5), `check-nx.py` exit 0, `check.sh` green.
+

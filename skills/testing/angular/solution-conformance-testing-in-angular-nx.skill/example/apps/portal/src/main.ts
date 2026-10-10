@@ -1,3 +1,5 @@
-import { bootstrapApplication } from "@angular/platform-browser";
-import { Portal } from "./app/app";
-bootstrapApplication(Portal).catch(console.error);
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { App } from './app/app';
+
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));

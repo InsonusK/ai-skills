@@ -4,8 +4,9 @@ import {
   mkdirSync,
   existsSync,
   cpSync,
-  appendFileSync,
+  readdirSync,
 } from "node:fs";
+import { createServer } from "node:net";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 const [action, kind] = process.argv.slice(2);
@@ -27,6 +28,34 @@ const nx = (args) => {
   return JSON.parse(result.stdout);
 };
 const file = resolve(dir, "result/projects.json");
+// Which projects a kind applies to is read from the workspace as Nx sees it - no testing
+// declaration of our own in a project: scenarios where a project has feature files,
+// component tests where it has the standard "test" target, browser tests where it has the
+// standard "e2e" target.
+const hasFeatures = (root) => {
+  const walk = (folder) =>
+    readdirSync(folder, { withFileTypes: true }).some((entry) =>
+      entry.isDirectory()
+        ? !["node_modules", "dist", "tmp"].includes(entry.name) &&
+          walk(resolve(folder, entry.name))
+        : entry.name.endsWith(".feature"),
+    );
+  return existsSync(root) && walk(root);
+};
+const applies = {
+  unit: (config) => hasFeatures(config.root),
+  components: (config) => !!config.targets?.test,
+  ui: (config) => !!config.targets?.e2e,
+};
+const freePort = () =>
+  new Promise((done, reject) => {
+    const server = createServer();
+    server.on("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const port = server.address().port;
+      server.close(() => done(String(port)));
+    });
+  });
 if (action === "run") {
   const selection = {
     kind,
@@ -50,37 +79,27 @@ if (action === "run") {
         "show",
         "projects",
         "--affected",
-        `--base=${process.env.DELTA_BASE}`,
+        `--base=${ref.stdout.trim()}`,
         "--json",
       ]);
     }
     for (const name of names) {
       const config = nx(["show", "project", name, "--json"]);
-      const testing = config.metadata?.testing;
-      if (typeof testing?.[kind] !== "boolean")
-        selection.errors.push(
-          `${name}: declare metadata.testing.${kind} true or false`,
-        );
-      const enabled = testing?.[kind] === true;
-      if (enabled && !config.targets?.[`conformance-${kind}`])
-        selection.errors.push(`${name}: missing conformance-${kind} target`);
-      if (enabled && kind === "ui" && !testing.uiHost)
-        selection.errors.push(`${name}: missing UI host`);
+      const enabled = applies[kind](config);
       selection.projects.push({
         name,
         root: config.root,
         enabled,
         selected: enabled && affected.includes(name),
-        uiHost: testing?.uiHost,
         reason: !enabled
-          ? "explicitly inapplicable"
+          ? `no ${kind === "unit" ? "feature file" : kind === "components" ? '"test" target' : '"e2e" target'}`
           : !affected.includes(name)
             ? "unaffected"
             : "selected",
       });
     }
     if (!selection.projects.some((project) => project.enabled))
-      selection.errors.push(`No project declares ${kind} tests`);
+      selection.errors.push(`No project has ${kind} tests`);
   } catch (error) {
     selection.errors.push(error.message);
   }
@@ -93,59 +112,68 @@ if (action === "run") {
     save("result/projects.json", selection);
     process.exit(0);
   }
-  let status = 1;
-  if (!selection.errors.length) {
-    const selected = selection.projects
-      .filter((project) => project.selected)
-      .map((project) => project.name);
-    const args = selection.delta
-      ? [
-          "affected",
-          `--base=${process.env.DELTA_BASE}`,
-          `--exclude=${selection.projects
-            .filter((project) => !project.enabled)
-            .map((project) => project.name)
-            .join(",")}`,
-        ]
-      : ["run-many", `--projects=${selected.join(",")}`];
-    args.push(
-      `--targets=conformance-${kind}`,
-      "--parallel=1",
-      "--skip-nx-cache",
-      "--skipRemoteCache",
-      "--outputStyle=stream",
-    );
-    const result = spawnSync(resolve("node_modules/.bin/nx"), args, {
+  // One run per selected project, each into a directory of its own, so a result always
+  // says which project it belongs to and a missing one is noticed.
+  let log = "";
+  for (const project of selection.errors.length
+    ? []
+    : selection.projects.filter((project) => project.selected)) {
+    const projectDir = resolve(dir, "projects", project.name);
+    for (const folder of ["result", "report"])
+      mkdirSync(resolve(projectDir, folder), { recursive: true });
+    const env = { ...process.env, TEST_KIND_DIR: projectDir };
+    const bin = (name) => resolve("node_modules/.bin", name);
+    let command, args;
+    if (kind === "unit") {
+      env.NX_TEST_PROJECT_ROOT = project.root;
+      command = bin("cucumber-js");
+      args = [
+        "--format",
+        "progress",
+        "--format",
+        `json:${projectDir}/result/unit.native.json`,
+        "--format",
+        `message:${projectDir}/result/messages.ndjson`,
+      ];
+    } else if (kind === "components") {
+      command = bin("nx");
+      args = [
+        "run",
+        `${project.name}:test`,
+        "--skip-nx-cache",
+        "--reporter=json",
+        `--outputFile=${projectDir}/result/components.native.json`,
+        "--passWithNoTests=false",
+        "--coverage",
+        `--coverage.reportsDirectory=${projectDir}/report/components/coverage`,
+        "--coverage.reporter=html",
+        "--coverage.reporter=json-summary",
+      ];
+    } else {
+      env.UI_TEST_PORT = await freePort();
+      command = bin("nx");
+      args = ["run", `${project.name}:e2e`, "--skip-nx-cache"];
+    }
+    const result = spawnSync(command, args, {
+      env,
       encoding: "utf8",
       maxBuffer: 32 * 1024 * 1024,
     });
-    const log = [result.stdout, result.stderr, result.error?.message]
+    const output = [result.stdout, result.stderr, result.error?.message]
       .filter(Boolean)
       .join("\n");
-    process.stdout.write(log);
-    writeFileSync(resolve(dir, "runner.log"), log);
-    status = result.status ?? 1;
+    writeFileSync(resolve(projectDir, "runner.log"), output);
+    log += `== ${project.name}\n${output}\n`;
+    const code = result.status ?? 1;
+    if (code !== 0) selection.errors.push(`${project.name}: runner exit ${code}`);
+    if (!existsSync(resolve(projectDir, "result", `${kind}.native.json`)))
+      selection.errors.push(`${project.name}: native result missing`);
   }
-  selection.runnerExit = status;
-  // Every selected project must publish fresh output, regardless of Nx's exit status.
-  for (const project of selection.projects.filter(
-    (project) => project.selected,
-  )) {
-    const path = resolve(dir, "projects", project.name, "result");
-    try {
-      const result = json(resolve(path, "exit-code.json"));
-      if (result.code !== 0)
-        selection.errors.push(`${project.name}: runner exit ${result.code}`);
-      if (!existsSync(resolve(path, `${kind}.native.json`)))
-        selection.errors.push(`${project.name}: native result missing`);
-    } catch (error) {
-      selection.errors.push(
-        `${project.name}: fresh result missing: ${error.message}`,
-      );
-    }
-  }
+  process.stdout.write(log);
+  writeFileSync(resolve(dir, "runner.log"), log);
+  selection.runnerExit = selection.errors.length ? 1 : 0;
   save("result/projects.json", selection);
-  process.exitCode = selection.errors.length ? 1 : status;
+  process.exitCode = selection.runnerExit;
 } else if (action === "native") {
   const selection = json(file),
     suites = [];
@@ -250,15 +278,24 @@ if (action === "run") {
             )
             .join(" ")
         : "";
-      return `<tr><td>${escape(project.name)}</td><td>${escape(project.reason)}</td><td>${links}</td></tr>`;
+      const summary = resolve(
+        report,
+        "projects",
+        project.name,
+        "coverage/coverage-summary.json",
+      );
+      const covered = existsSync(summary)
+        ? `lines ${json(summary).total.lines.pct}%`
+        : "";
+      return `<tr><td>${escape(project.name)}</td><td>${escape(project.reason)}</td><td>${covered}</td><td>${links}</td></tr>`;
     })
     .join("");
   const index = resolve(report, "index.html");
   writeFileSync(
     index,
     readFileSync(index, "utf8").replace(
-      "</html>",
-      `<h2>Projects</h2><table>${rows}</table><pre>${escape(errors.join("\n"))}</pre></html>`,
+      "<!-- projects -->",
+      `<h2>Projects</h2><table><thead><tr><th>Project</th><th>Selection</th><th>Coverage</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table>`,
     ),
   );
   save("result/projects.json", selection);

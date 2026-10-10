@@ -4,7 +4,7 @@ description: Extends TypeScript conformance testing with Angular TestBed compone
 whenToUse: Add or maintain conformance testing in a non-Nx repository whose product is one Angular application, including applications consuming npm libraries from other repositories.
 domain: skill
 type: architecture
-version: 20261009210200
+version: 20261010110000
 updated: 20261009
 tags:
   - skill/architecture/solution
@@ -113,6 +113,7 @@ PACKAGE:
 - A deliberately wrong component expectation — the run exits non-zero, the `components` badge is red (3/4), the other kinds still run and the report is assembled.
 - Two UI runs one right after the other on one machine — both pass: each run serves the application on a free port of its own.
 - `run-example.sh` and the base source-contract check pass with the shared catalog browser-suffix matcher; 25/25 scenarios, components/UI 4/4, living-doc tags and report links verified again.
+- The `components` and `ui` report pages have the same sections in the application, library and Nx examples: result, evidence links, tests; `components` adds the coverage figure, `ui` the screenshot comparisons — the reference image always, the run's image and the difference after a failed comparison (checked by changing a style in the Nx example).
 - Not verified: the `.devcontainer` image build, a workspace with several applications through this direct delivery, an Angular version before 22.
 
 # Rules
