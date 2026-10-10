@@ -4,8 +4,8 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 10
-updated: 20261010
+version: 11
+updated: 20261011
 tags:
   - skill/architecture/solution
   - solution/conformance-testing
@@ -116,7 +116,7 @@ The `.feature` file at `uri:line` supplies the assertions; surviving mutants in 
 - **classic Cucumber JSON** (`*.json`, `features[].elements[].steps[]`) — rendered by `multiple-cucumber-html-reporter`;
 - **Cucumber Messages** (`*.ndjson` envelope stream) — converted to classic JSON with actual executed steps and results, then rendered by the same renderer.
 
-Then it renders `report/tests/livingdoc/` with the shared [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]], from the isolated, pinned install in [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] — never from the project's own dependency manifest. Both protocols show every scenario with all its tags; excluded and not-run entries are added from `result/scenarios.json` with their reasons. Every report ends with the status legend. `kind_livingdoc` makes `reports/tests/` forward directly to this view, and `test-report` gathers it unchanged. The step needs Node 22+ and is skipped where npm is missing. Decision: [[./adr/one-livingdoc-view.md|One living-doc view]].
+Then it renders `report/tests/livingdoc/` with the shared [[./Implementation/tools/livingdoc/render.mjs.create.md|tools/livingdoc/render.mjs]], from the isolated, pinned install in [[./Implementation/tools/livingdoc/package.json.create.md|tools/livingdoc/package.json]] — never from the project's own dependency manifest. Both protocols show every scenario with all its tags; excluded and not-run entries are added from `result/scenarios.json` with their reasons. Every report ends with the status legend. `kind_livingdoc` makes `reports/tests/` forward directly to this view, and `test-report` gathers it unchanged. The step needs npm and Node 22+; without them the kind still passes and prints the reason, and `make test-report` fails — a report is never built without the living doc of a kind that has scenarios. Decision: [[./adr/one-livingdoc-view.md|One living-doc view]].
 
 ## Report output
 `test-report` builds `$TEST_REPORT_DIR` — `index.html`, `reports/{name}/`, `badges/{name}.json`, `run.json` — per [[./Implementation/Repository.create.md#report-output|Report output]]: the one stack-independent artifact a publishing step uploads as-is. Where it is published, and under which path, is the publisher's choice; this solution owns no `.github/workflows/*` file and writes nothing outside the two directories the caller names.
