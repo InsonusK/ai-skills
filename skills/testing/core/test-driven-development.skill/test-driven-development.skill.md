@@ -5,7 +5,6 @@ whenToUse: before writing code for new business logic, before starting a refacto
 tags:
   - concern/testing
   - tdd
-  - workflow
   - refactoring
   - stack
 
@@ -18,7 +17,7 @@ tags:
 # Scope
 This skill defines the order of writing tests vs. code. It does not define the test case format or coverage rules:
 - The unit's `.feature` file is the source of test cases for the red-green cycles: its scenarios are written first, category-tagged and tagged `@status/todo`, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md)'s scenarios-first protocol.
-- Use [code-coverage](skills/testing/core/code-coverage.skill.md) to decide what must be covered.
+- Use [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) to decide what must be covered.
 - When the task is new business logic decomposed into units, this skill governs step 4-5 of `solid-decomposition` (attach test cases, then generate code): drive each unit with red-green-refactor instead of writing the implementation first.
 
 # Core Principle

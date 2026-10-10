@@ -2,7 +2,7 @@
 name: scenario-report
 description: How the test report shows which behaviors are specified, of which type, and with which status — replacing the hand-maintained TESTS.md / test-trace-matrix.md that no-test-theater used to require
 problem: no-test-theater required a hand-maintained trace matrix (TESTS.md / test-trace-matrix.md) per module listing every scenario, its type, the covering test, what it asserts, and its status. With every test case written as a Cucumber scenario, that matrix duplicates the .feature files and drifts from them; but the report produced by make test-report showed only pass/fail counts, coverage, and mutation score — not which kinds of behavior are covered.
-decision: Classify every scenario with one type tag in the .feature file, have unit-test write a normalized tmp/result/scenarios.json (inventory from the .feature files, status from the runner), and have test-report render public/scenarios/index.html from it. No separate test inventory file.
+decision: Earlier choice — its tag names, paths and HTML page are superseded by caller-contract and one-livingdoc-view; what stands is the normalized scenario inventory built from tagged .feature files. As decided then - classify every scenario with one type tag in the .feature file, have unit-test write a normalized tmp/result/scenarios.json (inventory from the .feature files, status from the runner), and have test-report render public/scenarios/index.html from it. No separate test inventory file.
 tags:
   - solution/conformance-testing
   - stack

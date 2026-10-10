@@ -1,9 +1,9 @@
 ---
-version: 20261008170000
+version: 20261010120000
 name: cucumber-testing
 description: Language-independent rules for writing and organizing Cucumber/Gherkin scenarios and their step definitions — generic comparators, expected-data placement, ordering, logging, and BDD editor setup
 whenToUse: when writing or reviewing a `.feature` file or its step definitions, when deciding whether an assertion step is reusable across scenarios, or when configuring an editor/devcontainer for Cucumber
-updated: 20261008
+updated: 20261010
 tags:
   - stack
   - concern/testing/bdd
@@ -22,10 +22,10 @@ tags:
 - A VSCode workspace with the Cucumber extension declared in the devcontainer and `cucumber.glue`/`cucumber.features` set in `.vscode/settings.json`.
 
 # Scope
-This skill covers language-independent Cucumber/Gherkin authoring: scenario structure, step-definition organization, and editor setup. It does not cover the four-target Makefile/report contract (see [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md)) or any runner-specific mechanism (log capture, step-index generation, tag-filter syntax) — those live in a stack-specific companion skill named `cucumber-testing-in-{stack}` (e.g. `cucumber-testing-in-go`, `cucumber-testing-in-dotnet`, `cucumber-testing-in-python`, `cucumber-testing-in-typescript`). Ask the user which one to load for the project's actual stack rather than loading all of them.
+This skill covers language-independent Cucumber/Gherkin authoring: scenario structure, step-definition organization, and editor setup. It does not cover the Makefile contract of test kinds and the report (see [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md)) or any runner-specific mechanism (log capture, step-index generation, tag-filter syntax) — those live in a stack-specific companion skill named `cucumber-testing-in-{stack}` (e.g. `cucumber-testing-in-go`, `cucumber-testing-in-dotnet`, `cucumber-testing-in-python`, `cucumber-testing-in-typescript`). Ask the user which one to load for the project's actual stack rather than loading all of them.
 
 # Core Principle
-- **Every case is a scenario** - The only test code that is not a Cucumber scenario is the single runner entry point that executes the suite.
+- **Every case is a scenario** - Test code that is not a Cucumber scenario is the runner entry point that executes the suite, or a case whose scenario would cost more than it is worth, kept as a plain test with its reason stated.
 - **Test your own code** - An assertion proves something about the code under test, never about a bug or quirk of an underlying library.
 - **Comparators are generic, expectations live in Gherkin** - A step definition compares an actual result against data that came from the feature file; it never hardcodes a domain-specific expectation.
 - **A red scenario beats a fake-green one** - A scenario that cannot run yet must be visibly excluded, never silently counted as passing.
@@ -202,7 +202,7 @@ Use the runner's own step-listing/generation facility, when it has one, instead 
 
 # Check list
 - [ ] Every scenario is structured as an input/expected-result matrix (data table or `Examples:`), not a narrative.
-- [ ] No unit-test-framework test duplicates what a `.feature` scenario could express, other than the one runner entry point.
+- [ ] No unit-test-framework test duplicates what a `.feature` scenario could express; every plain test other than the runner entry point has its reason in a comment above it.
 - [ ] No test exists solely to cover code unreachable through the public API.
 - [ ] Every feature carries exactly one `@type/…` tag on its `Feature:` line: `domain`, `service`, `api`, `infrastructure`, `mapping`, `contract`, `tech-check`.
 - [ ] Every scenario (or `Examples:` block) carries exactly one `@category/…` tag: `happy`, `boundary`, `negative`, `error`, `concurrency`, `security`, `regression`.

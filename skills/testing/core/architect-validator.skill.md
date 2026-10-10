@@ -3,7 +3,6 @@ name: architect-validator
 description: Validate that all architecture pattern was applied correctly
 whenToUse: After make code changes
 tags:
-  - concern/testing
   - stack
   - concern/architecture
 
