@@ -14,7 +14,7 @@ links=$(mktemp); trap 'rm -f "$links"' EXIT
 git ls-files -co --exclude-standard '*.md' | grep -v "^$A/" | tr '\n' '\0' | xargs -0 perl skills/testing/agent/links.pl > "$links"
 
 # 1. Every link from or into skills/devops resolves.
-out=$(awk -F'\t' '$5=="broken" && ($1 ~ /^skills\/devops\// || $3 ~ /skills\/devops\//) && $1 !~ /service-deploy-skill-template\.md$/' "$links")
+out=$(awk -F'\t' '$5=="broken" && ($1 ~ /^skills\/devops\// || $3 ~ /skills\/devops\//)' "$links")
 [ -n "$out" ] && { err "broken links from or into skills/devops:"; echo "$out" | cut -f1-3; }
 
 # 2. Isolation (INVARIANTS §5): a skill under skills/devops links outside it only to testing and design skills.
@@ -82,6 +82,7 @@ done
 # 7. Code is delivered as files: no YAML or shell fence longer than 15 lines in a devops skill, no *.example.md.
 for f in $(git ls-files -co --exclude-standard "$D/core/**/*.md" $(printf "$D/%s/**/*.md " angular dotnet go python typescript)); do
   legacy "$f" && continue
+  [[ "$f" == */templates/* ]] && continue   # a template of a markdown document is a real file of its type
   awk -v f="$f" '/^\s*```(yaml|yml|bash|sh|shell)/ { n=0; inb=1; start=NR; next } /^\s*```/ { if (inb && n>15) printf "%s:%d: fenced code of %d lines\n", f, start, n; inb=0 } inb { n++ }' "$f"
 done > "$links.fence"
 [ -s "$links.fence" ] && { err "code that belongs in assets/ or templates/:"; cat "$links.fence"; }
@@ -114,6 +115,9 @@ fi
 listed=$(grep -oE '`devops-release-[a-z-]+`' $D/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md | tr -d '`' | sort -u)
 found=$(ls -d $D/*/devops-release-*.skill | xargs -n1 basename | sed 's/\.skill$//' | sort -u)
 [ "$listed" = "$found" ] || err "release actions listed in devops-github-wf-release differ from the skills that exist: $(echo $listed) / $(echo $found)"
+
+# 9c. Ground truth for devops-service-deploy: entrypoint, placeholders, filled manifests, the chart.
+bash "$A/deploy-templates-check.sh" >/tmp/devops-deploy.log 2>&1 || { err "deploy-templates-check.sh:"; grep -E 'FAIL|note' /tmp/devops-deploy.log; }
 
 # 10. Ground truth: the version tools of every stack.
 bash "$A/fixtures.sh" >/tmp/devops-fixtures.log 2>&1 || { err "fixtures.sh:"; grep -E 'FAIL|fixtures' /tmp/devops-fixtures.log; }

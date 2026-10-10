@@ -12,7 +12,7 @@ tags:
 - Give the deploy pipeline a binary that does exactly one thing — run `{store}.Migrate` and exit —
   so it can be wrapped as a Kubernetes `Job` (typically via a Helm `pre-install,pre-upgrade` hook) or
   a plain-manifest `kubectl apply` + `kubectl wait` step, per `devops-service-deploy.skill.md`'s own
-  "migration step" rule: no HTTP server, no domain service, no long-lived process.
+  "Apply migrations in exactly one mode" rule: no HTTP server, no domain service, no long-lived process.
 
 # Core Principles
 - This solution's **Job-mode** call site — used on whichever platform

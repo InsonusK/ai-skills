@@ -2,7 +2,7 @@
 name: job-only-not-startup-run
 description: Whether Migrate may be called from the app's own startup path, or only from a separate deploy-time job
 problem: An earlier version of this solution offered two call sites for Migrate — cmd/{service}/main.go's own startup path, or a separate cmd/migrate deploy-time job — and left the choice between them to each team, documented per plateau. The catalog owner asked for concrete selection criteria between the two, then asked to drop the startup-run option entirely in favor of always requiring a separate job gated ahead of the app.
-decision: cmd/migrate is the only caller of Migrate. cmd/{service}/main.go is never touched by this solution. The job/container that runs cmd/migrate is gated ahead of the app (re)starting via skills/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md's own "migration step" rule, on every platform that skill covers (Docker Compose, Docker Stack, Kubernetes).
+decision: cmd/migrate is the only caller of Migrate. cmd/{service}/main.go is never touched by this solution. The job/container that runs cmd/migrate is gated ahead of the app (re)starting via skills/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md's own "Apply migrations in exactly one mode" rule, on every platform that skill covers (Docker Compose, Docker Stack, Kubernetes).
 tags:
   - solution/go-db-migrations
   - concern/documentation
@@ -48,7 +48,7 @@ resource).
 `cmd/migrate` is the only path that ever calls `Migrate`. `cmd/{service}/main.go` is left exactly as
 `solution-persistent-db` created it — this solution's `Implementation/` no longer touches it at all.
 Making the job actually run, and complete, before the app (re)starts is
-`devops-service-deploy.skill.md`'s own concern: its "migration step" MUST rule requires every
+`devops-service-deploy.skill.md`'s own concern: its "Apply migrations in exactly one mode" rule requires every
 service with a migration step to wire it as a one-shot container/Job ahead of the app, per platform
 — Docker Compose's native `depends_on: condition: service_completed_successfully`; Docker Stack's
 `replicated-job` mode deployed and waited on as its own stack, since `docker stack deploy` silently

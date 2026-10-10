@@ -1,5 +1,6 @@
 #!/bin/sh
-# Resolves the {NAME}_FILE secret-file convention before exec'ing the real
+# docker-entrypoint.sh - Source: skill devops-service-deploy. Copied verbatim; never edited in the project.
+# Resolves the NAME_FILE secret-file convention before exec'ing the real
 # process, so every environment variable the service reads can be supplied
 # either directly (NAME=value) or as a file path (NAME_FILE=/path/to/file) —
 # the same convention official images (postgres, mysql, ...) use for
