@@ -67,7 +67,7 @@ func toStatus(err error) error {
 	return status.Error(codes.Internal, err.Error())
 }
 ```
-Verified against this plateau's own `example/internal/api/grpc/server.go` — `go build`/`go vet` clean; smoke-tested with `grpcurl`: a well-formed URL returns `200`-equivalent success with the normalized form; an invalid URL returns `codes.InvalidArgument`.
+Verified against this plateau's own `examples/internal/api/grpc/server.go` — `go build`/`go vet` clean; smoke-tested with `grpcurl`: a well-formed URL returns `200`-equivalent success with the normalized form; an invalid URL returns `codes.InvalidArgument`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] - [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/internal/api/grpc/server.go.create.md|server.go]]

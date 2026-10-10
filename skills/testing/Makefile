@@ -4,7 +4,7 @@
 # A failed example does not stop the others; the summary names each one and the target fails
 # when any did. Each example keeps its own report in {example}/tmp/testing/report/index.html
 # and the log of this run in {example}/tmp/mass-run.log.
-EXAMPLES := $(sort $(wildcard */solution-conformance-testing-in-*.skill/example))
+EXAMPLES := $(sort $(wildcard */solution-conformance-testing-in-*.skill/examples))
 ONLY ?=
 SELECTED := $(if $(ONLY),$(foreach e,$(EXAMPLES),$(if $(findstring $(ONLY),$(e)),$(e))),$(EXAMPLES))
 

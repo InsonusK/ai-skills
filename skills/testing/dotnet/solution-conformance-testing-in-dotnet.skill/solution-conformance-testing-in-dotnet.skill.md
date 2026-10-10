@@ -98,7 +98,7 @@ Each linked `#MUST` section below carries its own `Violation`/`Risk`/`Fix` at th
 
 # Ground truth
 
-`example/` is the runnable eight-feature `linkcheck` showcase on .NET SDK 10, Reqnroll 3.3.4, xUnit 2.9.3/VSTest, coverlet 8.0.0, ReportGenerator 5.5.11 and Stryker.NET 4.16.0.
+`examples/` is the runnable eight-feature `linkcheck` showcase on .NET SDK 10, Reqnroll 3.3.4, xUnit 2.9.3/VSTest, coverlet 8.0.0, ReportGenerator 5.5.11 and Stryker.NET 4.16.0.
 
 Measured 2026-10-08 with `make init && make test-and-report`: exit 0, **25/25 tests**, **100% line coverage**, **94.4% mutation score** (51 killed, 3 survived, no timeouts or uncovered mutants).
 The package scenario compares the public production `Package.Version` with the distribution assembly metadata; the URL checker also reports `https:example.com` as `MISSING_HOST`, matching the reference.

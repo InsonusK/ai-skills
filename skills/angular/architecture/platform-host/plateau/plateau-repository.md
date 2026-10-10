@@ -59,7 +59,7 @@ V1 bundled "become a platform" with "add offline write queue" (`platform-monolit
 plateau-platform-host/
   plateau-platform-host.skill/
     plateau-platform-host.skill.md   the plateau summary
-    example/                         a LIMITED federation smoke test (a Native Federation dynamic
+    examples/                         a LIMITED federation smoke test (a Native Federation dynamic
                                      host + @platform/contracts, not the full monolith)
   structure/                         the FEDERATION DELTA ONLY — 6 skills (monolith projects are
                                      inherited from the parent's structure/)

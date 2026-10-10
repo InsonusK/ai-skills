@@ -33,7 +33,7 @@ func (s *{Service}) {ReadMethod}(ctx context.Context, limit int) ([]interfaces.{
 }
 ```
 
-This catalog's own runnable examples record every `Check` call in `LinkHistory` and expose the read side as `RecentChecks`, which [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/api/http/server.go.extend.md|the HTTP adapter]] and (when `solution-grpc-api` is applied) [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/api/grpc/server.go.extend.md|the gRPC adapter]] both surface — see `plateau-persistent-service`'s `example/`.
+This catalog's own runnable examples record every `Check` call in `LinkHistory` and expose the read side as `RecentChecks`, which [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/api/http/server.go.extend.md|the HTTP adapter]] and (when `solution-grpc-api` is applied) [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/api/grpc/server.go.extend.md|the gRPC adapter]] both surface — see `plateau-persistent-service`'s `examples/`.
 
 # Rule changes
 

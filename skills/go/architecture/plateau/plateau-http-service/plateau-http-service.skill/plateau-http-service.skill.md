@@ -81,7 +81,7 @@ Three intersections found at this plateau (all canonical `FMN`, no resolver) —
 - [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=2)
 
 # Ground truth
-`example/` is a real, runnable Go module (`github.com/example/linkcheck-service`), verified:
+`examples/` is a real, runnable Go module (`github.com/example/linkcheck-service`), verified:
 - `go build ./...` and `go vet ./...` — clean.
 - `make test-kind-unit` — 5/5 godog scenarios green (`internal/domain/services/test`), `TestFeatures` the only test function.
 - `make test-kind-mutation` — `gremlins` runs clean (3 killed / 4 survived / 0 timed out / 20 not covered against this plateau's small surface — the HTTP-adapter path has no scenario coverage yet, expected at this plateau).

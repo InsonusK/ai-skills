@@ -105,7 +105,7 @@ func writeError(w http.ResponseWriter, code int, err error) {
 	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 }
 ```
-Verified against this plateau's own `example/internal/api/http/server.go` — smoke-tested: `GET /health` → `200`; `POST /v1/links/check {"url":"HTTPS://Example.com/Foo"}` → `200 {"url":"...","normalized":"https://example.com/Foo"}`; `POST /v1/links/check {"url":"not-a-url"}` → `400`.
+Verified against this plateau's own `examples/internal/api/http/server.go` — smoke-tested: `GET /health` → `200`; `POST /v1/links/check {"url":"HTTPS://Example.com/Foo"}` → `200 {"url":"...","normalized":"https://example.com/Foo"}`; `POST /v1/links/check {"url":"not-a-url"}` → `400`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/internal/api/http/server.go.create.md|server.go]]

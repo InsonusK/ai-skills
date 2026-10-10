@@ -50,7 +50,7 @@ Open, and yours to bring to the owner with a recommendation:
 For each of the two new skills:
 
 1. A skill folder beside the existing one, depending on it, whose `whenToUse` lets an agent choose by one fact — what the repository holds. The three `whenToUse` texts together must leave no situation of the four without exactly one skill.
-2. A runnable `example/` that passes `run-example.sh`. The owner must be able to run `make init && make test-and-report` and see the report: the same four kinds, the same landing page, the living doc with every scenario and its tags.
+2. A runnable `examples/` that passes `run-example.sh`. The owner must be able to run `make init && make test-and-report` and see the report: the same four kinds, the same landing page, the living doc with every scenario and its tags.
    - Library: a publishable Angular library with one component and some framework-independent logic; a host application the `ui` kind serves; `npm pack --dry-run` showing no spec, step or feature file in the package.
    - Nx: one application and at least two libraries, with framework-independent logic covered by scenarios in a library and in the application; a `check` run with `DELTA_BASE` in a two-commit copy showing that only the affected projects ran.
 3. `# Ground truth` in the skill with the numbers you measured and a plain list of what you did not verify.

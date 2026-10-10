@@ -30,7 +30,7 @@ if args.wave >= 2:
 markdown = []
 for root in roots:
     for p in root.rglob('*.md'):
-        if 'example' in p.parts or 'adr' in p.parts or 'agent' in p.parts:
+        if 'examples' in p.parts or 'adr' in p.parts or 'agent' in p.parts:
             continue
         if root.name == 'plateau' and not any(part in ('plateau-core', 'plateau-domain-service', 'plateau-offline-sync-service') for part in p.parts):
             continue
@@ -50,7 +50,7 @@ changed = set(git('diff', '--name-only', base).splitlines())
 changed.update(git('ls-files', '--others', '--exclude-standard').splitlines())
 for name in sorted(changed):
     p = Path(name)
-    if not p.is_file() or p.suffix != '.md' or 'agent' in p.parts or 'adr' in p.parts or 'example' in p.parts:
+    if not p.is_file() or p.suffix != '.md' or 'agent' in p.parts or 'adr' in p.parts or 'examples' in p.parts:
         continue
     s = p.read_text()
     now = re.search(r'^version:\s*(\d+)', s, re.M)
@@ -108,8 +108,8 @@ if args.wave >= 2:
     check('VP1' in main and 'VP4' in main and '`{Module}.Api` has no dedicated test project' in main, 'project selection changed')
 
 if args.wave >= 3:
-    examples = list(Path('skills/dotnet/architecture/plateau').glob('*/plateau-*.skill/example'))
-    examples.append(Path('skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/example'))
+    examples = list(Path('skills/dotnet/architecture/plateau').glob('*/plateau-*.skill/examples'))
+    examples.append(Path('skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/examples'))
     tracked = git('ls-files', '-co', '--exclude-standard').splitlines()
     # A folder migration must preserve both feature text and executable behavior.
     for old in git('ls-tree', '-r', '--name-only', base).splitlines():

@@ -21,7 +21,7 @@ Import the real standalone component in TestBed (or its real NgModule for a modu
 
 Cover the component's meaningful initial, loading, success, empty and error states as applicable. Subscribe to an output before clicking its real button and assert the emitted payload. For HTTP-backed state, provide the real HttpClient with `provideHttpClient()` and a testing backend with `provideHttpClientTesting()` in that order, flush the expected request and verify no pending requests remain after each test. Use a framework-independent domain fixture already checked by Cucumber when helpful rather than restating the business algorithm.
 
-The [runnable Angular example](../example/README.md) uses the [real form component](../example/src/app/app.ts) and [component specs](../example/src/app/spec/validation.component.spec.ts); `make test-kind-components` executes them and produces the shared report inputs.
+The [runnable Angular example](../examples/README.md) uses the [real form component](../examples/src/app/app.ts) and [component specs](../examples/src/app/spec/validation.component.spec.ts); `make test-kind-components` executes them and produces the shared report inputs.
 
 # Rules
 ## MUST

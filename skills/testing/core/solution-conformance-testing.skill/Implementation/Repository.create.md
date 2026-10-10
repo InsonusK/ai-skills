@@ -126,7 +126,7 @@ It lives at the repository root, never under `.github/`, since this solution own
 
 ## README badges
 One badge per declared badge, its URL ending with `badges/{name}.json` under wherever the report is published, linking `reports/{name}/`:
-```markdown
+```example
 [![tests](https://img.shields.io/endpoint?url={published-report-url}/badges/tests.json)]({published-report-url}/reports/tests/)
 ```
 

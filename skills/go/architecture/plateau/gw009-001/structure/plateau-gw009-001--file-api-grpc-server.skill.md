@@ -107,9 +107,9 @@ func toStatus(err error) error {
 	}
 }
 ```
-`proto/linkcheck/linkcheck.proto` gains the matching RPC and messages (`RecentChecksRequest{limit}`, `HistoryEntry{normalized, flagged, reason, checked_at_unix}`, `RecentChecksResponse{repeated HistoryEntry entries}`) — see this plateau's own `example/proto/linkcheck/linkcheck.proto`.
+`proto/linkcheck/linkcheck.proto` gains the matching RPC and messages (`RecentChecksRequest{limit}`, `HistoryEntry{normalized, flagged, reason, checked_at_unix}`, `RecentChecksResponse{repeated HistoryEntry entries}`) — see this plateau's own `examples/proto/linkcheck/linkcheck.proto`.
 
-Verified against this plateau's own `example/internal/api/grpc/server.go` — smoke-tested with `grpcurl`: `RecentChecks` after two `Check` calls returned both entries, matching the HTTP adapter's own `GET /v1/links/recent` response and the raw `psql` row contents exactly — confirming both transports share the one domain-service instance and its store.
+Verified against this plateau's own `examples/internal/api/grpc/server.go` — smoke-tested with `grpcurl`: `RecentChecks` after two `Check` calls returned both entries, matching the HTTP adapter's own `GET /v1/links/recent` response and the raw `psql` row contents exactly — confirming both transports share the one domain-service instance and its store.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] - [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/internal/api/grpc/server.go.create.md|server.go]]

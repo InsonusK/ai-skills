@@ -25,7 +25,7 @@ extends:
 depends_on:
   - "[Angular conformance testing](../solution-conformance-testing-in-angular.skill/solution-conformance-testing-in-angular.skill.md)"
 adr:
-  - "[Demo host](adr/demo-host.md)"
+  - "[Demo host](./adr/demo-host.md)"
 ---
 
 # Goal
@@ -41,11 +41,11 @@ adr:
 - Installing Chromium system libraries needs root or a prepared image; the example container build is not verified here.
 
 # Adr
-- [Demo host](adr/demo-host.md): use the existing `projects/demo` convention and compile TestBed tests against its application build target.
+- [Demo host](./adr/demo-host.md): use the existing `projects/demo` convention and compile TestBed tests against its application build target.
 
 # Template Skill Mutations
-- [Repository](Implementation/Repository.extend.md): select the library for components and the demo host for browser tests.
-- [Library package](Implementation/Library.package.extend.md): scope scenarios/mutation, compile and inspect the published package.
+- [Repository](./Implementation/Repository.extend.md): select the library for components and the demo host for browser tests.
+- [Library package](./Implementation/Library.package.extend.md): scope scenarios/mutation, compile and inspect the published package.
 
 # Workflow
 1. Apply the Angular base, then the two mutations above; retain its component and UI spec rules.
@@ -53,7 +53,7 @@ adr:
 3. Build the library and run the package inspection in the example verification script.
 
 # Ground truth
-[The runnable library example](example/README.md) was verified on 2026-10-09 with Node 24.21.0, Angular 22, Vitest 5, [ng-packagr](glossary/ng-packagr.md) 22 and Playwright 1.64/Chromium:
+[The runnable library example](./examples/README.md) was verified on 2026-10-09 with Node 24.21.0, Angular 22, Vitest 5, [ng-packagr](./glossary/ng-packagr.md) 22 and Playwright 1.64/Chromium:
 - `make init && make test-and-report`: exit 0; 25/25 domain scenarios, domain line coverage 98.11%, mutation 90.2%, components 4/4, UI 4/4 including the unchanged reviewed screenshot baseline.
 - Dependency-cold run (`npm ci` reinstalls node_modules), then all four kinds and report: 35.3 seconds on a host with warmed npm/browser/system-library caches. This is not a first-download measurement.
 - `run-example.sh`: exit 0 in report, caller-selected check directories and delta mutation; complete living-doc tags/reasons and report links checked. In the task worktree delta mutation skipped because no domain file changed relative to HEAD~1.

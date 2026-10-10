@@ -122,7 +122,7 @@ func run() error {
 	return g.Wait()
 }
 ```
-Verified against this plateau's own `example/cmd/linkcheck/main.go` — `go build`/`go vet` clean; HTTP and gRPC both smoke-tested (`curl`, `grpcurl` against a running process).
+Verified against this plateau's own `examples/cmd/linkcheck/main.go` — `go build`/`go vet` clean; HTTP and gRPC both smoke-tested (`curl`, `grpcurl` against a running process).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]]

@@ -31,11 +31,11 @@ extends:
 depends_on:
   - "[solution-conformance-testing-in-typescript](skills/testing/typescript/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md)"
 adr:
-  - "[Angular test kinds](adr/angular-test-kinds.md)"
-  - "[Complete Makefile example](adr/complete-makefile-example.md)"
-  - "[Chromium system dependencies](adr/chromium-system-dependencies.md)"
-  - "[Repository shape selection](adr/repository-shape-selection.md)"
-  - "[Browser spec discovery](adr/browser-spec-discovery.md)"
+  - "[Angular test kinds](./adr/angular-test-kinds.md)"
+  - "[Complete Makefile example](./adr/complete-makefile-example.md)"
+  - "[Chromium system dependencies](./adr/chromium-system-dependencies.md)"
+  - "[Repository shape selection](./adr/repository-shape-selection.md)"
+  - "[Browser spec discovery](./adr/browser-spec-discovery.md)"
 ---
 
 # Goal
@@ -47,8 +47,8 @@ adr:
 | Kind | Runner | Evidence |
 | --- | --- | --- |
 | `unit`, `mutation` | Inherited TypeScript tools | Gherkin conformance, domain coverage, domain mutation |
-| `components` | Angular CLI → [Vitest](glossary/vitest.md) → [TestBed](glossary/testbed.md), [jsdom](glossary/jsdom.md) | Rendered DOM, bindings, inputs, outputs, async states; native component coverage |
-| `ui` | [Playwright](glossary/playwright.md), Chromium | Served application, navigation, browser interactions, optional reviewed screenshot comparisons |
+| `components` | Angular CLI → [Vitest](./glossary/vitest.md) → [TestBed](./glossary/testbed.md), [jsdom](./glossary/jsdom.md) | Rendered DOM, bindings, inputs, outputs, async states; native component coverage |
+| `ui` | [Playwright](./glossary/playwright.md), Chromium | Served application, navigation, browser interactions, optional reviewed screenshot comparisons |
 
 # Core Principles
 - **Test boundary** — A scenario stays in Cucumber when it exercises a framework-independent business contract; a native component or UI spec exercises the Angular rendering or browser boundary.
@@ -62,14 +62,14 @@ adr:
 - The direct delivery assumes one Angular application with one test target. Library repositories use `solution-conformance-testing-in-angular-library`; Nx repositories use `solution-conformance-testing-in-angular-nx`, inheriting these spec and evidence rules.
 
 # Adr
-- [Angular test kinds](adr/angular-test-kinds.md): native Angular builder for compilation/TestBed and Playwright for browser evidence, two discovered kinds.
+- [Angular test kinds](./adr/angular-test-kinds.md): native Angular builder for compilation/TestBed and Playwright for browser evidence, two discovered kinds.
 
-- [Complete Makefile example](adr/complete-makefile-example.md): one runnable Angular app executes all four kinds and generates its report through Make.
+- [Complete Makefile example](./adr/complete-makefile-example.md): one runnable Angular app executes all four kinds and generates its report through Make.
 
-- [Chromium system dependencies](adr/chromium-system-dependencies.md): initialization installs the browser runtime libraries through the pinned installer.
+- [Chromium system dependencies](./adr/chromium-system-dependencies.md): initialization installs the browser runtime libraries through the pinned installer.
 
-- [Repository shape selection](adr/repository-shape-selection.md): choose one entry skill by what the repository holds.
-- [Browser spec discovery](adr/browser-spec-discovery.md): run UI, visual, computed-style and accessibility browser suffixes together.
+- [Repository shape selection](./adr/repository-shape-selection.md): choose one entry skill by what the repository holds.
+- [Browser spec discovery](./adr/browser-spec-discovery.md): run UI, visual, computed-style and accessibility browser suffixes together.
 
 # Requirements
 SOLUTION:
@@ -82,12 +82,12 @@ NPM:
 
 # Template Skill Mutations
 REPOSITORY:
-- [Repository](Implementation/Repository.extend.md): copy the kind assets and configure the UI template.
+- [Repository](./Implementation/Repository.extend.md): copy the kind assets and configure the UI template.
 
 PACKAGE:
-- [Angular package](Implementation/{Package}.package.extend.md): extend Angular targets, dependencies and test source boundaries.
-- [Component tests](Implementation/{Component}.component.spec.ts.create.md): author TestBed behavior assertions.
-- [UI tests](Implementation/{Flow}.ui.spec.ts.create.md): author browser flows and reviewed visual comparisons.
+- [Angular package](./Implementation/{Package}.package.extend.md): extend Angular targets, dependencies and test source boundaries.
+- [Component tests](./Implementation/{Component}.component.spec.ts.create.md): author TestBed behavior assertions.
+- [UI tests](./Implementation/{Flow}.ui.spec.ts.create.md): author browser flows and reviewed visual comparisons.
 
 # Workflow
 ## Apply and run
@@ -104,10 +104,10 @@ PACKAGE:
 ## Async component state and visual change
 1. Await TestBed stabilization or Playwright locator assertions, then assert the visible state; use controlled backend responses when the state depends on a request.
 2. When a screenshot differs, inspect expected/actual/diff evidence in the UI report.
-3. Follow the baseline review procedure in [UI tests](Implementation/{Flow}.ui.spec.ts.create.md#MUST); the normal kind never updates committed expectations.
+3. Follow the baseline review procedure in [UI tests](./Implementation/{Flow}.ui.spec.ts.create.md#MUST); the normal kind never updates committed expectations.
 
 # Ground truth
-[The complete Angular example](example/README.md) builds and serves a real Link checker form over the inherited domain package; its Makefile runs all four kinds and assembles the common report. Verified on 2026-10-09 with Node 24, Angular 22, Vitest 5, Playwright 1.64 and Chromium:
+[The complete Angular example](./examples/README.md) builds and serves a real Link checker form over the inherited domain package; its Makefile runs all four kinds and assembles the common report. Verified on 2026-10-09 with Node 24, Angular 22, Vitest 5, Playwright 1.64 and Chromium:
 - `make init && make test-and-report` — exit `0`; 25/25 Cucumber scenarios, domain coverage 98.1%, domain mutation score 90.2%, 4/4 component tests, 4/4 browser tests with one screenshot comparison.
 - `make test-and-report TEST_RUN_PURPOSE=check` with caller-chosen directories — every kind but mutation runs, mutation is skipped without `DELTA_BASE`, the domain coverage report is not published.
 - A deliberately wrong component expectation — the run exits non-zero, the `components` badge is red (3/4), the other kinds still run and the report is assembled.
@@ -118,10 +118,10 @@ PACKAGE:
 
 # Rules
 ## MUST
-- [Repository rules](Implementation/Repository.extend.md#MUST)
-- [Package rules](Implementation/{Package}.package.extend.md#MUST)
-- [Component test rules](Implementation/{Component}.component.spec.ts.create.md#MUST)
-- [UI test rules](Implementation/{Flow}.ui.spec.ts.create.md#MUST)
+- [Repository rules](./Implementation/Repository.extend.md#MUST)
+- [Package rules](./Implementation/{Package}.package.extend.md#MUST)
+- [Component test rules](./Implementation/{Component}.component.spec.ts.create.md#MUST)
+- [UI test rules](./Implementation/{Flow}.ui.spec.ts.create.md#MUST)
 
 # Check list
 - [ ] Shared core tools remain byte-identical; `make test-kinds` discovers all four kinds.

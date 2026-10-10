@@ -84,7 +84,7 @@ for, all legal under the map's Constraints:
 plateau-{name}/
   plateau-{name}.skill/
     plateau-{name}.skill.md      the plateau summary an agent reads before writing code
-    example/                     a runnable Nx workspace — vitest + nx lint + prod build (+ build-sw) green
+    examples/                     a runnable Nx workspace — vitest + nx lint + prod build (+ build-sw) green
   structure/                     one skill per project + per class (prefix `plateau-{name}--`)
   registry/                      delta-conflict-detection ordering records (per plateau)
 ```
@@ -98,7 +98,7 @@ plateau-{name}/
 | plateau-multiuser-monolith | 44 | 4 | vitest 28 files / 98 tests, `nx lint` (12), prod build 454 kB, build-sw |
 | plateau-persisted-state-monolith | 48 | 1 | vitest 31 files / 115 tests, `nx lint` (12), prod build 458 kB, build-sw; e2e typechecks |
 
-The example evolves **one Nx workspace** down the chain — each plateau's `example/` is a snapshot of
+The example evolves **one Nx workspace** down the chain — each plateau's `examples/` is a snapshot of
 that workspace grown by that plateau's solutions (living workspace at `/tmp/ng-ex/online-monolith`
 where this was built). Playwright specs are written and configured throughout but were not executed
 in the build sandbox.

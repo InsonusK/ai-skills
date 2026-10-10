@@ -44,7 +44,7 @@ multi-tenant-themed design system, built on `plateau-design-system` via `parent_
 plateau-{name}/
   plateau-{name}.skill/
     plateau-{name}.skill.md   the plateau summary
-    example/                   a plain Angular CLI multi-project workspace (NOT Nx)
+    examples/                   a plain Angular CLI multi-project workspace (NOT Nx)
   structure/                   repo + 2 project skills + class skills (prefix plateau-{name}--)
   registry/                    one entry: design-system-repository
 ```

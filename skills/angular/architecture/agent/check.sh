@@ -25,8 +25,8 @@ if grep -rn -E 'skills/angular/architecture/(solutions|plateau)/' "$V31" 2>/dev/
 else note "ok"; fi
 
 section "2. No Cyrillic anywhere in v3.1/ (HARD)"
-n=$(grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" 2>/dev/null | grep -vE '/example/' | wc -l)
-if [ "$n" -gt 0 ]; then fail=1; note "Cyrillic in $n files:"; grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" | grep -vE '/example/' | sed 's/^/    /'
+n=$(grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" 2>/dev/null | grep -vE '/examples/' | wc -l)
+if [ "$n" -gt 0 ]; then fail=1; note "Cyrillic in $n files:"; grep -rlIP '[\x{0400}-\x{04FF}]' "$V31" | grep -vE '/examples/' | sed 's/^/    /'
 else note "ok"; fi
 
 section "3a. Forbidden skill-design headings in main solution files (HARD)"
@@ -69,7 +69,7 @@ done
 
 section "8. Absolute wikilink targets resolve (fragments ignored)"
 : > /tmp/ng31_links.txt ; : > /tmp/ng31_planned.txt
-grep -rhoE '\[\[skills/[^]|#]+' "$V31" 2>/dev/null | grep -v '/example/' | sed 's/^\[\[//; s/\\$//' | sort -u | while read -r lnk; do
+grep -rhoE '\[\[skills/[^]|#]+' "$V31" 2>/dev/null | grep -v '/examples/' | sed 's/^\[\[//; s/\\$//' | sort -u | while read -r lnk; do
   resolve "$lnk" && continue
   sname="$(printf '%s' "$lnk" | grep -oE '(solution|plateau)-[a-z0-9-]+' | head -1)"
   if [ -n "$sname" ] && is_planned "$sname"; then echo "    planned: $lnk" >> /tmp/ng31_planned.txt

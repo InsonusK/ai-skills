@@ -26,7 +26,7 @@ latest() { # latest stable version of a NuGet package id
     | jq -r '.versions | map(select(test("-") | not)) | last'
 }
 
-FIXTURE="${FIXTURE:-skills/dotnet/architecture/plateau/plateau-core/plateau-core.skill/example}"
+FIXTURE="${FIXTURE:-skills/dotnet/architecture/plateau/plateau-core/plateau-core.skill/examples}"
 STRYKER_VERSION="${STRYKER_VERSION:-$(latest dotnet-stryker)}"
 XUNIT_V3_VERSION="${XUNIT_V3_VERSION:-$(latest xunit.v3)}"
 XUNIT_RUNNER_V3="${XUNIT_RUNNER_V3:-$(latest xunit.runner.visualstudio)}"

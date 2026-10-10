@@ -43,7 +43,7 @@ tags:
     plateau-{name}/
       plateau-{name}.skill/
         plateau-{name}.skill.md
-        example/
+        examples/
       structure/
       adr/
 ```

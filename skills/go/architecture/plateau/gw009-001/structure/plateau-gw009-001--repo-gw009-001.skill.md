@@ -114,5 +114,5 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Check list
-- [ ] `make proto-gen` regenerates both `gen/api` and `gen/reputation` with no manual edits needed afterward, including the new `RecentChecks` RPC (verified against this plateau's own `example/`).
+- [ ] `make proto-gen` regenerates both `gen/api` and `gen/reputation` with no manual edits needed afterward, including the new `RecentChecks` RPC (verified against this plateau's own `examples/`).
 - [ ] `TEST_DATABASE_DSN=postgres://postgres:postgres@localhost:5432/taskbox_test make test-kind-unit` passes (48 tests; 30 TaskBox scenarios on PostgreSQL).

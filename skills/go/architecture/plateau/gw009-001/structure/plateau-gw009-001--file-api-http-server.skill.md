@@ -159,7 +159,7 @@ func writeError(w http.ResponseWriter, code int, err error) {
 	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 }
 ```
-Verified against this plateau's own `example/internal/api/http/server.go` — smoke-tested: two `POST /v1/links/check` calls followed by `GET /v1/links/recent?limit=10` returned both entries, most-recent-first, with correct `checked_at`; a direct `psql` query against `link_checks` confirmed the same two rows; **the service was then killed and restarted, and `GET /v1/links/recent` (no new checks made) returned the identical two entries** — proving durable persistence across a process restart, not just within one process lifetime.
+Verified against this plateau's own `examples/internal/api/http/server.go` — smoke-tested: two `POST /v1/links/check` calls followed by `GET /v1/links/recent?limit=10` returned both entries, most-recent-first, with correct `checked_at`; a direct `psql` query against `link_checks` confirmed the same two rows; **the service was then killed and restarted, and `GET /v1/links/recent` (no new checks made) returned the identical two entries** — proving durable persistence across a process restart, not just within one process lifetime.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/internal/api/http/server.go.create.md|server.go]]

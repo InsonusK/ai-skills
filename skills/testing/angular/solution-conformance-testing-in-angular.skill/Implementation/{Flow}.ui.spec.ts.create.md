@@ -21,7 +21,7 @@ Visit a real route, locate controls by role/accessible name, perform the user's 
 
 Where appearance is part of the requirement, wait for loading to finish and fonts to settle, then assert a stable component/region with `toHaveScreenshot`. Use deterministic data and review any masks; do not mask the behavior being tested. Functional UI tests do not need a screenshot assertion solely to increase coverage.
 
-The [runnable browser specs](../example/src/app/spec/validation.ui.spec.ts) exercise button/keyboard submission, error recovery and a reviewed [visual baseline](../glossary/visual-baseline.md). `make test-kind-ui` owns the served application and native evidence.
+The [runnable browser specs](../examples/src/app/spec/validation.ui.spec.ts) exercise button/keyboard submission, error recovery and a reviewed [visual baseline](../glossary/visual-baseline.md). `make test-kind-ui` owns the served application and native evidence.
 
 # Rules
 ## MUST

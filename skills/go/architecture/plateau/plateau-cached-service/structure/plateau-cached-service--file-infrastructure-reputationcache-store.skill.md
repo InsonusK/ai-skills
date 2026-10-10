@@ -82,7 +82,7 @@ func (s *Store) Set(ctx context.Context, url string, rep interfaces.Reputation) 
 
 func cacheKey(url string) string { return "reputation:" + url }
 ```
-Verified against this plateau's own `example/internal/infrastructure/reputationcache/store.go`, against a real Redis instance (not mocked): 3 HTTP requests for the same URL produced exactly one call to the (throwaway, test-only) fake reputation server, confirmed both by that server's own call log and by `redis-cli get` returning the cached JSON value; a gRPC request for the same URL immediately afterward hit the cache too (same domain-service instance, same cache), confirming the cache is shared across transports.
+Verified against this plateau's own `examples/internal/infrastructure/reputationcache/store.go`, against a real Redis instance (not mocked): 3 HTTP requests for the same URL produced exactly one call to the (throwaway, test-only) fake reputation server, confirmed both by that server's own call log and by `redis-cli get` returning the cached JSON value; a gRPC request for the same URL immediately afterward hit the cache too (same domain-service instance, same cache), confirming the cache is shared across transports.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]] - [[skills/go/architecture/solutions/solution-cached-db.skill/Implementation/internal/infrastructure/{cache}/store.go.create.md|store.go]]

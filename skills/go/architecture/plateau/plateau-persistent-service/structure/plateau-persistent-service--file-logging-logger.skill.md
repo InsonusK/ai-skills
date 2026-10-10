@@ -55,7 +55,7 @@ func parseLevel(level string) slog.Level {
 	}
 }
 ```
-Verified against this plateau's own `example/internal/logging/logger.go`.
+Verified against this plateau's own `examples/internal/logging/logger.go`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-app-logging.skill/solution-go-app-logging.skill.md|solution-go-app-logging]] - [[skills/go/architecture/solutions/solution-go-app-logging.skill/Implementation/internal/logging/logger.go.create.md|internal/logging/logger.go]]

@@ -30,7 +30,7 @@ tags:
 `source: ordering-only` — arbitrary; listed in application order purely for readability, not because any delta requires it.
 
 # Resolution
-Canonical — no resolver needed, unchanged in shape since `plateau-http-service`. Every delta's own instructions ("add this field to the existing `Config{...}` literal") compose without conflict regardless of order — verified again at every plateau by actually building its own `example/`.
+Canonical — no resolver needed, unchanged in shape since `plateau-http-service`. Every delta's own instructions ("add this field to the existing `Config{...}` literal") compose without conflict regardless of order — verified again at every plateau by actually building its own `examples/`.
 
 # Architectural signal
 N=7 at the deepest plateau; every VP-realizing solution this catalog fully authored extends `Config`. This element's accretion has stayed purely additive across all five plateaus — the strongest confirmation in this catalog that an element can grow N≥3 and stay lower-risk than [[./cmd-service-main-go.md|cmd-service-main-go]]'s: named struct fields carry no order dependency at all, unlike the composition root's sequential `run()` body.

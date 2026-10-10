@@ -119,7 +119,7 @@ func writeError(w http.ResponseWriter, code int, err error) {
 	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 }
 ```
-Verified against this plateau's own `example/internal/api/http/server.go` — smoke-tested: `POST /v1/links/check {"url":"https://good.example.com"}` → `200 {"flagged":false,...}`; a URL the fake reputation server flags → `200 {"flagged":true,"reason":"..."}`; reputation service stopped → `502`; invalid URL → `400`; `GET /health` → `200`.
+Verified against this plateau's own `examples/internal/api/http/server.go` — smoke-tested: `POST /v1/links/check {"url":"https://good.example.com"}` → `200 {"flagged":false,...}`; a URL the fake reputation server flags → `200 {"flagged":true,"reason":"..."}`; reputation service stopped → `502`; invalid URL → `400`; `GET /health` → `200`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] - [[skills/go/architecture/solutions/solution-go-http-api.skill/Implementation/internal/api/http/server.go.create.md|server.go]]

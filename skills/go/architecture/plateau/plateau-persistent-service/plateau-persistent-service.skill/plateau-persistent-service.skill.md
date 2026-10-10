@@ -135,7 +135,7 @@ Six intersections — see `registry/`. Four canonical without further note; two 
 - [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (N=3, same retroactive-discovery story as above, conditional on `solution-grpc-api`)
 
 # Ground truth
-`example/` evolved from `plateau-cached-service`'s, verified:
+`examples/` evolved from `plateau-cached-service`'s, verified:
 - `go build ./...`, `go vet ./...` — clean.
 - `make test-kind-unit` — 13/13 godog scenarios green (11 unchanged + 2 new: a successful check is recorded in history, a history-recording failure fails the check), using in-memory stub `LinkHistory`/`ReputationCache`/`ReputationChecker` — no network call in the unit-test suite.
 - `make test-kind-mutation`/`test-report` — clean runs.

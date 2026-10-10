@@ -87,7 +87,7 @@ sequenceDiagram
 See [[skills/dotnet/architecture/plateau/plateau-core/structure/plateau-core--sln-core.skill|plateau-core--sln-core]] for the repository layout and the per-project / per-class skills.
 
 # Example
-A complete, runnable minimal service is in [`example/`](./example/) — a `Sample` module with one command, one query, one notification, and one Soft Value Object, wired through the full pipeline. `dotnet build Sample.slnx` and `make test-kind-unit` are green (the plateau's ground-truth check).
+A complete, runnable minimal service is in [`examples/`](./examples/) — a `Sample` module with one command, one query, one notification, and one Soft Value Object, wired through the full pipeline. `dotnet build Sample.slnx` and `make test-kind-unit` are green (the plateau's ground-truth check).
 
 # Testing ownership
 The updated [catalog solution](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md) contributes project selection and layer responsibilities; its generic testing conventions are applied through the linked stack skills.

@@ -80,4 +80,4 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] - [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/Repository.extend.md#MUST|Repository]]
 
 # Check list
-- [ ] `make proto-gen` regenerates `gen/api` from `proto/linkcheck/linkcheck.proto` with no manual edits needed afterward (verified against this plateau's own `example/`).
+- [ ] `make proto-gen` regenerates `gen/api` from `proto/linkcheck/linkcheck.proto` with no manual edits needed afterward (verified against this plateau's own `examples/`).

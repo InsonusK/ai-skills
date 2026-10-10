@@ -30,13 +30,13 @@ extends:
 depends_on:
   - "[Angular conformance testing](../solution-conformance-testing-in-angular.skill/solution-conformance-testing-in-angular.skill.md)"
 adr:
-  - "[Project aggregation](adr/project-aggregation.md)"
-  - "[Delta selection](adr/delta-selection.md)"
-  - "[Fresh runner evidence](adr/fresh-runner-evidence.md)"
+  - "[Project aggregation](./adr/project-aggregation.md)"
+  - "[Delta selection](./adr/delta-selection.md)"
+  - "[Fresh runner evidence](./adr/fresh-runner-evidence.md)"
 ---
 
 # Goal
-- Execute the four inherited kinds across an [Nx workspace](glossary/nx.md) and assemble one repository report.
+- Execute the four inherited kinds across an [Nx workspace](./glossary/nx.md) and assemble one repository report.
 - Preserve project identity and complete scenario inventory, including logic implemented in applications.
 
 # Core Principle
@@ -51,13 +51,13 @@ adr:
 - Chromium installation needs system libraries. Docker images, remote CI execution and other Angular/Nx versions are not verified here.
 
 # Adr
-- [Project aggregation](adr/project-aggregation.md): applicability read from the workspace, one run per project, one aggregated result; the base's five badge names.
-- [Delta selection](adr/delta-selection.md): affected projects in a `check` run with `DELTA_BASE`; mutation keeps changed-file selection inside the configured patterns.
-- [Fresh runner evidence](adr/fresh-runner-evidence.md): every Nx call of a kind skips the task cache; a missing project result is a failure.
+- [Project aggregation](./adr/project-aggregation.md): applicability read from the workspace, one run per project, one aggregated result; the base's five badge names.
+- [Delta selection](./adr/delta-selection.md): affected projects in a `check` run with `DELTA_BASE`; mutation keeps changed-file selection inside the configured patterns.
+- [Fresh runner evidence](./adr/fresh-runner-evidence.md): every Nx call of a kind skips the task cache; a missing project result is a failure.
 
 # Template Skill Mutations
-- [Repository](Implementation/Repository.extend.md): install Nx orchestration and the three replacement kinds.
-- [Project](Implementation/Project.extend.md): declare applicability, native targets, dependencies and domain scopes.
+- [Repository](./Implementation/Repository.extend.md): install Nx orchestration and the three replacement kinds.
+- [Project](./Implementation/Project.extend.md): declare applicability, native targets, dependencies and domain scopes.
 
 # Workflow
 1. Create projects with the official generators; apply the Angular base's spec rules and these two mutations.
@@ -65,7 +65,7 @@ adr:
 3. For a delta check, run `make test-and-report TEST_RUN_PURPOSE=check DELTA_BASE=<commit>`; read which projects were selected, unaffected or without the target in each kind's evidence.
 
 # Ground truth
-[The runnable Nx example](example/README.md) is a workspace made by the official generators — one application, its e2e project, an Angular library and a logic-only library — with no testing declaration in any `project.json`. Verified on 2026-10-10 with Node 24.21, Nx 23.2, Angular 22.1, Vitest 4.1 and Playwright with Chromium:
+[The runnable Nx example](./examples/README.md) is a workspace made by the official generators — one application, its e2e project, an Angular library and a logic-only library — with no testing declaration in any `project.json`. Verified on 2026-10-10 with Node 24.21, Nx 23.2, Angular 22.1, Vitest 4.1 and Playwright with Chromium:
 - `make init && make test-and-report`: exit 0; 31/31 scenarios (formatter 4, linkcheck 25, portal 2), line coverage 98.24%, mutation score 91.5%, components 5/5 through `nx run {project}:test`, UI 5/5 through `nx run portal-e2e:e2e` including the reviewed screenshot. The living documentation holds 29 inventory entries with all tags and exclusion reasons.
 - `run-example.sh` from a clean checkout — `npm ci`, a report run, a check run with caller-chosen directories, delta mutation: exit 0 in 1 min 51 s, with the npm and browser downloads already cached on the host. A first download was not measured.
 - `check-nx.py`, on a two-commit copy that changes `libs/formatter`: `unit` runs formatter and portal, `components` runs portal, `ui` runs portal-e2e, mutation covers the one changed file; linkcheck does not run and its scenarios stay in the inventory as `not-run`. The dependencies come from the imports — no project declares one by hand.
@@ -99,7 +99,7 @@ Select `nx affected` for unit/components/UI only when purpose is `check` and `DE
 ### Retain mutation's file delta
 Keep the TypeScript parent's `mutation.sh` unchanged and express all application/library domain scopes in Stryker `mutate` patterns.
 - Risk: mutation silently becomes whole-project rather than changed-file testing in checks.
-- Fix: run all configured domain files for reports and only changed matching files for delta checks, as decided in [Delta selection](adr/delta-selection.md).
+- Fix: run all configured domain files for reports and only changed matching files for delta checks, as decided in [Delta selection](./adr/delta-selection.md).
 
 ### Require fresh project evidence
 Skip the Nx task cache in every call a kind makes and validate a fresh native result for every selected project.

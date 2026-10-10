@@ -53,7 +53,7 @@ See [`structure/`](structure/plateau-offline-read-monolith--repo-offline-read-mo
 
 # Example
 
-See [`example/`](plateau-offline-read-monolith.skill/example/) — the parent Nx workspace, evolved: the `connectivity` slice + spec; `OfflineTransportError` + the `orders.client.ts` `status === 0` branch + spec; `OfflineBannerComponent` mounted in the shell; `sw-src.ts` / `sw-routes.ts` (unit-tested predicates) / `sw-build.mjs` + the `build-sw` target + `tsconfig.sw.json`; `main.ts` registers `/sw.js` after bootstrap (prod only). `npm test` (Vitest, 15 files / 44 tests), `npm run lint` (10 projects), `npx nx build-sw platform-shell` (produces `dist/.../sw.js`) all green.
+See [`examples/`](plateau-offline-read-monolith.skill/examples/) — the parent Nx workspace, evolved: the `connectivity` slice + spec; `OfflineTransportError` + the `orders.client.ts` `status === 0` branch + spec; `OfflineBannerComponent` mounted in the shell; `sw-src.ts` / `sw-routes.ts` (unit-tested predicates) / `sw-build.mjs` + the `build-sw` target + `tsconfig.sw.json`; `main.ts` registers `/sw.js` after bootstrap (prod only). `npm test` (Vitest, 15 files / 44 tests), `npm run lint` (10 projects), `npx nx build-sw platform-shell` (produces `dist/.../sw.js`) all green.
 
 # Intersection registry
 
