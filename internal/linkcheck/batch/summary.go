@@ -24,3 +24,5 @@ func Summarize(urls []string) Summary {
 	}
 	return summary
 }
+
+// A change of code: the pull request must run the tests and need no version bump into develop.
