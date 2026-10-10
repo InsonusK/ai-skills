@@ -18,7 +18,7 @@ tags:
 This skill defines the order of writing tests vs. code. It does not define the test case format or coverage rules:
 - The unit's `.feature` file is the source of test cases for the red-green cycles: its scenarios are written first, category-tagged and tagged `@status/todo`, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md)'s scenarios-first protocol.
 - Use [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) to decide what must be covered.
-- When the task is new business logic decomposed into units, this skill governs step 4-5 of `solid-decomposition` (attach test cases, then generate code): drive each unit with red-green-refactor instead of writing the implementation first.
+- When the task is new business logic decomposed into units, this skill governs the code-generation step of `solid-decomposition`: drive each unit with red-green-refactor instead of writing the implementation first.
 
 # Core Principle
 - Classify the task before choosing an approach — new behavior, large-scale refactor, and local/mechanical change need different rigor.
