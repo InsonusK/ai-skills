@@ -7,7 +7,6 @@ sources:
       - skills/devops
       - skills/common-workflow
       - skills/angular
-      - skills/typescript
       - skills/go
       - skills/design
       - skills/testing

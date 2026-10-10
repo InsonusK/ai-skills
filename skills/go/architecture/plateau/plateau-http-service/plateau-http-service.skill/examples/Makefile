@@ -2,8 +2,10 @@ SHELL := /bin/bash
 
 .PHONY: build run lint
 
-VERSION := $(shell cat VERSION 2>/dev/null || echo dev)
-LDFLAGS := -X github.com/example/linkcheck-service/internal/version.Version=$(VERSION)
+# Empty: the binary reports the version recorded in internal/version/version.go.
+# A snapshot build overrides it: make build VERSION=1.4.0-20261010120000
+VERSION ?=
+LDFLAGS := $(if $(VERSION),-X github.com/example/linkcheck-service/internal/version.Version=$(VERSION))
 
 build:
 	go build -ldflags "$(LDFLAGS)" -o bin/linkcheck ./cmd/linkcheck

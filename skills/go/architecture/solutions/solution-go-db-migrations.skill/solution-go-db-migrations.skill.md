@@ -78,7 +78,7 @@ adr:
   configuration (a Stack `deploy.replicas`, a Kubernetes `Deployment`'s `replicas`, a scaling
   policy), which this solution has no visibility into at build time. State the chosen mode, and the
   replica-count fact that makes it safe, explicitly in that plateau's own deploy config — see
-  [[skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md|devops-service-deploy]]'s
+  [[skills/devops/deploy/devops-service-deploy.skill/devops-service-deploy.skill.md|devops-service-deploy]]'s
   own "migration step" rule.
 
 # Adr
@@ -122,7 +122,7 @@ FILES:
 1. The deploy pipeline runs `cmd/migrate` as a one-shot job/container, per
    `devops-service-deploy.skill.md`'s own manifests for the platform in use — typically a
    Kubernetes `Job` via a Helm `pre-install,pre-upgrade` hook (see that skill's
-   [`templates/helm/chart-example/templates/migrate-job.yaml`](skills/devops/devops-service-deploy.skill/templates/helm/chart-example/templates/migrate-job.yaml)),
+   [`templates/helm/chart-example/templates/migrate-job.yaml`](skills/devops/deploy/devops-service-deploy.skill/templates/helm/chart-example/templates/migrate-job.yaml)),
    or a plain-manifest `kubectl apply` + `kubectl wait` step.
 2. `cmd/migrate`'s `run()` calls `{store}.Migrate(ctx, dsn)`, which applies every migration newer
    than the database's recorded version, or no-ops if already current.

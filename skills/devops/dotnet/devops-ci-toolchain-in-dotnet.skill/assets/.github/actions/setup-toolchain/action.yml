@@ -1,0 +1,10 @@
+# .github/actions/setup-toolchain/action.yml - installs the .NET toolchain version the project declares.
+# Source: skill devops-ci-toolchain-in-dotnet. Copied verbatim; never edited in the project.
+name: setup-toolchain
+description: Install the .NET toolchain version the project declares
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json

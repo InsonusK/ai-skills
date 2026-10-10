@@ -1,0 +1,52 @@
+# .github/actions/release/action.yml - packs the NuGet packages and pushes them to nuget.org (release) or GitHub Packages (snapshot)
+# Source: skill devops-release-package-in-dotnet. Copied verbatim; never edited in the project.
+name: release
+description: packs the NuGet packages and pushes them to nuget.org (release) or GitHub Packages (snapshot)
+inputs:
+  channel:
+    description: check - build and publish nothing; snapshot - a build of develop; release - a build of master
+    required: true
+  version:
+    description: The project's version, MAJOR.MINOR.PATCH
+    required: true
+  timestamp:
+    description: UTC time of the run, YYYYMMDDhhmmss - what makes a snapshot's name unique
+    required: true
+  registry-token:
+    description: nuget.org API key
+    required: false
+  snapshot-registry-token:
+    description: Not used - GitHub Packages takes the workflow's own token
+    required: false
+outputs:
+  notes:
+    description: Lines for the text of the GitHub Release
+    value: ${{ steps.names.outputs.notes }}
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/setup-toolchain
+    - id: names
+      shell: bash
+      env:
+        CHANNEL: ${{ inputs.channel }}
+        VERSION: ${{ inputs.version }}
+        TIMESTAMP: ${{ inputs.timestamp }}
+      run: |
+        publish="$VERSION"; [ "$CHANNEL" = snapshot ] && publish="$VERSION-$TIMESTAMP"
+        # The command-line property wins over the props file, which stays as it is.
+        dotnet pack --configuration Release -p:Version="$publish" --output ./nupkg
+        {
+          echo "notes<<EOF"
+          for f in ./nupkg/*.nupkg; do
+            id=$(basename "$f" ".$publish.nupkg")
+            echo "- Package: https://www.nuget.org/packages/$id/$VERSION"
+          done
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+    - if: inputs.channel == 'release'
+      shell: bash
+      run: dotnet nuget push "./nupkg/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "${{ inputs.registry-token }}" --skip-duplicate
+    - if: inputs.channel == 'snapshot'
+      shell: bash
+      run: dotnet nuget push "./nupkg/*.nupkg" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --api-key "${{ github.token }}" --skip-duplicate

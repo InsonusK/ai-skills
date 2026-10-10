@@ -1,0 +1,13 @@
+package.json	code
+angular.json	code
+nx.json	code
+src/app/cart/cart.component.ts	code
+src/app/cart/cart.component.html	code
+src/app/cart/spec/cart.component.spec.ts	test
+src/app/cart/test/cart.steps.ts	test
+src/app/cart/features/cart.feature	test
+projects/ui/src/lib/button/button.spec.ts	test
+apps/shop-e2e/src/shop.spec.ts	test
+apps/shop-e2e/playwright.config.ts	test
+apps/shop/src/main.ts	code
+libs/inspect/src/index.ts	code

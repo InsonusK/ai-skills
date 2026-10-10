@@ -1,0 +1,11 @@
+# .github/actions/setup-toolchain/action.yml - installs the Python toolchain version the project declares.
+# Source: skill devops-ci-toolchain-in-python. Copied verbatim; never edited in the project.
+name: setup-toolchain
+description: Install the Python toolchain version the project declares
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version-file: pyproject.toml
+        cache: pip

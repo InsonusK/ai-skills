@@ -276,7 +276,7 @@ replicated-job` (added specifically for one-shot tasks like migrations) exists â
 until `Complete`, then the app stack), not a manifest-only dependency.
 
 **Where this landed:** the actual "gate the app on the job" rule was added to
-`skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md` (a new MUST rule,
+`skills/devops/deploy/devops-service-deploy.skill/devops-service-deploy.skill.md` (a new MUST rule,
 mirrored into its `service-deploy-skill-template.md` skeleton, plus new
 `docker-stack-migrate.example.yml`/`k8s-migrate-job.example.yml` templates and wait-step updates to
 all three deploy guides) â€” **not** duplicated inside this Go catalog, since it is a cross-stack

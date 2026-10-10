@@ -1,0 +1,65 @@
+# .github/actions/release/action.yml - builds the npm package and publishes it to npmjs.org (release) or GitHub Packages (snapshot)
+# Source: skill devops-release-package-in-typescript. Filled and copied: {package-dir} is the folder that is published.
+name: release
+description: builds the npm package and publishes it to npmjs.org (release) or GitHub Packages (snapshot)
+inputs:
+  channel:
+    description: check - build and publish nothing; snapshot - a build of develop; release - a build of master
+    required: true
+  version:
+    description: The project's version, MAJOR.MINOR.PATCH
+    required: true
+  timestamp:
+    description: UTC time of the run, YYYYMMDDhhmmss - what makes a snapshot's name unique
+    required: true
+  registry-token:
+    description: npm access token
+    required: false
+  snapshot-registry-token:
+    description: Not used - GitHub Packages takes the workflow's own token
+    required: false
+outputs:
+  notes:
+    description: Lines for the text of the GitHub Release
+    value: ${{ steps.names.outputs.notes }}
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/setup-toolchain
+    - shell: bash
+      run: make init
+    - shell: bash
+      run: npm run build --if-present
+    - id: names
+      shell: bash
+      working-directory: {package-dir}
+      env:
+        CHANNEL: ${{ inputs.channel }}
+        VERSION: ${{ inputs.version }}
+        TIMESTAMP: ${{ inputs.timestamp }}
+      run: |
+        publish="$VERSION"; [ "$CHANNEL" = snapshot ] && publish="$VERSION-$TIMESTAMP"
+        # Stamped in the folder that is published, never committed.
+        npm pkg set version="$publish"
+        echo "notes=- Package: https://www.npmjs.com/package/$(npm pkg get name | tr -d '"')/v/$VERSION" >> "$GITHUB_OUTPUT"
+    - if: inputs.channel == 'check'
+      shell: bash
+      working-directory: {package-dir}
+      run: npm pack --dry-run
+    - if: inputs.channel == 'release'
+      shell: bash
+      working-directory: {package-dir}
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.registry-token }}
+      run: |
+        echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        npm publish --tag latest --provenance --access public
+    - if: inputs.channel == 'snapshot'
+      shell: bash
+      working-directory: {package-dir}
+      env:
+        NODE_AUTH_TOKEN: ${{ github.token }}
+      run: |
+        echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com" >> .npmrc
+        echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        npm publish --tag snapshot
