@@ -11,6 +11,7 @@ sources:
       - skills/go
       - skills/design
       - skills/testing
+      - skills/devops
 
 target:
   default:
