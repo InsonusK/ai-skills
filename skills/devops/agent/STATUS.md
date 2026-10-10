@@ -2,7 +2,7 @@
 
 Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop` at `aa241fc7`.
 
-**Now:** done, apart from what only a GitHub run shows. `bash skills/devops/agent/check.sh` is green (with `actionlint` on `PATH` and `npm install` run in `skills/devops/agent/`). The pull-request workflow ran green on GitHub on 2026-10-10 (pull request `devops-sample-change` into `develop-devops`, confirmed by the owner): `code` detected, `version-check` skipped, README check and the unit kind passed, the mutation kind skipped itself, the report job passed. The release workflow is not tried on GitHub by the owner's decision.
+**Now:** done, apart from what only a GitHub run shows. `bash skills/devops/agent/check.sh` is green (with `actionlint` on `PATH` and `npm install` run in `skills/devops/agent/`). The pull-request workflow ran green on GitHub on 2026-10-10 (pull request `devops-sample-change` into `develop-devops`, confirmed by the owner): `code` detected, `version-check` skipped, README check and the unit kind passed, the mutation kind skipped itself, the report job passed. A second run the same day, after the workflows became verbatim files that call the release action, was green too, `Delivery builds` included (with `devops-release-tag-only`). The release workflow is not tried on GitHub by the owner's decision.
 
 ## Waves
 
@@ -23,6 +23,5 @@ Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop
 - `check-changes` on a push (`base: ${{ github.ref }}`) and for categories other than `code`; on a pull request with a code change it ran green.
 - `make version-check` inside a workflow: the sample's pull request did not go into `master`.
 - Every job of `release.yml` after the tests: `deliver` with any release action, Pages, the Release. Of the release actions only the naming steps of the Docker and Go ones and the Go build ran locally.
-- `delivery-check` of `pull-request.yml` — added after the green run of 2026-10-10.
 - Starting test services from `.devcontainer/docker-compose.yml`; no sample has a database.
 - The Python, TypeScript, and .NET samples: only `tools/version/` and the path patterns ran for them.
