@@ -4,10 +4,7 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 
 ## Open forks
 
-- ⚠️ **F2. No `DELTA_BASE` for the test kinds in a pull request.** Not answered in the review of 2026-10-10. `INVARIANTS.md` keeps the standing decision: every kind runs in full as a `check` run and the mutation kind skips itself; a pull request is never gated on mutation testing.
-- ⚠️ **F10. What the GitHub experiment may publish.** A real run of `release.yml` in this repository pushes an image to `ghcr.io`, creates a tag and a Release, and deploys Pages. Proposed: the experiment workflows on `develop-devops` use a tag prefix `devops-test-v`, mark the Release as a draft and push only snapshot images; Pages deploy is exercised only if the owner allows it for this repository.
-
-- ⚠️ **F11. A push to `master` that would release an existing version fails.** The `version` job stops with "is already released" when `v{version}` exists and `code` or `docker` changed — instead of silently overwriting the image `{version}`. Cost: "re-run all jobs" of a release that already created its tag fails; "re-run failed jobs" works.
+None.
 
 ## Decided by the owner, 2026-10-10
 
@@ -21,6 +18,10 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 - **F7.** A database for tests is started by CI as a neighbouring environment, from the `docker-compose` of `.devcontainer`.
 - **F8.** Stack extensions live in `skills/devops/{stack}/`.
 - **F9.** Experiments run in this repository on the branch `develop-devops`; their files go under `test/`.
+- **F2** (2026-10-11). Mutation tests are not called when a pull request is checked: they do not block.
+- **F10** (2026-10-11). The release workflow is not tried on GitHub; the owner comes back with errors if a real project meets them.
+- **F11** (2026-10-11). A push to `master` that would release an existing version fails.
+- (2026-10-11) The owner reads the results of GitHub runs himself.
 - Forgotten items accepted: the library project type, an image build in a pull request, the report on Pages, the image tags, a docs-only change.
 
 ## Made by the agent
@@ -51,3 +52,4 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 - 2026-10-10 The GitHub experiment cannot live in a subfolder of this repository: the path filters and the workflows assume the project at the repository root, and everything under `test/` would be classified as tests. `test/devops/build-sample.sh` builds the sample as a repository root; the plan is to push that tree as the orphan branch `develop-devops` (and `master-devops` for the release path), branch names substituted in the two workflow files.
 - 2026-10-10 `skills/typescript/` held only DevOps skills and no longer exists; `test/ai-skills.yaml` drops that subpath.
 - 2026-10-10 `check.sh` §12 runs the repository's `aism sync` validation: the first run after W7 found five descriptions that were invalid YAML and one relative link the repointing missed.
+- 2026-10-11 The GitHub experiment covers `pull-request.yml` only: `test/devops/push-sample.sh` pushes the built sample as the orphan branch `develop-devops` and a branch `devops-sample-change` with one code change; the owner opens the pull request between them.
