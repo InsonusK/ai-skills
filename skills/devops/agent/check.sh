@@ -27,11 +27,11 @@ out=$(awk -F'\t' -v s="^skills/devops/($stacks)/" '$1 ~ /^skills\/devops\/(core)
 out=$(awk -F'\t' -v s="^skills/devops/($stacks)/" '$1 ~ s && $4 ~ s { split($1,a,"/"); split($4,b,"/"); if (a[3]!=b[3] && !(a[3]=="angular" && b[3]=="typescript")) print $1 "\t" $4 }' "$links" | sort -u)
 [ -n "$out" ] && { err "stack skill links another stack's skill:"; echo "$out"; }
 
-# 4. Layout: core/ and deploy/ hold stack-agnostic skills, {stack}/ holds {name}-in-{stack} skills.
+# 4. Layout: core/ holds stack-agnostic skills, {stack}/ holds {name}-in-{stack} skills.
 skill_file() { local e=$1 b n; b=$(basename "$e"); n=${b%.md}; n=${n%.skill}; if [ -d "$e" ]; then echo "$e/$n.skill.md"; else echo "$e"; fi; }
 for d in $D/*/; do
   dir=$(basename "$d"); [ "$dir" = agent ] && continue
-  [[ "$dir" =~ ^(core|deploy|$stacks)$ ]] || { err "$d: not core/, deploy/ or a stack folder"; continue; }
+  [[ "$dir" =~ ^(core|$stacks)$ ]] || { err "$d: not core/ or a stack folder"; continue; }
   for e in "$d"*; do
     b=$(basename "$e"); n=${b%.md}; n=${n%.skill}
     [[ "$b" == *.skill || "$b" == *.skill.md ]] || { err "$e: not a skill"; continue; }
@@ -74,7 +74,7 @@ forbidden='go test|go vet|pytest|mutmut|gremlins|stryker|dotnet test|coverlet|np
 #    Not checked: setup-toolchain reads the toolchain version, not the project's, from the manifest;
 #    a release action reads the package name from the manifest, and the Python one writes the
 #    snapshot version into it (DECISIONS.md).
-for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | grep -vE "^$D/deploy/|/setup-toolchain/action\.yml$|/actions/release/action\.yml$"); do
+for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | grep -vE "/devops-service-deploy\.skill/|/setup-toolchain/action\.yml$|/actions/release/action\.yml$"); do
   out=$(grep -nE "$forbidden" "$f" | grep -vE '^\s*[0-9]+:\s*#')
   [ -n "$out" ] && { err "$f names a test tool or a version source:"; echo "$out"; }
 done

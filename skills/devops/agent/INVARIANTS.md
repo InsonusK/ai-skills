@@ -60,7 +60,7 @@ A change of `docs` alone runs nothing but `changes` and `report`. A project whos
 
 ## 5. The skills
 
-Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` for stack-agnostic skills — the two workflow skills among them — `{stack}/` for extensions, `deploy/` for deployment. Stacks: go, python, typescript, dotnet, angular. A skill under `skills/devops/` links outside it only to `skills/testing/` and `skills/design/`.
+Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` for stack-agnostic skills — the two workflow skills among them — `{stack}/` for extensions. Stacks: go, python, typescript, dotnet, angular. A skill under `skills/devops/` links outside it only to `skills/testing/` and `skills/design/`.
 
 | Skill | Holds | Replaces |
 | --- | --- | --- |
@@ -71,7 +71,7 @@ Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` 
 | `devops-github-wf-pull-request` (core) | `pull-request.yml` | itself |
 | `devops-github-wf-release` (core) | `release.yml`, the contract of the release action, the list of its variants | `-docker-release-publish`, `-release-info-publish`, `-release-test-report`, `-stack-lib-release-publish` |
 | `devops-release-docker-image`, `devops-release-tag-only` (core), `devops-release-package-in-{python,typescript,dotnet}`, `devops-release-binaries-in-go` | one release action each; a project takes exactly one | the `docker-publish` job, `devops-github-wf-stack-lib-release-publish-in-{stack}`, `devops-github-wf-release-info-publish-in-go` |
-| `devops-service-deploy` | unchanged, moved to `deploy/` | — |
+| `devops-service-deploy` (core) | unchanged in content, moved to `core/`; not yet brought to the form of the other skills | — |
 
 Every script, action and workflow is a real file in `assets/` or `templates/` (per [[skills/design/skill-code-delivery.skill/skill-code-delivery.skill.md|skill-code-delivery]]), never YAML in a markdown fence. An extension links its base; a base names its extensions in backticks.
 
