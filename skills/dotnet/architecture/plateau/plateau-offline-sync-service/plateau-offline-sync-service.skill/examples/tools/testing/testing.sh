@@ -94,6 +94,11 @@ report() {
       for expected in $(badges "$kind"); do
         [ -f "$TEST_REPORT_DIR/badges/$expected.json" ] || { echo "test-report: test kind '$kind' declares badge '$expected' but the run produced none"; fail=1; }
       done
+      # A kind that ran scenarios must have rendered them: without the living doc the
+      # report's "tests" link shows no scenario.
+      if [ -f "$kinds_dir/$kind/result/scenarios.json" ] && [ ! -f "$kinds_dir/$kind/report/tests/livingdoc/index.html" ]; then
+        echo "test-report: test kind '$kind' has scenarios and no living doc - its output says why on a 'livingdoc:' line (the renderer needs npm and Node 22+)"; fail=1
+      fi
     done
   fi
   exit $fail

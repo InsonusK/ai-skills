@@ -31,10 +31,16 @@ kind_skip() {
 
 # kind_livingdoc - render report/tests/cucumber/ (the runner's standard Cucumber report) into
 # report/tests/livingdoc/ with the shared tools/livingdoc, and make it what report/tests/
-# opens when the runner's own report has no entry page. Never fails the kind; skipped
-# without npm.
+# opens when the runner's own report has no entry page. Never fails the kind; skipped, with
+# the reason printed, without npm or on a Node older than the renderer needs.
 kind_livingdoc() {
-  if command -v npm >/dev/null 2>&1; then
+  local node_major
+  node_major=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "livingdoc: npm not found - skipping living-doc report"
+  elif [ "$node_major" -lt 22 ]; then
+    echo "livingdoc: skipped - Node 22+ is needed, found $(node --version 2>/dev/null || echo none)"
+  else
     kind_status_legend_json > "$TEST_KIND_DIR/status-legend.json"
     { npm ci --prefix tools/livingdoc --silent \
         && node tools/livingdoc/render.mjs "$REPORT_DIR/tests/cucumber" "$REPORT_DIR/tests/livingdoc" \
@@ -45,8 +51,6 @@ kind_livingdoc() {
 <meta http-equiv="refresh" content="0; url=livingdoc/"></head>
 <body><a href="livingdoc/">living documentation</a></body></html>
 HTML
-  else
-    echo "livingdoc: npm not found - skipping living-doc report"
   fi
 }
 

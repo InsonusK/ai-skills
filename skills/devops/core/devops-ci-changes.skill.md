@@ -34,15 +34,17 @@ Start each job only for the categories in this table.
 
 | Category | Holds | In a pull request starts | On a push starts |
 | --- | --- | --- | --- |
-| `code` | what goes into the artifact: sources, manifests, the version source, any unclassified file | tests, the version check into `master`, the image build | tests, delivery |
+| `code` | what goes into the artifact: sources, manifests, the version source, the API contracts in `docs/integration/`, any unclassified file | tests, the version check into `master`, the image build | tests, delivery |
 | `test` | tests, features, `tools/` except `tools/version/`, the report template | tests | tests |
 | `ci` | `.github/`, `.devcontainer/`, `tools/version/`, `Makefile` | tests | tests |
 | `docker` | `Dockerfile`, `.dockerignore` | the version check into `master`, the image build | delivery |
-| `docs` | `docs/`, `*.md`, `LICENSE` | nothing | nothing |
+| `docs` | `docs/` except `docs/integration/`, `*.md`, `LICENSE` | nothing | nothing |
 
 - Violation: the version check also demanded for `test` or `ci`, or delivery started by `ci`.
 - Risk: a change that alters nothing shipped forces a version bump and publishes a release identical to the previous one.
 - Fix: copy the conditions of the workflow templates; they follow this table.
+
+The API contracts the `api-develop` and `api-client-develop` skills place under `docs/integration/` are `code`: a server embeds them and code is generated from them, so their change is tested, versioned, and delivered.
 
 ### Read the raw outputs in each job
 Expose the five outputs of the action unchanged from the `changes` job, and combine them in the `if:` of the job that needs them.

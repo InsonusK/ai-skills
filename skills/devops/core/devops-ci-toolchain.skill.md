@@ -28,6 +28,12 @@ Copy `action.yml` from the extension for the project's stack to `.github/actions
 - Risk: the workflow becomes stack-specific and is no longer the file every project copies.
 - Fix: call `./.github/actions/setup-toolchain` after the checkout.
 
+### Node for the test report in every stack
+The action of a stack other than Node's also installs Node, in the version `tools/livingdoc/package.json` declares in `engines`.
+- Violation: a Go project whose runner renders the living doc with whatever Node the image carries; `actions/setup-node` added to a workflow.
+- Risk: the renderer of [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] needs Node 22 or newer; on an older one the tests are green and the `tests` link of the published report leads nowhere.
+- Fix: keep the `actions/setup-node` step of the stack's asset; it reads the version from the renderer's own manifest.
+
 ### Only the toolchain and its cache
 Keep everything except the toolchain install and its dependency cache out of the action.
 - Violation: `npm ci` or a browser install added to the action.
@@ -38,3 +44,4 @@ Keep everything except the toolchain install and its dependency cache out of the
 - [ ] `.github/actions/setup-toolchain/action.yml` is byte-identical to the stack extension's asset.
 - [ ] Every building or testing job calls the action and then `make init`.
 - [ ] No workflow or action holds a toolchain version.
+- [ ] The action installs Node from `tools/livingdoc/package.json`, or the stack's own toolchain is Node.

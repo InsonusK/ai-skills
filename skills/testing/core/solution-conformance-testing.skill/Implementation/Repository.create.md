@@ -100,7 +100,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation` |
 | `report/tests/` | the tool's native test report; its entry page forwards to `livingdoc/` when the tool wrote none | `unit` — `kind_livingdoc` |
 | `report/tests/cucumber/` | the runner's standard Cucumber report — `*.json` (classic Cucumber JSON) or `*.ndjson` (Cucumber Messages), one protocol per stack | `unit` |
-| `report/tests/livingdoc/` | living-doc HTML rendered from `report/tests/cucumber/` by `tools/livingdoc/render.mjs` | `unit` (skipped when `npm` is unavailable) |
+| `report/tests/livingdoc/` | living-doc HTML rendered from `report/tests/cucumber/` by `tools/livingdoc/render.mjs` | `unit` (skipped, with the reason printed, when `npm` is unavailable or Node is older than 22) |
 | `report/coverage/` | the tool's native coverage report | `unit` (`report` only) |
 | `report/mutation/` | the tool's native mutation report | `mutation` |
 
@@ -109,7 +109,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 `score` in `mutation-test.json` is `killed / (killed+survived+timedout+noCoverage) * 100`, rounded to 1 decimal, `"0.0"` when nothing was mutated.
 
 ## Report output
-`test-report` empties `$TEST_REPORT_DIR`, runs `tools/testing/test-report.sh` — the same script in every stack — then records and checks the result. It exits `0` when a kind failed: that kind's own exit code is the signal, and the report of a red run must still be built and published. It exits non-zero only for a broken report — no `index.html`, a badge without a report or without a declaring kind, or in a `report` run a kind that exited `0` without a badge it declares.
+`test-report` empties `$TEST_REPORT_DIR`, runs `tools/testing/test-report.sh` — the same script in every stack — then records and checks the result. It exits `0` when a kind failed: that kind's own exit code is the signal, and the report of a red run must still be built and published. It exits non-zero only for a broken report — no `index.html`, a badge without a report or without a declaring kind, or in a `report` run a kind that exited `0` without a badge it declares or, having scenarios, without its living doc.
 
 | File | Content | Source |
 | --- | --- | --- |
@@ -179,7 +179,7 @@ One badge per declared badge, its URL ending with `badges/{name}.json` under whe
 - Write every badge through `kind_badge_count`, `kind_badge_percent` or `kind_badge`, under a name the script declares in its `# badges:` line, and write a `report/{name}/` of the same name.
   - Violation: a kind script that prints the JSON itself; a badge computed in `test-report.sh`.
   - Risk: a hand-written badge drifts in schema and colors from the others; a builder that computes badges knows a fixed list of kinds, and a new kind's badge needs the builder changed.
-  - Fix: call the function that fits; `test-report` fails when a badge has no report, no declaring kind, or when a kind that ran produced no badge it declares.
+  - Fix: call the function that fits; `test-report` fails when a badge has no report, no declaring kind, or when a kind that ran produced no badge it declares or no living doc for its scenarios.
 - Accept no caller-facing variable beyond `TEST_RUN_PURPOSE`, `DELTA_BASE`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`.
   - Risk: a caller needs stack knowledge to invoke the targets, defeating the uniform contract.
   - Fix: derive anything tool-specific inside the kind from those four.
