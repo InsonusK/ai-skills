@@ -16,7 +16,7 @@ adr:
 ---
 
 # Goal
-- `.github/workflows/release.yml`, an unchanged copy of this skill's asset.
+- `.github/workflows/release.yml`, a copy of this skill's asset that differs from it only in the test environment of the `test-kind` job.
 - `.github/actions/release/action.yml` taken from exactly one skill of [[#Take one release action]].
 - No other workflow that starts on a push to `develop` or `master`.
 - **Per branch** - On `develop`: a snapshot of what the project delivers. On `master`: the delivery as `{version}`, the test report on GitHub Pages, the tag `v{version}` with a GitHub Release.
@@ -40,11 +40,11 @@ adr:
 
 ## MUST
 
-### Copy the workflow verbatim
-Copy [[./assets/.github/workflows/release.yml|release.yml]] verbatim to `.github/workflows/release.yml`; do not modify it.
-- Violation: a publishing step for the project's registry typed into the workflow.
+### Change only the test environment
+Copy [[./assets/.github/workflows/release.yml|release.yml]] to `.github/workflows/release.yml` and change nothing in it but the test environment of the `test-kind` job: steps between `make init` and the test step that start what the tests need, and `env` entries of that job, per [[skills/devops/core/devops-ci-orchestration.skill/devops-ci-orchestration.skill.md#Start test services in the test job|devops-ci-orchestration]].
+- Violation: a publishing step for the project's registry typed into the workflow; a trigger, a job condition, or a `make` call changed.
 - Risk: the file stops being the one every project has, and a fix in the skill no longer applies to it.
-- Fix: restore the file; delivery belongs in the release action.
+- Fix: restore the file and re-add the test environment; delivery belongs in the release action.
 
 ### Take one release action
 Decide what the project delivers and apply the one skill of this table that matches; ask the user when it is not evident.
@@ -97,7 +97,7 @@ When `version` fails with "is already released", raise the version in a pull req
 - Fix: a pull request that raises the version; after a failed release, re-run only the failed jobs.
 
 # Check list
-- [ ] `.github/workflows/release.yml` is byte-identical to this skill's asset.
+- [ ] `.github/workflows/release.yml` differs from this skill's asset only in the test environment of the `test-kind` job.
 - [ ] `.github/actions/release/action.yml` comes from exactly one skill of [[#Take one release action]].
 - [ ] No other workflow triggers on a push to `develop` or `master`.
 - [ ] `check-changes`, `setup-toolchain`, `tools/version/`, the testing targets, and `make init` exist and run locally.

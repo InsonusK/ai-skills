@@ -1,5 +1,6 @@
 # .github/workflows/release.yml - what a push to develop or master tests, delivers, and releases.
-# Source: skill devops-github-wf-release. Copied verbatim; never edited in the project.
+# Source: skill devops-github-wf-release. Copied; a project edits only the test
+# environment of the test-kind job.
 name: Release
 
 on:
@@ -97,6 +98,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-toolchain
       - run: make init
+      # Test environment - the one part of this file a project edits: steps here start what
+      # the tests need (a database, a broker), and the job's env names it for them.
       # A kind exits non-zero when its checks failed; it wrote its results first.
       - run: make test-kind-${{ matrix.kind }}
       # The kind's one directory - handed to the report job as it is.

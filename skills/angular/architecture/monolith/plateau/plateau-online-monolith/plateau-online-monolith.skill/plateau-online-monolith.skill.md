@@ -55,19 +55,19 @@ registry:
 
 # Structure
 
-See [`structure/`](structure/plateau-online-monolith--repo-online-monolith.skill.md) — one repo skill, the project skills (`apps/platform-shell`, `apps/platform-shell-e2e`, `apps/component-preview`, `libs/shared/{ui,util,state,http-core,logging}`, `libs/{feature}/{feature,data-access}`), and the class/artifact skills under each.
+See [`structure/`](skills/angular/architecture/monolith/plateau/plateau-online-monolith/structure/plateau-online-monolith--repo-online-monolith.skill.md) — one repo skill, the project skills (`apps/platform-shell`, `apps/platform-shell-e2e`, `apps/component-preview`, `libs/shared/{ui,util,state,http-core,logging}`, `libs/{feature}/{feature,data-access}`), and the class/artifact skills under each.
 
 # Example
 
-See [`examples/`](plateau-online-monolith.skill/examples/) — a runnable Nx workspace with one feature (`orders`) end to end: a routed feature lib with a Signal Forms create form + feature Signal Store, an `orders` data-access lib (Facade/Client/Mapper/errors), `libs/shared/http-core`, `libs/shared/logging`, the empty-but-wired `libs/shared/state`, and the full four-layer test suite. `npm test` (Vitest) and `npm run e2e` (Playwright) green.
+See [`examples/`](skills/angular/architecture/monolith/plateau/plateau-online-monolith/plateau-online-monolith.skill/examples/) — a runnable Nx workspace with one feature (`orders`) end to end: a routed feature lib with a Signal Forms create form + feature Signal Store, an `orders` data-access lib (Facade/Client/Mapper/errors), `libs/shared/http-core`, `libs/shared/logging`, the empty-but-wired `libs/shared/state`, and the full four-layer test suite. `npm test` (Vitest) and `npm run e2e` (Playwright) green.
 
 # Intersection registry
 
 Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md), the solution deltas that touch the same element and first coexist at this plateau — all canonical, no resolvers:
 
-- [`component-name-component-ts`](registry/component-name-component-ts.md) — `solution-forms` + `solution-state-tiering`, `FMN`, `source: ordering-only`.
-- [`monolith-repository`](registry/monolith-repository.md) — `solution-repository-structure` `.create` + every feature's `.extend`, `FMN`/`TMN`, N≥3 (benign).
-- [`platform-shell-project`](registry/platform-shell-project.md) — the composition root, extended once per cross-cutting concern, `FMN`/`TMN`, N≥3 (benign).
+- [`component-name-component-ts`](skills/angular/architecture/monolith/registry/component-name-component-ts.md) — `solution-forms` + `solution-state-tiering`, `FMN`, `source: ordering-only`.
+- [`monolith-repository`](skills/angular/architecture/monolith/registry/monolith-repository.md) — `solution-repository-structure` `.create` + every feature's `.extend`, `FMN`/`TMN`, N≥3 (benign).
+- [`platform-shell-project`](skills/angular/architecture/monolith/registry/platform-shell-project.md) — the composition root, extended once per cross-cutting concern, `FMN`/`TMN`, N≥3 (benign).
 
 # Usecases
 

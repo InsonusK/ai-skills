@@ -42,7 +42,7 @@ registry:
 
 # Structure
 
-See [`structure/`](structure/plateau-embeddable-app--repo-embeddable-app.skill.md) — [`repo-embeddable-app`](structure/plateau-embeddable-app--repo-embeddable-app.skill.md) (the Native Federation remote baseline + the two consumption VPs; one flat app, so there is no dedicated project tier) and class skills [`class-remote-routes`](structure/classes/plateau-embeddable-app--class-remote-routes.skill.md) (the exposed `REMOTE_ROUTES`), [`class-require-permission`](structure/classes/plateau-embeddable-app--class-require-permission.skill.md) (the session-consumption guard), [`class-has-permission-directive`](structure/classes/plateau-embeddable-app--class-has-permission-directive.skill.md) (`*hasPermission`).
+See [`structure/`](skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/plateau-embeddable-app--repo-embeddable-app.skill.md) — [`repo-embeddable-app`](skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/plateau-embeddable-app--repo-embeddable-app.skill.md) (the Native Federation remote baseline + the two consumption VPs; one flat app, so there is no dedicated project tier) and class skills [`class-remote-routes`](skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-remote-routes.skill.md) (the exposed `REMOTE_ROUTES`), [`class-require-permission`](skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-require-permission.skill.md) (the session-consumption guard), [`class-has-permission-directive`](skills/angular/architecture/embeddable-app/plateau/plateau-embeddable-app/structure/classes/plateau-embeddable-app--class-has-permission-directive.skill.md) (`*hasPermission`).
 
 # Example
 
@@ -52,7 +52,7 @@ See [`examples/`](skills/angular/architecture/embeddable-app/plateau/plateau-emb
 
 Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
-- [`embeddable-repository`](registry/embeddable-repository.md) — `solution-federation-remote` `.create` + `solution-session-consumption` (VP1) / `solution-remote-design-system-consumption` (VP2) `.extend`. `FMN`/`TMN`, `source: ordering-only`, **N = 3 — benign** (the analogue of `monolith-repository` / `design-system-repository`; the `element/repository` retag is recorded in the analysis).
+- [`embeddable-repository`](skills/angular/architecture/embeddable-app/registry/embeddable-repository.md) — `solution-federation-remote` `.create` + `solution-session-consumption` (VP1) / `solution-remote-design-system-consumption` (VP2) `.extend`. `FMN`/`TMN`, `source: ordering-only`, **N = 3 — benign** (the analogue of `monolith-repository` / `design-system-repository`; the `element/repository` retag is recorded in the analysis).
 
 # Usecases
 

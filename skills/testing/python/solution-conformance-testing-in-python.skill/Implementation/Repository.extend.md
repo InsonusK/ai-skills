@@ -43,7 +43,7 @@ pyproject.toml
 ## Kind scripts
 The only stack-specific code — the Makefile, the runner and the report builder are the base's `tools/testing/`. Copy verbatim, as a folder, to `tools/testing/kinds/`: [`assets/tools/testing/kinds/`](../assets/tools/testing/kinds/) — `unit.sh`, `unit_scenarios.py`, `mutation.sh`.
 
-`report-template/index.html` — fill and copy the base's template, `{project-name}` = the package name: [`templates/report-template/index.html`](skills/testing/core/solution-conformance-testing.skill/templates/report-template/index.html)
+`report-template/index.html` — fill and copy `templates/report-template/index.html` from the folder of the base skill [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]], `{project-name}` = the package name
 
 ## .gitignore
 Beside the base's `tmp/` and `tools/livingdoc/node_modules/`: `.venv/`, `*.egg-info/`, `__pycache__/`, and `mutants/`, `.coverage`, `.pytest_cache/` (a `mutmut` or `pytest` started by hand — the kinds leave none of them).
