@@ -1,10 +1,9 @@
 init:
-	python3 -m venv .venv
-	.venv/bin/pip install -r requirements.txt
-	.venv/bin/aism sync
+	curl -fsSL https://raw.githubusercontent.com/InsonusK/go-ai-skill-manage/master/scripts/install.sh | sh
+	aism sync
 
 ai-skill-sync:
-	.venv/bin/aism sync
+	aism sync
 
 test-lib:
 	bash ./test/test.sh

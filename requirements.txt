@@ -1,1 +1,0 @@
-diagram-renderer @ git+https://github.com/InsonusK/ai-skill-graph-draw.git
