@@ -1,4 +1,6 @@
 package linkcheck
 
-// Version is the version of the module's distribution.
-const Version = "0.1.0"
+import "github.com/example/linkcheck/internal/version"
+
+// Version is the version of the module's distribution, as the package reports it.
+var Version = version.Version

@@ -5,7 +5,7 @@ whenToUse: when creating or editing internal/version/version.go
 domain: skill
 type: template
 plateau: plateau-integrated-service
-version: 20260917020000
+version: 20261010000000
 tags:
   - skill/template/file
   - plateau/plateau-integrated-service
@@ -14,25 +14,25 @@ created_by:
 ---
 
 # Goal
-Make the running binary's version observable, set at build time via `-ldflags`.
+Record the project's version in one place and make the running binary's version observable.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]
 
 # Core Principles
 - Apply ONE plateau template per file.
-- The version is a build-time constant, never computed at runtime.
-- The value comes only from the root `VERSION` file via `-ldflags -X`; never write a version number in Go source.
+- The version is recorded here and nowhere else; `make version` reads the `var Version` line.
+- `-ldflags -X` only overrides it for a snapshot build; there is no `VERSION` file.
 
 # Implementation
 ```go
 // Skill: file-version-version
 // Plateau: plateau-integrated-service
-// Version: 20260917020000
+// Version: 20261010000000
 
 package version
 
-var Version = "dev"
+var Version = "0.1.0"
 ```
 Verified against this plateau's own `examples/internal/version/version.go`.
 
@@ -40,8 +40,8 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]
 
 # Check list
-- [ ] `go build -ldflags "-X {module-path}/internal/version.Version=1.2.3" ...` overrides `Version`.
-- [ ] `Version` is `"dev"` in source; no Go file holds a version number.
+- [ ] `Version` holds the project's version; `make -s version` prints it; no `VERSION` file exists.
+- [ ] `go build -ldflags "-X {module-path}/internal/version.Version=9.9.9" ...` overrides `Version`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]

@@ -36,7 +36,7 @@ Reach testing and the version only through these targets and variables.
 | `make test-kinds`, `make test-kind-{kind}`, `make test-report`, `make test-readme-check` | list the test kinds, run one, build the report, check the README badges | [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md\|solution-conformance-testing]] |
 
 Variables: `DELTA_BASE`, `TEST_RUN_PURPOSE`, `TEST_WORK_DIR`, `TEST_REPORT_DIR`.
-- Violation: `run: go test ./...`, `run: cat VERSION`, or a new `make coverage` target called from a workflow.
+- Violation: `run: go test ./...`, `run: jq -r .version package.json`, or a new `make coverage` target called from a workflow.
 - Risk: the workflow breaks when the project changes a tool or a file, and the step cannot be tried before a push.
 - Fix: call the target; a need the contract does not cover is raised with the user, not added to one workflow.
 

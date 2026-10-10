@@ -13,10 +13,10 @@ step() { echo; echo "== $*"; "$@"; }
 step make -s version
 echo "-- version-check must fail while the version is not raised"
 if make -s version-check DELTA_BASE=master; then echo "FAIL: an unraised version passed"; exit 1; fi
-awk -F. '{ printf "%d.%d.%d\n", $1, $2 + 1, 0 }' VERSION > VERSION.new && mv VERSION.new VERSION
+next=$(make -s version | awk -F. '{ printf "%d.%d.%d", $1, $2 + 1, 0 }')
+sed -i "s/^var Version = .*/var Version = \"$next\"/" internal/version/version.go
 step make -s version-check DELTA_BASE=master
-# The example has a scenario that pins its own version; the tests run on the committed one.
-git checkout -q VERSION
+git checkout -q internal/version/version.go
 step make test-readme-check
 kinds=$(make -s test-kinds | cut -d' ' -f1 | jq -Rsc 'split("\n") | map(select(. != ""))')
 echo "kinds=$kinds"

@@ -70,7 +70,7 @@ for f in $(ls $D/core/*.skill/*.skill.md $D/core/*.skill.md $D/workflows/*.skill
 done
 
 # 6. INVARIANTS §1: no shipped workflow or action names a test tool, a coverage or mutation switch, or a version source.
-forbidden='go test|go vet|pytest|mutmut|gremlins|stryker|dotnet test|coverlet|npm test|npx (cucumber|jest|vitest|playwright|ng)|ng test|godog|--cov|--coverage|-cover\b|cat VERSION|pyproject\.toml|package\.json|Directory\.Build\.props|test-kind-(unit|mutation|components|ui)\b'
+forbidden='go test|go vet|pytest|mutmut|gremlins|stryker|dotnet test|coverlet|npm test|npx (cucumber|jest|vitest|playwright|ng)|ng test|godog|--cov|--coverage|-cover\b|cat VERSION|internal/version/version\.go|pyproject\.toml|package\.json|Directory\.Build\.props|test-kind-(unit|mutation|components|ui)\b'
 #    Not checked: setup-toolchain reads the toolchain version, not the project's, from the manifest;
 #    the Python package job writes the snapshot version into the manifest (DECISIONS.md).
 for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | grep -vE "^$D/deploy/|/setup-toolchain/action\.yml$|/devops-package-publish-in-python\.skill/"); do

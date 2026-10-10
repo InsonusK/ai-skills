@@ -1,64 +1,62 @@
 ---
 name: version-source-file
-description: Where a Go project's version, used for release tagging and package-publish gating, is read from
-problem: check-version (see [[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]] and [[skills/devops/workflows/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]]) needs one authoritative, comparable version per commit for every stack it supports. Python reads pyproject.toml, .NET reads Directory.Build.props, TypeScript reads package.json — but go.mod carries no version field at all; a Go module's version is conventionally just a semver git tag chosen at release time, decided by whoever cuts the release rather than recorded anywhere in the tree.
-decision: Add a plain-text `VERSION` file at the repository root (e.g. `1.4.0`, no `v` prefix, no newline requirement) as the single source of truth for a Go project's version, read and compared the same way the other three stacks' manifest files are.
+description: Where a Go project records the one version that CI checks, tags, and the program reports
+problem: Python, TypeScript, and .NET record the version in a manifest their build reads, but go.mod has no version field. Where does a Go project record its version so that a pull request can raise it, `make version` can print it, and the binary reports it?
+decision: The version is the string of `var Version` in `internal/version/version.go`; there is no `VERSION` file, and `-ldflags -X` is used only to override it for a snapshot build.
 tags:
   - stack/go
+  - concern/ci
   - concern/documentation
   - concern/documentation/adr
 ---
 
 # Problem
-
-[[skills/devops/workflows/devops-github-wf-pull-request.skill/devops-github-wf-pull-request.skill.md|devops-github-wf-pull-request]]'s `version-check` job and [[skills/devops/workflows/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]]'s `version` job both need to read the project's current version from a file in the tree and compare it against the same file at an earlier commit — this is how every other stack's `check-version` companion works (`pyproject.toml`, `Directory.Build.props`, `package.json`). Go has no equivalent: `go.mod` names the module path and its Go language version, never the module's own release version. The conventional Go approach is to let the release version live only as a git tag, chosen at tag-creation time — but that gives `check-version` nothing to diff between two commits before a release is cut, and no way to gate a PR's `version-check` job on "did this PR bump the version," since there is no file to compare.
+The version check needs one comparable version per commit, recorded in the tree so that a pull request into `master` can raise it. `go.mod` names the module path and the Go language version, never the module's own release version. The first answer was a root `VERSION` file with `Version = "dev"` in Go source, filled at build time through `-ldflags`. That is one number but three places that must agree — the file, the variable, and the flag with the variable's full path in the `Makefile` and the `Dockerfile` — and a build that misses the flag reports `dev` without failing. Where should the version be recorded?
 
 # Selected variant
-
-**Selected variant:** [[#Root VERSION file]]
-- Matches the other three stacks' pattern (one file, one field, diffable across commits) closely enough that the version check can reuse the same read/compare logic, and keeps `devops-github-wf-pull-request`'s PR-time version-bump gate meaningful for Go projects too.
+[[#Variable in version.go]]
+- Decided by the owner on 2026-10-10, replacing the root `VERSION` file selected before.
 
 # Searched variants
 
-## Root VERSION file
+## Variable in version.go
 
 **Selected.**
 
 ### Description
-A plain-text file, `VERSION`, at the repository root, holding exactly the semantic version (e.g. `1.4.0`).
+`internal/version/version.go` declares `var Version = "1.4.0"`. `read-version.sh` prints that string. A snapshot build overrides it with `-ldflags "-X {module-path}/internal/version.Version=…"`; a release build passes no flag.
 
 ### Benefits
-- Diffable across commits like every other stack's manifest file, so `check-version`'s "compare current vs. base ref" logic is identical in shape across all four stacks.
-- Trivial to read (`cat VERSION`) from any tooling, not just Go-aware tooling.
-- Keeps the actual release git tag (`v{VERSION}`) derived from, and consistent with, a value that was already reviewed as part of the PR that bumped it.
+- One place: the number is in the variable the program reports.
+- `go build`, `go install`, and a run from an editor all report the right version with no flag.
+- A pull request raises the version by changing one reviewed line.
 
 ### Costs
-- One more file to maintain that isn't read by `go build`/`go mod` themselves — it only matters to CI.
-- A maintainer could still forget to update it, same as any other stack's manifest field.
+- `read-version.sh` reads a line of Go source, so the declaration must keep its form and its path.
+- The version is not readable by a tool that knows nothing of the project's layout.
+
+## Root VERSION file
+
+### Description
+A plain-text `VERSION` file at the repository root; Go source holds `Version = "dev"` and every build injects the file's content through `-ldflags`.
+
+### Benefits
+- Trivial to read from any tooling.
+- The same shape as the other stacks' manifests: one file, one field.
+
+### Costs
+- Every build path must carry the flag; one that does not reports `dev` and does not fail.
+- Two files and a flag to keep in agreement; a test comparing the file with the code appears just to guard that.
 
 ## Git tag as the only version record
 
 ### Description
-Never store the version in a file; treat the most recent `vX.Y.Z` git tag as the project's current version, and let a human choose the next tag at release time.
+Never store the version in the tree; the latest `vX.Y.Z` tag is the version, read at build time or through `runtime/debug.ReadBuildInfo`.
 
 ### Benefits
-- Matches the most common convention in the wider Go ecosystem — no extra file.
-- No risk of the file and the tag disagreeing, since there is only one record.
+- The most common convention in the Go ecosystem, and the only version the module proxy knows.
+- Nothing to keep in agreement.
 
 ### Costs
-- Nothing in the tree changes when the version bumps, so `devops-github-wf-pull-request`'s `version-check` job has no file diff to gate on — a PR could not be required to "bump the version" the way it can for the other three stacks.
-- The release version is decided out-of-band from the PR that ships it, breaking this repo's pattern of every release-relevant fact being reviewed as part of a PR.
-
-## version.go constant
-
-### Description
-Store the release number itself as a Go constant (e.g. `const Version = "1.4.0"` in a `version.go` file), parsed with a small regex or `go/ast` in `check-version`.
-
-### Benefits
-- The version is available to the compiled binary at runtime (e.g. for a `--version` flag) without extra embedding steps.
-
-### Costs
-- Parsing a Go source file for a string constant is more fragile and more code than reading a one-line text file, for a value `check-version` only ever treats as opaque text.
-- Ties `check-version`'s implementation to Go source syntax instead of the same trivial file-read every other stack's action already uses.
-
-This rejected variant is not the `-ldflags` receiver in `internal/version/version.go` of `solution-go-repository-structure`: that file holds `"dev"`, never a number, and is filled from `VERSION` at build time.
+- Nothing in the tree changes with the version, so a pull request cannot be required to raise it.
+- A build from a checkout without tags — a shallow clone, a Docker context — has no version.

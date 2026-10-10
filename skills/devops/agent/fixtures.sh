@@ -12,7 +12,8 @@ fail=0
 # write_version <stack> <version> - records the version the way the stack's skill says.
 write_version() {
   case "$1" in
-    go) printf '%s\n' "$2" > VERSION ;;
+    go) mkdir -p internal/version
+        printf 'package version\n\n// Version is the version of the program.\nvar Version = "%s"\n\nvar Other = "9.9.9"\n' "$2" > internal/version/version.go ;;
     python) printf '[project]\nname = "fixture"\nversion = "%s"\n\n[tool.other]\nversion = "9.9.9"\n' "$2" > pyproject.toml ;;
     typescript) printf '{\n  "name": "fixture",\n  "version": "%s",\n  "dependencies": { "x": "9.9.9" }\n}\n' "$2" > package.json ;;
     dotnet) printf '<Project>\n  <PropertyGroup>\n    <Version>%s</Version>\n    <LangVersion>12.0</LangVersion>\n  </PropertyGroup>\n</Project>\n' "$2" > Directory.Build.props ;;

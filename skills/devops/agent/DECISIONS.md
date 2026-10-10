@@ -18,10 +18,11 @@ None.
 - **F7.** A database for tests is started by CI as a neighbouring environment, from the `docker-compose` of `.devcontainer`.
 - **F8.** Stack extensions live in `skills/devops/{stack}/`.
 - **F9.** Experiments run in this repository on the branch `develop-devops`; their files go under `test/`.
-- **F2** (2026-10-11). Mutation tests are not called when a pull request is checked: they do not block.
-- **F10** (2026-10-11). The release workflow is not tried on GitHub; the owner comes back with errors if a real project meets them.
-- **F11** (2026-10-11). A push to `master` that would release an existing version fails.
-- (2026-10-11) The owner reads the results of GitHub runs himself.
+- **F2** (2026-10-10). Mutation tests are not called when a pull request is checked: they do not block.
+- **F10** (2026-10-10). The release workflow is not tried on GitHub; the owner comes back with errors if a real project meets them.
+- **F11** (2026-10-10). A push to `master` that would release an existing version fails.
+- (2026-10-10) The owner reads the results of GitHub runs himself.
+- **Go version source** (2026-10-10). A Go project records its version only as `var Version` in `internal/version/version.go`; the root `VERSION` file is dropped. Changed with it: `devops-project-version-in-go` and its ADR, `solution-go-repository-structure`, six plateau version-file skills and their examples, the Go testing example and its ADR `distribution-version`.
 - Forgotten items accepted: the library project type, an image build in a pull request, the report on Pages, the image tags, a docs-only change.
 
 ## Made by the agent
@@ -52,4 +53,4 @@ None.
 - 2026-10-10 The GitHub experiment cannot live in a subfolder of this repository: the path filters and the workflows assume the project at the repository root, and everything under `test/` would be classified as tests. `test/devops/build-sample.sh` builds the sample as a repository root; the plan is to push that tree as the orphan branch `develop-devops` (and `master-devops` for the release path), branch names substituted in the two workflow files.
 - 2026-10-10 `skills/typescript/` held only DevOps skills and no longer exists; `test/ai-skills.yaml` drops that subpath.
 - 2026-10-10 `check.sh` §12 runs the repository's `aism sync` validation: the first run after W7 found five descriptions that were invalid YAML and one relative link the repointing missed.
-- 2026-10-11 The GitHub experiment covers `pull-request.yml` only: `test/devops/push-sample.sh` pushes the built sample as the orphan branch `develop-devops` and a branch `devops-sample-change` with one code change; the owner opens the pull request between them.
+- 2026-10-10 The GitHub experiment covers `pull-request.yml` only: `test/devops/push-sample.sh` pushes the built sample as the orphan branch `develop-devops` and a branch `devops-sample-change` with one code change; the owner opens the pull request between them.

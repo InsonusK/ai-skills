@@ -2,7 +2,7 @@
 
 Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop` at `aa241fc7`.
 
-**Now:** done, apart from what only a GitHub run shows. `bash skills/devops/agent/check.sh` is green (with `actionlint` on `PATH` and `npm install` run in `skills/devops/agent/`). The pull-request workflow ran green on GitHub on 2026-10-11 (pull request `devops-sample-change` into `develop-devops`, confirmed by the owner): `code` detected, `version-check` skipped, README check and the unit kind passed, the mutation kind skipped itself, the report job passed. The release workflow is not tried on GitHub by the owner's decision.
+**Now:** done, apart from what only a GitHub run shows. `bash skills/devops/agent/check.sh` is green (with `actionlint` on `PATH` and `npm install` run in `skills/devops/agent/`). The pull-request workflow ran green on GitHub on 2026-10-10 (pull request `devops-sample-change` into `develop-devops`, confirmed by the owner): `code` detected, `version-check` skipped, README check and the unit kind passed, the mutation kind skipped itself, the report job passed. The release workflow is not tried on GitHub by the owner's decision.
 
 ## Waves
 

@@ -4,7 +4,7 @@ description: Sets up the Go side of the Cucumber/coverage/mutation quality gate 
 whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario inventory into a Go project's Makefile/CI pipeline
 domain: skill
 type: architecture
-version: 20261009200000
+version: 20261010000000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-go
@@ -48,7 +48,7 @@ adr:
 - `test-kind-mutation` always exits with the underlying `gremlins` exit code after writing its normalized result, per the parent solution's contract.
 
 # Adr
-- [[./adr/distribution-version.md|Distribution version]] — compare the public Go version with a shipped VERSION manifest; local Go build metadata does not carry a release version.
+- [[./adr/distribution-version.md|Distribution version]] — compare the package's public version with the version recorded in `internal/version/version.go`; local Go build metadata does not carry a release version.
 - [[skills/testing/go/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]
   - Selected variant: `gremlins` (`github.com/go-gremlins/gremlins`)
 

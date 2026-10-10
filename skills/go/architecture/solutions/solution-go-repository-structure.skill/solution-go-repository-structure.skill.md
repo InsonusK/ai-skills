@@ -4,7 +4,7 @@ description: The baseline repository layout for a Go web-service — go.mod, Mak
 whenToUse: when starting a new Go web-service repository from scratch, or reviewing whether an existing one's root layout (go.mod, Makefile, cmd/{service}/main.go) matches this family's baseline
 domain: skill
 type: architecture
-version: 20260917000000
+version: 20261010000000
 tags:
   - skill/architecture/solution
   - solution/go-repository-structure
@@ -46,7 +46,7 @@ FILES:
 - [[./Implementation/Repository.create.md|Repository]] - create - `go.mod`, `Makefile` (`build`/`run`/`lint` targets), `.gitignore`
 - [[./Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]] - create - composition root, loads config and returns
 - [[./Implementation/internal/config/config.go.create.md|internal/config/config.go]] - create - env-var `Config` loader, starting with zero `Config` fields
-- [[./Implementation/internal/version/version.go.create.md|internal/version/version.go]] - create - build-time version receiver filled from the root `VERSION` file
+- [[./Implementation/internal/version/version.go.create.md|internal/version/version.go]] - create - the one place the version is recorded, reported by the running program
 
 # Workflow
 
@@ -77,5 +77,5 @@ FILES:
 - [ ] `make build`, `make run`, and `make lint` all succeed against the empty baseline.
 - [ ] `cmd/{service}/main.go` contains no adapter construction — `run()` only loads config and returns.
 - [ ] `internal/config/config.go`'s `Config` struct compiles with zero fields.
-- [ ] The root `VERSION` file is the only version source; `internal/version.Version` is `"dev"` in source and set via `-ldflags`.
+- [ ] `var Version` in `internal/version/version.go` is the only version source; there is no `VERSION` file, and `-ldflags` only overrides it for a snapshot build.
 - [ ] Every build path (Makefile, Dockerfile, release workflow) injects `{module-path}/internal/version.Version`.
