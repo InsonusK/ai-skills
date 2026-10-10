@@ -1,6 +1,6 @@
 ---
 name: devops-ci-changes-in-angular
-description: Angular implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the Angular test layout: `test/`, `features/`, and `spec/` folders beside the code, `*.spec.ts` files, and `-e2e` projects
+description: Angular implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the Angular test layout — `test/`, `features/`, and `spec/` folders beside the code, `*.spec.ts` files, and `-e2e` projects
 whenToUse: when a Angular project needs `.github/actions/check-changes/action.yml`, or when you review that file in a Angular project
 updated: 20261010
 tags:

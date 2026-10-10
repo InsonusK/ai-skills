@@ -1,6 +1,6 @@
 ---
 name: devops-ci-changes-in-dotnet
-description: .NET implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the .NET test layout: `*.Tests` projects
+description: .NET implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the .NET test layout — `*.Tests` projects
 whenToUse: when a .NET project needs `.github/actions/check-changes/action.yml`, or when you review that file in a .NET project
 updated: 20261010
 tags:

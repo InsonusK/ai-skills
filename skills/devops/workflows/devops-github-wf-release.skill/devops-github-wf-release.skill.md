@@ -72,12 +72,7 @@ Set the repository's Settings → Pages → Source to "GitHub Actions" before th
 - Fix: switch the source once in the repository settings.
 
 ### Add the badges to the README
-Add these lines to the README, with one `{name}` line per badge `make test-kinds` prints.
-```markdown
-[![Release](https://github.com/{org}/{repo}/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/{org}/{repo}/actions/workflows/release.yml)
-[![Test report](https://img.shields.io/badge/test-report-blue)](https://{org}.github.io/{repo}/testing/)
-[![{name}](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/testing/badges/{name}.json)](https://{org}.github.io/{repo}/testing/reports/{name}/)
-```
+Fill and copy [[./templates/readme-badges.md|readme-badges.md]] into the README: `{org}` and `{repo}` are the repository's owner and name, and the last line is repeated with `{name}` replaced by each badge `make test-kinds` prints.
 - Violation: a coverage number typed into a static badge.
 - Risk: the badge shows a number nothing updates, and `make test-readme-check` fails the pull request for a missing declared badge.
 - Fix: endpoint badges reading `badges/{name}.json` of the published report.

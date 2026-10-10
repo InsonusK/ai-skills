@@ -49,3 +49,5 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 - 2026-10-10 Release concurrency: a newer push cancels a running `develop` snapshot, never a running `master` release.
 - 2026-10-10 `skill-design` gets the rule "Keep DevOps skills together" and the ADR `devops-skills-in-one-directory` for F8.
 - 2026-10-10 The GitHub experiment cannot live in a subfolder of this repository: the path filters and the workflows assume the project at the repository root, and everything under `test/` would be classified as tests. `test/devops/build-sample.sh` builds the sample as a repository root; the plan is to push that tree as the orphan branch `develop-devops` (and `master-devops` for the release path), branch names substituted in the two workflow files.
+- 2026-10-10 `skills/typescript/` held only DevOps skills and no longer exists; `test/ai-skills.yaml` drops that subpath.
+- 2026-10-10 `check.sh` §12 runs the repository's `aism sync` validation: the first run after W7 found five descriptions that were invalid YAML and one relative link the repointing missed.

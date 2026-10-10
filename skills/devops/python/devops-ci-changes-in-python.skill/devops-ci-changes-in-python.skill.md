@@ -1,6 +1,6 @@
 ---
 name: devops-ci-changes-in-python
-description: Python implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the Python test layout: `{package}/test/`, `{package}/features/`, a root `tests/`
+description: Python implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the Python test layout — `{package}/test/`, `{package}/features/`, a root `tests/`
 whenToUse: when a Python project needs `.github/actions/check-changes/action.yml`, or when you review that file in a Python project
 updated: 20261010
 tags:

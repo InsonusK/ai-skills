@@ -1,6 +1,6 @@
 ---
 name: devops-ci-changes-in-typescript
-description: TypeScript implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the TypeScript test layout: `{package}/test/` and `{package}/features/`
+description: TypeScript implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the TypeScript test layout — `{package}/test/` and `{package}/features/`
 whenToUse: when a TypeScript project needs `.github/actions/check-changes/action.yml`, or when you review that file in a TypeScript project
 updated: 20261010
 tags:

@@ -121,4 +121,11 @@ for f in $D/*/devops-ci-changes-in-*.skill/assets/.github/actions/check-changes/
   [ "$n" = "$ref" ] || err "$f: differs from the other stacks outside its test patterns"
 done
 
+# 12. The repository's own sync validation - what its pull-request workflow runs.
+if command -v aism >/dev/null 2>&1; then
+  bash test/test.sh >/tmp/devops-sync.log 2>&1 || { err "test/test.sh (aism sync):"; grep -E 'E[0-9]{3}|Found' /tmp/devops-sync.log; }
+else
+  echo "note: aism is not installed - the sync validation is not run"
+fi
+
 [ "$fail" -eq 0 ] && echo "check: all passed" || exit 1

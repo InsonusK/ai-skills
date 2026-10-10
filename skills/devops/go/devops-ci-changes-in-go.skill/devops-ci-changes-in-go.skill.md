@@ -1,6 +1,6 @@
 ---
 name: devops-ci-changes-in-go
-description: Go implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the Go test layout: `*_test.go` files, `{package}/test/`, `{package}/features/`, `testdata/`
+description: Go implementation of devops-ci-changes — the ready check-changes composite action whose test category follows the Go test layout — `*_test.go` files, `{package}/test/`, `{package}/features/`, `testdata/`
 whenToUse: when a Go project needs `.github/actions/check-changes/action.yml`, or when you review that file in a Go project
 updated: 20261010
 tags:
