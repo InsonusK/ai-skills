@@ -52,7 +52,7 @@ type Reputation struct {
 	Reason  string
 }
 ```
-— see `plateau-integrated-service`'s `example/`.
+— see `plateau-integrated-service`'s `examples/`.
 
 # Rule changes
 

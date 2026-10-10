@@ -123,7 +123,7 @@ Six intersections, all canonical — see `registry/`:
 - [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (new at this plateau, N=2, same retroactive discovery as above — conditional on `solution-grpc-api` being applied)
 
 # Ground truth
-`example/` evolved from `plateau-dual-api-service`'s, verified:
+`examples/` evolved from `plateau-dual-api-service`'s, verified:
 - `buf generate proto/linkcheck` + `buf generate proto/reputation` (both via `make proto-gen`) — produce `gen/api/*.go` and `gen/reputation/*.go`, both flat.
 - `go build ./...`, `go vet ./...` — clean.
 - `make test-kind-unit` — 9/9 godog scenarios green (5 unchanged + 4 new: flagged, clean, validation-fails-before-reputation-call, reputation-unavailable), using a scenario-configurable stub `ReputationChecker` — no network call in the unit-test suite.

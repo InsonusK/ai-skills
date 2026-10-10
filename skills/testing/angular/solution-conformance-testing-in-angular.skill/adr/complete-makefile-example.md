@@ -24,7 +24,7 @@ The solution delivers a `Makefile` contract: a caller runs `make` targets, knows
 **Selected.**
 
 ### Description
-`example/` holds the Link checker domain and its scenarios unchanged from the TypeScript example, an Angular form that uses it, component and browser specs, a reviewed screenshot baseline, the lockfile, the four kind scripts and the unchanged shared report tools.
+`examples/` holds the Link checker domain and its scenarios unchanged from the TypeScript example, an Angular form that uses it, component and browser specs, a reviewed screenshot baseline, the lockfile, the four kind scripts and the unchanged shared report tools.
 
 ### Benefits
 - `make init && make test-and-report` is the whole public path; CI needs no runner command.

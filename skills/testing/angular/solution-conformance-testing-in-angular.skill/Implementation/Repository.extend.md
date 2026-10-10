@@ -31,7 +31,7 @@ The Playwright template discovers all existing browser layers under `spec/`: `.u
 
 Extend README Shields endpoint links with `badges/components.json` and `badges/ui.json` beside the inherited badges. Their destination links open `reports/components/` and `reports/ui/` under the published report root.
 
-The [complete example Makefile](../example/Makefile) exposes the inherited public contract. Its `init` target prepares dependencies; testing targets come exclusively from the shared include. [Example README](../example/README.md) documents the caller commands and report destination.
+The [complete example Makefile](../examples/Makefile) exposes the inherited public contract. Its `init` target prepares dependencies; testing targets come exclusively from the shared include. [Example README](../examples/README.md) documents the caller commands and report destination.
 
 # Rules
 ## MUST

@@ -107,7 +107,7 @@ PACKAGE:
 3. Follow the baseline review procedure in [UI tests](Implementation/{Flow}.ui.spec.ts.create.md#MUST); the normal kind never updates committed expectations.
 
 # Ground truth
-[The complete Angular example](example/README.md) builds and serves a real Link checker form over the inherited domain package; its Makefile runs all four kinds and assembles the common report. Verified on 2026-10-09 with Node 24, Angular 22, Vitest 5, Playwright 1.64 and Chromium:
+[The complete Angular example](examples/README.md) builds and serves a real Link checker form over the inherited domain package; its Makefile runs all four kinds and assembles the common report. Verified on 2026-10-09 with Node 24, Angular 22, Vitest 5, Playwright 1.64 and Chromium:
 - `make init && make test-and-report` — exit `0`; 25/25 Cucumber scenarios, domain coverage 98.1%, domain mutation score 90.2%, 4/4 component tests, 4/4 browser tests with one screenshot comparison.
 - `make test-and-report TEST_RUN_PURPOSE=check` with caller-chosen directories — every kind but mutation runs, mutation is skipped without `DELTA_BASE`, the domain coverage report is not published.
 - A deliberately wrong component expectation — the run exits non-zero, the `components` badge is red (3/4), the other kinds still run and the report is assembled.

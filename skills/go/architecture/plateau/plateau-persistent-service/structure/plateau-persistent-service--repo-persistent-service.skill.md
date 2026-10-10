@@ -101,4 +101,4 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] - [[skills/go/architecture/solutions/solution-external-integration.skill/Implementation/Repository.extend.md#MUST|Repository]]
 
 # Check list
-- [ ] `make proto-gen` regenerates both `gen/api` and `gen/reputation` with no manual edits needed afterward, including the new `RecentChecks` RPC (verified against this plateau's own `example/`).
+- [ ] `make proto-gen` regenerates both `gen/api` and `gen/reputation` with no manual edits needed afterward, including the new `RecentChecks` RPC (verified against this plateau's own `examples/`).

@@ -57,7 +57,7 @@ See [`structure/`](structure/plateau-offline-full-monolith--repo-offline-full-mo
 
 # Example
 
-See [`example/`](plateau-offline-full-monolith.skill/example/) — the parent Nx workspace, evolved: `libs/shared/offline-sync` (Dexie DB + `MutationQueueService` + `ReplayOrchestrator` + `MutationReplayRegistry` + `provide{OfflineSync,FeatureReplay}`); the `notifications` slice + spec; `orders.facade.ts` enqueues on `OfflineTransportError`; `orders.offline-sync.ts` registers the replay handler in `ORDERS_ROUTES`' route providers; `OrdersStore` tracks `pendingSync`; `<ui-pending-sync-indicator>` in the order form. **`npm test` (Vitest, 20 files / 67 tests) + `npm run lint` (11 projects) + `nx build platform-shell --configuration=production` + `nx build-sw platform-shell` all green.** `dexie` + `fake-indexeddb` (dev) added.
+See [`examples/`](plateau-offline-full-monolith.skill/examples/) — the parent Nx workspace, evolved: `libs/shared/offline-sync` (Dexie DB + `MutationQueueService` + `ReplayOrchestrator` + `MutationReplayRegistry` + `provide{OfflineSync,FeatureReplay}`); the `notifications` slice + spec; `orders.facade.ts` enqueues on `OfflineTransportError`; `orders.offline-sync.ts` registers the replay handler in `ORDERS_ROUTES`' route providers; `OrdersStore` tracks `pendingSync`; `<ui-pending-sync-indicator>` in the order form. **`npm test` (Vitest, 20 files / 67 tests) + `npm run lint` (11 projects) + `nx build platform-shell --configuration=production` + `nx build-sw platform-shell` all green.** `dexie` + `fake-indexeddb` (dev) added.
 
 # Intersection registry
 

@@ -48,7 +48,7 @@ Only when N≥3 solutions intersect on this element: note explicitly that this i
 
 # Growth history
 ```hint
-One row per plateau where the intersecting set changed (a solution was added, or the classification/resolution itself changed) — not one row per plateau that merely inherits the element unchanged. Table columns: Plateau | N | What changed | Verified. "Verified" states how that plateau's own `example/` confirmed the classification held (a build/test run, a runtime smoke test) — this is the per-plateau ground-truth note that used to be a separate paragraph per file under the old, per-plateau registry design; see delta-conflict-detection.skill's own ADR for why it moved here.
+One row per plateau where the intersecting set changed (a solution was added, or the classification/resolution itself changed) — not one row per plateau that merely inherits the element unchanged. Table columns: Plateau | N | What changed | Verified. "Verified" states how that plateau's own `examples/` confirmed the classification held (a build/test run, a runtime smoke test) — this is the per-plateau ground-truth note that used to be a separate paragraph per file under the old, per-plateau registry design; see delta-conflict-detection.skill's own ADR for why it moved here.
 
 | Plateau | N | What changed | Verified |
 | --- | --- | --- | --- |

@@ -32,7 +32,7 @@ func (s *{Service}) {Method}(ctx context.Context, input string) error {
 }
 ```
 
-This catalog's own runnable examples extend `LinkCheckService.Check` to also call `ReputationChecker.CheckReputation` and fold its verdict into the returned `Result` — see `plateau-integrated-service`'s `example/`.
+This catalog's own runnable examples extend `LinkCheckService.Check` to also call `ReputationChecker.CheckReputation` and fold its verdict into the returned `Result` — see `plateau-integrated-service`'s `examples/`.
 
 # Rule changes
 

@@ -79,7 +79,7 @@ Each wave receives a separate conformance review and commit after its checks pas
 ## Handoff
 
 - Local commits: preparation `d1682658`; library delivery `eebe8c9d`; Nx delivery `6b1c4b73`; final integration is the following commit. No push or PR per TASK.md.
-- Both examples retain generated reports at `example/tmp/testing/report/index.html`; reproduce with `make init && make test-and-report`.
+- Both examples retain generated reports at `examples/tmp/testing/report/index.html`; reproduce with `make init && make test-and-report`.
 - Mechanical check, all three example harnesses, the base source check, library package inspection and native failure checks, and final Nx proof script pass.
 - No Docker image or remote workflow run was attempted; first-download timing remains unverified. Measured npm-ci cold runs used warmed package/browser/system caches. Every owning skill lists its measured numbers and unverified cases.
 

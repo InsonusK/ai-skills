@@ -79,7 +79,7 @@ func toStatus(err error) error {
 	}
 }
 ```
-Verified against this plateau's own `example/internal/api/grpc/server.go` — smoke-tested with `grpcurl` against a real (throwaway) fake reputation server: a flagged URL returns `flagged: true` with the reason; the reputation service stopped returns `codes.Unavailable`; an invalid URL returns `codes.InvalidArgument`.
+Verified against this plateau's own `examples/internal/api/grpc/server.go` — smoke-tested with `grpcurl` against a real (throwaway) fake reputation server: a flagged URL returns `flagged: true` with the reason; the reputation service stopped returns `codes.Unavailable`; an invalid URL returns `codes.InvalidArgument`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] - [[skills/go/architecture/solutions/solution-grpc-api.skill/Implementation/internal/api/grpc/server.go.create.md|server.go]]

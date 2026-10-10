@@ -34,7 +34,7 @@ package version
 
 var Version = "dev"
 ```
-Verified against this plateau's own `example/internal/version/version.go`.
+Verified against this plateau's own `examples/internal/version/version.go`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/version/version.go.create.md|internal/version/version.go]]

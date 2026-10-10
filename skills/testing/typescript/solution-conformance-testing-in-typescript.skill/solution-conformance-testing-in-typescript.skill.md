@@ -89,7 +89,7 @@ PACKAGE:
 3. Whoever notices the survivor (via the report or the README's mutation-score badge) either strengthens the assertion in the corresponding scenario/step definition in a follow-up PR, or explicitly accepts it per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
 
 # Ground truth
-[`example/`](./example/) ports the Python reference's eight features beside real TypeScript production modules: URL checks, extraction, batch summary, CLI, file store, record mapping, result contract and package metadata. All seven type tags, seven categories, two todos with reasons, one broken scenario and one validated scenario are present. The unchanged validated scenario is `store.feature` / `A stored check is read back`, for owner confirmation.
+[`examples/`](./examples/) ports the Python reference's eight features beside real TypeScript production modules: URL checks, extraction, batch summary, CLI, file store, record mapping, result contract and package metadata. All seven type tags, seven categories, two todos with reasons, one broken scenario and one validated scenario are present. The unchanged validated scenario is `store.feature` / `A stored check is read back`, for owner confirmation.
 
 Verified on 2026-10-08 with Node 24, cucumber-js 10, c8 10, StrykerJS 8 and tsx 4:
 - `make init && make test-and-report`: exit 0; 25/25 Cucumber scenarios, coverage 99.31%, mutation score 90.2% (101 killed, 11 survived). Python also has one plain whitespace test, so its test count is 26.

@@ -53,7 +53,7 @@ adr:
 3. Build the library and run the package inspection in the example verification script.
 
 # Ground truth
-[The runnable library example](example/README.md) was verified on 2026-10-09 with Node 24.21.0, Angular 22, Vitest 5, [ng-packagr](glossary/ng-packagr.md) 22 and Playwright 1.64/Chromium:
+[The runnable library example](examples/README.md) was verified on 2026-10-09 with Node 24.21.0, Angular 22, Vitest 5, [ng-packagr](glossary/ng-packagr.md) 22 and Playwright 1.64/Chromium:
 - `make init && make test-and-report`: exit 0; 25/25 domain scenarios, domain line coverage 98.11%, mutation 90.2%, components 4/4, UI 4/4 including the unchanged reviewed screenshot baseline.
 - Dependency-cold run (`npm ci` reinstalls node_modules), then all four kinds and report: 35.3 seconds on a host with warmed npm/browser/system-library caches. This is not a first-download measurement.
 - `run-example.sh`: exit 0 in report, caller-selected check directories and delta mutation; complete living-doc tags/reasons and report links checked. In the task worktree delta mutation skipped because no domain file changed relative to HEAD~1.

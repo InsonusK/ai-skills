@@ -42,7 +42,7 @@ type ReputationCache interface {
 	Set(ctx context.Context, url string, rep Reputation) error
 }
 ```
-— see `plateau-cached-service`'s `example/`.
+— see `plateau-cached-service`'s `examples/`.
 
 # Rule changes
 

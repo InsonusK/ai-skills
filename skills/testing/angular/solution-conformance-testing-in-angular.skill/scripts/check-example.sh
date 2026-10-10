@@ -23,8 +23,8 @@ import sys, json
 skill, ts = map(Path, sys.argv[1:]); example = skill/'example'
 config = (skill/'templates/playwright.ui.config.ts').read_text().replace('{SourceRoot}', 'src').replace('{ServeCommand}', 'npm run start --')
 assert (example/'playwright.ui.config.ts').read_text() == config
-for source in (ts/'example/src').rglob('*'):
-    if source.is_file(): assert source.read_bytes() == (example/'src'/source.relative_to(ts/'example/src')).read_bytes(), source
+for source in (ts/'examples/src').rglob('*'):
+    if source.is_file(): assert source.read_bytes() == (example/'src'/source.relative_to(ts/'examples/src')).read_bytes(), source
 assert (example/'src/app/spec/__screenshots__/validation.ui.spec.ts/linkcheck-form.png').is_file()
 assert json.loads((example/'package-lock.json').read_text())['packages']['']['version'] == '0.1.0'
 assert 'test-and-report:' not in (example/'Makefile').read_text()

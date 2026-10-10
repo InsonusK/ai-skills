@@ -99,7 +99,7 @@ func (s *LinkCheckService) reputationWithCache(ctx context.Context, normalized s
 	return rep, nil
 }
 ```
-Verified against this plateau's own `example/internal/domain/services/linkcheck.go` — 11 godog scenarios green (9 unchanged + 2 new: cache hit skips the external call, a fresh lookup is written to the cache), using in-memory stub `ReputationChecker`/`ReputationCache` in the unit-test suite. Also verified against a **real Redis instance**: 3 HTTP requests for the same URL produced exactly one call to a throwaway fake reputation server; a subsequent gRPC request for the same URL hit the cache too (same domain-service instance shared across transports).
+Verified against this plateau's own `examples/internal/domain/services/linkcheck.go` — 11 godog scenarios green (9 unchanged + 2 new: cache hit skips the external call, a fresh lookup is written to the cache), using in-memory stub `ReputationChecker`/`ReputationCache` in the unit-test suite. Also verified against a **real Redis instance**: 3 HTTP requests for the same URL produced exactly one call to a throwaway fake reputation server; a subsequent gRPC request for the same URL hit the cache too (same domain-service instance shared across transports).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]] - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/Implementation/internal/domain/services/{service}.go.create.md|{service}.go]]

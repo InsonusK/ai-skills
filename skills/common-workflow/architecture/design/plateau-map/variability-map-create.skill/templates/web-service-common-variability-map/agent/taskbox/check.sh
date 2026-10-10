@@ -17,12 +17,12 @@ CONTRACT = f"{COMMON}/vp/vp-c003-taskbox/vp-c003-taskbox.contract.md"
 A1 = "skills/common-workflow/architecture/solutions/solution-taskbox.skill"
 A2 = "skills/go/architecture/solutions/solution-taskbox-in-go.skill"
 A3 = "skills/go/architecture/plateau/gw009-001"
-EX = f"{A3}/plateau-gw009-001.skill/example"
+EX = f"{A3}/plateau-gw009-001.skill/examples"
 MOD = "github.com/example/linkcheck-service"
 SPEC = os.environ.get("SPEC_DIR", "")
 
 def md_files(root):
-    return sorted(p for p in glob.glob(f"{root}/**/*.md", recursive=True) if "/example/" not in p)
+    return sorted(p for p in glob.glob(f"{root}/**/*.md", recursive=True) if "/examples/" not in p)
 def fm(p):
     m = re.match(r"---\n(.*?)\n---\n", open(p).read(), re.S)
     return m.group(1) if m else ""

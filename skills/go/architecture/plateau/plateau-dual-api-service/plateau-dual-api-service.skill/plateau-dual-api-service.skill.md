@@ -98,7 +98,7 @@ Three intersections, all still canonical (no resolver) but two grew from the par
 - [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=3, crosses the architectural-signal threshold for the first time; flagged to re-check once `solution-external-integration` also extends the same `proto-gen` target)
 
 # Ground truth
-`example/` evolved from `plateau-http-service`'s (copied forward, then extended), verified:
+`examples/` evolved from `plateau-http-service`'s (copied forward, then extended), verified:
 - `buf generate proto/linkcheck --template buf/buf.gen.yaml` (local `protoc-gen-go`/`protoc-gen-go-grpc` plugins, installed via `go install`) — produces `gen/api/{linkcheck.pb.go,linkcheck_grpc.pb.go}`, flat, matching `go_package`.
 - `go build ./...` and `go vet ./...` — clean.
 - `make test-kind-unit` — 5/5 godog scenarios still green (domain logic unchanged).

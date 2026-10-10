@@ -78,7 +78,7 @@ func translateErr(err error) error {
 	return err
 }
 ```
-Verified against this plateau's own `example/internal/infrastructure/reputationclient/client.go` — `go build`/`go vet` clean; smoke-tested end-to-end against a real (throwaway, test-only) gRPC reputation server: a URL containing "bad" comes back flagged with the server's reason; stopping that server before a request makes `CheckReputation` return `interfaces.ErrUnavailable`, which the HTTP adapter maps to `502` and the gRPC adapter maps to `codes.Unavailable`.
+Verified against this plateau's own `examples/internal/infrastructure/reputationclient/client.go` — `go build`/`go vet` clean; smoke-tested end-to-end against a real (throwaway, test-only) gRPC reputation server: a URL containing "bad" comes back flagged with the server's reason; stopping that server before a request makes `CheckReputation` return `interfaces.ErrUnavailable`, which the HTTP adapter maps to `502` and the gRPC adapter maps to `codes.Unavailable`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] - [[skills/go/architecture/solutions/solution-external-integration.skill/Implementation/internal/infrastructure/{adapter}/client.go.create.md|client.go]]

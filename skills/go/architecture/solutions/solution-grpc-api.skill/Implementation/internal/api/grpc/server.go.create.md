@@ -64,7 +64,7 @@ func toStatus(err error) error {
 }
 ```
 
-This catalog's own runnable examples give `{Method}` a real request/response shape (e.g. `Check(ctx, *CheckRequest) (*CheckResponse, error)`) — see `plateau-dual-api-service`'s `example/`.
+This catalog's own runnable examples give `{Method}` a real request/response shape (e.g. `Check(ctx, *CheckRequest) (*CheckResponse, error)`) — see `plateau-dual-api-service`'s `examples/`.
 
 # Rule changes
 

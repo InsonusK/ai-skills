@@ -25,7 +25,7 @@ This is the shallowest plateau where the federation extenders coexist with the m
 `source: ordering-only` — the federation host wiring registers after the monolith's own bootstrap wiring, but only as a consequence of composition (`parent_plateaus`), not a required sequence. Provider order in `ApplicationConfig.providers` does not matter for these blocks; `initFederation` must precede `import('./bootstrap')`, which the `main.ts` structure enforces directly, not via provider ordering.
 
 # Resolution
-**Canonical — resolved by design, no resolver.** The composition root accumulates one bootstrap wiring per cross-cutting capability, federation included. The `example/` (a limited federation smoke test) wires `federation.config.mjs` + `initFederation` + `RemoteRegistryService` + the `SESSION_CONTRACT` provider + the remote route mount; `remote-registry.service.spec.ts` and `host-session.spec.ts` confirm the runtime-resolution and single-session behaviour.
+**Canonical — resolved by design, no resolver.** The composition root accumulates one bootstrap wiring per cross-cutting capability, federation included. The `examples/` (a limited federation smoke test) wires `federation.config.mjs` + `initFederation` + `RemoteRegistryService` + the `SESSION_CONTRACT` provider + the remote route mount; `remote-registry.service.spec.ts` and `host-session.spec.ts` confirm the runtime-resolution and single-session behaviour.
 
 # Architectural signal
 **N ≥ 3 here** (federation-host + session-sharing + host-design-system-consumption on top of the monolith's own seven extenders — see [[skills/angular/architecture/monolith/registry/platform-shell-project.md|monolith's own platform-shell-project.md]] for that side of the growth). **Benign.** This is what a composition root is for. Not a mis-drawn VP.
@@ -33,4 +33,4 @@ This is the shallowest plateau where the federation extenders coexist with the m
 # Growth history
 | Plateau | N (this catalog's own contributors) | What changed | Verified |
 | --- | --- | --- | --- |
-| `plateau-platform-host` | 3 | First (and, so far, only) plateau where `solution-federation-host`, `solution-session-sharing`, `solution-host-design-system-consumption` are simultaneously present, on top of the monolith's own already-composed shell | The `example/` federation smoke test wires all three; `remote-registry.service.spec.ts` and `host-session.spec.ts` confirm runtime resolution and single-session behaviour |
+| `plateau-platform-host` | 3 | First (and, so far, only) plateau where `solution-federation-host`, `solution-session-sharing`, `solution-host-design-system-consumption` are simultaneously present, on top of the monolith's own already-composed shell | The `examples/` federation smoke test wires all three; `remote-registry.service.spec.ts` and `host-session.spec.ts` confirm runtime resolution and single-session behaviour |

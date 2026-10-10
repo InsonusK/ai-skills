@@ -42,7 +42,7 @@ func (s *{Service}) {Method}(ctx context.Context) error {
 }
 ```
 
-This catalog's own runnable examples concretize `{Service}` as `LinkCheckService`, with `{Method}` becoming `Check(ctx, rawURL) (Result, error)` — validate and normalize a URL, returning `Result{URL, Normalized string}` — see `plateau-http-service`'s `example/`.
+This catalog's own runnable examples concretize `{Service}` as `LinkCheckService`, with `{Method}` becoming `Check(ctx, rawURL) (Result, error)` — validate and normalize a URL, returning `Result{URL, Normalized string}` — see `plateau-http-service`'s `examples/`.
 
 # Rule changes
 

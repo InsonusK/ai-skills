@@ -67,7 +67,7 @@ func writeError(w http.ResponseWriter, code int, err error) {
 }
 ```
 
-This catalog's own runnable examples add the concrete route(s) calling `{Service}`'s real method (e.g. `POST /v1/links/check` calling `LinkCheckService.Check`) — see `plateau-http-service`'s `example/`.
+This catalog's own runnable examples add the concrete route(s) calling `{Service}`'s real method (e.g. `POST /v1/links/check` calling `LinkCheckService.Check`) — see `plateau-http-service`'s `examples/`.
 
 # Rule changes
 

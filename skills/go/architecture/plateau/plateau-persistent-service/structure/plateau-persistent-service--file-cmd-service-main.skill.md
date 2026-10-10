@@ -147,7 +147,7 @@ func run() error {
 	return g.Wait()
 }
 ```
-Verified against this plateau's own `example/cmd/linkcheck/main.go` — `go build`/`go vet` clean; against a **real PostgreSQL instance** (not mocked), a real Redis instance, and a throwaway fake reputation gRPC server: two checks recorded via `POST /v1/links/check`, read back identically via `GET /v1/links/recent` (HTTP), `RecentChecks` (gRPC), and a direct `psql` query — then the process was killed and restarted, and the same two entries were still returned with no new checks made, proving `linkstore.New`'s pool genuinely persists data outside the process lifetime.
+Verified against this plateau's own `examples/cmd/linkcheck/main.go` — `go build`/`go vet` clean; against a **real PostgreSQL instance** (not mocked), a real Redis instance, and a throwaway fake reputation gRPC server: two checks recorded via `POST /v1/links/check`, read back identically via `GET /v1/links/recent` (HTTP), `RecentChecks` (gRPC), and a direct `psql` query — then the process was killed and restarted, and the same two entries were still returned with no new checks made, proving `linkstore.New`'s pool genuinely persists data outside the process lifetime.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]]

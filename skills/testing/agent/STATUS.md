@@ -94,7 +94,7 @@ What was broken and is fixed — the commit messages carry the detail:
 
 Waves: (1) shared inventory/living-doc pipeline and verbatim copies; (2) Go showcase and skill audit; (3) TypeScript showcase, co-location ADR and production-only package; (4) .NET showcase and skill audit; (5) catalog feature templates, dependent skill metadata, final measurements and validation queue. Every code wave was exercised and reviewed independently; no new caller target or variable. `INVARIANTS.md` plus the owner's `TASK.md` are the reviewed anchor.
 
-The four showcases have identical eight feature files, all 17 tags, two todo reasons and one broken reason. Go/TypeScript/.NET run 25 Cucumber scenarios; Python runs those 25 plus its pre-existing plain whitespace test. New plain tests were not added solely to equalize counts. Reports are left under each testing solution's `example/tmp/testing/report/index.html`.
+The four showcases have identical eight feature files, all 17 tags, two todo reasons and one broken reason. Go/TypeScript/.NET run 25 Cucumber scenarios; Python runs those 25 plus its pre-existing plain whitespace test. New plain tests were not added solely to equalize counts. Reports are left under each testing solution's `examples/tmp/testing/report/index.html`.
 
 | Example | last full run exit | tests | coverage | mutation score |
 | --- | --- | --- | --- | --- |

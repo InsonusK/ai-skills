@@ -21,7 +21,7 @@ Project rules are in `AGENTS.md` at the repository root: a worktree of your own,
 
 A workflow names no test kind and no tool. A new kind — Angular added `components` and `ui` — is picked up with no workflow change. The contract was fixed with the owner; adding a target or a caller-facing variable is a change to raise with the owner, not to make.
 
-Fourteen runnable examples implement it: `skills/testing/{go,python,typescript,dotnet,angular}/solution-conformance-testing-in-*.skill/example` and the nine plateau examples of the Go and .NET catalogs. `bash skills/testing/agent/run-example.sh {example-dir}` runs one end to end; `bash skills/testing/agent/check.sh` checks the copies.
+Fourteen runnable examples implement it: `skills/testing/{go,python,typescript,dotnet,angular}/solution-conformance-testing-in-*.skill/examples` and the nine plateau examples of the Go and .NET catalogs. `bash skills/testing/agent/run-example.sh {example-dir}` runs one end to end; `bash skills/testing/agent/check.sh` checks the copies.
 
 ## What `skills-testing` already changed here
 

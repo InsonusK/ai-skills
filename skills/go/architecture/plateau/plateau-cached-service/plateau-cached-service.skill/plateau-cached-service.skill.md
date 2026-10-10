@@ -118,7 +118,7 @@ Four intersections — see `registry/`. Three canonical without qualification; o
 - [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=3; the `{external-integration, cached-db}` pairing is **borderline-`FMC`, defused not by a `depends_on` edge but by `solution-cached-db`'s own Implementation file explicitly naming `solution-external-integration` and stating the merge rule** — read this entry, it's the most interesting registry finding in this catalog so far)
 
 # Ground truth
-`example/` evolved from `plateau-integrated-service`'s, verified:
+`examples/` evolved from `plateau-integrated-service`'s, verified:
 - `go build ./...`, `go vet ./...` — clean.
 - `make test-kind-unit` — 11/11 godog scenarios green (9 unchanged + 2 new), using in-memory stub `ReputationCache`/`ReputationChecker` — no network call in the unit-test suite.
 - `make test-kind-mutation`/`test-report` — clean runs.

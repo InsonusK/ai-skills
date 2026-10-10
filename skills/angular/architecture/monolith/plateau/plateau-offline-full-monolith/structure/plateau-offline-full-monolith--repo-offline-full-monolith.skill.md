@@ -106,7 +106,7 @@ __Applied solutions:__
 | `util` (scope:shared) | `type:util` (leaf) |
 | `store` (scope:shared) | `type:util`, `type:data-access`, `type:store` (`scope:shared` — `offline-sync` reads the `connectivity`/`notifications` slices, VP5) |
 
-Scope axis: `scope:shared` → only `scope:shared`; a feature scope (`scope:orders`) → its own scope + `scope:shared`; `scope:platform` adds no scope constraint (it is the composition root). The `data-access`/`preview` gap rows, and the two `type:store` additions above (VP5), are places the V1 `solution-repository-structure` allow-list did not state — see the [example README](../plateau-offline-full-monolith.skill/example/README.md).
+Scope axis: `scope:shared` → only `scope:shared`; a feature scope (`scope:orders`) → its own scope + `scope:shared`; `scope:platform` adds no scope constraint (it is the composition root). The `data-access`/`preview` gap rows, and the two `type:store` additions above (VP5), are places the V1 `solution-repository-structure` allow-list did not state — see the [example README](../plateau-offline-full-monolith.skill/examples/README.md).
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]

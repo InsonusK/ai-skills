@@ -15,9 +15,9 @@ tags:
 - A project made by the official generator whose tests the kinds find and run.
 
 # Mutations
-Create the project with its generator — `nx g @nx/angular:application`, `nx g @nx/angular:library` (unit test runner `vitest-analog`), `nx g @nx/js:library` — and keep its `project.json` as generated. The examples: [application](../example/apps/portal/project.json), [its e2e project](../example/apps/portal-e2e/project.json), [Angular library](../example/libs/linkcheck/project.json), [logic-only library](../example/libs/formatter/project.json).
+Create the project with its generator — `nx g @nx/angular:application`, `nx g @nx/angular:library` (unit test runner `vitest-analog`), `nx g @nx/js:library` — and keep its `project.json` as generated. The examples: [application](../examples/apps/portal/project.json), [its e2e project](../examples/apps/portal-e2e/project.json), [Angular library](../examples/libs/linkcheck/project.json), [logic-only library](../examples/libs/formatter/project.json).
 
-In a project with components, set `test.include` of its `vite.config.mts` to `['src/**/spec/*.component.spec.ts']` — see [the library's](../example/libs/linkcheck/vite.config.mts). Component specs follow the base skill's rules.
+In a project with components, set `test.include` of its `vite.config.mts` to `['src/**/spec/*.component.spec.ts']` — see [the library's](../examples/libs/linkcheck/vite.config.mts). Component specs follow the base skill's rules.
 
 In the application's `-e2e` project, replace the generated `playwright.config.mts` with [the template](../templates/playwright.config.mts), putting the e2e project's name for `{E2eProject}` and the application's for `{HostProject}`. Browser specs go into its `src/` as `*.ui.spec.ts` (also `*.visual.spec.ts`, `*.style-snapshot.spec.ts`, `*.a11y.spec.ts`), screenshot baselines into `src/__screenshots__/`. Run by `make`, the config writes below the kind directory and serves the application on the free port it is given; run as `nx e2e`, it falls back to `tmp/` and port 4200.
 

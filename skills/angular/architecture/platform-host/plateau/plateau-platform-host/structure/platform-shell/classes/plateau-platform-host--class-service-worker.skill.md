@@ -18,7 +18,7 @@ created_by:
   - "[[skills/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
 ---
 
-> Extends [`plateau-multiuser-monolith`'s `class-service-worker`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-service-worker.skill.md) (four content-type rules) with a fifth. **Conditional** — applies only when the composed monolith plateau answers `OfflineReadResilience` (VP4) = Yes. `RuntimeRemoteFederation` itself has no offline dependency. Not part of the `example/` (a smoke test with no SW).
+> Extends [`plateau-multiuser-monolith`'s `class-service-worker`](skills/angular/architecture/monolith/plateau/plateau-multiuser-monolith/structure/platform-shell/classes/plateau-multiuser-monolith--class-service-worker.skill.md) (four content-type rules) with a fifth. **Conditional** — applies only when the composed monolith plateau answers `OfflineReadResilience` (VP4) = Yes. `RuntimeRemoteFederation` itself has no offline dependency. Not part of the `examples/` (a smoke test with no SW).
 
 # Goal
 

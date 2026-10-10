@@ -96,7 +96,7 @@ func (s *Store) Recent(ctx context.Context, limit int) ([]interfaces.LinkHistory
 	return out, rows.Err()
 }
 ```
-Verified against this plateau's own `example/internal/infrastructure/linkstore/store.go` against a **real PostgreSQL instance** (installed via `apt`, started manually — container init doesn't auto-start services): two `Record` calls followed by `Recent(limit=10)` returned both rows, most-recent-first; confirmed independently via a direct `psql` query against `link_checks`; **the service process was killed and restarted, and `Recent` still returned the same two rows with no new checks made** — the ground-truth proof of durable persistence across a process lifetime, not just within one.
+Verified against this plateau's own `examples/internal/infrastructure/linkstore/store.go` against a **real PostgreSQL instance** (installed via `apt`, started manually — container init doesn't auto-start services): two `Record` calls followed by `Recent(limit=10)` returned both rows, most-recent-first; confirmed independently via a direct `psql` query against `link_checks`; **the service process was killed and restarted, and `Recent` still returned the same two rows with no new checks made** — the ground-truth proof of durable persistence across a process lifetime, not just within one.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] - [[skills/go/architecture/solutions/solution-persistent-db.skill/Implementation/internal/infrastructure/{store}/store.go.create.md|store.go]]

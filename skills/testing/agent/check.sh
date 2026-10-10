@@ -65,7 +65,7 @@ for f in tools/testing/testing.mk tools/testing/testing.sh tools/testing/kind.sh
          tools/livingdoc/render.mjs tools/livingdoc/package.json tools/livingdoc/package-lock.json; do
   while IFS= read -r copy; do
     cmp -s "$core/$f" "$copy" || err "$copy differs from $core/$f"
-  done < <(git ls-files -co --exclude-standard "skills/**/example/$f")
+  done < <(git ls-files -co --exclude-standard "skills/**/examples/$f")
 done
 
 # 7. Every example on the contract: its Makefile parses, lists kinds, its README shows every declared badge,
@@ -81,7 +81,7 @@ while IFS= read -r mk; do
   for k in $(echo "$kinds" | cut -d' ' -f1); do
     make -n -C "$dir" "test-kind-$k" >/dev/null 2>&1 || err "$dir: no target test-kind-$k"
   done
-done < <(git grep -l 'include tools/testing/testing.mk' -- 'skills/**/example/Makefile')
+done < <(git grep -l 'include tools/testing/testing.mk' -- 'skills/**/examples/Makefile')
 
 # 8. No fenced script left in a templates/ description: code is a real file under assets/ or templates/.
 out=$(grep -lE '^```(bash|makefile|go|js|jq|json|html)$' skills/testing/*/*.skill/templates/*.md skills/testing/*/*.skill/Implementation/tools/*/*.md skills/testing/*/*.skill/Implementation/tools/*/*/*.md 2>/dev/null)
@@ -97,19 +97,19 @@ for s in go dotnet; do
   src=skills/testing/$s/solution-conformance-testing-in-$s.skill/assets
   while IFS= read -r copy; do
     cmp -s "$src/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/tools/testing/kinds/"
-  done < <(git ls-files -co --exclude-standard "skills/$s/**/example/tools/testing/kinds/*.sh")
+  done < <(git ls-files -co --exclude-standard "skills/$s/**/examples/tools/testing/kinds/*.sh")
 done
 for s in go python typescript dotnet; do   # the runnable example inside the testing skill itself
   src=skills/testing/$s/solution-conformance-testing-in-$s.skill
   while IFS= read -r copy; do
     cmp -s "$src/assets/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/assets/tools/testing/kinds/"
-  done < <(git ls-files -co --exclude-standard "$src/example/tools/testing/kinds/*")
+  done < <(git ls-files -co --exclude-standard "$src/examples/tools/testing/kinds/*")
 done
 ng=skills/testing/angular/solution-conformance-testing-in-angular.skill; tsk=skills/testing/typescript/solution-conformance-testing-in-typescript.skill/assets/tools/testing/kinds
 while IFS= read -r copy; do   # the Angular example: its own two kinds, the TypeScript parent's two unchanged
   k=$(basename "$copy"); src=$ng/assets/tools/testing/kinds/$k; [ -f "$src" ] || src=$tsk/$k
   cmp -s "$src" "$copy" || err "$copy differs from $src"
-done < <(git ls-files -co --exclude-standard "$ng/example/tools/testing/kinds/*")
+done < <(git ls-files -co --exclude-standard "$ng/examples/tools/testing/kinds/*")
 for shape in library nx; do
   refinement=skills/testing/angular/solution-conformance-testing-in-angular-$shape.skill
   [ -d "$refinement" ] || continue
@@ -118,24 +118,24 @@ for shape in library nx; do
     [ -f "$src" ] || src=$ng/assets/tools/testing/kinds/$k
     [ -f "$src" ] || src=$tsk/$k
     cmp -s "$src" "$copy" || err "$copy differs from $src"
-  done < <(git ls-files -co --exclude-standard "$refinement/example/tools/testing/kinds/*")
+  done < <(git ls-files -co --exclude-standard "$refinement/examples/tools/testing/kinds/*")
   while IFS= read -r asset; do
     relative=${asset#"$refinement/assets/"}
-    cmp -s "$asset" "$refinement/example/$relative" || err "$refinement/example/$relative differs from $asset"
+    cmp -s "$asset" "$refinement/examples/$relative" || err "$refinement/examples/$relative differs from $asset"
   done < <(git ls-files -co --exclude-standard "$refinement/assets/*")
-  cmp -s "$ng/assets/tools/testing/angular-results.mjs" "$refinement/example/tools/testing/angular-results.mjs" || err "$refinement: changed inherited Angular result adapter"
+  cmp -s "$ng/assets/tools/testing/angular-results.mjs" "$refinement/examples/tools/testing/angular-results.mjs" || err "$refinement: changed inherited Angular result adapter"
 done
 ts=skills/testing/typescript/solution-conformance-testing-in-typescript.skill
 for f in cucumber.mjs stryker.conf.json; do
-  cmp -s "$ts/assets/$f" "$ts/example/$f" || err "$ts/example/$f differs from $ts/assets/$f"
+  cmp -s "$ts/assets/$f" "$ts/examples/$f" || err "$ts/examples/$f differs from $ts/assets/$f"
 done
 go=skills/testing/go/solution-conformance-testing-in-go.skill/assets
 while IFS= read -r copy; do
   cmp -s "$go/tools/$(basename "$(dirname "$copy")")/main.go" "$copy" || err "$copy differs from $go"
-done < <(git ls-files -co --exclude-standard 'skills/go/**/example/tools/normalize_*/main.go' 'skills/testing/go/**/example/tools/normalize_*/main.go')
+done < <(git ls-files -co --exclude-standard 'skills/go/**/examples/tools/normalize_*/main.go' 'skills/testing/go/**/examples/tools/normalize_*/main.go')
 
 # 11. One Makefile, one report builder: no testing recipe in an example Makefile, no stack-own report builder.
-out=$(git grep -lE '^test-(kind|report|and-report)[a-z-]*:' -- 'skills/**/example/Makefile'; git ls-files 'skills/**/tools/test_report/*' 'skills/**/example/scripts/test-report.sh')
+out=$(git grep -lE '^test-(kind|report|and-report)[a-z-]*:' -- 'skills/**/examples/Makefile'; git ls-files 'skills/**/tools/test_report/*' 'skills/**/examples/scripts/test-report.sh')
 [ -n "$out" ] && { err "testing recipe or report builder outside tools/testing/:"; echo "$out"; }
 
 # 12. The removed page must not come back as a live function/call.

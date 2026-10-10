@@ -82,7 +82,7 @@ func (s *LinkCheckService) Check(ctx context.Context, rawURL string) (Result, er
 	return Result{URL: trimmed, Normalized: normalized, Flagged: rep.Flagged, Reason: rep.Reason}, nil
 }
 ```
-Verified against this plateau's own `example/internal/domain/services/linkcheck.go` — 9 godog scenarios green (5 from `plateau-http-service` unchanged + 4 new: flagged, clean, validation-fails-before-reputation-call, reputation-unavailable).
+Verified against this plateau's own `examples/internal/domain/services/linkcheck.go` — 9 godog scenarios green (5 from `plateau-http-service` unchanged + 4 new: flagged, clean, validation-fails-before-reputation-call, reputation-unavailable).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]] - [[skills/go/architecture/solutions/solution-go-domain-logic.skill/Implementation/internal/domain/services/{service}.go.create.md|{service}.go]]

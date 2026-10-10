@@ -78,7 +78,7 @@ __Applied solutions:__
 | `type` | `app`, `e2e`, `preview`, `feature`, `data-access`, `ui`, `util`, `store` | What role the project plays |
 | `scope` | `platform`, `shared`, `{feature-name}` (e.g. `orders`) | Which business area the project belongs to |
 
-`@nx/enforce-module-boundaries` allow-list (see [`example/eslint.config.mjs`](../plateau-online-monolith.skill/example/eslint.config.mjs) for the encoded form):
+`@nx/enforce-module-boundaries` allow-list (see [`examples/eslint.config.mjs`](../plateau-online-monolith.skill/examples/eslint.config.mjs) for the encoded form):
 
 | type | may depend on |
 | ----- | -------------- |
@@ -91,7 +91,7 @@ __Applied solutions:__
 | `util` (scope:shared) | `type:util` (leaf) |
 | `store` (scope:shared) | `type:util`, `type:data-access` (`scope:shared`) |
 
-Scope axis: `scope:shared` → only `scope:shared`; a feature scope → its own scope + `scope:shared`; `scope:platform` adds no scope constraint. The `data-access → data-access` and `preview → data-access` rows are gaps the V1 `solution-repository-structure` allow-list did not state — recorded in [`example/README.md`](../plateau-online-monolith.skill/example/README.md).
+Scope axis: `scope:shared` → only `scope:shared`; a feature scope → its own scope + `scope:shared`; `scope:platform` adds no scope constraint. The `data-access → data-access` and `preview → data-access` rows are gaps the V1 `solution-repository-structure` allow-list did not state — recorded in [`examples/README.md`](../plateau-online-monolith.skill/examples/README.md).
 
 __Applied solutions:__
 - [[skills/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]] - [[skills/angular/architecture/solutions/solution-repository-structure.skill/Implementation/Repository.create.md|Repository.create]]

@@ -54,7 +54,7 @@ See [`structure/`](structure/plateau-async-monolith--repo-async-monolith.skill.m
 
 # Example
 
-See [`example/`](plateau-async-monolith.skill/example/) — the parent's runnable Nx workspace, evolved: `apps/platform-shell` gains `preloading/selective-preloading.strategy.ts` (+ spec) and `withPreloading(...)`; the `orders` route is marked `data: { preload: true }` at the shell; `orders.routes.ts` splits a `report` sub-route via `loadComponent` (its own chunk, verified in the production build output); `apps/platform-shell/project.json` carries `error`-level `initial` + `anyScript` budgets. `npm test` (Vitest) and `npm run lint` green; `nx build platform-shell --configuration=production` green with the report screen in its own lazy chunk.
+See [`examples/`](plateau-async-monolith.skill/examples/) — the parent's runnable Nx workspace, evolved: `apps/platform-shell` gains `preloading/selective-preloading.strategy.ts` (+ spec) and `withPreloading(...)`; the `orders` route is marked `data: { preload: true }` at the shell; `orders.routes.ts` splits a `report` sub-route via `loadComponent` (its own chunk, verified in the production build output); `apps/platform-shell/project.json` carries `error`-level `initial` + `anyScript` budgets. `npm test` (Vitest) and `npm run lint` green; `nx build platform-shell --configuration=production` green with the report screen in its own lazy chunk.
 
 # Intersection registry
 

@@ -39,7 +39,7 @@ type {Port} interface {
 }
 ```
 
-This catalog's own runnable examples concretize this as `LinkHistory` recording/listing `HistoryEntry{URL, Normalized, CheckedAt}` — see `plateau-persistent-service`'s `example/`.
+This catalog's own runnable examples concretize this as `LinkHistory` recording/listing `HistoryEntry{URL, Normalized, CheckedAt}` — see `plateau-persistent-service`'s `examples/`.
 
 # Rule changes
 

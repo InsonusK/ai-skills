@@ -10,10 +10,10 @@ tags:
 ---
 
 # Goal
-- A plateau folder at `{output}/{plateau-name}/` containing `plateau-{plateau-name}.skill/plateau-{plateau-name}.skill.md`, `plateau-{plateau-name}.skill/example/`, `structure/`, and (when decisions were made) `adr/`.
+- A plateau folder at `{output}/{plateau-name}/` containing `plateau-{plateau-name}.skill/plateau-{plateau-name}.skill.md`, `plateau-{plateau-name}.skill/examples/`, `structure/`, and (when decisions were made) `adr/`.
 - A repository-level skill, one skill per contributed project/package, and one per contributed class/module — each file named `plateau-{plateau-name}--…`, with a `name` header equal to the file name minus `.skill.md` and a `description` stating which plateau the element belongs to.
 - Every `.create.md`/`.extend.md` for the same element merged into a single skill carrying an `__Applied solutions:__` trailer that lists every contributor.
-- A runnable example application under `example/`, evolved from the parent plateau's example when `parent_plateaus` is non-empty.
+- A runnable example application under `examples/`, evolved from the parent plateau's example when `parent_plateaus` is non-empty.
 - A plateau-level ADR, following [[skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]], for every conflict resolution or solution exclusion.
 - Plateau root frontmatter filled: `name`, `version` (UTC `YYYYMMDDHHMMSS`), `parent_plateaus`, `created_by`, `standalone`.
 
@@ -44,7 +44,7 @@ Before starting, read [[skills/common-workflow/architecture/design/solution-crea
 2. Check whether `{output}/{plateau-name}/` already exists; if it does, ask the user whether to replace it.
 3. Create `{output}/{plateau-name}/`.
 4. Create `{output}/{plateau-name}/plateau-{plateau-name}.skill/` — holds the plateau root skill and its example application.
-5. Create `{output}/{plateau-name}/plateau-{plateau-name}.skill/example/` and put a real, complete, minimal runnable example application there, demonstrating the plateau's patterns and referenced from the root skill. When `{parent_plateaus}` is non-empty, seed it from the closest parent's `example/` and then extend it — never recreate it from scratch.
+5. Create `{output}/{plateau-name}/plateau-{plateau-name}.skill/examples/` and put a real, complete, minimal runnable example application there, demonstrating the plateau's patterns and referenced from the root skill. When `{parent_plateaus}` is non-empty, seed it from the closest parent's `examples/` and then extend it — never recreate it from scratch.
 6. Create `{output}/{plateau-name}/structure/`.
 7. When `{parent_plateaus}` is non-empty, seed `structure/` from every parent's own `structure/` folder, merged by project/class per [[skills/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]]'s union-by-default rule; on any conflict, stop and ask, then record a plateau-level ADR.
 8. Discover every project/package and class/module contributed by `{solutions}` by scanning each solution's `Implementation/` folder, recognising the per-stack file patterns in [Recognize the solution Implementation file patterns](#recognize-the-solution-implementation-file-patterns) and normalising names per [Normalize placeholder and element names](#normalize-placeholder-and-element-names).
@@ -205,10 +205,10 @@ Record every plateau-level decision (conflict resolution, solution exclusion) as
 ### Place the plateau root skill inside its skill folder
 Place the plateau root skill file at `plateau-{plateau-name}.skill/plateau-{plateau-name}.skill.md`, not directly under `{output}/{plateau-name}/`.
 - Risk: a root skill outside the `.skill/` folder breaks the layout every consumer and tool expects.
-- Fix: create `plateau-{plateau-name}.skill/` and put the root skill (and its `example/`) inside it.
+- Fix: create `plateau-{plateau-name}.skill/` and put the root skill (and its `examples/`) inside it.
 
 ### Create a runnable example that evolves the parent
-Create a real, runnable example application in `plateau-{plateau-name}.skill/example/` that follows the plateau's patterns and is linked from the plateau root skill; when `parent_plateaus` is non-empty, copy it from the closest parent's `example/` and then extend it with this plateau's new patterns.
+Create a real, runnable example application in `plateau-{plateau-name}.skill/examples/` that follows the plateau's patterns and is linked from the plateau root skill; when `parent_plateaus` is non-empty, copy it from the closest parent's `examples/` and then extend it with this plateau's new patterns.
 - Violation: building a child plateau's example from scratch when a parent example exists.
 - Risk: the child example drifts from the parent's and stops being a faithful reference.
 - Fix: seed from the parent, then add only the new patterns; link the example from the root skill.
@@ -254,9 +254,9 @@ Ask the user, or record an exclusion ADR, when a solution in `{solutions}` has n
 - [ ] Every summarizing section ends with an `__Applied solutions:__` list in the two-wikilink form.
 - [ ] The repository/root skill's `## Project Structure` and `## Directory and class skills` stay at project/package granularity.
 - [ ] Every contributing solution — including content-free classification solutions — is in `created_by`.
-- [ ] With `parent_plateaus` non-empty: content is the union of every parent plus the `created_by` delta; `structure/` and `example/` were seeded from the parents.
+- [ ] With `parent_plateaus` non-empty: content is the union of every parent plus the `created_by` delta; `structure/` and `examples/` were seeded from the parents.
 - [ ] Every solution/parent conflict and every solution exclusion is recorded as an ADR in `{output}/{plateau-name}/adr/`, registered in the root skill's `adr:` and linked from its body.
 - [ ] `standalone` is set explicitly; `parent_plateaus` (not `parent_plateau`) is used.
-- [ ] The plateau root skill sits at `plateau-{plateau-name}.skill/plateau-{plateau-name}.skill.md` with a linked, runnable `example/`.
+- [ ] The plateau root skill sits at `plateau-{plateau-name}.skill/plateau-{plateau-name}.skill.md` with a linked, runnable `examples/`.
 - [ ] No `hint`/`example` block and no `# How Apply this template` section remain in the final files.
 - [ ] No Plateau Component appears in `{solutions}`, `created_by`, or `structure/`.

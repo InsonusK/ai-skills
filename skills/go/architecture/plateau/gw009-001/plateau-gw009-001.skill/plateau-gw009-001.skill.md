@@ -84,7 +84,7 @@ Element intersections this plateau adds or grows — see each entry's growth his
 - Unchanged: [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]], [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] — TaskBox adds no field to any HTTP/gRPC response.
 
 # Ground truth
-`example/` evolved from GW007.001's, verified on 2026-09-28:
+`examples/` evolved from GW007.001's, verified on 2026-09-28:
 - `go build ./...`, `go vet ./...` — clean.
 - `TEST_DATABASE_DSN=postgres://…/taskbox_test make test-kind-unit TEST_RUN_PURPOSE=report` — 48/48 tests: 15 domain scenarios (5 new: a flagged check carries a re-check task, a clean check carries none, `Recheck` records a fresh verdict, fails while the reputation service is down, rejects a non-http(s) URL) and 30 TaskBox conformance scenarios on PostgreSQL 18. The `@store-transient` scenario is `missing` in the report — no VP-C002 TaskBox store yet.
 - Targeted mutations: group lock removed → the commit-order scenario fails 10/10; `attempt` fence removed → the lease scenario fails 3/3.

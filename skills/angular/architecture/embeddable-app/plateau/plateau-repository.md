@@ -51,7 +51,7 @@ its plateau will `parent_plateaus` a `monolith/` plateau.
 plateau-embeddable-app/
   plateau-embeddable-app.skill/
     plateau-embeddable-app.skill.md   the plateau summary
-    example/                          a LIMITED trivial remote (a Native Federation remote exposing
+    examples/                          a LIMITED trivial remote (a Native Federation remote exposing
                                       ./Routes; any tooling — a plain Angular CLI workspace)
   structure/                          repo-embeddable-app (one flat app, no project tier) + 3 class skills
   registry/                           one entry: embeddable-repository

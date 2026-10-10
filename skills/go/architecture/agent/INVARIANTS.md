@@ -71,7 +71,7 @@ tools/
 - Wikilink form: `[[skills/go/architecture/solutions/solution-x.skill/solution-x.skill.md|solution-x]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
 - Implementation-file links: `[[.../solution-x.skill/Implementation/{path}/{File}.{kind}.md#SECTION|label]]`.
 - A solution's folder name, its main file name, and its `name:` field are identical: `solution-{name}.skill` / `solution-{name}.skill.md` / `name: solution-{name}`.
-- Placeholder directories/files (`{service}`, `{adapter}`, `{cache}`, `{store}`) are literal folder/file names inside `Implementation/`, matching this repository's existing dotnet/python convention (`{Module}`, `{App}`) — never resolved to a concrete name inside `solutions/`, only inside a plateau's `example/`.
+- Placeholder directories/files (`{service}`, `{adapter}`, `{cache}`, `{store}`) are literal folder/file names inside `Implementation/`, matching this repository's existing dotnet/python convention (`{Module}`, `{App}`) — never resolved to a concrete name inside `solutions/`, only inside a plateau's `examples/`.
 
 ## 5. Frontmatter policy
 
@@ -94,4 +94,4 @@ tools/
 
 ## 8. Ground truth
 
-Each of the five plateaus' own `example/` must `go build ./...`, `go vet ./...`, and `make test-kind-unit` (godog scenarios green) — `plateau-persistent-service`'s example additionally needs a reachable PostgreSQL and Redis to run its full scenario set; document the exact `docker run`/connection-string setup in that plateau's own root skill. Until a plateau's example passes, that plateau is "plausible", not "verified".
+Each of the five plateaus' own `examples/` must `go build ./...`, `go vet ./...`, and `make test-kind-unit` (godog scenarios green) — `plateau-persistent-service`'s example additionally needs a reachable PostgreSQL and Redis to run its full scenario set; document the exact `docker run`/connection-string setup in that plateau's own root skill. Until a plateau's example passes, that plateau is "plausible", not "verified".
