@@ -1,10 +1,10 @@
 ---
 name: plateau-core
-description: The v3.1 common baseline — Central Package Management, the two-project module layout (Interfaces + Application), the MediatR command/query/notification mechanism, the validation and exception pipeline behaviors, boundary Soft Value Objects with cross-module validators, structured console logging, and the conformance test harness. No domain layer, no persistence, no API surface.
+description: The v3.1 common baseline — Central Package Management, the two-project module layout (Interfaces + Application), the MediatR command/query/notification mechanism, the validation and exception pipeline behaviors, boundary Soft Value Objects with cross-module validators, structured console logging, and catalog test-project selection backed by the testing skills. No domain layer, no persistence, no API surface.
 whenToUse: when scaffolding a brand-new service repository or a new module before any domain logic, persistence, or API exists; or when reviewing whether a change to the composition root, the MediatR conventions, the validation/exception pipeline, Soft Value Objects, logging, or the test-project layout follows this baseline
 domain: skill
 type: template
-version: 20261008170000
+version: 20261009220001
 tags:
   - skill/template/plateau
   - plateau/core
@@ -21,6 +21,8 @@ created_by:
   - "[[skills/dotnet/architecture/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]"
   - "[[skills/dotnet/architecture/solutions/solution-app-logging.skill/solution-app-logging.skill|solution-app-logging]]"
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]"
+adr:
+  - "skills/dotnet/architecture/plateau/plateau-core/adr/test-boundary-mirrors-production.md"
 standalone: false
 ---
 
@@ -28,6 +30,7 @@ standalone: false
 Establish the common baseline every v3.1 service shares before any variability is chosen: a repository with Central Package Management, modules made of exactly `Interfaces` + `Application`, and a composition root that wires the MediatR pipeline, module registration, and logging. A module at this plateau has public contracts, validated request dispatch, notification pub/sub, and a conformance test suite — but **no domain layer, no persistence, and no external API**.
 
 # Core Principles
+- **Testing conventions** — Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
 - **Central Package Management** — every NuGet version is pinned once in `Directory.Packages.props`; project files carry versionless `<PackageReference>`.
 - **Two-project module** — a module is `{Module}.Interfaces` (public contracts) + `{Module}.Application` (handlers, validators). `{Module}.Domain` and `{Module}.Api` do not exist here; they arrive with their features.
 - **One MediatR mechanism** — `ICommand`/`ICommand<T>`, `IQuery<T>`, `INotificationEvent` in `Shared/MediatR`. Cross-module interaction is `ISender.Send` / `IPublisher.Publish` against `{Module}.Interfaces` contracts, never a direct call. Handlers follow `guard → work/dispatch → return Result<T>`; at this plateau there is no `load/stage` step.
@@ -44,7 +47,7 @@ Establish the common baseline every v3.1 service shares before any variability i
 - composition
   - `Program.cs` calls only `AddAppLogging()`, `AddModules()`, `AddPipeline()`. Each module self-registers via `Add{Module}Module()` (MediatR + validator assembly scan).
 - conformance
-  - `make test-kind-unit` runs every test project; `make test-report` adds coverage; `make test-kind-mutation` runs Stryker (heavy, off the fast gate).
+  - The catalog selects test projects and their reference boundaries; [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) runs them and owns coverage, mutation and reporting.
 
 # Usecases
 
@@ -85,3 +88,9 @@ See [[skills/dotnet/architecture/plateau/plateau-core/structure/plateau-core--sl
 
 # Example
 A complete, runnable minimal service is in [`example/`](./example/) — a `Sample` module with one command, one query, one notification, and one Soft Value Object, wired through the full pipeline. `dotnet build Sample.slnx` and `make test-kind-unit` are green (the plateau's ground-truth check).
+
+# Testing ownership
+The updated [catalog solution](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md) contributes project selection and layer responsibilities; its generic testing conventions are applied through the linked stack skills.
+
+# Dependency-boundary decision
+[Test boundary mirrors production](skills/dotnet/architecture/plateau/plateau-core/adr/test-boundary-mirrors-production.md) records the correction of narrower generated lists; the production Allowed Dependencies remain the authority.

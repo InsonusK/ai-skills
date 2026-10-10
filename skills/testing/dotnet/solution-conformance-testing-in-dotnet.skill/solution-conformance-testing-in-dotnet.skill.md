@@ -4,7 +4,7 @@ description: The .NET implementation of [[skills/testing/core/solution-conforman
 whenToUse: Set up or review the test tooling of a .NET solution that must prove conformance to a Cucumber/Gherkin spec, or wire coverage, mutation testing, and the living doc into a .NET solution's `make`/CI pipeline.
 domain: skill
 type: architecture
-version: 20261009200000
+version: 20261009220000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-dotnet
@@ -42,8 +42,8 @@ adr:
 - `make test-report` assembles a stack-independent `$TEST_REPORT_DIR/` site — badges, native reports, and the living doc — from what each kind wrote, computing nothing itself.
 
 # Core Principles
-- Every scenario is authored per [[skills/testing/dotnet/cucumber-testing-in-dotnet.skill.md|cucumber-testing-in-dotnet]] — this solution wires the `make`/report machinery around that authoring standard, it does not restate it.
-- Keep a separate `{Project}.Tests` project beside each production project, following `cucumber-testing-in-dotnet`; every test project belongs to the solution `dotnet test` runs.
+- Every scenario is authored per [[skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md|cucumber-testing-in-dotnet]] — this solution wires the `make`/report machinery around that authoring standard, it does not restate it.
+- Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects); every test project belongs to the solution `dotnet test` runs.
 - `test-kind-mutation` always exits with Stryker.NET's own exit code after writing its normalized result, per the parent solution's contract.
 - Test projects run xUnit v2 on the VSTest runner, never xunit.v3 on Microsoft.Testing.Platform: Stryker.NET 4.16 reports a false 0% score there. Re-check with `recheck/stryker-xunit-v3.sh` before any move — see [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|xUnit v2 on VSTest until Stryker.NET supports xunit.v3]].
 
