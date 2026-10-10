@@ -2,7 +2,7 @@
 
 Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop` at `aa241fc7`.
 
-**Now:** done, apart from what only a GitHub run shows. `bash skills/devops/agent/check.sh` is green (with `actionlint` on `PATH` and `npm install` run in `skills/devops/agent/`). The pull-request workflow is on GitHub as a sample — branch `develop-devops`, change branch `devops-sample-change`; the owner opens the pull request and reads the result. The release workflow is not tried on GitHub by the owner's decision.
+**Now:** done, apart from what only a GitHub run shows. `bash skills/devops/agent/check.sh` is green (with `actionlint` on `PATH` and `npm install` run in `skills/devops/agent/`). The pull-request workflow ran green on GitHub on 2026-10-11 (pull request `devops-sample-change` into `develop-devops`, confirmed by the owner): `code` detected, `version-check` skipped, README check and the unit kind passed, the mutation kind skipped itself, the report job passed. The release workflow is not tried on GitHub by the owner's decision.
 
 ## Waves
 
@@ -16,11 +16,12 @@ Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop
 | W5 | `core/devops-ci-toolchain` + `-in-{go,python,typescript,dotnet}`; `assemble-workflow.sh`; `workflows/devops-github-wf-pull-request` with `templates/pull-request.yml` | new / rewrite | done |
 | W6 | `workflows/devops-github-wf-release` with `templates/release.yml`; `core/devops-package-publish` + `-in-{python,typescript,dotnet}`; `devops-app-release-in-go` | rewrite, merges four workflow skills | done |
 | W7 | the replaced skills removed (`agent/removed-skills.txt`); rule and ADR in `skill-design` for the `skills/devops/` layout; no link to a removed skill is left in `skills/` | move / delete | done |
-| W8 | ground truth. Done: `fixtures.sh` (11 version cases x 4 stacks), `changes-fixtures.mjs` (path cases x 5 stacks), `actionlint` on every assembled variant, `test/devops/run-local.sh` on the Go sample. A GitHub run of `pull-request.yml`: sample pushed, result read by the owner | — | pushed |
+| W8 | ground truth. Done: `fixtures.sh` (11 version cases x 4 stacks), `changes-fixtures.mjs` (path cases x 5 stacks), `actionlint` on every assembled variant, `test/devops/run-local.sh` on the Go sample. A GitHub run of `pull-request.yml` on the Go sample: green | — | done |
 
 ## Unproved until a GitHub run
 
-- `dorny/paths-filter` with `base: ${{ github.ref }}` and `predicate-quantifier: every` — the patterns are tested with its matcher, the action itself is not.
+- `check-changes` on a push (`base: ${{ github.ref }}`) and for categories other than `code`; on a pull request with a code change it ran green.
+- `make version-check` inside a workflow: the sample's pull request did not go into `master`.
 - Every job of `release.yml` after the tests: the image push, the three package jobs, the Go binaries, Pages, the Release.
 - Starting test services from `.devcontainer/docker-compose.yml`; no sample has a database.
 - The Python, TypeScript, and .NET samples: only `tools/version/` and the path patterns ran for them.
