@@ -4,8 +4,8 @@ description: Versioned, embedded schema migrations for solution-persistent-db's 
 whenToUse: when a module applying solution-persistent-db needs its schema versioned and changeable across releases instead of a single inline CREATE TABLE IF NOT EXISTS
 domain: skill
 type: architecture
-version: 20260928000000
-updated: 20260928
+version: 20261010000000
+updated: 20261010
 tags:
   - skill/architecture/solution
   - solution/go-db-migrations
@@ -60,7 +60,7 @@ adr:
   the process that would call `Migrate`, Job mode is required — see the ADR's decision matrix.
   This solution does not, and cannot, enforce that condition itself; the deploying platform's own
   config (a replica count, a scaling policy) is what makes it true or false, and
-  `devops-service-deploy.skill.md`'s own "migration step" rule states the condition, not a
+  `devops-service-deploy.skill.md`'s own "Apply migrations in exactly one mode" rule states the condition, not a
   platform-unconditional default.
 - Depends on, and always pairs with, `solution-persistent-db` — this is how `PersistentStore` `PostgreSQL` (VP-C001)
   manages its schema once a team wants versioning, not a Variation Point of its own;
@@ -79,7 +79,7 @@ adr:
   policy), which this solution has no visibility into at build time. State the chosen mode, and the
   replica-count fact that makes it safe, explicitly in that plateau's own deploy config — see
   [[skills/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md|devops-service-deploy]]'s
-  own "migration step" rule.
+  own "Apply migrations in exactly one mode" rule.
 
 # Adr
 - [[skills/go/architecture/solutions/solution-go-db-migrations.skill/adr/migration-tool-choice.md|Migration tool choice]]
@@ -122,7 +122,7 @@ FILES:
 1. The deploy pipeline runs `cmd/migrate` as a one-shot job/container, per
    `devops-service-deploy.skill.md`'s own manifests for the platform in use — typically a
    Kubernetes `Job` via a Helm `pre-install,pre-upgrade` hook (see that skill's
-   [`templates/helm/chart-example/templates/migrate-job.yaml`](skills/devops/core/devops-service-deploy.skill/templates/helm/chart-example/templates/migrate-job.yaml)),
+   [`templates/helm/chart-example/templates/migrate-job.yaml`](skills/devops/core/devops-service-deploy.skill/templates/deploy-{service-name}.skill.template/templates/helm/chart-example/templates/migrate-job.yaml)),
    or a plain-manifest `kubectl apply` + `kubectl wait` step.
 2. `cmd/migrate`'s `run()` calls `{store}.Migrate(ctx, dsn)`, which applies every migration newer
    than the database's recorded version, or no-ops if already current.
