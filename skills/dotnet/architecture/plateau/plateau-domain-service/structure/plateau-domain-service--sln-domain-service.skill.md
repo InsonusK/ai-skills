@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level project in a plateau
 domain: skill
 type: template
 plateau: domain-service
-version: 20260924000000
+version: 20261009220000
 tags:
   - skill/template/sln
   - plateau/domain-service
@@ -115,3 +115,6 @@ __Applied solutions:__
 - [ ] `App.Infrastructure` referenced only by `App.Host`; `Shared` has zero project references.
 - [ ] One test project per production project except `{Module}.Api`; `{Module}.Domain.Tests` present with `{Module}.Domain`.
 - [ ] `make test-kind-unit` is green.
+
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.

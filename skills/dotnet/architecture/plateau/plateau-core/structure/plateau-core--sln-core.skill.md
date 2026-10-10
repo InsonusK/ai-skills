@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level project in a plateau
 domain: skill
 type: template
 plateau: core
-version: 20260902000000
+version: 20261009220000
 tags:
   - skill/template/sln
   - plateau/core
@@ -96,7 +96,7 @@ MUST:
 - Keep the dependency arrows: `{Module}.Application → {Module}.Interfaces, Shared, BuildingBlocks`; `{Module}.Interfaces → Shared`; `BuildingBlocks → Shared`; `App.Host → every {Module}.Application, BuildingBlocks`; `Shared → nothing`. Across modules, reference only `{Module-B}.Interfaces`.
 - Declare every NuGet version once in `Directory.Packages.props` with `ManagePackageVersionsCentrally` true; keep every `<PackageReference>` versionless. Add the central `<PackageVersion>` in the same change as the reference.
 - Give every production project that has one exactly one dedicated test project mirroring its Allowed Dependencies — never one combined test project per module, never a test project reaching wider than its production counterpart.
-- Expose `test-kind-unit`, `test-kind-mutation`, `test-report`, and `test-and-report` `make` targets at the repository root that behave exactly as [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|solution-conformance-testing]] defines; never call `dotnet test` / `dotnet-stryker` directly from CI or scripts.
+- Apply [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for the testing targets and report contract.
 - Never let `Shared` take a project reference, and never let a cross-module reference target anything but `{Module}.Interfaces`.
 MAY:
 - A pattern solution may add a project to a module (e.g. `{Module}.Domain.Rules`) when it needs isolation the base projects cannot give.
@@ -113,3 +113,6 @@ __Applied solutions:__
 - [ ] `Shared` has zero project references; no cross-module reference targets anything but `{Module}.Interfaces`.
 - [ ] `Shared.Tests`, `BuildingBlocks.Tests`, `{ModuleName}.Interfaces.Tests`, `{ModuleName}.Application.Tests` exist; no `{ModuleName}.Domain.Tests`.
 - [ ] `make test-kind-unit` is green.
+
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.

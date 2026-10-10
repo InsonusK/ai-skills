@@ -1,5 +1,5 @@
 ---
-version: 20261009130000
+version: 20261009220000
 description: Add the .NET test kinds (unit, mutation), the report builder and their normalization scripts to the Makefile behind the shared testing contract, aggregated across whichever test projects exist
 element_kind: repository
 change_kind: extend
@@ -15,7 +15,7 @@ tags:
 ```
 /tests
   /{TestProject}               — one per test project, however the solution splits them
-    {Rule}.feature, StepDefinitions/{Rule}Steps.cs
+    — feature and binding layout: see cucumber-testing-in-dotnet
     reqnroll.json
 /report-template
   index.html
@@ -30,7 +30,7 @@ Makefile                       — one line added: include tools/testing/testing
 README.md
 ```
 
-Keep a separate `{Project}.Tests` project for each production project, referencing that project and respecting its architectural reference boundary; include every test project in the solution.
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects); include every test project in the solution.
 
 ## Directory and class skills
 | Directory | file | Description |

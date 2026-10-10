@@ -1,4 +1,5 @@
 ---
+version: 20261009220000
 description: Step definitions binding a Gherkin feature file to a command handler's orchestration
 project_name: "{Module}.Application.Tests"
 name: "{Rule}Steps"
@@ -11,10 +12,10 @@ tags:
 ---
 
 # Goals
-- Prove every scenario in `Rules/{Rule}.feature` against `{Module}.Application`'s real handler — that it loads the right state, calls the right guarded domain method, and returns the expected `Result`.
+- Prove every scenario in the owning feature file against `{Module}.Application`'s real handler — that it loads the right state, calls the right guarded domain method, and returns the expected `Result`.
 
 # Core Principles
-- Unlike `{Module}.Domain.Tests`' validator-shaped scenarios (input → valid/invalid), Application scenarios are command-shaped: a command goes in, a `Result` comes out. The step definition never re-implements the handler's orchestration — it only sends the command and asserts on the real handler's result.
+- Unlike `{Module}.Domain.Tests`' validator-shaped scenarios (input → valid/invalid), Application scenarios are command-shaped: a command goes in, a `Result` comes out.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
@@ -22,45 +23,18 @@ tags:
 | Step definitions for one handler's scenarios | {Rule}Steps | ChangeCustomerEmailSteps | {Rule}Steps.cs | ChangeCustomerEmailSteps.cs |
 
 # Implementation changes
-```csharp
-[Binding]
-public sealed class {Rule}Steps
-{
-    private {Command} _command = null!;
-    private Result _result = null!;
-    private readonly {Handler} _handler = new({module dependencies});
+Apply [binding organization](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#one-binding-class-per-domain-concept), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [concrete Result assertions](skills/testing/dotnet/no-test-theater-in-dotnet.skill.md#assert-the-concrete-ardalisresult-state). The layer-specific action and observation are:
 
-    [Given(@"a {Rule} command with ""(.*)""")]
-    public void GivenACommand(string input) => _command = new {Command}(input);
-
-    [When(@"the handler processes it")]
-    public async Task WhenTheHandlerProcessesIt() =>
-        _result = await _handler.Handle(_command, CancellationToken.None);
-
-    [Then(@"the result is successful")]
-    public void ThenTheResultIsSuccessful() => Assert.True(_result.IsSuccess);
-
-    [Then(@"the result fails with error ""(.*)""")]
-    public void ThenTheResultFailsWithError(string errorCode) =>
-        Assert.Contains(errorCode, _result.Errors);
-}
-```
+- Construct the command, invoke `Handler.Handle(command, cancellationToken)` and observe the returned `Result` and any contracted collaborator calls. Do not substitute a direct Domain call for handler orchestration.
 
 # Rule changes
 
 ## MUST
-- Call the real `{Handler}` — never re-implement the orchestration (load, validate, call domain method, stage) inline in the step.
-  - Violation: `WhenTheHandlerProcessesIt` manually constructs the expected `Result` instead of calling `_handler.Handle(...)`.
-  - Risk: the scenario can stay green after the real handler's orchestration breaks.
-  - Fix: always invoke the real handler and assert on its actual return value.
-- Assert the specific error code/message in a failure scenario, not just `IsSuccess == false`.
-  - Risk: a boolean-only assertion passes for any failure reason, so a scenario claiming a specific error doesn't actually verify it.
-  - Fix: assert the exact error the real handler returns.
+- Apply [production-code bindings](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#exercise-production-code-from-bindings).
 
 # Check list
-- [ ] Every `Given/When/Then` in `{Rule}.feature` has a matching, non-duplicated step method.
-- [ ] `{Rule}Steps` calls the real `{Handler}`, not a hand-computed expected result.
+- [ ] The layer-specific action and observation match this project's responsibility; generic binding rules are applied.
 
 # Unittest TestCases
-- [ ] WHEN a scenario's command is valid THEN `ThenTheResultIsSuccessful` passes against the real handler.
-- [ ] WHEN a scenario's command is invalid THEN `ThenTheResultFailsWithError` asserts the exact error the real handler returns.
+- [ ] WHEN a scenario's command is valid THEN the handler returns the contracted success payload.
+- [ ] WHEN a scenario's command is invalid THEN the handler returns the contracted failure result.
