@@ -37,9 +37,10 @@ runs:
             - '{.github/**,.devcontainer/**,tools/version/**,Makefile}'
           docker:
             - '{Dockerfile,**/Dockerfile,.dockerignore,**/.dockerignore}'
+          # API contracts in docs/integration/ are built into the artifact - they are code, not docs.
           docs:
             - '{docs/**,*.md,**/*.md,LICENSE}'
-            - '!{.github/**,.devcontainer/**}'
+            - '!{.github/**,.devcontainer/**,docs/integration/**}'
           # Angular: Cucumber in test/ and features/, native specs in spec/, browser specs in an -e2e project.
           test:
             - '{test/**,**/test/**,features/**,**/features/**,spec/**,**/spec/**,*.spec.ts,**/*.spec.ts,*-e2e/**,**/*-e2e/**,tools/**,report-template/**}'
@@ -48,6 +49,6 @@ runs:
           # Left out besides the categories above: repository housekeeping.
           code:
             - '**'
-            - '!{.github/**,.devcontainer/**,Makefile,Dockerfile,**/Dockerfile,.dockerignore,**/.dockerignore,docs/**,*.md,**/*.md,LICENSE}'
+            - '!{.github/**,.devcontainer/**,Makefile,Dockerfile,**/Dockerfile,.dockerignore,**/.dockerignore,docs/*,docs/!(integration)/**,docs/integration?*/**,*.md,**/*.md,LICENSE}'
             - '!{test/**,**/test/**,features/**,**/features/**,spec/**,**/spec/**,*.spec.ts,**/*.spec.ts,*-e2e/**,**/*-e2e/**,tools/**,report-template/**}'
             - '!{.gitignore,.gitattributes,.editorconfig,.vscode/**,.agents/**,.claude/**}'

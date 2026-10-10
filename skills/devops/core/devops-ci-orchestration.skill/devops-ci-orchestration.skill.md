@@ -73,9 +73,18 @@ Where the dev container already describes the service in `.devcontainer/docker-c
       - run: docker compose --file .devcontainer/docker-compose.yml up --detach --wait {test-services}
 ```
 `{test-services}` — the compose service names the tests need, never the dev container itself.
+
+The runner reaches such a service on `localhost`, so in the compose file the service publishes its port and names its image by an exact tag. A dev container that shares the service's network (`network_mode: service:{db}`) works without `ports`; add them all the same — the dev container is unaffected:
+```yaml
+  db:
+    image: postgres:18          # an exact tag, never latest
+    ports:
+      - "127.0.0.1:5432:5432"   # for the runner; the dev container reaches db over the shared network
+```
 - Violation: a `services:` block in the workflow describing the same database a second time.
 - Risk: CI and the dev container run different versions or settings of the service, and a test passes in one only.
-- Fix: one compose file; the services publish their ports, and the job's `env` gives the tests the same variables the dev container sets, with `localhost` as the host.
+- Violation: `docker compose up db` for a service without `ports` — nothing listens on the runner's `localhost`; `image: postgres:latest`.
+- Fix: one compose file; the service publishes its port and pins its image tag, and the job's `env` gives the tests the same variables the dev container sets, with `localhost` as the host.
 
 # Check list
 - [ ] Every test, report, and version step is a `make` target of [[#Call only the caller contract|The caller contract]].
@@ -83,4 +92,4 @@ Where the dev container already describes the service in `.devcontainer/docker-c
 - [ ] The workflow sets only `TEST_RUN_PURPOSE`, `DELTA_BASE`, and the two test directories; no script reads a `GITHUB_*` variable.
 - [ ] The three actions and the two workflow files are copies of their skills' files, differing only in listed placeholders and the test environment of the `test-kind` job.
 - [ ] Preparation beyond the toolchain is in `make init`.
-- [ ] Services for tests are started in the `test-kind` job, from `.devcontainer/docker-compose.yml` where it describes them; no service is described a second time.
+- [ ] Services for tests are started in the `test-kind` job, from `.devcontainer/docker-compose.yml` where it describes them; no service is described a second time; each publishes its port and pins its image tag.

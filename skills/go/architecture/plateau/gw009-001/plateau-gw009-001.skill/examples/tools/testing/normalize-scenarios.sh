@@ -29,8 +29,16 @@ WORK_REL="$(realpath -m --relative-to=. "${TEST_WORK_DIR:-tmp/testing}")/"
 
 # One TSV line per entry: feature, scenario, examples, uri, line, tags, state (todo, broken
 # or empty), note, lines, and the tags of the Feature line alone.
-find . \( -name .git -o -name node_modules -o -name bin -o -name obj -o -name tmp -o -name public -o -name .venv \) -prune \
-  -o -name '*.feature' -print | sed 's#^\./##' | awk -v work="$WORK_REL" 'index($0, work) != 1' | sort | while IFS= read -r uri; do
+# Nor is a dot-directory (skills synced into .agents/ or .claude/, a virtual environment) or a
+# nested repository: a git submodule has a .git entry of its own and holds another project's
+# features.
+NESTED="$(find . -mindepth 2 \( -name node_modules -o -name tmp \) -prune -o -mindepth 2 -name .git -print -prune | sed 's#^\./##; s#\.git$##')"
+
+find . \( -name '.?*' -o -name node_modules -o -name bin -o -name obj -o -name tmp -o -name public \) -prune \
+  -o -name '*.feature' -print | sed 's#^\./##' | awk -v work="$WORK_REL" -v nested="$NESTED" '
+    BEGIN { n = split(nested, repo, "\n") }
+    index($0, work) == 1 { next }
+    { for (i = 1; i <= n; i++) if (repo[i] != "" && index($0, repo[i]) == 1) next; print }' | sort | while IFS= read -r uri; do
   awk -v uri="$uri" '
     function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t\r]+$/, "", s); return s }
     function after_colon(s) { sub(/^[^:]*:[ \t]*/, "", s); return s }

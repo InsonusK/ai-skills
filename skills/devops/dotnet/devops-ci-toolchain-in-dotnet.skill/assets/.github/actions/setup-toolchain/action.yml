@@ -8,3 +8,7 @@ runs:
     - uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
+    # Node for the living-doc renderer of the test report - every stack's report needs it.
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: tools/livingdoc/package.json
