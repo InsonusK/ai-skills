@@ -96,7 +96,7 @@ for f in $(git ls-files -co --exclude-standard "$D/**/assets/**/*.sh" "$D/**/tem
   sh -n "$f" 2>/dev/null || bash -n "$f" || err "$f: does not parse"
 done
 if command -v actionlint >/dev/null 2>&1; then
-  wf=$(git ls-files -co --exclude-standard "$D/**/templates/*.yml" | grep -v action.yml)
+  wf=$(git ls-files -co --exclude-standard "$D/**/*.yml" | grep '/\.github/workflows/')
   [ -n "$wf" ] && { actionlint -shellcheck= $wf || err "actionlint"; }
 else
   echo "note: actionlint is not installed - workflows are not linted"
@@ -104,5 +104,19 @@ fi
 
 # 10. Ground truth: the version tools of every stack.
 bash "$A/fixtures.sh" >/tmp/devops-fixtures.log 2>&1 || { err "fixtures.sh:"; grep -E 'FAIL|fixtures' /tmp/devops-fixtures.log; }
+
+# 11. Ground truth: the check-changes actions against sample paths, matched as dorny/paths-filter matches.
+if [ -d "$A/node_modules/picomatch" ]; then
+  node "$A/changes-fixtures.mjs" >/tmp/devops-changes.log 2>&1 || { err "changes-fixtures.mjs:"; grep FAIL /tmp/devops-changes.log; }
+else
+  echo "note: run 'npm install' in $A - the check-changes patterns are not tested"
+fi
+# The actions differ between stacks only in the lines that carry the test patterns and the skill's name.
+ref=
+for f in $D/*/devops-ci-changes-in-*.skill/assets/.github/actions/check-changes/action.yml; do
+  n=$(grep -vE "^# Source:|^          # |- '!?\{.*(test|Tests)/\*\*" "$f")
+  [ -z "$ref" ] && { ref=$n; continue; }
+  [ "$n" = "$ref" ] || err "$f: differs from the other stacks outside its test patterns"
+done
 
 [ "$fail" -eq 0 ] && echo "check: all passed" || exit 1

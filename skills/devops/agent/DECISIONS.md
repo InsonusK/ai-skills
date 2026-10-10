@@ -33,3 +33,8 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 - 2026-10-10 `skill-design` cites `devops-github-action-check-version-in-go` as a violation example of a missing base; the skill is removed and the citation is left for the owner — `check.sh` §8 skips `skills/design/`.
 - 2026-10-10 `devops-service-deploy`'s template links (`./templates/...` from a file inside `templates/`) were broken before this work; `check.sh` §1 skips that one file.
 - 2026-10-10 Starting test services from `.devcontainer/docker-compose.yml` is written as a rule of `devops-ci-orchestration` and is unverified until a sample with a database runs on GitHub.
+- 2026-10-10 `code` is everything no other category claims, minus repository housekeeping — an unclassified file starts tests and a release instead of being skipped. The old filters listed code paths, and a migration or an embedded file changed nothing.
+- 2026-10-10 `.devcontainer/**` is `ci`: it holds the compose file the test services start from.
+- 2026-10-10 The action passes `base: ${{ github.ref }}` to `dorny/paths-filter`: without it a push to `develop` is compared with the default branch, not with the commit before the push.
+- 2026-10-10 The patterns are run locally with the matcher `paths-filter` uses (`picomatch` 2.3.1). The first run failed: `**/Dockerfile` inside braces does not match a root `Dockerfile`. Both forms are listed now.
+- 2026-10-10 Angular has its own `devops-ci-changes-in-angular` — `spec/`, `*.spec.ts`, `-e2e` projects — while it shares the TypeScript version skill.

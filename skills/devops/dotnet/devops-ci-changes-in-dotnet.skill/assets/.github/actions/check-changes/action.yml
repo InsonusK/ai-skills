@@ -1,0 +1,53 @@
+# .github/actions/check-changes/action.yml - which categories of files a pull request or a push changed.
+# Source: skill devops-ci-changes-in-dotnet. Copied verbatim; never edited in the project.
+name: check-changes
+description: Detect which categories of files changed
+outputs:
+  code:
+    description: What goes into the artifact - everything no other category claims
+    value: ${{ steps.filter.outputs.code }}
+  test:
+    description: Tests, features, and the test tooling
+    value: ${{ steps.filter.outputs.test }}
+  ci:
+    description: Workflows, actions, the dev container, the version tools, the Makefile
+    value: ${{ steps.filter.outputs.ci }}
+  docker:
+    description: Dockerfile and .dockerignore
+    value: ${{ steps.filter.outputs.docker }}
+  docs:
+    description: Documentation
+    value: ${{ steps.filter.outputs.docs }}
+runs:
+  using: composite
+  steps:
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        # A pull request is compared with the commit it branched from. A push is compared
+        # with the commit before it - which needs the pushed branch itself as the base;
+        # the default base is the repository's default branch.
+        base: ${{ github.ref }}
+        # every: a file counts for a category only when it matches all of its patterns, so
+        # a category lists its places inside one pair of braces and then what it leaves out.
+        # Inside braces '**/x' does not match x at the root - both are listed.
+        predicate-quantifier: every
+        filters: |
+          ci:
+            - '{.github/**,.devcontainer/**,tools/version/**,Makefile}'
+          docker:
+            - '{Dockerfile,**/Dockerfile,.dockerignore,**/.dockerignore}'
+          docs:
+            - '{docs/**,*.md,**/*.md,LICENSE}'
+            - '!{.github/**,.devcontainer/**}'
+          # .NET: every test lives in a *.Tests project.
+          test:
+            - '{*.Tests/**,**/*.Tests/**,tools/**,report-template/**}'
+            - '!{tools/version/**,docs/**,*.md,**/*.md}'
+          # Everything else, so that a file nobody thought of is tested and released, not skipped.
+          # Left out besides the categories above: repository housekeeping.
+          code:
+            - '**'
+            - '!{.github/**,.devcontainer/**,Makefile,Dockerfile,**/Dockerfile,.dockerignore,**/.dockerignore,docs/**,*.md,**/*.md,LICENSE}'
+            - '!{*.Tests/**,**/*.Tests/**,tools/**,report-template/**}'
+            - '!{.gitignore,.gitattributes,.editorconfig,.vscode/**,.agents/**,.claude/**}'

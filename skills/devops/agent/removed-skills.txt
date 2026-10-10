@@ -1,1 +1,5 @@
 devops-github-action-check-version-in-go
+devops-github-action-check-changes-in-go
+devops-github-action-check-changes-in-python
+devops-github-action-check-changes-in-typescript
+devops-github-action-check-changes-in-dotnet
