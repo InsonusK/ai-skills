@@ -1,6 +1,6 @@
 ---
 name: devops-github-wf-pull-request
-description: Stack-agnostic GitHub Actions workflow for validating a pull request into develop/master — change detection, a version-bump check on master, and unit tests, all wired through reusable composite actions instead of inline stack logic
+description: Stack-agnostic GitHub Actions workflow for validating a pull request into develop/master — change detection, a version-bump check on master, and the project's test kinds in a `check` run, all wired through reusable composite actions instead of inline stack logic
 whenToUse: when you need to create or update `.github/workflows/pull-request.yml` (or a similarly named file) to validate pull requests into develop/master
 updated: 20261006
 tags:
@@ -19,15 +19,15 @@ tags:
 
 # Core Principle
 - This workflow calls two reusable composite actions — `./.github/actions/check-changes` and `./.github/actions/check-version` — never inline `dorny/paths-filter`/version-parsing logic. Their stack-specific mechanics live in a companion skill named `devops-github-action-check-changes-in-{stack}` / `devops-github-action-check-version-in-{stack}`; ask the user which stack to load rather than loading all of them.
-- Every PR to `develop` or `master` runs unit tests; a PR to `master` that touches code, the workflow, or the Dockerfile must also strictly increase the project's version.
-- This workflow only ever runs blocking checks — it never includes mutation testing. Mutation testing is a report-only signal, not a per-PR gate; it only ever runs on the master-push report workflow (see [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]) for a project following [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]].
+- Every PR to `develop` or `master` runs every test kind the project declares, as a `check` run; a PR to `master` that touches code, the workflow, or the Dockerfile must also strictly increase the project's version.
+- This workflow never names a test kind: it lists them with `make test-kinds`, runs each as `make test-kind-{kind}` with `TEST_RUN_PURPOSE=check`, and each kind decides what a `check` run means for it. It only ever runs blocking checks — mutation testing is a report-only signal, not a per-PR gate, so this workflow passes no `DELTA_BASE` and the mutation kind skips itself; it runs on the master-push report workflow (see [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]) for a project following [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]].
 - The AI agent never pushes directly to `master` or `develop`; it always opens a PR from a separate branch, or does not push at all.
 
 # Workflow
 1. `changes` job calls `./.github/actions/check-changes`, producing `code`/`test`/`workflow`/`docker`/`docs` booleans.
 2. `version-check` job calls `./.github/actions/check-version`, but only when `github.base_ref == 'master'` and `changes` found `code`, `workflow`, or `docker` — then a follow-up step fails the job when the action's `bumped` output is not `true`, i.e. unless the PR's version is strictly greater than `master`'s.
-3. `unit-test` job sets up the stack's toolchain (`Set up {stack}` — the only step that changes between stacks), then runs `make unit-test` (or the stack's native test runner for a project not yet on solution-conformance-testing) when `code` or `test` changed; a cross-platform console app runs it across an OS matrix.
-4. `report` aggregate job — `needs: [changes, version-check, unit-test]`, `if: always()` — prints the changed-file summary and fails only if any needed job's `result` is `failure`; `skipped` counts as passing. This is the job branch protection requires, never the individual jobs.
+3. `test-kinds` job — when `code` or `test` changed — reads the kinds from `make test-kinds` and runs `make test-readme-check`; `test-kind` then runs one matrix leg per kind: it sets up the stack's toolchain (`Set up {stack}` — the only step that changes between stacks) and runs `make test-kind-{kind}` with `TEST_RUN_PURPOSE=check`. A cross-platform console app adds an OS dimension to the matrix. A project not yet on solution-conformance-testing runs its native test runner in one plain job instead.
+4. `report` aggregate job — `needs: [changes, version-check, test-kinds, test-kind]`, `if: always()` — prints the changed-file summary and fails only if any needed job's `result` is `failure`; `skipped` counts as passing. This is the job branch protection requires, never the individual jobs.
 
 # Rule
 
@@ -47,7 +47,7 @@ Implement change detection and version comparison as `uses: ./.github/actions/ch
 
 ### Aggregate job wraps every conditional job
 Add a final aggregate `report:` job with `needs: [...]` listing every job above (including conditionally-skipped ones) and `if: always()`, that fails only when a listed job's `result` is `failure` — treat `skipped` and `success` as passing. Require this job, not the underlying jobs, in branch protection.
-- Violation: branch protection requires `unit-test` directly.
+- Violation: branch protection requires a `Test ({kind})` matrix leg directly.
 - Risk: when a job is skipped by the path filter (no relevant changes), GitHub never reports success for that job's required check — it stays pending, blocking merge even though nothing needed to run.
 - Fix: add the aggregate `report:` job (see [example](./templates/pull-request.example.md)) and require it instead.
 
@@ -64,14 +64,14 @@ Follow `./.github/actions/check-version` with a step that exits non-zero when it
 - Fix: add the `Require a version bump` step from the [example](./templates/pull-request.example.md).
 
 ### Set up the stack's toolchain before running tests
-Install the project's toolchain version with `actions/setup-{stack}` (the `Set up {stack}` step in the [example](./templates/pull-request.example.md)) before `make unit-test`.
-- Violation: `unit-test` runs `make unit-test` straight after checkout.
+Install the project's toolchain version with `actions/setup-{stack}` (the `Set up {stack}` step in the [example](./templates/pull-request.example.md)) before `make test-kind-{kind}`.
+- Violation: `test-kind` runs `make test-kind-{kind}` straight after checkout.
 - Risk: tests run on whatever version `ubuntu-latest` preinstalls (for Go, not the `go.mod` version) and without a dependency cache.
 - Fix: add `actions/setup-{stack}` pinned to the project's version file, with its built-in cache enabled.
 
 ### Never gate a PR on mutation testing
-Never add a mutation-testing job to this workflow, and never require one in branch protection.
-- Violation: a `mutation-test` job with `ONLY_DELTA=true` wired into this workflow's aggregate `report:` job, or required directly in branch protection.
+Never pass `DELTA_BASE` in this workflow, never name a mutation-testing job in it, and never require one in branch protection.
+- Violation: `DELTA_BASE: origin/${{ github.base_ref }}` added to the `test-kind` job, which makes the mutation kind run over the changed code and its exit code part of the aggregate `report:` job.
 - Risk: mutation testing is a quality *signal*, not a correctness gate the way unit tests are — blocking merge on it trains the team to treat surviving mutants as a merge obstacle to route around (loosen assertions, mark scenarios `@todo`) rather than a report to act on deliberately; it also slows down every PR with a run whose only consumer is a report nobody reads synchronously.
 - Fix: let mutation testing run exclusively on [[skills/devops/workflows/devops-github-wf-release-test-report.skill/devops-github-wf-release-test-report.skill.md|devops-github-wf-release-test-report]]'s unscoped, report-only job after merge.
 
@@ -100,7 +100,7 @@ See [Pull-request workflow example](./templates/pull-request.example.md).
 - [ ] `changes` and `version-check` call `./.github/actions/check-changes`/`./.github/actions/check-version` — no inline path-filter or version-parsing logic.
 - [ ] `version-check` runs only for PRs to `master` when code, workflow, or Dockerfile changed.
 - [ ] `version-check` fails when `bumped != 'true'`.
-- [ ] `unit-test` sets up the stack's toolchain via `actions/setup-{stack}`, then runs on code/test changes, with an OS matrix for cross-platform console apps.
-- [ ] No mutation-testing job exists in this workflow, and branch protection does not require one.
+- [ ] `test-kinds` lists the kinds from `make test-kinds` and runs `make test-readme-check`; `test-kind` sets up the stack's toolchain via `actions/setup-{stack}` and runs one `make test-kind-{kind}` per kind with `TEST_RUN_PURPOSE=check`; no kind is named in the workflow.
+- [ ] The workflow passes no `DELTA_BASE`, names no mutation-testing job, and branch protection does not require one.
 - [ ] A final aggregate `report:` job is what branch protection requires, not the individual conditional jobs.
 - [ ] No direct push to `develop`/`master` — every change went through a branch and a PR.

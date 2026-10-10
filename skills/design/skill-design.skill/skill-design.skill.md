@@ -2,7 +2,7 @@
 name: skill-design
 description: How a skill file is organized so an AI agent can find, load, and follow it — Human Flat vs Dir, folder and file naming, the top-level section set, cross-skill links, supporting files, and ADRs; the entry point that also requires skill-content and skill-tags
 whenToUse: when you create a new skill, or change how one is organized — its Human Flat/Dir format, file and folder layout, top-level sections, cross-skill links, or ADRs
-updated: 20261007
+updated: 20261010
 tags:
   - skill/core
   - stack
@@ -11,6 +11,7 @@ adr:
   - adr/cross-skill-links-scope.md
   - adr/allow-extra-top-level-sections.md
   - adr/stack-rules-in-own-skill.md
+  - adr/testing-skills-in-one-directory.md
 ---
 
 # Goal
@@ -133,6 +134,12 @@ When a choice between considered variants — each with real benefits and costs 
 - Risk: the rejected alternatives and trade-offs are lost, and the decision gets re-argued the next time someone touches the skill.
 - Fix: create the ADR immediately, register it in the skill's `adr:` YAML property, and link it from the skill body.
 
+### Keep testing skills together
+Place every testing skill under `skills/testing/` — a stack-agnostic `{skill-name}` in `core/`, a stack-specific `{skill-name}-in-{stack}` in `{stack}/`, with the `-in-{stack}` suffix even when no base exists — and link from a skill there only to files under `skills/testing/`. Decision recorded in [[./adr/testing-skills-in-one-directory.md|testing-skills-in-one-directory]].
+- Violation: `cucumber-testing-in-go` under `skills/go/test/`, or a testing skill linking a plateau or a catalog solution.
+- Risk: testing rules scatter across stack and catalog directories again, and a link out of the directory makes `ai-skill-manager` load an architecture catalog with every testing skill.
+- Fix: move the skill into `skills/testing/core/` or `skills/testing/{stack}/`; name an outside skill as plain backticked text, or move what the testing skill needs into `skills/testing/`.
+
 ## SHOULD
 
 ### Always ship a check list
@@ -172,6 +179,7 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] All supporting files are inside the skill folder (Human Dir); a Human Flat skill has none.
 - [ ] Every cross-skill link is an input, a required sub-step, an applied standard/template, or an active prohibition — an agent could not finish this skill's artifact without it; no link to a later pipeline stage, a consumer, or an out-of-scope topic.
 - [ ] The skill is split by stack only when a second, differing stack implementation exists or is planned, and then per [[skills/design/skill-stack-split.skill/skill-stack-split.skill.md|skill-stack-split]]; otherwise it is one skill with no `-in-{stack}` suffix.
+- [ ] A testing skill lives in `skills/testing/core/` (stack-agnostic) or `skills/testing/{stack}/` (named `{skill-name}-in-{stack}`), and links only inside `skills/testing/`.
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
 - [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.

@@ -3,7 +3,8 @@ name: solution-app-testing
 description: Vitest as the unit test runner, Playwright for e2e, TestBed for non-DOM business-layer units (Client, Facade, Signal Store), and a strict layer-by-layer HTTP mocking rule (HttpTestingController only at the Client, MSW only for genuine cross-layer integration tests). Deliberately does not cover UI/component/visual testing — see solution-ui-testing.
 domain: skill
 type: architecture
-version: 20260902000000
+version: 20261009210100
+updated: 20261009
 tags:
   - skill/architecture/solution
   - stack/typescript
@@ -90,6 +91,7 @@ The integration spec sits under the feature library because it exercises the who
   - Selected variant: this layered strategy — chosen to give each HTTP mock exactly one source of truth
 
 # Boundaries
+- This solution defines which business-layer and end-to-end tests exist and what each may mock. How those tests are run by CI and reported — the `make test-kind-components` / `make test-kind-ui` kinds, their badges and the common report — is defined by [[skills/testing/angular/solution-conformance-testing-in-angular.skill/solution-conformance-testing-in-angular.skill.md|solution-conformance-testing-in-angular]], which adds to these rules and keeps the same `spec/` folder for Angular-native specs; its delivered runner setup targets one Angular CLI application, for an Nx workspace apply [[skills/testing/angular/solution-conformance-testing-in-angular-nx.skill/solution-conformance-testing-in-angular-nx.skill.md|solution-conformance-testing-in-angular-nx]].
 - `monolith` catalog, `BusinessLayerTesting` (common — the test-runner + coverage gate is baseline infra). Assumes `solution-repository-structure`; requires `solution-api-http-layer` + `solution-state-tiering` for the layer patterns it tests.
 - Covers non-DOM business-layer units (Client, Facade, Signal Store) + e2e. **Deliberately does not cover UI/component/visual testing** — that is `solution-ui-testing` (monolith) / `solution-design-system-ui-testing` (design-system), which reuse this solution's Vitest/Playwright tool ADRs.
 - `HttpTestingController` lives only in a Client spec; MSW only for deliberate cross-layer integration specs.

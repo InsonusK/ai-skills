@@ -1,0 +1,22 @@
+{
+  "name": "linkcheck",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "cucumber-js",
+    "mutation": "stryker run",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10",
+    "@stryker-mutator/core": "^8",
+    "c8": "^10",
+    "tsx": "^4",
+    "typescript": "^5"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ]
+}

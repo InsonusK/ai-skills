@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linkcheck"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-bdd>=8.1,<10",
+    "coverage>=7",
+    "mutmut>=3.8,<4",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["*.test", "*.test.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["src"]
+python_files = ["*_test.py"]
+addopts = "--import-mode=importlib"
+markers = [
+    "status/todo: planned, not implemented yet - excluded from the run",
+    "status/broken: implemented, known to fail - excluded from the run",
+    "status/validated: checked by a person",
+    "category/happy", "category/boundary", "category/negative", "category/error",
+    "category/concurrency", "category/security", "category/regression",
+    "type/domain", "type/service", "type/api", "type/infrastructure",
+    "type/mapping", "type/contract", "type/tech-check",
+]
+
+[tool.coverage.run]
+source = ["linkcheck"]
+branch = true
+omit = ["*/test/*"]
+
+[tool.coverage.report]
+fail_under = 80
+
+[tool.mutmut]
+source_paths = ["src"]
+do_not_mutate = ["*/test/*"]
+pytest_add_cli_args = ["-m", "not status/todo and not status/broken"]

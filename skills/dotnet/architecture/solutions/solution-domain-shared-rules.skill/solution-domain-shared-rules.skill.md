@@ -4,7 +4,7 @@ description: Consolidates the scattered, locally-owned conditions already writte
 whenToUse: when the same condition has been duplicated by two or more of solution-value-objects/solution-dto-property-validators/solution-domain-behaviour and needs one shared, reusable, cross-adapter home — or when authoring a brand-new module and choosing to start with shared rules from the beginning.
 domain: skill
 type: architecture
-version: 20260924000000
+version: 20261009220000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -20,7 +20,7 @@ creates:
   - "{Module}.Domain.Rules.{Rule}.cs"
   - "{Module}.Domain.Rules.Spec/{format|semantic|domain}/{Rule}.feature"
   - "{Module}.Domain.Rules.Tests.csproj"
-  - "{Module}.Domain.Rules.Tests.StepDefinitions.{Rule}RuleSteps.cs"
+  - "{Module}.Domain.Rules.Tests.Steps.{Rule}RuleSteps.cs"
   - Shared.Exceptions.EntityNotLoadedException.cs
 extends:
   - "{Module}.Application.Validators.Property.{ValueObject}PropertyValidator.cs"
@@ -37,6 +37,8 @@ depends_on:
   - "[[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]"
 built_on_plateau:
 adr:
+  - "skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/test-layout-owned-by-testing-skill.md"
+  - adr/feature-tag-contract.md
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rule-as-irulebuilder-extension|Rule as bool primitive + IRuleBuilder extension]]"
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/format-semantic-domain-unification|Format/Semantic/Domain are one mechanism]]"
   - "[[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rules-project-references-interfaces-only|Domain.Rules references {Module}.Interfaces only — not gated on DomainLogic]]"
@@ -71,7 +73,7 @@ adr:
 - A Domain rule that needs data from another aggregate or another service is not "just read it" — same-aggregate Domain rules stay synchronous; cross-aggregate/cross-service Domain rules become Try/Confirm (see Workflow)
 - `{Module}.Domain.Rules.Spec` holds `.feature` files only, never a `.cs` file — it is a shared Gherkin source, not a project, and is not itself compiled or referenced by anything; every test project that proves a scenario from it links the classification folders it proves in via its own `.csproj` as `<ReqnrollFeatureFiles>` — never `<None>`, for which Reqnroll generates no test — and generates its own Reqnroll fixture bound to its own step definitions (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/Implementation/{Module}.Domain.Rules.Spec.create|{Module}.Domain.Rules.Spec]])
 - Scenario text in `{Module}.Domain.Rules.Spec` is domain language only — no .NET type names, no C#/FluentValidation vocabulary, no reference to which adapter proves it — so the same file binds against a step definition in another language without rewording; the rejection code strings are part of that contract and stay verbatim (see [[skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-as-exported-cross-language-contract|adr/spec-as-exported-cross-language-contract]])
-- `{Module}.Domain.Rules.Tests` proves the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension directly — it takes scenarios both from its own project (`{Module}.Domain.Rules.Tests/Rules/*.feature`, for rule-only edge cases no other layer needs) and, linked in, from `{Module}.Domain.Rules.Spec` (the scenarios shared with `{Module}.Domain.Tests`/`{Module}.Application.Tests`)
+- `{Module}.Domain.Rules.Tests` proves the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension directly — it takes scenarios both from its own project (`{Module}.Domain.Rules.Tests/features/*.feature`, for rule-only edge cases no other layer needs) and, linked in, from `{Module}.Domain.Rules.Spec` (the scenarios shared with `{Module}.Domain.Tests`/`{Module}.Application.Tests`)
 
 # Boundaries
 - **Not gated on DomainLogic** - `{Module}.Domain.Rules.csproj` references only `{Module}.Interfaces` (for `Soft{ValueObject}` types) and FluentValidation — never `{Module}.Domain`. VP4 can be applied to a module with no domain layer: it centralizes conditions duplicated across the common Application-side consumers (`{ValueObject}PropertyValidator`, `{Dto}Validator`). The `extends` entries for `{Module}.Domain.ValueObjects`/`Entities` apply only when VP1/VP3 are present — this solution does **not** `depends_on solution-domain-behaviour` or `solution-value-objects`.
@@ -225,3 +227,8 @@ flowchart LR
 - [ ] `{Module}.Domain.Rules.Tests` references `{Module}.Domain.Rules` only, and proves every scenario in the rule's `.feature` file directly against `IsValid()`/`Check()`
 - [ ] Every `@format`-tagged scenario is also proven in `{Module}.Domain.Tests` against the VO/Entity adapter; every `@semantic`/`@domain`-tagged scenario is also proven in `{Module}.Application.Tests` against the DtoValidator/`{Feature}Check` adapter
 - [ ] No scenario text is duplicated across `{Module}.Domain.Rules.Tests`/`{Module}.Domain.Tests`/`{Module}.Application.Tests` — all three link the same physical `.feature` file from `{Module}.Domain.Rules.Spec`
+
+Feature templates apply [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md|cucumber-testing]]'s mandatory type/category tags; [[./adr/feature-tag-contract.md|feature-tag-contract]] records the decision.
+
+# Layout decision
+[Rule tests use the stack-owned layout](skills/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/test-layout-owned-by-testing-skill.md) — Domain.Rules.Tests applies cucumber-testing-in-dotnet; VP4 retains its shared-spec links, classification scope and direct rule entry points.

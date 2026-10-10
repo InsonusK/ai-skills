@@ -4,8 +4,8 @@ description: GW009.001 — persistent service with TaskBox; plateau-persistent-s
 whenToUse: when a Go web-service with PostgreSQL must run follow-up work after a data change — retried, ordered per key, and atomic with the change — or when reviewing a Go service's TaskBox wiring against the VP-C003 contract
 domain: skill
 type: template
-version: 20260928120000
-updated: 20260929
+version: 20261009200000
+updated: 20261008
 tags:
   - skill/template/plateau
   - plateau/plateau-gw009-001
@@ -55,7 +55,7 @@ Code `GW009.001`: Go web-service, common combination 009 of the [[skills/common-
   - `internal/taskbox/pgstore`: contract schema v1 — enqueue in the caller's `pgx.Tx` with the group lock, `SKIP LOCKED` claim, requeue/cancel, retention cleanup.
   - Settings: `TASKBOX_WORKERS` (2), `TASKBOX_LEASE` (5m), `TASKBOX_POLL_INTERVAL` (1s), `RECHECK_AFTER` (1h).
 - schema — `linkstore.Migrate` (goose, session-locked); `cmd/migrate` for Job mode, `MIGRATE_ON_START=true` for single-instance deployments.
-- testing — `make unit-test` runs the domain scenarios and the TaskBox conformance feature; the latter needs `TEST_DATABASE_DSN`.
+- testing — `make test-kind-unit` runs the domain scenarios and the TaskBox conformance feature; the latter needs `TEST_DATABASE_DSN`.
 
 # Usecases
 
@@ -86,9 +86,9 @@ Element intersections this plateau adds or grows — see each entry's growth his
 # Ground truth
 `example/` evolved from GW007.001's, verified on 2026-09-28:
 - `go build ./...`, `go vet ./...` — clean.
-- `TEST_DATABASE_DSN=postgres://…/taskbox_test make unit-test WITH_CODE_COVERAGE=true` — 48/48 tests: 15 domain scenarios (5 new: a flagged check carries a re-check task, a clean check carries none, `Recheck` records a fresh verdict, fails while the reputation service is down, rejects a non-http(s) URL) and 30 TaskBox conformance scenarios on PostgreSQL 18. The `@store-transient` scenario is `missing` in the report — no VP-C002 TaskBox store yet.
+- `TEST_DATABASE_DSN=postgres://…/taskbox_test make test-kind-unit TEST_RUN_PURPOSE=report` — 48/48 tests: 15 domain scenarios (5 new: a flagged check carries a re-check task, a clean check carries none, `Recheck` records a fresh verdict, fails while the reputation service is down, rejects a non-http(s) URL) and 30 TaskBox conformance scenarios on PostgreSQL 18. The `@store-transient` scenario is `missing` in the report — no VP-C002 TaskBox store yet.
 - Targeted mutations: group lock removed → the commit-order scenario fails 10/10; `attempt` fence removed → the lease scenario fails 3/3.
-- `make mutation-test` runs but is not evidence here: gremlins runs only the mutated package's own tests, and the godog runners live in `test/` subpackages (catalog-wide limitation, recorded in the common map's `agent/DECISIONS.md`).
+- `make test-kind-mutation` (re-run 2026-10-08, after the mutation kind got `gremlins --integration`): 79 mutants killed, none lived, 2 timed out, 60 in code no scenario reaches — score 56%, about ten minutes with PostgreSQL. Before that change gremlins ran only the mutated package's own tests while the godog runners live in `test/` subpackages, and the run proved nothing (3 killed, 78 lived).
 - Runtime smoke test (real PostgreSQL, Redis, a throwaway fake reputation gRPC server, `RECHECK_AFTER=2s`): `cmd/migrate` applied versions 1–2; a flagged check wrote its history row and a pending task (group = URL, delay 2 s) in one transaction, a clean check none; after 2 s the re-check got `503` and was retried 2 s later (1 s × 2¹), then succeeded — the fresh verdict appeared in `link_checks`, `GET /v1/links/recent`, and the Redis cache. A task still pending when the service was killed ran after the restart.
 
-To run it yourself: `cd example && go mod tidy && make build && DATABASE_DSN=… REPUTATION_ADDR=… go run ./cmd/migrate && TEST_DATABASE_DSN=… make unit-test`.
+To run it yourself: `cd example && go mod tidy && make build && DATABASE_DSN=… REPUTATION_ADDR=… go run ./cmd/migrate && TEST_DATABASE_DSN=… make test-kind-unit`.

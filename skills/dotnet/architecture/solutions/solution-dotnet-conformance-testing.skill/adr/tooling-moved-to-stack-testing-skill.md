@@ -1,8 +1,8 @@
 ---
 name: tooling-moved-to-stack-testing-skill
 description: Where the .NET test tooling (Makefile, scripts, Reqnroll/coverlet/Stryker.NET choice, report) lives relative to the dotnet catalog's test-project layout
-problem: This solution mixed two concerns — the stack-generic .NET test tooling that implements solution-conformance-testing, and the dotnet plateau catalog's own rule of one test project per production project. The go, python, and typescript variants of the same tooling are pure tooling and live under skills/{stack}/test/, next to cucmber-testing-in-{stack}.
-decision: Move the tooling into skills/dotnet/test/solution-conformance-testing-in-dotnet.skill; keep only the test-project layout here, depending on it. The solution name stays so the plateaus' created_by links to its csproj Implementation files stay valid.
+problem: This solution mixed two concerns — the stack-generic .NET test tooling that implements solution-conformance-testing, and the dotnet plateau catalog's own rule of one test project per production project. The go, python, and typescript variants of the same tooling are pure tooling and live under skills/{stack}/test/, next to cucumber-testing-in-{stack}.
+decision: Move the tooling into skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill; keep only the test-project layout here, depending on it. The solution name stays so the plateaus' created_by links to its csproj Implementation files stay valid.
 tags:
   - solution/dotnet-conformance-testing
   - stack/dotnet
@@ -26,7 +26,7 @@ The Makefile, the `unit-test.sh`/`mutation-test.sh`/`test-report.sh` scripts, `r
 
 ### Description
 
-`Implementation/Repository.extend.md`, `templates/`, and `adr/testing-tool-choice.md` move to [[skills/dotnet/test/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]. This solution keeps the per-production-project `*.Tests.csproj` Implementation files and `{Rule}Steps.cs`, and `depends_on` the testing skill.
+`Implementation/Repository.extend.md`, `templates/`, and `adr/testing-tool-choice.md` move to [[skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]. This solution keeps the per-production-project `*.Tests.csproj` Implementation files and `{Rule}Steps.cs`, and `depends_on` the testing skill.
 
 ### Benefits
 

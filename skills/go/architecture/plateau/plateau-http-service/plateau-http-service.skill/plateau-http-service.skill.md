@@ -4,7 +4,7 @@ description: The base Go web-service plateau — no DB, domain-logic separation,
 whenToUse: when starting a new Go web-service from scratch with no database and no alternative API yet, or reviewing whether a change follows this family's ports-and-adapters/config/logging/testing conventions
 domain: skill
 type: template
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/plateau
   - plateau/plateau-http-service
@@ -15,7 +15,7 @@ created_by:
   - "[[skills/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]]"
   - "[[skills/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]]"
   - "[[skills/go/architecture/solutions/solution-go-app-logging.skill/solution-go-app-logging.skill.md|solution-go-app-logging]]"
-  - "[[skills/go/test/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]]"
+  - "[[skills/testing/go/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]]"
 standalone: true
 registry:
   - "[[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"
@@ -37,7 +37,7 @@ The foundation every other plateau in this catalog composes from: a Go web-servi
 - domain
   - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged; rejects everything else via `ErrInvalidURL`.
 - testing
-  - `make unit-test`/`mutation-test`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `public/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -83,9 +83,9 @@ Three intersections found at this plateau (all canonical `FMN`, no resolver) —
 # Ground truth
 `example/` is a real, runnable Go module (`github.com/example/linkcheck-service`), verified:
 - `go build ./...` and `go vet ./...` — clean.
-- `make unit-test` — 5/5 godog scenarios green (`internal/domain/services/test`), `TestFeatures` the only test function.
-- `make mutation-test` — `gremlins` runs clean (3 killed / 4 survived / 0 timed out / 20 not covered against this plateau's small surface — the HTTP-adapter path has no scenario coverage yet, expected at this plateau).
-- `make test-report` — `public/` assembled with `index.html` + three badge files.
+- `make test-kind-unit` — 5/5 godog scenarios green (`internal/domain/services/test`), `TestFeatures` the only test function.
+- `make test-kind-mutation` — `gremlins` runs clean (3 killed / 4 survived / 0 timed out / 20 not covered against this plateau's small surface — the HTTP-adapter path has no scenario coverage yet, expected at this plateau).
+- `make test-report` — `$TEST_REPORT_DIR/` assembled with `index.html` + three badge files.
 - Runtime smoke test: built binary started, `GET /health` → `200`; `POST /v1/links/check` with a valid/invalid URL → `200`/`400` as designed.
 
-To run it yourself: `cd example && go mod tidy && make build && make unit-test && make run`.
+To run it yourself: `cd example && go mod tidy && make build && make test-kind-unit && make run`.

@@ -1,6 +1,6 @@
 # Release-test-report workflow example
 
-Project: any stack that implements the [[skills/common-workflow/test/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] `make` contract and has `.github/actions/check-changes` implemented (see `devops-github-action-check-changes-in-{stack}`). Only the `Set up {stack}` step below changes between stacks — everything else is identical because the workflow only ever calls `make` targets.
+Project: any stack that implements the [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]] `make` contract and has `.github/actions/check-changes` implemented (see `devops-github-action-check-changes-in-{stack}`). Only the `Set up {stack}` step below changes between stacks — everything else is identical because the workflow only ever calls `make` targets.
 
 ```yaml
 name: Release test report
@@ -20,6 +20,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # Facts about this run and the directories this workflow chose - the whole of what it
+  # tells the project's tests. The report goes into a subfolder of the published site,
+  # so a project that publishes its own pages keeps them.
+  TEST_RUN_PURPOSE: report
+  TEST_WORK_DIR: tmp/testing
+  TEST_REPORT_DIR: site/testing
+
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -30,9 +38,25 @@ jobs:
       - uses: ./.github/actions/check-changes
         id: filter
 
-  unit-test:
+  # The project's Makefile says which test kinds exist; this workflow never names one.
+  test-kinds:
     needs: changes
     if: needs.changes.outputs.relevant == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      kinds: ${{ steps.kinds.outputs.kinds }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: kinds
+        run: echo "kinds=$(make -s test-kinds | cut -d' ' -f1 | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
+
+  test-kind:
+    name: Test (${{ matrix.kind }})
+    needs: test-kinds
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: ${{ fromJSON(needs.test-kinds.outputs.kinds) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,73 +66,51 @@ jobs:
       # - name: Set up {stack}
       #   uses: actions/setup-{stack}@v...
 
-      - name: Run tests with coverage
-        run: make unit-test WITH_CODE_COVERAGE=true
+      # A kind exits non-zero when its checks failed (a red test, a broken tool) - never
+      # because of a score in a report run. The job then shows red, and the report is
+      # still built and published: the kind wrote its results before exiting.
+      - run: make test-kind-${{ matrix.kind }}
 
+      # The kind's one directory - handed to the report job as it is.
       - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
-          name: unit-test-report
-          path: |
-            tmp/result
-            tmp/report/tests
-            tmp/report/coverage
-          if-no-files-found: error
+          name: test-kind-${{ matrix.kind }}
+          path: ${{ env.TEST_WORK_DIR }}/kinds/${{ matrix.kind }}
+          include-hidden-files: true
+          if-no-files-found: warn
 
-  mutation-test:
-    needs: changes
-    if: needs.changes.outputs.relevant == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      # - name: Set up {stack}
-      #   uses: actions/setup-{stack}@v...
-
-      # Full run (no ONLY_DELTA): this workflow only runs on master, where there's no PR
-      # base branch to diff against, so the whole project is mutated. It never gates -
-      # mutation testing runs only in this workflow, and only as a report.
-      # continue-on-error is what actually makes that true: make mutation-test exits
-      # with the underlying tool's own exit code (non-zero on a surviving mutant, per
-      # solution-conformance-testing's contract) - without this, that failure would
-      # fail the job and, since test-report's `needs` has no `if: always()`, cascade
-      # into skipping test-report/deploy entirely instead of just reporting the score.
-      - name: Run mutation tests
-        run: make mutation-test
-        continue-on-error: true
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: mutation-test-report
-          path: |
-            tmp/result
-            tmp/report/mutation
-          if-no-files-found: error
-
-  # test-report and deploy have no `if:` of their own - when unit-test/mutation-test
-  # are skipped by the path filter, `needs` makes these cascade-skip automatically.
+  # Runs whenever the kinds were listed - also after a failed kind - and cascade-skips
+  # with them when the path filter found nothing relevant.
   test-report:
-    needs: [unit-test, mutation-test]
+    needs: [test-kinds, test-kind]
+    if: ${{ !cancelled() && needs.test-kinds.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: "*-test-report"
-          merge-multiple: true
-          path: tmp
+          pattern: test-kind-*
+          path: tmp/artifacts
 
-      - name: Assemble GitHub Pages site
+      - name: Put every kind's directory back under the work directory
+        run: |
+          mkdir -p "$TEST_WORK_DIR/kinds"
+          for d in tmp/artifacts/test-kind-*; do
+            [ -d "$d" ] && mv "$d" "$TEST_WORK_DIR/kinds/${d##*/test-kind-}"
+          done
+
+      - name: Build the report
         run: make test-report
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: site
 
   deploy:
     needs: test-report
+    if: ${{ !cancelled() && needs.test-report.result == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -122,9 +124,8 @@ jobs:
 
 ```markdown
 [![Pull request](https://github.com/{org}/{repo}/actions/workflows/pull-request.yml/badge.svg)](https://github.com/{org}/{repo}/actions/workflows/pull-request.yml)
-[![Tests](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/tests-badge.json)](https://{org}.github.io/{repo}/tests/)
-[![Coverage](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/coverage-badge.json)](https://{org}.github.io/{repo}/coverage/)
-[![Mutation score](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/mutation-badge.json)](https://{org}.github.io/{repo}/)
+[![Test report](https://img.shields.io/badge/test-report-blue)](https://{org}.github.io/{repo}/testing/)
+[![{name}](https://img.shields.io/endpoint?url=https://{org}.github.io/{repo}/testing/badges/{name}.json)](https://{org}.github.io/{repo}/testing/reports/{name}/)
 ```
 
-The four badges are independent: the first is GitHub's native workflow-status badge for the pull-request workflow; the other three are shields.io [endpoint badges](https://shields.io/badges/endpoint-badge) reading the `tests-badge.json`, `coverage-badge.json`, and `mutation-badge.json` files that `make test-report` writes into `public/` on every run of this workflow — never hand-edited. The mutation badge links to the landing page, not into `mutation/`: the native mutation report's entry file differs per stack (Stryker's `reports/mutation-report.html`, Go's `index.html`).
+The first badge is GitHub's native workflow-status badge for the pull-request workflow; the second links the report's entry page. The last line is the pattern for every badge the project's tests declare — one line per name `make test-kinds` prints after a kind — a shields.io [endpoint badge](https://shields.io/badges/endpoint-badge) reading `badges/{name}.json` and linking `reports/{name}/`, both written by `make test-report` on every run of this workflow. This workflow never lists the names: the project adds a line when it adds a test kind, and `make test-readme-check` in the pull-request workflow fails when one is missing.

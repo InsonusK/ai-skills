@@ -33,9 +33,9 @@ Covers how a multi-stack skill is split. Whether a skill is split at all is deci
 
 ### Base points to its extensions without linking them
 State in the base that the implementation is described in its stack-specialized extensions, naming them only as plain backticked text — never a wikilink or markdown link. Decision recorded in [stack-specific-links-direction](./adr/stack-specific-links-direction.md).
-- Violation: `cucmber-testing`'s `# Scope` linking `cucmber-testing-in-go`, `-in-dotnet`, `-in-python`, and `-in-typescript` by path.
+- Violation: `cucumber-testing`'s `# Scope` linking `cucumber-testing-in-go`, `-in-dotnet`, `-in-python`, and `-in-typescript` by path.
 - Risk: every other stack's extension is installed into a project that uses only one of them.
-- Fix: write `` `cucmber-testing-in-go`, `cucmber-testing-in-dotnet`, `cucmber-testing-in-python`, `cucmber-testing-in-typescript` `` as plain text, and tell the agent to ask the user which one to load for the project's stack.
+- Fix: write `` `cucumber-testing-in-go`, `cucumber-testing-in-dotnet`, `cucumber-testing-in-python`, `cucumber-testing-in-typescript` `` as plain text, and tell the agent to ask the user which one to load for the project's stack.
 
 ### Extension links its base
 Link the base from every extension, stating that the extension details the base's implementation for its stack.

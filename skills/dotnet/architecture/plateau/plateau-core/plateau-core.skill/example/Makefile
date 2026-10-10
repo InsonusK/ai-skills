@@ -1,13 +1,7 @@
-# Conformance-testing contract — solution-dotnet-conformance-testing.
-# `make unit-test` is the ground-truth gate for this plateau example.
 SOLUTION := Sample.slnx
 CONFIGURATION := Release
 
-.PHONY: restore build run test unit-test mutation-test test-report test-and-report clean
-
-WITH_CODE_COVERAGE ?= false
-ONLY_DELTA ?= false
-DELTA_BASE ?=
+.PHONY: restore build run test clean
 
 restore:
 	dotnet restore $(SOLUTION)
@@ -19,21 +13,14 @@ build: restore
 run: build
 	dotnet run --project src/App/App.Host/App.Host.csproj --configuration $(CONFIGURATION) --no-build
 
-test: unit-test
-
-unit-test: build
-	WITH_CODE_COVERAGE=$(WITH_CODE_COVERAGE) scripts/unit-test.sh
-
-mutation-test: restore
-	ONLY_DELTA=$(ONLY_DELTA) DELTA_BASE=$(DELTA_BASE) scripts/mutation-test.sh
-
-test-report:
-	scripts/test-report.sh
-
-test-and-report: WITH_CODE_COVERAGE := true
-test-and-report: unit-test mutation-test test-report
+# `make test-kind-unit` is the ground-truth gate for this plateau example.
+test: test-kind-unit
 
 clean:
 	dotnet clean $(SOLUTION)
 	find . -type d \( -name bin -o -name obj \) -exec rm -rf {} +
-	rm -rf tmp public
+	rm -rf tmp
+
+# Testing contract: test-kinds, test-kind-<kind>, test-report, test-readme-check, test-and-report.
+# The kinds are the scripts in tools/testing/kinds/ - see solution-conformance-testing.
+include tools/testing/testing.mk

@@ -1,3 +1,4 @@
+@type/domain
 Feature: ItemTitle rule
 
   The centralized title condition — one Gherkin source, re-proven by every layer
@@ -7,17 +8,17 @@ Feature: ItemTitle rule
   (Sample.Domain.Tests). Text is domain language only, so the same file could be
   copied into a client repo in another language.
 
-  @format @negative
+  @format @category/negative
   Scenario: A blank title fails the required rule
     When the title "" is checked
     Then the check fails with error code "Sample.ItemTitle.Required"
 
-  @format @boundary
+  @format @category/boundary
   Scenario: An over-long title fails the length rule
     When a 101-character title is checked
     Then the check fails with error code "Sample.ItemTitle.TooLong"
 
-  @format @happy
+  @format @category/happy
   Scenario: A normal title passes
     When the title "buy milk" is checked
     Then the check passes

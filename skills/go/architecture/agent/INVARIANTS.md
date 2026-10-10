@@ -7,8 +7,8 @@ The anchor document for this catalog's build (per [[skills/common-workflow/bulk-
 ```
 go.mod
 Makefile                          ← solution-go-repository-structure (build/run/lint) +
-                                     solution-conformance-testing-in-go (unit-test/mutation-test/
-                                     test-report/test-and-report)
+                                     solution-conformance-testing-in-go (test-kind-unit/
+                                     test-kind-mutation/test-report-build)
 .gitignore
 report-template/index.html        ← solution-conformance-testing-in-go
 cmd/
@@ -67,7 +67,7 @@ tools/
 ## 4. Link & path conventions
 
 - Every internal link points inside `skills/go/architecture/` — this catalog has no version-prefixed staging tree (no pre-existing catalog to parallel-build against; see `agent/DECISIONS.md`).
-- **Carve-out:** `solution-conformance-testing-in-go` legitimately `depends_on`/references `skills/common-workflow/test/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/go/test/cucmber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). `solution-go-db-migrations` legitimately references (body prose only, never `depends_on:` — it is not a `solution-*.skill.md`) `skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md`, whose own "migration step" rule owns the deployment topology that gates `cmd/migrate` ahead of the app on each platform. These are the only allowed external `depends_on`/references in the catalog.
+- **Carve-out:** `solution-conformance-testing-in-go` legitimately `depends_on`/references `skills/testing/core/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/testing/go/cucumber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). `solution-go-db-migrations` legitimately references (body prose only, never `depends_on:` — it is not a `solution-*.skill.md`) `skills/devops/devops-service-deploy.skill/devops-service-deploy.skill.md`, whose own "migration step" rule owns the deployment topology that gates `cmd/migrate` ahead of the app on each platform. These are the only allowed external `depends_on`/references in the catalog.
 - Wikilink form: `[[skills/go/architecture/solutions/solution-x.skill/solution-x.skill.md|solution-x]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
 - Implementation-file links: `[[.../solution-x.skill/Implementation/{path}/{File}.{kind}.md#SECTION|label]]`.
 - A solution's folder name, its main file name, and its `name:` field are identical: `solution-{name}.skill` / `solution-{name}.skill.md` / `name: solution-{name}`.
@@ -94,4 +94,4 @@ tools/
 
 ## 8. Ground truth
 
-Each of the five plateaus' own `example/` must `go build ./...`, `go vet ./...`, and `make unit-test` (godog scenarios green) — `plateau-persistent-service`'s example additionally needs a reachable PostgreSQL and Redis to run its full scenario set; document the exact `docker run`/connection-string setup in that plateau's own root skill. Until a plateau's example passes, that plateau is "plausible", not "verified".
+Each of the five plateaus' own `example/` must `go build ./...`, `go vet ./...`, and `make test-kind-unit` (godog scenarios green) — `plateau-persistent-service`'s example additionally needs a reachable PostgreSQL and Redis to run its full scenario set; document the exact `docker run`/connection-string setup in that plateau's own root skill. Until a plateau's example passes, that plateau is "plausible", not "verified".

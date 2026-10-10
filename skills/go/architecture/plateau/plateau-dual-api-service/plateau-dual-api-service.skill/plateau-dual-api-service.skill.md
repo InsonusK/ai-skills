@@ -4,7 +4,7 @@ description: plateau-http-service plus a gRPC inbound API alongside HTTP, sharin
 whenToUse: when a Go web-service needs to expose its capabilities over gRPC in addition to HTTP, or reviewing whether a change follows this family's errgroup-based concurrent-server convention
 domain: skill
 type: template
-version: 20260924000000
+version: 20261008170000
 tags:
   - skill/template/plateau
   - plateau/plateau-dual-api-service
@@ -37,7 +37,7 @@ A Go web-service with no database, a real domain layer, structured logging, and 
 - domain
   - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged; rejects everything else via `ErrInvalidURL`.
 - testing
-  - `make unit-test`/`mutation-test`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `public/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -101,9 +101,9 @@ Three intersections, all still canonical (no resolver) but two grew from the par
 `example/` evolved from `plateau-http-service`'s (copied forward, then extended), verified:
 - `buf generate proto/linkcheck --template buf/buf.gen.yaml` (local `protoc-gen-go`/`protoc-gen-go-grpc` plugins, installed via `go install`) — produces `gen/api/{linkcheck.pb.go,linkcheck_grpc.pb.go}`, flat, matching `go_package`.
 - `go build ./...` and `go vet ./...` — clean.
-- `make unit-test` — 5/5 godog scenarios still green (domain logic unchanged).
-- `make mutation-test` — `gremlins` clean run.
-- `make test-report` — `public/` assembled.
+- `make test-kind-unit` — 5/5 godog scenarios still green (domain logic unchanged).
+- `make test-kind-mutation` — `gremlins` clean run.
+- `make test-report` — `$TEST_REPORT_DIR/` assembled.
 - Runtime smoke test: built binary started both servers; `GET /health` → `200`; `grpcurl -plaintext -proto proto/linkcheck/linkcheck.proto` against `linkcheck.LinkCheckService/Check` with a valid URL → success with normalized form; with an invalid URL → `InvalidArgument` status. HTTP endpoint re-verified still working alongside gRPC.
 
-To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make unit-test && make run`.
+To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make test-kind-unit && make run`.

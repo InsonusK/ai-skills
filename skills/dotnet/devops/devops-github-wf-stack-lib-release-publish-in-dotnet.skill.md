@@ -24,20 +24,20 @@ This skill adds .NET-specific mechanics on top of [[skills/devops/workflows/devo
 ## MUST
 
 ### Start from the shared base, then add this publish job
-Open [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version`/`unit-test` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
+Open [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] and copy its `on:` trigger and `changes`/`check-version`/`test-kind-unit` jobs verbatim into `.github/workflows/stack-lib-release-publish.yml` — never reconstruct them from prose memory; add only the `publish` job below. Any deviation from either this job or the shared base gets confirmed with the user first and folded back into the example, not shipped silently.
 ```yaml
   publish:
-    needs: [changes, check-version, unit-test]
-    # always() is required because unit-test is conditionally skipped (no
+    needs: [changes, check-version, tests]
+    # always() is required because tests is conditionally skipped (no
     # code/test change) - GitHub's default needs-gating treats a skipped
     # upstream job the same as a failed one, which would wrongly cascade-skip
-    # this job. unit-test.result != 'failure' accepts both success and
+    # this job. tests.result != 'failure' accepts both success and
     # skipped, only an actual test failure blocks publishing.
     if: >-
       always() &&
       needs.changes.result == 'success' &&
       needs.check-version.result == 'success' &&
-      needs.unit-test.result != 'failure' &&
+      needs.tests.result != 'failure' &&
       (needs.changes.outputs.code == 'true' || needs.changes.outputs.workflow == 'true')
       && needs.check-version.outputs.publishable == 'true'
     runs-on: ubuntu-latest
@@ -79,8 +79,8 @@ Pass `-p:Version=${{ steps.publish-version.outputs.value }}` to `dotnet pack` �
 
 # Check list
 - [ ] `.github/workflows/stack-lib-release-publish.yml` exists, following [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/devops-github-wf-stack-lib-release-publish.skill.md|devops-github-wf-stack-lib-release-publish]]'s shared trigger/gating rules.
-- [ ] `changes`/`check-version`/`unit-test` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
-- [ ] `publish` also `needs: unit-test` and uses the `always()`-based condition (`unit-test.result != 'failure'`), never a plain `if:`.
+- [ ] `changes`/`check-version`/`test-kind-unit` are copied from [[skills/devops/workflows/devops-github-wf-stack-lib-release-publish.skill/templates/base-jobs.example.md|base-jobs.example.md]] unmodified.
+- [ ] `publish` also `needs: tests` and uses the `always()`-based condition (`tests.result != 'failure'`), never a plain `if:`.
 - [ ] `master` pushes to `nuget.org` under the plain `{version}`; `develop` pushes to `nuget.pkg.github.com` under `{version}-{timestamp}`.
 - [ ] Only `<IsPackable>true</IsPackable>` projects are packed — `*.Tests` projects are never pushed.
 - [ ] `-p:Version` is passed explicitly on every pack.

@@ -1,0 +1,21 @@
+{
+  "testRunner": "command",
+  "commandRunner": {
+    "command": "npx cucumber-js --format progress"
+  },
+  "mutate": [
+    "projects/linkcheck/src/linkcheck/**/*.ts",
+    "!projects/linkcheck/src/**/test/**/*.ts"
+  ],
+  "coverageAnalysis": "off",
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": 50
+  },
+  "ignorePatterns": [
+    "projects/demo/**",
+    "projects/linkcheck/src/lib/**",
+    "tools/livingdoc/node_modules/**"
+  ]
+}

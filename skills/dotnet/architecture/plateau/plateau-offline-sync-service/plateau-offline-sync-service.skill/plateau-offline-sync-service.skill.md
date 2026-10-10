@@ -4,7 +4,7 @@ description: A domain service built for an offline-first front end — everythin
 whenToUse: when scaffolding or reviewing a service whose entities are created offline by a client and synced later — checking idempotent-create wiring (IHasGuid, GuidResolvingBehavior, the Guid resolver), the {Module}.Domain.Rules project, or the entity classification against this baseline
 domain: skill
 type: template
-version: 20260924000000
+version: 20261009220001
 tags:
   - skill/template/plateau
   - plateau/offline-sync-service
@@ -19,6 +19,8 @@ created_by:
 registry:
   - "[[skills/dotnet/architecture/registry/command-cs|registry-command-cs]]"
   - "[[skills/dotnet/architecture/registry/pipelineregistration-cs|registry-pipelineregistration-cs]]"
+adr:
+  - "skills/dotnet/architecture/plateau/plateau-offline-sync-service/adr/test-boundary-mirrors-production.md"
 standalone: true
 ---
 
@@ -26,6 +28,7 @@ standalone: true
 Take plateau-domain-service and make it safe for an offline-first client: a create command carries a client-generated `Guid` and creation is idempotent (a retried sync returns the original entity, not a duplicate or an error), and the validation conditions live in one portable `{Module}.Domain.Rules` project so the exact same rule can run in the offline client and on the server. Entities are classified explicitly by ownership × mutability, and the rule mechanism itself is guarded by build-time architecture tests.
 
 # Core Principles
+- **Testing conventions** — Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
 - **Everything plateau-domain-service defines still holds** — the domain layer, the persistence stack, optimistic concurrency, timestamps, the HTTP API, the outbound gRPC client. This plateau only adds.
 - **Idempotent creation (VP6).** An entity created outside the system carries an immutable `Guid` correlation handle, set once in its factory. The create command implements `Shared.Guid.IHasGuid`; `GuidResolvingBehavior` (registered after `ConcurrencyBehavior`, before `UnitOfWorkBehavior`) asks the entity's `IGuidResolver<TResponse>` whether the `Guid` already exists and, if so, returns a `ConflictResult<T>` carrying the existing entity's response — the handler and the commit never run. A unique DB index on `Guid` is the last-line guard for a race that passes the pipeline twice. The internal `int Id` stays the only domain identity.
 - **Shared Rules (VP4).** A condition that turns out duplicated across a strict `{ValueObject}` constructor, an entity method, a `{ValueObject}PropertyValidator`, and a `{Dto}Validator` moves to one `{Rule}` class in `{Module}.Domain.Rules` — `IsValid()` (pure predicate) + one `IRuleBuilder` extension (the only place `ErrorCode`/`Message`/`State` are declared) + `Check()`. Every consumer is redirected to it; the local copies are deleted. `{Module}.Domain.Rules` references only FluentValidation and `{Module}.Interfaces` — it is portable to any .NET service (or a Blazor client) without this service's exception or pipeline conventions. It never does I/O.
@@ -34,6 +37,8 @@ Take plateau-domain-service and make it safe for an offline-first client: a crea
 - **Rules are proven once, from every layer.** `{Module}.Domain.Rules.Spec` holds `.feature` files only (not a project). `{Module}.Domain.Rules.Tests` proves the rule's own `Check()`; `{Module}.Domain.Tests` re-proves `@format` scenarios through the VO/entity (fail-fast, `DomainException`); `{Module}.Application.Tests` re-proves `@semantic`/`@domain` scenarios through the validators (collect-all, `ValidationResult`) — one Gherkin source, three independent proofs.
 
 # Capabilities
+- conformance
+  - Inherit the parent's test-project selection and layer responsibilities; use the linked testing skills for execution and reporting.
 - offline sync
   - A retried create returns `409 Conflict` with the original entity's body (same shape as the `201`), so an offline client's replayed sync is safe. No duplicate row, no exception.
 - portable rules
@@ -88,4 +93,10 @@ flowchart LR
 See [[skills/dotnet/architecture/plateau/plateau-offline-sync-service/structure/plateau-offline-sync-service--sln-offline-sync-service.skill|plateau-offline-sync-service--sln-offline-sync-service]]. `structure/` carries plateau-domain-service's elements (union-merged, re-prefixed) plus the `{Module}.Domain.Rules` project, the Guid/idempotency elements, and the Cecil architecture-test elements this plateau adds. The `registry/` folder records the two ordering-only pipeline-position entries (`command-cs`, `pipelineregistration-cs`).
 
 # Example
-[`example/`](./example/) evolves plateau-domain-service's: `TodoItem` is "External Mutable" (`Guid` + `Version`), `AddItemCommand` carries the client `Guid`, and `Sample.Domain.Rules` holds `ItemTitleRules` (redirected from both `ItemTitle` and the property validator). `Program.cs` sends a create, then replays the exact same create and gets `Conflict` with the original id. `dotnet build` and `make unit-test` are green across the six test projects. The `.Spec` shared-feature apparatus is wired end-to-end: `src/Modules/Sample/Sample.Domain.Rules.Spec/ItemTitle.feature` is the single Gherkin source (three `@format` scenarios), linked — never copied — into both `Sample.Domain.Rules.Tests` (bound to `Check()`) and `Sample.Domain.Tests` (bound to the `ItemTitle` constructor), so each scenario is proven from two layers against one text. The Cecil tests are documented in `structure/` but only lightly exercised in the example.
+[`example/`](./example/) evolves plateau-domain-service's: `TodoItem` is "External Mutable" (`Guid` + `Version`), `AddItemCommand` carries the client `Guid`, and `Sample.Domain.Rules` holds `ItemTitleRules` (redirected from both `ItemTitle` and the property validator). `Program.cs` sends a create, then replays the exact same create and gets `Conflict` with the original id. `dotnet build` and `make test-kind-unit` are green across the six test projects. The `.Spec` shared-feature apparatus is wired end-to-end: `src/Modules/Sample/Sample.Domain.Rules.Spec/ItemTitle.feature` is the single Gherkin source (three `@format` scenarios), linked — never copied — into both `Sample.Domain.Rules.Tests` (bound to `Check()`) and `Sample.Domain.Tests` (bound to the `ItemTitle` constructor), so each scenario is proven from two layers against one text. The Cecil tests are documented in `structure/` but only lightly exercised in the example.
+
+# Testing ownership
+The [catalog solution](skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill.md) contributes project selection, mirrored dependency boundaries and layer responsibilities. `{Module}.Domain.Rules.Tests` is added only with VP4; shared spec classification and Cecil companions retain their existing scope.
+
+# Dependency-boundary decision
+[Test boundary mirrors production](skills/dotnet/architecture/plateau/plateau-offline-sync-service/adr/test-boundary-mirrors-production.md) records the correction of narrower generated lists; the production Allowed Dependencies remain the authority.

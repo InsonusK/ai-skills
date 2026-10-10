@@ -1,0 +1,19 @@
+<main>
+  <h1>Link checker</h1>
+  <p>Validate and normalize an HTTP or HTTPS URL.</p>
+  <form (submit)="validate($event)">
+    <label for="url">URL</label>
+    <input id="url" name="url" type="text" autocomplete="off"
+      placeholder="https://example.com" [value]="raw()" (input)="setUrl($event)">
+    <button type="submit">Check URL</button>
+  </form>
+  @if (result(); as checked) {
+    @if (checked.is_valid) {
+      <section role="status" aria-label="Validation result">
+        <h2>Valid URL</h2><output>{{ checked.normalized }}</output>
+      </section>
+    } @else {
+      <section role="alert"><h2>Invalid URL</h2><p>{{ checked.error_code }}</p></section>
+    }
+  }
+</main>

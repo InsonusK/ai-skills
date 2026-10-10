@@ -36,7 +36,7 @@ func TestFeatures(t *testing.T) {
 			Options: &godog.Options{
 				Format:   "pretty",
 				Paths:    []string{"../features"},
-				Tags:     "~@todo && ~@store-" + sut.excludedKind(),
+				Tags:     "~@status/todo && ~@status/broken && ~@store-" + sut.excludedKind(),
 				Strict:   true,
 				TestingT: t,
 			},

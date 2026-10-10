@@ -5,7 +5,7 @@ whenToUse: when writing the step definitions for a BuildingBlocks.Tests feature 
 domain: skill
 type: template
 plateau: core
-version: 20260902000000
+version: 20261009220000
 tags:
   - skill/template/class
   - plateau/core
@@ -14,74 +14,37 @@ created_by:
 ---
 
 # Goal
-- Prove every scenario in `Rules/{Rule}.feature` against a real `BuildingBlocks` pipeline behavior — drive it through a hand-built next-delegate and assert on the returned `Result`.
+- Prove every scenario in `features/{Rule}.feature` against a real `BuildingBlocks` pipeline behavior — drive it through a hand-built next-delegate and assert on the returned `Result`.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Core Principles
+- Apply the linked [testing conventions](#testing-conventions).
 - Apply ONE plateau template per class.
-- `[Binding] sealed class {Rule}Steps` — Reqnroll bindings.
-- Instantiate the real behavior; supply a `RequestHandlerDelegate<TResponse>` that records whether it ran and/or throws; assert on the actual `Result` status and message.
+- Supply a `RequestHandlerDelegate<TResponse>` that records whether it ran and/or throws; observe the pipeline result.
 - A private sample request `record` (implementing `ICommand<Result<string>>`) stands in for a real command — the behavior is generic.
-- Never re-implement the behavior in the step; never hand-compute the expected `Result`.
 
 # Naming convention
 | use case | class name pattern | class name | file name pattern | file name |
 | --- | --- | --- | --- | --- |
 | Step definitions for one behavior | `{Rule}Steps` | `PipelineSteps` | `{Rule}Steps.cs` | `PipelineSteps.cs` |
 
+# Testing conventions
+Apply [test-project layout](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#keep-tests-in-separate-test-projects), [binding mechanics](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must) and [solution-conformance-testing-in-dotnet](skills/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md) for layout, bindings, assertions, packages and runner configuration.
+
 # Implementation
-```csharp
-// Skill: plateau-core--class-building-blocks-rule-steps
-// Plateau: core
-// Version: 20260902000000
-using Ardalis.Result;
-using BuildingBlocks.MediatR;
-using Microsoft.Extensions.Logging.Abstractions;
-using Reqnroll;
-using Shared.MediatR;
-using Xunit;
-
-namespace BuildingBlocks.Tests.StepDefinitions;
-
-[Binding]
-public sealed class PipelineSteps
-{
-    private record Req(string Value) : ICommand<Result<string>>;
-
-    private Result<string> _result = null!;
-
-    [When("an inner step throws an exception")]
-    public async Task WhenThrows()
-    {
-        var behavior = new ExceptionHandlingBehavior<Req, Result<string>>(
-            NullLogger<ExceptionHandlingBehavior<Req, Result<string>>>.Instance);
-        _result = await behavior.Handle(new Req("x"),
-            () => throw new InvalidOperationException("boom"), CancellationToken.None);
-    }
-
-    [Then("the result is an error with message {string}")]
-    public void ThenError(string message)
-    {
-        Assert.Equal(ResultStatus.Error, _result.Status);
-        Assert.Equal(message, _result.Errors.First());
-    }
-}
-```
+The layer-specific action and observation follow the contributing solution linked below; generic binding code comes from the testing skills.
 
 __Applied solutions:__
 - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]] - [[skills/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/Implementation/BuildingBlocks.Tests.csproj.create/{Rule}Steps.cs.create|{Rule}Steps.cs]]
 
 # Rules
 MUST:
-- `[Binding] sealed class {Rule}Steps` in `BuildingBlocks.Tests/StepDefinitions`.
-- Instantiate and call the real behavior; assert the exact `Result` status/message it returns.
-- Never re-implement the behavior or hand-compute the expected result.
+- Apply [production-code bindings](skills/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md#exercise-production-code-from-bindings) and [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md#must).
 - Never apply several plateau templates per class.
 
 # Check list
-- [ ] Every `Given/When/Then` in `{Rule}.feature` has a matching step.
 - [ ] The real behavior class is instantiated and invoked.
 
 # Unittest TestCases

@@ -1,3 +1,4 @@
+@type/service
 Feature: Check a URL
   As a caller of the link-check service
   I want to validate and normalize a URL
@@ -9,13 +10,13 @@ Feature: Check a URL
     Then the check should be "<outcome>"
     And the normalized URL should be "<normalized>"
 
-    @happy
+    @category/happy
     Examples: well-formed
       | input                     | outcome | normalized                |
       | https://Example.com/Path  | valid   | https://example.com/Path  |
       | HTTP://EXAMPLE.COM        | valid   | http://example.com        |
 
-    @negative
+    @category/negative
     Examples: malformed
       | input                     | outcome | normalized                |
       | not-a-url                 | invalid |                           |

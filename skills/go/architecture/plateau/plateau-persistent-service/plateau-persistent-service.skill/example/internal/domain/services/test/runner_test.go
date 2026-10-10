@@ -10,12 +10,12 @@ import (
 )
 
 // TestFeatures is the single godog runner for this package - see
-// cucmber-testing-in-go's "One TestFeatures runner per test package" rule.
+// cucumber-testing-in-go's "One TestFeatures runner per test package" rule.
 // No other plain func TestXxx exists in this package.
 func TestFeatures(t *testing.T) {
 	w := newWorld()
 
-	// Classic Cucumber JSON for the living-doc report - see cucmber-testing-in-go's
+	// Classic Cucumber JSON for the living-doc report - see cucumber-testing-in-go's
 	// "Emit classic Cucumber JSON" rule. One file per package: godog runs per package.
 	format := "pretty"
 	if dir := os.Getenv("CUCUMBER_JSON_DIR"); dir != "" {
@@ -31,7 +31,7 @@ func TestFeatures(t *testing.T) {
 		Options: &godog.Options{
 			Format:   format,
 			Paths:    []string{"../features"},
-			Tags:     "~@todo",
+			Tags:     "~@status/todo && ~@status/broken",
 			Strict:   true,
 			TestingT: t,
 		},
