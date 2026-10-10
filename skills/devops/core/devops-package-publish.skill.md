@@ -17,7 +17,7 @@ tags:
 - The registry credentials stored as repository secrets.
 
 # Core Principle
-- This skill adds one delivery to [[skills/devops/workflows/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]]; the job waits for the tests and reads the version from the `version` job.
+- This skill adds one delivery to [[skills/devops/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]]; the job waits for the tests and reads the version from the `version` job.
 - A snapshot never takes the name a release will have, and never lands where consumers of releases look.
 - **Stack extensions** - The job for a stack is in `devops-package-publish-in-python`, `devops-package-publish-in-typescript`, `devops-package-publish-in-dotnet`; a Go module is published by its tag and has none; ask the user which one to load.
 

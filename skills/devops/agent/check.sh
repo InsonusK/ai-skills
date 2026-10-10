@@ -22,16 +22,16 @@ out=$(awk -F'\t' '$1 ~ /^skills\/devops\// && $5=="ok" && $4 !~ /^skills\/(devop
 [ -n "$out" ] && { err "links leaving skills/devops:"; echo "$out"; }
 
 # 3. A stack-agnostic skill never links a stack-specialized one; a stack skill never links another stack's.
-out=$(awk -F'\t' -v s="^skills/devops/($stacks)/" '$1 ~ /^skills\/devops\/(core|workflows)\// && $4 ~ s { print $1 "\t" $4 }' "$links" | sort -u)
+out=$(awk -F'\t' -v s="^skills/devops/($stacks)/" '$1 ~ /^skills\/devops\/(core)\// && $4 ~ s { print $1 "\t" $4 }' "$links" | sort -u)
 [ -n "$out" ] && { err "stack-agnostic skill links a stack-specialized skill:"; echo "$out"; }
 out=$(awk -F'\t' -v s="^skills/devops/($stacks)/" '$1 ~ s && $4 ~ s { split($1,a,"/"); split($4,b,"/"); if (a[3]!=b[3] && !(a[3]=="angular" && b[3]=="typescript")) print $1 "\t" $4 }' "$links" | sort -u)
 [ -n "$out" ] && { err "stack skill links another stack's skill:"; echo "$out"; }
 
-# 4. Layout: core/, workflows/, deploy/ hold stack-agnostic skills, {stack}/ holds {name}-in-{stack} skills.
+# 4. Layout: core/ and deploy/ hold stack-agnostic skills, {stack}/ holds {name}-in-{stack} skills.
 skill_file() { local e=$1 b n; b=$(basename "$e"); n=${b%.md}; n=${n%.skill}; if [ -d "$e" ]; then echo "$e/$n.skill.md"; else echo "$e"; fi; }
 for d in $D/*/; do
   dir=$(basename "$d"); [ "$dir" = agent ] && continue
-  [[ "$dir" =~ ^(core|workflows|deploy|$stacks)$ ]] || { err "$d: not core/, workflows/, deploy/ or a stack folder"; continue; }
+  [[ "$dir" =~ ^(core|deploy|$stacks)$ ]] || { err "$d: not core/, deploy/ or a stack folder"; continue; }
   for e in "$d"*; do
     b=$(basename "$e"); n=${b%.md}; n=${n%.skill}
     [[ "$b" == *.skill || "$b" == *.skill.md ]] || { err "$e: not a skill"; continue; }
@@ -61,7 +61,7 @@ done
 legacy() { grep -qF "$(echo "$1" | cut -d/ -f1-4)" "$A/legacy-paths.txt"; }
 
 # 5. Every extension a base names in backticks exists.
-for f in $(ls $D/core/*.skill/*.skill.md $D/core/*.skill.md $D/workflows/*.skill/*.skill.md 2>/dev/null); do
+for f in $(ls $D/core/*.skill/*.skill.md $D/core/*.skill.md 2>/dev/null); do
   legacy "$f" && continue
   for n in $(grep -oE '`devops-[a-z-]+-in-('"$stacks"')`' "$f" | tr -d '`' | sort -u); do
     s=${n##*-in-}
@@ -79,7 +79,7 @@ for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | gr
 done
 
 # 7. Code is delivered as files: no YAML or shell fence longer than 15 lines in a devops skill, no *.example.md.
-for f in $(git ls-files -co --exclude-standard "$D/core/**/*.md" "$D/workflows/**/*.md" $(printf "$D/%s/**/*.md " angular dotnet go python typescript)); do
+for f in $(git ls-files -co --exclude-standard "$D/core/**/*.md" $(printf "$D/%s/**/*.md " angular dotnet go python typescript)); do
   legacy "$f" && continue
   awk -v f="$f" '/^\s*```(yaml|yml|bash|sh|shell)/ { n=0; inb=1; start=NR; next } /^\s*```/ { if (inb && n>15) printf "%s:%d: fenced code of %d lines\n", f, start, n; inb=0 } inb { n++ }' "$f"
 done > "$links.fence"

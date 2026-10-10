@@ -13,8 +13,8 @@ Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop
 | W2 | `core/devops-ci-orchestration`; `core/devops-project-version` with `tools/version/` + `-in-go` — the sample, run by `fixtures.sh` | new | done |
 | W3 | `devops-project-version-in-{python,typescript,dotnet}`; Angular uses the TypeScript one; `devops-service-deploy` moved to `deploy/` | new, from `check-version-in-{stack}` | done |
 | W4 | `core/devops-ci-changes` + `-in-{go,python,typescript,dotnet,angular}` | new, from `check-changes-in-{stack}`; fixes `CONTEXT.md` gaps 2–4; patterns run by `agent/changes-fixtures.mjs` | done |
-| W5 | `core/devops-ci-toolchain` + `-in-{go,python,typescript,dotnet}`; `assemble-workflow.sh`; `workflows/devops-github-wf-pull-request` with `templates/pull-request.yml` | new / rewrite | done |
-| W6 | `workflows/devops-github-wf-release` with `templates/release.yml`; `core/devops-package-publish` + `-in-{python,typescript,dotnet}`; `devops-app-release-in-go` | rewrite, merges four workflow skills | done |
+| W5 | `core/devops-ci-toolchain` + `-in-{go,python,typescript,dotnet}`; `assemble-workflow.sh`; `core/devops-github-wf-pull-request` with `templates/pull-request.yml` | new / rewrite | done |
+| W6 | `core/devops-github-wf-release` with `templates/release.yml`; `core/devops-package-publish` + `-in-{python,typescript,dotnet}`; `devops-app-release-in-go` | rewrite, merges four workflow skills | done |
 | W7 | the replaced skills removed (`agent/removed-skills.txt`); rule and ADR in `skill-design` for the `skills/devops/` layout; no link to a removed skill is left in `skills/` | move / delete | done |
 | W8 | ground truth. Done: `fixtures.sh` (11 version cases x 4 stacks), `changes-fixtures.mjs` (path cases x 5 stacks), `actionlint` on every assembled variant, `test/devops/run-local.sh` on the Go sample. A GitHub run of `pull-request.yml` on the Go sample: green | — | done |
 

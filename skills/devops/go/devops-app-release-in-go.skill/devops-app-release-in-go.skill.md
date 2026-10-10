@@ -15,7 +15,7 @@ tags:
 - Binaries `{app}_{version}_{os}_{arch}` for linux, windows, and darwin, with a checksums file, attached to the Release on `master`.
 
 # Core Principle
-- This skill adds one delivery to [[skills/devops/workflows/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]]; the Release itself is created by that workflow's `release` job.
+- This skill adds one delivery to [[skills/devops/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]]; the Release itself is created by that workflow's `release` job.
 - The binary gets its version as [[skills/devops/go/devops-project-version-in-go.skill/devops-project-version-in-go.skill.md|devops-project-version-in-go]] states — through `-ldflags`, from the `version` job.
 
 # Rule

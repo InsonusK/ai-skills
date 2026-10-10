@@ -62,7 +62,7 @@ A change of `docs` alone runs nothing but `changes` and `report`. A project whos
 
 ## 5. The skills
 
-Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` for stack-agnostic skills, `{stack}/` for extensions, `workflows/`, `deploy/`. Stacks: go, python, typescript, dotnet, angular. A skill under `skills/devops/` links outside it only to `skills/testing/` and `skills/design/`.
+Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` for stack-agnostic skills — the two workflow skills among them — `{stack}/` for extensions, `deploy/` for deployment. Stacks: go, python, typescript, dotnet, angular. A skill under `skills/devops/` links outside it only to `skills/testing/` and `skills/design/`.
 
 | Skill | Holds | Replaces |
 | --- | --- | --- |

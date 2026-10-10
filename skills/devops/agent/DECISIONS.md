@@ -23,6 +23,7 @@ None.
 - **F11** (2026-10-10). A push to `master` that would release an existing version fails.
 - (2026-10-10) The owner reads the results of GitHub runs himself.
 - **Go version source** (2026-10-10). A Go project records its version only as `var Version` in `internal/version/version.go`; the root `VERSION` file is dropped. Changed with it: `devops-project-version-in-go` and its ADR, `solution-go-repository-structure`, six plateau version-file skills and their examples, the Go testing example and its ADR `distribution-version`.
+- **Workflow skills in `core/`** (2026-10-10). The two workflow skills are stack-agnostic and live in `skills/devops/core/`; there is no `workflows/` folder. (Agent: `deploy/` stays apart — a project that deploys nothing selects `core` and its stack and leaves it out.)
 - Forgotten items accepted: the library project type, an image build in a pull request, the report on Pages, the image tags, a docs-only change.
 
 ## Made by the agent
