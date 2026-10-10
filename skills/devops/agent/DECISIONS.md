@@ -7,6 +7,8 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 - ⚠️ **F2. No `DELTA_BASE` for the test kinds in a pull request.** Not answered in the review of 2026-10-10. `INVARIANTS.md` keeps the standing decision: every kind runs in full as a `check` run and the mutation kind skips itself; a pull request is never gated on mutation testing.
 - ⚠️ **F10. What the GitHub experiment may publish.** A real run of `release.yml` in this repository pushes an image to `ghcr.io`, creates a tag and a Release, and deploys Pages. Proposed: the experiment workflows on `develop-devops` use a tag prefix `devops-test-v`, mark the Release as a draft and push only snapshot images; Pages deploy is exercised only if the owner allows it for this repository.
 
+- ⚠️ **F11. A push to `master` that would release an existing version fails.** The `version` job stops with "is already released" when `v{version}` exists and `code` or `docker` changed — instead of silently overwriting the image `{version}`. Cost: "re-run all jobs" of a release that already created its tag fails; "re-run failed jobs" works.
+
 ## Decided by the owner, 2026-10-10
 
 - **The principle is narrower than "everything through `make`".** Through `make`: what changes often — tests, test reports, the version. Decided once per stack and copied ready-made: change detection, tags, release name and text.
@@ -38,3 +40,12 @@ One line per choice. ⚠️ = an architectural fork the owner decides.
 - 2026-10-10 The action passes `base: ${{ github.ref }}` to `dorny/paths-filter`: without it a push to `develop` is compared with the default branch, not with the commit before the push.
 - 2026-10-10 The patterns are run locally with the matcher `paths-filter` uses (`picomatch` 2.3.1). The first run failed: `**/Dockerfile` inside braces does not match a root `Dockerfile`. Both forms are listed now.
 - 2026-10-10 Angular has its own `devops-ci-changes-in-angular` — `spec/`, `*.spec.ts`, `-e2e` projects — while it shares the TypeScript version skill.
+- 2026-10-10 The toolchain is installed by a ready `setup-toolchain` composite action per stack. With it and `check-changes` behind fixed names, both workflow templates are identical for every stack.
+- 2026-10-10 A workflow is written by `assemble-workflow.sh` (a script the agent runs), not copied and trimmed by hand: project types are marked blocks, a stack's `package`/`app` job is a file passed to the script.
+- 2026-10-10 `make test-readme-check` is its own job and also runs for a `docs` change — the README is a `docs` file and removing a badge from it would otherwise pass.
+- 2026-10-10 A Python snapshot is `{version}.dev{timestamp}`: the old `{version}-{timestamp}` is a PEP 440 post-release and sorts after the release.
+- 2026-10-10 The Python package job writes the snapshot version into `pyproject.toml` with `sed` — the one place besides `read-version.sh` that names the version source; the build backend has no command-line override. Exempt in `check.sh` §6.
+- 2026-10-10 The `release` job attaches every artifact named `release-*`; a delivery job needs no knowledge of the Release.
+- 2026-10-10 Release concurrency: a newer push cancels a running `develop` snapshot, never a running `master` release.
+- 2026-10-10 `skill-design` gets the rule "Keep DevOps skills together" and the ADR `devops-skills-in-one-directory` for F8.
+- 2026-10-10 The GitHub experiment cannot live in a subfolder of this repository: the path filters and the workflows assume the project at the repository root, and everything under `test/` would be classified as tests. `test/devops/build-sample.sh` builds the sample as a repository root; the plan is to push that tree as the orphan branch `develop-devops` (and `master-devops` for the release path), branch names substituted in the two workflow files.

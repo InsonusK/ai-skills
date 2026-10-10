@@ -12,7 +12,7 @@ tags:
 
 # Goal
 - `.github/actions/check-changes/action.yml`, an unchanged copy of this skill's asset.
-- Every test file of the project inside the layout the action's `test` category matches: `test/`, `features/`, and `spec/` folders beside the code, `*.spec.ts` files, and `-e2e` projects.
+- **Tests in the layout** - Every test file of the project inside the layout the action's `test` category matches: `test/`, `features/`, and `spec/` folders beside the code, `*.spec.ts` files, and `-e2e` projects.
 
 # Core Principle
 - This skill details [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]] for Angular; apply both.

@@ -34,7 +34,8 @@ Input is environment variables that state facts about the run: `DELTA_BASE` and 
 
 - `tools/version/` — `version.mk` and `version.sh`, identical in every project of every stack, and `read-version.sh`, the one script that differs by stack. Assets of the project-version skill, copied verbatim; the project's `Makefile` includes `version.mk` as it includes `tools/testing/testing.mk`.
 - `.github/actions/check-changes/action.yml` — one ready file per stack, copied verbatim. Outputs `code`, `test`, `ci`, `docker`, `docs`: `code` — what goes into the artifact, with the manifest and the version source; `test` — tests, features, `tools/testing/**`; `ci` — `.github/**`, `tools/version/**`, `Makefile`; `docker` — `Dockerfile`, `.dockerignore`; `docs` — `docs/**`, `*.md`. A file is in exactly one category.
-- `.github/workflows/pull-request.yml`, `release.yml` — templates; what is filled in is listed in the workflow skill.
+- `.github/actions/setup-toolchain/action.yml` — one ready file per stack, copied verbatim.
+- `.github/workflows/pull-request.yml`, `release.yml` — written by `assemble-workflow.sh` from a template: blocks marked `docker`, `package`, `app` are kept for the project's types and removed otherwise.
 
 ## 4. The processes
 
@@ -42,14 +43,14 @@ Input is environment variables that state facts about the run: `DELTA_BASE` and 
 
 1. `changes`: `check-changes` — the files the pull request changes against the commit it branched from.
 2. `version-check`, only into `master` and when `code` or `docker` changed: `make version-check` against the tip of `master`.
-3. Tests, when `code`, `test` or `ci` changed: `make test-readme-check`, then every kind in its own parallel job as `make test-kind-{kind}`, `TEST_RUN_PURPOSE=check`, no `DELTA_BASE`.
+3. `make test-readme-check`, also for a `docs` change. Tests, when `code`, `test` or `ci` changed: every kind in its own parallel job as `make test-kind-{kind}`, `TEST_RUN_PURPOSE=check`, no `DELTA_BASE`.
 4. Image build without a push, when the project has a Dockerfile and `code` or `docker` changed.
 5. `report`: the one required status; fails when a job failed, a skipped job passes.
 
 **Push to `develop` or `master`** — `release.yml`, one file per repository
 
 1. `changes`: `check-changes` against the commit before the push.
-2. `version`: `make version`, read once and handed to every later job together with one UTC timestamp.
+2. `version`: `make version`, read once and handed to every later job together with one UTC timestamp. On `master` the job fails when `v{version}` exists and `code` or `docker` changed.
 3. Tests, when `code`, `test` or `ci` changed, every kind in its own parallel job. `develop`: `TEST_RUN_PURPOSE=check`. `master`: `TEST_RUN_PURPOSE=report`, then `make test-report` and the report with its badges deployed to Pages.
 4. Delivery, when `code` or `docker` changed and no kind failed — the jobs of the project's type, chosen when the workflow is written, never at run time:
    - Docker service: build and push the image. `master`: `{version}` and `latest`. `develop`: `{version}-{timestamp}`.
@@ -65,9 +66,10 @@ Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` 
 
 | Skill | Holds | Replaces |
 | --- | --- | --- |
-| `devops-ci-orchestration` (core) | §1 and §2 as rules | — |
+| `devops-ci-orchestration` (core) | §1 and §2 as rules; `assemble-workflow.sh`, which writes a workflow from a template for the project's types | — |
+| `devops-ci-toolchain` (core) + `-in-{go,python,typescript,dotnet}` | the ready `setup-toolchain` action — the one stack-specific step, so workflow templates are the same for every stack | the `Set up {stack}` placeholder |
 | `devops-project-version` (core) + `-in-{go,python,typescript,dotnet}`; Angular uses the TypeScript one | `tools/version/`; per stack where the version is recorded, `read-version.sh`, how the version reaches the built artifact | `devops-github-action-check-version-in-{stack}` |
-| `devops-ci-changes` (core) + `-in-{stack}` | the categories and what each gates; per stack the ready `action.yml` | `devops-github-action-check-changes-in-{stack}` |
+| `devops-ci-changes` (core) + `-in-{go,python,typescript,angular,dotnet}` | the categories and what each gates; per stack the ready `action.yml` | `devops-github-action-check-changes-in-{stack}` |
 | `devops-package-publish` (core) + `-in-{python,typescript,dotnet}` | the library delivery job | `devops-github-wf-stack-lib-release-publish(-in-{stack})` |
 | `devops-app-release-in-go` | the application delivery job | `devops-github-wf-release-info-publish-in-go` |
 | `devops-github-wf-pull-request` | `pull-request.yml` | itself |
@@ -80,7 +82,8 @@ Every script, action and workflow is a real file in `assets/` or `templates/` (p
 
 - `agent/fixtures.sh` runs `tools/version/` of every stack against a throw-away git repository: the version printed, a raised and an unraised version, a malformed one, no version at the base.
 - `agent/check.sh`: links resolve, the §1 check, every stack has every extension, no reference to a removed skill, every workflow and action passes `actionlint`.
-- A green run on GitHub: sample projects under `test/devops/` on the branch `develop-devops` of this repository, with the workflows pointed at them.
+- `test/devops/build-sample.sh` builds a sample repository from the testing Go example and every DevOps asset; `test/devops/run-local.sh` runs in it every `make` call the workflows make.
+- A green run on GitHub of that sample — not done yet, see `STATUS.md`.
 
 ## 7. Open
 

@@ -71,7 +71,9 @@ done
 
 # 6. INVARIANTS §1: no shipped workflow or action names a test tool, a coverage or mutation switch, or a version source.
 forbidden='go test|go vet|pytest|mutmut|gremlins|stryker|dotnet test|coverlet|npm test|npx (cucumber|jest|vitest|playwright|ng)|ng test|godog|--cov|--coverage|-cover\b|cat VERSION|pyproject\.toml|package\.json|Directory\.Build\.props|test-kind-(unit|mutation|components|ui)\b'
-for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | grep -vE "^$D/(deploy|devops-service-deploy\.skill)/"); do
+#    Not checked: setup-toolchain reads the toolchain version, not the project's, from the manifest;
+#    the Python package job writes the snapshot version into the manifest (DECISIONS.md).
+for f in $(git ls-files -co --exclude-standard "$D/**/*.yml" "$D/**/*.yaml" | grep -vE "^$D/deploy/|/setup-toolchain/action\.yml$|/devops-package-publish-in-python\.skill/"); do
   out=$(grep -nE "$forbidden" "$f" | grep -vE '^\s*[0-9]+:\s*#')
   [ -n "$out" ] && { err "$f names a test tool or a version source:"; echo "$out"; }
 done
@@ -87,7 +89,7 @@ rm -f "$links.fence"
 # 8. A replaced skill is named nowhere (the list grows as waves remove skills).
 while read -r name; do
   [ -z "$name" ] && continue
-  out=$(git grep -lE "$name([^a-z-]|$)" -- skills ':!skills/devops/agent' ':!skills/testing/agent' ':!skills/design' 2>/dev/null)
+  out=$(git grep -lE "$name([^a-z-]|$)" -- skills ':!skills/**/agent/**' ':!skills/design' 2>/dev/null)
   [ -n "$out" ] && { err "removed skill $name is still named in:"; echo "$out"; }
 done < "$A/removed-skills.txt"
 

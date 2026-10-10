@@ -1,0 +1,11 @@
+# .github/actions/setup-toolchain/action.yml - installs the Node.js toolchain version the project declares.
+# Source: skill devops-ci-toolchain-in-typescript. Copied verbatim; never edited in the project.
+name: setup-toolchain
+description: Install the Node.js toolchain version the project declares
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: package.json
+        cache: npm

@@ -2,7 +2,7 @@
 
 Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop` at `aa241fc7`.
 
-**Now:** W5. `bash skills/devops/agent/check.sh` is green; the old workflow skills are exempt through `agent/legacy-paths.txt` until W5–W7 rewrite them.
+**Now:** W8 waits for the owner: F2, F10, F11 in `DECISIONS.md`, and a way to read the results of a GitHub run (`gh` is not logged in in this container). Everything else is done; `bash skills/devops/agent/check.sh` is green (with `actionlint` on `PATH` and `npm install` run in `skills/devops/agent/`).
 
 ## Waves
 
@@ -13,12 +13,14 @@ Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop
 | W2 | `core/devops-ci-orchestration`; `core/devops-project-version` with `tools/version/` + `-in-go` — the sample, run by `fixtures.sh` | new | done |
 | W3 | `devops-project-version-in-{python,typescript,dotnet}`; Angular uses the TypeScript one; `devops-service-deploy` moved to `deploy/` | new, from `check-version-in-{stack}` | done |
 | W4 | `core/devops-ci-changes` + `-in-{go,python,typescript,dotnet,angular}` | new, from `check-changes-in-{stack}`; fixes `CONTEXT.md` gaps 2–4; patterns run by `agent/changes-fixtures.mjs` | done |
-| W5 | `workflows/devops-github-wf-pull-request` | rewrite | — |
-| W6 | `workflows/devops-github-wf-release`; `core/devops-package-publish` + three extensions; `devops-app-release-in-go` | rewrite, merges four workflow skills | — |
-| W7 | remove the replaced skills, an ADR and a rule in `skill-design` for the `skills/devops/` layout, repoint every link in `skills/` (testing skills and plateau catalogs name the old workflow skills) | move / delete | — |
-| W8 | ground truth: fixtures green, `actionlint`, sample projects under `test/devops/` run on `develop-devops`; hand-off | — | — |
+| W5 | `core/devops-ci-toolchain` + `-in-{go,python,typescript,dotnet}`; `assemble-workflow.sh`; `workflows/devops-github-wf-pull-request` with `templates/pull-request.yml` | new / rewrite | done |
+| W6 | `workflows/devops-github-wf-release` with `templates/release.yml`; `core/devops-package-publish` + `-in-{python,typescript,dotnet}`; `devops-app-release-in-go` | rewrite, merges four workflow skills | done |
+| W7 | the replaced skills removed (`agent/removed-skills.txt`); rule and ADR in `skill-design` for the `skills/devops/` layout; no link to a removed skill is left in `skills/` | move / delete | done |
+| W8 | ground truth. Done: `fixtures.sh` (11 version cases x 4 stacks), `changes-fixtures.mjs` (path cases x 5 stacks), `actionlint` on every assembled variant, `test/devops/run-local.sh` on the Go sample. Not done: a run on GitHub | — | waits for the owner |
 
-## Replaced skills (removed in W7)
+## Unproved until a GitHub run
 
-`skills/devops/workflows/`: `-docker-release-publish`, `-release-info-publish`, `-release-test-report`, `-stack-lib-release-publish`.
-`skills/{go,python,typescript,dotnet}/devops/`: `devops-github-action-check-changes-in-*`, `devops-github-action-check-version-in-*`, `devops-github-wf-stack-lib-release-publish-in-{python,typescript,dotnet}`, `devops-github-wf-release-info-publish-in-go`.
+- `dorny/paths-filter` with `base: ${{ github.ref }}` and `predicate-quantifier: every` — the patterns are tested with its matcher, the action itself is not.
+- Every job of `release.yml` after the tests: the image push, the three package jobs, the Go binaries, Pages, the Release.
+- Starting test services from `.devcontainer/docker-compose.yml`; no sample has a database.
+- The Python, TypeScript, and .NET samples: only `tools/version/` and the path patterns ran for them.

@@ -12,8 +12,8 @@ adr:
 ---
 
 # Goal
-- Every workflow step that runs tests, builds the test report, or reads or checks the version is one call of a `make` target from [[#Call only the caller contract|The caller contract]].
-- Every part decided once per stack — the change-detection action, the workflow file — is a file copied from the skill that ships it.
+- **Make for what changes** - Every workflow step that runs tests, builds the test report, or reads or checks the version is one call of a `make` target from [[#Call only the caller contract|The caller contract]].
+- **Ready files for the rest** - Every part decided once per stack — the change-detection action, the toolchain action, the workflow file — is a file copied or assembled from the skill that ships it.
 - No workflow or action names a test tool, a coverage or mutation switch, or the file the version is recorded in.
 
 # Core Principle
@@ -53,13 +53,13 @@ Pass a workflow's knowledge of the run as `TEST_RUN_PURPOSE` (`check` or `report
 - Fix: set the two variables in the workflow; let each script decide what they mean for it.
 
 ### Copy what is decided once
-Take the change-detection action and each workflow file from the skill that ships it, and change only what that skill lists as a placeholder.
+Take the change-detection action, the toolchain action, and each workflow file from the skill that ships it, and change only what that skill lists as a placeholder.
 - Violation: path patterns or a tag string typed into a workflow from memory.
 - Risk: each project gets a slightly different copy, and a fix in the skill reaches none of them.
-- Fix: copy the file; propose a needed deviation to the user and fold it back into the skill's file.
+- Fix: copy the action; write a workflow with [[./scripts/assemble-workflow.sh|assemble-workflow.sh]] from its template; propose a needed deviation to the user and fold it back into the skill's file.
 
 ### Toolchain in the workflow, the rest in make init
-Install the stack's toolchain with the workflow's setup action, then run `make init`.
+Install the stack's toolchain with the `setup-toolchain` action of [[skills/devops/core/devops-ci-toolchain.skill.md|devops-ci-toolchain]], then run `make init`.
 - Violation: `npm ci`, `go install …`, or `playwright install` as workflow steps.
 - Risk: the list of what a checkout needs lives in the workflow, and a developer's machine is prepared differently.
 - Fix: keep one setup step for the toolchain and its cache; move every other preparation into the `init` target.

@@ -12,6 +12,7 @@ adr:
   - adr/allow-extra-top-level-sections.md
   - adr/stack-rules-in-own-skill.md
   - adr/testing-skills-in-one-directory.md
+  - adr/devops-skills-in-one-directory.md
 ---
 
 # Goal
@@ -140,6 +141,12 @@ Place every testing skill under `skills/testing/` — a stack-agnostic `{skill-n
 - Risk: testing rules scatter across stack and catalog directories again, and a link out of the directory makes `ai-skill-manager` load an architecture catalog with every testing skill.
 - Fix: move the skill into `skills/testing/core/` or `skills/testing/{stack}/`; name an outside skill as plain backticked text, or move what the testing skill needs into `skills/testing/`.
 
+### Keep DevOps skills together
+Place every DevOps skill under `skills/devops/` — a stack-agnostic `{skill-name}` in `core/`, `workflows/`, or `deploy/`, a stack-specific `{skill-name}-in-{stack}` in `{stack}/` — and link from a skill there outside the directory only to `skills/testing/` and `skills/design/`. Decision recorded in [[./adr/devops-skills-in-one-directory.md|devops-skills-in-one-directory]].
+- Violation: `devops-ci-changes-in-go` under `skills/go/devops/`, or a workflow skill linking a plateau.
+- Risk: one CI process is read across stack directories again, and a link into a catalog makes `ai-skill-manager` load it with every DevOps skill.
+- Fix: move the skill into `skills/devops/core/` or `skills/devops/{stack}/`; name an outside skill as plain backticked text.
+
 ## SHOULD
 
 ### Always ship a check list
@@ -180,6 +187,7 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] Every cross-skill link is an input, a required sub-step, an applied standard/template, or an active prohibition — an agent could not finish this skill's artifact without it; no link to a later pipeline stage, a consumer, or an out-of-scope topic.
 - [ ] The skill is split by stack only when a second, differing stack implementation exists or is planned, and then per [[skills/design/skill-stack-split.skill/skill-stack-split.skill.md|skill-stack-split]]; otherwise it is one skill with no `-in-{stack}` suffix.
 - [ ] A testing skill lives in `skills/testing/core/` (stack-agnostic) or `skills/testing/{stack}/` (named `{skill-name}-in-{stack}`), and links only inside `skills/testing/`.
+- [ ] A DevOps skill lives in `skills/devops/core/`, `workflows/`, or `deploy/` (stack-agnostic) or `skills/devops/{stack}/` (named `{skill-name}-in-{stack}`), and links outside `skills/devops/` only to `skills/testing/` and `skills/design/`.
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
 - [ ] Every decision made while writing this skill is an ADR following [adr-create](skills/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
