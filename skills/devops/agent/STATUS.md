@@ -2,21 +2,21 @@
 
 Branch `devops-rework`, worktree `.ai-worktree/devops-rework`, cut from `develop` at `aa241fc7`.
 
-**Now:** waiting for the owner's review of `INVARIANTS.md` and the ⚠️ entries of `DECISIONS.md`. Nothing outside `skills/devops/agent/` is changed.
+**Now:** W1–W2.
 
 ## Waves
 
 | Wave | Produces | Class | State |
 | --- | --- | --- | --- |
-| W0 | `INVARIANTS.md`, `DECISIONS.md`, this file | new | draft, in review |
-| W1 | `agent/check.sh` (links, `run:` rule, every stack has every extension, no reference to a removed skill), `agent/fixtures.sh` | new | — |
-| W2 | `core/devops-ci-orchestration` with `tools/ci/` assets; `core/devops-project-version` + `-in-go` — the sample, run by `fixtures.sh` | new | — |
+| W0 | `INVARIANTS.md`, `DECISIONS.md`, this file | new | reviewed 2026-10-10 |
+| W1 | `agent/check.sh` (links, the §1 check, every stack has every extension, no reference to a removed skill), `agent/fixtures.sh` | new | — |
+| W2 | `core/devops-ci-orchestration`; `core/devops-project-version` with `tools/version/` + `-in-go` — the sample, run by `fixtures.sh` | new | — |
 | W3 | `devops-project-version-in-{python,typescript,dotnet,angular}` | new, from `check-version-in-{stack}` | — |
 | W4 | `core/devops-ci-changes` + `-in-{go,python,typescript,dotnet,angular}` | new, from `check-changes-in-{stack}`; fixes `CONTEXT.md` gaps 2–4 | — |
 | W5 | `workflows/devops-github-wf-pull-request` | rewrite | — |
 | W6 | `workflows/devops-github-wf-release`; `core/devops-package-publish` + three extensions; `devops-app-release-in-go` | rewrite, merges four workflow skills | — |
 | W7 | remove the replaced skills, move `devops-service-deploy` to `deploy/`, repoint every link in `skills/` (testing skills and plateau catalogs name the old workflow skills) | move / delete | — |
-| W8 | ground truth: fixtures green, `actionlint`, a GitHub run if a repository is given; hand-off | — | — |
+| W8 | ground truth: fixtures green, `actionlint`, sample projects under `test/devops/` run on `develop-devops`; hand-off | — | — |
 
 ## Replaced skills (removed in W7)
 
