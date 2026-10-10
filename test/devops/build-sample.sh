@@ -26,6 +26,6 @@ cp -R "$D"/go/devops-ci-toolchain-in-go.skill/assets/.github "$out/"
 # devops-github-wf-pull-request, devops-github-wf-release
 mkdir -p "$out/.github/workflows"
 pr_types=(); for t in "$@"; do [ "$t" = docker ] && pr_types+=(docker); done
-sh "$assemble" "$D/workflows/devops-github-wf-pull-request.skill/templates/pull-request.yml" "${pr_types[@]}" > "$out/.github/workflows/pull-request.yml"
-sh "$assemble" "$D/workflows/devops-github-wf-release.skill/templates/release.yml" "$@" > "$out/.github/workflows/release.yml"
+sh "$assemble" "$D/core/devops-github-wf-pull-request.skill/templates/pull-request.yml" "${pr_types[@]}" > "$out/.github/workflows/pull-request.yml"
+sh "$assemble" "$D/core/devops-github-wf-release.skill/templates/release.yml" "$@" > "$out/.github/workflows/release.yml"
 echo "sample built in $out"
